@@ -1,0 +1,19 @@
+Description: Fix django.wsgi
+Author: Julien Danjou <acid@debian.org>
+
+---
+Origin: other
+
+--- horizon-2012.1~e1.orig/openstack-dashboard/dashboard/wsgi/django.wsgi
++++ horizon-2012.1~e1/openstack-dashboard/dashboard/wsgi/django.wsgi
+@@ -4,7 +4,10 @@ import sys
+ import django.core.handlers.wsgi
+ from django.conf import settings
+ 
++# Add this file path to sys.path in order to import settings
++sys.path.insert (0, os.path.join (os.path.dirname (os.path.realpath (__file__)), '../..')) 
+ os.environ['DJANGO_SETTINGS_MODULE'] = 'dashboard.settings'
++
+ sys.stdout = sys.stderr
+ 
+ DEBUG = False
