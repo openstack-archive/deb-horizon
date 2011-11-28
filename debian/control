@@ -21,7 +21,7 @@ Description: Django module to provide web interaction with OpenStack
 
 Package: openstack-dashboard
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-django-horizon, python-django
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-django-horizon, python-django, python-openstackx
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
