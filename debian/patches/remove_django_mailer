@@ -1,0 +1,74 @@
+Description: Remove dependency on django-mailer
+ django-mailer is not used, so remove its dependency.
+Author: Julien Danjou <acid@debian.org>
+
+---
+Origin: vendor
+Forwarded: yes
+
+--- horizon-2012.1~e1.orig/horizon/buildout.cfg
++++ horizon-2012.1~e1/horizon/buildout.cfg
+@@ -28,7 +28,6 @@ webob = 1.0.8
+ recipe = zc.recipe.egg
+ eggs =
+     python-dateutil
+-    django-mailer
+     httplib2
+     python-cloudfiles
+     coverage
+--- horizon-2012.1~e1.orig/horizon/horizon/tests/testsettings.py
++++ horizon-2012.1~e1/horizon/horizon/tests/testsettings.py
+@@ -37,8 +37,7 @@ INSTALLED_APPS = (
+     'horizon.tests',
+     'horizon.dashboards.nova',
+     'horizon.dashboards.syspanel',
+-    'horizon.dashboards.settings',
+-    'mailer')
++    'horizon.dashboards.settings')
+ 
+ MIDDLEWARE_CLASSES = (
+     'django.middleware.common.CommonMiddleware',
+@@ -85,10 +84,7 @@ NOSE_ARGS = ['--nocapture',
+ # For nose-selenium integration
+ LIVE_SERVER_PORT = 8000
+ 
+-# django-mailer uses a different config attribute
+-# even though it just wraps django.core.mail
+-MAILER_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+-EMAIL_BACKEND = MAILER_EMAIL_BACKEND
++EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+ 
+ HORIZON_CONFIG = {
+--- horizon-2012.1~e1.orig/openstack-dashboard/tools/pip-requires
++++ horizon-2012.1~e1/openstack-dashboard/tools/pip-requires
+@@ -1,7 +1,6 @@
+ coverage
+ CherryPy
+ Django==1.3
+-django-mailer
+ django-nose==0.1.2
+ django-nose-selenium
+ django-registration==0.7
+--- horizon-2012.1~e1.orig/openstack-dashboard/dashboard/settings.py
++++ horizon-2012.1~e1/openstack-dashboard/dashboard/settings.py
+@@ -91,7 +91,6 @@ INSTALLED_APPS = (
+     'horizon.dashboards.nova',
+     'horizon.dashboards.syspanel',
+     'horizon.dashboards.settings',
+-    'mailer',
+ )
+ 
+ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+--- horizon-2012.1~e1.orig/openstack-dashboard/local/local_settings.py.example
++++ horizon-2012.1~e1/openstack-dashboard/local/local_settings.py.example
+@@ -21,9 +21,6 @@ EMAIL_BACKEND = 'django.core.mail.backen
+ # Or send them to /dev/null
+ #EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+ 
+-# django-mailer uses a different settings attribute
+-MAILER_EMAIL_BACKEND = EMAIL_BACKEND
+-
+ # Configure these for your outgoing email host
+ # EMAIL_HOST = 'smtp.my-company.com'
+ # EMAIL_PORT = 25
