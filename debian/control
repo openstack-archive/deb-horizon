@@ -13,7 +13,7 @@ Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
 
 Package: python-django-horizon
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, quantum-client, python-glance
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, quantum-client, python-glance, python-mox
 Description: Django module to provide web interaction with OpenStack
  Horizon is a Django module that permits interaction with an OpenStack
  cloud. It can be used to build a dashboard to control an OpenStack cloud.
