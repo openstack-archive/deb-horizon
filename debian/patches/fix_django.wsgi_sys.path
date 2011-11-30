@@ -3,6 +3,7 @@ Author: Julien Danjou <acid@debian.org>
 
 ---
 Origin: other
+Forwarded: https://review.openstack.org/#change,1966
 
 --- horizon-2012.1~e1.orig/openstack-dashboard/dashboard/wsgi/django.wsgi
 +++ horizon-2012.1~e1/openstack-dashboard/dashboard/wsgi/django.wsgi
