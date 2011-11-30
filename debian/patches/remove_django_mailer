@@ -4,7 +4,7 @@ Author: Julien Danjou <acid@debian.org>
 
 ---
 Origin: vendor
-Forwarded: yes
+Forwarded: https://review.openstack.org/#change,1963
 
 --- horizon-2012.1~e1.orig/horizon/buildout.cfg
 +++ horizon-2012.1~e1/horizon/buildout.cfg
