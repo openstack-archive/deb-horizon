@@ -1,4 +1,0 @@
-3e8413be302d8c75da8996a6e3b73d619b2e7b34
-fix_django.wsgi_sys.path
-remove_django_mailer
-fix_templates_installation

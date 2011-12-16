@@ -4,18 +4,21 @@
 
 SOURCE_DIRS=horizon openstack-dashboard
 
+# Add -B so we do not pollute the source tree
+PYTHON=python -B
+
 override_dh_auto_build:
 	dh_auto_build
 	for d in $(SOURCE_DIRS); \
 	do \
-		cd $(CURDIR)/$$d && python setup.py build; \
+		cd $(CURDIR)/$$d && $(PYTHON) setup.py build; \
 	done
 
 override_dh_auto_install:
 	dh_auto_install
 	for d in $(SOURCE_DIRS); \
 	do \
-		cd $(CURDIR)/$$d && python setup.py install --install-layout=deb --root=$(CURDIR)/debian/tmp; \
+		cd $(CURDIR)/$$d && $(PYTHON) setup.py install --install-layout=deb --root=$(CURDIR)/debian/tmp; \
 	done
 	# Actually the setup.py from openstack-dashboard does not install anything…
 	install -d -m 755  $(CURDIR)/debian/tmp/usr/share/openstack-dashboard
@@ -30,9 +33,8 @@ override_dh_auto_clean:
 	dh_auto_clean
 	for d in $(SOURCE_DIRS); \
 	do \
-		cd $(CURDIR)/$$d && python setup.py clean; \
+		cd $(CURDIR)/$$d && $(PYTHON) setup.py clean; \
 	done
 	rm -rf $(CURDIR)/horizon/build
-	rm -rf $(CURDIR)/horizon/horizon/*.pyc
 	rm -rf $(CURDIR)/horizon/horizon.egg-info
 	rm -rf $(CURDIR)/openstack-dashboard/openstack_dashboard.egg-info
