@@ -47,7 +47,7 @@ class Image(APIDictWrapper):
 class ImageProperties(APIDictWrapper):
     """Simple wrapper around glance image properties dictionary"""
     _attrs = ['architecture', 'image_location', 'image_state', 'kernel_id',
-             'project_id', 'ramdisk_id']
+             'project_id', 'ramdisk_id', 'image_type']
 
 
 def glance_api(request):
@@ -68,7 +68,19 @@ def image_delete(request, image_id):
 
 
 def image_get(request, image_id):
-    return Image(glance_api(request).get_image(image_id)[0])
+    """
+    Returns the actual image file from Glance for image with
+    supplied identifier
+    """
+    return glance_api(request).get_image(image_id)[1]
+
+
+def image_get_meta(request, image_id):
+    """
+    Returns an Image object populated with metadata for image
+    with supplied identifier.
+    """
+    return Image(glance_api(request).get_image_meta(image_id))
 
 
 def image_list_detailed(request):

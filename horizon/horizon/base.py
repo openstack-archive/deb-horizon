@@ -25,6 +25,7 @@ the classes contained therein.
 import copy
 import functools
 import inspect
+import logging
 
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url, include
@@ -36,6 +37,9 @@ from django.utils.module_loading import module_has_submodule
 from django.utils.translation import ugettext as _
 
 from horizon.decorators import require_roles, _current_component
+
+
+LOG = logging.getLogger(__name__)
 
 
 # Default configuration dictionary. Do not mutate directly. Use copy.copy().
@@ -139,8 +143,19 @@ class Registry(object):
             for registered in self._registry.values():
                 if registered.slug == cls:
                     return registered
-        raise NotRegistered('%s with slug "%s" is not registered'
-                            % (self._registerable_class, cls))
+        class_name = self._registerable_class.__name__
+        if hasattr(self, "_registered_with"):
+            parent = self._registered_with._registerable_class.__name__
+            raise NotRegistered('%(type)s with slug "%(slug)s" is not '
+                                'registered with %(parent)s "%(name)s".'
+                                    % {"type": class_name,
+                                       "slug": cls,
+                                       "parent": parent,
+                                       "name": self.name})
+        else:
+            raise NotRegistered('%(type)s with slug "%(slug)s" is not '
+                                'registered.'
+                                    % {"type": class_name, "slug": cls})
 
 
 class Panel(HorizonComponent):
@@ -182,11 +197,18 @@ class Panel(HorizonComponent):
         which accepts a ``RequestContext`` object as a single argument
         to control whether or not this panel should appear in
         automatically-generated navigation. Default: ``True``.
+
+    .. attribute:: index_url_name
+
+        The ``name`` argument for the URL pattern which corresponds to
+        the index view for this ``Panel``. This is the view that
+        :meth:`.Panel.get_absolute_url` will attempt to reverse.
     """
     name = ''
     slug = ''
     urls = None
     nav = True
+    index_url_name = "index"
 
     def __repr__(self):
         return "<Panel: %s>" % self.__unicode__()
@@ -197,8 +219,15 @@ class Panel(HorizonComponent):
         The default URL is defined as the URL pattern with ``name="index"`` in
         the URLconf for this panel.
         """
-        return reverse('horizon:%s:%s:index' % (self._registered_with.slug,
-                                                self.slug,))
+        try:
+            return reverse('horizon:%s:%s:%s' % (self._registered_with.slug,
+                                                 self.slug,
+                                                 self.index_url_name))
+        except:
+            # Logging here since this will often be called in a template
+            # where the exception would be hidden.
+            LOG.exception("Error reversing absolute URL for %s." % self)
+            raise
 
     @property
     def _decorated_urls(self):
@@ -235,18 +264,29 @@ class Dashboard(Registry, HorizonComponent):
     .. attribute:: panels
 
         The ``panels`` attribute can be either a list containing the name
-        of each panel module which should be loaded as part of this
-        dashboard, or a dictionary of tuples which define groups of
+        of each panel **module**  which should be loaded as part of this
+        dashboard, or a dictionary of tuples which define groups of panels
         as in the following example::
 
             class Syspanel(horizon.Dashboard):
                 panels = {'System Panel': ('overview', 'instances', ...)}
 
         Automatically generated navigation will use the order of the
-        modules in this attribute. Default: ``[]``.
+        modules in this attribute.
 
-        Panel modules must be listed in ``panels`` in order to be
-        discovered by the automatic registration mechanism.
+        Default: ``[]``.
+
+        .. warning::
+
+            The values for this attribute should not correspond to the
+            :attr:`~.Panel.name` attributes of the ``Panel`` classes.
+            They should be the names of the Python modules in which the
+            ``panel.py`` files live. This is used for the automatic
+            loading and registration of ``Panel`` classes much like
+            Django's ``ModelAdmin`` machinery.
+
+            Panel modules must be listed in ``panels`` in order to be
+            discovered by the automatic registration mechanism.
 
     .. attribute:: default_panel
 
@@ -271,6 +311,13 @@ class Dashboard(Registry, HorizonComponent):
 
         Optional boolean to control whether or not this dashboard should
         appear in automatically-generated navigation. Default: ``True``.
+
+    .. attribute:: supports_tenants
+
+        Optional boolean that indicates whether or not this dashboard includes
+        support for projects/tenants. If set to ``True`` this dashboard's
+        naviagtion will include a UI element that allows the user to select
+        project/tenant. Default: ``False``.
     """
     _registerable_class = Panel
     name = ''
@@ -279,6 +326,7 @@ class Dashboard(Registry, HorizonComponent):
     panels = []
     default_panel = None
     nav = True
+    supports_tenants = False
 
     def __repr__(self):
         return "<Dashboard: %s>" % self.__unicode__()
@@ -322,7 +370,13 @@ class Dashboard(Registry, HorizonComponent):
         in the URLconf for the :class:`~horizon.Panel` specified by
         :attr:`~horizon.Dashboard.default_panel`.
         """
-        return self._registered(self.default_panel).get_absolute_url()
+        try:
+            return self._registered(self.default_panel).get_absolute_url()
+        except:
+            # Logging here since this will often be called in a template
+            # where the exception would be hidden.
+            LOG.exception("Error reversing absolute URL for %s." % self)
+            raise
 
     @property
     def _decorated_urls(self):

@@ -1,10 +1,5 @@
 {% extends 'syspanel/base.html' %}
-
-{% block sidebar %}
-  {% with current_sidebar="instances" %}
-    {{block.super}}
-  {% endwith %}
-{% endblock %}
+{% load i18n %}
 
 {% block page_header %}
   {# to make searchable false, just remove it from the include statement #}
@@ -57,7 +52,7 @@
     </div>
 
     <div id="log" class="tab_wrapper">
-      <a class="view_full" target="_blank" href="{% url horizon:nova:instances:console instance.id %}">View Full Log</a>
+      <a class="view_full" target="_blank" href="{% url horizon:nova:instances_and_volumes:instances:console instance.id %}">View Full Log</a>
       <pre class="logs"></pre>
     </div>
 
@@ -96,7 +91,7 @@
     })
 
     function getlog(){
-      $.get("{% url horizon:nova:instances:console instance.id %}?length=25", function(data){
+      $.get("{% url horizon:nova:instances_and_volumes:instances:console instance.id %}?length=25", function(data){
         $("#log .logs").html(data)
       })
     }

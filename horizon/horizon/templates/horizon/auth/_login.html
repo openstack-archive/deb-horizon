@@ -1,17 +1,18 @@
+{% extends "horizon/common/_modal_form.html" %}
 {% load i18n %}
-<form action="{% url horizon:auth_login %}" method="post">
-  {% csrf_token %}
+
+{% block modal-header %}Log In{% endblock %}
+{% block modal_class %}modal{% endblock %}
+
+{% block form-action %}{% url horizon:auth_login %}{% endblock %}
+
+{% block modal-body %}
+  {% include "horizon/_messages.html" %}
   <fieldset>
-  {% for hidden in form.hidden_fields %}
-    {{ hidden }}
-  {% endfor %}
-  {% for field in form.visible_fields %}
-    {{ field.label_tag }}
-    {{ field.errors }}
-    {{ field }}
-    {% endfor %}
-  {% block submit %}
-    <input type="submit" value="{% trans "Login" %}" />
-  {% endblock %}
+    {% include "horizon/common/_form_fields.html" %}
   </fieldset>
-</form>
+{% endblock %}
+
+{% block modal-footer %}
+  <input type="submit" class="btn primary pull-right" value="{% trans "Login" %}" />
+{% endblock %}

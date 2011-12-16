@@ -28,6 +28,7 @@ from django import shortcuts
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from openstackx.api import exceptions as api_exceptions
+from keystoneclient import exceptions as keystone_exceptions
 
 from horizon import api
 from horizon import base
@@ -44,7 +45,8 @@ def _set_session_data(request, token):
     request.session['tenant'] = token.tenant['name']
     request.session['tenant_id'] = token.tenant['id']
     request.session['token'] = token.id
-    request.session['user'] = token.user['name']
+    request.session['user_name'] = token.user['name']
+    request.session['user_id'] = token.user['id']
     request.session['roles'] = token.user['roles']
 
 
@@ -79,10 +81,17 @@ class Login(forms.SelfHandlingForm):
                 return shortcuts.redirect(base.Horizon.get_user_home(user))
 
             elif data.get('username', None):
-                token = api.token_create(request,
-                                         '',
-                                         data['username'],
-                                         data['password'])
+                try:
+                    token = api.token_create(request,
+                                             '',
+                                             data['username'],
+                                             data['password'])
+                except keystone_exceptions.Unauthorized:
+                    LOG.exception("Failed login attempt for %s."
+                                  % data['username'])
+                    messages.error(request, _('Bad user name or password.'),
+                                   extra_tags="login")
+                    return
 
                 # Unscoped token
                 request.session['unscoped_token'] = token.id
@@ -96,7 +105,8 @@ class Login(forms.SelfHandlingForm):
                 if not tenants:
                     messages.error(request,
                                    _('No tenants present for user: %(user)s') %
-                                    {"user": data['username']})
+                                    {"user": data['username']},
+                                   extra_tags="login")
                     return
 
                 # Create a token.
@@ -124,11 +134,11 @@ class Login(forms.SelfHandlingForm):
         except api_exceptions.Unauthorized as e:
             msg = _('Error authenticating: %s') % e.message
             LOG.exception(msg)
-            messages.error(request, msg)
+            messages.error(request, msg, extra_tags="login")
         except api_exceptions.ApiException as e:
             messages.error(request,
                            _('Error authenticating with keystone: %s') %
-                           e.message)
+                           e.message, extra_tags="login")
 
 
 class LoginWithTenant(Login):

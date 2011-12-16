@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block main %}
-  {% block page_header %}{% endblock %}
-  <div class="main_content">
-    {% include "_messages.html" %}
+  <div id='main_content' class="content">
+    {% block page_header %}{% endblock %}
+    {% include "horizon/_messages.html" %}
     {% block settings_main %}{% endblock %}
   </div>
 {% endblock %}

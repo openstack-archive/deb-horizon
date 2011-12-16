@@ -2,6 +2,9 @@
 The ``run_tests.sh`` Script
 ===========================
 
+.. contents:: Contents:
+   :local:
+
 Horizon ships with a script called ``run_tests.sh`` at the root of the
 repository. This script provides many crucial functions for the project,
 and also makes several otherwise complex tasks trivial for you as a
@@ -74,6 +77,16 @@ For more detailed code analysis you can run::
 
 The output will be saved in ``./pylint.txt``.
 
+Tab Characters
+--------------
+
+For those who dislike having a mix of tab characters and spaces for indentation
+there's a command to check for that in Python, CSS, JavaScript and HTML files::
+
+    ./run_tests.sh --tabs
+
+This will output a total "tab count" and a list of the offending files.
+
 Running the development server
 ==============================
 
@@ -104,3 +117,36 @@ run::
     ./run_tests.sh --force
 
 That will blow away the existing environments and create new ones for you.
+
+Non-interactive Mode
+====================
+
+There is an optional flag which will run the script in a non-interactive
+(and eventually less verbose) mode::
+
+    ./run_tests.sh --quiet
+
+This will automatically take the default action for actions which would
+normally prompt for user input such as installing/updating the environment.
+
+Environment Backups
+===================
+
+To speed up the process of doing clean checkouts, running continuous
+integration tests, etc. there are options for backing up the current
+environment and restoring from a backup.
+
+    ./run_tests.sh --restore-environment
+    ./run_tests.sh --backup-environment
+
+The environment backup is stored in ``/tmp/.horizon_environment/``.
+
+Environment Versioning
+======================
+
+Horizon keeps track of changes to the environment by incrementing an
+``environment_version`` integer at the top of ``run_tests.sh``.
+
+If you do anything which changes the environment (adding new dependencies
+or renaming directories are both great examples) be sure to increment the
+``environment_version`` counter as well.

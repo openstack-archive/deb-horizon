@@ -23,6 +23,7 @@ import logging
 from cloudfiles.errors import ContainerNotEmpty
 from django import shortcuts
 from django.contrib import messages
+from django.utils.translation import ugettext as _
 
 from horizon import api
 from horizon import forms
@@ -66,16 +67,16 @@ class FilterObjects(forms.SelfHandlingForm):
     def handle(self, request, data):
         object_prefix = data['object_prefix'] or None
 
-        objects = api.swift_get_objects(request,
-                                        data['container_name'],
-                                        prefix=object_prefix)
+        objects, more = api.swift_get_objects(request,
+                                              data['container_name'],
+                                              prefix=object_prefix)
 
         if not objects:
             messages.info(request,
                          _('There are no objects matching that prefix in %s') %
                          data['container_name'])
 
-        return objects
+        return (objects, more)
 
 
 class DeleteObject(forms.SelfHandlingForm):
@@ -106,7 +107,8 @@ class UploadObject(forms.SelfHandlingForm):
                 self.files['object_file'].read())
 
         messages.success(request, _("Object was successfully uploaded."))
-        return shortcuts.redirect(request.build_absolute_uri())
+        return shortcuts.redirect("horizon:nova:containers:object_index",
+                                  data['container_name'])
 
 
 class CopyObject(forms.SelfHandlingForm):
@@ -139,4 +141,5 @@ class CopyObject(forms.SelfHandlingForm):
                 _('Object was successfully copied to %(container)s\%(obj)s') %
                 {"container": new_container_name, "obj": new_object_name})
 
-        return shortcuts.redirect(request.build_absolute_uri())
+        return shortcuts.redirect("horizon:nova:containers:object_index",
+                                  data['new_container_name'])

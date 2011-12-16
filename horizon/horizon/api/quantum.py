@@ -26,6 +26,7 @@ import logging
 from django.conf import settings
 from quantum import client as quantum_client
 
+from horizon.api import nova
 from horizon.api.base import *
 from horizon.api.deprecated import extras_api
 
@@ -88,7 +89,7 @@ def quantum_detach_port(request, network_id, port_id):
 
 
 def quantum_set_port_state(request, network_id, port_id, data):
-    return quantum_api(request).set_port_state(network_id, port_id, data)
+    return quantum_api(request).update_port(network_id, port_id, data)
 
 
 def quantum_port_attachment(request, network_id, port_id):
@@ -111,7 +112,7 @@ def get_vif_ids(request):
                 attached_vifs.append(
                     port_attachment['attachment']['id'].encode('ascii'))
     # Get all instances
-    instances = server_list(request)
+    instances = nova.server_list(request)
     # Get virtual interface ids by instance
     for instance in instances:
         id = instance.id

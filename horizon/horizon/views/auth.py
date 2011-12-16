@@ -20,13 +20,11 @@
 
 import logging
 
-from django.conf import settings
-from django import template
 from django import shortcuts
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-from openstackx.api import exceptions as api_exceptions
 
+import horizon
 from horizon import api
 from horizon import exceptions
 from horizon import users
@@ -35,6 +33,11 @@ from horizon.views.auth_forms import Login, LoginWithTenant, _set_session_data
 
 
 LOG = logging.getLogger(__name__)
+
+
+def user_home(request):
+    """ Reversible named view to direct a user to the appropriate homepage. """
+    return shortcuts.redirect(horizon.get_user_home(request.user))
 
 
 def login(request):

@@ -53,8 +53,6 @@ class GlanceApiTests(APITestCase):
         self.assertIsNotNone(ret_val)
         self.assertEqual(ret_val.auth_tok, TEST_TOKEN)
 
-        self.mox.VerifyAll()
-
     def test_image_create(self):
         IMAGE_FILE = 'someData'
         IMAGE_META = {'metadata': 'foo'}
@@ -69,8 +67,6 @@ class GlanceApiTests(APITestCase):
         self.assertIsInstance(ret_val, api.Image)
         self.assertEqual(ret_val._apidict, TEST_RETURN)
 
-        self.mox.VerifyAll()
-
     def test_image_delete(self):
         IMAGE_ID = '1'
 
@@ -83,20 +79,18 @@ class GlanceApiTests(APITestCase):
 
         self.assertEqual(ret_val, TEST_RETURN)
 
-        self.mox.VerifyAll()
-
-    def test_image_get(self):
+    def test_image_get_meta(self):
         IMAGE_ID = '1'
 
         glance_api = self.stub_glance_api()
-        glance_api.get_image(IMAGE_ID).AndReturn([TEST_RETURN])
+        glance_api.get_image_meta(IMAGE_ID).AndReturn([TEST_RETURN])
 
         self.mox.ReplayAll()
 
-        ret_val = api.image_get(self.request, IMAGE_ID)
+        ret_val = api.image_get_meta(self.request, IMAGE_ID)
 
         self.assertIsInstance(ret_val, api.Image)
-        self.assertEqual(ret_val._apidict, TEST_RETURN)
+        self.assertEqual(ret_val._apidict, [TEST_RETURN])
 
     def test_image_list_detailed(self):
         images = (TEST_RETURN, TEST_RETURN + '2')
@@ -111,8 +105,6 @@ class GlanceApiTests(APITestCase):
         for image in ret_val:
             self.assertIsInstance(image, api.Image)
             self.assertIn(image._apidict, images)
-
-        self.mox.VerifyAll()
 
     def test_image_update(self):
         IMAGE_ID = '1'
@@ -136,8 +128,6 @@ class GlanceApiTests(APITestCase):
 
         self.assertIsInstance(ret_val, api.Image)
         self.assertEqual(ret_val._apidict, TEST_RETURN)
-
-        self.mox.VerifyAll()
 
 
 # Wrapper classes that have other attributes or methods need testing

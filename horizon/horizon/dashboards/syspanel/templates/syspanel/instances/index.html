@@ -1,11 +1,5 @@
 {% extends 'syspanel/base.html' %}
-{%load i18n%}
-
-{% block sidebar %}
-  {% with current_sidebar="instances" %}
-    {{block.super}}
-  {% endwith %}
-{% endblock %}
+{% load i18n %}
 
 {% block page_header %}
   {% url horizon:syspanel:instances:index as refresh_link %}
@@ -17,10 +11,9 @@
   {% if instances %}
     {% include 'syspanel/instances/_list.html' %}
   {% else %}
-    <div class="message_box info">
-      {% url horizon:nova:images:index as dash_image_url%}
-      <h2>{% trans "Info"%}</h2>
-      <p>{% blocktrans %}There are currently no instances.  You can launch an instance from the  <a href='{{dash_image_url}}'>Images Page.</a>{% endblocktrans %}</p>
+    <div class="alert-message block-message info">
+      {% url horizon:nova:images_and_snapshots:images:index as dash_image_url%}
+      <p><strong>{% trans "Info: "%}</strong>{% blocktrans %}There are currently no instances.  You can launch an instance from the  <a class="btn small" href='{{dash_image_url}}'>Images Page.</a>{% endblocktrans %}</p>
     </div>
   {% endif %}
 {% endblock %}

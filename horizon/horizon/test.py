@@ -25,6 +25,7 @@ from django import shortcuts
 from django import test as django_test
 from django import template as django_template
 from django.conf import settings
+import httplib2
 import mox
 
 from horizon import context_processors
@@ -65,6 +66,7 @@ class TestCase(django_test.TestCase):
     TEST_TENANT_NAME = 'aTenant'
     TEST_TOKEN = 'aToken'
     TEST_USER = 'test'
+    TEST_USER_ID = '1'
     TEST_ROLES = [{'name': 'admin', 'id': '1'}]
     TEST_CONTEXT = {'authorized_tenants': [{'enabled': True,
                                             'name': 'aTenant',
@@ -113,6 +115,13 @@ class TestCase(django_test.TestCase):
     def setUp(self):
         self.mox = mox.Mox()
 
+        def fake_conn_request(*args, **kwargs):
+            raise Exception("An external URI request tried to escape through "
+                            "an httplib2 client. Args: %s, kwargs: %s"
+                            % (args, kwargs))
+        self._real_conn_request = httplib2.Http._conn_request
+        httplib2.Http._conn_request = fake_conn_request
+
         self._real_horizon_context_processor = context_processors.horizon
         context_processors.horizon = lambda request: self.TEST_CONTEXT
 
@@ -126,13 +135,16 @@ class TestCase(django_test.TestCase):
 
     def tearDown(self):
         self.mox.UnsetStubs()
+        httplib2.Http._conn_request = self._real_conn_request
         context_processors.horizon = self._real_horizon_context_processor
         users.get_user_from_request = self._real_get_user_from_request
+        self.mox.VerifyAll()
 
-    def setActiveUser(self, token=None, username=None, tenant_id=None,
+    def setActiveUser(self, id=None, token=None, username=None, tenant_id=None,
                         service_catalog=None, tenant_name=None, roles=None):
         users.get_user_from_request = lambda x: \
-                users.User(token=token,
+                users.User(id=id,
+                           token=token,
                            user=username,
                            tenant_id=tenant_id,
                            service_catalog=service_catalog)
@@ -152,51 +164,10 @@ class TestCase(django_test.TestCase):
         utcnow.override_time = None
 
 
-def fake_render_to_response(template_name, context, context_instance=None,
-                            mimetype='text/html'):
-    """Replacement for render_to_response so that views can be tested
-       without having to stub out templates that belong in the frontend
-       implementation.
-
-       Should be able to be tested using the django unit test assertions like a
-       normal render_to_response return value can be.
-    """
-    class Template(object):
-        def __init__(self, name):
-            self.name = name
-
-    if context_instance is None:
-        context_instance = django_template.Context(context)
-    else:
-        context_instance.update(context)
-
-    resp = http.HttpResponse()
-    template = Template(template_name)
-
-    resp.write('<html><body><p>'
-               'This is a fake httpresponse for testing purposes only'
-               '</p></body></html>')
-
-    # Allows django.test.client to populate fields on the response object
-    django_test.signals.template_rendered.send(template, template=template,
-                                               context=context_instance)
-
-    return resp
-
-
 class BaseViewTests(TestCase):
     """
     Base class for view based unit tests.
     """
-    def setUp(self):
-        super(BaseViewTests, self).setUp()
-        self._real_render_to_response = shortcuts.render_to_response
-        shortcuts.render_to_response = fake_render_to_response
-
-    def tearDown(self):
-        super(BaseViewTests, self).tearDown()
-        shortcuts.render_to_response = self._real_render_to_response
-
     def assertRedirectsNoFollow(self, response, expected_url):
         self.assertEqual(response._headers['location'],
                          ('Location', settings.TESTSERVER + expected_url))
@@ -204,10 +175,11 @@ class BaseViewTests(TestCase):
 
 
 class BaseAdminViewTests(BaseViewTests):
-    def setActiveUser(self, token=None, username=None, tenant_id=None,
+    def setActiveUser(self, id=None, token=None, username=None, tenant_id=None,
                     service_catalog=None, tenant_name=None, roles=None):
         users.get_user_from_request = lambda x: \
-                users.User(token=self.TEST_TOKEN,
+                users.User(id=self.TEST_USER_ID,
+                           token=self.TEST_TOKEN,
                            user=self.TEST_USER,
                            tenant_id=self.TEST_TENANT,
                            service_catalog=self.TEST_SERVICE_CATALOG,

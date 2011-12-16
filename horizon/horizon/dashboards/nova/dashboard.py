@@ -20,14 +20,16 @@ import horizon
 
 
 class Nova(horizon.Dashboard):
-    name = "User Dashboard"
+    name = "Dashboard"
     slug = "nova"
-    panels = {_("Manage Compute"): ('overview', 'instances', 'images',
-                                    'snapshots', 'keypairs', 'volumes',
-                                    'floating_ips', 'security_groups',),
+    panels = {_("Manage Compute"): ('overview',
+                                    'instances_and_volumes',
+                                    'access_and_security',
+                                    'images_and_snapshots'),
               _("Network"): ('networks',),
               _("Object Store"): ('containers',)}
     default_panel = 'overview'
+    supports_tenants = True
 
 
 horizon.register(Nova)

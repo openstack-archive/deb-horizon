@@ -1,9 +1,8 @@
 {% load horizon %}
-
 {% for component in components %}
     {% if user|can_haz:component %}
-        <li>
-            <a href="{{ component.get_absolute_url }}" {% if current == component.slug %}class="active"{% endif %}>{{ component.name }}</a>
+        <li{% if current == component.slug %} class="active"{% endif %}>
+            <a href="{{ component.get_absolute_url }}" tabindex='1'>{{ component.name }}</a>
         </li>
     {% endif %}
 {% endfor %}

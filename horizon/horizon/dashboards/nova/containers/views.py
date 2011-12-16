@@ -24,9 +24,9 @@ Views for managing Swift containers.
 import logging
 
 from django import http
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django import shortcuts
-from django.utils.translation import ugettext as _
 
 from horizon import api
 from horizon.dashboards.nova.containers.forms import (DeleteContainer,
@@ -44,12 +44,19 @@ def index(request):
     if handled:
         return handled
 
-    containers = api.swift_get_containers(request, marker=marker)
+    try:
+        containers, more = api.swift_get_containers(request, marker=marker)
+    except Exception, e:
+        containers, more = None, None
+        msg = _('Error retrieving container list: %s') % e
+        LOG.exception(msg)
+        messages.error(request, msg)
 
     return shortcuts.render(request,
                             'nova/containers/index.html',
                             {'containers': containers,
-                             'delete_form': delete_form})
+                             'delete_form': delete_form,
+                             'more': more})
 
 
 @login_required
@@ -71,17 +78,22 @@ def object_index(request, container_name):
     if handled:
         return handled
 
-    filter_form, objects = FilterObjects.maybe_handle(request)
+    filter_form, paged_objects = FilterObjects.maybe_handle(request)
 
-    if objects is None:
+    if paged_objects is None:
         filter_form.fields['container_name'].initial = container_name
-        objects = api.swift_get_objects(request, container_name, marker=marker)
+        objects, more = api.swift_get_objects(request,
+                                              container_name,
+                                              marker=marker)
+    else:
+        objects, more = paged_objects
 
     delete_form.fields['container_name'].initial = container_name
     return shortcuts.render(request,
                             'nova/objects/index.html',
                             {'container_name': container_name,
                              'objects': objects,
+                             'more': more,
                              'delete_form': delete_form,
                              'filter_form': filter_form})
 
@@ -116,7 +128,7 @@ def object_download(request, container_name, object_name):
 def object_copy(request, container_name, object_name):
     containers = \
             [(c.name, c.name) for c in api.swift_get_containers(
-                    request)]
+                    request)[0]]
     form, handled = CopyObject.maybe_handle(request,
             containers=containers)
 

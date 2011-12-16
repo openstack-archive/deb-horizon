@@ -24,13 +24,12 @@ import logging
 
 from django.contrib import messages
 from novaclient.v1_1 import client as nova_client
+from novaclient.v1_1.servers import REBOOT_HARD
 
 from horizon.api.base import *
 from horizon.api.deprecated import admin_api
-from horizon.api.deprecated import compute_api
 from horizon.api.deprecated import check_openstackx
 from horizon.api.deprecated import extras_api
-from horizon.api.deprecated import REBOOT_HARD
 
 LOG = logging.getLogger(__name__)
 
@@ -72,7 +71,7 @@ class Server(APIResourceWrapper):
     """
     _attrs = ['addresses', 'attrs', 'hostId', 'id', 'image', 'links',
              'metadata', 'name', 'private_ip', 'public_ip', 'status', 'uuid',
-             'image_name', 'VirtualInterfaces']
+             'image_name', 'VirtualInterfaces', 'flavor', 'key_name']
 
     def __init__(self, apiresource, request):
         super(Server, self).__init__(apiresource)
@@ -89,13 +88,13 @@ class Server(APIResourceWrapper):
         from glance.common import exception as glance_exceptions
         from horizon.api import glance
         try:
-            image = glance.image_get(self.request, self.image['id'])
+            image = glance.image_get_meta(self.request, self.image['id'])
             return image.name
         except glance_exceptions.NotFound:
             return "(not found)"
 
     def reboot(self, hardness=REBOOT_HARD):
-        compute_api(self.request).servers.reboot(self.id, hardness)
+        novaclient(self.request).servers.reboot(self.id, hardness)
 
 
 class ServerAttributes(APIDictWrapper):
@@ -103,7 +102,7 @@ class ServerAttributes(APIDictWrapper):
 
        Preserves the request info so image name can later be retrieved
     """
-    _attrs = ['description', 'disk_gb', 'host', 'image_ref', 'kernel_id',
+    _attrs = ['disk_gb', 'host', 'image_ref', 'kernel_id',
               'key_name', 'launched_at', 'mac_address', 'memory_mb', 'name',
               'os_type', 'tenant_id', 'ramdisk_id', 'scheduled_at',
               'terminated_at', 'user_data', 'user_id', 'vcpus', 'hostname',
@@ -227,16 +226,15 @@ def server_create(request, name, image, flavor,
 
 
 def server_delete(request, instance):
-    compute_api(request).servers.delete(instance)
+    novaclient(request).servers.delete(instance)
 
 
 def server_get(request, instance_id):
-    return Server(extras_api(request).servers.get(instance_id), request)
+    return Server(novaclient(request).servers.get(instance_id), request)
 
 
-@check_openstackx
 def server_list(request):
-    return [Server(s, request) for s in extras_api(request).servers.list()]
+    return [Server(s, request) for s in novaclient(request).servers.list()]
 
 
 @check_openstackx
@@ -251,10 +249,8 @@ def server_reboot(request,
     server.reboot(hardness)
 
 
-def server_update(request, instance_id, name, description):
-    return extras_api(request).servers.update(instance_id,
-                                              name=name,
-                                              description=description)
+def server_update(request, instance_id, name):
+    return novaclient(request).servers.update(instance_id, name=name)
 
 
 def server_add_floating_ip(request, server, address):
@@ -340,7 +336,7 @@ def volume_instance_list(request, instance_id):
 
 def volume_create(request, size, name, description):
     return Volume(novaclient(request).volumes.create(
-            size, name, description))
+            size, display_name=name, display_description=description))
 
 
 def volume_delete(request, volume_id):

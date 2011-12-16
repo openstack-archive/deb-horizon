@@ -23,10 +23,10 @@ from __future__ import absolute_import
 from django import http
 from django.conf import settings
 from mox import IsA
-from openstack import compute as OSCompute
 from openstackx import admin as OSAdmin
 from openstackx import auth as OSAuth
 from openstackx import extras as OSExtras
+from novaclient.v1_1 import servers
 
 
 from horizon.tests.api_tests.utils import *
@@ -99,8 +99,8 @@ class ServerWrapperTests(test.TestCase):
 
     def test_image_name(self):
         image = api.Image({'name': self.IMAGE_NAME})
-        self.mox.StubOutWithMock(api.glance, 'image_get')
-        api.glance.image_get(IsA(http.HttpRequest),
+        self.mox.StubOutWithMock(api.glance, 'image_get_meta')
+        api.glance.image_get_meta(IsA(http.HttpRequest),
                       self.IMAGE_OBJ['id']).AndReturn(image)
 
         server = api.Server(self.inner_server, self.request)
@@ -110,8 +110,6 @@ class ServerWrapperTests(test.TestCase):
         image_name = server.image_name
 
         self.assertEqual(image_name, self.IMAGE_NAME)
-
-        self.mox.VerifyAll()
 
 
 class NovaAdminApiTests(APITestCase):
@@ -135,8 +133,6 @@ class NovaAdminApiTests(APITestCase):
 
         self.assertIsNotNone(api.nova.admin_api(self.request))
 
-        self.mox.VerifyAll()
-
     def test_flavor_create(self):
         FLAVOR_DISK = 1000
         FLAVOR_ID = 6
@@ -159,8 +155,6 @@ class NovaAdminApiTests(APITestCase):
         self.assertIsInstance(ret_val, api.Flavor)
         self.assertEqual(ret_val._apiresource, TEST_RETURN)
 
-        self.mox.VerifyAll()
-
     def test_flavor_delete(self):
         FLAVOR_ID = 6
 
@@ -180,37 +174,6 @@ class NovaAdminApiTests(APITestCase):
 
 
 class ComputeApiTests(APITestCase):
-    def stub_compute_api(self, count=1):
-        self.mox.StubOutWithMock(api.nova, 'compute_api')
-        compute_api = self.mox.CreateMock(OSCompute.Compute)
-        for i in range(count):
-            api.nova.compute_api(IsA(http.HttpRequest)) \
-                    .AndReturn(compute_api)
-        return compute_api
-
-    def test_get_compute_api(self):
-        class ComputeClient(object):
-            __slots__ = ['auth_token', 'management_url']
-
-        self.mox.StubOutClassWithMocks(OSCompute, 'Compute')
-        compute_api = OSCompute.Compute(auth_token=TEST_TOKEN,
-                                        management_url=TEST_URL)
-
-        compute_api.client = ComputeClient()
-
-        self.mox.StubOutWithMock(api.deprecated, 'url_for')
-        api.deprecated.url_for(IsA(http.HttpRequest),
-                               'compute').AndReturn(TEST_URL)
-
-        self.mox.ReplayAll()
-
-        compute_api = api.nova.compute_api(self.request)
-
-        self.assertIsNotNone(compute_api)
-        self.assertEqual(compute_api.client.auth_token, TEST_TOKEN)
-        self.assertEqual(compute_api.client.management_url, TEST_URL)
-
-        self.mox.VerifyAll()
 
     def test_flavor_get(self):
         FLAVOR_ID = 6
@@ -226,15 +189,12 @@ class ComputeApiTests(APITestCase):
         self.assertIsInstance(ret_val, api.Flavor)
         self.assertEqual(ret_val._apiresource, TEST_RETURN)
 
-        self.mox.VerifyAll()
-
     def test_server_delete(self):
         INSTANCE = 'anInstance'
 
-        compute_api = self.stub_compute_api()
-
-        compute_api.servers = self.mox.CreateMockAnything()
-        compute_api.servers.delete(INSTANCE).AndReturn(TEST_RETURN)
+        novaclient = self.stub_novaclient()
+        novaclient.servers = self.mox.CreateMockAnything()
+        novaclient.servers.delete(INSTANCE).AndReturn(TEST_RETURN)
 
         self.mox.ReplayAll()
 
@@ -242,21 +202,15 @@ class ComputeApiTests(APITestCase):
 
         self.assertIsNone(ret_val)
 
-        self.mox.VerifyAll()
-
     def test_server_reboot(self):
         INSTANCE_ID = '2'
-        HARDNESS = 'diamond'
+        HARDNESS = servers.REBOOT_HARD
+
+        server = self.mox.CreateMock(servers.Server)
+        server.reboot(HARDNESS)
 
         self.mox.StubOutWithMock(api.nova, 'server_get')
 
-        server = self.mox.CreateMock(OSCompute.Server)
-        server.reboot(OSCompute.servers.REBOOT_HARD).AndReturn(TEST_RETURN)
-        api.nova.server_get(IsA(http.HttpRequest),
-                            INSTANCE_ID).AndReturn(server)
-
-        server = self.mox.CreateMock(OSCompute.Server)
-        server.reboot(HARDNESS).AndReturn(TEST_RETURN)
         api.nova.server_get(IsA(http.HttpRequest),
                             INSTANCE_ID).AndReturn(server)
 
@@ -264,12 +218,6 @@ class ComputeApiTests(APITestCase):
 
         ret_val = api.server_reboot(self.request, INSTANCE_ID)
         self.assertIsNone(ret_val)
-
-        ret_val = api.server_reboot(self.request, INSTANCE_ID,
-                                    hardness=HARDNESS)
-        self.assertIsNone(ret_val)
-
-        self.mox.VerifyAll()
 
     def test_server_create(self):
         NAME = 'server'
@@ -279,7 +227,6 @@ class ComputeApiTests(APITestCase):
         KEY = 'user'
         SECGROUP = self.mox.CreateMock(api.SecurityGroup)
 
-        server = self.mox.CreateMock(OSCompute.Server)
         novaclient = self.stub_novaclient()
         novaclient.servers = self.mox.CreateMockAnything()
         novaclient.servers.create(NAME, IMAGE, FLAVOR, userdata=USER_DATA,
@@ -293,8 +240,6 @@ class ComputeApiTests(APITestCase):
 
         self.assertIsInstance(ret_val, api.Server)
         self.assertEqual(ret_val._apiresource, TEST_RETURN)
-
-        self.mox.VerifyAll()
 
 
 class ExtrasApiTests(APITestCase):
@@ -319,8 +264,6 @@ class ExtrasApiTests(APITestCase):
 
         self.assertIsNotNone(api.nova.extras_api(self.request))
 
-        self.mox.VerifyAll()
-
     def test_console_create(self):
         extras_api = self.stub_extras_api(count=2)
         extras_api.consoles = self.mox.CreateMockAnything()
@@ -341,8 +284,6 @@ class ExtrasApiTests(APITestCase):
         self.assertIsInstance(ret_val, api.Console)
         self.assertEqual(ret_val._apiresource, TEST_RETURN + '2')
 
-        self.mox.VerifyAll()
-
     def test_flavor_list(self):
         flavors = (TEST_RETURN, TEST_RETURN + '2')
         novaclient = self.stub_novaclient()
@@ -358,15 +299,13 @@ class ExtrasApiTests(APITestCase):
             self.assertIsInstance(flavor, api.Flavor)
             self.assertIn(flavor._apiresource, flavors)
 
-        self.mox.VerifyAll()
-
     def test_server_list(self):
         servers = (TEST_RETURN, TEST_RETURN + '2')
 
-        extras_api = self.stub_extras_api()
+        novaclient = self.stub_novaclient()
 
-        extras_api.servers = self.mox.CreateMockAnything()
-        extras_api.servers.list().AndReturn(servers)
+        novaclient.servers = self.mox.CreateMockAnything()
+        novaclient.servers.list().AndReturn(servers)
 
         self.mox.ReplayAll()
 
@@ -376,8 +315,6 @@ class ExtrasApiTests(APITestCase):
         for server in ret_val:
             self.assertIsInstance(server, api.Server)
             self.assertIn(server._apiresource, servers)
-
-        self.mox.VerifyAll()
 
     def test_usage_get(self):
         extras_api = self.stub_extras_api()
@@ -392,8 +329,6 @@ class ExtrasApiTests(APITestCase):
 
         self.assertIsInstance(ret_val, api.Usage)
         self.assertEqual(ret_val._apiresource, TEST_RETURN)
-
-        self.mox.VerifyAll()
 
     def test_usage_list(self):
         usages = (TEST_RETURN, TEST_RETURN + '2')
@@ -412,14 +347,12 @@ class ExtrasApiTests(APITestCase):
             self.assertIsInstance(usage, api.Usage)
             self.assertIn(usage._apiresource, usages)
 
-        self.mox.VerifyAll()
-
     def test_server_get(self):
         INSTANCE_ID = '2'
 
-        extras_api = self.stub_extras_api()
-        extras_api.servers = self.mox.CreateMockAnything()
-        extras_api.servers.get(INSTANCE_ID).AndReturn(TEST_RETURN)
+        novaclient = self.stub_novaclient()
+        novaclient.servers = self.mox.CreateMockAnything()
+        novaclient.servers.get(INSTANCE_ID).AndReturn(TEST_RETURN)
 
         self.mox.ReplayAll()
 
@@ -427,8 +360,6 @@ class ExtrasApiTests(APITestCase):
 
         self.assertIsInstance(ret_val, api.Server)
         self.assertEqual(ret_val._apiresource, TEST_RETURN)
-
-        self.mox.VerifyAll()
 
 
 class APIExtensionTests(APITestCase):
@@ -468,7 +399,6 @@ class APIExtensionTests(APITestCase):
         server = api.snapshot_create(self.request, 1, 'test-snapshot')
 
         self.assertIsInstance(server, api.Server)
-        self.mox.VerifyAll()
 
     def test_tenant_floating_ip_list(self):
         novaclient = self.stub_novaclient()
@@ -481,7 +411,6 @@ class APIExtensionTests(APITestCase):
 
         self.assertEqual(len(floating_ips), len(self.floating_ips))
         self.assertIsInstance(floating_ips[0], api.FloatingIp)
-        self.mox.VerifyAll()
 
     def test_tenant_floating_ip_get(self):
         novaclient = self.stub_novaclient()
@@ -493,7 +422,6 @@ class APIExtensionTests(APITestCase):
         floating_ip = api.tenant_floating_ip_get(self.request, 1)
 
         self.assertIsInstance(floating_ip, api.FloatingIp)
-        self.mox.VerifyAll()
 
     def test_tenant_floating_ip_allocate(self):
         novaclient = self.stub_novaclient()
@@ -505,7 +433,6 @@ class APIExtensionTests(APITestCase):
         floating_ip = api.tenant_floating_ip_allocate(self.request)
 
         self.assertIsInstance(floating_ip, api.FloatingIp)
-        self.mox.VerifyAll()
 
     def test_tenant_floating_ip_release(self):
         novaclient = self.stub_novaclient()
@@ -517,7 +444,6 @@ class APIExtensionTests(APITestCase):
         floating_ip = api.tenant_floating_ip_release(self.request, 1)
 
         self.assertIsInstance(floating_ip, api.FloatingIp)
-        self.mox.VerifyAll()
 
     def test_server_remove_floating_ip(self):
         novaclient = self.stub_novaclient()
@@ -535,7 +461,6 @@ class APIExtensionTests(APITestCase):
         server = api.server_remove_floating_ip(self.request, 1, 1)
 
         self.assertIsInstance(server, api.Server)
-        self.mox.VerifyAll()
 
     def test_server_add_floating_ip(self):
         novaclient = self.stub_novaclient()
@@ -553,7 +478,6 @@ class APIExtensionTests(APITestCase):
         server = api.server_add_floating_ip(self.request, 1, 1)
 
         self.assertIsInstance(server, api.Server)
-        self.mox.VerifyAll()
 
     def test_keypair_create(self):
         novaclient = self.stub_novaclient()
@@ -566,8 +490,6 @@ class APIExtensionTests(APITestCase):
         self.assertIsInstance(ret_val, api.KeyPair)
         self.assertEqual(ret_val.name, self.keypair.name)
 
-        self.mox.VerifyAll()
-
     def test_keypair_import(self):
         novaclient = self.stub_novaclient()
 
@@ -579,8 +501,6 @@ class APIExtensionTests(APITestCase):
         self.assertIsInstance(ret_val, api.KeyPair)
         self.assertEqual(ret_val.name, self.keypair.name)
 
-        self.mox.VerifyAll()
-
     def test_keypair_delete(self):
         novaclient = self.stub_novaclient()
 
@@ -591,8 +511,6 @@ class APIExtensionTests(APITestCase):
 
         ret_val = api.keypair_delete(self.request, self.keypair.id)
         self.assertIsNone(ret_val)
-
-        self.mox.VerifyAll()
 
     def test_keypair_list(self):
         novaclient = self.stub_novaclient()
@@ -607,8 +525,6 @@ class APIExtensionTests(APITestCase):
         self.assertEqual(len(ret_val), len(self.keypairs))
         for keypair in ret_val:
             self.assertIsInstance(keypair, api.KeyPair)
-
-        self.mox.VerifyAll()
 
 
 class VolumeTests(APITestCase):
@@ -634,7 +550,6 @@ class VolumeTests(APITestCase):
         volumes = api.volume_list(self.request)
 
         self.assertIsInstance(volumes[0], api.Volume)
-        self.mox.VerifyAll()
 
     def test_volume_get(self):
         self.novaclient.volumes.get(IsA(int)).AndReturn(self.volume)
@@ -643,7 +558,6 @@ class VolumeTests(APITestCase):
         volume = api.volume_get(self.request, 1)
 
         self.assertIsInstance(volume, api.Volume)
-        self.mox.VerifyAll()
 
     def test_volume_instance_list(self):
         self.novaclient.volumes.get_server_volumes(IsA(int)).AndReturn(
@@ -653,11 +567,12 @@ class VolumeTests(APITestCase):
         attachments = api.volume_instance_list(self.request, 1)
 
         self.assertEqual(attachments, self.volume.attachments)
-        self.mox.VerifyAll()
 
     def test_volume_create(self):
-        self.novaclient.volumes.create(IsA(int), IsA(str), IsA(str)).AndReturn(
-                self.volume)
+        self.novaclient.volumes.create(IsA(int),
+                                       display_name=IsA(str),
+                                       display_description=IsA(str)) \
+                                       .AndReturn(self.volume)
         self.mox.ReplayAll()
 
         new_volume = api.volume_create(self.request,
@@ -666,7 +581,6 @@ class VolumeTests(APITestCase):
                                        "new description")
 
         self.assertIsInstance(new_volume, api.Volume)
-        self.mox.VerifyAll()
 
     def test_volume_delete(self):
         self.novaclient.volumes.delete(IsA(int))
@@ -675,7 +589,6 @@ class VolumeTests(APITestCase):
         ret_val = api.volume_delete(self.request, 1)
 
         self.assertIsNone(ret_val)
-        self.mox.VerifyAll()
 
     def test_volume_attach(self):
         self.novaclient.volumes.create_server_volume(
@@ -685,7 +598,6 @@ class VolumeTests(APITestCase):
         ret_val = api.volume_attach(self.request, 1, 1, "/dev/vdb")
 
         self.assertIsNone(ret_val)
-        self.mox.VerifyAll()
 
     def test_volume_detach(self):
         self.novaclient.volumes.delete_server_volume(IsA(int), IsA(int))
@@ -694,4 +606,3 @@ class VolumeTests(APITestCase):
         ret_val = api.volume_detach(self.request, 1, 1)
 
         self.assertIsNone(ret_val)
-        self.mox.VerifyAll()

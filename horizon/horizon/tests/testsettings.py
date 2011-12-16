@@ -19,6 +19,9 @@
 #    under the License.
 
 import os
+import socket
+
+socket.setdefaulttimeout(1)
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 DEBUG = True
@@ -37,8 +40,7 @@ INSTALLED_APPS = (
     'horizon.tests',
     'horizon.dashboards.nova',
     'horizon.dashboards.syspanel',
-    'horizon.dashboards.settings',
-    'mailer')
+    'horizon.dashboards.settings')
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -85,10 +87,7 @@ NOSE_ARGS = ['--nocapture',
 # For nose-selenium integration
 LIVE_SERVER_PORT = 8000
 
-# django-mailer uses a different config attribute
-# even though it just wraps django.core.mail
-MAILER_EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-EMAIL_BACKEND = MAILER_EMAIL_BACKEND
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 HORIZON_CONFIG = {

@@ -1,19 +1,22 @@
 {% extends 'nova/base.html' %}
-{%load i18n%}
-
-{% block sidebar %}
-  {% with current_sidebar="containers" %}
-    {{block.super}}
-  {% endwith %}
-{% endblock %}
+{% load i18n %}
 
 {% block page_header %}
-  {% url horizon:nova:images:index as refresh_link %}
+  {% url horizon:nova:images_and_snapshots:images:index as refresh_link %}
   {# to make searchable false, just remove it from the include statement #}
   {% include "horizon/common/_page_header.html" with title=_("Containers") refresh_link=refresh_link searchable="true" %}
 {% endblock page_header %}
 
 {% block dash_main %}
-  {% include 'nova/containers/_list.html' %}
-  <a class="action_link large-rounded" href="{% url horizon:nova:containers:create %}">{% trans "Create New Container"%} &gt;&gt;</a>
+  {% if containers %}
+    {% include 'nova/containers/_list.html' %}
+    <a class="btn small primary" href="{% url horizon:nova:containers:create %}">{% trans "Create New Container" %}</a>
+  {% else %}
+    <div class="alert-message block-message info">
+      <p><strong>{% trans "Info: " %}</strong>{% trans "There are currently no containers." %}</p>
+      <div class="alert-actions">
+        <a class="btn small primary" href="{% url horizon:nova:containers:create %}">{% trans "Create New Container" %}</a>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

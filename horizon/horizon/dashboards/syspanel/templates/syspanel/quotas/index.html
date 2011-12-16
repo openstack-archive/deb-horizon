@@ -1,11 +1,5 @@
 {% extends 'syspanel/base.html' %}
-{%load i18n%}
-
-{% block sidebar %}
-  {% with current_sidebar="quotas" %}
-    {{block.super}}
-  {% endwith %}
-{% endblock %}
+{% load i18n %}
 
 {% block page_header %}
   {% url horizon:syspanel:quotas:index as refresh_link %}
@@ -14,7 +8,7 @@
 {% endblock page_header %}
 
 {% block syspanel_main %}
-  <table class="wide">
+  <table class="zebra-striped">
     <tr>
       <th>{% trans "Quota Name"%}</th>
       <th>{% trans "Limit"%}</th>

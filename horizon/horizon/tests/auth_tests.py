@@ -78,15 +78,15 @@ class AuthViewTests(test.BaseViewTests):
                                   AndReturn([])
 
         self.mox.StubOutWithMock(messages, 'error')
-        messages.error(IsA(http.HttpRequest), IsA(unicode))
+        messages.error(IsA(http.HttpRequest),
+                       IsA(unicode),
+                       extra_tags=IsA(str))
 
         self.mox.ReplayAll()
 
         res = self.client.post(reverse('horizon:auth_login'), form_data)
 
         self.assertTemplateUsed(res, 'splash.html')
-
-        self.mox.VerifyAll()
 
     def test_login(self):
         NEW_TENANT_ID = '6'
@@ -130,8 +130,6 @@ class AuthViewTests(test.BaseViewTests):
 
         self.assertRedirectsNoFollow(res, DASH_INDEX_URL)
 
-        self.mox.VerifyAll()
-
     def test_login_invalid_credentials(self):
         form_data = {'method': 'Login',
                     'password': self.PASSWORD,
@@ -147,8 +145,6 @@ class AuthViewTests(test.BaseViewTests):
         res = self.client.post(reverse('horizon:auth_login'), form_data)
 
         self.assertTemplateUsed(res, 'splash.html')
-
-        self.mox.VerifyAll()
 
     def test_login_exception(self):
         form_data = {'method': 'Login',
@@ -167,8 +163,6 @@ class AuthViewTests(test.BaseViewTests):
 
         self.assertTemplateUsed(res, 'splash.html')
 
-        self.mox.VerifyAll()
-
     def test_switch_tenants_index(self):
         res = self.client.get(reverse('horizon:auth_switch',
                                       args=[self.TEST_TENANT]))
@@ -180,8 +174,8 @@ class AuthViewTests(test.BaseViewTests):
         NEW_TENANT_NAME = 'FAKENAME'
         TOKEN_ID = 1
 
-        self.setActiveUser(self.TEST_TOKEN, self.TEST_USER, self.TEST_TENANT,
-                           False, self.TEST_SERVICE_CATALOG)
+        self.setActiveUser(self.TEST_USER_ID, self.TEST_TOKEN, self.TEST_USER,
+                           self.TEST_TENANT, False, self.TEST_SERVICE_CATALOG)
 
         form_data = {'method': 'LoginWithTenant',
                      'password': self.PASSWORD,
@@ -196,7 +190,8 @@ class AuthViewTests(test.BaseViewTests):
 
         aToken = self.mox.CreateMock(api.Token)
         aToken.id = TOKEN_ID
-        aToken.user = {'name': self.TEST_USER, 'roles': [{'name': 'fake'}]}
+        aToken.user = {'id': self.TEST_USER_ID,
+                       'name': self.TEST_USER, 'roles': [{'name': 'fake'}]}
         aToken.serviceCatalog = {}
         aToken.tenant = {'id': aTenant.id, 'name': aTenant.name}
 
@@ -214,8 +209,6 @@ class AuthViewTests(test.BaseViewTests):
 
         self.assertRedirectsNoFollow(res, DASH_INDEX_URL)
         self.assertEqual(self.client.session['tenant'], NEW_TENANT_NAME)
-
-        self.mox.VerifyAll()
 
     def test_logout(self):
         KEY = 'arbitraryKeyString'

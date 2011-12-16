@@ -22,6 +22,7 @@ import tempfile
 
 from cloudfiles.errors import ContainerNotEmpty
 from django import http
+from django import template
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from mox import IgnoreArg, IsA
@@ -36,13 +37,14 @@ CONTAINER_INDEX_URL = reverse('horizon:nova:containers:index')
 class ContainerViewTests(test.BaseViewTests):
     def setUp(self):
         super(ContainerViewTests, self).setUp()
-        self.container = self.mox.CreateMock(api.Container)
+        self.container = api.Container(None)
         self.container.name = 'containerName'
 
     def test_index(self):
         self.mox.StubOutWithMock(api, 'swift_get_containers')
         api.swift_get_containers(
-                IsA(http.HttpRequest), marker=None).AndReturn([self.container])
+                IsA(http.HttpRequest), marker=None).AndReturn(
+                        ([self.container], False))
 
         self.mox.ReplayAll()
 
@@ -54,8 +56,6 @@ class ContainerViewTests(test.BaseViewTests):
 
         self.assertEqual(len(containers), 1)
         self.assertEqual(containers[0].name, 'containerName')
-
-        self.mox.VerifyAll()
 
     def test_delete_container(self):
         formData = {'container_name': 'containerName',
@@ -70,8 +70,6 @@ class ContainerViewTests(test.BaseViewTests):
         res = self.client.post(CONTAINER_INDEX_URL, formData)
 
         self.assertRedirectsNoFollow(res, CONTAINER_INDEX_URL)
-
-        self.mox.VerifyAll()
 
     def test_delete_container_nonempty(self):
         formData = {'container_name': 'containerName',
@@ -94,8 +92,6 @@ class ContainerViewTests(test.BaseViewTests):
 
         self.assertRedirectsNoFollow(res, CONTAINER_INDEX_URL)
 
-        self.mox.VerifyAll()
-
     def test_create_container_get(self):
         res = self.client.get(reverse('horizon:nova:containers:create'))
 
@@ -107,10 +103,9 @@ class ContainerViewTests(test.BaseViewTests):
 
         self.mox.StubOutWithMock(api, 'swift_create_container')
         api.swift_create_container(
-                IsA(http.HttpRequest), 'CreateContainer')
+                IsA(http.HttpRequest), u'containerName')
 
-        self.mox.StubOutWithMock(messages, 'success')
-        messages.success(IgnoreArg(), IsA(basestring))
+        self.mox.ReplayAll()
 
         res = self.client.post(reverse('horizon:nova:containers:create'),
                                formData)
@@ -123,7 +118,8 @@ class ObjectViewTests(test.BaseViewTests):
 
     def setUp(self):
         super(ObjectViewTests, self).setUp()
-        swift_object = self.mox.CreateMock(api.SwiftObject)
+        swift_object = api.SwiftObject(None)
+        swift_object.name = "test_object"
         self.swift_objects = [swift_object]
 
     def test_index(self):
@@ -131,7 +127,7 @@ class ObjectViewTests(test.BaseViewTests):
         api.swift_get_objects(
                 IsA(http.HttpRequest),
                 self.CONTAINER_NAME,
-                marker=None).AndReturn(self.swift_objects)
+                marker=None).AndReturn((self.swift_objects, False))
 
         self.mox.ReplayAll()
 
@@ -139,8 +135,6 @@ class ObjectViewTests(test.BaseViewTests):
                                       args=[self.CONTAINER_NAME]))
         self.assertTemplateUsed(res, 'nova/objects/index.html')
         self.assertItemsEqual(res.context['objects'], self.swift_objects)
-
-        self.mox.VerifyAll()
 
     def test_upload_index(self):
         res = self.client.get(reverse('horizon:nova:containers:object_upload',
@@ -169,15 +163,18 @@ class ObjectViewTests(test.BaseViewTests):
 
         self.mox.ReplayAll()
 
+        res = self.client.get(reverse('horizon:nova:containers:object_upload',
+                                       args=[self.CONTAINER_NAME]))
+
+        self.assertContains(res, 'enctype="multipart/form-data"')
+
         res = self.client.post(reverse('horizon:nova:containers:object_upload',
                                        args=[self.CONTAINER_NAME]),
                                formData)
 
         self.assertRedirectsNoFollow(res,
-                            reverse('horizon:nova:containers:object_upload',
+                            reverse('horizon:nova:containers:object_index',
                                     args=[self.CONTAINER_NAME]))
-
-        self.mox.VerifyAll()
 
     def test_delete(self):
         OBJECT_NAME = 'objectName'
@@ -200,8 +197,6 @@ class ObjectViewTests(test.BaseViewTests):
                                 reverse('horizon:nova:containers:object_index',
                                         args=[self.CONTAINER_NAME]))
 
-        self.mox.VerifyAll()
-
     def test_download(self):
         OBJECT_DATA = 'objectData'
         OBJECT_NAME = 'objectName'
@@ -220,8 +215,6 @@ class ObjectViewTests(test.BaseViewTests):
         self.assertEqual(res.content, OBJECT_DATA)
         self.assertTrue(res.has_header('Content-Disposition'))
 
-        self.mox.VerifyAll()
-
     def test_copy_index(self):
         OBJECT_NAME = 'objectName'
 
@@ -230,7 +223,7 @@ class ObjectViewTests(test.BaseViewTests):
 
         self.mox.StubOutWithMock(api, 'swift_get_containers')
         api.swift_get_containers(
-                IsA(http.HttpRequest)).AndReturn([container])
+                IsA(http.HttpRequest)).AndReturn(([container], False))
 
         self.mox.ReplayAll()
 
@@ -239,8 +232,6 @@ class ObjectViewTests(test.BaseViewTests):
                                             OBJECT_NAME]))
 
         self.assertTemplateUsed(res, 'nova/objects/copy.html')
-
-        self.mox.VerifyAll()
 
     def test_copy(self):
         NEW_CONTAINER_NAME = self.CONTAINER_NAME
@@ -259,7 +250,7 @@ class ObjectViewTests(test.BaseViewTests):
 
         self.mox.StubOutWithMock(api, 'swift_get_containers')
         api.swift_get_containers(
-                IsA(http.HttpRequest)).AndReturn([container])
+                IsA(http.HttpRequest)).AndReturn(([container], False))
 
         self.mox.StubOutWithMock(api, 'swift_copy_object')
         api.swift_copy_object(IsA(http.HttpRequest),
@@ -276,11 +267,8 @@ class ObjectViewTests(test.BaseViewTests):
                               formData)
 
         self.assertRedirectsNoFollow(res,
-                            reverse('horizon:nova:containers:object_copy',
-                                    args=[ORIG_CONTAINER_NAME,
-                                          ORIG_OBJECT_NAME]))
-
-        self.mox.VerifyAll()
+                            reverse('horizon:nova:containers:object_index',
+                                    args=[NEW_CONTAINER_NAME]))
 
     def test_filter(self):
         PREFIX = 'prefix'
@@ -294,7 +282,7 @@ class ObjectViewTests(test.BaseViewTests):
         api.swift_get_objects(IsA(http.HttpRequest),
                               unicode(self.CONTAINER_NAME),
                               prefix=unicode(PREFIX))\
-                              .AndReturn(self.swift_objects)
+                              .AndReturn((self.swift_objects, False))
 
         self.mox.ReplayAll()
 
@@ -303,5 +291,3 @@ class ObjectViewTests(test.BaseViewTests):
                                formData)
 
         self.assertTemplateUsed(res, 'nova/objects/index.html')
-
-        self.mox.VerifyAll()
