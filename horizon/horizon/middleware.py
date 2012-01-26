@@ -21,14 +21,18 @@
 Middleware provided and used by Horizon.
 """
 
-from django.contrib import messages
+import logging
+
 from django import shortcuts
+from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-import openstackx
-
+from horizon import api
 from horizon import exceptions
 from horizon import users
+
+
+LOG = logging.getLogger(__name__)
 
 
 class HorizonMiddleware(object):
@@ -44,18 +48,27 @@ class HorizonMiddleware(object):
         """
         request.__class__.user = users.LazyUser()
         request.horizon = {'dashboard': None, 'panel': None}
+        if request.user.is_authenticated() and \
+                request.user.authorized_tenants is None:
+            try:
+                authd = api.tenant_list_for_token(request,
+                                                  request.user.token,
+                                                  endpoint_type='internalURL')
+            except Exception, e:
+                authd = []
+                LOG.exception('Could not retrieve tenant list.')
+                if hasattr(request.user, 'message_set'):
+                    messages.error(request,
+                                   _("Unable to retrieve tenant list."))
+            request.user.authorized_tenants = authd
 
     def process_exception(self, request, exception):
-        """ Catch NotAuthorized and handle it gracefully. """
-        if issubclass(exception.__class__, exceptions.NotAuthorized):
-            messages.error(request, _(unicode(exception)))
-            return shortcuts.redirect('/auth/logout')
+        """ Catch NotAuthorized and Http302 and handle them gracefully. """
+        if isinstance(exception, exceptions.NotAuthorized):
+            messages.error(request, unicode(exception))
+            return shortcuts.redirect('/auth/login')
 
-        if type(exception) == openstackx.api.exceptions.Forbidden:
-            # flush other error messages, which are collateral damage
-            # when our token expires
-            for message in messages.get_messages(request):
-                pass
-            messages.error(request,
-                           _('Your token has expired. Please log in again'))
-            return shortcuts.redirect('/auth/logout')
+        if isinstance(exception, exceptions.Http302):
+            if exception.message:
+                messages.error(request, exception.message)
+            return shortcuts.redirect(exception.location)

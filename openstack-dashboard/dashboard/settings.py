@@ -24,7 +24,8 @@ import sys
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
-sys.path.append(ROOT_PATH)
+if ROOT_PATH not in sys.path:
+    sys.path.append(ROOT_PATH)
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -69,8 +70,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader'
 )
 
 TEMPLATE_DIRS = (

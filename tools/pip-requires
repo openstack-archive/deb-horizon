@@ -1,0 +1,39 @@
+# horizon
+Django==1.3.1
+python-cloudfiles
+python-dateutil
+
+# docs
+sphinx
+
+# testing
+CherryPy
+coverage
+django-nose==0.1.2
+django-nose-selenium
+mox
+nose==1.0.0
+pep8
+pylint
+
+# glance
+PasteDeploy
+eventlet
+kombu
+paste
+pycrypto==2.3
+routes
+sqlalchemy
+sqlalchemy-migrate
+webob
+xattr
+
+# quantum
+-e git+https://github.com/openstack/python-quantumclient.git#egg=python-quantumclient-dev
+python-gflags
+
+# horizon non-pip deps
+-e git+https://github.com/cloudbuilders/openstackx.git#egg=openstackx
+-e git+https://github.com/openstack/python-novaclient.git#egg=python-novaclient
+-e git+https://github.com/openstack/python-keystoneclient.git#egg=python-keystoneclient
+-e git+https://github.com/openstack/glance.git#egg=glance

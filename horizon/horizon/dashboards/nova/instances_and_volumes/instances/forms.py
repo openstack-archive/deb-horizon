@@ -23,58 +23,13 @@ import logging
 from django import shortcuts
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-import openstackx.api.exceptions as api_exceptions
 
 from horizon import api
+from horizon import exceptions
 from horizon import forms
 
 
 LOG = logging.getLogger(__name__)
-
-
-class TerminateInstance(forms.SelfHandlingForm):
-    instance = forms.CharField(required=True)
-
-    def handle(self, request, data):
-        instance_id = data['instance']
-        instance = api.server_get(request, instance_id)
-
-        try:
-            api.server_delete(request, instance)
-        except api_exceptions.ApiException, e:
-            LOG.exception(_('ApiException while terminating instance "%s"') %
-                      instance_id)
-            messages.error(request,
-                           _('Unable to terminate %(inst)s: %(message)s') %
-                           {"inst": instance_id, "message": e.message})
-        else:
-            msg = _('Instance %s has been terminated.') % instance_id
-            LOG.info(msg)
-            messages.success(request, msg)
-
-        return shortcuts.redirect(request.build_absolute_uri())
-
-
-class RebootInstance(forms.SelfHandlingForm):
-    instance = forms.CharField(required=True)
-
-    def handle(self, request, data):
-        instance_id = data['instance']
-        try:
-            server = api.server_reboot(request, instance_id)
-            messages.success(request, _("Instance rebooting"))
-        except api_exceptions.ApiException, e:
-            LOG.exception(_('ApiException while rebooting instance "%s"') %
-                      instance_id)
-            messages.error(request,
-                       _('Unable to reboot instance: %s') % e.message)
-
-        else:
-            msg = _('Instance %s has been rebooted.') % instance_id
-            LOG.info(msg)
-            messages.success(request, msg)
-
-        return shortcuts.redirect(request.build_absolute_uri())
 
 
 class UpdateInstance(forms.SelfHandlingForm):
@@ -84,16 +39,12 @@ class UpdateInstance(forms.SelfHandlingForm):
     name = forms.CharField(required=True)
 
     def handle(self, request, data):
-        tenant_id = data['tenant_id']
         try:
-            api.server_update(request,
-                              data['instance'],
-                              data['name'])
-            messages.success(request, _("Instance '%s' updated") %
-                                      data['name'])
-        except api_exceptions.ApiException, e:
-            messages.error(request,
-                       _('Unable to update instance: %s') % e.message)
+            api.server_update(request, data['instance'], data['name'])
+            messages.success(request,
+                             _('Instance "%s" updated.') % data['name'])
+        except:
+            exceptions.handle(request, _('Unable to update instance.'))
 
         return shortcuts.redirect(
-                        'horizon:nova:instances_and_volumes:instances:index')
+                        'horizon:nova:instances_and_volumes:index')

@@ -48,7 +48,7 @@ class BaseUserForm(forms.SelfHandlingForm):
         return cls(request, *args, **kwargs)
 
 
-class UserForm(BaseUserForm):
+class CreateUserForm(BaseUserForm):
     name = forms.CharField(label=_("Name"))
     email = forms.CharField(label=_("Email"))
     password = forms.CharField(label=_("Password"),
@@ -75,6 +75,8 @@ class UserForm(BaseUserForm):
             except Exception, e:
                 LOG.exception('Exception while assigning \
                                role to new user: %s' % new_user.id)
+                if not hasattr(e, 'message'):
+                    e.message = str(e)
                 messages.error(request,
                                _('Error assigning role to user: %s')
                                % e.message)
@@ -85,13 +87,15 @@ class UserForm(BaseUserForm):
             LOG.exception('Exception while creating user\n'
                       'name: "%s", email: "%s", tenant_id: "%s"' %
                       (data['name'], data['email'], data['tenant_id']))
+            if not hasattr(e, 'message'):
+                e.message = str(e)
             messages.error(request,
                             _('Error creating user: %s')
                              % e.message)
             return shortcuts.redirect('horizon:syspanel:users:index')
 
 
-class UserUpdateForm(BaseUserForm):
+class UpdateUserForm(BaseUserForm):
     id = forms.CharField(label=_("ID"),
             widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     # FIXME: keystone doesn't return the username from a get API call.
@@ -117,40 +121,3 @@ class UserUpdateForm(BaseUserForm):
                          _('Updated %(attrib)s for %(user)s.') %
                          {"attrib": ', '.join(updated), "user": data['id']})
         return shortcuts.redirect('horizon:syspanel:users:index')
-
-
-class UserDeleteForm(forms.SelfHandlingForm):
-    user = forms.CharField(required=True)
-
-    def handle(self, request, data):
-        user_id = data['user']
-        LOG.info('Deleting user with id "%s"' % user_id)
-        api.user_delete(request, user_id)
-        messages.info(request, _('%(user)s was successfully deleted.')
-                                % {"user": user_id})
-        return shortcuts.redirect(request.build_absolute_uri())
-
-
-class UserEnableDisableForm(forms.SelfHandlingForm):
-    id = forms.CharField(label=_("ID (username)"), widget=forms.HiddenInput())
-    enabled = forms.ChoiceField(label=_("enabled"), widget=forms.HiddenInput(),
-                                choices=[[c, c]
-                                         for c in ("disable", "enable")])
-
-    def handle(self, request, data):
-        user_id = data['id']
-        enabled = data['enabled'] == "enable"
-
-        try:
-            api.user_update_enabled(request, user_id, enabled)
-            messages.info(request,
-                        _("User %(user)s %(state)s") %
-                        {"user": user_id,
-                        "state": "enabled" if enabled else "disabled"})
-        except api_exceptions.ApiException:
-            messages.error(request,
-                        _("Unable to %(state)s user %(user)s") %
-                        {"state": "enable" if enabled else "disable",
-                        "user": user_id})
-
-        return shortcuts.redirect(request.build_absolute_uri())

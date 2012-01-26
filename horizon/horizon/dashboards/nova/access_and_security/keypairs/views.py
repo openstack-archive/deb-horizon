@@ -23,77 +23,18 @@ Views for managing Nova keypairs.
 """
 import logging
 
-from django import http
-from django import shortcuts
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext as _
-from novaclient import exceptions as novaclient_exceptions
-
-from horizon import api
-from horizon.dashboards.nova.access_and_security.keypairs.forms import \
-                                  (CreateKeypair, DeleteKeypair, ImportKeypair)
+from horizon import forms
+from .forms import CreateKeypair, ImportKeypair
 
 
 LOG = logging.getLogger(__name__)
 
 
-# FIXME(gabriel): There's a very obvious pattern to these views.
-#                 This is a perfect candidate for a class-based view.
-
-@login_required
-def index(request):
-    delete_form, handled = DeleteKeypair.maybe_handle(request)
-    if handled:
-        return handled
-
-    try:
-        keypairs = api.keypair_list(request)
-    except novaclient_exceptions.ClientException, e:
-        keypairs = []
-        LOG.exception("ClientException in keypair index")
-        messages.error(request, _('Error fetching keypairs: %s') % e.message)
-
-    context = {'keypairs': keypairs, 'delete_form': delete_form}
-
-    if request.is_ajax():
-        template = 'nova/access_and_security/keypairs/_list.html'
-        context['hide'] = True
-    else:
-        template = 'nova/access_and_security/keypairs/index.html'
-
-    return shortcuts.render(request, template, context)
+class CreateView(forms.ModalFormView):
+    form_class = CreateKeypair
+    template_name = 'nova/access_and_security/keypairs/create.html'
 
 
-@login_required
-def create(request):
-    form, handled = CreateKeypair.maybe_handle(request)
-    if handled:
-        return handled
-
-    context = {'form': form}
-
-    if request.is_ajax():
-        template = 'nova/access_and_security/keypairs/_create.html'
-        context['hide'] = True
-    else:
-        template = 'nova/access_and_security/keypairs/create.html'
-
-    return shortcuts.render(request, template, context)
-
-
-@login_required
-def import_keypair(request):
-    form, handled = ImportKeypair.maybe_handle(request)
-    if handled:
-        return handled
-
-    context = {'form': form}
-
-    if request.is_ajax():
-        template = 'nova/access_and_security/keypairs/_import.html'
-        context['hide'] = True
-    else:
-        template = 'nova/access_and_security/keypairs/import.html'
-
-    return shortcuts.render(request, template, context)
+class ImportView(forms.ModalFormView):
+    form_class = ImportKeypair
+    template_name = 'nova/access_and_security/keypairs/import.html'

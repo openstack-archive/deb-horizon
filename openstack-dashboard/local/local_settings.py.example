@@ -16,7 +16,7 @@ DATABASES = {
 
 # We recommend you use memcached for development; otherwise after every reload
 # of the django development server, you will have to login again. To use
-# memcached set CACHE_BACKED to something like 'memcached://127.0.0.1:11211/' 
+# memcached set CACHE_BACKED to something like 'memcached://127.0.0.1:11211/'
 CACHE_BACKEND = 'locmem://'
 
 # Send email to the console by default
@@ -36,6 +36,14 @@ HORIZON_CONFIG = {
     'user_home': 'dashboard.views.user_home',
 }
 
+# For multiple regions uncomment this configuration, and add (title, endpoint).
+# AVAILABLE_REGIONS = [
+#     ('cluster1', 'http://cluster1.com:5000/v2.0'),
+#     ('cluster2', 'http://cluster2.com:5000/v2.0'),
+# ]
+
+# FIXME: This is only here so quantum still works. It must be refactored to
+# work with multiple regions.
 OPENSTACK_HOST = "127.0.0.1"
 OPENSTACK_KEYSTONE_URL = "http://%s:5000/v2.0" % OPENSTACK_HOST
 # FIXME: this is only needed until keystone fixes its GET /tenants call
@@ -45,7 +53,7 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = "Member"
 
 # The number of Swift containers and objects to display on a single page before
 # providing a paging element (a "more" link) to paginate results.
-SWIFT_PAGINATE_LIMIT = 1000
+API_RESULT_LIMIT = 1000
 
 # Configure quantum connection details for networking
 QUANTUM_ENABLED = True

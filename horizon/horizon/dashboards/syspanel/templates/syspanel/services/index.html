@@ -1,5 +1,6 @@
 {% extends 'syspanel/base.html' %}
 {% load i18n %}
+{% block title %}Services{% endblock %}
 
 {% block page_header %}
   {% url horizon:syspanel:services:index as refresh_link %}
@@ -8,6 +9,6 @@
 {% endblock page_header %}
 
 {% block syspanel_main %}
-  {% include "syspanel/services/_list.html" %}
+  {{ table.render }}
 {% endblock %}
 

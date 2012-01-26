@@ -5,6 +5,7 @@
 # All Rights Reserved.
 #
 # Copyright 2011 Nebula, Inc.
+# Copyright (c) 2011 X.commerce, a business unit of eBay Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -22,21 +23,21 @@ from __future__ import absolute_import
 
 import logging
 
-from django.contrib import messages
 from novaclient.v1_1 import client as nova_client
+from novaclient.v1_1 import security_group_rules as nova_rules
 from novaclient.v1_1.servers import REBOOT_HARD
 
 from horizon.api.base import *
-from horizon.api.deprecated import admin_api
 from horizon.api.deprecated import check_openstackx
 from horizon.api.deprecated import extras_api
+
 
 LOG = logging.getLogger(__name__)
 
 
-class Console(APIResourceWrapper):
-    """Simple wrapper around openstackx.extras.consoles.Console"""
-    _attrs = ['id', 'output', 'type']
+# API static values
+INSTANCE_ACTIVE_STATE = 'ACTIVE'
+VOLUME_STATE_AVAILABLE = "available"
 
 
 class Flavor(APIResourceWrapper):
@@ -45,8 +46,13 @@ class Flavor(APIResourceWrapper):
 
 
 class FloatingIp(APIResourceWrapper):
+    """Simple wrapper for floating ip pools"""
+    _attrs = ['ip', 'fixed_ip', 'instance_id', 'id', 'pool']
+
+
+class FloatingIpPool(APIResourceWrapper):
     """Simple wrapper for floating ips"""
-    _attrs = ['ip', 'fixed_ip', 'instance_id', 'id']
+    _attrs = ['name']
 
 
 class KeyPair(APIResourceWrapper):
@@ -64,6 +70,34 @@ class Volume(APIResourceWrapper):
               'attachments', 'displayDescription']
 
 
+class VNCConsole(APIDictWrapper):
+    """Simple wrapper for floating ips"""
+    _attrs = ['url', 'type']
+
+
+class Quota(object):
+    """ Basic wrapper for individual limits in a quota."""
+    def __init__(self, name, limit):
+        self.name = name
+        self.limit = limit
+
+    def __repr__(self):
+        return "<Quota: (%s, %s)>" % (self.name, self.limit)
+
+
+class QuotaSet(object):
+    """ Basic wrapper for quota sets."""
+    def __init__(self, apiresource):
+        self.items = []
+        for k in apiresource._info.keys():
+            if k in ['id']:
+                continue
+            v = int(apiresource._info[k])
+            q = Quota(k, v)
+            self.items.append(q)
+            setattr(self, k, v)
+
+
 class Server(APIResourceWrapper):
     """Simple wrapper around openstackx.extras.server.Server
 
@@ -71,17 +105,12 @@ class Server(APIResourceWrapper):
     """
     _attrs = ['addresses', 'attrs', 'hostId', 'id', 'image', 'links',
              'metadata', 'name', 'private_ip', 'public_ip', 'status', 'uuid',
-             'image_name', 'VirtualInterfaces', 'flavor', 'key_name']
+             'image_name', 'VirtualInterfaces', 'flavor', 'key_name',
+             'OS-EXT-STS:power_state', 'OS-EXT-STS:task_state']
 
     def __init__(self, apiresource, request):
         super(Server, self).__init__(apiresource)
         self.request = request
-
-    def __getattr__(self, attr):
-        if attr == "attrs":
-            return ServerAttributes(super(Server, self).__getattr__(attr))
-        else:
-            return super(Server, self).__getattr__(attr)
 
     @property
     def image_name(self):
@@ -97,18 +126,6 @@ class Server(APIResourceWrapper):
         novaclient(self.request).servers.reboot(self.id, hardness)
 
 
-class ServerAttributes(APIDictWrapper):
-    """Simple wrapper around openstackx.extras.server.Server attributes
-
-       Preserves the request info so image name can later be retrieved
-    """
-    _attrs = ['disk_gb', 'host', 'image_ref', 'kernel_id',
-              'key_name', 'launched_at', 'mac_address', 'memory_mb', 'name',
-              'os_type', 'tenant_id', 'ramdisk_id', 'scheduled_at',
-              'terminated_at', 'user_data', 'user_id', 'vcpus', 'hostname',
-              'security_groups']
-
-
 class Usage(APIResourceWrapper):
     """Simple wrapper around openstackx.extras.usage.Usage"""
     _attrs = ['begin', 'instances', 'stop', 'tenant_id',
@@ -119,46 +136,57 @@ class Usage(APIResourceWrapper):
 
 class SecurityGroup(APIResourceWrapper):
     """Simple wrapper around openstackx.extras.security_groups.SecurityGroup"""
-    _attrs = ['id', 'name', 'description', 'tenant_id', 'rules']
+    _attrs = ['id', 'name', 'description', 'tenant_id']
+
+    @property
+    def rules(self):
+        """ Wraps transmitted rule info in the novaclient rule class. """
+        if not hasattr(self, "_rules"):
+            manager = nova_rules.SecurityGroupRuleManager
+            self._rules = [nova_rules.SecurityGroupRule(manager, rule) for \
+                           rule in self._apiresource.rules]
+        return self._rules
+
+    @rules.setter
+    def rules(self, value):
+        self._rules = value
 
 
 class SecurityGroupRule(APIResourceWrapper):
-    """Simple wrapper around
-    openstackx.extras.security_groups.SecurityGroupRule"""
-    _attrs = ['id', 'parent_group_id', 'group_id', 'ip_protocol',
-              'from_port', 'to_port', 'groups', 'ip_ranges']
+    """ Simple wrapper for individual rules in a SecurityGroup. """
+    _attrs = ['id', 'ip_protocol', 'from_port', 'to_port', 'ip_range']
 
-
-class SecurityGroupRule(APIResourceWrapper):
-    """Simple wrapper around openstackx.extras.users.User"""
-    _attrs = ['id', 'name', 'description', 'tenant_id', 'security_group_rules']
+    def __unicode__(self):
+        vals = {'from': self.from_port,
+                'to': self.to_port,
+                'cidr': self.ip_range['cidr']}
+        return 'ALLOW %(from)s:%(to)s from %(cidr)s' % vals
 
 
 def novaclient(request):
     LOG.debug('novaclient connection created using token "%s" and url "%s"' %
               (request.user.token, url_for(request, 'compute')))
-    c = nova_client.Client(username=request.user.username,
-                      api_key=request.user.token,
-                      project_id=request.user.tenant_id,
-                      auth_url=url_for(request, 'compute'))
+    c = nova_client.Client(request.user.username,
+                           request.user.token,
+                           project_id=request.user.tenant_id,
+                           auth_url=url_for(request, 'compute'))
     c.client.auth_token = request.user.token
     c.client.management_url = url_for(request, 'compute')
     return c
 
 
-def console_create(request, instance_id, kind='text'):
-    return Console(extras_api(request).consoles.create(instance_id, kind))
+def server_vnc_console(request, instance_id, type='novnc'):
+    return VNCConsole(novaclient(request).servers.get_vnc_console(instance_id,
+                                                  type)['console'])
 
 
 def flavor_create(request, name, memory, vcpu, disk, flavor_id):
-    # TODO -- convert to novaclient when novaclient adds create support
-    return Flavor(admin_api(request).flavors.create(
+    return Flavor(novaclient(request).flavors.create(
             name, int(memory), int(vcpu), int(disk), flavor_id))
 
 
 def flavor_delete(request, flavor_id, purge=False):
-    # TODO -- convert to novaclient when novaclient adds delete support
-    admin_api(request).flavors.delete(flavor_id, purge)
+    novaclient(request).flavors.delete(flavor_id, purge)
 
 
 def flavor_get(request, flavor_id):
@@ -176,6 +204,14 @@ def tenant_floating_ip_list(request):
     return [FloatingIp(ip) for ip in novaclient(request).floating_ips.list()]
 
 
+def floating_ip_pools_list(request):
+    """
+    Fetches a list of all floating ip pools.
+    """
+    return [FloatingIpPool(pool)
+            for pool in novaclient(request).floating_ip_pools.list()]
+
+
 def tenant_floating_ip_get(request, floating_ip_id):
     """
     Fetches a floating ip.
@@ -183,11 +219,12 @@ def tenant_floating_ip_get(request, floating_ip_id):
     return novaclient(request).floating_ips.get(floating_ip_id)
 
 
-def tenant_floating_ip_allocate(request):
+def tenant_floating_ip_allocate(request, pool=None):
     """
     Allocates a floating ip to tenant.
+    Optionally you may provide a pool for which you would like the IP.
     """
-    return novaclient(request).floating_ips.create()
+    return novaclient(request).floating_ips.create(pool=pool)
 
 
 def tenant_floating_ip_release(request, floating_ip_id):
@@ -217,12 +254,13 @@ def keypair_list(request):
     return [KeyPair(key) for key in novaclient(request).keypairs.list()]
 
 
-def server_create(request, name, image, flavor,
-                           key_name, user_data, security_groups):
+def server_create(request, name, image, flavor, key_name, user_data,
+                  security_groups, block_device_mapping, instance_count=1):
     return Server(novaclient(request).servers.create(
             name, image, flavor, userdata=user_data,
             security_groups=security_groups,
-            key_name=key_name), request)
+            key_name=key_name, block_device_mapping=block_device_mapping,
+            min_count=instance_count), request)
 
 
 def server_delete(request, instance):
@@ -234,12 +272,38 @@ def server_get(request, instance_id):
 
 
 def server_list(request):
-    return [Server(s, request) for s in novaclient(request).servers.list()]
+    # (sleepsonthefloor) explicitly filter by project id, so admins
+    # can retrieve a list that includes -only- their instances if destired.
+    # admin_server_list() returns all servers.
+    return [Server(s, request) for s in novaclient(request).\
+            servers.list(True, {'project_id': request.user.tenant_id})]
+
+
+def server_console_output(request, instance_id, tail_length=None):
+    """Gets console output of an instance"""
+    return novaclient(request).servers.get_console_output(instance_id,
+                                                          length=tail_length)
 
 
 @check_openstackx
 def admin_server_list(request):
-    return [Server(s, request) for s in admin_api(request).servers.list()]
+    return [Server(s, request) for s in novaclient(request).servers.list()]
+
+
+def server_pause(request, instance_id):
+    novaclient(request).servers.pause(instance_id)
+
+
+def server_unpause(request, instance_id):
+    novaclient(request).servers.unpause(instance_id)
+
+
+def server_suspend(request, instance_id):
+    novaclient(request).servers.suspend(instance_id)
+
+
+def server_resume(request, instance_id):
+    novaclient(request).servers.resume(instance_id)
 
 
 def server_reboot(request,
@@ -273,8 +337,16 @@ def server_remove_floating_ip(request, server, address):
     return novaclient(request).servers.remove_floating_ip(server, fip)
 
 
-def tenant_quota_get(request, tenant):
-    return novaclient(request).quotas.get(tenant)
+def tenant_quota_get(request, tenant_id):
+    return QuotaSet(novaclient(request).quotas.get(tenant_id))
+
+
+def tenant_quota_update(request, tenant_id, **kwargs):
+    novaclient(request).quotas.update(tenant_id, **kwargs)
+
+
+def tenant_quota_defaults(request, tenant_id):
+    return QuotaSet(novaclient(request).quotas.defaults(tenant_id))
 
 
 @check_openstackx
@@ -309,17 +381,21 @@ def security_group_delete(request, security_group_id):
 def security_group_rule_create(request, parent_group_id, ip_protocol=None,
                                from_port=None, to_port=None, cidr=None,
                                group_id=None):
-    return SecurityGroup(novaclient(request).\
-                         security_group_rules.create(parent_group_id,
-                                                     ip_protocol,
-                                                     from_port,
-                                                     to_port,
-                                                     cidr,
-                                                     group_id))
+    return SecurityGroupRule(novaclient(request).\
+                             security_group_rules.create(parent_group_id,
+                                                         ip_protocol,
+                                                         from_port,
+                                                         to_port,
+                                                         cidr,
+                                                         group_id))
 
 
 def security_group_rule_delete(request, security_group_rule_id):
     novaclient(request).security_group_rules.delete(security_group_rule_id)
+
+
+def virtual_interfaces_list(request, instance_id):
+    return novaclient(request).virtual_interfaces.list(instance_id)
 
 
 def volume_list(request):

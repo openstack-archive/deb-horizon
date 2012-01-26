@@ -21,10 +21,8 @@
   font-style: normal;
 }
 
-
 a {
   color: #43a1d6;
-
 }
 
 ul {
@@ -32,12 +30,36 @@ ul {
     margin: 0;
 }
 
+.topbar {
+  margin-bottom: 20px;
+}
+
+.topbar .switcher_bar {
+  display: inline-block;
+  height: auto;
+  width: 160px;
+  background-position: 140px center;
+  margin-bottom: 0;
+  font-size: 11px;
+  padding: 0;
+}
+
+.topbar .switcher_bar a{
+  padding: 2px 10px 1px;
+  margin-left: 0;
+  display: block;
+}
+
+.topbar .switcher_bar ul {
+  width: 130px;
+}
+
 .page-header {
     background: #f2f2f2;
     height: 31px;
     display: block;
     border-bottom: 1px solid #e5e5e5;
-    padding: 17px;
+    padding: 17px 25px;
     margin-left: -25px;
     margin-right: -25px;
     font-family: anivers;
@@ -69,36 +91,34 @@ html, #splash{
 
 .nav li a {
     color: #8EACB7;
-    background: transparent !important;
     text-shadow: none;
 }
 
 #container {
-    padding: 0;
-}
-.container-fluid > .content {
-  margin-left: 225px;
-    padding-left: 25px;
-    padding-right: 25px;
+    padding: 0 25px 0 250px;
 }
 
-.sidebar {
+.fluid-sidebar {
     background: #edf9ff;
     border-right: 5px solid #e5e5e5;
     border-bottom: 5px solid #e5e5e5;
 }
 
-.sidebar h4 {
+.sidebar-left .fluid-sidebar {
+  margin-left: -250px;
+}
+
+.fluid-sidebar h4 {
     margin-left: 14px;
     color: #999;
 }
 
 .tabs {
-    margin-top: -40px;
+    margin-top: -34px;
 }
 
 .tabs li.active a {
-    background: #edf9ff;
+    background-color: #edf9ff;
 }
 
 h1.brand {
@@ -137,10 +157,36 @@ a.current_item:hover h3, a.current_item:hover h4 {
     color: #39738c;
 }
 
+.switcher_bar {
+    background-color: #e9f5fa;
+    width: 190px;
+    height: 38px;
+    padding: 5px 0 0 0;
+    border: 1px solid #c0d9e4;
+    margin-left: 14px;
+    margin-bottom: 15px;
+    background-image: url(/static/dashboard/images/drop_arrow.png);
+    background-repeat: no-repeat;
+    background-position: 170px 20px;
+}
+
+.switcher_bar:hover {
+  text-decoration: none;
+  background-color: #cde8f4;
+}
+
+.switcher_bar a:hover {
+  text-decoration: none;
+}
+
+.switcher_bar:focus {
+  outline: none;
+}
+
 .switcher_bar h3 {
     color: #4790ae;
     font-size: 16px;
-    margin: -20px 0 0 10px;
+    margin: -6px 0 0 14px;
     padding: 0;
 }
 
@@ -149,51 +195,19 @@ a.current_item:hover h3, a.current_item:hover h4 {
     font-size: 10px;
     text-transform: uppercase;
     font-weight: normal;
-    margin: -10px 0 0 10px;
     padding: 0;
 }
 
-.switcher_bar {
-    background: #e9f5fa;
-    width: 190px;
-    height: 38px;
-    padding: 5px 0 0 0;
-    border: 1px solid #c0d9e4;
-    margin-left: 14px;
-    margin-bottom: 15px;
-}
 
 .switcher_bar ul {
-    background: #c9e1ea;
-    right: 0px;
     border: 1px solid #c0d9e4;
-    margin: 37px 0 0 -1px;
-    list-style: none;
-    display: none;
+    margin-left: -1px;
     width: 190px;
-    position: relative;
 }
 
-.drop_btn {
-  background: #d4edf7 url(../images/drop_arrow.png) no-repeat center center;
-  padding: 12px 0 0 0;
-  float: left;
-  width: 25px;
-  height: 29px;
-  border: 1px solid #c0d9e4;
-  text-indent: -9999px;
-    margin: -5px 0 0;
+.switcher_bar li a:hover{
+  background: #92d6f1;
 }
-.drop_btn:hover { background-color: #c9e1ea; }
-
-.switcher_bar li a {
-  color: #4891ae;
-  font: 14px;
-  padding: 5px 0 5px 10px;
-  display: block;
-  border-bottom: 1px solid #c0d9e4;
-}
-.switcher_bar li a:hover{ background: #92d6f1; }
 
 
 #usage {
@@ -249,27 +263,25 @@ a.current_item:hover h3, a.current_item:hover h4 {
   padding: 0 0 0 1px;
 }
 
-.table_title {
+.table_header {
   overflow: auto; /* Triggers clearing if all contained elements are floated */
+  margin-bottom: 10px;
 }
 
-.table_title h3 {
+.table_title h3, .table_header h3 {
     font-family: anivers;
     font-weight: normal;
     font-size: 24px;
     margin-bottom: 5px;
     float: left;
 }
+
 th {
     background: #f1f1f1;
 }
 
 
 small {
-    font-size: 11px;
-}
-.csv_download_link {
-    margin-top: 11px;
     font-size: 11px;
 }
 
@@ -281,7 +293,7 @@ small {
     color: #888;
 }
 
-#user_info a {
+#user_info > a {
     margin-left: 25px;
     font-size: 11px !important;
 }
@@ -319,16 +331,19 @@ table form {
     margin-bottom: 0;
 }
 
+.alert-block p:last-child {
+  margin-bottom: 0;
+}
+
 #actions.single {
     width: 90px;
 }
 
-.zebra-striped tr td {
+.table-striped tr td {
   transition: background 0.2s;
   -webkit-transition: background 0.2s;
   -moz-transition: background 0.2s;
   -o-transition: background 0.2s;
-
 }
 
 .inspect {
@@ -338,8 +353,23 @@ table form {
     margin-right: 25px;
 }
 
-#main_content table {
+.table {
     margin-bottom: 50px;
+}
+
+.table tr td {
+    vertical-align: middle;
+}
+
+.table tr.empty td {
+  text-align: center;
+}
+
+.table tfoot tr td {
+  border-top: 1px solid #DDD;
+  background-color: #F1F1F1;
+  font-size: 11px;
+  line-height: 14px;
 }
 
 .table_actions {
@@ -348,16 +378,30 @@ table form {
 }
 
 .table_actions .table_search {
-    float: right;
+    display: inline-block;
 }
 
 .table_search input {
-    background: url(../images/search.png) no-repeat 137px 5px;
+  background: url(../images/search.png) no-repeat 195px 5px;
+  display: inline-block;
 }
 
-.table_actions a{
+.table_actions a, .table_actions button {
     float: right;
     margin-left: 10px;
+}
+
+.table_actions button.filter {
+  margin-left: 0;
+}
+
+.table_header .table_actions {
+  min-width: 0;
+}
+
+.table_header .table_actions a, .table_header .table_actions button {
+  display: inline-block;
+  float: none;
 }
 
 .table_actions form {
@@ -500,7 +544,6 @@ table form {
   background: #fbfbfb;
   text-align: center;
   min-width: 735px;
-  margin: 0 10px 0 10px;
   padding: 5px 0 5px 0;
   border: 1px solid #e6e6e6;
 }
@@ -552,14 +595,39 @@ table form {
 
 .modal {
     width: 700px;
+    max-height: none; /* Prevents large modals from scrolling unnecessarily */
     top: 80px;
     margin-top: 0;
     position: absolute;
 }
 
+.modal form.horizontal .form-field {
+    float: left;
+  }
+
+.modal form.horizontal.split_half .form-field {
+    width: 334px; /* Fits 2 fields to a row */
+}
+
+.modal form.horizontal.split_quarter .form-field {
+    width: 167px; /* Fits 4 fields to a row */
+}
+
+.modal form.horizontal fieldset {
+    width: 100%;
+}
+
+.modal table {
+  margin-bottom: 30px;
+}
+
+.modal-body ~ hr {
+  margin-bottom: 0;
+}
+
 .modal.static_page {
   position: relative;
-  left: 250px;
+  left: 280px;
   top: 10px;
   float: left;
 }
@@ -568,7 +636,6 @@ table form {
     float: left;
     width: 342px;
     margin-right: 25px;
-    margin-left: 10px;
 }
 
 .left form {
@@ -594,12 +661,15 @@ table form {
     width: 372px;
 }
 
-.modal fieldset input, .modal fieldset select, .modal fieldset textarea, .modal fieldset ul {
+.modal .form-field,
+.modal fieldset ul {
     width: 90%;
 }
 
-.modal ul.chzn-choices {
-    width: 342px;
+.modal fieldset .form-field input,
+.modal fieldset .form-field select,
+.modal fieldset .form-field textarea {
+  width: 100%;
 }
 
 .modal .modal-footer input {
@@ -620,11 +690,12 @@ table form {
   margin-top: 0;
     margin-right: 5px;
     font-size: 12px;
-    color: #999;
+    color: #666;
     font-weight: normal;
   filter: alpha(opacity=100);
   -khtml-opacity: 1;
   -moz-opacity: 1;
+  opacity: 1;
 }
 
 .modal-footer a.close:hover {
@@ -642,49 +713,6 @@ table form {
 #create_keypair_modal .clearfix {
   margin-bottom: 115px;
 }
-
-#edit_security_group_rule_form {
-    float: right;
-    width: 163px;
-}
-#edit_security_group_rule_form fieldset {
-    width: 163px;
-}
-
-#security_group_rule_modal .left .help-inline {
-    float: left;
-}
-
-#security_group_rule_modal .right {
-    width: 475px;
-    float: right;
-    margin-left: 25px;
-}
-
-#security_group_rule_modal .right table {
-    margin-top: 31px;
-}
-table tr.odd.good td { border: 1px solid #92fd75; }
-table tr.even.good td { border: 1px solid #88f06d; }
-table tr.odd.bad td { border: 1px solid #ffb7b8; }
-table tr.even.bad td { border: 1px solid #fba7a9; }
-table tr.odd.medium td { border: 1px solid #f8e400; }
-table tr.even.medium td { border: 1px solid #f0dd00; }
-
-/*Fix for bootstrap not applying style to table footer.*/
-tfoot tr td { border-top: 1px solid #DDD }
-
-.odd.good { background: #e1ffd9; }
-.odd.medium { background: #fffabf; }
-.odd.bad { background: #ffd9d9; }
-
-.even.good { background: #c2ffb2; }
-.even.medium { background: #fff690; }
-.even.bad { background: #ffb7b8; }
-
-.odd.good:hover, .even.good:hover { background: #98ff7e; }
-.odd.medium:hover, .even.medium:hover { background: #fff376; }
-.odd.bad:hover, .even.bad:hover { background: #ff9899; }
 
 #actions {
     width: 90px;
@@ -708,6 +736,7 @@ tfoot tr td { border-top: 1px solid #DDD }
 .details-modal .modal-body {
   padding-bottom: 20px;
 }
+
 .form-inline {
   display: inline;
 }
@@ -718,54 +747,207 @@ td.select {
 
 /* Actions dropdown */
 
-td.actions {
+td.actions_column {
   width: 150px;
   padding: 10px;
+  position: relative;
+  min-height: 20px;
 }
 
-td.actions a.more-actions {
+td.actions_column .row_actions a,
+td.actions_column .row_actions input,
+td.actions_column .row_actions button {
+  background: none;
+  float: none;
   display: block;
-  float: left;
-  width: 132px;
-  padding: 10px;
-  background: url(../images/right_droparrow.png) no-repeat 130px;
-}
-
-td.actions a.more-actions:hover, td.actions a.more-actions.active {
-  background: #cdcdcd url(../images/drop_arrow.png) no-repeat 125px;
-
-}
-
-td.actions ul {
-  background: #e1e1e1;
-  float: left;
-  width: 150px;
-  position: absolute;
-  padding-bottom: 10px;
-  border: 1px solid #cacaca;
-  padding-top: 10px;
-  display: none;
-  margin-top: 37px;
-}
-
-td.actions ul.active {
-  display: block;
-  z-index: 100;
-}
-
-td.actions ul li {
   padding: 5px 10px;
-}
-
-td.actions ul li a {
-  width: 110px;
-}
-
-td.actions ul li input {
-  width: 129px;
+  color: black;
   text-align: left;
+  border-radius: 0;
+  border: 0 none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 
-td.actions ul {
+/* Makes size consistent across browsers when mixing "btn-group" and "small" */
+.btn-group > .btn.small {
+  height: 12px;
+}
+.btn-group .dropdown-toggle {
+  height: 12px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+.btn-group .dropdown-toggle:focus {
+  outline: none;
+}
+.dropdown-menu button {
+  line-height: 18px; /* Matches rule for ".dropdown-menu a" in bootstrap */
+  width: 100%;
+}
+.btn-group .dropdown-menu .btn {
+  border-radius: 0;
+}
+.dropdown-menu .btn.danger,
+.dropdown-menu .btn.danger:hover,
+.dropdown-menu .btn.success,
+.dropdown-menu .btn.success:hover,
+.dropdown-menu .btn.info, .btn.info:hover {
+  text-shadow: none; /* remove default bootstrap shadowing from button text. */
+}
+.dropdown-menu li:hover {
+  background: none;
+}
+td.actions_column .dropdown-menu a:hover,
+td.actions_column .dropdown-menu button:hover {
+  background-color: #CDCDCD;
+}
+.dropdown-menu .btn.danger {
+  color: #C43C35;
+}
+.dropdown-menu .btn.danger:hover {
+  background-color: #f6e0df;
+}
+
+
+/* Overrides for single-action rows (no dropdown) */
+
+tr td.actions_column ul.row_actions.single,
+tr:hover td.actions_column ul.row_actions.single,
+td.actions_column ul.row_actions.single,
+td.actions_column ul.row_actions.single:hover {
+  border: none;
+}
+
+td.actions_column ul.row_actions.single li.action {
+  display: block;
+}
+
+td.actions_column ul.row_actions.single li.action:hover {
+  background-color: transparent;
+}
+
+td.actions_column ul.row_actions.single a,
+td.actions_column ul.row_actions.single input,
+td.actions_column ul.row_actions.single button {
+  color: #43a1d6;
+}
+
+td.actions_column ul.row_actions.single a:hover,
+td.actions_column ul.row_actions.single input:hover,
+td.actions_column ul.row_actions.single button:hover {
+  color: black;
+}
+
+td.multi_select_column {
+  width: 30px;
+  text-align: center;
+}
+
+div.input input[type="checkbox"] {
+  float: left;
+  width: 25px;
+}
+
+.table_title a {
+    font-size: 11px;
+    float: right;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+tr.terminated {
+  color: #999999;
+}
+
+#instance_tabs {
+  float: left;
+  width: 100%;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+#instance_tabs li a {
+  background: #f2f2f2;
+  display: block;
+  font-size: 14px;
+  float: left;
+  padding: 5px 10px;
+  margin-right: 10px;
+  border: 1px solid #e1e1e1;
+  border-bottom: none;
+}
+
+#instance_tabs li.active a {
+  background: #fff;
+  padding-bottom: 8px;
+  margin-bottom: -5px;
+}
+
+a.view_full {
+  float: right;
+  margin: 10px 10px 0 0;
+}
+
+.tab_wrapper {
+  padding-top: 50px;
+}
+
+/* Fix tooltip z-index to show above modals. Bootstrap bug 582*/
+.tooltip {
+  z-index: 12000;
+}
+
+.volume_boot_disclosure {
+  font-weight: bold;
+  color: #555;
+  cursor: pointer;
+  background-image: url(/static/dashboard/images/right_droparrow.png);
+  background-repeat: no-repeat;
+  background-position: 130px center;
+}
+
+.volume_boot_disclosure.on {
+  width: 334px;
+  margin-bottom: 10px;
+  border-bottom: solid 1px #E1E1E1;
+  background-image: url(/static/dashboard/images/drop_arrow.png);
+}
+
+form div.clearfix.error {
+  width: 330px;
+  padding: 10px 10px;
+}
+
+/* Region selector in header */
+
+#region_selector {
+  position: absolute;
+  z-index: 9999;
+  right: 0;
+  top: 24px;
+}
+
+#region_selector a {  margin-left: 0; }
+
+#region_selector ul{
+  float: left;
+  margin-left: 5px;
+  padding-right: 21px;
+  width: 125px;
+}
+#region_selector ul:hover a { display: block; }
+
+#region_selector li a{
+  padding: 3px 3px 3px 5px;
   display: none;
+  background: #E1E1E1;
+  margin-top: -10px;
+}
+
+#region_selector li:first-child p{
+  background: #EDEDED url(/static/dashboard/images/drop_arrow.png) no-repeat 106px 9px !important;
+  display: block;
+  border: 1px solid #e1e1e1;
+  padding: 5px;
 }

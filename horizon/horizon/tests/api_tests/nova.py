@@ -5,6 +5,7 @@
 # All Rights Reserved.
 #
 # Copyright 2011 Nebula, Inc.
+# Copyright (c) 2011 X.commerce, a business unit of eBay Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -22,7 +23,7 @@ from __future__ import absolute_import
 
 from django import http
 from django.conf import settings
-from mox import IsA
+from mox import IsA, IgnoreArg
 from openstackx import admin as OSAdmin
 from openstackx import auth as OSAuth
 from openstackx import extras as OSExtras
@@ -73,14 +74,6 @@ class ServerWrapperTests(test.TestCase):
 
         #self.request = self.mox.CreateMock(http.HttpRequest)
 
-    def test_get_attrs(self):
-        server = api.Server(self.inner_server, self.request)
-        attrs = server.attrs
-        # for every attribute in the "inner" object passed to the api wrapper,
-        # see if it can be accessed through the api.ServerAttribute instance
-        for k in self.inner_attrs:
-            self.assertEqual(attrs.__getattr__(k), self.inner_attrs[k])
-
     def test_get_other(self):
         server = api.Server(self.inner_server, self.request)
         self.assertEqual(server.id, self.ID)
@@ -112,26 +105,7 @@ class ServerWrapperTests(test.TestCase):
         self.assertEqual(image_name, self.IMAGE_NAME)
 
 
-class NovaAdminApiTests(APITestCase):
-    def stub_admin_api(self, count=1):
-        self.mox.StubOutWithMock(api.nova, 'admin_api')
-        admin_api = self.mox.CreateMock(OSAdmin.Admin)
-        for i in range(count):
-            api.nova.admin_api(IsA(http.HttpRequest)) \
-                    .AndReturn(admin_api)
-        return admin_api
-
-    def test_get_admin_api(self):
-        self.mox.StubOutClassWithMocks(OSAdmin, 'Admin')
-        OSAdmin.Admin(auth_token=TEST_TOKEN, management_url=TEST_URL)
-
-        self.mox.StubOutWithMock(api.deprecated, 'url_for')
-        api.deprecated.url_for(IsA(http.HttpRequest),
-                               'compute', True).AndReturn(TEST_URL)
-
-        self.mox.ReplayAll()
-
-        self.assertIsNotNone(api.nova.admin_api(self.request))
+class ComputeApiTests(APITestCase):
 
     def test_flavor_create(self):
         FLAVOR_DISK = 1000
@@ -140,10 +114,10 @@ class NovaAdminApiTests(APITestCase):
         FLAVOR_NAME = 'newFlavor'
         FLAVOR_VCPU = 2
 
-        admin_api = self.stub_admin_api()
+        novaclient = self.stub_novaclient()
 
-        admin_api.flavors = self.mox.CreateMockAnything()
-        admin_api.flavors.create(FLAVOR_NAME, FLAVOR_MEMORY, FLAVOR_VCPU,
+        novaclient.flavors = self.mox.CreateMockAnything()
+        novaclient.flavors.create(FLAVOR_NAME, FLAVOR_MEMORY, FLAVOR_VCPU,
                                  FLAVOR_DISK, FLAVOR_ID).AndReturn(TEST_RETURN)
 
         self.mox.ReplayAll()
@@ -158,11 +132,11 @@ class NovaAdminApiTests(APITestCase):
     def test_flavor_delete(self):
         FLAVOR_ID = 6
 
-        admin_api = self.stub_admin_api(count=2)
+        novaclient = self.stub_novaclient()
 
-        admin_api.flavors = self.mox.CreateMockAnything()
-        admin_api.flavors.delete(FLAVOR_ID, False).AndReturn(TEST_RETURN)
-        admin_api.flavors.delete(FLAVOR_ID, True).AndReturn(TEST_RETURN)
+        novaclient.flavors = self.mox.CreateMockAnything()
+        novaclient.flavors.delete(FLAVOR_ID, False).AndReturn(TEST_RETURN)
+        novaclient.flavors.delete(FLAVOR_ID, True).AndReturn(TEST_RETURN)
 
         self.mox.ReplayAll()
 
@@ -171,9 +145,6 @@ class NovaAdminApiTests(APITestCase):
 
         ret_val = api.flavor_delete(self.request, FLAVOR_ID, purge=True)
         self.assertIsNone(ret_val)
-
-
-class ComputeApiTests(APITestCase):
 
     def test_flavor_get(self):
         FLAVOR_ID = 6
@@ -202,6 +173,60 @@ class ComputeApiTests(APITestCase):
 
         self.assertIsNone(ret_val)
 
+    def test_server_pause(self):
+        INSTANCE = 'anInstance'
+
+        novaclient = self.stub_novaclient()
+        novaclient.servers = self.mox.CreateMockAnything()
+        novaclient.servers.pause(INSTANCE).AndReturn(TEST_RETURN)
+
+        self.mox.ReplayAll()
+
+        server = self.mox.CreateMock(servers.Server)
+
+        ret_val = api.server_pause(self.request, INSTANCE)
+
+        self.assertIsNone(ret_val)
+
+    def test_server_unpause(self):
+        INSTANCE = 'anInstance'
+
+        novaclient = self.stub_novaclient()
+        novaclient.servers = self.mox.CreateMockAnything()
+        novaclient.servers.unpause(INSTANCE).AndReturn(TEST_RETURN)
+
+        self.mox.ReplayAll()
+
+        ret_val = api.server_unpause(self.request, INSTANCE)
+
+        self.assertIsNone(ret_val)
+
+    def test_server_suspend(self):
+        INSTANCE = 'anInstance'
+
+        novaclient = self.stub_novaclient()
+        novaclient.servers = self.mox.CreateMockAnything()
+        novaclient.servers.suspend(INSTANCE).AndReturn(TEST_RETURN)
+
+        self.mox.ReplayAll()
+
+        ret_val = api.server_suspend(self.request, INSTANCE)
+
+        self.assertIsNone(ret_val)
+
+    def test_server_resume(self):
+        INSTANCE = 'anInstance'
+
+        novaclient = self.stub_novaclient()
+        novaclient.servers = self.mox.CreateMockAnything()
+        novaclient.servers.resume(INSTANCE).AndReturn(TEST_RETURN)
+
+        self.mox.ReplayAll()
+
+        ret_val = api.server_resume(self.request, INSTANCE)
+
+        self.assertIsNone(ret_val)
+
     def test_server_reboot(self):
         INSTANCE_ID = '2'
         HARDNESS = servers.REBOOT_HARD
@@ -226,17 +251,21 @@ class ComputeApiTests(APITestCase):
         USER_DATA = {'nuts': 'berries'}
         KEY = 'user'
         SECGROUP = self.mox.CreateMock(api.SecurityGroup)
+        BLOCK_DEVICE_MAPPING = {'vda': '1:::0'}
 
         novaclient = self.stub_novaclient()
         novaclient.servers = self.mox.CreateMockAnything()
         novaclient.servers.create(NAME, IMAGE, FLAVOR, userdata=USER_DATA,
-                                  security_groups=[SECGROUP], key_name=KEY)\
-                                  .AndReturn(TEST_RETURN)
+                                  security_groups=[SECGROUP], key_name=KEY,
+                                  block_device_mapping=BLOCK_DEVICE_MAPPING,
+                                  min_count=IsA(int)).AndReturn(TEST_RETURN)
 
         self.mox.ReplayAll()
 
         ret_val = api.server_create(self.request, NAME, IMAGE, FLAVOR,
-                                    KEY, USER_DATA, [SECGROUP])
+                                    KEY, USER_DATA, [SECGROUP],
+                                    BLOCK_DEVICE_MAPPING,
+                                    instance_count=1)
 
         self.assertIsInstance(ret_val, api.Server)
         self.assertEqual(ret_val._apiresource, TEST_RETURN)
@@ -264,25 +293,26 @@ class ExtrasApiTests(APITestCase):
 
         self.assertIsNotNone(api.nova.extras_api(self.request))
 
-    def test_console_create(self):
-        extras_api = self.stub_extras_api(count=2)
-        extras_api.consoles = self.mox.CreateMockAnything()
-        extras_api.consoles.create(
-                TEST_INSTANCE_ID, TEST_CONSOLE_KIND).AndReturn(TEST_RETURN)
-        extras_api.consoles.create(
-                TEST_INSTANCE_ID, 'text').AndReturn(TEST_RETURN + '2')
+    def test_server_vnc_console(self):
+        fake_console = {'console': {'url': 'http://fake', 'type': ''}}
+        novaclient = self.stub_novaclient()
+        novaclient.servers = self.mox.CreateMockAnything()
+        novaclient.servers.get_vnc_console(
+                TEST_INSTANCE_ID, TEST_CONSOLE_TYPE).AndReturn(fake_console)
+        novaclient.servers.get_vnc_console(
+                TEST_INSTANCE_ID, 'novnc').AndReturn(fake_console)
 
         self.mox.ReplayAll()
 
-        ret_val = api.console_create(self.request,
-                                     TEST_INSTANCE_ID,
-                                     TEST_CONSOLE_KIND)
-        self.assertIsInstance(ret_val, api.Console)
-        self.assertEqual(ret_val._apiresource, TEST_RETURN)
+        ret_val = api.server_vnc_console(self.request,
+                                         TEST_INSTANCE_ID,
+                                         TEST_CONSOLE_TYPE)
+        self.assertIsInstance(ret_val, api.VNCConsole)
+        self.assertEqual(ret_val._apidict, fake_console['console'])
 
-        ret_val = api.console_create(self.request, TEST_INSTANCE_ID)
-        self.assertIsInstance(ret_val, api.Console)
-        self.assertEqual(ret_val._apiresource, TEST_RETURN + '2')
+        ret_val = api.server_vnc_console(self.request, TEST_INSTANCE_ID)
+        self.assertIsInstance(ret_val, api.VNCConsole)
+        self.assertEqual(ret_val._apidict, fake_console['console'])
 
     def test_flavor_list(self):
         flavors = (TEST_RETURN, TEST_RETURN + '2')
@@ -305,7 +335,7 @@ class ExtrasApiTests(APITestCase):
         novaclient = self.stub_novaclient()
 
         novaclient.servers = self.mox.CreateMockAnything()
-        novaclient.servers.list().AndReturn(servers)
+        novaclient.servers.list(True, {'project_id': '1'}).AndReturn(servers)
 
         self.mox.ReplayAll()
 
@@ -423,14 +453,27 @@ class APIExtensionTests(APITestCase):
 
         self.assertIsInstance(floating_ip, api.FloatingIp)
 
-    def test_tenant_floating_ip_allocate(self):
+    def test_tenant_floating_ip_allocate_without_pool(self):
         novaclient = self.stub_novaclient()
 
         novaclient.floating_ips = self.mox.CreateMockAnything()
-        novaclient.floating_ips.create().AndReturn(self.floating_ip)
+        novaclient.floating_ips.create(pool=IgnoreArg()).\
+                                                    AndReturn(self.floating_ip)
         self.mox.ReplayAll()
 
         floating_ip = api.tenant_floating_ip_allocate(self.request)
+
+        self.assertIsInstance(floating_ip, api.FloatingIp)
+
+    def test_tenant_floating_ip_allocate_with_pool(self):
+        novaclient = self.stub_novaclient()
+
+        novaclient.floating_ips = self.mox.CreateMockAnything()
+        novaclient.floating_ips.create(pool="nova").AndReturn(self.floating_ip)
+        self.mox.ReplayAll()
+
+        floating_ip = api.tenant_floating_ip_allocate(self.request,
+                                                      pool='nova')
 
         self.assertIsInstance(floating_ip, api.FloatingIp)
 

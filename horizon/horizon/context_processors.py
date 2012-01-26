@@ -24,7 +24,6 @@ Context processors used by Horizon.
 import logging
 
 from django.conf import settings
-from django.contrib import messages
 
 from horizon import api
 
@@ -37,8 +36,8 @@ def horizon(request):
 
     Adds three variables to the request context:
 
-    ``tenants``
-        A list of the tenants the current uses is authorized to access.
+    ``authorized_tenants``
+        A list of tenant objects which the current user has access to.
 
     ``object_store_configured``
         Boolean. Will be ``True`` if there is a service of type
@@ -49,6 +48,12 @@ def horizon(request):
 
     Additionally, it sets the names ``True`` and ``False`` in the context
     to their boolean equivalents for convenience.
+
+    .. warning::
+
+        Don't put API calls in context processors; they will be called once
+        for each template/template fragment which takes context that is used
+        to render the complete output.
     """
     context = {"True": True,
                "False": False}
@@ -56,17 +61,7 @@ def horizon(request):
     # Auth/Keystone context
     context.setdefault('authorized_tenants', [])
     if request.user.is_authenticated():
-        try:
-            tenants = api.tenant_list_for_token(request,
-                                                request.user.token,
-                                                endpoint_type='internalURL')
-            context['authorized_tenants'] = tenants
-        except Exception, e:
-            if hasattr(request.user, 'message_set'):
-                messages.error(request, _("Unable to retrieve tenant list: %s")
-                               % e.message)
-            else:
-                LOG.exception('Could not retrieve tenant list.')
+        context['authorized_tenants'] = request.user.authorized_tenants
 
     # Object Store/Swift context
     catalog = getattr(request.user, 'service_catalog', [])
@@ -78,5 +73,12 @@ def horizon(request):
     # TODO(gabriel): Convert to service catalog check when Quantum starts
     #                supporting keystone integration.
     context['network_configured'] = getattr(settings, 'QUANTUM_ENABLED', None)
+
+    # Region context/support
+    available_regions = getattr(settings, 'AVAILABLE_REGIONS', None)
+    regions = {'support': available_regions > 1,
+               'endpoint': request.session.get('region_endpoint'),
+               'name': request.session.get('region_name')}
+    context['region'] = regions
 
     return context

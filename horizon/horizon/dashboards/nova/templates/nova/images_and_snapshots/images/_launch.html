@@ -1,12 +1,11 @@
 {% extends "horizon/common/_modal_form.html" %}
 {% load i18n %}
 
-{% block form_id %}{% endblock %}
-{% block form_action %}{% url horizon:nova:images_and_snapshots:images:launch image_id %}{% endblock %}
+{% block form_id %}launch_image_form{% endblock %}
+{% block form_action %}{% url horizon:nova:images_and_snapshots:images:launch image.id %}{% endblock %}
 
-{% block modal_id %}launch_image_{{ image_id }}{% endblock %}
-
-{% block modal-header %}Launch Instances{% endblock %}
+{% block modal_id %}launch_image_{{ image.id }}{% endblock %}
+{% block modal-header %}{% trans "Launch Instances" %}{% endblock %}
 
 {% block modal-body %}
 <div class="left">
@@ -17,7 +16,7 @@
 <div class="right">
     <h3>{% trans "Description:" %}</h3>
         <p>{% trans "Specify the details for launching an instance. Also please make note of the table below; all tenants have quotas which define the limit of resources they are allowed to provision." %}</p>
-        <table border="0">
+        <table class="table table-striped table-bordered">
           <tr>
             <th>{% trans "Quota Name" %}</th>
             <th>{% trans "Limit" %}</th>
@@ -48,5 +47,5 @@
 
 {% block modal-footer %}
   <input class="btn primary pull-right" type="submit" value="{% trans "Launch Instance" %}" />
-  <a href="{% url horizon:nova:images_and_snapshots:images:index %}" class="btn secondary cancel close">Cancel</a>
+  <a href="{% url horizon:nova:images_and_snapshots:index %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}

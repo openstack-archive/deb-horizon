@@ -25,57 +25,32 @@ import urlparse
 
 from django import shortcuts
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from openstackx.api import exceptions as api_exceptions
 
 from horizon import api
-from horizon.dashboards.syspanel.services.forms import ToggleService
+from horizon import tables
+from .tables import ServicesTable
 
 
 LOG = logging.getLogger(__name__)
 
 
-@login_required
-def index(request):
-    for f in (ToggleService,):
-        form, handled = f.maybe_handle(request)
-        if handled:
-            return handled
+class IndexView(tables.DataTableView):
+    table_class = ServicesTable
+    template_name = 'syspanel/services/index.html'
 
-    services = []
-    try:
-        services = api.service_list(request)
-    except api_exceptions.ApiException, e:
-        LOG.exception('ApiException fetching service list')
-        messages.error(request,
-                       _('Unable to get service info: %s') % e.message)
+    def get_data(self):
+        services = []
+        for i, service in enumerate(self.request.session['serviceCatalog']):
+            url = service['endpoints'][0]['internalURL']
+            hostname = urlparse.urlparse(url).hostname
+            row = {'id': i,  # id is required for table to render properly
+                   'type': service['type'],
+                   'internalURL': url,
+                   'host': hostname,
+                   'region': service['endpoints'][0]['region'],
+                   'disabled': None}
+            services.append(api.base.APIDictWrapper(row))
 
-    other_services = []
-
-    for service in request.session['serviceCatalog']:
-        url = service['endpoints'][0]['internalURL']
-        try:
-            # TODO(mgius): This silences curl, but there's probably
-            # a better solution than using curl to begin with
-            subprocess.check_call(['curl', '-m', '1', url],
-                                  stdout=open(os.devnull, 'w'),
-                                  stderr=open(os.devnull, 'w'))
-            up = True
-        except:
-            up = False
-        hostname = urlparse.urlparse(url).hostname
-        row = {'type': service['type'], 'internalURL': url, 'host': hostname,
-               'region': service['endpoints'][0]['region'], 'up': up}
-        other_services.append(row)
-
-    services = sorted(services, key=lambda svc: (svc.type +
-                                                 svc.host))
-    other_services = sorted(other_services, key=lambda svc: (svc['type'] +
-                                                             svc['host']))
-
-    return shortcuts.render(request,
-                            'syspanel/services/index.html', {
-                                'services': services,
-                                'service_toggle_enabled_form': ToggleService,
-                                'other_services': other_services})
+        return services

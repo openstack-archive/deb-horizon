@@ -77,7 +77,7 @@ class RemoveUser(forms.SelfHandlingForm):
 
 class CreateTenant(forms.SelfHandlingForm):
     name = forms.CharField(label=_("Name"))
-    description = forms.CharField(required=False,
+    description = forms.CharField(
             widget=forms.widgets.Textarea(),
             label=_("Description"))
     enabled = forms.BooleanField(label=_("Enabled"), required=False,
@@ -88,7 +88,7 @@ class CreateTenant(forms.SelfHandlingForm):
             LOG.info('Creating tenant with name "%s"' % data['name'])
             api.tenant_create(request,
                               data['name'],
-                              data['description'] or '',
+                              data['description'],
                               data['enabled'])
             messages.success(request,
                              _('%s was successfully created.')
@@ -107,7 +107,7 @@ class UpdateTenant(forms.SelfHandlingForm):
             widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     name = forms.CharField(label=_("Name"),
             widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-    description = forms.CharField(required=False,
+    description = forms.CharField(
             widget=forms.widgets.Textarea(),
             label=_("Description"))
     enabled = forms.BooleanField(required=False, label=_("Enabled"))
@@ -118,7 +118,7 @@ class UpdateTenant(forms.SelfHandlingForm):
             api.tenant_update(request,
                               data['id'],
                               data['name'],
-                              data['description'] or '',
+                              data['description'],
                               data['enabled'])
             messages.success(request,
                              _('%s was successfully updated.')
@@ -149,7 +149,8 @@ class UpdateQuotas(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            api.admin_api(request).quota_sets.update(data['tenant_id'],
+            api.nova.tenant_quota_update(request,
+               data['tenant_id'],
                metadata_items=data['metadata_items'],
                injected_file_content_bytes=data['injected_file_content_bytes'],
                volumes=data['volumes'],
@@ -167,19 +168,3 @@ class UpdateQuotas(forms.SelfHandlingForm):
             messages.error(request,
                            _('Unable to update quotas: %s') % e.message)
         return shortcuts.redirect('horizon:syspanel:tenants:index')
-
-
-class DeleteTenant(forms.SelfHandlingForm):
-    tenant_id = forms.CharField(required=True)
-
-    def handle(self, request, data):
-        tenant_id = data['tenant_id']
-        try:
-            api.tenant_delete(request, tenant_id)
-            messages.info(request, _('Successfully deleted tenant %(tenant)s.')
-                                     % {"tenant": tenant_id})
-        except Exception, e:
-            LOG.exception("Error deleting tenant")
-            messages.error(request,
-                           _("Error deleting tenant: %s") % e.message)
-        return shortcuts.redirect(request.build_absolute_uri())

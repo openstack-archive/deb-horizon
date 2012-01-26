@@ -18,10 +18,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import functools
 import logging
-
-from django.utils.decorators import available_attrs
 
 from horizon import exceptions
 
@@ -70,17 +67,13 @@ class APIDictWrapper(object):
         self._apidict = apidict
 
     def __getattr__(self, attr):
-        if attr in self._attrs:
-            try:
-                return self._apidict[attr]
-            except KeyError, e:
-                raise AttributeError(e)
-
-        else:
-            LOG.debug('Attempted to access unknown item "%s" on'
-                      'APIResource object of type "%s"'
-                      % (attr, self.__class__))
-            raise AttributeError(attr)
+        try:
+            return self._apidict[attr]
+        except KeyError, e:
+            msg = 'Unknown attribute "%(attr)s" on APIResource object ' \
+                  'of type "%(cls)s"' % {'attr': attr, 'cls': self.__class__}
+            LOG.debug(msg)
+            raise AttributeError(msg)
 
     def __getitem__(self, item):
         try:

@@ -22,25 +22,27 @@ import logging
 
 from django import shortcuts
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 
 from horizon import api
+from horizon import tables
+from .tables import QuotasTable
 
 
 LOG = logging.getLogger(__name__)
 
 
-@login_required
-def index(request):
-    try:
-        quotas = api.admin_api(request).quota_sets.get(True)._info
-        quotas['ram'] = int(quotas['ram']) / 100
-        quotas.pop('id')
-    except Exception, e:
-        quotas = None
-        LOG.exception('Exception while getting quota info')
-        messages.error(request, _('Unable to get quota info: %s') % e.message)
+class IndexView(tables.DataTableView):
+    table_class = QuotasTable
+    template_name = 'syspanel/quotas/index.html'
 
-    return shortcuts.render(request,
-                            'syspanel/quotas/index.html', {
-                                'quotas': quotas})
+    def get_data(self):
+        try:
+            quota_set = api.tenant_quota_defaults(self.request,
+                                                  self.request.user.tenant_id)
+            data = quota_set.items
+        except Exception, e:
+            data = []
+            LOG.exception('Exception while getting quota info')
+            messages.error(self.request,
+                           _('Unable to get quota info: %s') % e)
+        return data

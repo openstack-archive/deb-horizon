@@ -13,12 +13,12 @@
     </fieldset>
 </div>
 <div class="right">
-    <h3>{% trans "Description"%}:</h3>
-    <p>{% trans "You may make a new copy of an existing object to store in this or another container."%}</p>
+    <h3>{% trans "Description" %}:</h3>
+    <p>{% trans "You may make a new copy of an existing object to store in this or another container." %}</p>
 </div>
 {% endblock %}
 
 {% block modal-footer %}
     <input class="btn primary pull-right" type="submit" value="{% trans "Copy Object" %}" />
-    <a href="{% url horizon:nova:containers:object_index container_name %}" class="btn secondary cancel close">Cancel</a>
+    <a href="{% url horizon:nova:containers:object_index container_name %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}

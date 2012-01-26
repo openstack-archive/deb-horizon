@@ -101,7 +101,8 @@ class User(object):
         privileges. Internally mapped to :meth:`horizon.users.User.is_admin`.
     """
     def __init__(self, id=None, token=None, user=None, tenant_id=None,
-                    service_catalog=None, tenant_name=None, roles=None):
+                    service_catalog=None, tenant_name=None, roles=None,
+                    authorized_tenants=None):
         self.id = id
         self.token = token
         self.username = user
@@ -109,6 +110,7 @@ class User(object):
         self.tenant_name = tenant_name
         self.service_catalog = service_catalog
         self.roles = roles or []
+        self.authorized_tenants = authorized_tenants
 
     def is_authenticated(self):
         """
@@ -131,3 +133,9 @@ class User(object):
             if role['name'].lower() == 'admin':
                 return True
         return False
+
+    def get_and_delete_messages(self):
+        """ Placeholder function for parity with
+        ``django.contrib.auth.models.User``.
+        """
+        return []
