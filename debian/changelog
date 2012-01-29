@@ -1,3 +1,9 @@
+horizon (2012.1~e3-3) unstable; urgency=low
+
+  * Added manage.py to openstack-dashboard pkg
+
+ -- Ghe Rivero <ghe@debian.org>  Sun, 29 Jan 2012 10:26:12 +0100
+
 horizon (2012.1~e3-2) unstable; urgency=low
 
   *Fixed typo in libjs-jquery
