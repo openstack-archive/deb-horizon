@@ -20,7 +20,7 @@ Description: Django module to provide web interaction with OpenStack
 
 Package: openstack-dashboard
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-django-horizon, python-django, python-openstackx, python-django-nose, python-keystoneclient, python-cloudfiles, libjs-query
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-django-horizon, python-django, python-openstackx, python-django-nose, python-keystoneclient, python-cloudfiles, libjs-jquery
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.

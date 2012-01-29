@@ -1,3 +1,9 @@
+horizon (2012.1~e3-2) unstable; urgency=low
+
+  *Fixed typo in libjs-jquery
+
+ -- Ghe Rivero <ghe@debian.org>  Thu, 26 Jan 2012 16:40:21 +0100
+
 horizon (2012.1~e3-1) unstable; urgency=low
 
   * New upstream release
