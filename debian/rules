@@ -2,42 +2,20 @@
 %:
 	dh $@ --with python2
 
-SOURCE_DIRS=horizon openstack-dashboard
-
-# Add -B so we do not pollute the source tree
-PYTHON=python -B
-
-override_dh_auto_build:
-	dh_auto_build
-	for d in $(SOURCE_DIRS); \
-	do \
-		cd $(CURDIR)/$$d && $(PYTHON) setup.py build; \
-	done
-
 override_dh_auto_install:
-	dh_auto_install
-	for d in $(SOURCE_DIRS); \
-	do \
-		cd $(CURDIR)/$$d && $(PYTHON) setup.py install --install-layout=deb --root=$(CURDIR)/debian/tmp; \
-	done
-	# Actually the setup.py from openstack-dashboard does not install anything…
+	python setup.py install --root=$(CURDIR)/debian/tmp --no-compile -O0 --install-layout=deb
 	install -d -m 755  $(CURDIR)/debian/tmp/usr/share/openstack-dashboard
-	cp -a $(CURDIR)/openstack-dashboard/dashboard $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
-	cp -a $(CURDIR)/openstack-dashboard/local $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
+	cp -a $(CURDIR)/openstack_dashboard/local $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
 	install -d -m 755 $(CURDIR)/debian/tmp/etc/openstack-dashboard
-	cp $(CURDIR)/openstack-dashboard/local/local_settings.py.example \
+	cp $(CURDIR)/openstack_dashboard/local/local_settings.py.example \
 		$(CURDIR)/debian/tmp/etc/openstack-dashboard/settings.py
-	cp $(CURDIR)/openstack-dashboard/manage.py \
+	cp $(CURDIR)/manage.py \
 		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/manage.py
 
-	ln -s /etc/openstack-dashboard/settings.py $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/local/local_settings.py
+	ln -s /etc/openstack_dashboard/settings.py $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/local/local_settings.py
 
 override_dh_auto_clean:
 	dh_auto_clean
-	for d in $(SOURCE_DIRS); \
-	do \
-		cd $(CURDIR)/$$d && $(PYTHON) setup.py clean; \
-	done
 	rm -rf $(CURDIR)/horizon/build
 	rm -rf $(CURDIR)/horizon/horizon.egg-info
-	rm -rf $(CURDIR)/openstack-dashboard/openstack_dashboard.egg-info
+	rm -rf $(CURDIR)/openstack_dashboard/openstack_dashboard.egg-info
