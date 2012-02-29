@@ -10,6 +10,7 @@ override_dh_auto_install:
 	cp -a $(CURDIR)/openstack_dashboard/ $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
 	cp $(CURDIR)/openstack_dashboard/local/local_settings.py.example $(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
 	cp $(CURDIR)/manage.py $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
+	ln -fs /etc/openstack-dashboard/local_settings.py $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/local/local_settings.py
 
 override_dh_auto_clean:
 	dh_auto_clean
