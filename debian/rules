@@ -5,15 +5,12 @@
 override_dh_auto_install:
 	python setup.py install --root=$(CURDIR)/debian/tmp --no-compile -O0 --install-layout=deb
 	install -d -m 755  $(CURDIR)/debian/tmp/usr/share/openstack-dashboard
-	cp -a $(CURDIR)/openstack_dashboard/local $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
-	cp -a $(CURDIR)/openstack_dashboard/settings.py $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
+	cp -a $(CURDIR)/openstack_dashboard/ $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
 	install -d -m 755 $(CURDIR)/debian/tmp/etc/openstack-dashboard
 	cp $(CURDIR)/openstack_dashboard/local/local_settings.py.example \
 		$(CURDIR)/debian/tmp/etc/openstack-dashboard/settings.py
 	cp $(CURDIR)/manage.py \
-		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/manage.py
-
-	ln -s /etc/openstack_dashboard/settings.py $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/local/local_settings.py
+		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
 
 override_dh_auto_clean:
 	dh_auto_clean
