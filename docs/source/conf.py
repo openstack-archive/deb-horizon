@@ -11,17 +11,16 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys
+import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-HORIZON_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "..", "horizon"))
-DASHBOARD_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "..", "openstack-dashboard"))
+ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
 
-sys.path.insert(0, HORIZON_DIR)
-sys.path.insert(0, DASHBOARD_DIR)
+sys.path.insert(0, ROOT)
 
 # This is required for ReadTheDocs.org, but isn't a bad idea anyway.
-os.environ['DJANGO_SETTINGS_MODULE'] = 'dashboard.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'openstack_dashboard.settings'
 
 import horizon.version
 
@@ -36,8 +35,6 @@ def write_autodoc_index():
         for root, dirs, files in os.walk("."):
             for filename in files:
                 if filename.endswith(".py"):
-                    # root = ./dashboard/test/unit
-                    # filename = base.py
                     # remove the pieces of the root
                     elements = root.split(os.path.sep)
                     # replace the leading "." with the module name
@@ -52,10 +49,10 @@ def write_autodoc_index():
         return modlist
 
     RSTDIR = os.path.abspath(os.path.join(BASE_DIR, "sourcecode"))
-    SRCS = {'horizon': HORIZON_DIR,
-            'dashboard': DASHBOARD_DIR}
+    SRCS = {'horizon': ROOT,
+            'openstack_dashboard': ROOT}
 
-    EXCLUDED_MODULES = ('horizon.tests', 'dashboard.tests',)
+    EXCLUDED_MODULES = ('horizon.tests', 'openstack_dashboard.tests',)
     CURRENT_SOURCES = {}
 
     if not(os.path.exists(RSTDIR)):
@@ -117,7 +114,7 @@ def write_autodoc_index():
     # Delete auto-generated .rst files for sources which no longer exist
     for directory, subdirs, files in list(os.walk(RSTDIR)):
         for old_file in files:
-            if old_file not in CURRENT_SOURCES[directory]:
+            if old_file not in CURRENT_SOURCES.get(directory, []):
                 print "Removing outdated file for %s" % old_file
                 os.remove(os.path.join(directory, old_file))
 
@@ -160,7 +157,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Horizon'
-copyright = u'2011, OpenStack, LLC'
+copyright = u'2012, OpenStack, LLC'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -370,7 +367,7 @@ texinfo_documents = [
 epub_title = u'Horizon'
 epub_author = u'OpenStack'
 epub_publisher = u'OpenStack'
-epub_copyright = u'2011, OpenStack'
+epub_copyright = u'2012, OpenStack'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

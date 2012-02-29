@@ -1,5 +1,5 @@
 ..
-      Copyright 2011 OpenStack, LLC
+      Copyright 2012 OpenStack, LLC
       All Rights Reserved.
 
       Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -40,17 +40,18 @@ How to use Horizon in your own projects.
 
    intro
    quickstart
+   topics/deployment
+   topics/branding
 
-
-Developer Reference
-===================
+Developer Docs
+==============
 
 For those wishing to develop Horizon itself, or go in-depth with building
 your own :class:`~horizon.Dashboard` or :class:`~horizon.Panel` classes,
 the following documentation is provided.
 
-Topics
-------
+General information
+-------------------
 
 Brief guides to areas of interest and importance when developing Horizon.
 
@@ -59,6 +60,18 @@ Brief guides to areas of interest and importance when developing Horizon.
 
    contributing
    testing
+
+Topic Guides
+------------
+
+Information on how to work with specific areas of Horizon can be found in
+the following topic guides.
+
+.. toctree::
+   :maxdepth: 1
+
+   topics/tables
+   topics/testing
 
 API Reference
 -------------
@@ -71,6 +84,7 @@ In-depth documentation for Horizon and it's APIs.
    ref/run_tests
    ref/horizon
    ref/tables
+   ref/tabs
    ref/users
    ref/forms
    ref/views
@@ -78,6 +92,7 @@ In-depth documentation for Horizon and it's APIs.
    ref/context_processors
    ref/decorators
    ref/exceptions
+   ref/test
 
 Source Code Reference
 ---------------------

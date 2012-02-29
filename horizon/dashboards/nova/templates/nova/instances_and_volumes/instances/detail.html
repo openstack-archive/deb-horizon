@@ -1,0 +1,37 @@
+{% extends 'nova/base.html' %}
+{% load i18n sizeformat %}
+{% block title %}Instance Detail{% endblock %}
+
+{% block page_header %}
+  {# to make searchable false, just remove it from the include statement #}
+  {% include "horizon/common/_page_header.html" with title="Instance Detail: "|add:instance.name %}
+{% endblock page_header %}
+
+{% block dash_main %}
+<div class="row-fluid">
+  <div class="span12">
+  {{ tab_group.render }}
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+  {{ block.super }}
+  {# FIXME: This JavaScript should live with the rest of the JS #}
+    <script type="text/javascript" charset="utf-8">
+      $(function() {
+        function getLog() {
+          if ($("#instance_details__log .logs").length) {
+            $.get("{% url horizon:nova:instances_and_volumes:instances:console instance.id %}?length=25", function(data) {
+              $("#instance_details__log .logs").html(data);
+            });
+          }
+        }
+        getLog();
+
+        setInterval(function() {
+          getLog();
+        }, 10000); // This value has to stay under Nova's API rate limiting.
+      });
+    </script>
+{% endblock %}
