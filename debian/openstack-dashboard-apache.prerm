@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+a2dissite openstack-dashboard
+
+#DEBHELPER#
