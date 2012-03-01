@@ -6,21 +6,37 @@ Uploaders: Julien Danjou <acid@debian.org>,
            Thomas Goirand <zigo@debian.org>,
            Ghe Rivero <ghe@debian.org>
 Build-Depends: debhelper (>= 8.0.0), python, python-setuptools
-Standards-Version: 3.9.2
+Standards-Version: 3.9.4
 Homepage: http://launchpad.net/horizon
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
 Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
 
 Package: python-django-horizon
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-quantumclient, python-glance, python-mox, python-dateutil
+Depends: ${shlibs:Depends},
+ ${misc:Depends},
+ ${python:Depends},
+ python-quantumclient,
+ python-glance,
+ python-mox,
+ python-dateutil
 Description: Django module to provide web interaction with OpenStack
  Horizon is a Django module that permits interaction with an OpenStack
  cloud. It can be used to build a dashboard to control an OpenStack cloud.
 
 Package: openstack-dashboard
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-django-horizon, python-django, python-openstackx, python-django-nose, python-keystoneclient, python-cloudfiles, libjs-jquery
+Depends: ${shlibs:Depends},
+ ${misc:Depends},
+ ${python:Depends},
+ python-django-horizon,
+ python-django,
+ python-openstackx,
+ python-django-nose,
+ python-keystoneclient,
+ python-cloudfiles,
+ libjs-jquery
+Recommends: libapache2-mod-wsgi (>= 2.3)
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
