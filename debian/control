@@ -36,7 +36,15 @@ Depends: ${shlibs:Depends},
  python-keystoneclient,
  python-cloudfiles,
  libjs-jquery
-Recommends: libapache2-mod-wsgi (>= 2.3)
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
+
+Package: openstack-dashboard-apache
+Architectur: all
+Depends: openstack-dashboard,
+ libapache2-mod-wsgi
+Description: OpenStack Dashboard - Apache2 Support
+ The OpenStack Dashboard is a Web application allowing to control an
+ OpenStack cloud.
+ This package includes the configuration files to use it with apache2
