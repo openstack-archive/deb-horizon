@@ -1,0 +1,10 @@
+--- a/setup.py
++++ b/setup.py
+@@ -41,6 +41,7 @@
+                                 + findall('horizon/dashboards/nova/templates') \
+                                 + findall('horizon/dashboards/syspanel/templates') \
+                                 + findall('horizon/dashboards/settings/templates')]},
++      include_package_data=True,
+       install_requires=[],
+       classifiers=['Development Status :: 4 - Beta',
+                    'Framework :: Django',
