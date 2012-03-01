@@ -11,5 +11,5 @@
 --- /dev/null
 +++ b/MANIFEST.in
 @@ -0,0 +1 @@
-+recursive-include horizon *.html
++recursive-include horizon *.html *.js
 \ No newline at end of file
