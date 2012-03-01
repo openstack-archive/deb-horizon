@@ -8,3 +8,8 @@
        zip_safe=False,
        install_requires=parse_requirements(PIP_REQUIRES, TEST_REQUIRES),
        dependency_links=parse_dependency_links(PIP_REQUIRES, TEST_REQUIRES),
+--- /dev/null
++++ b/MANIFEST.in
+@@ -0,0 +1 @@
++recursive-include *.html
+\ No newline at end of file
