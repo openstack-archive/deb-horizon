@@ -1,10 +1,10 @@
 # Testing Requirements
 CherryPy
 coverage
-django-nose
+django-nose==0.1.2
 django-nose-selenium
 mox
-nose
+nose==1.0.0
 pep8
 pylint
 

@@ -1,13 +1,13 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -76,6 +76,7 @@
+@@ -36,6 +36,7 @@
        author='Devin Carlen',
        author_email='devin.carlen@gmail.com',
        packages=find_packages(),
 +      include_package_data=True,
-       zip_safe=False,
-       install_requires=parse_requirements(PIP_REQUIRES, TEST_REQUIRES),
-       dependency_links=parse_dependency_links(PIP_REQUIRES, TEST_REQUIRES),
+       package_data={'horizon': [s[len('horizon/'):] for s in
+                                 findall('horizon/templates') \
+                                 + findall('horizon/dashboards/nova/templates') \
 --- /dev/null
 +++ b/MANIFEST.in
 @@ -0,0 +1 @@
