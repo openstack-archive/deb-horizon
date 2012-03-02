@@ -1,3 +1,9 @@
+horizon (2012.1~e3+git134-g052aa55-1) unstable; urgency=low
+
+  * some testing
+
+ -- Ghe Rivero <ghe@debian.org>  Wed, 29 Feb 2012 10:12:59 +0100
+
 horizon (2012.1~e3-3) unstable; urgency=low
 
   * Added manage.py to openstack-dashboard pkg
