@@ -58,11 +58,15 @@ var Horizon = function() {
   horizon.datatables.confirm = function (action) {
     var $action = $(action),
         action_string, title, body, modal, form;
+    if($action.hasClass("disabled")) {
+      return;
+    }
     action_string = $action.text();
     title = "Confirm " + action_string;
     body = "Please confirm your selection. This action cannot be undone.";
+    var use_backdrop = $('.modal').length == 0; // check if already has a modal
     modal = horizon.modals.create(title, body, action_string);
-    modal.modal('show');
+    modal.modal({backdrop: use_backdrop});
     modal.find('.btn-primary').click(function (evt) {
       form = $action.closest('form');
       form.append("<input type='hidden' name='" + $action.attr('name') + "' value='" + $action.attr('value') + "'/>");

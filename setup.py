@@ -19,12 +19,58 @@
 #    under the License.
 
 import os
-from setuptools import setup, find_packages, findall
+import re
+from setuptools import setup, find_packages
 from horizon import version
 
 
+ROOT = os.path.dirname(__file__)
+PIP_REQUIRES = os.path.join(ROOT, "tools", "pip-requires")
+TEST_REQUIRES = os.path.join(ROOT, "tools", "test-requires")
+
+
+def parse_requirements(*filenames):
+    """
+    We generate our install_requires from the pip-requires and test-requires
+    files so that we don't have to maintain the dependency definitions in
+    two places.
+    """
+    requirements = []
+    for f in filenames:
+        for line in open(f, 'r').read().split('\n'):
+            # Comment lines. Skip.
+            if re.match(r'(\s*#)|(\s*$)', line):
+                continue
+            # Editable matches. Put the egg name into our reqs list.
+            if re.match(r'\s*-e\s+', line):
+                pkg = re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line)
+                requirements.append("%s" % pkg)
+            # File-based installs not supported/needed. Skip.
+            elif re.match(r'\s*-f\s+', line):
+                pass
+            else:
+                requirements.append(line)
+    return requirements
+
+
+def parse_dependency_links(*filenames):
+    """
+    We generate our dependency_links from the pip-requires and test-requires
+    files for the dependencies pulled from github (prepended with -e).
+    """
+    dependency_links = []
+    for f in filenames:
+        for line in open(f, 'r').read().split('\n'):
+            if re.match(r'\s*-[ef]\s+', line):
+                line = re.sub(r'\s*-[ef]\s+', '', line)
+                line = re.sub(r'\s*git\+https', 'http', line)
+                line = re.sub(r'\.git#', '/tarball/master#', line)
+                dependency_links.append(line)
+    return dependency_links
+
+
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    return open(os.path.join(ROOT, fname)).read()
 
 
 setup(name="horizon",
@@ -33,15 +79,14 @@ setup(name="horizon",
       license='Apache 2.0',
       description="The OpenStack Dashboard.",
       long_description=read('README.rst'),
-      author='Devin Carlen',
-      author_email='devin.carlen@gmail.com',
+      author='OpenStack',
+      author_email='horizon@lists.launchpad.net',
       packages=find_packages(),
-      package_data={'horizon': [s[len('horizon/'):] for s in
-                                findall('horizon/templates') \
-                                + findall('horizon/dashboards/nova/templates') \
-                                + findall('horizon/dashboards/syspanel/templates') \
-                                + findall('horizon/dashboards/settings/templates')]},
-      install_requires=[],
+      include_package_data=True,
+      zip_safe=False,
+      install_requires=parse_requirements(PIP_REQUIRES),
+      tests_require=parse_requirements(TEST_REQUIRES),
+      dependency_links=parse_dependency_links(PIP_REQUIRES, TEST_REQUIRES),
       classifiers=['Development Status :: 4 - Beta',
                    'Framework :: Django',
                    'Intended Audience :: Developers',
