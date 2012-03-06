@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+case $1 in
+    purge)
+        userdel horizon || true
+        groupdel horizon || true
+        ;;
+esac
+
+#DEBHELPER#

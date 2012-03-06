@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "configure" ]
+then
+    adduser --system \
+	--home /var/lib/horizon \
+        --quiet \
+        --disabled-password \
+        --group horizon
+fi
+
+#DEBHELPER#
