@@ -817,7 +817,6 @@ tr.terminated {
 
 form div.clearfix.error {
   width: 330px;
-  padding: 10px 10px;
 }
 
 /* Region selector in header */
@@ -913,4 +912,12 @@ iframe {
   margin-bottom: 25px;
   float: left;
   margin-right: 50px;
+}
+
+.error .help-inline {
+	background: #efdfdf;
+	border: 1px solid #ead5d8;
+	padding: 10px;
+	display: block;
+	width: 304px;
 }

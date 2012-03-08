@@ -1,5 +1,5 @@
 horizon.addInitFunction(function() {
-  $('.table_search input').quicksearch('tr.odd, tr.even', {
+  $('.table_search input').quicksearch('tbody tr', {
     'delay': 300,
     'loader': 'span.loading',
     'bind': 'keyup click',
@@ -33,6 +33,8 @@ horizon.addInitFunction(function() {
         var $new_row = $(jqXHR.responseText);
         $new_row.find("td.status_unknown").prepend('<i class="icon-updating ajax-updating"></i>');
         $this.closest('tr').replaceWith($new_row);
+        // Revalidate the button check for updated table
+        horizon.datatables.validate_button();
       }
     });
     return false;
