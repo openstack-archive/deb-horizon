@@ -35,7 +35,8 @@ Depends: ${shlibs:Depends},
  python-django-nose,
  python-keystoneclient,
  python-cloudfiles,
- libjs-jquery
+ libjs-jquery,
+ python-iso8601
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
