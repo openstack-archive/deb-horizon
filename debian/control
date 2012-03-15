@@ -43,7 +43,8 @@ Description: OpenStack Dashboard
 
 Package: openstack-dashboard-apache
 Architecture: all
-Depends: libapache2-mod-wsgi (>=2.3)
+Depends: libapache2-mod-wsgi (>=2.3),
+ openstack-dashboard
 Description: OpenStack Dashboard - Apache support
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
