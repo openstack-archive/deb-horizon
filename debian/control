@@ -4,9 +4,9 @@ Priority: extra
 Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
 Uploaders: Julien Danjou <acid@debian.org>,
            Thomas Goirand <zigo@debian.org>,
-           Ghe Rivero <ghe@debian.org>
+           Ghe Rivero <ghe.rivero@stackops.com>
 Build-Depends: debhelper (>= 8.0.0), python, python-setuptools
-Standards-Version: 3.9.4
+Standards-Version: 3.9.3
 Homepage: http://launchpad.net/horizon
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
 Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
@@ -36,7 +36,8 @@ Depends: ${shlibs:Depends},
  python-keystoneclient,
  python-cloudfiles,
  libjs-jquery,
- python-iso8601
+ python-iso8601,
+ adduser
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
@@ -44,7 +45,8 @@ Description: OpenStack Dashboard
 Package: openstack-dashboard-apache
 Architecture: all
 Depends: libapache2-mod-wsgi (>=2.3),
- openstack-dashboard
+ openstack-dashboard,
+ ${misc:Depends}
 Description: OpenStack Dashboard - Apache support
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
