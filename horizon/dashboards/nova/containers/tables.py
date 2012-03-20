@@ -25,25 +25,26 @@ from django.utils import http
 from django.utils.translation import ugettext as _
 
 from horizon import api
-from horizon import exceptions
 from horizon import tables
 
 
 LOG = logging.getLogger(__name__)
 
 
-class DeleteContainer(tables.Action):
-    name = "delete"
-    verbose_name = _("Delete")
-    verbose_name_plural = _("Delete Containers")
-    classes = ('btn-danger',)
+class DeleteContainer(tables.DeleteAction):
+    data_type_singular = _("Container")
+    data_type_plural = _("Containers")
+
+    def delete(self, request, obj_id):
+        api.swift_delete_container(request, obj_id)
 
     def handle(self, table, request, object_ids):
+        # Overriden to show clearer error messages instead of generic message
         deleted = []
         for obj_id in object_ids:
             obj = table.get_object_by_id(obj_id)
             try:
-                api.swift_delete_container(request, obj_id)
+                self.delete(request, obj_id)
                 deleted.append(obj)
             except ContainerNotEmpty:
                 LOG.exception('Unable to delete container "%s".' % obj.name)
@@ -61,20 +62,21 @@ class CreateContainer(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Container")
     url = "horizon:nova:containers:create"
-    classes = ("ajax-modal",)
+    classes = ("ajax-modal", "btn-create")
 
 
 class ListObjects(tables.LinkAction):
     name = "list_objects"
     verbose_name = _("List Objects")
     url = "horizon:nova:containers:object_index"
+    classes = ("btn-list",)
 
 
 class UploadObject(tables.LinkAction):
     name = "upload"
     verbose_name = _("Upload Object")
     url = "horizon:nova:containers:object_upload"
-    classes = ("ajax-modal",)
+    classes = ("ajax-modal", "btn-upload")
 
     def get_link_url(self, datum=None):
         # Usable for both the container and object tables
@@ -97,7 +99,8 @@ def get_size_used(container):
 
 
 class ContainersTable(tables.DataTable):
-    name = tables.Column("name", link='horizon:nova:containers:object_index')
+    name = tables.Column("name", link='horizon:nova:containers:object_index',
+                         verbose_name=_("Container Name"))
     objects = tables.Column("object_count",
                             verbose_name=_('Objects'),
                             empty_value="0")
@@ -113,35 +116,21 @@ class ContainersTable(tables.DataTable):
         row_actions = (ListObjects, UploadObject, DeleteContainer)
 
 
-class DeleteObject(tables.Action):
-    name = "delete"
-    verbose_name = _("Delete")
-    verbose_name_plural = _("Delete Objects")
-    classes = ('btn-danger',)
+class DeleteObject(tables.DeleteAction):
+    data_type_singular = _("Object")
+    data_type_plural = _("Objects")
 
-    def handle(self, table, request, object_ids):
-        deleted = []
-        for obj_id in object_ids:
-            obj = table.get_object_by_id(obj_id)
-            container_name = obj.container.name
-            try:
-                api.swift_delete_object(request, container_name, obj_id)
-                deleted.append(obj)
-            except:
-                exceptions.handle(request, _('Unable to delete object.'))
-        if deleted:
-            messages.success(request,
-                             _('Successfully deleted objects: %s')
-                               % ", ".join([obj.name for obj in deleted]))
-        return shortcuts.redirect('horizon:nova:containers:object_index',
-                                  table.kwargs['container_name'])
+    def delete(self, request, obj_id):
+        obj = self.table.get_object_by_id(obj_id)
+        container_name = obj.container.name
+        api.swift_delete_object(request, container_name, obj_id)
 
 
 class CopyObject(tables.LinkAction):
     name = "copy"
     verbose_name = _("Copy")
     url = "horizon:nova:containers:object_copy"
-    attrs = {"class": "ajax-modal"}
+    classes = ("ajax-modal", "btn-copy")
 
     def get_link_url(self, obj):
         return reverse(self.url, args=(http.urlquote(obj.container.name),
@@ -152,6 +141,7 @@ class DownloadObject(tables.LinkAction):
     name = "download"
     verbose_name = _("Download")
     url = "horizon:nova:containers:object_download"
+    classes = ("btn-download",)
 
     def get_link_url(self, obj):
         #assert False, obj.__dict__['_apiresource'].__dict__
@@ -160,17 +150,16 @@ class DownloadObject(tables.LinkAction):
 
 
 class ObjectFilterAction(tables.FilterAction):
-    def filter(self, table, users, filter_string):
+    def filter(self, table, objects, filter_string):
         """ Really naive case-insensitive search. """
-        # FIXME(gabriel): This should be smarter. Written for demo purposes.
         q = filter_string.lower()
 
-        def comp(user):
-            if q in user.name.lower() or q in user.email.lower():
+        def comp(object):
+            if q in object.name.lower():
                 return True
             return False
 
-        return filter(comp, users)
+        return filter(comp, objects)
 
 
 def get_size(obj):
@@ -178,7 +167,7 @@ def get_size(obj):
 
 
 class ObjectsTable(tables.DataTable):
-    name = tables.Column("name")
+    name = tables.Column("name", verbose_name=_("Object Name"))
     size = tables.Column(get_size, verbose_name=_('Size'))
 
     def get_object_id(self, obj):

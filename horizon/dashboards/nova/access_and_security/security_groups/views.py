@@ -56,9 +56,17 @@ class EditRulesView(tables.DataTableView):
         return rules
 
     def handle_form(self):
-        tenant_id = self.request.user.tenant_id
-        initial = {'tenant_id': tenant_id,
-                   'security_group_id': self.kwargs['security_group_id']}
+        try:
+            groups = api.security_group_list(self.request)
+        except:
+            groups = []
+            exceptions.handle(self.request,
+                              _("Unable to retrieve security groups."))
+
+        security_groups = [(group.id, group.name) for group in groups]
+
+        initial = {'security_group_id': self.kwargs['security_group_id'],
+                   'security_group_list': security_groups}
         return AddRule.maybe_handle(self.request, initial=initial)
 
     def get(self, request, *args, **kwargs):

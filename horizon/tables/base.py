@@ -21,6 +21,7 @@ from operator import attrgetter
 import sys
 
 from django import forms
+from django.http import HttpResponse
 from django import template
 from django.conf import settings
 from django.contrib import messages
@@ -29,11 +30,13 @@ from django.template.loader import render_to_string
 from django.utils import http
 from django.utils.datastructures import SortedDict
 from django.utils.html import escape
+from django.utils.http import urlencode
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 from django.utils import termcolors
 
 from horizon import exceptions
+from horizon.utils import html
 from .actions import FilterAction, LinkAction
 
 
@@ -239,10 +242,21 @@ class Column(object):
             return self.link
 
 
-class Row(object):
+class Row(html.HTMLElement):
     """ Represents a row in the table.
 
     When iterated, the ``Row`` instance will yield each of its cells.
+
+    Rows are capable of AJAX updating, with a little added work:
+
+    The ``ajax`` property needs to be set to ``True``, and
+    subclasses need to define a ``get_data`` method which returns a data
+    object appropriate for consumption by the table (effectively the "get"
+    lookup versus the table's "list" lookup).
+
+    The automatic update interval is configurable by setting the key
+    ``ajax_poll_interval`` in the ``settings.HORIZON_CONFIG`` dictionary.
+    Default: ``2500`` (measured in milliseconds).
 
     .. attribute:: table
 
@@ -264,22 +278,42 @@ class Row(object):
 
     .. attribute:: status
 
-        Boolean value representing the status of this row according
-        to the value of the table's ``status_column`` value if it is set.
+        Boolean value representing the status of this row calculated from
+        the values of the table's ``status_columns`` if they are set.
 
     .. attribute:: status_class
 
         Returns a css class for the status of the row based on ``status``.
+
+    .. attribute:: ajax
+
+        Boolean value to determine whether ajax updating for this row is
+        enabled.
+
+    .. attribute:: ajax_action_name
+
+        String that is used for the query parameter key to request AJAX
+        updates. Generally you won't need to change this value.
+        Default: ``"row_update"``.
     """
+    ajax = False
+    ajax_action_name = "row_update"
+
     def __init__(self, table, datum):
+        super(Row, self).__init__()
         self.table = table
         self.datum = datum
         id_vals = {"table": self.table.name,
                    "sep": STRING_SEPARATOR,
                    "id": table.get_object_id(datum)}
         self.id = "%(table)s%(sep)srow%(sep)s%(id)s" % id_vals
+        if self.ajax:
+            interval = settings.HORIZON_CONFIG.get('ajax_poll_interval', 2500)
+            self.attrs['data-update-interval'] = interval
+            self.attrs['data-update-url'] = self.get_ajax_update_url()
+            self.classes.append("ajax-update")
 
-        # Compile all the cells on instantiation
+        # Compile all the cells on instantiation.
         cells = []
         for column in table.columns.values():
             if column.auto == "multi_select":
@@ -297,17 +331,29 @@ class Row(object):
             cells.append((column.name or column.auto, cell))
         self.cells = SortedDict(cells)
 
+        # Add the row's status class and id to the attributes to be rendered.
+        self.classes.append(self.status_class)
+        self.attrs['id'] = self.id
+
+    def __repr__(self):
+        return '<%s: %s>' % (self.__class__.__name__, self.id)
+
+    def __iter__(self):
+        return iter(self.cells.values())
+
     @property
     def status(self):
-        column_name = self.table._meta.status_column
-        if column_name:
-            return self.cells[column_name].status
+        column_names = self.table._meta.status_columns
+        if column_names:
+            statuses = dict([(column_name, self.cells[column_name].status) for
+                             column_name in column_names])
+            return self.table.calculate_row_status(statuses)
 
     @property
     def status_class(self):
-        column_name = self.table._meta.status_column
-        if column_name:
-            return self.cells[column_name].get_status_class(self.status)
+        column_names = self.table._meta.status_columns
+        if column_names:
+            return self.table.get_row_status_class(self.status)
         else:
             return ''
 
@@ -319,11 +365,21 @@ class Row(object):
         """ Returns the bound cells for this row in order. """
         return self.cells.values()
 
-    def __repr__(self):
-        return '<%s: %s>' % (self.__class__.__name__, self.id)
+    def get_ajax_update_url(self):
+        table_url = self.table.get_absolute_url()
+        params = urlencode({"table": self.table.name,
+                            "action": self.ajax_action_name,
+                            "obj_id": self.table.get_object_id(self.datum)})
+        return "%s?%s" % (table_url, params)
 
-    def __iter__(self):
-        return iter(self.cells.values())
+    @classmethod
+    def get_data(cls, request, obj_id):
+        """
+        Fetches the updated data for the row based on the object id
+        passed in. Must be implemented by a subclass to allow AJAX updating.
+        """
+        raise NotImplementedError("You must define a get_data method on %s"
+                                  % cls.__name__)
 
 
 class Cell(object):
@@ -371,7 +427,7 @@ class Cell(object):
             return self._status
 
         if self.column.status or \
-                self.column.table._meta.status_column == self.column.name:
+                self.column.name in self.column.table._meta.status_columns:
             #returns the first matching status found
             data_value_lower = unicode(self.data).lower()
             for status_name, status_value in self.column.status_choices:
@@ -453,20 +509,18 @@ class DataTableOptions(object):
         The name of the context variable which will contain the table when
         it is rendered. Defaults to ``"table"``.
 
-    .. attribute:: status_column
+    .. attribute:: status_columns
 
-        The name of a column on this table which represents the "state"
-        of the data object being represented. The collumn must already be
-        designated as a status column by passing the ``status=True``
-        parameter to the column.
+        A list or tuple of column names which represents the "state"
+        of the data object being represented.
 
-        If ``status_column`` is set, when the rows are rendered the value
+        If ``status_columns`` is set, when the rows are rendered the value
         of this column will be used to add an extra class to the row in
         the form of ``"status_up"`` or ``"status_down"`` for that row's
         data.
 
-        This is useful for displaying the enabled/disabled status of a
-        service, for example.
+        The row status is used by other Horizon components to trigger tasks
+        such as dynamic AJAX updating.
 
     .. attribute:: row_class
 
@@ -484,7 +538,7 @@ class DataTableOptions(object):
                                     or self.name.title()
         self.verbose_name = unicode(verbose_name)
         self.columns = getattr(options, 'columns', None)
-        self.status_column = getattr(options, 'status_column', None)
+        self.status_columns = getattr(options, 'status_columns', [])
         self.table_actions = getattr(options, 'table_actions', [])
         self.row_actions = getattr(options, 'row_actions', [])
         self.row_class = getattr(options, 'row_class', Row)
@@ -619,10 +673,6 @@ class DataTable(object):
         # Associate these actions with this table
         for action in self.base_actions.values():
             action.table = self
-        if self._meta._filter_action:
-            param_name = self._meta._filter_action.get_param_name()
-            q = self._meta.request.POST.get(param_name, '')
-            self._meta._filter_action.filter_string = q
 
     def __unicode__(self):
         return self._meta.verbose_name
@@ -652,10 +702,19 @@ class DataTable(object):
             self._filtered_data = self.data
             if self._meta.filter and self._meta._filter_action:
                 action = self._meta._filter_action
-                self._filtered_data = action.filter(self,
-                                                    self.data,
-                                                    action.filter_string)
+                filter_string = self.get_filter_string()
+                request_method = self._meta.request.method
+                if filter_string and request_method == action.method:
+                    self._filtered_data = action.filter(self,
+                                                        self.data,
+                                                        filter_string)
         return self._filtered_data
+
+    def get_filter_string(self):
+        filter_action = self._meta._filter_action
+        param_name = filter_action.get_param_name()
+        filter_string = self._meta.request.POST.get(param_name, '')
+        return filter_string
 
     def _populate_data_cache(self):
         self._data_cache = {}
@@ -686,10 +745,10 @@ class DataTable(object):
         after a successful action on the table.
 
         For convenience it defaults to the value of
-        ``request.get_full_path()``, e.g. the path at which the table
-        was requested.
+        ``request.get_full_path()`` with any query string stripped off,
+         e.g. the path at which the table was requested.
         """
-        return self._meta.request.get_full_path()
+        return self._meta.request.get_full_path().partition('?')[0]
 
     def get_empty_message(self):
         """ Returns the message to be displayed when there is no data. """
@@ -727,6 +786,7 @@ class DataTable(object):
         for action in self._meta.row_actions:
             # Copy to allow modifying properties per row
             bound_action = copy.copy(self.base_actions[action.name])
+            bound_action.attrs = copy.copy(bound_action.attrs)
             # Remove disallowed actions.
             if not self._filter_action(bound_action,
                                        self._meta.request,
@@ -818,6 +878,7 @@ class DataTable(object):
     def _check_handler(self):
         """ Determine whether the request should be handled by this table. """
         request = self._meta.request
+
         if request.method == "POST" and "action" in request.POST:
             table, action, obj_id = self.parse_action(request.POST["action"])
         elif "table" in request.GET and "action" in request.GET:
@@ -831,17 +892,35 @@ class DataTable(object):
     def maybe_preempt(self):
         """
         Determine whether the request should be handled by a preemptive action
-        on this table before loading any data.
+        on this table or by an AJAX row update before loading any data.
         """
         table_name, action_name, obj_id = self._check_handler()
-        preemptive_actions = [action for action in self.base_actions.values()
-                              if action.preempt]
-        if table_name == self.name and action_name:
-            for action in preemptive_actions:
-                if action.name == action_name:
-                    handled = self.take_action(action_name, obj_id)
-                    if handled:
-                        return handled
+
+        if table_name == self.name:
+            # Handle AJAX row updating.
+            row_class = self._meta.row_class
+            if row_class.ajax and row_class.ajax_action_name == action_name:
+                try:
+                    datum = row_class.get_data(self._meta.request, obj_id)
+                    error = False
+                except:
+                    datum = None
+                    error = exceptions.handle(self._meta.request, ignore=True)
+                if self._meta.request.is_ajax():
+                    if not error:
+                        row = row_class(self, datum)
+                        return HttpResponse(row.render())
+                    else:
+                        return HttpResponse(status=error.status_code)
+
+            preemptive_actions = [action for action in
+                                  self.base_actions.values() if action.preempt]
+            if action_name:
+                for action in preemptive_actions:
+                    if action.name == action_name:
+                        handled = self.take_action(action_name, obj_id)
+                        if handled:
+                            return handled
         return None
 
     def maybe_handle(self):
@@ -892,6 +971,46 @@ class DataTable(object):
         for APIs that use marker/limit-based paging.
         """
         return http.urlquote_plus(self.get_object_id(self.data[-1]))
+
+    def calculate_row_status(self, statuses):
+        """
+        Returns a boolean value determining the overall row status
+        based on the dictionary of column name to status mappings passed in.
+
+        By default, it uses the following logic:
+
+        #. If any statuses are ``False``, return ``False``.
+        #. If no statuses are ``False`` but any or ``None``, return ``None``.
+        #. If all statuses are ``True``, return ``True``.
+
+        This provides the greatest protection against false positives without
+        weighting any particular columns.
+
+        The ``statuses`` parameter is passed in as a dictionary mapping
+        column names to their statuses in order to allow this function to
+        be overridden in such a way as to weight one column's status over
+        another should that behavior be desired.
+        """
+        values = statuses.values()
+        if any([status is False for status in values]):
+            return False
+        elif any([status is None for status in values]):
+            return None
+        else:
+            return True
+
+    def get_row_status_class(self, status):
+        """
+        Returns a css class name determined by the status value. This class
+        name is used to indicate the status of the rows in the table if
+        any ``status_columns`` have been specified.
+        """
+        if status is True:
+            return "status_up"
+        elif status is False:
+            return "status_down"
+        else:
+            return "status_unknown"
 
     def get_columns(self):
         """ Returns this table's columns including auto-generated ones."""

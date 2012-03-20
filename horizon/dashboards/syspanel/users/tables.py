@@ -15,20 +15,21 @@ class CreateUserLink(tables.LinkAction):
     name = "create"
     verbose_name = _("Create User")
     url = "horizon:syspanel:users:create"
-    classes = ("ajax-modal",)
+    classes = ("ajax-modal", "btn-create")
 
 
 class EditUserLink(tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit")
     url = "horizon:syspanel:users:update"
-    classes = ("ajax-modal",)
+    classes = ("ajax-modal", "btn-edit")
 
 
 class EnableUsersAction(tables.Action):
     name = "enable"
     verbose_name = _("Enable")
     verbose_name_plural = _("Enable Users")
+    classes = ("btn-enable",)
 
     def allowed(self, request, user):
         return not user.enabled
@@ -57,6 +58,7 @@ class DisableUsersAction(tables.Action):
     name = "disable"
     verbose_name = _("Disable")
     verbose_name_plural = _("Disable Users")
+    classes = ("btn-disable",)
 
     def allowed(self, request, user):
         return user.enabled
@@ -118,19 +120,24 @@ class UsersTable(tables.DataTable):
         ("true", True),
         ("false", False)
     )
-    id = tables.Column(_('id'))
-    name = tables.Column(_('name'))
-    email = tables.Column(_('email'))
+    id = tables.Column('id', verbose_name=_('ID'))
+    name = tables.Column('name', verbose_name=_('User Name'))
+    email = tables.Column('email', verbose_name=_('Email'))
     # Default tenant is not returned from Keystone currently.
-    #default_tenant = tables.Column(_('default_tenant'),
-    #                               verbose_name="Default Project")
-    enabled = tables.Column(_('enabled'),
+    #default_tenant = tables.Column('default_tenant',
+    #                               verbose_name=_('Default Project'))
+    enabled = tables.Column('enabled', verbose_name=_('Enabled'),
                             status=True,
                             status_choices=STATUS_CHOICES)
 
     class Meta:
         name = "users"
         verbose_name = _("Users")
-        row_actions = (EditUserLink, EnableUsersAction, DisableUsersAction,
-                       DeleteUsersAction)
-        table_actions = (UserFilterAction, CreateUserLink, DeleteUsersAction)
+        if api.keystone_can_edit_user():
+            row_actions = (EditUserLink, EnableUsersAction, DisableUsersAction,
+                           DeleteUsersAction)
+            table_actions = (UserFilterAction, CreateUserLink,
+                             DeleteUsersAction)
+        else:
+            row_actions = (EnableUsersAction, DisableUsersAction)
+            table_actions = (UserFilterAction,)

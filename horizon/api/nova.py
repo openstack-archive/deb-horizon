@@ -26,11 +26,12 @@ import logging
 
 from novaclient.v1_1 import client as nova_client
 from novaclient.v1_1 import security_group_rules as nova_rules
+from novaclient.v1_1.security_groups import SecurityGroup as NovaSecurityGroup
 from novaclient.v1_1.servers import REBOOT_HARD
 
-from horizon.api import keystone
 from horizon.api.base import APIResourceWrapper, APIDictWrapper, url_for
 
+from django.utils.translation import ugettext as _
 
 LOG = logging.getLogger(__name__)
 
@@ -98,6 +99,10 @@ class Server(APIResourceWrapper):
             return image.name
         except glance_exceptions.NotFound:
             return "(not found)"
+
+    @property
+    def internal_name(self):
+        return getattr(self, 'OS-EXT-SRV-ATTR:instance_name', "")
 
     def reboot(self, hardness=REBOOT_HARD):
         novaclient(self.request).servers.reboot(self.id, hardness)
@@ -167,13 +172,19 @@ class SecurityGroup(APIResourceWrapper):
 
 class SecurityGroupRule(APIResourceWrapper):
     """ Wrapper for individual rules in a SecurityGroup. """
-    _attrs = ['id', 'ip_protocol', 'from_port', 'to_port', 'ip_range']
+    _attrs = ['id', 'ip_protocol', 'from_port', 'to_port', 'ip_range', 'group']
 
     def __unicode__(self):
-        vals = {'from': self.from_port,
-                'to': self.to_port,
-                'cidr': self.ip_range['cidr']}
-        return 'ALLOW %(from)s:%(to)s from %(cidr)s' % vals
+        if 'name' in self.group:
+            vals = {'from': self.from_port,
+                    'to': self.to_port,
+                    'group': self.group['name']}
+            return _('ALLOW %(from)s:%(to)s from %(group)s') % vals
+        else:
+            vals = {'from': self.from_port,
+                    'to': self.to_port,
+                    'cidr': self.ip_range['cidr']}
+            return _('ALLOW %(from)s:%(to)s from %(cidr)s') % vals
 
 
 def novaclient(request):
@@ -304,6 +315,28 @@ def server_console_output(request, instance_id, tail_length=None):
                                                           length=tail_length)
 
 
+def server_security_groups(request, instance_id):
+    """Gets security groups of an instance."""
+    # TODO(gabriel): This needs to be moved up to novaclient, and should
+    # be removed once novaclient supports this call.
+    security_groups = []
+    nclient = novaclient(request)
+    resp, body = nclient.client.get('/servers/%s/os-security-groups'
+                                    % instance_id)
+    if body:
+        # Wrap data in SG objects as novaclient would.
+        sg_objects = [NovaSecurityGroup(nclient.security_groups, sg) for
+                      sg in body.get('security_groups', [])]
+        # Then wrap novaclient's object with our own. Yes, sadly wrapping
+        # with two layers of objects is necessary.
+        security_groups = [SecurityGroup(sg) for sg in sg_objects]
+        # Package up the rules, as well.
+        for sg in security_groups:
+            rule_objects = [SecurityGroupRule(rule) for rule in sg.rules]
+            sg.rules = rule_objects
+    return security_groups
+
+
 def server_pause(request, instance_id):
     novaclient(request).servers.pause(instance_id)
 
@@ -371,18 +404,20 @@ def tenant_quota_usages(request):
     """
     # TODO(tres): Make this capture floating_ips and volumes as well.
     instances = server_list(request)
+    floating_ips = tenant_floating_ip_list(request)
     quotas = tenant_quota_get(request, request.user.tenant_id)
     flavors = dict([(f.id, f) for f in flavor_list(request)])
     usages = {'instances': {'flavor_fields': [], 'used': len(instances)},
               'cores': {'flavor_fields': ['vcpus'], 'used': 0},
               'gigabytes': {'flavor_fields': ['disk', 'ephemeral'], 'used': 0},
-              'ram': {'flavor_fields': ['ram'], 'used': 0}}
+              'ram': {'flavor_fields': ['ram'], 'used': 0},
+              'floating_ips': {'flavor_fields': [], 'used': len(floating_ips)}}
 
     for usage in usages:
         for instance in instances:
             for flavor_field in usages[usage]['flavor_fields']:
                 usages[usage]['used'] += getattr(
-                        flavors[instance.flavor['id']], flavor_field)
+                        flavors[instance.flavor['id']], flavor_field, 0)
         usages[usage]['quota'] = getattr(quotas, usage)
         usages[usage]['available'] = usages[usage]['quota'] - \
                                      usages[usage]['used']

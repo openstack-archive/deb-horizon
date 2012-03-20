@@ -17,18 +17,15 @@
 
 import logging
 
-from django import template
 from django.template.defaultfilters import title
-from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext as _
 
-from horizon import api
 from horizon import tables
-from horizon.dashboards.nova.instances_and_volumes.instances.tables import \
-         (LaunchLink, TerminateInstance, EditInstance, ConsoleLink, LogLink,
-          SnapshotLink, TogglePause, ToggleSuspend, RebootInstance, get_size,
-          TerminateInstance, UpdateRow, get_ips, get_power_state)
-from horizon.templatetags import sizeformat
+from horizon.dashboards.nova.instances_and_volumes.instances.tables import (
+        TerminateInstance, EditInstance, ConsoleLink, LogLink, SnapshotLink,
+        TogglePause, ToggleSuspend, RebootInstance, get_size, UpdateRow,
+        get_ips, get_power_state)
+
 
 LOG = logging.getLogger(__name__)
 
@@ -38,16 +35,27 @@ class SyspanelInstancesTable(tables.DataTable):
         (None, True),
         ("none", True)
     )
+    STATUS_CHOICES = (
+        ("active", True),
+        ("error", False),
+    )
     tenant = tables.Column("tenant_name", verbose_name=_("Tenant"))
-    user = tables.Column("user_id", verbose_name=_("User"))
-    internal_id = tables.Column("internal_identifier",
-                                  verbose_name=_("Instance ID"))
+    # NOTE(gabriel): Commenting out the user column because all we have
+    # is an ID, and correlating that at production scale using our current
+    # techniques isn't practical. It can be added back in when we have names
+    # returned in a practical manner by the API.
+    #user = tables.Column("user_id", verbose_name=_("User"))
     host = tables.Column("OS-EXT-SRV-ATTR:host", verbose_name=_("Host"))
     name = tables.Column("name", link="horizon:nova:instances_and_volumes:" \
-                                      "instances:detail")
+                                      "instances:detail",
+                         verbose_name=_("Instance Name"))
     ip = tables.Column(get_ips, verbose_name=_("IP Address"))
     size = tables.Column(get_size, verbose_name=_("Size"))
-    status = tables.Column("status", filters=(title,))
+    status = tables.Column("status",
+                           filters=(title,),
+                           verbose_name=_("Status"),
+                           status=True,
+                           status_choices=STATUS_CHOICES)
     task = tables.Column("OS-EXT-STS:task_state",
                          verbose_name=_("Task"),
                          filters=(title,),
@@ -60,8 +68,9 @@ class SyspanelInstancesTable(tables.DataTable):
     class Meta:
         name = "instances"
         verbose_name = _("Instances")
-        status_column = "task"
-        table_actions = (LaunchLink, TerminateInstance)
+        status_columns = ["status", "task"]
+        table_actions = (TerminateInstance,)
+        row_class = UpdateRow
         row_actions = (EditInstance, ConsoleLink, LogLink, SnapshotLink,
                        TogglePause, ToggleSuspend, RebootInstance,
-                       TerminateInstance, UpdateRow)
+                       TerminateInstance)

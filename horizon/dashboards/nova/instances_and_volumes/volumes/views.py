@@ -20,42 +20,24 @@ Views for managing Nova volumes.
 
 import logging
 
-from django import shortcuts
-from django.contrib import messages
 from django.utils.translation import ugettext as _
-from novaclient import exceptions as novaclient_exceptions
 
 from horizon import api
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
+from horizon import tabs
 from .forms import CreateForm, AttachForm, CreateSnapshotForm
 from .tables import AttachmentsTable
+from .tabs import VolumeDetailTabs
 
 
 LOG = logging.getLogger(__name__)
 
 
-def detail(request, volume_id):
-    try:
-        volume = api.volume_get(request, volume_id)
-        attachment = volume.attachments[0]
-        if attachment:
-            instance = api.server_get(
-                    request, volume.attachments[0]['serverId'])
-        else:
-            instance = None
-    except novaclient_exceptions.ClientException, e:
-        LOG.exception("ClientException in volume get")
-        messages.error(request, _('Error fetching volume: %s') % e.message)
-        return shortcuts.redirect(
-                            'horizon:nova:instances_and_volumes:volumes:index')
-
-    return shortcuts.render(request,
-                            'nova/instances_and_volumes/volumes/detail.html', {
-                                'volume': volume,
-                                'attachment': attachment,
-                                'instance': instance})
+class DetailView(tabs.TabView):
+    tab_group_class = VolumeDetailTabs
+    template_name = 'nova/instances_and_volumes/volumes/detail.html'
 
 
 class CreateView(forms.ModalFormView):
@@ -115,7 +97,16 @@ class EditAttachmentsView(tables.DataTableView):
         self.form, handled = self.handle_form()
         if handled:
             return handled
-        return super(EditAttachmentsView, self).get(request, *args, **kwargs)
+        handled = self.construct_tables()
+        if handled:
+            return handled
+        context = self.get_context_data(**kwargs)
+        context['form'] = self.form
+        if request.is_ajax():
+            context['hide'] = True
+            self.template_name = ('nova/instances_and_volumes/volumes'
+                                 '/_attach.html')
+        return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         form, handled = self.handle_form()

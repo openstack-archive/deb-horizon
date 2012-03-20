@@ -23,10 +23,12 @@ import logging
 from django import shortcuts
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.forms import ValidationError
 
 from horizon import api
 from horizon import exceptions
 from horizon import forms
+from horizon.utils import validators
 
 
 LOG = logging.getLogger(__name__)
@@ -46,13 +48,29 @@ class BaseUserForm(forms.SelfHandlingForm):
     def _instantiate(cls, request, *args, **kwargs):
         return cls(request, *args, **kwargs)
 
+    def clean(self):
+        '''Check to make sure password fields match.'''
+        super(forms.Form, self).clean()
+        if 'password' in self.cleaned_data and \
+                'confirm_password' in self.cleaned_data:
+            if self.cleaned_data['password'] != \
+                    self.cleaned_data['confirm_password']:
+                raise ValidationError(_('Passwords do not match.'))
+        return self.cleaned_data
+
 
 class CreateUserForm(BaseUserForm):
     name = forms.CharField(label=_("Name"))
     email = forms.EmailField(label=_("Email"))
-    password = forms.CharField(label=_("Password"),
-                               widget=forms.PasswordInput(render_value=False),
-                               required=False)
+    password = forms.RegexField(
+            label=_("Password"),
+            widget=forms.PasswordInput(render_value=False),
+            regex=validators.password_validator(),
+            error_messages={'invalid': validators.password_validator_msg()})
+    confirm_password = forms.CharField(
+            label=_("Confirm Password"),
+            required=False,
+            widget=forms.PasswordInput(render_value=False))
     tenant_id = forms.ChoiceField(label=_("Primary Project"))
 
     def handle(self, request, data):
@@ -90,6 +108,9 @@ class UpdateUserForm(BaseUserForm):
     password = forms.CharField(label=_("Password"),
                                widget=forms.PasswordInput(render_value=False),
                                required=False)
+    confirm_password = forms.CharField(
+            label=_("Confirm Password"),
+            widget=forms.PasswordInput(render_value=False))
     tenant_id = forms.ChoiceField(label=_("Primary Project"))
 
     def handle(self, request, data):

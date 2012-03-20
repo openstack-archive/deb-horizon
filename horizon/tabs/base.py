@@ -14,10 +14,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import sys
+
 from django.template import TemplateSyntaxError
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 
+from horizon import exceptions
 from horizon.utils import html
 
 SEPARATOR = "__"
@@ -92,6 +95,10 @@ class TabGroup(html.HTMLElement):
         self._tabs = SortedDict(tab_instances)
         if not self._set_active_tab():
             self.tabs_not_available()
+        # Preload all data that will be loaded to allow errors to be displayed
+        for tab in self._tabs.values():
+            if tab.load:
+                tab._context_data = tab.get_context_data(request)
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self.slug)
@@ -246,6 +253,12 @@ class Tab(html.HTMLElement):
         load_preloaded = self.preload or self.is_active()
         return load_preloaded and self._allowed and self._enabled
 
+    @property
+    def context_data(self):
+        if not getattr(self, "_context_data", None):
+            self._context_data = self.get_context_data(self.request)
+        return self._context_data
+
     def render(self):
         """
         Renders the tab to HTML using the :meth:`~horizon.tabs.Tab.get_data`
@@ -260,9 +273,12 @@ class Tab(html.HTMLElement):
         if not self.load:
             return ''
         try:
-            context = self.get_context_data(self.request)
-        except Exception as exc:
-            raise TemplateSyntaxError(exc)
+            context = self.context_data
+        except exceptions.Http302:
+            raise
+        except:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            raise TemplateSyntaxError, exc_value, exc_traceback
         return render_to_string(self.get_template_name(self.request), context)
 
     def get_id(self):

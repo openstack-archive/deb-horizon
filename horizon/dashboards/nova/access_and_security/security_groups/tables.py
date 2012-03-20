@@ -43,19 +43,19 @@ class CreateGroup(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Security Group")
     url = "horizon:nova:access_and_security:security_groups:create"
-    classes = ("ajax-modal",)
+    classes = ("ajax-modal", "btn-create")
 
 
 class EditRules(tables.LinkAction):
     name = "edit_rules"
     verbose_name = _("Edit Rules")
     url = "horizon:nova:access_and_security:security_groups:edit_rules"
-    attrs = {"class": "ajax-modal"}
+    classes = ("ajax-modal", "btn-edit")
 
 
 class SecurityGroupsTable(tables.DataTable):
-    name = tables.Column("name")
-    description = tables.Column("description")
+    name = tables.Column("name", verbose_name=_("Name"))
+    description = tables.Column("description", verbose_name=_("Description"))
 
     def sanitize_id(self, obj_id):
         return int(obj_id)
@@ -78,8 +78,13 @@ class DeleteRule(tables.DeleteAction):
         return reverse("horizon:nova:access_and_security:index")
 
 
-def get_cidr(rule):
-    return rule.ip_range['cidr']
+def get_source(rule):
+    if 'cidr' in rule.ip_range:
+        return rule.ip_range['cidr'] + ' (CIDR)'
+    elif 'name' in rule.group:
+        return rule.group['name']
+    else:
+        return None
 
 
 class RulesTable(tables.DataTable):
@@ -88,7 +93,7 @@ class RulesTable(tables.DataTable):
                              filters=(unicode.upper,))
     from_port = tables.Column("from_port", verbose_name=_("From Port"))
     to_port = tables.Column("to_port", verbose_name=_("To Port"))
-    cidr = tables.Column(get_cidr, verbose_name=_("CIDR"))
+    source = tables.Column(get_source, verbose_name=_("Source"))
 
     def sanitize_id(self, obj_id):
         return int(obj_id)

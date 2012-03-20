@@ -1,11 +1,8 @@
 import logging
 
-from django import shortcuts
 from django import template
-from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
-from horizon import api
 from horizon import tables
 
 
@@ -38,7 +35,8 @@ def get_enabled(service, reverse=False):
 
 class ServicesTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_('Id'), hidden=True)
-    service = tables.Column('type', verbose_name=_('Service'))
+    name = tables.Column("name", verbose_name=_('Name'))
+    service_type = tables.Column('__unicode__', verbose_name=_('Service'))
     host = tables.Column('host', verbose_name=_('Host'))
     enabled = tables.Column(get_enabled,
                             verbose_name=_('Enabled'),
@@ -49,4 +47,4 @@ class ServicesTable(tables.DataTable):
         verbose_name = _("Services")
         table_actions = (ServiceFilterAction,)
         multi_select = False
-        status_column = "enabled"
+        status_columns = ["enabled"]

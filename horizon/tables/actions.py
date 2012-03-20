@@ -16,16 +16,12 @@
 
 import logging
 import new
-from urlparse import urlparse
-from urlparse import parse_qs
 
-from django import http
 from django import shortcuts
 from django.conf import settings
 from django.contrib import messages
 from django.core import urlresolvers
 from django.utils.functional import Promise
-from django.utils.http import urlencode
 from django.utils.translation import string_concat, ugettext as _
 
 from horizon import exceptions
@@ -34,8 +30,9 @@ from horizon.utils import html
 
 LOG = logging.getLogger(__name__)
 
-# For Bootstrap integration, can be overridden in settings.
+# For Bootstrap integration; can be overridden in settings.
 ACTION_CSS_CLASSES = ("btn", "btn-small")
+STRING_SEPARATOR = "__"
 
 
 class BaseAction(html.HTMLElement):
@@ -45,6 +42,10 @@ class BaseAction(html.HTMLElement):
     requires_input = False
     preempt = False
 
+    def __init__(self):
+        super(BaseAction, self).__init__()
+        self.id_counter = 0
+
     def allowed(self, request, datum):
         """ Determine whether this action is allowed for the current request.
 
@@ -53,9 +54,6 @@ class BaseAction(html.HTMLElement):
         return True
 
     def _allowed(self, request, datum):
-        """ Default allowed checks for certain actions """
-        if isinstance(self, BatchAction) and not self.table.data:
-            return False
         return self.allowed(request, datum)
 
     def update(self, request, datum):
@@ -71,10 +69,20 @@ class BaseAction(html.HTMLElement):
 
     def get_default_classes(self):
         """
-        Returns a list of the default classes for the tab. Defaults to
+        Returns a list of the default classes for the action. Defaults to
         ``["btn", "btn-small"]``.
         """
         return getattr(settings, "ACTION_CSS_CLASSES", ACTION_CSS_CLASSES)
+
+    def get_default_attrs(self):
+        """
+        Returns a list of the default HTML attributes for the action. Defaults
+        to returning an ``id`` attribute with the value
+        ``{{ table.name }}__action_{{ action.name }}__{{ creation counter }}``.
+        """
+        bits = (self.table.name, "action_%s" % self.name, str(self.id_counter))
+        self.id_counter += 1
+        return {"id": STRING_SEPARATOR.join(bits)}
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self.name)
@@ -259,77 +267,6 @@ class LinkAction(BaseAction):
             return self.url
 
 
-class UpdateAction(LinkAction):
-    """ A base class for handling updating rows on tables with new data.
-
-    Subclasses need to define a ``get_data`` method which returns a data
-    object appropriate for consumption by the table (effectively the "get"
-    lookup versus the table's "list" lookup).
-
-    By default, this action is meant to be a row-level action, and is hidden
-    from the row's action list. It is instead triggered via automatic AJAX
-    updates based on the row status.
-
-    The automatic update interval is determined first by setting the key
-    ``ajax_poll_interval`` in the ``settings.HORIZON_CONFIG`` dictionary.
-    If that key is not present, it falls back to the value of the
-    ``update_interval`` attribute on this class.
-    Default: ``2500`` (measured in milliseconds).
-    """
-    name = "update"
-    verbose_name = _("Update")
-    method = "GET"
-    classes = ('ajax-update', 'hide')
-    preempt = True
-    update_interval = 2500
-
-    def __init__(self, *args, **kwargs):
-        super(UpdateAction, self).__init__(*args, **kwargs)
-        interval = settings.HORIZON_CONFIG.get('ajax_poll_interval',
-                                               self.update_interval)
-        self.attrs['data-update-interval'] = interval
-
-    def get_link_url(self, datum=None):
-        table_url = self.table.get_absolute_url()
-        query = parse_qs(urlparse(table_url).query)
-        # Strip the query off, since we're adding a different action
-        # here, and the existing query may have an action. This is not
-        # ideal because it prevents other uses of the querystring, but
-        # it does prevent runaway compound querystring construction.
-        if 'action' in query:
-            table_url = table_url.partition('?')[0]
-        params = urlencode({'table': self.table.name,
-                            'action': self.name,
-                            'obj_id': self.table.get_object_id(datum)})
-        return "%s?%s" % (table_url, params)
-
-    def get_data(self, request, obj_id):
-        """
-        Fetches the updated data for the row based on the object id
-        passed in. Must be implemented by a subclass.
-        """
-        raise NotImplementedError("You must define a get_data method on %s"
-                                  % self.__class__.__name__)
-
-    def single(self, data_table, request, obj_id):
-        try:
-            datum = self.get_data(request, obj_id)
-            error = False
-        except:
-            datum = None
-            error = exceptions.handle(request, ignore=True)
-        if request.is_ajax():
-            if not error:
-                row = data_table._meta.row_class(data_table, datum)
-                return http.HttpResponse(row.render())
-            else:
-                return http.HttpResponse(status=error.status_code)
-        # NOTE(gabriel): returning None from the action continues
-        # with the view as normal. This will generally be the equivalent
-        # of refreshing the page.
-        return None
-
-
 class FilterAction(BaseAction):
     """ A base class representing a filter action for a table.
 
@@ -348,7 +285,11 @@ class FilterAction(BaseAction):
         A string representing the name of the request parameter used for the
         search term. Default: ``"q"``.
     """
-    method = "GET"
+    # TODO(gabriel): The method for a filter action should be a GET,
+    # but given the form structure of the table that's currently impossible.
+    # At some future date this needs to be reworked to get the filter action
+    # separated from the table's POST form.
+    method = "POST"
     name = "filter"
 
     def __init__(self, verbose_name=None, param_name=None):
@@ -363,6 +304,11 @@ class FilterAction(BaseAction):
         ``{{ table.name }}__{{ action.name }}__{{ action.param_name }}``.
         """
         return "__".join([self.table.name, self.name, self.param_name])
+
+    def get_default_classes(self):
+        classes = super(FilterAction, self).get_default_classes()
+        classes += ("btn-search",)
+        return classes
 
     def filter(self, table, data, filter_string):
         """ Provides the actual filtering logic.
@@ -427,6 +373,13 @@ class BatchAction(Action):
                                            self._conjugate('plural'))
         super(BatchAction, self).__init__()
 
+    def _allowed(self, request, datum=None):
+        # Override the default internal action method to prevent batch
+        # actions from appearing on tables with no data.
+        if not self.table.data and not datum:
+            return False
+        return super(BatchAction, self)._allowed(request, datum)
+
     def _conjugate(self, items=None, past=False):
         """
         Builds combinations like 'Delete Object' and 'Deleted
@@ -490,9 +443,10 @@ class BatchAction(Action):
                 LOG.info('%s: "%s"' %
                          (self._conjugate(past=True), datum_display))
             except:
-                action_str = self._conjugate().lower()
-                exceptions.handle(request,
-                                  _("Unable to %s.") % action_str)
+                # Handle the exception but silence it since we'll display
+                # an aggregate error message later. Otherwise we'd get
+                # multiple error messages displayed to the user.
+                exceptions.handle(request, ignore=True)
                 action_failure.append(datum_display)
 
         #Begin with success message class, downgrade to info if problems
@@ -522,10 +476,14 @@ class DeleteAction(BatchAction):
     name = "delete"
     action_present = _("Delete")
     action_past = _("Deleted")
-    classes = ('btn-danger',)
 
     def action(self, request, obj_id):
         return self.delete(request, obj_id)
 
     def delete(self, request, obj_id):
         raise NotImplementedError("DeleteAction must define a delete method.")
+
+    def get_default_classes(self):
+        classes = super(DeleteAction, self).get_default_classes()
+        classes += ("btn-danger", "btn-delete")
+        return classes

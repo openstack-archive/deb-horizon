@@ -27,29 +27,35 @@ from horizon import tables
 
 LOG = logging.getLogger(__name__)
 
-ACTIVE_STATES = ("ACTIVE",)
+URL_PREFIX = "horizon:nova:instances_and_volumes"
+DELETABLE_STATES = ("available", "error")
 
 
 class DeleteVolume(tables.DeleteAction):
     data_type_singular = _("Volume")
     data_type_plural = _("Volumes")
-    classes = ('btn-danger',)
 
     def delete(self, request, obj_id):
         api.volume_delete(request, obj_id)
+
+    def allowed(self, request, volume=None):
+        if volume:
+            return volume.status in DELETABLE_STATES
+        return True
 
 
 class CreateVolume(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Volume")
-    url = "horizon:nova:instances_and_volumes:volumes:create"
-    classes = ("ajax-modal",)
+    url = "%s:volumes:create" % URL_PREFIX
+    classes = ("ajax-modal", "btn-create")
 
 
 class EditAttachments(tables.LinkAction):
     name = "attachments"
     verbose_name = _("Edit Attachments")
-    url = "horizon:nova:instances_and_volumes:volumes:attach"
+    url = "%s:volumes:attach" % URL_PREFIX
+    classes = ("ajax-modal", "btn-edit")
 
     def allowed(self, request, volume=None):
         return volume.status in ("available", "in-use")
@@ -58,11 +64,20 @@ class EditAttachments(tables.LinkAction):
 class CreateSnapshot(tables.LinkAction):
     name = "snapshots"
     verbose_name = _("Create Snapshot")
-    url = "horizon:nova:instances_and_volumes:volumes:create_snapshot"
-    attrs = {"class": "ajax-modal"}
+    url = "%s:volumes:create_snapshot" % URL_PREFIX
+    classes = ("ajax-modal", "btn-camera")
 
     def allowed(self, request, volume=None):
-        return volume.status in ("available",)
+        return volume.status == "available"
+
+
+class UpdateRow(tables.Row):
+    ajax = True
+
+    @classmethod
+    def get_data(cls, request, volume_id):
+        volume = api.volume_get(request, volume_id)
+        return volume
 
 
 def get_size(volume):
@@ -75,7 +90,7 @@ def get_attachment(volume):
            '<small>(%(dev)s)</small></a>'
     # Filter out "empty" attachments which the client returns...
     for attachment in [att for att in volume.attachments if att]:
-        url = reverse("horizon:nova:instances_and_volumes:instances:detail",
+        url = reverse("%s:instances:detail" % URL_PREFIX,
                       args=(attachment["serverId"],))
         # TODO(jake): Make "instance" the instance name
         vals = {"url": url,
@@ -86,27 +101,39 @@ def get_attachment(volume):
 
 
 class VolumesTableBase(tables.DataTable):
-    name = tables.Column("displayName", verbose_name=_("Name"))
+    STATUS_CHOICES = (
+        ("in-use", True),
+        ("available", True),
+        ("creating", None),
+        ("error", False),
+    )
+    name = tables.Column("displayName", verbose_name=_("Name"),
+                         link="%s:volumes:detail" % URL_PREFIX)
     description = tables.Column("displayDescription",
                                 verbose_name=_("Description"))
     size = tables.Column(get_size, verbose_name=_("Size"))
-    status = tables.Column("status", filters=(title,),
-                           verbose_name=_("Status"))
-
-    def sanitize_id(self, obj_id):
-        return int(obj_id)
+    status = tables.Column("status",
+                           filters=(title,),
+                           verbose_name=_("Status"),
+                           status=True,
+                           status_choices=STATUS_CHOICES)
 
     def get_object_display(self, obj):
         return obj.displayName
 
 
 class VolumesTable(VolumesTableBase):
+    name = tables.Column("displayName",
+                         verbose_name=_("Name"),
+                         link="%s:volumes:detail" % URL_PREFIX)
     attachments = tables.Column(get_attachment,
                                 verbose_name=_("Attachments"))
 
     class Meta:
         name = "volumes"
         verbose_name = _("Volumes")
+        status_columns = ["status"]
+        row_class = UpdateRow
         table_actions = (CreateVolume, DeleteVolume,)
         row_actions = (EditAttachments, CreateSnapshot, DeleteVolume)
 
@@ -117,22 +144,19 @@ class DetachVolume(tables.BatchAction):
     action_past = _("Detached")
     data_type_singular = _("Volume")
     data_type_plural = _("Volumes")
-    classes = ('btn-danger',)
+    classes = ('btn-danger', 'btn-detach')
 
     def action(self, request, obj_id):
         instance_id = self.table.get_object_by_id(obj_id)['serverId']
         api.volume_detach(request, instance_id, obj_id)
 
     def get_success_url(self, request):
-        return reverse('horizon:nova:instances_and_volumes:index')
+        return reverse('%s:index' % URL_PREFIX)
 
 
 class AttachmentsTable(tables.DataTable):
     instance = tables.Column("serverId", verbose_name=_("Instance"))
     device = tables.Column("device")
-
-    def sanitize_id(self, obj_id):
-        return int(obj_id)
 
     def get_object_id(self, obj):
         return obj['id']

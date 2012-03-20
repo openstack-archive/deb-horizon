@@ -3,12 +3,19 @@
 <h3>{% trans "Instance Overview" %}</h3>
 
 <div class="status row-fluid">
+  <h4>{% trans "Info" %}</h4>
+  <hr class="header_rule">
+  <ul>
+    <li><strong>{% trans "Name" %}:</strong>&nbsp;{{ instance.name }}</li>
+    <li><strong>{% trans "ID" %}:</strong>&nbsp;{{ instance.id }}</li>
+  </ul>
+</div>
+
+<div class="status row-fluid">
   <h4>{% trans "Status" %}</h4>
   <hr class="header_rule">
   <ul>
-    <li><strong>{% trans "Status" %}:</strong>&nbsp;{{ instance.status }}</li>
-    <li><strong>{% trans "Instance Name" %}:</strong>&nbsp;{{ instance.name }}</li>
-    <li><strong>{% trans "Instance ID" %}:</strong>&nbsp;{{ instance.id }}</li>
+    <li><strong>{% trans "Status" %}:</strong>&nbsp;{{ instance.status|title }}</li>
   </ul>
 </div>
 
@@ -36,12 +43,32 @@
   </ul>
 </div>
 
+<div class="security_groups row-fluid">
+  <h4>{% trans "Security Groups" %}</h4>
+  <hr class="header_rule">
+  {% for group in instance.security_groups %}
+  <ul>
+    <li>
+      <strong>{{ group.name }}</strong>
+      <ul>
+      {% for rule in group.rules %}
+        <li>{{ rule }}</li>
+        {% empty %}
+        <li><em>{% trans "No rules defined." %}</em></li>
+      {% endfor %}
+      </ul>
+    </li>
+  </ul>
+  {% endfor %}
+</div>
+
 <div class="meta row-fluid">
   <h4>{% trans "Meta" %}</h4>
   <hr class="header_rule">
   <ul>
     <li><strong>{% trans "Key name" %}:</strong>&nbsp;{% if instance.key_name %}{{ instance.key_name }}{% else %}<em>None</em>{% endif %}</li>
-    <li><strong>{% trans "Image Name" %}:</strong>&nbsp;{{ instance.image_name }}</li>
+    {% url horizon:nova:images_and_snapshots:images:detail instance.image.id as image_url %}
+    <li><strong>{% trans "Image Name" %}:</strong>&nbsp;<a href="{{ image_url }}">{{ instance.image_name }}</a></li>
   </ul>
 </div>
 
@@ -49,7 +76,7 @@
   <h4>{% trans "Volumes" %}</h4>
   <hr class="header_rule">
   <ul>
-    {% if volumes %}
+    {% if instance.volumes %}
       {% for volume in instance.volumes %}
       <li>
         <strong>{% trans "Volume" %}:</strong>

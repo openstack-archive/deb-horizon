@@ -120,7 +120,8 @@ class TestCase(django_test.TestCase):
                            tenant_id=tenant_id,
                            service_catalog=service_catalog,
                            roles=roles,
-                           authorized_tenants=authorized_tenants)
+                           authorized_tenants=authorized_tenants,
+                           request=self.request)
 
     def override_times(self):
         """ Overrides the "current" time with immutable values. """
@@ -142,20 +143,20 @@ class TestCase(django_test.TestCase):
         Asserts that the given response issued a 302 redirect without
         processing the view which is redirected to.
         """
-        if response.status_code / 100 != 3:
-            assert("The response did not return a redirect.")
+        assert (response.status_code / 100 == 3), \
+            "The response did not return a redirect."
         self.assertEqual(response._headers.get('location', None),
                          ('Location', settings.TESTSERVER + expected_url))
         self.assertEqual(response.status_code, 302)
 
-    def assertNoMessages(self):
+    def assertNoMessages(self, response=None):
         """
         Asserts that no messages have been attached by the ``contrib.messages``
         framework.
         """
-        self.assertMessageCount(success=0, warn=0, info=0, error=0)
+        self.assertMessageCount(response, success=0, warn=0, info=0, error=0)
 
-    def assertMessageCount(self, **kwargs):
+    def assertMessageCount(self, response=None, **kwargs):
         """
         Asserts that the specified number of messages have been attached
         for various message types. Usage would look like
@@ -165,10 +166,15 @@ class TestCase(django_test.TestCase):
         temp_req.COOKIES = self.client.cookies
         storage = default_storage(temp_req)
         messages = []
-        # To gain early access to the messages we have to decode the
-        # cookie on the test client.
-        if 'messages' in self.client.cookies:
-            messages = storage._decode(self.client.cookies['messages'].value)
+
+        if response is None:
+            # To gain early access to the messages we have to decode the
+            # cookie on the test client.
+            if 'messages' in self.client.cookies:
+                message_cookie = self.client.cookies['messages'].value
+                messages = storage._decode(message_cookie)
+        elif "messages" in response.context:
+            messages = response.context["messages"]
 
         # If we don't have messages and we don't expect messages, we're done.
         if not any(kwargs.values()) and not messages:
@@ -198,23 +204,38 @@ class TestCase(django_test.TestCase):
         assert len(errors) == 0, \
                "Unexpected errors were found on the form: %s" % errors
 
+    def assertFormErrors(self, response, count=0, message=None,
+                         context_name="form"):
+        """
+        Asserts that the response does contain a form in it's
+        context, and that form has errors, if count were given,
+        it must match the exact numbers of errors
+        """
+        context = getattr(response, "context", {})
+        assert (context and context_name in context), \
+            "The response did not contain a form."
+        errors = response.context[context_name]._errors
+        if count:
+            assert len(errors) == count, \
+               "%d errors were found on the form, %d expected" % \
+               (len(errors), count)
+            if message and message not in unicode(errors):
+                self.fail("Expected message not found, instead found: %s"
+                          % ["%s: %s" % (key, [e for e in field_errors]) for
+                             (key, field_errors) in errors.items()])
+        else:
+            assert len(errors) > 0, "No errors were found on the form"
+
 
 class BaseAdminViewTests(TestCase):
     """
     A ``TestCase`` subclass which sets an active user with the "admin" role
     for testing admin-only views and functionality.
     """
-    def setActiveUser(self, id=None, token=None, username=None, tenant_id=None,
-                      service_catalog=None, tenant_name=None, roles=None,
-                      authorized_tenants=None):
-        users.get_user_from_request = lambda x: \
-                users.User(id=self.user.id,
-                           token=self.token.id,
-                           user=self.user.name,
-                           tenant_id=self.tenant.id,
-                           service_catalog=self.service_catalog,
-                           roles=[self.roles.admin._info],
-                           authorized_tenants=None)
+    def setActiveUser(self, *args, **kwargs):
+        if "roles" not in kwargs:
+            kwargs['roles'] = [self.roles.admin._info]
+        super(BaseAdminViewTests, self).setActiveUser(*args, **kwargs)
 
 
 class APITestCase(TestCase):

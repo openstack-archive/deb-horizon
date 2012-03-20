@@ -160,7 +160,7 @@ class HorizonTests(BaseHorizonTests):
         settings_dash.register(MyPanel)
         self.assertQuerysetEqual(settings_dash.get_panels(),
                                  ['<Panel: User Settings>',
-                                  '<Panel: Project Settings>',
+                                  '<Panel: OpenStack Credentials>',
                                   '<Panel: EC2 Credentials>',
                                   '<Panel: My Panel>'])
 
@@ -249,6 +249,7 @@ class HorizonTests(BaseHorizonTests):
         self.setActiveUser(token=self.token.id,
                            username=self.user.name,
                            tenant_id=self.tenant.id,
+                           service_catalog=self.service_catalog,
                            roles=[])
 
         resp = self.client.get(user_panel.get_absolute_url())
