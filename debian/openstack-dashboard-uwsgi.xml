@@ -1,0 +1,8 @@
+<uwsgi>
+  <socket>/var/run/horizon-uwsgi.sock</socket>
+  <pidfile>/var/run/horizon-uwsgi.pid</pidfile>
+  <mount>/=/usr/share/openstack-dashboard/openstack_dashboard/wsgi/django.wsgi</mount>
+  <plugin>python27</plugin>
+  <uid>www-data</uid>
+  <gid>www-data</gid>
+</uwsgi>
