@@ -23,7 +23,7 @@ import logging
 
 from django.contrib import messages
 from django import shortcuts
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from novaclient import exceptions as novaclient_exceptions
 
 from horizon import api
@@ -36,9 +36,10 @@ LOG = logging.getLogger(__name__)
 
 class FloatingIpAssociate(forms.SelfHandlingForm):
     floating_ip_id = forms.CharField(widget=forms.HiddenInput())
-    floating_ip = forms.CharField(widget=forms.TextInput(
+    floating_ip = forms.CharField(label=_("Floating IP"),
+                                  widget=forms.TextInput(
                                             attrs={'readonly': 'readonly'}))
-    instance_id = forms.ChoiceField()
+    instance_id = forms.ChoiceField(label=_("Instance ID"))
 
     def __init__(self, *args, **kwargs):
         super(FloatingIpAssociate, self).__init__(*args, **kwargs)
@@ -72,7 +73,7 @@ class FloatingIpAssociate(forms.SelfHandlingForm):
 
 class FloatingIpAllocate(forms.SelfHandlingForm):
     tenant_name = forms.CharField(widget=forms.HiddenInput())
-    pool = forms.ChoiceField()
+    pool = forms.ChoiceField(label=_("Pool"))
 
     def __init__(self, *args, **kwargs):
         super(FloatingIpAllocate, self).__init__(*args, **kwargs)
@@ -87,8 +88,8 @@ class FloatingIpAllocate(forms.SelfHandlingForm):
                      % (fip.ip, data['tenant_name']))
 
             messages.success(request,
-                             _('Successfully allocated Floating IP "%(ip)s" \
-                                to project "%(project)s"')
+                             _('Successfully allocated Floating IP "%(ip)s" '
+                               'to project "%(project)s"')
                              % {"ip": fip.ip, "project": data['tenant_name']})
         except:
             exceptions.handle(request, _('Unable to allocate Floating IP.'))

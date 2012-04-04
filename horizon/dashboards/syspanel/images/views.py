@@ -20,13 +20,14 @@
 
 import logging
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
 from horizon import tables
 from horizon.dashboards.nova.images_and_snapshots.images import views
 from .tables import AdminImagesTable
+from .forms import AdminUpdateImageForm
 
 
 LOG = logging.getLogger(__name__)
@@ -48,3 +49,4 @@ class IndexView(tables.DataTableView):
 
 class UpdateView(views.UpdateView):
     template_name = 'syspanel/images/update.html'
+    form_class = AdminUpdateImageForm

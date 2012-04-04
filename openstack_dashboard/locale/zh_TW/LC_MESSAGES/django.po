@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-19 14:32-0700\n"
+"POT-Creation-Date: 2012-03-26 17:59-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,6 +53,10 @@ msgstr ""
 msgid "Traditional Chinese"
 msgstr ""
 
+#: local/local_settings.py:17
+msgid "Your password must be at least 6 characters long."
+msgstr ""
+
 #: templates/403.html:4 templates/403.html.py:9
 msgid "Forbidden"
 msgstr "禁止"
@@ -87,6 +91,10 @@ msgid ""
 "request again."
 msgstr "處理過程中發生無法預期的錯誤。請再嘗試。"
 
+#: templates/_header.html:3
+msgid "Logged in as"
+msgstr "目前登入者"
+
 #: templates/_header.html:4
 msgid "Settings"
 msgstr "設定"
@@ -95,10 +103,9 @@ msgstr "設定"
 msgid "Sign Out"
 msgstr "登出"
 
-#: templates/_login.html:5 templates/_switch.html:6
-msgid "Sign In"
-msgstr "登入"
-
 #: templates/switch_tenants.html:12
 msgid "Log-in to tenant"
 msgstr "登入到租戶"
+
+#~ msgid "Sign In"
+#~ msgstr "登入"

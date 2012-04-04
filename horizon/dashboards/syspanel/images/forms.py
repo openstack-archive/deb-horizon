@@ -20,26 +20,11 @@
 
 import logging
 
-from django.utils.translation import ugettext as _
-
-from horizon import api
-from horizon import exceptions
-from horizon import tables
-from .tables import QuotasTable
+from horizon.dashboards.nova.images_and_snapshots.images import forms
 
 
 LOG = logging.getLogger(__name__)
 
 
-class IndexView(tables.DataTableView):
-    table_class = QuotasTable
-    template_name = 'syspanel/quotas/index.html'
-
-    def get_data(self):
-        try:
-            quota_set = api.tenant_quota_defaults(self.request,
-                                                  self.request.user.tenant_id)
-            data = quota_set.items
-        except:
-            exceptions.handle(self.request, _('Unable to get quota info.'))
-        return data
+class AdminUpdateImageForm(forms.UpdateImageForm):
+    completion_view = 'horizon:syspanel:images:index'

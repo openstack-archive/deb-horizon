@@ -73,7 +73,12 @@ class MyAction(tables.Action):
         return getattr(obj, 'status', None) != 'down'
 
     def handle(self, data_table, request, object_ids):
-        return shortcuts.redirect('http://example.com/%s' % len(object_ids))
+        return shortcuts.redirect('http://example.com/?ids=%s'
+                                  % ",".join(object_ids))
+
+
+class MyColumn(tables.Column):
+    pass
 
 
 class MyRow(tables.Row):
@@ -142,7 +147,7 @@ class MyTable(tables.DataTable):
     value = tables.Column('value',
                           sortable=True,
                           link='http://example.com/',
-                          attrs={'classes': ('green', 'blue')})
+                          attrs={'class': 'green blue'})
     status = tables.Column('status', link=get_link)
     optional = tables.Column('optional', empty_value='N/A')
     excluded = tables.Column('excluded')
@@ -153,6 +158,7 @@ class MyTable(tables.DataTable):
         status_columns = ["status"]
         columns = ('id', 'name', 'value', 'optional', 'status')
         row_class = MyRow
+        column_class = MyColumn
         table_actions = (MyFilterAction, MyAction, MyBatchAction)
         row_actions = (MyAction, MyLinkAction, MyBatchAction, MyToggleAction)
 
@@ -172,14 +178,16 @@ class DataTableTests(test.TestCase):
         # Column ordering and exclusion.
         # This should include auto-columns for multi_select and actions,
         # but should not contain the excluded column.
+        # Additionally, auto-generated columns should use the custom
+        # column class specified on the table.
         self.assertQuerysetEqual(self.table.columns.values(),
-                                 ['<Column: multi_select>',
+                                 ['<MyColumn: multi_select>',
                                   '<Column: id>',
                                   '<Column: name>',
                                   '<Column: value>',
                                   '<Column: optional>',
                                   '<Column: status>',
-                                  '<Column: actions>'])
+                                  '<MyColumn: actions>'])
         # Actions (these also test ordering)
         self.assertQuerysetEqual(self.table.base_actions.values(),
                                  ['<MyBatchAction: batch>',
@@ -199,10 +207,12 @@ class DataTableTests(test.TestCase):
         # Auto-generated columns
         multi_select = self.table.columns['multi_select']
         self.assertEqual(multi_select.auto, "multi_select")
-        self.assertEqual(multi_select.get_classes(), "multi_select_column")
+        self.assertEqual(multi_select.get_final_attrs().get('class', ""),
+                         "multi_select_column")
         actions = self.table.columns['actions']
         self.assertEqual(actions.auto, "actions")
-        self.assertEqual(actions.get_classes(), "actions_column")
+        self.assertEqual(actions.get_final_attrs().get('class', ""),
+                         "actions_column")
 
     def test_table_force_no_multiselect(self):
         class TempTable(MyTable):
@@ -273,13 +283,13 @@ class DataTableTests(test.TestCase):
         self.table = MyTable(self.request, TEST_DATA)
         # Verify we retrieve the right columns for headers
         columns = self.table.get_columns()
-        self.assertQuerysetEqual(columns, ['<Column: multi_select>',
+        self.assertQuerysetEqual(columns, ['<MyColumn: multi_select>',
                                            '<Column: id>',
                                            '<Column: name>',
                                            '<Column: value>',
                                            '<Column: optional>',
                                            '<Column: status>',
-                                           '<Column: actions>'])
+                                           '<MyColumn: actions>'])
         # Verify we retrieve the right rows from our data
         rows = self.table.get_rows()
         self.assertQuerysetEqual(rows, ['<MyRow: my_table__row__1>',
@@ -299,9 +309,9 @@ class DataTableTests(test.TestCase):
         self.table = MyTable(self.request, TEST_DATA)
         row = self.table.get_rows()[0]
         row3 = self.table.get_rows()[2]
-        id_col = self.table.base_columns['id']
-        name_col = self.table.base_columns['name']
-        value_col = self.table.base_columns['value']
+        id_col = self.table.columns['id']
+        name_col = self.table.columns['name']
+        value_col = self.table.columns['value']
         # transform
         self.assertEqual(row.cells['id'].data, '1')  # Standard attr access
         self.assertEqual(row.cells['name'].data, 'custom object_1')  # Callable
@@ -310,21 +320,22 @@ class DataTableTests(test.TestCase):
         self.assertEqual(unicode(name_col), "Verbose Name")
         # sortable
         self.assertEqual(id_col.sortable, False)
-        self.assertNotIn("sortable", id_col.get_classes())
+        self.assertNotIn("sortable", id_col.get_final_attrs().get('class', ""))
         self.assertEqual(name_col.sortable, True)
-        self.assertIn("sortable", name_col.get_classes())
+        self.assertIn("sortable", name_col.get_final_attrs().get('class', ""))
         # hidden
         self.assertEqual(id_col.hidden, True)
-        self.assertIn("hide", id_col.get_classes())
+        self.assertIn("hide", id_col.get_final_attrs().get('class', ""))
         self.assertEqual(name_col.hidden, False)
-        self.assertNotIn("hide", name_col.get_classes())
+        self.assertNotIn("hide", name_col.get_final_attrs().get('class', ""))
         # link and get_link_url
         self.assertIn('href="http://example.com/"', row.cells['value'].value)
         self.assertIn('href="/auth/login/"', row.cells['status'].value)
         # empty_value
         self.assertEqual(row3.cells['optional'].value, "N/A")
-        # get_classes
-        self.assertEqual(value_col.get_classes(), "green blue sortable")
+        # classes
+        self.assertEqual(value_col.get_final_attrs().get('class', ""),
+                         "green blue sortable")
         # status
         cell_status = row.cells['status'].status
         self.assertEqual(cell_status, True)
@@ -370,6 +381,7 @@ class DataTableTests(test.TestCase):
         self.assertContains(resp, "table_search", 1)
         self.assertContains(resp, "my_table__filter__q", 1)
         self.assertContains(resp, "my_table__delete", 1)
+        self.assertContains(resp, 'id="my_table__action_delete"', 1)
         # Row actions
         row_actions = self.table.render_row_actions(TEST_DATA[0])
         resp = http.HttpResponse(row_actions)
@@ -378,10 +390,11 @@ class DataTableTests(test.TestCase):
         self.assertContains(resp, "my_table__toggle__1", 1)
         self.assertContains(resp, "/auth/login/", 1)
         self.assertContains(resp, "ajax-modal", 1)
+        self.assertContains(resp, 'id="my_table__row_1__action_delete"', 1)
         # Whole table
         resp = http.HttpResponse(self.table.render())
         self.assertContains(resp, '<table id="my_table"', 1)
-        self.assertContains(resp, '<th ', 7)
+        self.assertContains(resp, '<th ', 8)
         self.assertContains(resp, 'id="my_table__row__1"', 1)
         self.assertContains(resp, 'id="my_table__row__2"', 1)
         self.assertContains(resp, 'id="my_table__row__3"', 1)
@@ -406,7 +419,7 @@ class DataTableTests(test.TestCase):
                          ('my_table', 'delete', '1'))
         handled = self.table.maybe_handle()
         self.assertEqual(handled.status_code, 302)
-        self.assertEqual(handled["location"], "http://example.com/1")
+        self.assertEqual(handled["location"], "http://example.com/?ids=1")
 
         # Batch action (without toggle) conjugation behavior
         req = self.factory.get('/my_url/')
@@ -464,7 +477,7 @@ class DataTableTests(test.TestCase):
                          ('my_table', 'delete', None))
         handled = self.table.maybe_handle()
         self.assertEqual(handled.status_code, 302)
-        self.assertEqual(handled["location"], "http://example.com/2")
+        self.assertEqual(handled["location"], "http://example.com/?ids=1,2")
 
         # Action with nothing selected
         req = self.factory.post('/my_url/', {'action': action_string})
@@ -475,6 +488,18 @@ class DataTableTests(test.TestCase):
         self.assertEqual(handled, None)
         self.assertEqual(list(req._messages)[0].message,
                          "Please select a row before taking that action.")
+
+        # Action with specific id and multiple ids favors single id
+        action_string = "my_table__delete__3"
+        req = self.factory.post('/my_url/', {'action': action_string,
+                                             'object_ids': [1, 2]})
+        self.table = MyTable(req, TEST_DATA)
+        self.assertEqual(self.table.parse_action(action_string),
+                         ('my_table', 'delete', '3'))
+        handled = self.table.maybe_handle()
+        self.assertEqual(handled.status_code, 302)
+        self.assertEqual(handled["location"],
+                         "http://example.com/?ids=3")
 
         # At least one object in table
         # BatchAction is available
@@ -542,3 +567,18 @@ class DataTableTests(test.TestCase):
         row_actions = self.table.get_row_actions(TEST_DATA[0])
         self.assertEqual(unicode(row_actions[0].verbose_name), "Delete Me")
         self.assertEqual(unicode(row_actions[1].verbose_name), "Log In")
+
+    def test_column_uniqueness(self):
+        table1 = MyTable(self.request)
+        table2 = MyTable(self.request)
+        # Regression test for launchpad bug 964345.
+        self.assertNotEqual(id(table1), id(table2))
+        self.assertNotEqual(id(table1.columns), id(table2.columns))
+        t1cols = table1.columns.values()
+        t2cols = table2.columns.values()
+        self.assertEqual(t1cols[0].name, t2cols[0].name)
+        self.assertNotEqual(id(t1cols[0]), id(t2cols[0]))
+        self.assertNotEqual(id(t1cols[0].table),
+                            id(t2cols[0].table))
+        self.assertNotEqual(id(t1cols[0].table._data_cache),
+                            id(t2cols[0].table._data_cache))

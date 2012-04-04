@@ -23,7 +23,7 @@ import logging
 from django import shortcuts
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
@@ -35,8 +35,9 @@ LOG = logging.getLogger(__name__)
 
 class CreateSnapshot(forms.SelfHandlingForm):
     tenant_id = forms.CharField(widget=forms.HiddenInput())
-    instance_id = forms.CharField(widget=forms.TextInput(
-                                  attrs={'readonly': 'readonly'}))
+    instance_id = forms.CharField(label=_("Instance ID"),
+                                  widget=forms.TextInput(
+                                        attrs={'readonly': 'readonly'}))
     name = forms.CharField(max_length="20", label=_("Snapshot Name"))
 
     def handle(self, request, data):

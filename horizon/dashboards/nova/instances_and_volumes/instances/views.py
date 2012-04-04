@@ -27,7 +27,7 @@ from django import http
 from django import shortcuts
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import SortedDict
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
@@ -43,7 +43,10 @@ LOG = logging.getLogger(__name__)
 def console(request, instance_id):
     try:
         # TODO(jakedahn): clean this up once the api supports tailing.
-        data = api.server_console_output(request, instance_id)
+        tail = request.GET.get('length', None)
+        data = api.server_console_output(request,
+                                        instance_id,
+                                        tail_length=tail)
     except:
         data = _('Unable to get log for instance "%s".') % instance_id
         exceptions.handle(request, ignore=True)
@@ -103,12 +106,8 @@ class DetailView(tabs.TabView):
                 instance = api.server_get(self.request, instance_id)
                 instance.volumes = api.volume_instance_list(self.request,
                                                             instance_id)
-                # Gather our flavors and images and correlate our instances to
-                # them. Exception handling happens in the parent class.
-                flavors = api.flavor_list(self.request)
-                full_flavors = SortedDict([(str(flavor.id), flavor) for \
-                                            flavor in flavors])
-                instance.full_flavor = full_flavors[instance.flavor["id"]]
+                instance.full_flavor = api.flavor_get(self.request,
+                                                      instance.flavor["id"])
                 instance.security_groups = api.server_security_groups(
                                            self.request, instance_id)
             except:

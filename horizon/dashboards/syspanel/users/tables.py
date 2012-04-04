@@ -2,7 +2,7 @@ import logging
 
 from django import shortcuts
 from django.contrib import messages
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import tables
@@ -108,7 +108,8 @@ class UserFilterAction(tables.FilterAction):
         q = filter_string.lower()
 
         def comp(user):
-            if q in user.name.lower() or q in user.email.lower():
+            if any([q in (user.name or "").lower(),
+                    q in (user.email or "").lower()]):
                 return True
             return False
 

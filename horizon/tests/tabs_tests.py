@@ -14,11 +14,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import copy
+
 from django import http
 from django.utils.translation import ugettext_lazy as _
 
+from horizon import exceptions
 from horizon import tabs as horizon_tabs
 from horizon import test
+
+from .table_tests import MyTable, TEST_DATA
 
 
 class BaseTestTab(horizon_tabs.Tab):
@@ -60,15 +65,43 @@ class TabDisallowed(BaseTestTab):
 class Group(horizon_tabs.TabGroup):
     slug = "tab_group"
     tabs = (TabOne, TabDelayed, TabDisabled, TabDisallowed)
+    sticky = True
 
     def tabs_not_available(self):
         self._assert_tabs_not_available = True
 
 
-class TabTests(test.TestCase):
-    def setUp(self):
-        super(TabTests, self).setUp()
+class TabWithTable(horizon_tabs.TableTab):
+    table_classes = (MyTable,)
+    name = _("Tab With My Table")
+    slug = "tab_with_table"
+    template_name = "horizon/common/_detail_table.html"
 
+    def get_my_table_data(self):
+        return TEST_DATA
+
+
+class RecoverableErrorTab(horizon_tabs.Tab):
+    name = _("Recoverable Error Tab")
+    slug = "recoverable_error_tab"
+    template_name = "_tab.html"
+
+    def get_context_data(self, request):
+        # Raise a known recoverable error.
+        raise exceptions.AlreadyExists("Recoverable!", None)
+
+
+class TableTabGroup(horizon_tabs.TabGroup):
+    slug = "tab_group"
+    tabs = [TabWithTable]
+
+
+class TabWithTableView(horizon_tabs.TabbedTableView):
+    tab_group_class = TableTabGroup
+    template_name = "tab_group.html"
+
+
+class TabTests(test.TestCase):
     def test_tab_group_basics(self):
         tg = Group(self.request)
 
@@ -172,6 +205,9 @@ class TabTests(test.TestCase):
         res = http.HttpResponse(output.strip())
         self.assertContains(res, "<li", 3)
 
+        # stickiness
+        self.assertContains(res, 'data-sticky-tabs="sticky"', 1)
+
         # tab
         output = tab_one.render()
         self.assertEqual(output.strip(), tab_one.name)
@@ -190,3 +226,79 @@ class TabTests(test.TestCase):
         tab_delayed = tg.get_tab("tab_delayed")
         output = tab_delayed.render()
         self.assertEqual(output.strip(), tab_delayed.name)
+
+    def test_table_tabs(self):
+        tab_group = TableTabGroup(self.request)
+        tabs = tab_group.get_tabs()
+        # Only one tab, as expected.
+        self.assertEqual(len(tabs), 1)
+        tab = tabs[0]
+        # Make sure it's the tab we think it is.
+        self.assertTrue(isinstance(tab, horizon_tabs.TableTab))
+        # Data should not be loaded yet.
+        self.assertFalse(tab._table_data_loaded)
+        table = tab._tables[MyTable.Meta.name]
+        self.assertTrue(isinstance(table, MyTable))
+        # Let's make sure the data *really* isn't loaded yet.
+        self.assertEqual(table.data, None)
+        # Okay, load the data.
+        tab.load_table_data()
+        self.assertTrue(tab._table_data_loaded)
+        self.assertQuerysetEqual(table.data, ['<FakeObject: object_1>',
+                                              '<FakeObject: object_2>',
+                                              '<FakeObject: object_3>'])
+        context = tab.get_context_data(self.request)
+        # Make sure our table is loaded into the context correctly
+        self.assertEqual(context['my_table_table'], table)
+        # Since we only had one table we should get the shortcut name too.
+        self.assertEqual(context['table'], table)
+
+    def test_tabbed_table_view(self):
+        view = TabWithTableView.as_view()
+
+        # Be sure we get back a rendered table containing data for a GET
+        req = self.factory.get("/")
+        res = view(req)
+        self.assertContains(res, "<table", 1)
+        self.assertContains(res, "Displaying 3 items", 1)
+
+        # AJAX response to GET for row update
+        params = {"table": "my_table", "action": "row_update", "obj_id": "1"}
+        req = self.factory.get('/', params,
+                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        res = view(req)
+        self.assertEqual(res.status_code, 200)
+        # Make sure we got back a row but not a table or body
+        self.assertContains(res, "<tr", 1)
+        self.assertContains(res, "<table", 0)
+        self.assertContains(res, "<body", 0)
+
+        # Response to POST for table action
+        action_string = "my_table__toggle__2"
+        req = self.factory.post('/', {'action': action_string})
+        res = view(req)
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res["location"], "/")
+
+        # Ensure that lookup errors are raised as such instead of converted
+        # to TemplateSyntaxErrors.
+        action_string = "my_table__toggle__2000000000"
+        req = self.factory.post('/', {'action': action_string})
+        self.assertRaises(exceptions.Http302, view, req)
+
+
+class TabExceptionTests(test.TestCase):
+    def setUp(self):
+        super(TabExceptionTests, self).setUp()
+        self._original_tabs = copy.copy(TabWithTableView.tab_group_class.tabs)
+        TabWithTableView.tab_group_class.tabs.append(RecoverableErrorTab)
+
+    def tearDown(self):
+        super(TabExceptionTests, self).tearDown()
+        TabWithTableView.tab_group_class.tabs = self._original_tabs
+
+    def test_tab_view_exception(self):
+        view = TabWithTableView.as_view()
+        req = self.factory.get("/")
+        res = view(req)
+        self.assertMessageCount(res, error=1)

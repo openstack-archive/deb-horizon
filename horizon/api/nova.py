@@ -67,7 +67,8 @@ class QuotaSet(object):
         for k in apiresource._info.keys():
             if k in ['id']:
                 continue
-            v = int(apiresource._info[k])
+            limit = apiresource._info[k]
+            v = int(limit) if limit is not None else limit
             q = Quota(k, v)
             self.items.append(q)
             setattr(self, k, v)
@@ -409,7 +410,9 @@ def tenant_quota_usages(request):
     flavors = dict([(f.id, f) for f in flavor_list(request)])
     usages = {'instances': {'flavor_fields': [], 'used': len(instances)},
               'cores': {'flavor_fields': ['vcpus'], 'used': 0},
-              'gigabytes': {'flavor_fields': ['disk', 'ephemeral'], 'used': 0},
+              'gigabytes': {'used': 0,
+                            'flavor_fields': ['disk',
+                                              'OS-FLV-EXT-DATA:ephemeral']},
               'ram': {'flavor_fields': ['ram'], 'used': 0},
               'floating_ips': {'flavor_fields': [], 'used': len(floating_ips)}}
 
@@ -419,8 +422,12 @@ def tenant_quota_usages(request):
                 usages[usage]['used'] += getattr(
                         flavors[instance.flavor['id']], flavor_field, 0)
         usages[usage]['quota'] = getattr(quotas, usage)
-        usages[usage]['available'] = usages[usage]['quota'] - \
-                                     usages[usage]['used']
+        if usages[usage]['quota'] is None:
+            usages[usage]['quota'] = float("inf")
+            usages[usage]['available'] = float("inf")
+        else:
+            usages[usage]['available'] = usages[usage]['quota'] - \
+                                         usages[usage]['used']
 
     return usages
 

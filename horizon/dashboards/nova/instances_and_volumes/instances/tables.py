@@ -18,12 +18,13 @@ import logging
 
 from django import template
 from django.template.defaultfilters import title
-from django.utils.datastructures import SortedDict
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import tables
 from horizon.templatetags import sizeformat
+
+from .tabs import InstanceDetailTabs, LogTab, VNCTab
 
 
 LOG = logging.getLogger(__name__)
@@ -91,6 +92,8 @@ class TogglePause(tables.BatchAction):
         self.paused = instance.status == "PAUSED"
         if self.paused:
             self.current_present_action = UNPAUSE
+        else:
+            self.current_present_action = PAUSE
         return instance.status in ACTIVE_STATES or self.paused
 
     def action(self, request, obj_id):
@@ -117,6 +120,8 @@ class ToggleSuspend(tables.BatchAction):
         self.suspended = instance.status == "SUSPENDED"
         if self.suspended:
             self.current_present_action = RESUME
+        else:
+            self.current_present_action = SUSPEND
         return instance.status in ACTIVE_STATES or self.suspended
 
     def action(self, request, obj_id):
@@ -155,32 +160,39 @@ class SnapshotLink(tables.LinkAction):
 class ConsoleLink(tables.LinkAction):
     name = "console"
     verbose_name = _("VNC Console")
-    url = "horizon:nova:instances_and_volumes:instances:vnc"
+    url = "horizon:nova:instances_and_volumes:instances:detail"
     classes = ("btn-console",)
 
     def allowed(self, request, instance=None):
         return instance.status in ACTIVE_STATES
 
+    def get_link_url(self, datum):
+        base_url = super(ConsoleLink, self).get_link_url(datum)
+        tab_query_string = VNCTab(InstanceDetailTabs).get_query_string()
+        return "?".join([base_url, tab_query_string])
+
 
 class LogLink(tables.LinkAction):
     name = "log"
     verbose_name = _("View Log")
-    url = "horizon:nova:instances_and_volumes:instances:console"
+    url = "horizon:nova:instances_and_volumes:instances:detail"
     classes = ("btn-log",)
 
     def allowed(self, request, instance=None):
         return instance.status in ACTIVE_STATES
 
+    def get_link_url(self, datum):
+        base_url = super(LogLink, self).get_link_url(datum)
+        tab_query_string = LogTab(InstanceDetailTabs).get_query_string()
+        return "?".join([base_url, tab_query_string])
+
 
 class UpdateRow(tables.Row):
     ajax = True
 
-    @classmethod
-    def get_data(cls, request, instance_id):
+    def get_data(self, request, instance_id):
         instance = api.server_get(request, instance_id)
-        flavors = api.flavor_list(request)
-        keyed_flavors = [(str(flavor.id), flavor) for flavor in flavors]
-        instance.full_flavor = SortedDict(keyed_flavors)[instance.flavor["id"]]
+        instance.full_flavor = api.flavor_get(request, instance.flavor["id"])
         return instance
 
 
@@ -204,6 +216,10 @@ def get_power_state(instance):
     return POWER_STATES.get(getattr(instance, "OS-EXT-STS:power_state", 0), '')
 
 
+def replace_underscores(string):
+    return string.replace("_", " ")
+
+
 class InstancesTable(tables.DataTable):
     TASK_STATUS_CHOICES = (
         (None, True),
@@ -211,6 +227,8 @@ class InstancesTable(tables.DataTable):
     )
     STATUS_CHOICES = (
         ("active", True),
+        ("suspended", True),
+        ("paused", True),
         ("error", False),
     )
     name = tables.Column("name", link="horizon:nova:instances_and_volumes:" \
@@ -219,17 +237,17 @@ class InstancesTable(tables.DataTable):
     ip = tables.Column(get_ips, verbose_name=_("IP Address"))
     size = tables.Column(get_size, verbose_name=_("Size"))
     status = tables.Column("status",
-                           filters=(title,),
+                           filters=(title, replace_underscores),
                            verbose_name=_("Status"),
                            status=True,
                            status_choices=STATUS_CHOICES)
     task = tables.Column("OS-EXT-STS:task_state",
                          verbose_name=_("Task"),
-                         filters=(title,),
+                         filters=(title, replace_underscores),
                          status=True,
                          status_choices=TASK_STATUS_CHOICES)
     state = tables.Column(get_power_state,
-                          filters=(title,),
+                          filters=(title, replace_underscores),
                           verbose_name=_("Power State"))
 
     class Meta:

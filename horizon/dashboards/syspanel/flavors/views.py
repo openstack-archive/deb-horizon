@@ -21,7 +21,7 @@
 import logging
 
 from django.contrib import messages
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from novaclient import exceptions as api_exceptions
 
 from horizon import api
@@ -64,5 +64,8 @@ class CreateView(forms.ModalFormView):
         # TODO(tres): Get rid of this hacky bit of nonsense after flavors get
         # converted to nova client.
         flavors = api.flavor_list(self.request)
-        flavors.sort(key=lambda f: f.id, reverse=True)
-        return {'flavor_id': int(flavors[0].id) + 1}
+        if flavors:
+            largest_id = max(flavors, key=lambda f: f.id).id
+            return {'flavor_id': int(largest_id) + 1}
+        else:
+            return {'flavor_id': 1}

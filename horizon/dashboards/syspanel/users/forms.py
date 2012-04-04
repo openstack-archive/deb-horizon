@@ -22,7 +22,7 @@ import logging
 
 from django import shortcuts
 from django.contrib import messages
-from django.utils.translation import ugettext as _
+from django.utils.translation import force_unicode, ugettext_lazy as _
 from django.forms import ValidationError
 
 from horizon import api
@@ -50,17 +50,15 @@ class BaseUserForm(forms.SelfHandlingForm):
 
     def clean(self):
         '''Check to make sure password fields match.'''
-        super(forms.Form, self).clean()
-        if 'password' in self.cleaned_data and \
-                'confirm_password' in self.cleaned_data:
-            if self.cleaned_data['password'] != \
-                    self.cleaned_data['confirm_password']:
+        data = super(forms.Form, self).clean()
+        if 'password' in data:
+            if data['password'] != data.get('confirm_password', None):
                 raise ValidationError(_('Passwords do not match.'))
-        return self.cleaned_data
+        return data
 
 
 class CreateUserForm(BaseUserForm):
-    name = forms.CharField(label=_("Name"))
+    name = forms.CharField(label=_("User Name"))
     email = forms.EmailField(label=_("Email"))
     password = forms.RegexField(
             label=_("Password"),
@@ -105,12 +103,15 @@ class UpdateUserForm(BaseUserForm):
     id = forms.CharField(label=_("ID"), widget=forms.HiddenInput)
     name = forms.CharField(label=_("User Name"))
     email = forms.EmailField(label=_("Email"))
-    password = forms.CharField(label=_("Password"),
-                               widget=forms.PasswordInput(render_value=False),
-                               required=False)
+    password = forms.RegexField(label=_("Password"),
+            widget=forms.PasswordInput(render_value=False),
+            regex=validators.password_validator(),
+            required=False,
+            error_messages={'invalid': validators.password_validator_msg()})
     confirm_password = forms.CharField(
             label=_("Confirm Password"),
-            widget=forms.PasswordInput(render_value=False))
+            widget=forms.PasswordInput(render_value=False),
+            required=False)
     tenant_id = forms.ChoiceField(label=_("Primary Project"))
 
     def handle(self, request, data):
@@ -118,8 +119,9 @@ class UpdateUserForm(BaseUserForm):
         user = data.pop('id')
         password = data.pop('password')
         tenant = data.pop('tenant_id')
-        # Discard the "method" param so we can pass kwargs to keystoneclient
+        # Discard the extra fields so we can pass kwargs to keystoneclient
         data.pop('method')
+        data.pop('confirm_password', None)
 
         # Update user details
         msg_bits = (_('name'), _('email'))
@@ -151,11 +153,13 @@ class UpdateUserForm(BaseUserForm):
                 exceptions.handle(request, ignore=True)
 
         if succeeded:
+            succeeded = map(force_unicode, succeeded)
             messages.success(request,
                              _('Updated %(attributes)s for "%(user)s".')
                                % {"user": data["name"],
                                   "attributes": ", ".join(succeeded)})
         if failed:
+            failed = map(force_unicode, failed)
             messages.error(request,
                            _('Unable to update %(attributes)s for "%(user)s".')
                              % {"user": data["name"],

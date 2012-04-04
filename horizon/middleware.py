@@ -57,7 +57,8 @@ class HorizonMiddleware(object):
         Catches internal Horizon exception classes such as NotAuthorized,
         NotFound and Http302 and handles them gracefully.
         """
-        if isinstance(exception, exceptions.NotAuthorized):
+        if isinstance(exception,
+                (exceptions.NotAuthorized, exceptions.NotAuthenticated)):
             auth_url = reverse("horizon:auth_login")
             next_url = iri_to_uri(request.get_full_path())
             if next_url != auth_url:
@@ -68,7 +69,7 @@ class HorizonMiddleware(object):
             messages.error(request, unicode(exception))
             if request.is_ajax():
                 response_401 = http.HttpResponse(status=401)
-                response_401["REDIRECT_URL"] = redirect_to
+                response_401['X-Horizon-Location'] = redirect_to
                 return response_401
             return shortcuts.redirect(redirect_to)
 
@@ -80,3 +81,15 @@ class HorizonMiddleware(object):
             if exception.message:
                 messages.error(request, exception.message)
             return shortcuts.redirect(exception.location)
+
+    def process_response(self, request, response):
+        """
+        Convert HttpResponseRedirect to HttpResponse if request is via ajax
+        to allow ajax request to redirect url
+        """
+        if request.is_ajax():
+            if type(response) == http.HttpResponseRedirect:
+                redirect_response = http.HttpResponse()
+                redirect_response['X-Horizon-Location'] = response['location']
+                return redirect_response
+        return response

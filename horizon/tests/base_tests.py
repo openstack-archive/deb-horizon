@@ -114,10 +114,10 @@ class HorizonTests(BaseHorizonTests):
         with self.assertRaises(base.NotRegistered):
             horizon.get_dashboard("fake")
         self.assertQuerysetEqual(horizon.get_dashboards(),
-                                 ['<Dashboard: Project>',
-                                  '<Dashboard: Admin>',
-                                  '<Dashboard: Settings>',
-                                  '<Dashboard: My Dashboard>'])
+                                 ['<Dashboard: nova>',
+                                  '<Dashboard: syspanel>',
+                                  '<Dashboard: settings>',
+                                  '<Dashboard: mydash>'])
 
         # Removal
         self.assertEqual(len(base.Horizon._registry), 4)
@@ -128,7 +128,7 @@ class HorizonTests(BaseHorizonTests):
 
     def test_site(self):
         self.assertEqual(unicode(base.Horizon), "Horizon")
-        self.assertEqual(repr(base.Horizon), "<Site: Horizon>")
+        self.assertEqual(repr(base.Horizon), "<Site: horizon>")
         dash = base.Horizon.get_dashboard('nova')
         self.assertEqual(base.Horizon.get_default_dashboard(), dash)
         user = users.User()
@@ -138,31 +138,37 @@ class HorizonTests(BaseHorizonTests):
     def test_dashboard(self):
         syspanel = horizon.get_dashboard("syspanel")
         self.assertEqual(syspanel._registered_with, base.Horizon)
-        self.assertQuerysetEqual(syspanel.get_panels()['System Panel'],
-                                 ['<Panel: Overview>',
-                                 '<Panel: Instances>',
-                                 '<Panel: Services>',
-                                 '<Panel: Flavors>',
-                                 '<Panel: Images>',
-                                 '<Panel: Projects>',
-                                 '<Panel: Users>',
-                                 '<Panel: Quotas>'])
+        self.assertQuerysetEqual(syspanel.get_panels(),
+                                 ['<Panel: overview>',
+                                 '<Panel: instances>',
+                                 '<Panel: services>',
+                                 '<Panel: flavors>',
+                                 '<Panel: images>',
+                                 '<Panel: projects>',
+                                 '<Panel: users>',
+                                 '<Panel: quotas>'])
         self.assertEqual(syspanel.get_absolute_url(), "/syspanel/")
+
         # Test registering a module with a dashboard that defines panels
         # as a dictionary.
         syspanel.register(MyPanel)
-        self.assertQuerysetEqual(syspanel.get_panels()['Other'],
-                                 ['<Panel: My Panel>'])
+        self.assertQuerysetEqual(syspanel.get_panel_groups()['other'],
+                                 ['<Panel: myslug>'])
+
+        # Test that panels defined as a tuple still return a PanelGroup
+        settings_dash = horizon.get_dashboard("settings")
+        self.assertQuerysetEqual(settings_dash.get_panel_groups().values(),
+                                 ['<PanelGroup: default>'])
 
         # Test registering a module with a dashboard that defines panels
         # as a tuple.
         settings_dash = horizon.get_dashboard("settings")
         settings_dash.register(MyPanel)
         self.assertQuerysetEqual(settings_dash.get_panels(),
-                                 ['<Panel: User Settings>',
-                                  '<Panel: OpenStack Credentials>',
-                                  '<Panel: EC2 Credentials>',
-                                  '<Panel: My Panel>'])
+                                 ['<Panel: user>',
+                                  '<Panel: project>',
+                                  '<Panel: ec2>',
+                                  '<Panel: myslug>'])
 
     def test_panels(self):
         syspanel = horizon.get_dashboard("syspanel")
@@ -213,7 +219,7 @@ class HorizonTests(BaseHorizonTests):
         resp = client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         # Response should be HTTP 401 with redirect header
         self.assertEquals(resp.status_code, 401)
-        self.assertEquals(resp["REDIRECT_URL"],
+        self.assertEquals(resp["X-Horizon-Location"],
                           "?".join([urlresolvers.reverse("horizon:auth_login"),
                                     "next=%s" % url]))
 

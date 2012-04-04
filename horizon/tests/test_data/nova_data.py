@@ -27,6 +27,7 @@ SERVER_DATA = """
 {
     "server": {
         "OS-EXT-SRV-ATTR:instance_name": "instance-00000005",
+        "OS-EXT-SRV-ATTR:host": "instance-host",
         "OS-EXT-STS:task_state": null,
         "addresses": {
             "private": [
@@ -147,7 +148,8 @@ def data(TEST):
                                  name='test_volume',
                                  status='available',
                                  size=40,
-                                 displayName='',
+                                 display_name='Volume name',
+                                 created_at='2012-04-01 10:30:00',
                                  attachments={}))
     TEST.volumes.add(volume)
 
@@ -275,11 +277,11 @@ def data(TEST):
 
     volume_snapshot = vol_snaps.Snapshot(vol_snaps.SnapshotManager(None),
                                          {'id': 2,
-                                          'displayName': 'test snapshot',
-                                          'displayDescription': 'vol snap!',
+                                          'display_name': 'test snapshot',
+                                          'display_description': 'vol snap!',
                                           'size': 40,
                                           'status': 'available',
-                                          'volumeId': 1})
+                                          'volume_id': 1})
     TEST.volume_snapshots.add(volume_snapshot)
 
     cert_data = {'private_key': 'private',

@@ -31,7 +31,7 @@ from django.utils import http
 from django.utils.datastructures import SortedDict
 from django.utils.html import escape
 from django.utils.http import urlencode
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils import termcolors
 
@@ -45,7 +45,7 @@ PALETTE = termcolors.PALETTES[termcolors.DEFAULT_PALETTE]
 STRING_SEPARATOR = "__"
 
 
-class Column(object):
+class Column(html.HTMLElement):
     """ A class which represents a single column in a :class:`.DataTable`.
 
     .. attribute:: transform
@@ -120,6 +120,16 @@ class Column(object):
         A list of functions (often template filters) to be applied to the
         value of the data for this column prior to output. This is effectively
         a shortcut for writing a custom ``transform`` function in simple cases.
+
+    .. attribute:: classes
+
+        An iterable of CSS classes which should be added to this column.
+        Example: ``classes=('foo', 'bar')``.
+
+    .. attribute:: attrs
+
+        A dict of HTML attribute strings which should be added to this column.
+        Example: ``attrs={"data-foo": "bar"}``.
     """
     # Used to retain order when instantiating columns on a table
     creation_counter = 0
@@ -147,7 +157,12 @@ class Column(object):
 
     def __init__(self, transform, verbose_name=None, sortable=False,
                  link=None, hidden=False, attrs=None, status=False,
-                 status_choices=None, empty_value=None, filters=None):
+                 status_choices=None, empty_value=None, filters=None,
+                 classes=None):
+        self.classes = classes or getattr(self, "classes", [])
+        super(Column, self).__init__()
+        self.attrs.update(attrs or {})
+
         if callable(transform):
             self.transform = transform
             self.name = transform.__name__
@@ -160,7 +175,7 @@ class Column(object):
             verbose_name = self.transform.title()
         else:
             verbose_name = verbose_name
-        self.verbose_name = unicode(verbose_name)
+        self.verbose_name = verbose_name
         self.link = link
         self.hidden = hidden
         self.status = status
@@ -172,17 +187,13 @@ class Column(object):
         self.creation_counter = Column.creation_counter
         Column.creation_counter += 1
 
-        self.attrs = {"classes": []}
-        self.attrs.update(attrs or {})
-        # Make sure we have a mutable list.
-        self.attrs['classes'] = list(self.attrs['classes'])
         if self.sortable:
-            self.attrs['classes'].append("sortable")
+            self.classes.append("sortable")
         if self.hidden:
-            self.attrs['classes'].append("hide")
+            self.classes.append("hide")
 
     def __unicode__(self):
-        return self.verbose_name
+        return unicode(self.verbose_name)
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.name)
@@ -220,10 +231,6 @@ class Column(object):
             data = filter_func(data)
         self.table._data_cache[self][datum_id] = data
         return self.table._data_cache[self][datum_id]
-
-    def get_classes(self):
-        """ Returns a flattened string of the column's CSS classes. """
-        return " ".join(self.attrs['classes'])
 
     def get_link_url(self, datum):
         """ Returns the final value for the column's ``link`` property.
@@ -299,21 +306,36 @@ class Row(html.HTMLElement):
     ajax = False
     ajax_action_name = "row_update"
 
-    def __init__(self, table, datum):
+    def __init__(self, table, datum=None):
         super(Row, self).__init__()
         self.table = table
         self.datum = datum
-        id_vals = {"table": self.table.name,
-                   "sep": STRING_SEPARATOR,
-                   "id": table.get_object_id(datum)}
-        self.id = "%(table)s%(sep)srow%(sep)s%(id)s" % id_vals
-        if self.ajax:
-            interval = settings.HORIZON_CONFIG.get('ajax_poll_interval', 2500)
-            self.attrs['data-update-interval'] = interval
-            self.attrs['data-update-url'] = self.get_ajax_update_url()
-            self.classes.append("ajax-update")
+        if self.datum:
+            self.load_cells()
+        else:
+            self.id = None
+            self.cells = []
 
+    def load_cells(self, datum=None):
+        """
+        Load the row's data (either provided at initialization or as an
+        argument to this function), initiailize all the cells contained
+        by this row, and set the appropriate row properties which require
+        the row's data to be determined.
+
+        This function is called automatically by
+        :meth:`~horizon.tables.Row.__init__` if the ``datum`` argument is
+        provided. However, by not providing the data during initialization
+        this function allows for the possibility of a two-step loading
+        pattern when you need a row instance but don't yet have the data
+        available.
+        """
         # Compile all the cells on instantiation.
+        table = self.table
+        if datum:
+            self.datum = datum
+        else:
+            datum = self.datum
         cells = []
         for column in table.columns.values():
             if column.auto == "multi_select":
@@ -331,8 +353,18 @@ class Row(html.HTMLElement):
             cells.append((column.name or column.auto, cell))
         self.cells = SortedDict(cells)
 
+        if self.ajax:
+            interval = settings.HORIZON_CONFIG.get('ajax_poll_interval', 2500)
+            self.attrs['data-update-interval'] = interval
+            self.attrs['data-update-url'] = self.get_ajax_update_url()
+            self.classes.append("ajax-update")
+
         # Add the row's status class and id to the attributes to be rendered.
         self.classes.append(self.status_class)
+        id_vals = {"table": self.table.name,
+                   "sep": STRING_SEPARATOR,
+                   "id": table.get_object_id(datum)}
+        self.id = "%(table)s%(sep)srow%(sep)s%(id)s" % id_vals
         self.attrs['id'] = self.id
 
     def __repr__(self):
@@ -372,25 +404,26 @@ class Row(html.HTMLElement):
                             "obj_id": self.table.get_object_id(self.datum)})
         return "%s?%s" % (table_url, params)
 
-    @classmethod
-    def get_data(cls, request, obj_id):
+    def get_data(self, request, obj_id):
         """
         Fetches the updated data for the row based on the object id
         passed in. Must be implemented by a subclass to allow AJAX updating.
         """
         raise NotImplementedError("You must define a get_data method on %s"
-                                  % cls.__name__)
+                                  % self.__class__.__name__)
 
 
-class Cell(object):
+class Cell(html.HTMLElement):
     """ Represents a single cell in the table. """
-    def __init__(self, datum, data, column, row, attrs=None):
+    def __init__(self, datum, data, column, row, attrs=None, classes=None):
+        self.classes = classes or getattr(self, "classes", [])
+        super(Cell, self).__init__()
+        self.attrs.update(attrs or {})
+
         self.datum = datum
         self.data = data
         self.column = column
         self.row = row
-        self.attrs = {'classes': []}
-        self.attrs.update(attrs or {})
 
     def __repr__(self):
         return '<%s: %s, %s>' % (self.__class__.__name__,
@@ -415,8 +448,9 @@ class Cell(object):
             raise template.TemplateSyntaxError, exc_info[1], exc_info[2]
         if self.column.link:
             url = self.column.get_link_url(self.datum)
-            # Escape the data inside while allowing our HTML to render
-            data = mark_safe('<a href="%s">%s</a>' % (url, escape(data)))
+            if url:
+                # Escape the data inside while allowing our HTML to render
+                data = mark_safe('<a href="%s">%s</a>' % (url, escape(data)))
         return data
 
     @property
@@ -446,12 +480,13 @@ class Cell(object):
         else:
             return "status_unknown"
 
-    def get_classes(self):
+    def get_default_classes(self):
         """ Returns a flattened string of the cell's CSS classes. """
-        union = set(self.attrs['classes']) | set(self.column.attrs['classes'])
+        column_class_string = self.column.get_final_attrs().get('class', "")
+        classes = set(column_class_string.split(" "))
         if self.column.status:
-            union.add(self.get_status_class(self.status))
-        return " ".join(union)
+            classes.add(self.get_status_class(self.status))
+        return list(classes)
 
 
 class DataTableOptions(object):
@@ -536,7 +571,7 @@ class DataTableOptions(object):
         self.name = getattr(options, 'name', self.__class__.__name__)
         verbose_name = getattr(options, 'verbose_name', None) \
                                     or self.name.title()
-        self.verbose_name = unicode(verbose_name)
+        self.verbose_name = verbose_name
         self.columns = getattr(options, 'columns', None)
         self.status_columns = getattr(options, 'status_columns', [])
         self.table_actions = getattr(options, 'table_actions', [])
@@ -583,13 +618,14 @@ class DataTableMetaclass(type):
 
         # Gather columns; this prevents the column from being an attribute
         # on the DataTable class and avoids naming conflicts.
-        columns = [(column_name, attrs.pop(column_name)) for \
-                            column_name, obj in attrs.items() \
-                            if isinstance(obj, opts.column_class)]
-        # add a name attribute to each column
-        for column_name, column in columns:
-            column.name = column_name
+        columns = []
+        for name, obj in attrs.items():
+            if issubclass(type(obj), (opts.column_class, Column)):
+                column_instance = attrs.pop(name)
+                column_instance.name = name
+                columns.append((name, column_instance))
         columns.sort(key=lambda x: x[1].creation_counter)
+
         # Iterate in reverse to preserve final order
         for base in bases[::-1]:
             if hasattr(base, 'base_columns'):
@@ -608,16 +644,17 @@ class DataTableMetaclass(type):
         if opts.multi_select:
             multi_select = opts.column_class("multi_select",
                                              verbose_name="")
-            multi_select.attrs = {'classes': ('multi_select_column',)}
+            multi_select.classes.append('multi_select_column')
             multi_select.auto = "multi_select"
             columns.insert(0, ("multi_select", multi_select))
         if opts.actions_column:
             actions_column = opts.column_class("actions",
                                                verbose_name=_("Actions"))
-            actions_column.attrs = {'classes': ('actions_column',)}
+            actions_column.classes.append('actions_column')
             actions_column.auto = "actions"
             columns.append(("actions", actions_column))
-        attrs['columns'] = SortedDict(columns)
+        # Store this set of columns internally so we can copy them per-instance
+        attrs['_columns'] = SortedDict(columns)
 
         # Gather and register actions for later access since we only want
         # to instantiate them once.
@@ -664,18 +701,23 @@ class DataTable(object):
     def __init__(self, request, data=None, **kwargs):
         self._meta.request = request
         self._meta.data = data
-        self._populate_data_cache()
         self.kwargs = kwargs
 
-        for column in self.columns.values():
+        # Create a new set
+        columns = []
+        for key, _column in self._columns.items():
+            column = copy.copy(_column)
             column.table = self
+            columns.append((key, column))
+        self.columns = SortedDict(columns)
+        self._populate_data_cache()
 
         # Associate these actions with this table
         for action in self.base_actions.values():
             action.table = self
 
     def __unicode__(self):
-        return self._meta.verbose_name
+        return unicode(self._meta.verbose_name)
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.name)
@@ -746,7 +788,7 @@ class DataTable(object):
 
         For convenience it defaults to the value of
         ``request.get_full_path()`` with any query string stripped off,
-         e.g. the path at which the table was requested.
+        e.g. the path at which the table was requested.
         """
         return self._meta.request.get_full_path().partition('?')[0]
 
@@ -787,6 +829,7 @@ class DataTable(object):
             # Copy to allow modifying properties per row
             bound_action = copy.copy(self.base_actions[action.name])
             bound_action.attrs = copy.copy(bound_action.attrs)
+            bound_action.datum = datum
             # Remove disallowed actions.
             if not self._filter_action(bound_action,
                                        self._meta.request,
@@ -823,7 +866,8 @@ class DataTable(object):
         context = template.RequestContext(self._meta.request, extra_context)
         return row_actions_template.render(context)
 
-    def parse_action(self, action_string):
+    @staticmethod
+    def parse_action(action_string):
         """
         Parses the ``action`` parameter (a string) sent back with the
         POST data. By default this parses a string formatted as
@@ -866,7 +910,9 @@ class DataTable(object):
                 response = action.single(self, self._meta.request, obj_id)
             # Otherwise figure out what to pass along
             else:
-                if obj_id and not obj_ids:
+                # Preference given to a specific id, since that implies
+                # the user selected an action for just one row.
+                if obj_id:
                     obj_ids = [obj_id]
                 response = action.multiple(self, self._meta.request, obj_ids)
             return response
@@ -875,12 +921,11 @@ class DataTable(object):
                           _("Please select a row before taking that action."))
         return None
 
-    def _check_handler(self):
+    @classmethod
+    def check_handler(cls, request):
         """ Determine whether the request should be handled by this table. """
-        request = self._meta.request
-
         if request.method == "POST" and "action" in request.POST:
-            table, action, obj_id = self.parse_action(request.POST["action"])
+            table, action, obj_id = cls.parse_action(request.POST["action"])
         elif "table" in request.GET and "action" in request.GET:
             table = request.GET["table"]
             action = request.GET["action"]
@@ -894,22 +939,23 @@ class DataTable(object):
         Determine whether the request should be handled by a preemptive action
         on this table or by an AJAX row update before loading any data.
         """
-        table_name, action_name, obj_id = self._check_handler()
+        request = self._meta.request
+        table_name, action_name, obj_id = self.check_handler(request)
 
         if table_name == self.name:
             # Handle AJAX row updating.
-            row_class = self._meta.row_class
-            if row_class.ajax and row_class.ajax_action_name == action_name:
+            new_row = self._meta.row_class(self)
+            if new_row.ajax and new_row.ajax_action_name == action_name:
                 try:
-                    datum = row_class.get_data(self._meta.request, obj_id)
+                    datum = new_row.get_data(request, obj_id)
+                    new_row.load_cells(datum)
                     error = False
                 except:
                     datum = None
-                    error = exceptions.handle(self._meta.request, ignore=True)
-                if self._meta.request.is_ajax():
+                    error = exceptions.handle(request, ignore=True)
+                if request.is_ajax():
                     if not error:
-                        row = row_class(self, datum)
-                        return HttpResponse(row.render())
+                        return HttpResponse(new_row.render())
                     else:
                         return HttpResponse(status=error.status_code)
 
@@ -928,7 +974,8 @@ class DataTable(object):
         Determine whether the request should be handled by any action on this
         table after data has been loaded.
         """
-        table_name, action_name, obj_id = self._check_handler()
+        request = self._meta.request
+        table_name, action_name, obj_id = self.check_handler(request)
         if table_name == self.name and action_name:
             return self.take_action(action_name, obj_id)
         return None
@@ -944,6 +991,11 @@ class DataTable(object):
 
         By default this returns an ``id`` attribute on the given object,
         but this can be overridden to return other values.
+
+        .. warning::
+
+            Make sure that the value returned is a unique value for the id
+            otherwise rendering issues can occur.
         """
         return datum.id
 

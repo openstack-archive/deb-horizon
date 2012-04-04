@@ -24,7 +24,7 @@ from django import shortcuts
 from django.contrib import messages
 from django.core import validators
 from django.forms import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from novaclient import exceptions as novaclient_exceptions
 
 from horizon import api
@@ -38,8 +38,9 @@ LOG = logging.getLogger(__name__)
 
 
 class CreateGroup(forms.SelfHandlingForm):
-    name = forms.CharField(validators=[validators.validate_slug])
-    description = forms.CharField()
+    name = forms.CharField(label=_("Name"),
+                           validators=[validators.validate_slug])
+    description = forms.CharField(label=_("Description"))
 
     def handle(self, request, data):
         try:
@@ -67,7 +68,7 @@ class AddRule(forms.SelfHandlingForm):
                                                "enter a value for ICMP type "
                                                "in the range (-1: 255)"),
                                    widget=forms.TextInput(
-                                          attrs={'data': _('From port'),
+                                          attrs={'data': _('From Port'),
                                                  'data-icmp': _('Type')}),
                                    validators=[validate_port_range])
     to_port = forms.IntegerField(label=_("To Port"),
@@ -76,7 +77,7 @@ class AddRule(forms.SelfHandlingForm):
                                              "enter a value for ICMP code "
                                              "in the range (-1: 255)"),
                                  widget=forms.TextInput(
-                                        attrs={'data': _('To port'),
+                                        attrs={'data': _('To Port'),
                                                'data-icmp': _('Code')}),
                                  validators=[validate_port_range])
 
@@ -85,7 +86,7 @@ class AddRule(forms.SelfHandlingForm):
                            required=False,
                            initial="0.0.0.0/0",
                            help_text=_("Classless Inter-Domain Routing "
-                                       "(i.e. 192.168.0.0/24"),
+                                       "(e.g. 192.168.0.0/24)"),
                            validators=[validate_ipv4_cidr])
 
     security_group_id = forms.IntegerField(widget=forms.HiddenInput())

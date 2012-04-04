@@ -16,9 +16,9 @@
 
 from __future__ import absolute_import
 
-import copy
-
 from django import template
+from django.utils.translation import ugettext as _
+from django.utils.datastructures import SortedDict
 
 from horizon.base import Horizon
 
@@ -68,7 +68,7 @@ def horizon_main_nav(context):
             dashboards.append(dash)
     return {'components': dashboards,
             'user': context['request'].user,
-            'current': getattr(current_dashboard, 'slug', None),
+            'current': current_dashboard,
             'request': context['request']}
 
 
@@ -78,21 +78,20 @@ def horizon_dashboard_nav(context):
     if 'request' not in context:
         return {}
     dashboard = context['request'].horizon['dashboard']
-    if isinstance(dashboard.panels, dict):
-        panels = copy.copy(dashboard.get_panels())
-    else:
-        panels = {dashboard.name: dashboard.get_panels()}
+    panel_groups = dashboard.get_panel_groups()
+    non_empty_groups = []
 
-    for heading, items in panels.iteritems():
-        temp_panels = []
-        for panel in items:
+    for group in panel_groups.values():
+        allowed_panels = []
+        for panel in group:
             if callable(panel.nav) and panel.nav(context):
-                temp_panels.append(panel)
+                allowed_panels.append(panel)
             elif not callable(panel.nav) and panel.nav:
-                temp_panels.append(panel)
-        panels[heading] = temp_panels
-    non_empty_panels = dict([(k, v) for k, v in panels.items() if len(v) > 0])
-    return {'components': non_empty_panels,
+                allowed_panels.append(panel)
+        if allowed_panels:
+            non_empty_groups.append((group.name, allowed_panels))
+
+    return {'components': SortedDict(non_empty_groups),
             'user': context['request'].user,
             'current': context['request'].horizon['panel'].slug,
             'request': context['request']}
@@ -114,6 +113,16 @@ def horizon_progress_bar(current_val, max_val):
     """
     return {'current_val': current_val,
             'max_val': max_val}
+
+
+@register.filter
+def quota(val, units=None):
+    if val == float("inf"):
+        return _("No Limit")
+    elif units is not None:
+        return "%s %s %s" % (val, units, _("Available"))
+    else:
+        return "%s %s" % (val, _("Available"))
 
 
 class JSTemplateNode(template.Node):

@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import timesince, floatformat
 
 from horizon import tables
@@ -49,7 +49,7 @@ class TenantUsageTable(BaseUsageTable):
                            filters=(timesince,))
 
     def get_object_id(self, datum):
-        return datum['name']
+        return id(datum)
 
     class Meta:
         name = "tenant_usage"

@@ -27,8 +27,9 @@ import logging
 from django import shortcuts
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.forms import ValidationError
 from django.utils.text import normalize_newlines
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
@@ -38,13 +39,17 @@ LOG = logging.getLogger(__name__)
 
 
 class UpdateImageForm(forms.SelfHandlingForm):
+    completion_view = 'horizon:nova:images_and_snapshots:index'
+
     image_id = forms.CharField(widget=forms.HiddenInput())
-    name = forms.CharField(max_length="25", label=_("Name"))
+    name = forms.CharField(max_length="255", label=_("Name"))
     kernel = forms.CharField(max_length="36", label=_("Kernel ID"),
+                             required=False,
                              widget=forms.TextInput(
                                 attrs={'readonly': 'readonly'}
                              ))
     ramdisk = forms.CharField(max_length="36", label=_("Ramdisk ID"),
+                              required=False,
                               widget=forms.TextInput(
                                 attrs={'readonly': 'readonly'}
                               ))
@@ -83,7 +88,7 @@ class UpdateImageForm(forms.SelfHandlingForm):
             messages.success(request, _('Image was successfully updated.'))
         except:
             exceptions.handle(request, error_updating % image_id)
-        return shortcuts.redirect('horizon:nova:images_and_snapshots:index')
+        return shortcuts.redirect(self.get_success_url())
 
 
 class LaunchForm(forms.SelfHandlingForm):
@@ -139,6 +144,18 @@ class LaunchForm(forms.SelfHandlingForm):
         self.fields['keypair'].choices = keypair_list
         self.fields['security_groups'].choices = security_group_list
         self.fields['volume'].choices = volume_list
+
+    def clean(self):
+        cleaned_data = super(LaunchForm, self).clean()
+        count = cleaned_data.get('count', 1)
+        volume = cleaned_data.get('volume', None)
+
+        if volume and count > 1:
+            msg = _('Cannot launch more than one instance if '
+                    'volume is specified.')
+            raise ValidationError(msg)
+
+        return cleaned_data
 
     def handle(self, request, data):
         try:

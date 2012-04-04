@@ -22,7 +22,7 @@ import logging
 import operator
 
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
@@ -45,7 +45,8 @@ class IndexView(tables.DataTableView):
         try:
             tenants = api.keystone.tenant_list(self.request, admin=True)
         except:
-            exceptions.handle(self.request)
+            exceptions.handle(self.request,
+                              _("Unable to retrieve project list."))
         tenants.sort(key=lambda x: x.id, reverse=True)
         return tenants
 
@@ -67,7 +68,7 @@ class UpdateView(forms.ModalFormView):
         except:
             redirect = reverse("horizon:syspanel:projects:index")
             exceptions.handle(self.request,
-                              _('Unable to retrieve tenant.'),
+                              _('Unable to retrieve project.'),
                               redirect=redirect)
 
     def get_initial(self):
@@ -171,7 +172,7 @@ class QuotasView(forms.ModalFormView):
             'injected_file_content_bytes': quotas.injected_file_content_bytes,
             'volumes': quotas.volumes,
             'gigabytes': quotas.gigabytes,
-            'ram': int(quotas.ram),
+            'ram': quotas.ram,
             'floating_ips': quotas.floating_ips,
             'instances': quotas.instances,
             'injected_files': quotas.injected_files,

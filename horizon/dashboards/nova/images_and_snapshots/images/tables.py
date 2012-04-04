@@ -17,7 +17,7 @@
 import logging
 
 from django.template import defaultfilters as filters
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import tables
@@ -45,6 +45,11 @@ class LaunchImage(tables.LinkAction):
     verbose_name = _("Launch")
     url = "horizon:nova:images_and_snapshots:images:launch"
     classes = ("ajax-modal", "btn-launch")
+
+    def allowed(self, request, image=None):
+        if image:
+            return image.status in ('active',)
+        return False
 
 
 class EditImage(tables.LinkAction):

@@ -15,7 +15,7 @@
 #    under the License.
 
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
@@ -33,7 +33,8 @@ class OverviewTab(tabs.Tab):
         try:
             volume = api.nova.volume_get(request, volume_id)
             for att in volume.attachments:
-                att['instance'] = api.nova.server_get(request, att['serverId'])
+                att['instance'] = api.nova.server_get(request,
+                                                      att['server_id'])
         except:
             redirect = reverse('horizon:nova:instances_and_volumes:index')
             exceptions.handle(self.request,

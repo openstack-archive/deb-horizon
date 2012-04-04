@@ -22,7 +22,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core import urlresolvers
 from django.utils.functional import Promise
-from django.utils.translation import string_concat, ugettext as _
+from django.utils.translation import string_concat, ugettext_lazy as _
 
 from horizon import exceptions
 from horizon.utils import html
@@ -42,9 +42,9 @@ class BaseAction(html.HTMLElement):
     requires_input = False
     preempt = False
 
-    def __init__(self):
+    def __init__(self, datum=None):
         super(BaseAction, self).__init__()
-        self.id_counter = 0
+        self.datum = datum
 
     def allowed(self, request, datum):
         """ Determine whether this action is allowed for the current request.
@@ -80,8 +80,12 @@ class BaseAction(html.HTMLElement):
         to returning an ``id`` attribute with the value
         ``{{ table.name }}__action_{{ action.name }}__{{ creation counter }}``.
         """
-        bits = (self.table.name, "action_%s" % self.name, str(self.id_counter))
-        self.id_counter += 1
+        if self.datum is not None:
+            bits = (self.table.name,
+                    "row_%s" % self.table.get_object_id(self.datum),
+                    "action_%s" % self.name)
+        else:
+            bits = (self.table.name, "action_%s" % self.name)
         return {"id": STRING_SEPARATOR.join(bits)}
 
     def __repr__(self):
@@ -149,8 +153,9 @@ class Action(BaseAction):
 
     def __init__(self, verbose_name=None, verbose_name_plural=None,
                  single_func=None, multiple_func=None, handle_func=None,
-                 handles_multiple=False, attrs=None, requires_input=True):
-        super(Action, self).__init__()
+                 handles_multiple=False, attrs=None, requires_input=True,
+                 datum=None):
+        super(Action, self).__init__(datum=datum)
         # Priority: constructor, class-defined, fallback
         self.verbose_name = verbose_name or getattr(self, 'verbose_name',
                                                     self.name.title())
@@ -230,9 +235,9 @@ class LinkAction(BaseAction):
 
     def __init__(self, verbose_name=None, url=None, attrs=None):
         super(LinkAction, self).__init__()
-        self.verbose_name = verbose_name or unicode(getattr(self,
+        self.verbose_name = verbose_name or getattr(self,
                                             "verbose_name",
-                                            self.name.title()))
+                                            self.name.title())
         self.url = getattr(self, "url", url)
         if not self.verbose_name:
             raise NotImplementedError('A LinkAction object must have a '
@@ -291,10 +296,11 @@ class FilterAction(BaseAction):
     # separated from the table's POST form.
     method = "POST"
     name = "filter"
+    verbose_name = _("Filter")
 
     def __init__(self, verbose_name=None, param_name=None):
         super(FilterAction, self).__init__()
-        self.verbose_name = unicode(verbose_name or self.name)
+        self.verbose_name = verbose_name or self.name
         self.param_name = param_name or 'q'
 
     def get_param_name(self):

@@ -14,19 +14,30 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 import horizon
 
 
+class BasePanels(horizon.PanelGroup):
+    slug = "compute"
+    name = _("Manage Compute")
+    panels = ('overview',
+              'instances_and_volumes',
+              'images_and_snapshots',
+              'access_and_security')
+
+
+class ObjectStorePanels(horizon.PanelGroup):
+    slug = "object_store"
+    name = _("Object Store")
+    panels = ('containers',)
+
+
 class Nova(horizon.Dashboard):
-    name = "Project"
+    name = _("Project")
     slug = "nova"
-    panels = {_("Manage Compute"): ('overview',
-                                    'instances_and_volumes',
-                                    'access_and_security',
-                                    'images_and_snapshots'),
-              _("Object Store"): ('containers',)}
+    panels = (BasePanels, ObjectStorePanels)
     default_panel = 'overview'
     supports_tenants = True
 
