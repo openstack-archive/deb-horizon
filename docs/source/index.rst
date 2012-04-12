@@ -76,7 +76,7 @@ the following topic guides.
 API Reference
 -------------
 
-In-depth documentation for Horizon and it's APIs.
+In-depth documentation for Horizon and its APIs.
 
 .. toctree::
    :maxdepth: 1
@@ -104,6 +104,14 @@ Auto-generated reference for the complete source code.
 
    sourcecode/autoindex
 
+Release Notes
+=============
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+
+   releases/*
 
 Information
 ===========
