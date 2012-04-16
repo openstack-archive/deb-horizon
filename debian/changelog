@@ -1,3 +1,11 @@
+horizon (2012.1-2) unstable; urgency=low
+
+  * Make openstack-dashboard depends on the same version of
+    python-django-horizon, otherwise it just fails to work most of the
+    time, since upstream doesn't guarantee it'd works.
+
+ -- Julien Danjou <acid@debian.org>  Mon, 16 Apr 2012 16:11:45 +0200
+
 horizon (2012.1-1) unstable; urgency=low
 
   * New upstream release

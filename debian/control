@@ -29,7 +29,7 @@ Architecture: all
 Depends: ${shlibs:Depends},
  ${misc:Depends},
  ${python:Depends},
- python-django-horizon,
+ python-django-horizon (= ${source:Version}),
  python-django,
  python-openstackx,
  python-django-nose,
