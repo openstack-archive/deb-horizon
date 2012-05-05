@@ -1,3 +1,9 @@
+horizon (2012.1-4) unstable; urgency=low
+
+  * Fixed CVE_2012-2144. Closes: #671604
+
+ -- Ghe Rivero <ghe.rivero@stackops.com>  Sat, 05 May 2012 12:02:08 +0200
+
 horizon (2012.1-3) unstable; urgency=low
 
   * Fixed CVE_2012-2094
