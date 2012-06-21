@@ -1,3 +1,9 @@
+horizon (2012.1-5) UNRELEASED; urgency=low
+
+  * Remove useless dependency on openstackx
+
+ -- Julien Danjou <acid@debian.org>  Thu, 21 Jun 2012 11:30:39 +0200
+
 horizon (2012.1-4) unstable; urgency=low
 
   * Fixed CVE_2012-2144. Closes: #671604
