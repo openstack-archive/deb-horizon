@@ -4,7 +4,8 @@ Priority: extra
 Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
 Uploaders: Julien Danjou <acid@debian.org>,
            Thomas Goirand <zigo@debian.org>,
-           Ghe Rivero <ghe.rivero@stackops.com>
+           Ghe Rivero <ghe.rivero@stackops.com>,
+           Mehdi Abaakouk <sileht@sileht.net>
 Build-Depends: debhelper (>= 8.0.0), python, python-setuptools
 Standards-Version: 3.9.3
 Homepage: http://launchpad.net/horizon
