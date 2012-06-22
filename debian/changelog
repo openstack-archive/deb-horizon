@@ -5,6 +5,7 @@ horizon (2012.1.1-1) UNRELEASED; urgency=low
 
   [ Mehdi Abaakouk ]
   * Remove patches fixed upstream: CVE_2012-2094, CVE_2012-2144.
+  * Add gbp configuration file
 
  -- Julien Danjou <acid@debian.org>  Thu, 21 Jun 2012 11:30:39 +0200
 
