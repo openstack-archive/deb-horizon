@@ -4,6 +4,7 @@ horizon (2012.1.1-1) UNRELEASED; urgency=low
   * Remove useless dependency on openstackx
 
   [ Mehdi Abaakouk ]
+  * New upsteam release
   * Remove patches fixed upstream: CVE_2012-2094, CVE_2012-2144.
   * Add gbp configuration file
   * Clean horizon user home directory on purge. Closes: #668760
