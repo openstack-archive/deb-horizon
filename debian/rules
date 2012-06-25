@@ -28,5 +28,5 @@ override_dh_auto_install:
 override_dh_auto_clean:
 	dh_auto_clean
 	rm -rf $(CURDIR)/horizon/build
-	rm -rf $(CURDIR)/horizon/horizon.egg-info
+	rm -rf $(CURDIR)/horizon.egg-info
 	rm -rf $(CURDIR)/openstack_dashboard/openstack_dashboard.egg-info

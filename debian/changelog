@@ -2,6 +2,7 @@ horizon (2012.1.1-1) UNRELEASED; urgency=low
 
   [ Julien Danjou ]
   * Remove useless dependency on openstackx
+  * Fix clean target
 
   [ Mehdi Abaakouk ]
   * New upsteam release
