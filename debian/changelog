@@ -1,4 +1,4 @@
-horizon (2012.1.1-1) UNRELEASED; urgency=low
+horizon (2012.1.1-1) unstable; urgency=low
 
   [ Julien Danjou ]
   * Remove useless dependency on openstackx
