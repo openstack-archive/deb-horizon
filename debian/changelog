@@ -1,9 +1,12 @@
-horizon (2012.1.1-2) UNRELEASED; urgency=low
+horizon (2012.1.1-2) unstable; urgency=low
 
-  * Add /static alias (Closes: #679440)
-  * Don't listen on a new port by default
+  * Add a /static alias to serve the static files. By default django is
+    configured in debug mode and will serve the static files. However,
+    when it is configured in production mode, it will no longer serve them
+    and it is expected that apache will take care of it. (Closes: #679440).
+  * Add Loic Dachary as Uploader
 
- -- Julien Danjou <acid@debian.org>  Fri, 29 Jun 2012 10:37:56 +0200
+ -- Loic Dachary (OuoU) <loic@debian.org>  Fri, 29 Jun 2012 10:23:33 +0200
 
 horizon (2012.1.1-1) unstable; urgency=low
 
