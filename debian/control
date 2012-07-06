@@ -1,5 +1,5 @@
 Source: horizon
-Section: python
+Section: net
 Priority: extra
 Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
 Uploaders: Loic Dachary (OuoU) <loic@debian.org>,
@@ -7,13 +7,35 @@ Uploaders: Loic Dachary (OuoU) <loic@debian.org>,
            Thomas Goirand <zigo@debian.org>,
            Ghe Rivero <ghe.rivero@stackops.com>,
            Mehdi Abaakouk <sileht@sileht.net>
-Build-Depends: debhelper (>= 8.0.0), python, python-setuptools
+Build-Depends: debhelper (>= 8), python-all (>= 2.6.6-3~), python-setuptools,
+ python-eventlet,
+ python-glance,
+ python-setuptools,
+ python-kombu,
+ python-mox,
+ python-paste,
+ python-pastedeploy,
+ python-crypto,
+ python-cloudfiles,
+ python-django-nose,
+ python-nose,
+ python-dateutil,
+ python-routes,
+ python-sqlalchemy,
+ python-keystoneclient,
+ python-novaclient,
+ python-coverage,
+ pep8,
+ python-sphinx,
+ python-webob,
+ python-xattr
 Standards-Version: 3.9.3
 Homepage: http://launchpad.net/horizon
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
 Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
 
 Package: python-django-horizon
+Section: python
 Architecture: all
 Depends: ${shlibs:Depends},
  ${misc:Depends},
@@ -22,7 +44,24 @@ Depends: ${shlibs:Depends},
  python-glance,
  python-mox,
  python-dateutil
-Description: Django module to provide web interaction with OpenStack
+ python-nova,
+ python-cloudfiles,
+ python-eventlet,
+ python-kombu,
+ python-paste,
+ python-pastedeploy,
+ python-crypto,
+ python-dateutil,
+ python-routes,
+ python-sqlalchemy,
+ python-webob,
+ python-xattr,
+ python-novaclient,
+ python-keystoneclient,
+ python-memcache,
+ python-django-nose
+Recommends: memcached
+Description: Django module providing web interaction with OpenStack
  Horizon is a Django module that permits interaction with an OpenStack
  cloud. It can be used to build a dashboard to control an OpenStack cloud.
 
@@ -38,7 +77,8 @@ Depends: ${shlibs:Depends},
  python-cloudfiles,
  libjs-jquery,
  python-iso8601,
- adduser
+ adduser,
+ libapache2-mod-wsgi (>= 2.3)
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
@@ -47,7 +87,8 @@ Package: openstack-dashboard-apache
 Architecture: all
 Depends: libapache2-mod-wsgi (>=2.3),
  openstack-dashboard,
- ${misc:Depends}
+ ${misc:Depends},
+ libapache2-mod-wsgi (>=2.3)
 Description: OpenStack Dashboard - Apache support
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
