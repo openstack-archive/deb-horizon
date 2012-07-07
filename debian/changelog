@@ -4,6 +4,7 @@ horizon (2012.1.1-3) unstable; urgency=low
   which seems to be missing in Debian).
   * Fixed missing license in debian/copyright.
   * Added a get-vcs-source target in debian/rules.
+  * Fixed debian/copyright header.
 
  -- Thomas Goirand <zigo@debian.org>  Fri, 06 Jul 2012 18:03:53 +0000
 
