@@ -10,7 +10,6 @@ Uploaders: Loic Dachary (OuoU) <loic@debian.org>,
 Build-Depends: debhelper (>= 8), python-all (>= 2.6.6-3~), python-setuptools,
  python-eventlet,
  python-glance,
- python-setuptools,
  python-kombu,
  python-mox,
  python-paste,
@@ -37,13 +36,11 @@ Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
 Package: python-django-horizon
 Section: python
 Architecture: all
-Depends: ${shlibs:Depends},
- ${misc:Depends},
- ${python:Depends},
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends},
  python-quantumclient,
  python-glance,
  python-mox,
- python-dateutil
+ python-dateutil,
  python-nova,
  python-cloudfiles,
  python-eventlet,
@@ -51,7 +48,6 @@ Depends: ${shlibs:Depends},
  python-paste,
  python-pastedeploy,
  python-crypto,
- python-dateutil,
  python-routes,
  python-sqlalchemy,
  python-webob,
@@ -87,8 +83,7 @@ Package: openstack-dashboard-apache
 Architecture: all
 Depends: libapache2-mod-wsgi (>=2.3),
  openstack-dashboard,
- ${misc:Depends},
- libapache2-mod-wsgi (>=2.3)
+ ${misc:Depends}
 Description: OpenStack Dashboard - Apache support
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
