@@ -30,3 +30,13 @@ override_dh_auto_clean:
 	rm -rf $(CURDIR)/horizon/build
 	rm -rf $(CURDIR)/horizon.egg-info
 	rm -rf $(CURDIR)/openstack_dashboard/openstack_dashboard.egg-info
+
+get-vcs-source:
+	git remote add upstream git://github.com/openstack/horizon.git || true
+	git fetch upstream
+	git archive --prefix=horizon-2012.1.1/ 2012.1.1 | xz >../horizon_2012.1.1.orig.tar.xz
+	if ! git checkout master ; then \
+		echo "No upstream branch: checking out" ; \
+		git checkout -b master upstream/master ; \
+	fi
+	git checkout debian/unstable
