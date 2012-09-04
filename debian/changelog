@@ -1,3 +1,11 @@
+horizon (2012.1.1-5) unstable; urgency=low
+
+  * Add the /static/horizon alias to the apache host definition. Without
+    it the javascript files cannot be found and most of the dashboard
+    functions are not working.
+
+ -- Loic Dachary (OuoU) <loic@debian.org>  Tue, 04 Sep 2012 13:47:54 +0200
+
 horizon (2012.1.1-4) unstable; urgency=high
 
   * CVE-2012-3540: added patch: Disallow login redirects to anywhere other than
