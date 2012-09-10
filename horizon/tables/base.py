@@ -110,6 +110,11 @@ class Column(html.HTMLElement):
                     ('off', False),
                 )
 
+    .. attribute::  display_choices
+
+        A tuple of tuples representing the possible values to substitute
+        the data when displayed in the column cell.
+
     .. attribute:: empty_value
 
         A string to be used for cells which have no data. Defaults to an
@@ -157,8 +162,8 @@ class Column(html.HTMLElement):
 
     def __init__(self, transform, verbose_name=None, sortable=False,
                  link=None, hidden=False, attrs=None, status=False,
-                 status_choices=None, empty_value=None, filters=None,
-                 classes=None):
+                 status_choices=None, display_choices=None,
+                 empty_value=None, filters=None, classes=None):
         self.classes = classes or getattr(self, "classes", [])
         super(Column, self).__init__()
         self.attrs.update(attrs or {})
@@ -183,6 +188,7 @@ class Column(html.HTMLElement):
         self.filters = filters or []
         if status_choices:
             self.status_choices = status_choices
+        self.display_choices = display_choices
 
         self.creation_counter = Column.creation_counter
         Column.creation_counter += 1
@@ -227,8 +233,16 @@ class Column(html.HTMLElement):
                 msg = termcolors.colorize(msg, **PALETTE['ERROR'])
                 LOG.warning(msg)
             data = None
-        for filter_func in self.filters:
-            data = filter_func(data)
+        display_value = None
+        if self.display_choices:
+            display_value = [display for (value, display) in
+                             self.display_choices
+                             if value.lower() == (data or '').lower()]
+        if display_value:
+            data = display_value[0]
+        else:
+            for filter_func in self.filters:
+                data = filter_func(data)
         self.table._data_cache[self][datum_id] = data
         return self.table._data_cache[self][datum_id]
 
@@ -544,6 +558,13 @@ class DataTableOptions(object):
         The name of the context variable which will contain the table when
         it is rendered. Defaults to ``"table"``.
 
+    .. attribute:: pagination_param
+
+        The name of the query string parameter which will be used when
+        paginating this table. When using multiple tables in a single
+        view this will need to be changed to differentiate between the
+        tables. Default: ``"marker"``.
+
     .. attribute:: status_columns
 
         A list or tuple of column names which represents the "state"
@@ -578,6 +599,7 @@ class DataTableOptions(object):
         self.row_actions = getattr(options, 'row_actions', [])
         self.row_class = getattr(options, 'row_class', Row)
         self.column_class = getattr(options, 'column_class', Column)
+        self.pagination_param = getattr(options, 'pagination_param', 'marker')
 
         # Set self.filter if we have any FilterActions
         filter_actions = [action for action in self.table_actions if
@@ -1023,6 +1045,10 @@ class DataTable(object):
         for APIs that use marker/limit-based paging.
         """
         return http.urlquote_plus(self.get_object_id(self.data[-1]))
+
+    def get_pagination_string(self):
+        """ Returns the query parameter string to paginate this table. """
+        return "=".join([self._meta.pagination_param, self.get_marker()])
 
     def calculate_row_status(self, statuses):
         """

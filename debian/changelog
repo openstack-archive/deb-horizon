@@ -1,3 +1,77 @@
+horizon (2012.1.1-5) unstable; urgency=low
+
+  * Add the /static/horizon alias to the apache host definition. Without
+    it the javascript files cannot be found and most of the dashboard
+    functions are not working.
+
+ -- Loic Dachary (OuoU) <loic@debian.org>  Tue, 04 Sep 2012 13:47:54 +0200
+
+horizon (2012.1.1-4) unstable; urgency=high
+
+  * CVE-2012-3540: added patch: Disallow login redirects to anywhere other than
+  the same origin (Closes: #686050).
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 28 Aug 2012 03:05:44 +0000
+
+horizon (2012.1.1-3) unstable; urgency=low
+
+  [ Thomas Goirand ]
+  * Added missing (build-)dependencies (took what was in the Ubuntu package and
+  which seems to be missing in Debian).
+  * Fixed missing license in debian/copyright.
+  * Added a get-vcs-source target in debian/rules.
+  * Fixed debian/copyright header.
+
+  [ Loic Dachary (OuoU) ]
+  * Add compression = xz to debian/gbp.conf
+
+ -- Thomas Goirand <zigo@debian.org>  Sun, 08 Jul 2012 18:05:14 +0000
+
+horizon (2012.1.1-2) unstable; urgency=low
+
+  * Add a /static alias to serve the static files. By default django is
+    configured in debug mode and will serve the static files. However,
+    when it is configured in production mode, it will no longer serve them
+    and it is expected that apache will take care of it. (Closes: #679440).
+  * Add Loic Dachary as Uploader
+
+ -- Loic Dachary (OuoU) <loic@debian.org>  Fri, 29 Jun 2012 10:23:33 +0200
+
+horizon (2012.1.1-1) unstable; urgency=low
+
+  [ Julien Danjou ]
+  * Remove useless dependency on openstackx
+  * Fix clean target
+
+  [ Mehdi Abaakouk ]
+  * New upsteam release
+  * Remove patches fixed upstream: CVE_2012-2094, CVE_2012-2144.
+  * Add gbp configuration file
+  * Clean horizon user home directory on purge. Closes: #668760
+  * Add Mehdi Abaakouk as Uploader
+
+ -- Julien Danjou <acid@debian.org>  Mon, 25 Jun 2012 13:13:35 +0200
+
+horizon (2012.1-4) unstable; urgency=low
+
+  * Fixed CVE_2012-2144. Closes: #671604
+
+ -- Ghe Rivero <ghe.rivero@stackops.com>  Sat, 05 May 2012 12:02:08 +0200
+
+horizon (2012.1-3) unstable; urgency=low
+
+  * Fixed CVE_2012-2094
+
+ -- Ghe Rivero <ghe.rivero@stackops.com>  Tue, 17 Apr 2012 19:38:18 +0200
+
+horizon (2012.1-2) unstable; urgency=low
+
+  * Make openstack-dashboard depends on the same version of
+    python-django-horizon, otherwise it just fails to work most of the
+    time, since upstream doesn't guarantee it'd work.
+
+ -- Julien Danjou <acid@debian.org>  Mon, 16 Apr 2012 16:11:45 +0200
+
 horizon (2012.1-1) unstable; urgency=low
 
   * New upstream release

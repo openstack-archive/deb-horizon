@@ -4,7 +4,7 @@ set -e
 
 case $1 in
     purge)
-        userdel horizon || true
+        userdel -r horizon || true
         groupdel horizon || true
         ;;
 esac
