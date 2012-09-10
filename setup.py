@@ -20,58 +20,64 @@
 #    under the License.
 
 import os
-import re
-from setuptools import setup, find_packages
-from horizon import version
 
+from distutils.core import setup
+from distutils.command.install import INSTALL_SCHEMES
+
+from horizon import version
+from horizon.openstack.common import setup as os_common_setup
+
+
+requires = os_common_setup.parse_requirements()
+depend_links = os_common_setup.parse_dependency_links()
+tests_require = os_common_setup.parse_requirements(['tools/test-requires'])
 
 ROOT = os.path.dirname(__file__)
-PIP_REQUIRES = os.path.join(ROOT, "tools", "pip-requires")
-TEST_REQUIRES = os.path.join(ROOT, "tools", "test-requires")
-
-
-def parse_requirements(*filenames):
-    """
-    We generate our install_requires from the pip-requires and test-requires
-    files so that we don't have to maintain the dependency definitions in
-    two places.
-    """
-    requirements = []
-    for f in filenames:
-        for line in open(f, 'r').read().split('\n'):
-            # Comment lines. Skip.
-            if re.match(r'(\s*#)|(\s*$)', line):
-                continue
-            # Editable matches. Put the egg name into our reqs list.
-            if re.match(r'\s*-e\s+', line):
-                pkg = re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line)
-                requirements.append("%s" % pkg)
-            # File-based installs not supported/needed. Skip.
-            elif re.match(r'\s*-f\s+', line):
-                pass
-            else:
-                requirements.append(line)
-    return requirements
-
-
-def parse_dependency_links(*filenames):
-    """
-    We generate our dependency_links from the pip-requires and test-requires
-    files for the dependencies pulled from github (prepended with -e).
-    """
-    dependency_links = []
-    for f in filenames:
-        for line in open(f, 'r').read().split('\n'):
-            if re.match(r'\s*-[ef]\s+', line):
-                line = re.sub(r'\s*-[ef]\s+', '', line)
-                line = re.sub(r'\s*git\+https', 'http', line)
-                line = re.sub(r'\.git#', '/tarball/master#', line)
-                dependency_links.append(line)
-    return dependency_links
+target_dirs = ['horizon', 'openstack_dashboard', 'bin']
 
 
 def read(fname):
     return open(os.path.join(ROOT, fname)).read()
+
+
+def split(path, result=None):
+    """
+    Split a path into components in a platform-neutral way.
+    """
+    if result is None:
+        result = []
+    head, tail = os.path.split(path)
+    if head == '':
+        return [tail] + result
+    if head == path:
+        return result
+    return split(head, [tail] + result)
+
+
+# Tell distutils not to put the data_files in platform-specific installation
+# locations. See here for an explanation:
+# https://groups.google.com/forum/#!topic/comp.lang.python/Nex7L-026uw
+for scheme in INSTALL_SCHEMES.values():
+    scheme['data'] = scheme['purelib']
+
+# Compile the list of packages available, because distutils doesn't have
+# an easy way to do this.
+packages, data_files = [], []
+root_dir = os.path.dirname(__file__)
+if root_dir != '':
+    os.chdir(root_dir)
+
+for target_dir in target_dirs:
+    for dirpath, dirnames, filenames in os.walk(target_dir):
+        # Ignore dirnames that start with '.'
+        for i, dirname in enumerate(dirnames):
+            if dirname.startswith('.'):
+                del dirnames[i]
+        if '__init__.py' in filenames:
+            packages.append('.'.join(split(dirpath)))
+        elif filenames:
+            data_files.append([dirpath, [os.path.join(dirpath, f)
+                               for f in filenames]])
 
 
 setup(name="horizon",
@@ -82,13 +88,15 @@ setup(name="horizon",
       long_description=read('README.rst'),
       author='OpenStack',
       author_email='horizon@lists.launchpad.net',
-      packages=find_packages(),
+      packages=packages,
+      data_files=data_files,
+      cmdclass=os_common_setup.get_cmdclass(),
       include_package_data=True,
+      install_requires=requires,
+      tests_require=tests_require,
+      dependency_links=depend_links,
       zip_safe=False,
-      install_requires=parse_requirements(PIP_REQUIRES),
-      tests_require=parse_requirements(TEST_REQUIRES),
-      dependency_links=parse_dependency_links(PIP_REQUIRES, TEST_REQUIRES),
-      classifiers=['Development Status :: 4 - Beta',
+      classifiers=['Development Status :: 5 - Production/Stable',
                    'Framework :: Django',
                    'Intended Audience :: Developers',
                    'License :: OSI Approved :: Apache Software License',

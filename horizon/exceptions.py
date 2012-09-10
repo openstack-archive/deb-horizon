@@ -19,18 +19,77 @@ Exceptions raised by the Horizon code and the machinery for handling them.
 """
 
 import logging
+import os
 import sys
 
 from django.conf import settings
-from django.contrib import messages
+from django.contrib.auth import logout
+from django.http import HttpRequest
+from django.utils import termcolors
 from django.utils.translation import ugettext as _
-from cloudfiles import errors as swiftclient
-from glance.common import exception as glanceclient
-from keystoneclient import exceptions as keystoneclient
-from novaclient import exceptions as novaclient
+from django.views.debug import SafeExceptionReporterFilter, CLEANSED_SUBSTITUTE
 
+from horizon import messages
 
 LOG = logging.getLogger(__name__)
+PALETTE = termcolors.PALETTES[termcolors.DEFAULT_PALETTE]
+
+
+class HorizonReporterFilter(SafeExceptionReporterFilter):
+    """ Error report filter that's always active, even in DEBUG mode. """
+    def is_active(self, request):
+        return True
+
+    # TODO(gabriel): This bugfix is cribbed from Django's code. When 1.4.1
+    # is available we can remove this code.
+    def get_traceback_frame_variables(self, request, tb_frame):
+        """
+        Replaces the values of variables marked as sensitive with
+        stars (*********).
+        """
+        # Loop through the frame's callers to see if the sensitive_variables
+        # decorator was used.
+        current_frame = tb_frame.f_back
+        sensitive_variables = None
+        while current_frame is not None:
+            if (current_frame.f_code.co_name == 'sensitive_variables_wrapper'
+                    and 'sensitive_variables_wrapper'
+                    in current_frame.f_locals):
+                # The sensitive_variables decorator was used, so we take note
+                # of the sensitive variables' names.
+                wrapper = current_frame.f_locals['sensitive_variables_wrapper']
+                sensitive_variables = getattr(wrapper,
+                                              'sensitive_variables',
+                                              None)
+                break
+            current_frame = current_frame.f_back
+
+        cleansed = []
+        if self.is_active(request) and sensitive_variables:
+            if sensitive_variables == '__ALL__':
+                # Cleanse all variables
+                for name, value in tb_frame.f_locals.items():
+                    cleansed.append((name, CLEANSED_SUBSTITUTE))
+                return cleansed
+            else:
+                # Cleanse specified variables
+                for name, value in tb_frame.f_locals.items():
+                    if name in sensitive_variables:
+                        value = CLEANSED_SUBSTITUTE
+                    elif isinstance(value, HttpRequest):
+                        # Cleanse the request's POST parameters.
+                        value = self.get_request_repr(value)
+                    cleansed.append((name, value))
+                return cleansed
+        else:
+            # Potentially cleanse only the request if it's one of the
+            # frame variables.
+            for name, value in tb_frame.f_locals.items():
+                if isinstance(value, HttpRequest):
+                    # Cleanse the request's POST parameters.
+                    value = self.get_request_repr(value)
+                cleansed.append((name, value))
+            return cleansed
 
 
 class HorizonException(Exception):
@@ -53,8 +112,8 @@ class Http302(HorizonException):
 class NotAuthorized(HorizonException):
     """
     Raised whenever a user attempts to access a resource which they do not
-    have role-based access to (such as when failing the
-    :func:`~horizon.decorators.require_roles` decorator).
+    have permission-based access to (such as when failing the
+    :func:`~horizon.decorators.require_perms` decorator).
 
     The included :class:`~horizon.middleware.HorizonMiddleware` catches
     ``NotAuthorized`` and handles it gracefully by displaying an error
@@ -106,8 +165,24 @@ class AlreadyExists(HorizonException):
     def __repr__(self):
         return self.msg % self.attrs
 
+    def __str__(self):
+        return self.msg % self.attrs
+
     def __unicode__(self):
         return _(self.msg) % self.attrs
+
+
+class WorkflowError(HorizonException):
+    """ Exception to be raised when something goes wrong in a workflow. """
+    pass
+
+
+class WorkflowValidationError(HorizonException):
+    """
+    Exception raised during workflow validation if required data is missing,
+    or existing data is not valid.
+    """
+    pass
 
 
 class HandledException(HorizonException):
@@ -121,38 +196,18 @@ class HandledException(HorizonException):
 
 HORIZON_CONFIG = getattr(settings, "HORIZON_CONFIG", {})
 EXCEPTION_CONFIG = HORIZON_CONFIG.get("exceptions", {})
-
-
-UNAUTHORIZED = (keystoneclient.Unauthorized,
-                keystoneclient.Forbidden,
-                novaclient.Unauthorized,
-                novaclient.Forbidden,
-                glanceclient.AuthorizationFailure,
-                glanceclient.NotAuthorized,
-                swiftclient.AuthenticationFailed,
-                swiftclient.AuthenticationError)
-UNAUTHORIZED += tuple(EXCEPTION_CONFIG.get('unauthorized', []))
-
-NOT_FOUND = (keystoneclient.NotFound,
-             novaclient.NotFound,
-             glanceclient.NotFound,
-             swiftclient.NoSuchContainer,
-             swiftclient.NoSuchObject)
-NOT_FOUND += tuple(EXCEPTION_CONFIG.get('not_found', []))
-
-
-# NOTE(gabriel): This is very broad, and may need to be dialed in.
-RECOVERABLE = (keystoneclient.ClientException,
-               # AuthorizationFailure is raised when Keystone is "unavailable".
-               keystoneclient.AuthorizationFailure,
-               novaclient.ClientException,
-               glanceclient.GlanceException,
-               swiftclient.Error,
-               AlreadyExists)
+UNAUTHORIZED = tuple(EXCEPTION_CONFIG.get('unauthorized', []))
+NOT_FOUND = tuple(EXCEPTION_CONFIG.get('not_found', []))
+RECOVERABLE = (AlreadyExists,)
 RECOVERABLE += tuple(EXCEPTION_CONFIG.get('recoverable', []))
 
 
-def handle(request, message=None, redirect=None, ignore=False, escalate=False):
+def error_color(msg):
+    return termcolors.colorize(msg, **PALETTE['ERROR'])
+
+
+def handle(request, message=None, redirect=None, ignore=False,
+           escalate=False, log_level=None, force_log=None):
     """ Centralized error handling for Horizon.
 
     Because Horizon consumes so many different APIs with completely
@@ -181,6 +236,9 @@ def handle(request, message=None, redirect=None, ignore=False, escalate=False):
     returned.
     """
     exc_type, exc_value, exc_traceback = sys.exc_info()
+    log_method = getattr(LOG, log_level or "exception")
+    force_log = force_log or os.environ.get("HORIZON_TEST_RUN", False)
+    force_silence = getattr(exc_value, "silence_logging", False)
 
     # Because the same exception may travel through this method more than
     # once (if it's re-raised) we may want to treat it differently
@@ -203,9 +261,10 @@ def handle(request, message=None, redirect=None, ignore=False, escalate=False):
     if issubclass(exc_type, UNAUTHORIZED):
         if ignore:
             return NotAuthorized
-        request.user_logout()
+        logout(request)
+        if not force_silence and not handled:
+            log_method(error_color("Unauthorized: %s" % exc_value))
         if not handled:
-            LOG.debug("Unauthorized: %s" % exc_value)
             # We get some pretty useless error messages back from
             # some clients, so let's define our own fallback.
             fallback = _("Unauthorized. Please try logging in again.")
@@ -214,8 +273,9 @@ def handle(request, message=None, redirect=None, ignore=False, escalate=False):
 
     if issubclass(exc_type, NOT_FOUND):
         wrap = True
+        if not force_silence and not handled and (not ignore or force_log):
+            log_method(error_color("Not Found: %s" % exc_value))
         if not ignore and not handled:
-            LOG.debug("Not Found: %s" % exc_value)
             messages.error(request, message or exc_value)
         if redirect:
             raise Http302(redirect)
@@ -224,8 +284,9 @@ def handle(request, message=None, redirect=None, ignore=False, escalate=False):
 
     if issubclass(exc_type, RECOVERABLE):
         wrap = True
+        if not force_silence and not handled and (not ignore or force_log):
+            log_method(error_color("Recoverable error: %s" % exc_value))
         if not ignore and not handled:
-            LOG.debug("Recoverable error: %s" % exc_value)
             messages.error(request, message or exc_value)
         if redirect:
             raise Http302(redirect)

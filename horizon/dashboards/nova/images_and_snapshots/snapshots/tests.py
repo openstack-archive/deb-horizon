@@ -20,7 +20,6 @@
 
 from django import http
 from django.core.urlresolvers import reverse
-from novaclient import exceptions as novaclient_exceptions
 from mox import IsA
 
 from horizon import api
@@ -43,29 +42,17 @@ class SnapshotsViewTests(test.TestCase):
         self.assertTemplateUsed(res,
                             'nova/images_and_snapshots/snapshots/create.html')
 
-    def test_create_snapshot_get_with_invalid_status(self):
-        server = self.servers.get(status='BUILD')
-        self.mox.StubOutWithMock(api, 'server_get')
-        api.server_get(IsA(http.HttpRequest), server.id).AndReturn(server)
-        self.mox.ReplayAll()
-
-        url = reverse('horizon:nova:images_and_snapshots:snapshots:create',
-                      args=[server.id])
-        res = self.client.get(url)
-        redirect = reverse("horizon:nova:instances_and_volumes:index")
-        self.assertRedirectsNoFollow(res, redirect)
-
     def test_create_get_server_exception(self):
         server = self.servers.first()
         self.mox.StubOutWithMock(api, 'server_get')
-        exc = novaclient_exceptions.ClientException('apiException')
-        api.server_get(IsA(http.HttpRequest), server.id).AndRaise(exc)
+        api.server_get(IsA(http.HttpRequest), server.id) \
+                    .AndRaise(self.exceptions.nova)
         self.mox.ReplayAll()
 
         url = reverse('horizon:nova:images_and_snapshots:snapshots:create',
                       args=[server.id])
         res = self.client.get(url)
-        redirect = reverse("horizon:nova:instances_and_volumes:index")
+        redirect = reverse("horizon:nova:instances:index")
         self.assertRedirectsNoFollow(res, redirect)
 
     def test_create_snapshot_post(self):
@@ -77,7 +64,6 @@ class SnapshotsViewTests(test.TestCase):
         api.server_get(IsA(http.HttpRequest), server.id).AndReturn(server)
         api.snapshot_create(IsA(http.HttpRequest), server.id, snapshot.name) \
                             .AndReturn(snapshot)
-        api.server_get(IsA(http.HttpRequest), server.id).AndReturn(server)
         self.mox.ReplayAll()
 
         formData = {'method': 'CreateSnapshot',
@@ -96,10 +82,8 @@ class SnapshotsViewTests(test.TestCase):
 
         self.mox.StubOutWithMock(api, 'server_get')
         self.mox.StubOutWithMock(api, 'snapshot_create')
-        api.server_get(IsA(http.HttpRequest), server.id).AndReturn(server)
-        exc = novaclient_exceptions.ClientException('apiException')
         api.snapshot_create(IsA(http.HttpRequest), server.id, snapshot.name) \
-                            .AndRaise(exc)
+                            .AndRaise(self.exceptions.nova)
         self.mox.ReplayAll()
 
         formData = {'method': 'CreateSnapshot',
@@ -109,5 +93,5 @@ class SnapshotsViewTests(test.TestCase):
         url = reverse('horizon:nova:images_and_snapshots:snapshots:create',
                       args=[server.id])
         res = self.client.post(url, formData)
-        redirect = reverse("horizon:nova:instances_and_volumes:index")
+        redirect = reverse("horizon:nova:instances:index")
         self.assertRedirectsNoFollow(res, redirect)

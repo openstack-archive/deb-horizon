@@ -35,7 +35,10 @@ class AccessAndSecurityTests(test.TestCase):
         self.mox.StubOutWithMock(api, 'tenant_floating_ip_list')
         self.mox.StubOutWithMock(api, 'security_group_list')
         self.mox.StubOutWithMock(api.nova, 'keypair_list')
+        self.mox.StubOutWithMock(api.nova, 'server_list')
 
+        api.nova.server_list(IsA(http.HttpRequest),
+                             all_tenants=True).AndReturn(self.servers.list())
         api.nova.keypair_list(IsA(http.HttpRequest)).AndReturn(keypairs)
         api.tenant_floating_ip_list(IsA(http.HttpRequest)) \
                                     .AndReturn(floating_ips)
@@ -54,7 +57,6 @@ class AccessAndSecurityTests(test.TestCase):
                               floating_ips)
 
     def test_association(self):
-        floating_ip = self.floating_ips.first()
         servers = self.servers.list()
 
         # Add duplicate instance name to test instance name with [IP]
@@ -65,23 +67,20 @@ class AccessAndSecurityTests(test.TestCase):
         server3.addresses['private'][0]['addr'] = "10.0.0.5"
         self.servers.add(server3)
 
-        self.mox.StubOutWithMock(api, 'tenant_floating_ip_get')
-        self.mox.StubOutWithMock(api, 'server_list')
-        api.tenant_floating_ip_get(IsA(http.HttpRequest),
-                                   floating_ip.id).AndReturn(floating_ip)
-        api.server_list(IsA(http.HttpRequest)).AndReturn(servers)
+        self.mox.StubOutWithMock(api.nova, 'tenant_floating_ip_list')
+        self.mox.StubOutWithMock(api.nova, 'server_list')
+        api.nova.tenant_floating_ip_list(IsA(http.HttpRequest)) \
+                .AndReturn(self.floating_ips.list())
+        api.nova.server_list(IsA(http.HttpRequest)).AndReturn(servers)
         self.mox.ReplayAll()
 
-        res = self.client.get(
-                             reverse("horizon:nova:access_and_security:"
-                                     "floating_ips:associate",
-                                     args=[floating_ip.id]))
+        res = self.client.get(reverse("horizon:nova:access_and_security:"
+                                      "floating_ips:associate"))
         self.assertTemplateUsed(res,
-                                'nova/access_and_security/'
-                                'floating_ips/associate.html')
+                        'nova/access_and_security/floating_ips/associate.html')
 
-        self.assertContains(res, '<option value="1">server_1 [1]'
-                            '</option>')
-        self.assertContains(res, '<option value="101">server_1 [101]'
-                            '</option>')
+        self.assertContains(res,
+                            '<option value="1">server_1 [1]</option>')
+        self.assertContains(res,
+                            '<option value="101">server_1 [101]</option>')
         self.assertContains(res, '<option value="2">server_2</option>')

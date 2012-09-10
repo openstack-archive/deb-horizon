@@ -16,11 +16,13 @@
 
 import logging
 
+from django.core.urlresolvers import reverse
+from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import tables
-from ...instances_and_volumes.volumes import tables as volume_tables
+from ...volumes import tables as volume_tables
 
 
 LOG = logging.getLogger(__name__)
@@ -34,11 +36,38 @@ class DeleteVolumeSnapshot(tables.DeleteAction):
         api.volume_snapshot_delete(request, obj_id)
 
 
+class CreateVolumeFromSnapshot(tables.LinkAction):
+    name = "create_from_snapshot"
+    verbose_name = _("Create Volume")
+    url = "horizon:nova:volumes:create"
+    classes = ("ajax-modal", "btn-camera")
+
+    def get_link_url(self, datum):
+        base_url = reverse(self.url)
+        params = urlencode({"snapshot_id": self.table.get_object_id(datum)})
+        return "?".join([base_url, params])
+
+    def allowed(self, request, volume=None):
+        return volume.status == "available" if volume else False
+
+
+class UpdateRow(tables.Row):
+    ajax = True
+
+    def get_data(self, request, snapshot_id):
+        snapshot = api.nova.volume_snapshot_get(request, snapshot_id)
+        return snapshot
+
+
 class VolumeSnapshotsTable(volume_tables.VolumesTableBase):
-    volume_id = tables.Column("volume_id", verbose_name=_("Volume ID"))
+    name = tables.Column("display_name", verbose_name=_("Name"))
+    volume_id = tables.Column("volume_id",
+                              verbose_name=_("Volume ID"))
 
     class Meta:
         name = "volume_snapshots"
         verbose_name = _("Volume Snapshots")
         table_actions = (DeleteVolumeSnapshot,)
-        row_actions = (DeleteVolumeSnapshot,)
+        row_actions = (CreateVolumeFromSnapshot, DeleteVolumeSnapshot)
+        row_class = UpdateRow
+        status_columns = ("status",)

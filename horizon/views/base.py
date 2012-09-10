@@ -14,9 +14,35 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django import shortcuts
 from django.views import generic
+from django.views.decorators import vary
 
+from openstack_auth.views import Login
+
+import horizon
 from horizon import exceptions
+
+
+def user_home(request):
+    """ Reversible named view to direct a user to the appropriate homepage. """
+    return shortcuts.redirect(horizon.get_user_home(request.user))
+
+
+def get_user_home(user):
+    if user.is_superuser:
+        return horizon.get_dashboard('syspanel').get_absolute_url()
+    return horizon.get_dashboard('nova').get_absolute_url()
+
+
+@vary.vary_on_cookie
+def splash(request):
+    if request.user.is_authenticated():
+        return shortcuts.redirect(get_user_home(request.user))
+    form = Login(request)
+    request.session.clear()
+    request.session.set_test_cookie()
+    return shortcuts.render(request, 'splash.html', {'form': form})
 
 
 class APIView(generic.TemplateView):

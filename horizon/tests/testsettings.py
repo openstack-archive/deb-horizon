@@ -23,28 +23,49 @@ import socket
 
 from django.utils.translation import ugettext_lazy as _
 
+from openstack_dashboard.exceptions import UNAUTHORIZED, RECOVERABLE, NOT_FOUND
+
 socket.setdefaulttimeout(1)
 
+LOGIN_URL = '/auth/login/'
+LOGOUT_URL = '/auth/logout/'
+LOGIN_REDIRECT_URL = '/'
+
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-DEBUG = True
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
 TESTSERVER = 'http://testserver'
+
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
 
 DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3'}}
 
+DEFAULT_EXCEPTION_REPORTER_FILTER = 'horizon.exceptions.HorizonReporterFilter'
+
 INSTALLED_APPS = (
     'django.contrib.sessions',
+    'django.contrib.staticfiles',
     'django.contrib.messages',
+    'django.contrib.humanize',
     'django_nose',
+    'openstack_auth',
+    'compressor',
     'horizon',
     'horizon.tests',
     'horizon.dashboards.nova',
     'horizon.dashboards.syspanel',
-    'horizon.dashboards.settings')
+    'horizon.dashboards.settings',
+    'horizon.tests.test_dashboards.cats',
+    'horizon.tests.test_dashboards.dogs'
+)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -59,42 +80,66 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'horizon.context_processors.horizon')
 
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    'horizon.loaders.TemplateLoader'
+)
+
+STATIC_URL = '/static/'
+
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 ROOT_URLCONF = 'horizon.tests.testurls'
 TEMPLATE_DIRS = (os.path.join(ROOT_PATH, 'tests', 'templates'))
 SITE_ID = 1
 SITE_BRANDING = 'OpenStack'
-SITE_NAME = 'openstack'
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--nocapture',
              '--nologcapture',
+             '--exclude-dir=horizon/conf/',
              '--cover-package=horizon',
              '--cover-inclusive']
-# For nose-selenium integration
-LIVE_SERVER_PORT = 8000
 
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_SECURE = False
+
+AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 
 HORIZON_CONFIG = {
-    'dashboards': ('nova', 'syspanel', 'settings',),
+    'dashboards': ('nova', 'syspanel', 'settings'),
     'default_dashboard': 'nova',
     "password_validator": {
         "regex": '^.{8,18}$',
         "help_text": _("Password must be between 8 and 18 characters.")
     },
+    'user_home': None,
+    'help_url': "http://docs.openstack.org",
+    'exceptions': {'recoverable': RECOVERABLE,
+                   'not_found': NOT_FOUND,
+                   'unauthorized': UNAUTHORIZED},
 }
+
+COMPRESS_ENABLED = False
+COMPRESS_OFFLINE = False
+COMPRESS_ROOT = "/tmp/"
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 
 AVAILABLE_REGIONS = [
     ('http://localhost:5000/v2.0', 'local'),
     ('http://remote:5000/v2.0', 'remote'),
 ]
 
-OPENSTACK_ADDRESS = "localhost"
-OPENSTACK_ADMIN_TOKEN = "openstack"
-OPENSTACK_KEYSTONE_URL = "http://%s:5000/v2.0" % OPENSTACK_ADDRESS
+OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v2.0"
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "Member"
 
 OPENSTACK_KEYSTONE_BACKEND = {
@@ -102,7 +147,10 @@ OPENSTACK_KEYSTONE_BACKEND = {
     'can_edit_user': True
 }
 
-# Silence logging output during tests.
+OPENSTACK_HYPERVISOR_FEATURES = {
+    'can_set_mount_point': True
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -110,27 +158,35 @@ LOGGING = {
         'null': {
             'level': 'DEBUG',
             'class': 'django.utils.log.NullHandler',
-            },
         },
+        'test': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        }
+    },
     'loggers': {
         'django.db.backends': {
             'handlers': ['null'],
             'propagate': False,
-            },
+        },
         'horizon': {
-            'handlers': ['null'],
+            'handlers': ['test'],
             'propagate': False,
         },
         'novaclient': {
-            'handlers': ['null'],
+            'handlers': ['test'],
             'propagate': False,
         },
         'keystoneclient': {
-            'handlers': ['null'],
+            'handlers': ['test'],
+            'propagate': False,
+        },
+        'glanceclient': {
+            'handlers': ['test'],
             'propagate': False,
         },
         'quantum': {
-            'handlers': ['null'],
+            'handlers': ['test'],
             'propagate': False,
         },
         'nose.plugins.manager': {

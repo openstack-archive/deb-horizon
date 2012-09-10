@@ -2,8 +2,10 @@ import logging
 
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.utils.http import urlencode
 
 from horizon import api
+from horizon import exceptions
 from horizon import tables
 
 from ..users.tables import UsersTable
@@ -12,18 +14,17 @@ from ..users.tables import UsersTable
 LOG = logging.getLogger(__name__)
 
 
-class ModifyQuotasLink(tables.LinkAction):
-    name = "quotas"
-    verbose_name = _("Modify Quotas")
-    url = "horizon:syspanel:projects:quotas"
-    classes = ("ajax-modal", "btn-edit")
-
-
 class ViewMembersLink(tables.LinkAction):
     name = "users"
     verbose_name = _("Modify Users")
-    url = "horizon:syspanel:projects:users"
-    classes = ("btn-download",)
+    url = "horizon:syspanel:projects:update"
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, project):
+        step = 'update_members'
+        base_url = reverse(self.url, args=[project.id])
+        param = urlencode({"step": step})
+        return "?".join([base_url, param])
 
 
 class UsageLink(tables.LinkAction):
@@ -33,18 +34,31 @@ class UsageLink(tables.LinkAction):
     classes = ("btn-stats",)
 
 
-class EditLink(tables.LinkAction):
+class CreateProject(tables.LinkAction):
+    name = "create"
+    verbose_name = _("Create Project")
+    url = "horizon:syspanel:projects:create"
+    classes = ("btn-launch", "ajax-modal",)
+
+
+class UpdateProject(tables.LinkAction):
     name = "update"
     verbose_name = _("Edit Project")
     url = "horizon:syspanel:projects:update"
     classes = ("ajax-modal", "btn-edit")
 
 
-class CreateLink(tables.LinkAction):
-    name = "create"
-    verbose_name = _("Create New Project")
-    url = "horizon:syspanel:projects:create"
-    classes = ("ajax-modal",)
+class ModifyQuotas(tables.LinkAction):
+    name = "quotas"
+    verbose_name = "Modify Quotas"
+    url = "horizon:syspanel:projects:update"
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, project):
+        step = 'update_quotas'
+        base_url = reverse(self.url, args=[project.id])
+        param = urlencode({"step": step})
+        return "?".join([base_url, param])
 
 
 class DeleteTenantsAction(tables.DeleteAction):
@@ -70,18 +84,19 @@ class TenantFilterAction(tables.FilterAction):
 
 
 class TenantsTable(tables.DataTable):
-    id = tables.Column('id', verbose_name=_('Id'))
     name = tables.Column('name', verbose_name=_('Name'))
     description = tables.Column(lambda obj: getattr(obj, 'description', None),
                                 verbose_name=_('Description'))
+    id = tables.Column('id', verbose_name=_('Project ID'))
     enabled = tables.Column('enabled', verbose_name=_('Enabled'), status=True)
 
     class Meta:
         name = "tenants"
         verbose_name = _("Projects")
-        row_actions = (EditLink, UsageLink, ViewMembersLink, ModifyQuotasLink,
-                       DeleteTenantsAction)
-        table_actions = (TenantFilterAction, CreateLink, DeleteTenantsAction)
+        row_actions = (ViewMembersLink, UpdateProject, UsageLink,
+                       ModifyQuotas, DeleteTenantsAction)
+        table_actions = (TenantFilterAction, CreateProject,
+                         DeleteTenantsAction)
 
 
 class RemoveUserAction(tables.BatchAction):
@@ -97,12 +112,29 @@ class RemoveUserAction(tables.BatchAction):
         api.keystone.remove_tenant_user(request, tenant_id, user_id)
 
 
+class ProjectUserRolesColumn(tables.Column):
+    def get_raw_data(self, user):
+        request = self.table.request
+        try:
+            roles = api.keystone.roles_for_user(request,
+                                                user.id,
+                                                self.table.kwargs["tenant_id"])
+        except:
+            roles = []
+            exceptions.handle(request,
+                              _("Unable to retrieve role information."))
+        return ", ".join([role.name for role in roles])
+
+
 class TenantUsersTable(UsersTable):
+    roles = ProjectUserRolesColumn("roles", verbose_name=_("Roles"))
+
     class Meta:
         name = "tenant_users"
         verbose_name = _("Users For Project")
         table_actions = (RemoveUserAction,)
         row_actions = (RemoveUserAction,)
+        columns = ("name", "email", "id", "roles", "enabled")
 
 
 class AddUserAction(tables.LinkAction):
@@ -122,3 +154,4 @@ class AddUsersTable(UsersTable):
         verbose_name = _("Add New Users")
         table_actions = ()
         row_actions = (AddUserAction,)
+        columns = ("name", "email", "id", "enabled")

@@ -24,9 +24,7 @@ Views for Instances and Volumes.
 """
 import logging
 
-from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
-from novaclient import exceptions as novaclient_exceptions
 
 from horizon import api
 from horizon import exceptions
@@ -55,19 +53,31 @@ class IndexView(tables.MultiTableView):
     def get_security_groups_data(self):
         try:
             security_groups = api.security_group_list(self.request)
-        except novaclient_exceptions.ClientException, e:
+        except:
             security_groups = []
-            LOG.exception("ClientException in security_groups index")
-            messages.error(self.request,
-                           _('Error fetching security_groups: %s') % e)
+            exceptions.handle(self.request,
+                              _('Unable to retrieve security groups.'))
         return security_groups
 
     def get_floating_ips_data(self):
         try:
             floating_ips = api.tenant_floating_ip_list(self.request)
-        except novaclient_exceptions.ClientException, e:
+        except:
             floating_ips = []
-            LOG.exception("ClientException in floating ip index")
-            messages.error(self.request,
-                        _('Error fetching floating ips: %s') % e)
+            exceptions.handle(self.request,
+                              _('Unable to retrieve floating IP addresses.'))
+
+        instances = []
+        try:
+            instances = api.nova.server_list(self.request, all_tenants=True)
+        except:
+            exceptions.handle(self.request,
+                        _('Unable to retrieve instance list.'))
+
+        instances_dict = dict([(obj.id, obj) for obj in instances])
+
+        for ip in floating_ips:
+            ip.instance_name = instances_dict[ip.instance_id].name \
+                if ip.instance_id in instances_dict else None
+
         return floating_ips

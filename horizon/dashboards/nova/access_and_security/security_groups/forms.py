@@ -18,23 +18,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
-from django import shortcuts
-from django.contrib import messages
 from django.core import validators
+from django.core.urlresolvers import reverse
 from django.forms import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from novaclient import exceptions as novaclient_exceptions
 
 from horizon import api
 from horizon import exceptions
 from horizon import forms
-from horizon.utils.validators import validate_ipv4_cidr
+from horizon import messages
 from horizon.utils.validators import validate_port_range
-
-
-LOG = logging.getLogger(__name__)
+from horizon.utils import fields
 
 
 class CreateGroup(forms.SelfHandlingForm):
@@ -44,15 +38,18 @@ class CreateGroup(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            api.security_group_create(request,
-                                      data['name'],
-                                      data['description'])
+            sg = api.security_group_create(request,
+                                           data['name'],
+                                           data['description'])
             messages.success(request,
-                             _('Successfully created security_group: %s')
-                                    % data['name'])
+                             _('Successfully created security group: %s')
+                               % data['name'])
+            return sg
         except:
-            exceptions.handle(request, _('Unable to create security group.'))
-        return shortcuts.redirect('horizon:nova:access_and_security:index')
+            redirect = reverse("horizon:nova:access_and_security:index")
+            exceptions.handle(request,
+                              _('Unable to create security group.'),
+                              redirect=redirect)
 
 
 class AddRule(forms.SelfHandlingForm):
@@ -60,6 +57,8 @@ class AddRule(forms.SelfHandlingForm):
                                     choices=[('tcp', 'TCP'),
                                              ('udp', 'UDP'),
                                              ('icmp', 'ICMP')],
+                                    help_text=_("The protocol which this "
+                                                "rule should be applied to."),
                                     widget=forms.Select(attrs={'class':
                                                                'switchable'}))
     from_port = forms.IntegerField(label=_("From Port"),
@@ -81,26 +80,31 @@ class AddRule(forms.SelfHandlingForm):
                                                'data-icmp': _('Code')}),
                                  validators=[validate_port_range])
 
-    source_group = forms.ChoiceField(label=_('Source Group'), required=False)
-    cidr = forms.CharField(label=_("CIDR"),
+    source_group = forms.ChoiceField(label=_('Source Group'),
+                                     required=False,
+                                     help_text=_("To specify an allowed IP "
+                                                 "range, select CIDR. To "
+                                                 "allow access from all "
+                                                 "members of another security "
+                                                 "group select Source Group."))
+    cidr = fields.IPField(label=_("CIDR"),
                            required=False,
                            initial="0.0.0.0/0",
                            help_text=_("Classless Inter-Domain Routing "
                                        "(e.g. 192.168.0.0/24)"),
-                           validators=[validate_ipv4_cidr])
+                           version=fields.IPv4 | fields.IPv6,
+                           mask=True)
 
     security_group_id = forms.IntegerField(widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
+        sg_list = kwargs.pop('sg_list', [])
         super(AddRule, self).__init__(*args, **kwargs)
-        initials = kwargs.get("initial", {})
-        current_group_id = initials.get('security_group_id', 0)
-        security_groups = initials.get('security_group_list', [])
-        security_groups_choices = [("", "CIDR")]  # default choice is CIDR
-        group_choices = [s for s in security_groups
-                         if str(s[0]) != current_group_id]
-        if len(group_choices):  # add group choice if available
-            security_groups_choices.append(('Security Group', group_choices))
+        # Determine if there are security groups available for the
+        # source group option; add the choices and enable the option if so.
+        security_groups_choices = [("", "CIDR")]
+        if sg_list:
+            security_groups_choices.append(('Security Group', sg_list))
         self.fields['source_group'].choices = security_groups_choices
 
     def clean(self):
@@ -108,18 +112,33 @@ class AddRule(forms.SelfHandlingForm):
         from_port = cleaned_data.get("from_port", None)
         to_port = cleaned_data.get("to_port", None)
         cidr = cleaned_data.get("cidr", None)
+        ip_proto = cleaned_data.get('ip_protocol', None)
         source_group = cleaned_data.get("source_group", None)
 
-        if from_port == None:
-            msg = _('The "from" port number is invalid.')
-            raise ValidationError(msg)
-        if to_port == None:
-            msg = _('The "to" port number is invalid.')
-            raise ValidationError(msg)
-        if to_port < from_port:
-            msg = _('The "to" port number must be greater than or equal to '
-                    'the "from" port number.')
-            raise ValidationError(msg)
+        if ip_proto == 'icmp':
+            if from_port is None:
+                msg = _('The ICMP type is invalid.')
+                raise ValidationError(msg)
+            if to_port is None:
+                msg = _('The ICMP code is invalid.')
+                raise ValidationError(msg)
+            if from_port not in xrange(-1, 256):
+                msg = _('The ICMP type not in range (-1, 255)')
+                raise ValidationError(msg)
+            if to_port not in xrange(-1, 256):
+                msg = _('The ICMP code not in range (-1, 255)')
+                raise ValidationError(msg)
+        else:
+            if from_port is None:
+                msg = _('The "from" port number is invalid.')
+                raise ValidationError(msg)
+            if to_port is None:
+                msg = _('The "to" port number is invalid.')
+                raise ValidationError(msg)
+            if to_port < from_port:
+                msg = _('The "to" port number must be greater than '
+                        'or equal to the "from" port number.')
+                raise ValidationError(msg)
 
         if source_group and cidr != self.fields['cidr'].initial:
             # Specifying a source group *and* a custom CIDR is invalid.
@@ -144,10 +163,11 @@ class AddRule(forms.SelfHandlingForm):
                                                   data['to_port'],
                                                   data['cidr'],
                                                   data['source_group'])
-            messages.success(request, _('Successfully added rule: %s') \
-                                    % unicode(rule))
-        except novaclient_exceptions.ClientException, e:
-            LOG.exception("ClientException in AddRule")
-            messages.error(request, _('Error adding rule security group: %s')
-                                     % e.message)
-        return shortcuts.redirect("horizon:nova:access_and_security:index")
+            messages.success(request,
+                             _('Successfully added rule: %s') % unicode(rule))
+            return rule
+        except:
+            redirect = reverse("horizon:nova:access_and_security:index")
+            exceptions.handle(request,
+                              _('Unable to add rule to security group.'),
+                              redirect=redirect)

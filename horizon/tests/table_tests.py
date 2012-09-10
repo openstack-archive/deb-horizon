@@ -19,6 +19,8 @@ from django import shortcuts
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from mox import IsA
+
 from horizon import tables
 from horizon import test
 
@@ -51,11 +53,21 @@ TEST_DATA_3 = (
     FakeObject('1', 'object_1', 'value_1', 'up', 'optional_1', 'excluded_1'),
 )
 
+TEST_DATA_4 = (
+    FakeObject('1', 'object_1', 2, 'up'),
+    FakeObject('2', 'object_2', 4, 'up'),
+)
+
+TEST_DATA_5 = (
+    FakeObject('1', 'object_1', 'A Value That is longer than 35 characters!',
+               'down', 'optional_1'),
+)
+
 
 class MyLinkAction(tables.LinkAction):
     name = "login"
     verbose_name = "Log In"
-    url = "horizon:auth_login"
+    url = "login"
     attrs = {
         "class": "ajax-modal",
     }
@@ -138,16 +150,18 @@ def get_name(obj):
 
 
 def get_link(obj):
-    return reverse('horizon:auth_login')
+    return reverse('login')
 
 
 class MyTable(tables.DataTable):
-    id = tables.Column('id', hidden=True)
+    id = tables.Column('id', hidden=True, sortable=False)
     name = tables.Column(get_name, verbose_name="Verbose Name", sortable=True)
     value = tables.Column('value',
                           sortable=True,
                           link='http://example.com/',
-                          attrs={'class': 'green blue'})
+                          attrs={'class': 'green blue'},
+                          summation="average",
+                          truncate=35)
     status = tables.Column('status', link=get_link)
     optional = tables.Column('optional', empty_value='N/A')
     excluded = tables.Column('excluded')
@@ -161,6 +175,16 @@ class MyTable(tables.DataTable):
         column_class = MyColumn
         table_actions = (MyFilterAction, MyAction, MyBatchAction)
         row_actions = (MyAction, MyLinkAction, MyBatchAction, MyToggleAction)
+
+
+class NoActionsTable(tables.DataTable):
+    id = tables.Column('id')
+
+    class Meta:
+        name = "no_actions_table"
+        verbose_name = _("No Actions Table")
+        table_actions = ()
+        row_actions = ()
 
 
 class DataTableTests(test.TestCase):
@@ -335,7 +359,7 @@ class DataTableTests(test.TestCase):
         self.assertEqual(row3.cells['optional'].value, "N/A")
         # classes
         self.assertEqual(value_col.get_final_attrs().get('class', ""),
-                         "green blue sortable")
+                         "green blue sortable anchor normal_column")
         # status
         cell_status = row.cells['status'].status
         self.assertEqual(cell_status, True)
@@ -372,6 +396,14 @@ class DataTableTests(test.TestCase):
         self.assertEqual(cell_status, True)
         self.assertEqual(row.cells['status'].get_status_class(cell_status),
                          'status_up')
+
+    def test_table_column_truncation(self):
+        self.table = MyTable(self.request, TEST_DATA_5)
+        row = self.table.get_rows()[0]
+
+        self.assertEqual(len(row.cells['value'].data), 35)
+        self.assertEqual(row.cells['value'].data,
+                         u'A Value That is longer than 35 c...')
 
     def test_table_rendering(self):
         self.table = MyTable(self.request, TEST_DATA)
@@ -582,3 +614,62 @@ class DataTableTests(test.TestCase):
                             id(t2cols[0].table))
         self.assertNotEqual(id(t1cols[0].table._data_cache),
                             id(t2cols[0].table._data_cache))
+
+    def test_summation_row(self):
+        # Test with the "average" method.
+        table = MyTable(self.request, TEST_DATA_4)
+        res = http.HttpResponse(table.render())
+        self.assertContains(res, '<tr class="summation"', 1)
+        self.assertContains(res, '<td>Summary</td>', 1)
+        self.assertContains(res, '<td>3.0</td>', 1)
+
+        # Test again with the "sum" method.
+        table.columns['value'].summation = "sum"
+        res = http.HttpResponse(table.render())
+        self.assertContains(res, '<tr class="summation"', 1)
+        self.assertContains(res, '<td>Summary</td>', 1)
+        self.assertContains(res, '<td>6</td>', 1)
+
+        # One last test with no summation.
+        table.columns['value'].summation = None
+        table.needs_summary_row = False
+        res = http.HttpResponse(table.render())
+        self.assertNotContains(res, '<tr class="summation"')
+        self.assertNotContains(res, '<td>3.0</td>')
+        self.assertNotContains(res, '<td>6</td>')
+
+    def test_table_action_attributes(self):
+        table = MyTable(self.request, TEST_DATA)
+        self.assertTrue(table.has_actions)
+        self.assertTrue(table.needs_form_wrapper)
+        res = http.HttpResponse(table.render())
+        self.assertContains(res, "<form")
+
+        table = MyTable(self.request, TEST_DATA, needs_form_wrapper=False)
+        self.assertTrue(table.has_actions)
+        self.assertFalse(table.needs_form_wrapper)
+        res = http.HttpResponse(table.render())
+        self.assertNotContains(res, "<form")
+
+        table = NoActionsTable(self.request, TEST_DATA)
+        self.assertFalse(table.has_actions)
+        self.assertFalse(table.needs_form_wrapper)
+        res = http.HttpResponse(table.render())
+        self.assertNotContains(res, "<form")
+
+    def test_table_action_object_display_is_none(self):
+        action_string = "my_table__toggle__1"
+        req = self.factory.post('/my_url/', {'action': action_string})
+        self.table = MyTable(req, TEST_DATA)
+
+        self.mox.StubOutWithMock(self.table, 'get_object_display')
+        self.table.get_object_display(IsA(FakeObject)).AndReturn(None)
+        self.mox.ReplayAll()
+
+        self.assertEqual(self.table.parse_action(action_string),
+                         ('my_table', 'toggle', '1'))
+        handled = self.table.maybe_handle()
+        self.assertEqual(handled.status_code, 302)
+        self.assertEqual(handled["location"], "/my_url/")
+        self.assertEqual(list(req._messages)[0].message,
+                        u"Downed Item: N/A")

@@ -1,3 +1,4 @@
+from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import timesince, floatformat
 
@@ -19,13 +20,14 @@ class BaseUsageTable(tables.DataTable):
     disk = tables.Column('local_gb', verbose_name=_("Disk"))
     memory = tables.Column('memory_mb',
                            verbose_name=_("RAM"),
-                           filters=(mbformat,))
+                           filters=(mbformat,),
+                           attrs={"data-type": "size"})
     hours = tables.Column('vcpu_hours', verbose_name=_("VCPU Hours"),
                           filters=(lambda v: floatformat(v, 2),))
 
 
 class GlobalUsageTable(BaseUsageTable):
-    tenant = tables.Column('tenant_id', verbose_name=_("Project ID"))
+    tenant = tables.Column('tenant_name', verbose_name=_("Project Name"))
     disk_hours = tables.Column('disk_gb_hours',
                                verbose_name=_("Disk GB Hours"),
                                filters=(lambda v: floatformat(v, 2),))
@@ -42,14 +44,24 @@ class GlobalUsageTable(BaseUsageTable):
         multi_select = False
 
 
+def get_instance_link(datum):
+    view = "horizon:nova:instances:detail"
+    if datum.get('instance_id', False):
+        return urlresolvers.reverse(view, args=(datum.get('instance_id'),))
+    else:
+        return None
+
+
 class TenantUsageTable(BaseUsageTable):
-    instance = tables.Column('name', verbose_name=_("Instance Name"))
+    instance = tables.Column('name',
+                             verbose_name=_("Instance Name"),
+                             link=get_instance_link)
     uptime = tables.Column('uptime_at',
                            verbose_name=_("Uptime"),
                            filters=(timesince,))
 
     def get_object_id(self, datum):
-        return id(datum)
+        return datum.get('instance_id', id(datum))
 
     class Meta:
         name = "tenant_usage"

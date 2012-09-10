@@ -19,13 +19,13 @@ import new
 
 from django import shortcuts
 from django.conf import settings
-from django.contrib import messages
 from django.core import urlresolvers
 from django.utils.functional import Promise
 from django.utils.translation import string_concat, ugettext_lazy as _
 
 from horizon import exceptions
-from horizon.utils import html
+from horizon import messages
+from horizon.utils import html, functions
 
 
 LOG = logging.getLogger(__name__)
@@ -45,6 +45,21 @@ class BaseAction(html.HTMLElement):
     def __init__(self, datum=None):
         super(BaseAction, self).__init__()
         self.datum = datum
+
+    def data_type_matched(self, datum):
+        """ Method to see if the action is allowed for a certain type of data.
+            Only affects mixed data type tables.
+        """
+        if datum:
+            action_data_types = getattr(self, "allowed_data_types", [])
+            # If the data types of this action is empty, we assume it accepts
+            # all kinds of data and this method will return True.
+            if action_data_types:
+                datum_type = getattr(datum, self.table._meta.data_type_name,
+                                     None)
+                if datum_type and (datum_type not in action_data_types):
+                    return False
+        return True
 
     def allowed(self, request, datum):
         """ Determine whether this action is allowed for the current request.
@@ -130,6 +145,15 @@ class Action(BaseAction):
         to bypass any API calls and processing which would otherwise be
         required to load the table.
 
+    .. attribute:: allowed_data_types
+
+        A list that contains the allowed data types of the action.  If the
+        datum's type is in this list, the action will be shown on the row
+        for the datum.
+
+        Default to be an empty list (``[]``). When set to empty, the action
+        will accept any kind of data.
+
     At least one of the following methods must be defined:
 
     .. method:: single(self, data_table, request, object_id)
@@ -154,7 +178,7 @@ class Action(BaseAction):
     def __init__(self, verbose_name=None, verbose_name_plural=None,
                  single_func=None, multiple_func=None, handle_func=None,
                  handles_multiple=False, attrs=None, requires_input=True,
-                 datum=None):
+                 allowed_data_types=[], datum=None):
         super(Action, self).__init__(datum=datum)
         # Priority: constructor, class-defined, fallback
         self.verbose_name = verbose_name or getattr(self, 'verbose_name',
@@ -168,6 +192,9 @@ class Action(BaseAction):
         self.requires_input = getattr(self,
                                       "requires_input",
                                       requires_input)
+        self.allowed_data_types = getattr(self, "allowed_data_types",
+                                          allowed_data_types)
+
         if attrs:
             self.attrs.update(attrs)
 
@@ -229,19 +256,31 @@ class LinkAction(BaseAction):
         A string or a callable which resolves to a url to be used as the link
         target. You must either define the ``url`` attribute or a override
         the ``get_link_url`` method on the class.
+
+    .. attribute:: allowed_data_types
+
+        A list that contains the allowed data types of the action.  If the
+        datum's type is in this list, the action will be shown on the row
+        for the datum.
+
+        Defaults to be an empty list (``[]``). When set to empty, the action
+        will accept any kind of data.
     """
     method = "GET"
     bound_url = None
 
-    def __init__(self, verbose_name=None, url=None, attrs=None):
+    def __init__(self, verbose_name=None, allowed_data_types=[],
+                 url=None, attrs=None):
         super(LinkAction, self).__init__()
         self.verbose_name = verbose_name or getattr(self,
-                                            "verbose_name",
-                                            self.name.title())
+                                                    "verbose_name",
+                                                    self.name.title())
         self.url = getattr(self, "url", url)
         if not self.verbose_name:
             raise NotImplementedError('A LinkAction object must have a '
                                       'verbose_name attribute.')
+        self.allowed_data_types = getattr(self, "allowed_data_types",
+                                          allowed_data_types)
         if attrs:
             self.attrs.update(attrs)
 
@@ -316,14 +355,36 @@ class FilterAction(BaseAction):
         classes += ("btn-search",)
         return classes
 
+    def assign_type_string(self, table, data, type_string):
+        for datum in data:
+            setattr(datum, table._meta.data_type_name, type_string)
+
+    def data_type_filter(self, table, data, filter_string):
+        filtered_data = []
+        for data_type in table.data_types:
+            func_name = "filter_%s_data" % data_type
+            filter_func = getattr(self, func_name, None)
+            if not filter_func and not callable(filter_func):
+                # The check of filter function implementation should happen
+                # in the __init__. However, the current workflow of DataTable
+                # and actions won't allow it. Need to be fixed in the future.
+                cls_name = self.__class__.__name__
+                raise NotImplementedError("You must define a %s method "
+                                            "for %s data type in %s." %
+                                            (func_name, data_type, cls_name))
+            _data = filter_func(table, data, filter_string)
+            self.assign_type_string(table, _data, data_type)
+            filtered_data.extend(_data)
+        return filtered_data
+
     def filter(self, table, data, filter_string):
         """ Provides the actual filtering logic.
 
         This method must be overridden by subclasses and return
         the filtered data.
         """
-        raise NotImplementedError("The filter method has not been implemented "
-                                  "by %s." % self.__class__)
+        raise NotImplementedError("The filter method has not been "
+                                  "implemented by %s." % self.__class__)
 
 
 class BatchAction(Action):
@@ -377,6 +438,8 @@ class BatchAction(Action):
                                     self._conjugate())
         self.verbose_name_plural = getattr(self, "verbose_name_plural",
                                            self._conjugate('plural'))
+        # Keep record of successfully handled objects
+        self.success_ids = []
         super(BatchAction, self).__init__()
 
     def _allowed(self, request, datum=None):
@@ -402,7 +465,8 @@ class BatchAction(Action):
             data_type = self.data_type_singular
         else:
             data_type = self.data_type_plural
-        return string_concat(action, ' ', data_type)
+        return _("%(action)s %(data_type)s") % {'action': action,
+                                                'data_type': data_type}
 
     def action(self, request, datum_id):
         """
@@ -435,7 +499,7 @@ class BatchAction(Action):
         action_not_allowed = []
         for datum_id in obj_ids:
             datum = table.get_object_by_id(datum_id)
-            datum_display = table.get_object_display(datum)
+            datum_display = table.get_object_display(datum) or _("N/A")
             if not table._filter_action(self, request, datum):
                 action_not_allowed.append(datum_display)
                 LOG.info('Permission denied to %s: "%s"' %
@@ -446,6 +510,7 @@ class BatchAction(Action):
                 #Call update to invoke changes if needed
                 self.update(request, datum)
                 action_success.append(datum_display)
+                self.success_ids.append(datum_id)
                 LOG.info('%s: "%s"' %
                          (self._conjugate(past=True), datum_display))
             except:
@@ -460,19 +525,19 @@ class BatchAction(Action):
         if action_not_allowed:
             msg = _('You do not have permission to %(action)s: %(objs)s')
             params = {"action": self._conjugate(action_not_allowed).lower(),
-                      "objs": ", ".join(action_not_allowed)}
+                      "objs": functions.lazy_join(", ", action_not_allowed)}
             messages.error(request, msg % params)
             success_message_level = messages.info
         if action_failure:
             msg = _('Unable to %(action)s: %(objs)s')
             params = {"action": self._conjugate(action_failure).lower(),
-                      "objs": ", ".join(action_failure)}
+                      "objs": functions.lazy_join(", ", action_failure)}
             messages.error(request, msg % params)
             success_message_level = messages.info
         if action_success:
             msg = _('%(action)s: %(objs)s')
             params = {"action": self._conjugate(action_success, True),
-                      "objs": ", ".join(action_success)}
+                      "objs": functions.lazy_join(", ", action_success)}
             success_message_level(request, msg % params)
 
         return shortcuts.redirect(self.get_success_url(request))

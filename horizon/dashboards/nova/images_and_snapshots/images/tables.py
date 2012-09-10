@@ -16,7 +16,9 @@
 
 import logging
 
+from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
+from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
@@ -24,6 +26,19 @@ from horizon import tables
 
 
 LOG = logging.getLogger(__name__)
+
+
+class LaunchImage(tables.LinkAction):
+    name = "launch_image"
+    verbose_name = _("Launch")
+    url = "horizon:nova:instances:launch"
+    classes = ("btn-launch", "ajax-modal")
+
+    def get_link_url(self, datum):
+        base_url = reverse(self.url)
+        params = urlencode({"source_type": "image_id",
+                            "source_id": self.table.get_object_id(datum)})
+        return "?".join([base_url, params])
 
 
 class DeleteImage(tables.DeleteAction):
@@ -40,16 +55,11 @@ class DeleteImage(tables.DeleteAction):
         api.image_delete(request, obj_id)
 
 
-class LaunchImage(tables.LinkAction):
-    name = "launch"
-    verbose_name = _("Launch")
-    url = "horizon:nova:images_and_snapshots:images:launch"
-    classes = ("ajax-modal", "btn-launch")
-
-    def allowed(self, request, image=None):
-        if image:
-            return image.status in ('active',)
-        return False
+class CreateImage(tables.LinkAction):
+    name = "create"
+    verbose_name = _("Create Image")
+    url = "horizon:nova:images_and_snapshots:images:create"
+    classes = ("ajax-modal", "btn-create")
 
 
 class EditImage(tables.LinkAction):
@@ -60,43 +70,65 @@ class EditImage(tables.LinkAction):
 
     def allowed(self, request, image=None):
         if image:
-            return image.owner == request.user.tenant_id
+            return image.status in ("active",) and \
+                image.owner == request.user.tenant_id
         # We don't have bulk editing, so if there isn't an image that's
         # authorized, don't allow the action.
         return False
 
 
 def get_image_type(image):
-    return getattr(image.properties, "image_type", "Image")
+    return getattr(image, "properties", {}).get("image_type", _("Image"))
 
 
-def get_container_format(image):
-    container_format = getattr(image, "container_format", "")
+def get_format(image):
+    format = getattr(image, "disk_format", "")
     # The "container_format" attribute can actually be set to None,
     # which will raise an error if you call upper() on it.
-    if container_format is not None:
-        return container_format.upper()
+    if format is not None:
+        return format.upper()
+
+
+class UpdateRow(tables.Row):
+    ajax = True
+
+    def get_data(self, request, image_id):
+        image = api.image_get(request, image_id)
+        return image
 
 
 class ImagesTable(tables.DataTable):
-    name = tables.Column("name", link="horizon:nova:images_and_snapshots:" \
-                                      "images:detail",
+    STATUS_CHOICES = (
+        ("active", True),
+        ("saving", None),
+        ("queued", None),
+        ("pending_delete", None),
+        ("killed", False),
+        ("deleted", False),
+    )
+    name = tables.Column("name",
+                         link=("horizon:nova:images_and_snapshots:"
+                               "images:detail"),
                          verbose_name=_("Image Name"))
     image_type = tables.Column(get_image_type,
                                verbose_name=_("Type"),
                                filters=(filters.title,))
-    status = tables.Column("status", filters=(filters.title,),
-                           verbose_name=_("Status"))
+    status = tables.Column("status",
+                           filters=(filters.title,),
+                           verbose_name=_("Status"),
+                           status=True,
+                           status_choices=STATUS_CHOICES)
     public = tables.Column("is_public",
                            verbose_name=_("Public"),
                            empty_value=False,
                            filters=(filters.yesno, filters.capfirst))
-    container_format = tables.Column(get_container_format,
-                                     verbose_name=_("Container Format"))
+    disk_format = tables.Column(get_format, verbose_name=_("Format"))
 
     class Meta:
         name = "images"
+        row_class = UpdateRow
+        status_columns = ["status"]
         verbose_name = _("Images")
-        table_actions = (DeleteImage,)
-        row_actions = (LaunchImage, EditImage, DeleteImage)
+        table_actions = (CreateImage, DeleteImage,)
+        row_actions = (LaunchImage, EditImage, DeleteImage,)
         pagination_param = "image_marker"

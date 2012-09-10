@@ -16,6 +16,8 @@
 
 from django.conf.urls.defaults import patterns, url
 
+from .views import OpenRCView
 
-urlpatterns = patterns('horizon.dashboards.settings.project.views',
-    url(r'^$', 'index', name='index'))
+
+urlpatterns = patterns('',
+    url(r'^$', OpenRCView.as_view(), name='index'))

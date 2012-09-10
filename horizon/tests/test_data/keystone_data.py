@@ -12,7 +12,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from datetime import timedelta
+
 from django.conf import settings
+from django.utils import datetime_safe
+
 from keystoneclient.v2_0 import users, tenants, tokens, roles, ec2
 
 from .utils import TestDataContainer
@@ -103,12 +107,13 @@ def data(TEST):
                  'name': 'test_user',
                  'email': 'test@example.com',
                  'password': 'password',
-                 'token': 'test_token'}
-    user = users.User(users.UserManager, user_dict)
+                 'token': 'test_token',
+                 'enabled': True}
+    user = users.User(users.UserManager(None), user_dict)
     user_dict.update({'id': "2",
                       'name': 'user_two',
                       'email': 'two@example.com'})
-    user2 = users.User(users.UserManager, user_dict)
+    user2 = users.User(users.UserManager(None), user_dict)
     TEST.users.add(user, user2)
     TEST.user = user  # Your "current" user
     TEST.user.service_catalog = SERVICE_CATALOG
@@ -126,9 +131,12 @@ def data(TEST):
     TEST.tenants.add(tenant, disabled_tenant)
     TEST.tenant = tenant  # Your "current" tenant
 
+    tomorrow = datetime_safe.datetime.now() + timedelta(days=1)
+    expiration = datetime_safe.datetime.isoformat(tomorrow)
+
     scoped_token = tokens.Token(tokens.TokenManager,
                                 dict(token={"id": "test_token_id",
-                                            "expires": "#FIXME",
+                                            "expires": expiration,
                                             "tenant": tenant_dict,
                                             "tenants": [tenant_dict]},
                                      user={"id": "test_user_id",
@@ -137,7 +145,7 @@ def data(TEST):
                                      serviceCatalog=TEST.service_catalog))
     unscoped_token = tokens.Token(tokens.TokenManager,
                                   dict(token={"id": "test_token_id",
-                                              "expires": "#FIXME"},
+                                              "expires": expiration},
                                        user={"id": "test_user_id",
                                              "name": "test_user",
                                              "roles": [member_role_dict]},

@@ -18,123 +18,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
-from django import shortcuts
-from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
-
 from horizon import api
-from horizon import exceptions
 from horizon import forms
+from horizon.dashboards.syspanel.users.forms import CreateUserForm
 
 
-LOG = logging.getLogger(__name__)
+class CreateUser(CreateUserForm):
+    role_id = forms.ChoiceField(widget=forms.HiddenInput())
+    tenant_id = forms.CharField(widget=forms.HiddenInput())
 
-
-class AddUser(forms.SelfHandlingForm):
-    tenant_id = forms.CharField(widget=forms.widgets.HiddenInput())
-    user_id = forms.CharField(widget=forms.widgets.HiddenInput())
-    role_id = forms.ChoiceField(label=_("Role"))
-
-    def __init__(self, *args, **kwargs):
-        roles = kwargs.pop('roles')
-        super(AddUser, self).__init__(*args, **kwargs)
-        role_choices = [(role.id, role.name) for role in roles]
-        self.fields['role_id'].choices = role_choices
-
-    def handle(self, request, data):
-        try:
-            api.add_tenant_user_role(request,
-                                     data['tenant_id'],
-                                     data['user_id'],
-                                     data['role_id'])
-            messages.success(request, _('Successfully added user to tenant.'))
-        except:
-            exceptions.handle(request, _('Unable to add user to tenant.'))
-        return shortcuts.redirect('horizon:syspanel:projects:users',
-                                  tenant_id=data['tenant_id'])
-
-
-class CreateTenant(forms.SelfHandlingForm):
-    name = forms.CharField(label=_("Name"))
-    description = forms.CharField(
-            widget=forms.widgets.Textarea(),
-            label=_("Description"))
-    enabled = forms.BooleanField(label=_("Enabled"), required=False,
-            initial=True)
-
-    def handle(self, request, data):
-        try:
-            LOG.info('Creating tenant with name "%s"' % data['name'])
-            api.tenant_create(request,
-                              data['name'],
-                              data['description'],
-                              data['enabled'])
-            messages.success(request,
-                             _('%s was successfully created.')
-                             % data['name'])
-        except:
-            exceptions.handle(request, _('Unable to create tenant.'))
-        return shortcuts.redirect('horizon:syspanel:projects:index')
-
-
-class UpdateTenant(forms.SelfHandlingForm):
-    id = forms.CharField(label=_("ID"),
-            widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-    name = forms.CharField(label=_("Name"))
-    description = forms.CharField(
-            widget=forms.widgets.Textarea(),
-            label=_("Description"))
-    enabled = forms.BooleanField(required=False, label=_("Enabled"))
-
-    def handle(self, request, data):
-        try:
-            LOG.info('Updating tenant with id "%s"' % data['id'])
-            api.tenant_update(request,
-                              data['id'],
-                              data['name'],
-                              data['description'],
-                              data['enabled'])
-            messages.success(request,
-                             _('%s was successfully updated.')
-                             % data['name'])
-        except:
-            exceptions.handle(request, _('Unable to update tenant.'))
-        return shortcuts.redirect('horizon:syspanel:projects:index')
-
-
-class UpdateQuotas(forms.SelfHandlingForm):
-    tenant_id = forms.CharField(label=_("ID (name)"),
-            widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-    metadata_items = forms.IntegerField(label=_("Metadata Items"))
-    injected_files = forms.IntegerField(label=_("Injected Files"))
-    injected_file_content_bytes = forms.IntegerField(label=_("Injected File "
-                                                          "Content Bytes"))
-    cores = forms.IntegerField(label=_("VCPUs"))
-    instances = forms.IntegerField(label=_("Instances"))
-    volumes = forms.IntegerField(label=_("Volumes"))
-    gigabytes = forms.IntegerField(label=_("Gigabytes"))
-    ram = forms.IntegerField(label=_("RAM (in MB)"))
-    floating_ips = forms.IntegerField(label=_("Floating IPs"))
-
-    def handle(self, request, data):
-        try:
-            api.nova.tenant_quota_update(request,
-               data['tenant_id'],
-               metadata_items=data['metadata_items'],
-               injected_file_content_bytes=data['injected_file_content_bytes'],
-               volumes=data['volumes'],
-               gigabytes=data['gigabytes'],
-               ram=data['ram'],
-               floating_ips=data['floating_ips'],
-               instances=data['instances'],
-               injected_files=data['injected_files'],
-               cores=data['cores'],
-            )
-            messages.success(request,
-                             _('Quotas for %s were successfully updated.')
-                             % data['tenant_id'])
-        except:
-            exceptions.handle(request, _('Unable to update quotas.'))
-        return shortcuts.redirect('horizon:syspanel:projects:index')
+    def __init__(self, request, *args, **kwargs):
+        super(CreateUser, self).__init__(request, *args, **kwargs)
+        tenant_id = self.request.path.split("/")[-1]
+        self.fields['tenant_id'].initial = tenant_id

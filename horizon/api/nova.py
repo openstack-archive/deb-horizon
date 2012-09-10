@@ -24,14 +24,20 @@ from __future__ import absolute_import
 
 import logging
 
+from django.conf import settings
+from django.utils.translation import ugettext as _
+
+from cinderclient.v1 import client as cinder_client
+
 from novaclient.v1_1 import client as nova_client
 from novaclient.v1_1 import security_group_rules as nova_rules
 from novaclient.v1_1.security_groups import SecurityGroup as NovaSecurityGroup
 from novaclient.v1_1.servers import REBOOT_HARD
 
+from horizon import exceptions
 from horizon.api.base import APIResourceWrapper, APIDictWrapper, url_for
+from horizon.utils.memoized import memoized
 
-from django.utils.translation import ugettext as _
 
 LOG = logging.getLogger(__name__)
 
@@ -93,12 +99,12 @@ class Server(APIResourceWrapper):
 
     @property
     def image_name(self):
-        from glance.common import exception as glance_exceptions
+        import glanceclient.exc as glance_exceptions
         from horizon.api import glance
         try:
-            image = glance.image_get_meta(self.request, self.image['id'])
+            image = glance.image_get(self.request, self.image['id'])
             return image.name
-        except glance_exceptions.NotFound:
+        except glance_exceptions.ClientException:
             return "(not found)"
 
     @property
@@ -125,12 +131,12 @@ class Usage(APIResourceWrapper):
 
     @property
     def total_active_instances(self):
-        return sum(1 for s in self.server_usages if s['ended_at'] == None)
+        return sum(1 for s in self.server_usages if s['ended_at'] is None)
 
     @property
     def vcpus(self):
         return sum(s['vcpus'] for s in self.server_usages
-                   if s['ended_at'] == None)
+                   if s['ended_at'] is None)
 
     @property
     def vcpu_hours(self):
@@ -139,12 +145,12 @@ class Usage(APIResourceWrapper):
     @property
     def local_gb(self):
         return sum(s['local_gb'] for s in self.server_usages
-                   if s['ended_at'] == None)
+                   if s['ended_at'] is None)
 
     @property
     def memory_mb(self):
         return sum(s['memory_mb'] for s in self.server_usages
-                   if s['ended_at'] == None)
+                   if s['ended_at'] is None)
 
     @property
     def disk_gb_hours(self):
@@ -160,11 +166,11 @@ class SecurityGroup(APIResourceWrapper):
     @property
     def rules(self):
         """Wraps transmitted rule info in the novaclient rule class."""
-        if not hasattr(self, "_rules"):
+        if "_rules" not in self.__dict__:
             manager = nova_rules.SecurityGroupRuleManager
-            self._rules = [nova_rules.SecurityGroupRule(manager, rule) for \
-                           rule in self._apiresource.rules]
-        return self._rules
+            self._rules = [nova_rules.SecurityGroupRule(manager, rule)
+                           for rule in self._apiresource.rules]
+        return self.__dict__['_rules']
 
     @rules.setter
     def rules(self, value):
@@ -189,25 +195,29 @@ class SecurityGroupRule(APIResourceWrapper):
 
 
 def novaclient(request):
+    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     LOG.debug('novaclient connection created using token "%s" and url "%s"' %
-              (request.user.token, url_for(request, 'compute')))
+              (request.user.token.id, url_for(request, 'compute')))
     c = nova_client.Client(request.user.username,
-                           request.user.token,
+                           request.user.token.id,
                            project_id=request.user.tenant_id,
-                           auth_url=url_for(request, 'compute'))
-    c.client.auth_token = request.user.token
+                           auth_url=url_for(request, 'compute'),
+                           insecure=insecure)
+    c.client.auth_token = request.user.token.id
     c.client.management_url = url_for(request, 'compute')
     return c
 
 
 def cinderclient(request):
+    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     LOG.debug('cinderclient connection created using token "%s" and url "%s"' %
-              (request.user.token, url_for(request, 'volume')))
-    c = nova_client.Client(request.user.username,
-                           request.user.token,
-                           project_id=request.user.tenant_id,
-                           auth_url=url_for(request, 'volume'))
-    c.client.auth_token = request.user.token
+              (request.user.token.id, url_for(request, 'volume')))
+    c = cinder_client.Client(request.user.username,
+                             request.user.token.id,
+                             project_id=request.user.tenant_id,
+                             auth_url=url_for(request, 'volume'),
+                             insecure=insecure)
+    c.client.auth_token = request.user.token.id
     c.client.management_url = url_for(request, 'volume')
     return c
 
@@ -231,7 +241,9 @@ def flavor_get(request, flavor_id):
     return novaclient(request).flavors.get(flavor_id)
 
 
+@memoized
 def flavor_list(request):
+    """Get the list of available instance sizes (flavors)."""
     return novaclient(request).flavors.list()
 
 
@@ -283,11 +295,13 @@ def keypair_list(request):
 
 
 def server_create(request, name, image, flavor, key_name, user_data,
-                  security_groups, block_device_mapping, instance_count=1):
+                  security_groups, block_device_mapping, nics=None,
+                  instance_count=1):
     return Server(novaclient(request).servers.create(
             name, image, flavor, userdata=user_data,
             security_groups=security_groups,
             key_name=key_name, block_device_mapping=block_device_mapping,
+            nics=nics,
             min_count=instance_count), request)
 
 
@@ -306,8 +320,8 @@ def server_list(request, search_opts=None, all_tenants=False):
         search_opts['all_tenants'] = True
     else:
         search_opts['project_id'] = request.user.tenant_id
-    return [Server(s, request) for s in novaclient(request).\
-            servers.list(True, search_opts)]
+    return [Server(s, request)
+            for s in novaclient(request).servers.list(True, search_opts)]
 
 
 def server_console_output(request, instance_id, tail_length=None):
@@ -326,11 +340,11 @@ def server_security_groups(request, instance_id):
                                     % instance_id)
     if body:
         # Wrap data in SG objects as novaclient would.
-        sg_objects = [NovaSecurityGroup(nclient.security_groups, sg) for
-                      sg in body.get('security_groups', [])]
+        sg_objs = [NovaSecurityGroup(nclient.security_groups, sg, loaded=True)
+                   for sg in body.get('security_groups', [])]
         # Then wrap novaclient's object with our own. Yes, sadly wrapping
         # with two layers of objects is necessary.
-        security_groups = [SecurityGroup(sg) for sg in sg_objects]
+        security_groups = [SecurityGroup(sg) for sg in sg_objs]
         # Package up the rules, as well.
         for sg in security_groups:
             rule_objects = [SecurityGroupRule(rule) for rule in sg.rules]
@@ -360,7 +374,12 @@ def server_reboot(request, instance_id, hardness=REBOOT_HARD):
 
 
 def server_update(request, instance_id, name):
-    return novaclient(request).servers.update(instance_id, name=name)
+    response = novaclient(request).servers.update(instance_id, name=name)
+    # TODO(gabriel): servers.update method doesn't return anything. :-(
+    if response is None:
+        return True
+    else:
+        return response
 
 
 def server_add_floating_ip(request, server, floating_ip):
@@ -399,33 +418,52 @@ def usage_list(request, start, end):
     return [Usage(u) for u in novaclient(request).usage.list(start, end, True)]
 
 
+@memoized
 def tenant_quota_usages(request):
-    """Builds a dictionary of current usage against quota for the current
-    tenant.
     """
-    # TODO(tres): Make this capture floating_ips and volumes as well.
+    Builds a dictionary of current usage against quota for the current
+    project.
+    """
     instances = server_list(request)
     floating_ips = tenant_floating_ip_list(request)
     quotas = tenant_quota_get(request, request.user.tenant_id)
     flavors = dict([(f.id, f) for f in flavor_list(request)])
+    volumes = volume_list(request)
+
     usages = {'instances': {'flavor_fields': [], 'used': len(instances)},
               'cores': {'flavor_fields': ['vcpus'], 'used': 0},
-              'gigabytes': {'used': 0,
-                            'flavor_fields': ['disk',
-                                              'OS-FLV-EXT-DATA:ephemeral']},
+              'gigabytes': {'used': sum([int(v.size) for v in volumes]),
+                            'flavor_fields': []},
+              'volumes': {'used': len(volumes), 'flavor_fields': []},
               'ram': {'flavor_fields': ['ram'], 'used': 0},
               'floating_ips': {'flavor_fields': [], 'used': len(floating_ips)}}
 
     for usage in usages:
         for instance in instances:
+            used_flavor = instance.flavor['id']
+            if used_flavor not in flavors:
+                try:
+                    flavors[used_flavor] = flavor_get(request, used_flavor)
+                except:
+                    flavors[used_flavor] = {}
+                    exceptions.handle(request, ignore=True)
             for flavor_field in usages[usage]['flavor_fields']:
-                usages[usage]['used'] += getattr(
-                        flavors[instance.flavor['id']], flavor_field, 0)
+                instance_flavor = flavors[used_flavor]
+                usages[usage]['used'] += getattr(instance_flavor,
+                                                 flavor_field,
+                                                 0)
+
         usages[usage]['quota'] = getattr(quotas, usage)
+
         if usages[usage]['quota'] is None:
             usages[usage]['quota'] = float("inf")
             usages[usage]['available'] = float("inf")
+        elif type(usages[usage]['quota']) is str:
+            usages[usage]['quota'] = int(usages[usage]['quota'])
         else:
+            if type(usages[usage]['used']) is str:
+                usages[usage]['used'] = int(usages[usage]['used'])
+
             usages[usage]['available'] = usages[usage]['quota'] - \
                                          usages[usage]['used']
 
@@ -433,18 +471,17 @@ def tenant_quota_usages(request):
 
 
 def security_group_list(request):
-    return [SecurityGroup(g) for g in novaclient(request).\
-                                     security_groups.list()]
+    return [SecurityGroup(g) for g
+            in novaclient(request).security_groups.list()]
 
 
-def security_group_get(request, security_group_id):
-    return SecurityGroup(novaclient(request).\
-                         security_groups.get(security_group_id))
+def security_group_get(request, sg_id):
+    return SecurityGroup(novaclient(request).security_groups.get(sg_id))
 
 
-def security_group_create(request, name, description):
-    return SecurityGroup(novaclient(request).\
-                         security_groups.create(name, description))
+def security_group_create(request, name, desc):
+    return SecurityGroup(novaclient(request).security_groups.create(name,
+                                                                    desc))
 
 
 def security_group_delete(request, security_group_id):
@@ -454,13 +491,13 @@ def security_group_delete(request, security_group_id):
 def security_group_rule_create(request, parent_group_id, ip_protocol=None,
                                from_port=None, to_port=None, cidr=None,
                                group_id=None):
-    return SecurityGroupRule(novaclient(request).\
-                             security_group_rules.create(parent_group_id,
+    sg = novaclient(request).security_group_rules.create(parent_group_id,
                                                          ip_protocol,
                                                          from_port,
                                                          to_port,
                                                          cidr,
-                                                         group_id))
+                                                         group_id)
+    return SecurityGroupRule(sg)
 
 
 def security_group_rule_delete(request, security_group_rule_id):
@@ -476,16 +513,33 @@ def volume_list(request):
 
 
 def volume_get(request, volume_id):
-    return cinderclient(request).volumes.get(volume_id)
+    volume_data = cinderclient(request).volumes.get(volume_id)
+
+    for attachment in volume_data.attachments:
+        if "server_id" in attachment:
+            instance = server_get(request, attachment['server_id'])
+            attachment['instance_name'] = instance.name
+        else:
+            # Nova volume can occasionally send back error'd attachments
+            # the lack a server_id property; to work around that we'll
+            # give the attached instance a generic name.
+            attachment['instance_name'] = _("Unknown instance")
+    return volume_data
 
 
 def volume_instance_list(request, instance_id):
-    return novaclient(request).volumes.get_server_volumes(instance_id)
+    volumes = novaclient(request).volumes.get_server_volumes(instance_id)
+
+    for volume in volumes:
+        volume_data = cinderclient(request).volumes.get(volume.id)
+        volume.name = volume_data.display_name
+
+    return volumes
 
 
-def volume_create(request, size, name, description):
+def volume_create(request, size, name, description, snapshot_id=None):
     return cinderclient(request).volumes.create(size, display_name=name,
-            display_description=description)
+            display_description=description, snapshot_id=snapshot_id)
 
 
 def volume_delete(request, volume_id):
@@ -498,9 +552,12 @@ def volume_attach(request, volume_id, instance_id, device):
                                                      device)
 
 
-def volume_detach(request, instance_id, attachment_id):
-    novaclient(request).volumes.delete_server_volume(
-            instance_id, attachment_id)
+def volume_detach(request, instance_id, att_id):
+    novaclient(request).volumes.delete_server_volume(instance_id, att_id)
+
+
+def volume_snapshot_get(request, snapshot_id):
+    return cinderclient(request).volume_snapshots.get(snapshot_id)
 
 
 def volume_snapshot_list(request):

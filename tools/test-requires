@@ -1,12 +1,17 @@
-# Testing Requirements
-CherryPy
-coverage
-django-nose-selenium
-mox
-nose
-pep8
-pylint
 distribute>=0.6.24
+
+# Testing Requirements
+coverage
+django-nose
+mox
+netaddr
+nose
+nose-exclude
+nosexcover
+openstack.nose_plugin
+pep8>=1.3
+pylint
+selenium
 
 # Docs Requirements
 sphinx

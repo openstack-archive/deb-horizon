@@ -24,23 +24,92 @@ Views for managing Nova images.
 
 import logging
 
-from django import shortcuts
-from django.contrib import messages
-from django.core.urlresolvers import reverse
-from django.forms import ValidationError
-from django.utils.text import normalize_newlines
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
 from horizon import forms
+from horizon import messages
+
 
 LOG = logging.getLogger(__name__)
 
 
-class UpdateImageForm(forms.SelfHandlingForm):
-    completion_view = 'horizon:nova:images_and_snapshots:index'
+class CreateImageForm(forms.SelfHandlingForm):
+    name = forms.CharField(max_length="255", label=_("Name"), required=True)
+    copy_from = forms.CharField(max_length="255",
+                                label=_("Image Location"),
+                                help_text=_("An external (HTTP) URL to load "
+                                            "the image from."),
+                                required=True)
+    disk_format = forms.ChoiceField(label=_('Format'),
+                                    required=True,
+                                    choices=[('', ''),
+                                             ('aki',
+                                                _('AKI - Amazon Kernel '
+                                                        'Image')),
+                                             ('ami',
+                                                _('AMI - Amazon Machine '
+                                                        'Image')),
+                                             ('ari',
+                                                _('ARI - Amazon Ramdisk '
+                                                        'Image')),
+                                             ('iso',
+                                                _('ISO - Optical Disk Image')),
+                                             ('qcow2',
+                                                _('QCOW2 - QEMU Emulator')),
+                                             ('raw', 'Raw'),
+                                             ('vdi', 'VDI'),
+                                             ('vhd', 'VHD'),
+                                             ('vmdk', 'VMDK')],
+                                    widget=forms.Select(attrs={'class':
+                                                               'switchable'}))
+    minimum_disk = forms.IntegerField(label=_("Minimum Disk (GB)"),
+                                    help_text=_('The minimum disk size'
+                                            ' required to boot the'
+                                            ' image. If unspecified, this'
+                                            ' value defaults to 0'
+                                            ' (no minimum).'),
+                                    required=False)
+    minimum_ram = forms.IntegerField(label=_("Minimum Ram (MB)"),
+                                    help_text=_('The minimum disk size'
+                                            ' required to boot the'
+                                            ' image. If unspecified, this'
+                                            ' value defaults to 0 (no'
+                                            ' minimum).'),
+                                    required=False)
+    is_public = forms.BooleanField(label=_("Public"), required=False)
 
+    def handle(self, request, data):
+        # Glance does not really do anything with container_format at the
+        # moment. It requires it is set to the same disk_format for the three
+        # Amazon image types, otherwise it just treats them as 'bare.' As such
+        # we will just set that to be that here instead of bothering the user
+        # with asking them for information we can already determine.
+        if data['disk_format'] in ('ami', 'aki', 'ari',):
+            container_format = data['disk_format']
+        else:
+            container_format = 'bare'
+
+        meta = {'is_public': data['is_public'],
+                'disk_format': data['disk_format'],
+                'container_format': container_format,
+                'copy_from': data['copy_from'],
+                'min_disk': (data['minimum_disk'] or 0),
+                'min_ram': (data['minimum_ram'] or 0),
+                'name': data['name']}
+
+        try:
+            image = api.glance.image_create(request, **meta)
+            messages.success(request,
+                _('Your image %s has been queued for creation.' %
+                    data['name']))
+            return image
+        except:
+            exceptions.handle(request, _('Unable to create new image.'))
+
+
+class UpdateImageForm(forms.SelfHandlingForm):
     image_id = forms.CharField(widget=forms.HiddenInput())
     name = forms.CharField(max_length="255", label=_("Name"))
     kernel = forms.CharField(max_length="36",
@@ -56,23 +125,26 @@ class UpdateImageForm(forms.SelfHandlingForm):
     architecture = forms.CharField(label=_("Architecture"),
                                    required=False,
                                    widget=forms.TextInput(
-                                       attrs={'readonly': 'readonly'}))
-    container_format = forms.CharField(label=_("Container Format"),
-                                       widget=forms.TextInput(
-                                           attrs={'readonly': 'readonly'}))
-    disk_format = forms.CharField(label=_("Disk Format"),
+                                    attrs={'readonly': 'readonly'}
+                                   ))
+    disk_format = forms.CharField(label=_("Format"),
                                   widget=forms.TextInput(
-                                      attrs={'readonly': 'readonly'}))
+                                    attrs={'readonly': 'readonly'}
+                                  ))
     public = forms.BooleanField(label=_("Public"), required=False)
 
     def handle(self, request, data):
-        # TODO add public flag to image meta properties
         image_id = data['image_id']
         error_updating = _('Unable to update image "%s".')
 
+        if data['disk_format'] in ['aki', 'ari', 'ami']:
+            container_format = data['disk_format']
+        else:
+            container_format = 'bare'
+
         meta = {'is_public': data['public'],
                 'disk_format': data['disk_format'],
-                'container_format': data['container_format'],
+                'container_format': container_format,
                 'name': data['name'],
                 'properties': {}}
         if data['kernel']:
@@ -81,107 +153,13 @@ class UpdateImageForm(forms.SelfHandlingForm):
             meta['properties']['ramdisk_id'] = data['ramdisk']
         if data['architecture']:
             meta['properties']['architecture'] = data['architecture']
+        # Ensure we do not delete properties that have already been
+        # set on an image.
+        meta['purge_props'] = False
 
         try:
-            api.image_update(request, image_id, meta)
+            image = api.image_update(request, image_id, **meta)
             messages.success(request, _('Image was successfully updated.'))
+            return image
         except:
             exceptions.handle(request, error_updating % image_id)
-        return shortcuts.redirect(self.get_success_url())
-
-
-class LaunchForm(forms.SelfHandlingForm):
-    name = forms.CharField(max_length=80, label=_("Server Name"))
-    image_id = forms.CharField(widget=forms.HiddenInput())
-    tenant_id = forms.CharField(widget=forms.HiddenInput())
-    user_data = forms.CharField(widget=forms.Textarea,
-                                label=_("User Data"),
-                                required=False)
-    flavor = forms.ChoiceField(label=_("Flavor"),
-                               help_text=_("Size of image to launch."))
-    keypair = forms.ChoiceField(label=_("Keypair"),
-                                required=False,
-                                help_text=_("Which keypair to use for "
-                                            "authentication."))
-    count = forms.IntegerField(label=_("Instance Count"),
-                            required=True,
-                            min_value=1,
-                            initial=1,
-                            help_text=_("Number of instances to launch."))
-    security_groups = forms.MultipleChoiceField(
-                                label=_("Security Groups"),
-                                required=True,
-                                initial=["default"],
-                                widget=forms.CheckboxSelectMultiple(),
-                                help_text=_("Launch instance in these "
-                                            "security groups."))
-    volume = forms.ChoiceField(label=_("Volume or Volume Snapshot"),
-                               required=False,
-                               help_text=_("Volume to boot from."))
-    device_name = forms.CharField(label=_("Device Name"),
-                                  required=False,
-                                  initial="vda",
-                                  help_text=_("Volume mount point (e.g. 'vda' "
-                                              "mounts at '/dev/vda')."))
-    delete_on_terminate = forms.BooleanField(
-            label=_("Delete on Terminate"),
-            initial=False,
-            required=False,
-            help_text=_("Delete volume on instance terminate"))
-
-    def __init__(self, *args, **kwargs):
-        flavor_list = kwargs.pop('flavor_list')
-        keypair_list = kwargs.pop('keypair_list')
-        if keypair_list:
-            keypair_list.insert(0, ("", _("Select a keypair")))
-        else:
-            keypair_list = (("", _("No keypairs available.")),)
-        security_group_list = kwargs.pop('security_group_list')
-        volume_list = kwargs.pop('volume_list')
-        super(LaunchForm, self).__init__(*args, **kwargs)
-        self.fields['flavor'].choices = flavor_list
-        self.fields['keypair'].choices = keypair_list
-        self.fields['security_groups'].choices = security_group_list
-        self.fields['volume'].choices = volume_list
-
-    def clean(self):
-        cleaned_data = super(LaunchForm, self).clean()
-        count = cleaned_data.get('count', 1)
-        volume = cleaned_data.get('volume', None)
-
-        if volume and count > 1:
-            msg = _('Cannot launch more than one instance if '
-                    'volume is specified.')
-            raise ValidationError(msg)
-
-        return cleaned_data
-
-    def handle(self, request, data):
-        try:
-            if(len(data['volume']) > 0):
-                if(data['delete_on_terminate']):
-                    delete_on_terminate = 1
-                else:
-                    delete_on_terminate = 0
-                dev_mapping = {data['device_name']:
-                        ("%s::%s" % (data['volume'], delete_on_terminate))}
-            else:
-                dev_mapping = None
-
-            api.server_create(request,
-                              data['name'],
-                              data['image_id'],
-                              data['flavor'],
-                              data.get('keypair'),
-                              normalize_newlines(data.get('user_data')),
-                              data.get('security_groups'),
-                              dev_mapping,
-                              instance_count=data.get('count'))
-            messages.success(request,
-                         _('Instance "%s" launched.') % data["name"])
-        except:
-            redirect = reverse("horizon:nova:images_and_snapshots:index")
-            exceptions.handle(request,
-                              _('Unable to launch instance: %(exc)s'),
-                              redirect=redirect)
-        return shortcuts.redirect('horizon:nova:instances_and_volumes:index')

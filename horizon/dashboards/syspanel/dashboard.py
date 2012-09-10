@@ -22,8 +22,8 @@ import horizon
 class SystemPanels(horizon.PanelGroup):
     slug = "syspanel"
     name = _("System Panel")
-    panels = ('overview', 'instances', 'services', 'flavors', 'images',
-              'projects', 'users', 'quotas',)
+    panels = ('overview', 'instances', 'volumes', 'services', 'flavors',
+              'images', 'projects', 'users', 'quotas', 'networks',)
 
 
 class Syspanel(horizon.Dashboard):
@@ -31,7 +31,7 @@ class Syspanel(horizon.Dashboard):
     slug = "syspanel"
     panels = (SystemPanels,)
     default_panel = 'overview'
-    roles = ('admin',)
+    permissions = ('openstack.roles.admin',)
 
 
 horizon.register(Syspanel)

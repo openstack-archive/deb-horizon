@@ -28,9 +28,7 @@ from horizon import api
 from horizon import exceptions
 from horizon import tables
 from horizon.dashboards.syspanel.instances.tables import SyspanelInstancesTable
-from horizon.dashboards.nova.instances_and_volumes .instances.views import (
-        console, DetailView, vnc)
-
+from horizon.dashboards.nova.instances.views import console, DetailView, vnc
 
 LOG = logging.getLogger(__name__)
 
@@ -51,9 +49,9 @@ class AdminIndexView(tables.DataTableView):
             try:
                 flavors = api.nova.flavor_list(self.request)
             except:
+                # If fails to retrieve flavor list, creates an empty list.
                 flavors = []
-                msg = _('Unable to retrieve instance size information.')
-                exceptions.handle(self.request, msg)
+
             # Gather our tenants to correlate against IDs
             try:
                 tenants = api.keystone.tenant_list(self.request, admin=True)
@@ -64,8 +62,20 @@ class AdminIndexView(tables.DataTableView):
 
             full_flavors = SortedDict([(f.id, f) for f in flavors])
             tenant_dict = SortedDict([(t.id, t) for t in tenants])
+            # Loop through instances to get flavor and tenant info.
             for inst in instances:
-                inst.full_flavor = full_flavors.get(inst.flavor["id"], None)
+                flavor_id = inst.flavor["id"]
+                try:
+                    if flavor_id in full_flavors:
+                        inst.full_flavor = full_flavors[flavor_id]
+                    else:
+                        # If the flavor_id is not in full_flavors list,
+                        # gets it via nova api.
+                        inst.full_flavor = api.nova.flavor_get(
+                                            self.request, flavor_id)
+                except:
+                    msg = _('Unable to retrieve instance size information.')
+                    exceptions.handle(self.request, msg)
                 tenant = tenant_dict.get(inst.tenant_id, None)
                 inst.tenant_name = getattr(tenant, "name", None)
         return instances

@@ -18,19 +18,19 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
+import re
 
 from django import shortcuts
-from django.contrib import messages
 from django.core import validators
 from django.utils.translation import ugettext_lazy as _
-from novaclient import exceptions as novaclient_exceptions
 
 from horizon import api
+from horizon import exceptions
 from horizon import forms
+from horizon import messages
 
 
-LOG = logging.getLogger(__name__)
+NEW_LINES = re.compile(r"\r|\n")
 
 
 class CreateKeypair(forms.SelfHandlingForm):
@@ -42,15 +42,7 @@ class CreateKeypair(forms.SelfHandlingForm):
                                 'and hyphens.')})
 
     def handle(self, request, data):
-        try:
-            return shortcuts.redirect(
-                    'horizon:nova:access_and_security:keypairs:download',
-                    keypair_name=data['name'])
-        except novaclient_exceptions.ClientException, e:
-            LOG.exception("ClientException in CreateKeyPair")
-            messages.error(request,
-                           _('Error Creating Keypair: %s') % e.message)
-            return shortcuts.redirect(request.build_absolute_uri())
+        return True  # We just redirect to the download view.
 
 
 class ImportKeypair(forms.SelfHandlingForm):
@@ -60,14 +52,15 @@ class ImportKeypair(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            LOG.info('Importing keypair "%s"' % data['name'])
-            api.keypair_import(request, data['name'], data['public_key'])
+            # Remove any new lines in the public key
+            data['public_key'] = NEW_LINES.sub("", data['public_key'])
+            keypair = api.keypair_import(request,
+                                         data['name'],
+                                         data['public_key'])
             messages.success(request, _('Successfully imported public key: %s')
                                        % data['name'])
-            return shortcuts.redirect(
-                            'horizon:nova:access_and_security:index')
-        except novaclient_exceptions.ClientException, e:
-            LOG.exception("ClientException in ImportKeypair")
-            messages.error(request,
-                           _('Error Importing Keypair: %s') % e.message)
-            return shortcuts.redirect(request.build_absolute_uri())
+            return keypair
+        except:
+            exceptions.handle(request, ignore=True)
+            self.api_error(_('Unable to import keypair.'))
+            return False

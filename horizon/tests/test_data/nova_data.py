@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import json
+from horizon.openstack.common import jsonutils
 
 from novaclient.v1_1 import (flavors, keypairs, servers, volumes, quotas,
                              floating_ips, usage, certs,
@@ -81,7 +81,9 @@ SERVER_DATA = """
         "name": "%(name)s",
         "created": "2012-02-28T19:51:17Z",
         "tenant_id": "%(tenant_id)s",
-        "metadata": {}
+        "metadata": {"someMetaLabel": "someMetaData",
+                     "some<b>html</b>label": "<!--",
+                     "empty": ""}
     }
 }
 """
@@ -144,14 +146,38 @@ def data(TEST):
 
     # Volumes
     volume = volumes.Volume(volumes.VolumeManager(None),
-                            dict(id="1",
+                            dict(id="41023e92-8008-4c8b-8059-7f2293ff3775",
                                  name='test_volume',
                                  status='available',
                                  size=40,
                                  display_name='Volume name',
                                  created_at='2012-04-01 10:30:00',
-                                 attachments={}))
+                                 attachments=[]))
+    nameless_volume = volumes.Volume(volumes.VolumeManager(None),
+                         dict(id="3b189ac8-9166-ac7f-90c9-16c8bf9e01ac",
+                              name='',
+                              status='in-use',
+                              size=10,
+                              display_name='',
+                              display_description='',
+                              device="/dev/hda",
+                              created_at='2010-11-21 18:34:25',
+                              attachments=[{"id": "1", "server_id": '1',
+                                            "device": "/dev/hda"}]))
+    attached_volume = volumes.Volume(volumes.VolumeManager(None),
+                         dict(id="8cba67c1-2741-6c79-5ab6-9c2bf8c96ab0",
+                              name='my_volume',
+                              status='in-use',
+                              size=30,
+                              display_name='My Volume',
+                              display_description='',
+                              device="/dev/hdk",
+                              created_at='2011-05-01 11:54:33',
+                              attachments=[{"id": "2", "server_id": '1',
+                                            "device": "/dev/hdk"}]))
     TEST.volumes.add(volume)
+    TEST.volumes.add(nameless_volume)
+    TEST.volumes.add(attached_volume)
 
     # Flavors
     flavor_1 = flavors.Flavor(flavors.FlavorManager(None),
@@ -196,9 +222,31 @@ def data(TEST):
             'to_port': u"80",
             'parent_group_id': 1,
             'ip_range': {'cidr': u"0.0.0.0/32"}}
+
+    icmp_rule = {'id': 2,
+            'ip_protocol': u"icmp",
+            'from_port': u"9",
+            'to_port': u"5",
+            'parent_group_id': 1,
+            'ip_range': {'cidr': u"0.0.0.0/32"}}
+
+    group_rule = {'id': 3,
+            'ip_protocol': u"tcp",
+            'from_port': u"80",
+            'to_port': u"80",
+            'parent_group_id': 1,
+            'source_group_id': 1}
+
     rule_obj = rules.SecurityGroupRule(rules.SecurityGroupRuleManager(None),
                                        rule)
+    rule_obj2 = rules.SecurityGroupRule(rules.SecurityGroupRuleManager(None),
+                                       icmp_rule)
+    rule_obj3 = rules.SecurityGroupRule(rules.SecurityGroupRuleManager(None),
+                                        group_rule)
+
     TEST.security_group_rules.add(rule_obj)
+    TEST.security_group_rules.add(rule_obj2)
+    TEST.security_group_rules.add(rule_obj3)
 
     sec_group_1.rules = [rule_obj]
     sec_group_2.rules = [rule_obj]
@@ -244,12 +292,12 @@ def data(TEST):
             "image_id": TEST.images.first().id,
             "key_name": keypair.name}
     server_1 = servers.Server(servers.ServerManager(None),
-                              json.loads(SERVER_DATA % vals)['server'])
+                              jsonutils.loads(SERVER_DATA % vals)['server'])
     vals.update({"name": "server_2",
                  "status": "BUILD",
                  "server_id": "2"})
     server_2 = servers.Server(servers.ServerManager(None),
-                              json.loads(SERVER_DATA % vals)['server'])
+                              jsonutils.loads(SERVER_DATA % vals)['server'])
     TEST.servers.add(server_1, server_2)
 
     # VNC Console Data
@@ -262,7 +310,12 @@ def data(TEST):
                                      'fixed_ip': '10.0.0.4',
                                      'instance_id': server_1.id,
                                      'ip': '58.58.58.58'})
-    TEST.floating_ips.add(fip_1)
+    fip_2 = floating_ips.FloatingIP(floating_ips.FloatingIPManager(None),
+                                    {'id': 2,
+                                     'fixed_ip': None,
+                                     'instance_id': None,
+                                     'ip': '58.58.58.58'})
+    TEST.floating_ips.add(fip_1, fip_2)
 
     # Usage
     usage_vals = {"tenant_id": TEST.tenant.id,
@@ -272,7 +325,7 @@ def data(TEST):
                   "flavor_disk": flavor_1.disk,
                   "flavor_ram": flavor_1.ram}
     usage_obj = usage.Usage(usage.UsageManager(None),
-                            json.loads(USAGE_DATA % usage_vals))
+                            jsonutils.loads(USAGE_DATA % usage_vals))
     TEST.usages.add(usage_obj)
 
     volume_snapshot = vol_snaps.Snapshot(vol_snaps.SnapshotManager(None),

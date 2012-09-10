@@ -18,12 +18,13 @@
 import logging
 
 from django import shortcuts
-from django.contrib import messages
 from django.core import urlresolvers
+from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
+from horizon import messages
 from horizon import tables
 
 
@@ -54,7 +55,7 @@ class ReleaseIPs(tables.BatchAction):
 
 class AssociateIP(tables.LinkAction):
     name = "associate"
-    verbose_name = _("Associate IP")
+    verbose_name = _("Associate Floating IP")
     url = "horizon:nova:access_and_security:floating_ips:associate"
     classes = ("ajax-modal", "btn-associate")
 
@@ -63,10 +64,15 @@ class AssociateIP(tables.LinkAction):
             return False
         return True
 
+    def get_link_url(self, datum):
+        base_url = urlresolvers.reverse(self.url)
+        params = urlencode({"ip_id": self.table.get_object_id(datum)})
+        return "?".join([base_url, params])
+
 
 class DisassociateIP(tables.Action):
     name = "disassociate"
-    verbose_name = _("Disassociate IP")
+    verbose_name = _("Disassociate Floating IP")
     classes = ("btn-disassociate", "btn-danger")
 
     def allowed(self, request, fip):
@@ -88,8 +94,17 @@ class DisassociateIP(tables.Action):
         return shortcuts.redirect('horizon:nova:access_and_security:index')
 
 
+def get_instance_info(instance):
+    info_string = _("%(INSTANCE_NAME)s (%(INSTANCE_ID)s)")
+    if instance.instance_id and instance.instance_name:
+        vals = {'INSTANCE_NAME': instance.instance_name,
+                'INSTANCE_ID': instance.instance_id}
+        return info_string % vals
+    return None
+
+
 def get_instance_link(datum):
-    view = "horizon:nova:instances_and_volumes:instances:detail"
+    view = "horizon:nova:instances:detail"
     if datum.instance_id:
         return urlresolvers.reverse(view, args=(datum.instance_id,))
     else:
@@ -98,7 +113,7 @@ def get_instance_link(datum):
 
 class FloatingIPsTable(tables.DataTable):
     ip = tables.Column("ip", verbose_name=_("IP Address"))
-    instance = tables.Column("instance_id",
+    instance = tables.Column(get_instance_info,
                              link=get_instance_link,
                              verbose_name=_("Instance"),
                              empty_value="-")
