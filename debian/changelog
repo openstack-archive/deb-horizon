@@ -1,7 +1,10 @@
 horizon (2012.2~e3-1) experimental; urgency=low
 
+  [ Mehdi Abaakouk ]
   * New upstream version
   * Remove CVE-2012-3540 fixed by upstream
+  [ Thomas Goirand ]
+  * Now using xz compression level 9 for the debs.
 
  -- Mehdi Abaakouk <sileht@sileht.net>  Mon, 10 Sep 2012 17:56:09 +0200
 
