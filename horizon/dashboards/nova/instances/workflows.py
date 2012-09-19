@@ -172,7 +172,7 @@ class SetInstanceDetailsAction(workflows.Action):
     image_id = forms.ChoiceField(label=_("Image"), required=False)
     instance_snapshot_id = forms.ChoiceField(label=_("Instance Snapshot"),
                                              required=False)
-    name = forms.CharField(max_length=80, label=_("Server Name"))
+    name = forms.CharField(max_length=80, label=_("Instance Name"))
     flavor = forms.ChoiceField(label=_("Flavor"),
                                help_text=_("Size of image to launch."))
     count = forms.IntegerField(label=_("Instance Count"),
@@ -217,7 +217,8 @@ class SetInstanceDetailsAction(workflows.Action):
     def _get_available_images(self, request, context):
         project_id = context.get('project_id', None)
         if not hasattr(self, "_public_images"):
-            public = {"is_public": True}
+            public = {"is_public": True,
+                      "status": "active"}
             try:
                 public_images, _more = api.glance.image_list_detailed(request,
                                                            filters=public)
@@ -232,7 +233,8 @@ class SetInstanceDetailsAction(workflows.Action):
             setattr(self, "_images_for_%s" % project_id, [])
 
         if not hasattr(self, "_images_for_%s" % project_id):
-            owner = {"property-owner_id": project_id}
+            owner = {"property-owner_id": project_id,
+                     "status": "active"}
             try:
                 owned_images, _more = api.glance.image_list_detailed(request,
                                                           filters=owner)
@@ -245,7 +247,7 @@ class SetInstanceDetailsAction(workflows.Action):
         owned_images = getattr(self, "_images_for_%s" % project_id)
         images = owned_images + self._public_images
 
-        # Remove duplicate images.
+        # Remove duplicate images
         image_ids = []
         final_images = []
         for image in images:
@@ -419,12 +421,8 @@ class SetNetworkAction(workflows.Action):
 
     def populate_network_choices(self, request, context):
         try:
-            # If a user has admin role, network list returned by Quantum API
-            # contains networks that does not belong to that tenant.
-            # So we need to specify tenant_id when calling network_list().
             tenant_id = self.request.user.tenant_id
-            networks = api.quantum.network_list(request,
-                                                tenant_id=tenant_id)
+            networks = api.quantum.network_list_for_tenant(request, tenant_id)
             for n in networks:
                 n.set_id_as_name_if_empty()
             network_list = [(network.id, network.name) for network in networks]

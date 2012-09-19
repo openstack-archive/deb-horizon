@@ -38,7 +38,7 @@ def wrap_delimiter(name):
 class DeleteContainer(tables.DeleteAction):
     data_type_singular = _("Container")
     data_type_plural = _("Containers")
-    completion_url = "horizon:nova:containers:index"
+    success_url = "horizon:nova:containers:index"
 
     def delete(self, request, obj_id):
         api.swift_delete_container(request, obj_id)
@@ -52,7 +52,7 @@ class DeleteContainer(tables.DeleteAction):
         # If the current_container is deleted, then redirect to the default
         # completion url
         if current_container in self.success_ids:
-            return self.completion_url
+            return self.success_url
         return  request.get_full_path()
 
 
@@ -84,10 +84,10 @@ class UploadObject(tables.LinkAction):
     def get_link_url(self, datum=None):
         # Usable for both the container and object tables
         if getattr(datum, 'container', datum):
-            # This is an Container
+            # This is a container
             container_name = http.urlquote(datum.name)
         else:
-            # This is a table action and we already have the container name
+            # This is a table action, and we already have the container name
             container_name = self.table.kwargs['container_name']
         subfolders = self.table.kwargs.get('subfolder_path', '')
         args = (http.urlquote(bit) for bit in

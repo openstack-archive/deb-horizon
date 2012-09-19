@@ -24,10 +24,17 @@ horizon.tabs.load_tab = function (evt) {
 horizon.addInitFunction(function () {
   var data = horizon.cookies.read('tabs');
 
+  $(".tab-content").find(".js-tab-pane").addClass("tab-pane");
+  horizon.modals.addModalInitFunction(function (el) {
+    $(el).find(".js-tab-pane").addClass("tab-pane");
+  });
+
   $(document).on("show", ".ajax-tabs a[data-loaded='false']", horizon.tabs.load_tab);
 
   $(document).on("shown", ".nav-tabs a[data-toggle='tab']", function (evt) {
-    var $tab = $(evt.target);
+    var $tab = $(evt.target),
+        $content = $($(evt.target).attr('data-target'));
+    horizon.datatables.update_footer_count($content.find("table"));
     horizon.cookies.update("tabs", $tab.closest(".nav-tabs").attr("id"), $tab.attr('data-target'));
   });
 
@@ -36,7 +43,8 @@ horizon.addInitFunction(function () {
     var $this = $(this),
         id = $this.attr("id"),
         active_tab = data[id];
-    if (active_tab) {
+    // Set the tab from memory if we have a "sticky" tab and the tab wasn't explicitly requested via GET.
+    if (active_tab && window.location.search.indexOf("tab=") < 0) {
       $this.find("a[data-target='" + active_tab + "']").tab('show');
     }
   });

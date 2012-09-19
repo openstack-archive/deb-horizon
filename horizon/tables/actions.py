@@ -254,7 +254,7 @@ class LinkAction(BaseAction):
     .. attribute:: url
 
         A string or a callable which resolves to a url to be used as the link
-        target. You must either define the ``url`` attribute or a override
+        target. You must either define the ``url`` attribute or override
         the ``get_link_url`` method on the class.
 
     .. attribute:: allowed_data_types
@@ -361,7 +361,7 @@ class FilterAction(BaseAction):
 
     def data_type_filter(self, table, data, filter_string):
         filtered_data = []
-        for data_type in table.data_types:
+        for data_type in table._meta.data_types:
             func_name = "filter_%s_data" % data_type
             filter_func = getattr(self, func_name, None)
             if not filter_func and not callable(filter_func):
@@ -427,7 +427,7 @@ class BatchAction(Action):
        Optional location to redirect after completion of the delete
        action. Defaults to the current page.
     """
-    completion_url = None
+    success_url = None
 
     def __init__(self):
         self.current_present_action = 0
@@ -489,8 +489,8 @@ class BatchAction(Action):
         """
         Returns the URL to redirect to after a successful action.
         """
-        if self.completion_url:
-            return self.completion_url
+        if self.success_url:
+            return self.success_url
         return request.get_full_path()
 
     def handle(self, table, request, obj_ids):
@@ -513,12 +513,16 @@ class BatchAction(Action):
                 self.success_ids.append(datum_id)
                 LOG.info('%s: "%s"' %
                          (self._conjugate(past=True), datum_display))
-            except:
+            except Exception, ex:
                 # Handle the exception but silence it since we'll display
                 # an aggregate error message later. Otherwise we'd get
                 # multiple error messages displayed to the user.
-                exceptions.handle(request, ignore=True)
-                action_failure.append(datum_display)
+                if getattr(ex, "_safe_message", None):
+                    ignore = False
+                else:
+                    ignore = True
+                    action_failure.append(datum_display)
+                exceptions.handle(request, ignore=ignore)
 
         #Begin with success message class, downgrade to info if problems
         success_message_level = messages.success
