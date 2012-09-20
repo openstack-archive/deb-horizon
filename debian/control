@@ -13,6 +13,7 @@ Build-Depends: debhelper (>= 8), python-all (>= 2.6.6-3~), python-setuptools,
  python-coverage,
  python-django-nose,
  python-glanceclient,
+ python-cinderclient,
  python-keystoneclient,
  python-mox,
  python-netaddr,
@@ -21,6 +22,10 @@ Build-Depends: debhelper (>= 8), python-all (>= 2.6.6-3~), python-setuptools,
  python-quantumclient,
  python-sphinx,
  python-swiftclient,
+ python-openstack-auth,
+ python-compressor,
+ nodejs-legacy, 
+ node-less
 Standards-Version: 3.9.3
 Homepage: http://launchpad.net/horizon
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary

@@ -8,6 +8,11 @@ then
         --quiet \
         --disabled-password \
         --group horizon
+
+  if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static ] ; then
+    chown -R www-data:www-data \
+      /usr/share/openstack-dashboard/openstack_dashboard/static
+  fi
 fi
 
 #DEBHELPER#
