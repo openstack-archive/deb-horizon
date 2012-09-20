@@ -1,0 +1,13 @@
+Index: horizon/openstack_dashboard/wsgi/django.wsgi
+===================================================================
+--- horizon.orig/openstack_dashboard/wsgi/django.wsgi	2012-07-03 14:07:21.316118123 -0700
++++ horizon/openstack_dashboard/wsgi/django.wsgi	2012-07-03 14:07:26.176118333 -0700
+@@ -9,6 +9,8 @@
+ os.environ['DJANGO_SETTINGS_MODULE'] = 'openstack_dashboard.settings'
+ sys.stdout = sys.stderr
+ 
++sys.path.append("/usr/share/openstack-dashboard/")
++
+ DEBUG = False
+ 
+ application = django.core.handlers.wsgi.WSGIHandler()

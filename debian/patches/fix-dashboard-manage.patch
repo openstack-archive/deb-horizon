@@ -1,0 +1,13 @@
+Index: horizon-2012.2/manage.py
+===================================================================
+--- horizon-2012.2.orig/manage.py	2012-09-04 16:32:01.000000000 -0700
++++ horizon-2012.2/manage.py	2012-09-04 16:32:52.250690667 -0700
+@@ -5,6 +5,8 @@
+ 
+ from django.core.management import execute_from_command_line
+ 
++sys.path.append("/usr/share/openstack-dashboard")
++
+ if __name__ == "__main__":
+     os.environ.setdefault("DJANGO_SETTINGS_MODULE",
+                           "openstack_dashboard.settings")
