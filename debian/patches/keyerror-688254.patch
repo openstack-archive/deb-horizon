@@ -1,0 +1,135 @@
+Description: Fixes a Keyerror when displaying Instances & Volumes
+ .
+ bug 1053488 prevents the display of the Instances & Volumes page for
+ every account with administrative permissions, once a volume has been
+ created and attached to an instance. While there are workarounds (
+ such as using an unprivileged account to display the same page ), it
+ affects almost all admin users deploying the current release of
+ horizon in Essex.
+ .
+ The source of the problem is that the relevant portion of code loops
+ over all existing volumes while it only has access to the instances
+ that are owned by the current tenant. As a consequence, it fails to
+ find the instance to which a volume is attached when it does not
+ belong to the current tenant.
+ .
+ A possible fix would be to change the behaviour of the volume list
+ API so that it only returns the volumes of the current tenant even
+ when the user has administrative rights. However, this would be a
+ user visible change that may have side effects beyond the current
+ bug.
+ .
+ The proposed patch catches the lookup error when the instance is not
+ found for a given volume and creates a fake instance object which
+ will only be used to display the name "UNKNOWN".
+ .
+ The associated test re-creates the conditions and derives from
+ the class that will give administrative permissions to the test
+ user. However, since the data is created from fixed data instead of
+ being actually retrieved from the API, this derivation is only
+ included to illustrate the purpose of the test.
+ .
+ Once 2012.1.2 is released, this patch should be dropped, if
+ https://bugs.launchpad.net/horizon/+bug/1053488
+ has been fixed in stable/essex. 
+ . 
+Author: Loic Dachary <loic@debian.org>
+Reviewed-by: 
+Last-Update: 2012-09-21
+Applied-Upstream: 
+Bug-Debian: http://bugs.debian.org/688254
+Bug-Ubuntu: https://launchpad.net/bugs/1053488
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+diff --git a/horizon/dashboards/nova/instances_and_volumes/tests.py b/horizon/dashboards/nova/instances_and_volumes/tests.py
+index 9cee9a0..eb17f7f 100644
+--- a/horizon/dashboards/nova/instances_and_volumes/tests.py
++++ b/horizon/dashboards/nova/instances_and_volumes/tests.py
+@@ -28,6 +28,56 @@ from horizon import api
+ from horizon import test
+ 
+ 
++class AdminInstancesAndVolumesViewTest(test.BaseAdminViewTests):
++    def test_attached_volume(self):
++        """ When the user has admin rights, all volumes are returned by
++        api.volume_list(), including those with attachments to
++        instances that are not owned by the current tenant.
++        """
++        instance_not_returned_by_server_list = "5"
++        volumes = deepcopy(self.volumes.list())
++        attached_volume = deepcopy(self.volumes.list()[0])
++        attached_volume.id = "2"
++        attached_volume.display_name = "Volume2 name"
++        attached_volume.size = "80"
++        attached_volume.status = "in-use"
++        attached_volume.attachments = [{"server_id":
++                                        instance_not_returned_by_server_list,
++                                        "device": "/dev/hdn"}]
++        volumes.append(attached_volume)
++
++        self.mox.StubOutWithMock(api, 'server_list')
++        self.mox.StubOutWithMock(api, 'volume_list')
++        api.server_list(IsA(http.HttpRequest)).AndReturn(self.servers.list())
++        api.volume_list(IsA(http.HttpRequest)).AndReturn(volumes)
++
++        self.mox.ReplayAll()
++
++        res = self.client.get(
++            reverse('horizon:nova:instances_and_volumes:index'))
++
++        self.assertTemplateUsed(res,
++            'nova/instances_and_volumes/index.html')
++        instances = res.context['instances_table'].data
++        resp_volumes = res.context['volumes_table'].data
++
++        self.assertItemsEqual(instances, self.servers.list())
++        self.assertItemsEqual(resp_volumes, volumes)
++
++        self.assertContains(res, ">Volume name<", 1, 200)
++        self.assertContains(res, ">40 GB<", 1, 200)
++        self.assertContains(res, ">Available<", 1, 200)
++
++        self.assertContains(res, ">Volume2 name<", 1, 200)
++        self.assertContains(res, ">80 GB<", 1, 200)
++        self.assertContains(res, ">In-Use<", 1, 200)
++        self.assertContains(res,
++                            ">Instance UNKNOWN (" +
++                            instance_not_returned_by_server_list +
++                            ")</a>&nbsp;on /dev/hdn",
++                            1, 200)
++
++
+ class InstancesAndVolumesViewTest(test.TestCase):
+     def test_index(self):
+         self.mox.StubOutWithMock(api, 'server_list')
+diff --git a/horizon/dashboards/nova/instances_and_volumes/views.py b/horizon/dashboards/nova/instances_and_volumes/views.py
+index 5eb9300..d1d5c06 100644
+--- a/horizon/dashboards/nova/instances_and_volumes/views.py
++++ b/horizon/dashboards/nova/instances_and_volumes/views.py
+@@ -71,7 +71,13 @@ class IndexView(tables.MultiTableView):
+                                     self._get_instances()])
+             for volume in volumes:
+                 for att in volume.attachments:
+-                    att['instance'] = instances[att['server_id']]
++                    try:
++                        att['instance'] = instances[att['server_id']]
++                    except:
++                        class FakeInstance:
++                            name = 'UNKNOWN'
++                        att['instance'] = FakeInstance()
++
+         except novaclient_exceptions.ClientException, e:
+             volumes = []
+             LOG.exception("ClientException in volume index")
