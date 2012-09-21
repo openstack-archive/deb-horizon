@@ -1,0 +1,14 @@
+Description: Enable Offline Compresssion
+Author: Mehdi Abaakouk <sileht@sileht.net>
+
+--- a/openstack_dashboard/local/local_settings.py.example
++++ b/openstack_dashboard/local/local_settings.py.example
+@@ -145,3 +145,8 @@
+             }
+         }
+ }
++
++# The Debian package includes pre-compressed JS and compiled CSS to allow
++# offline compression by default.  To enable online compression, install
++# the node-less package and enable the following option.
++COMPRESS_OFFLINE = True
