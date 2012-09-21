@@ -62,6 +62,7 @@ Depends: ${shlibs:Depends},
  ${python:Depends},
  python-django-horizon (= ${source:Version}),
  libjs-jquery,
+ libjs-jquery-cookie,
  adduser,
  libapache2-mod-wsgi (>= 2.3)
 Description: OpenStack Dashboard
@@ -76,4 +77,4 @@ Depends: libapache2-mod-wsgi (>=2.3),
 Description: OpenStack Dashboard - Apache support
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.
- This package includes the configuration files to use within apache.
+ This package includes the configuration files to use within Apache.
