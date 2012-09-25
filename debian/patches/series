@@ -1,3 +1,4 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fix-ubuntu-tests.patch
+debian_local_settings.patch
