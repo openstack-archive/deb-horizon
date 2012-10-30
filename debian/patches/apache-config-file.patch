@@ -2,7 +2,10 @@ Index: horizon/etc/apache2/openstack-dashboard
 ===================================================================
 --- /dev/null
 +++ horizon/etc/apache2/openstack-dashboard
-@@ -0,0 +1,29 @@
+@@ -0,0 +1,32 @@
++NameVirtualHost *:8080
++Listen 8080
++
 +<VirtualHost *:8080>
 +    WSGIScriptAlias / /usr/share/openstack-dashboard/openstack_dashboard/wsgi/django.wsgi
 +    WSGIDaemonProcess openstack-dashboard user=horizon group=horizon
