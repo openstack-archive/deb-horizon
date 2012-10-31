@@ -2,11 +2,14 @@
 
 set -e
 
-if [ "$1" = "configure" ]; then
-        if [ -x /etc/init.d/apache2 ]; then
-	    a2ensite openstack-dashboard
-	    invoke-rc.d --quiet apache2 reload
-        fi
+if [ "$1" = "configure" ] ; then
+	if [ -x /etc/init.d/apache2 ]; then
+		a2dissite default
+		a2ensite openstack-dashboard
+		invoke-rc.d --quiet apache2 reload
+	fi
 fi
 
 #DEBHELPER#
+
+exit 0

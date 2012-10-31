@@ -2,11 +2,10 @@
 
 set -e
 
-case $1 in
-    purge)
-        userdel -r horizon || true
-        groupdel horizon || true
-        ;;
-esac
+if [ "${1}" = "purge" ] ; then
+	rm -rf /var/lib/openstack-dashboard
+fi
 
 #DEBHELPER#
+
+exit 0
