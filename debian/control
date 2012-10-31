@@ -65,6 +65,7 @@ Depends: ${shlibs:Depends},
  libjs-jquery-cookie,
  adduser,
  libapache2-mod-wsgi (>= 2.3)
+Recommends: memcached
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.

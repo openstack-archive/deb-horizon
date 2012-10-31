@@ -1,6 +1,10 @@
 horizon (2012.2-1) experimental; urgency=low
 
+  [ Mehdi Abaakouk ]
   * New upstream release 2012.2
+
+  [ Thomas Goirand ]
+  * Recommends: memcached and use it as default on localhost.
 
  -- Mehdi Abaakouk <sileht@sileht.net>  Sat, 29 Sep 2012 09:38:19 +0200
 
