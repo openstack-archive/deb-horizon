@@ -18,6 +18,7 @@ if [ "$1" = "configure" ] ; then
 		fi
 		invoke-rc.d --quiet apache2 reload
 	fi
+	db_stop
 fi
 
 #DEBHELPER#
