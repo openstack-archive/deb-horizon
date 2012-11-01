@@ -43,6 +43,7 @@ override_dh_auto_install:
 	
 	# openstack-dashboard-apache
 	install -D -m 0644 $(CURDIR)/debian/openstack-dashboard-apache.conf $(CURDIR)/debian/tmp/etc/apache2/sites-available/openstack-dashboard
+	install -D -m 0644 $(CURDIR)/debian/openstack-dashboard-apache-ssl.conf $(CURDIR)/debian/tmp/etc/apache2/sites-available/openstack-dashboard-ssl
 
 override_dh_install:
 	dh_install

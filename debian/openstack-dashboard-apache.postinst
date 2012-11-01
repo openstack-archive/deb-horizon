@@ -3,9 +3,19 @@
 set -e
 
 if [ "$1" = "configure" ] ; then
-	if [ -x /etc/init.d/apache2 ]; then
+        . /usr/share/debconf/confmodule
+        db_get horizon/activate_vhost
+        if [ "${RET}" = "true" ] && [ -x /etc/init.d/apache2 ] ; then
 		a2dissite default
-		a2ensite openstack-dashboard
+		db_get horizon/use_ssl
+		if [ "${RET}" = "true" ] ; then
+			a2enmod ssl
+			a2ensite openstack-dashboard-ssl
+			a2dissite openstack-dashboard
+		else
+			a2ensite openstack-dashboard
+			a2dissite openstack-dashboard-ssl
+		fi
 		invoke-rc.d --quiet apache2 reload
 	fi
 fi
