@@ -63,6 +63,7 @@ Depends: ${shlibs:Depends},
  python-django-horizon (= ${source:Version}),
  libjs-jquery,
  libjs-jquery-cookie,
+ node-less,
  adduser,
  libapache2-mod-wsgi (>= 2.3)
 Recommends: memcached
