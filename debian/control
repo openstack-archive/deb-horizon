@@ -63,8 +63,10 @@ Depends: ${shlibs:Depends},
  python-django-horizon (= ${source:Version}),
  libjs-jquery,
  libjs-jquery-cookie,
- adduser
-Recommends: openstack-dashboard-apache
+ node-less,
+ adduser,
+ libapache2-mod-wsgi (>= 2.3)
+Recommends: memcached, openstack-dashboard-apache
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an
  OpenStack cloud.

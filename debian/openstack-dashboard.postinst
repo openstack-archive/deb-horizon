@@ -1,18 +1,23 @@
 #!/bin/sh
 set -e
 
-if [ "$1" = "configure" ]
-then
-    adduser --system \
-	--home /var/lib/horizon \
-        --quiet \
-        --disabled-password \
-        --group horizon
+if [ "$1" = "configure" ] ; then
+	adduser --system \
+		--home /var/lib/horizon \
+		--quiet \
+		--disabled-password \
+		--group horizon
 
-  if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static ] ; then
-    chown -R www-data:www-data \
-      /usr/share/openstack-dashboard/openstack_dashboard/static
-  fi
+        mkdir -p /var/lib/openstack-dashboard/static/js
+        mkdir -p /var/lib/openstack-dashboard/static/css
+        chown -R www-data:www-data /var/lib/openstack-dashboard/static
+
+	#if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static ] ; then
+	#	chown -R www-data:www-data \
+	#		/usr/share/openstack-dashboard/openstack_dashboard/static
+	#fi
 fi
 
 #DEBHELPER#
+
+exit 0
