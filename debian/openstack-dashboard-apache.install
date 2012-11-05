@@ -1,1 +1,2 @@
 etc/apache2/openstack-dashboard /etc/apache2/sites-available
+etc/apache2/openstack-dashboard-ssl /etc/apache2/sites-available

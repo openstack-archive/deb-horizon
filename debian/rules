@@ -41,10 +41,6 @@ override_dh_auto_install:
 	chmod 644 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css/*.css
 	chmod 644 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/manifest.json
 
-	# openstack-dashboard-apache
-	install -D -m 0644 $(CURDIR)/debian/openstack-dashboard-apache.conf $(CURDIR)/debian/tmp/etc/apache2/sites-available/openstack-dashboard
-	install -D -m 0644 $(CURDIR)/debian/openstack-dashboard-apache-ssl.conf $(CURDIR)/debian/tmp/etc/apache2/sites-available/openstack-dashboard-ssl
-
 override_dh_install:
 	dh_install
 	rm -r $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
