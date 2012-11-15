@@ -1,3 +1,10 @@
+horizon (2012.1.1-7) unstable; urgency=high
+
+  * CVE-2012-5474: The file /etc/openstack-dashboard/local_settings is not
+  world readable anymore (Closes: #693287).
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 15 Nov 2012 08:47:18 +0000
+
 horizon (2012.1.1-6) unstable; urgency=low
 
   * Keyerror when displaying Instances & Volumes:

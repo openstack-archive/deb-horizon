@@ -4,10 +4,15 @@ set -e
 if [ "$1" = "configure" ]
 then
     adduser --system \
-	--home /var/lib/horizon \
+        --home /var/lib/horizon \
         --quiet \
         --disabled-password \
         --group horizon
+
+	if[ -r /etc/openstack-dashboard/local_settings.py ] ; then
+		chmod 0640 /etc/openstack-dashboard/local_settings.py
+		chown horizon:horizon /etc/openstack-dashboard/local_settings.py
+	fi
 fi
 
 #DEBHELPER#
