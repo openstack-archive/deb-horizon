@@ -34,6 +34,7 @@ Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
 Package: python-django-horizon
 Section: python
 Architecture: all
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: ${misc:Depends}, ${python:Depends},
  python-cinderclient,
  python-cloudfiles,
@@ -57,6 +58,7 @@ Description: Django module providing web interaction with OpenStack
 
 Package: openstack-dashboard
 Architecture: all
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: ${shlibs:Depends},
  ${misc:Depends},
  ${python:Depends},
@@ -73,6 +75,7 @@ Description: OpenStack Dashboard
 
 Package: openstack-dashboard-apache
 Architecture: all
+Pre-Depends: dpkg (>= 1.15.6~)
 Depends: libapache2-mod-wsgi (>=2.3),
  openstack-dashboard,
  ${misc:Depends}
