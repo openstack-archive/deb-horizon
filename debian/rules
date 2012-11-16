@@ -1,12 +1,8 @@
 #!/usr/bin/make -f
 
-# Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-DEBVERS := $(shell dpkg-parsechangelog | sed -n -e 's/^Version: //p')
-VERSION := $(shell echo '$(DEBVERS)' | sed -e 's/^[[:digit:]]*://' -e 's/[~-].*//')
-DEBFLAVOR :=$(shell dpkg-parsechangelog | grep -E ^Distribution: | cut -d" " -f2)
-DEBPKGNAME :=$(shell dpkg-parsechangelog | grep -E ^Source: | cut -d" " -f2)
+include /usr/share/openstack-pkg-tools/pkgos.make
 
 %:
 	dh $@ --with python2
@@ -48,24 +44,9 @@ override_dh_install:
 	ln -s /var/lib/openstack-dashboard/static/js $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
 	ln -s /var/lib/openstack-dashboard/static/css $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
 
-override_dh_builddeb:
-	dh_builddeb -- -Zxz -z9
-
 override_dh_auto_clean:
 	dh_auto_clean
 	rm -rf $(CURDIR)/static
 	rm -rf $(CURDIR)/horizon/build
 	rm -rf $(CURDIR)/horizon.egg-info
 	rm -rf $(CURDIR)/openstack_dashboard/openstack_dashboard.egg-info
-
-get-vcs-source:
-	git remote add upstream git://github.com/openstack/$(DEBPKGNAME).git || true
-	git fetch upstream
-	if [ ! -f ../$(DEBPKGNAME)_$(VERSION).orig.tar.xz ] ; then \
-		git archive --prefix=$(DEBPKGNAME)-$(VERSION)/ $(VERSION) | xz >../$(DEBPKGNAME)_$(VERSION).orig.tar.xz ; \
-	fi
-	if ! git checkout master ; then \
-		echo "No upstream branch: checking out" ; \
-		git checkout -b master upstream/master ; \
-	fi
-	git checkout debian/experimental

@@ -7,7 +7,10 @@ Uploaders: Loic Dachary (OuoU) <loic@debian.org>,
            Thomas Goirand <zigo@debian.org>,
            Ghe Rivero <ghe.rivero@stackops.com>,
            Mehdi Abaakouk <sileht@sileht.net>
-Build-Depends: debhelper (>= 8), python-all (>= 2.6.6-3~), python-setuptools,
+Build-Depends: debhelper (>= 9),
+ python-all (>= 2.6.6-3~),
+ python-setuptools
+Build-Depends-Indep: openstack-pkg-tools,
  pep8,
  python-cloudfiles,
  python-coverage,
