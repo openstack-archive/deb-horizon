@@ -1,0 +1,40 @@
+<VirtualHost *:443>
+    ServerAdmin webmaster@localhost
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+    BrowserMatch "MSIE [2-6]" \
+    	nokeepalive ssl-unclean-shutdown \
+    	downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+    WSGIScriptAlias / /usr/share/openstack-dashboard/openstack_dashboard/wsgi/django.wsgi
+    WSGIDaemonProcess horizon user=www-data group=www-data
+    #WSGIProcessGroup openstack-dashboard
+    Alias /static /usr/share/openstack-dashboard/openstack_dashboard/static
+
+    DocumentRoot /var/www
+
+    <Directory />
+    	AllowOverride None
+    </Directory>
+
+    <Directory /usr/share/openstack-dashboard/openstack_dashboard/wsgi/>
+    	Order allow,deny
+    	Allow from all
+    </Directory>
+
+    <Directory /usr/share/pyshared/horizon/static/horizon>
+    	Order allow,deny
+    	Allow from all
+    </Directory>
+
+    <Directory /usr/share/openstack-dashboard/openstack_dashboard/static/>
+    	Order allow,deny
+    	Allow from all
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    LogLevel warn
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
