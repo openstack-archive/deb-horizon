@@ -8,6 +8,7 @@ Uploaders: Loic Dachary (OuoU) <loic@debian.org>,
            Ghe Rivero <ghe.rivero@stackops.com>,
            Mehdi Abaakouk <sileht@sileht.net>
 Build-Depends: debhelper (>= 9),
+ po-debconf,
  python-all (>= 2.6.6-3~),
  python-setuptools
 Build-Depends-Indep: openstack-pkg-tools,
@@ -79,7 +80,8 @@ Description: OpenStack Dashboard
 Package: openstack-dashboard-apache
 Architecture: all
 Pre-Depends: dpkg (>= 1.15.6~)
-Depends: libapache2-mod-wsgi (>=2.3),
+Depends: debconf,
+ libapache2-mod-wsgi (>=2.3),
  openstack-dashboard,
  ${misc:Depends}
 Description: OpenStack Dashboard - Apache support
