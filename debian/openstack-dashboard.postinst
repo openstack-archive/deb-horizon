@@ -9,7 +9,7 @@ then
         --disabled-password \
         --group horizon
 
-	if[ -r /etc/openstack-dashboard/local_settings.py ] ; then
+	if [ -r /etc/openstack-dashboard/local_settings.py ] ; then
 		chmod 0640 /etc/openstack-dashboard/local_settings.py
 		chown horizon:horizon /etc/openstack-dashboard/local_settings.py
 	fi
