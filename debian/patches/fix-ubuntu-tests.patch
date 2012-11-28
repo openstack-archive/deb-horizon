@@ -1,3 +1,7 @@
+Description: Fixes some unit testings
+Author: Mehdi Abaakouk <sileht@sileht.net>
+Forwarded: not-needed
+
 Index: horizon-2012.2/run_tests.sh
 ===================================================================
 --- horizon-2012.2.orig/run_tests.sh	2012-08-23 18:52:34.891973319 -0700
