@@ -31,7 +31,7 @@ Build-Depends-Indep: openstack-pkg-tools,
  nodejs-legacy, 
  node-less
 Standards-Version: 3.9.3
-Homepage: http://launchpad.net/horizon
+Homepage: http://horizon.openstack.org
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
 Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
 
