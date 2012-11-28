@@ -10,11 +10,14 @@ if [ "$1" = "configure" ] ; then
 		db_get horizon/use_ssl
 		if [ "${RET}" = "true" ] ; then
 			a2enmod ssl
-			a2ensite openstack-dashboard-ssl
+			a2enmod rewrite
 			a2dissite openstack-dashboard
+			a2ensite openstack-dashboard-ssl-redirect
+			a2ensite openstack-dashboard-ssl
 		else
-			a2ensite openstack-dashboard
 			a2dissite openstack-dashboard-ssl
+			a2dissite openstack-dashboard-ssl-redirect
+			a2ensite openstack-dashboard
 		fi
 		invoke-rc.d --quiet apache2 reload
 	fi
