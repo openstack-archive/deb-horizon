@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
-"POT-Creation-Date: 2012-11-01 07:34+0000\n"
+"POT-Creation-Date: 2012-11-28 14:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,12 +28,21 @@ msgstr ""
 #: ../openstack-dashboard-apache.templates:2001
 msgid ""
 "In Debian, Apache comes with a default website and a default page, "
-"configured in /etc/apache2/sites-available/default. Should this "
-"configuration be disabled and shall the Openstack Dashboard replace it?"
+"configured in /etc/apache2/sites-available/default. Select if this "
+"configuration should be disabled and replaced by the Openstack Dashboard "
+"configuration."
 msgstr ""
 
 #. Type: boolean
 #. Description
 #: ../openstack-dashboard-apache.templates:3001
 msgid "Should the Dashboard be installed on HTTPS?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid ""
+"Please choose if you would like Horizon to be installed on HTTPS only, with "
+"a redirection to HTTPS if HTTP is in use."
 msgstr ""

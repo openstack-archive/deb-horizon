@@ -12,10 +12,12 @@ Type: boolean
 Default: false
 _Description: Activate Dashboard and disable default VirtualHost?
  In Debian, Apache comes with a default website and a default page, configured
- in /etc/apache2/sites-available/default. Should this configuration be disabled
- and shall the Openstack Dashboard replace it?
+ in /etc/apache2/sites-available/default. Select if this configuration should be
+ disabled and replaced by the Openstack Dashboard configuration.
 
 Template: horizon/use_ssl
 Type: boolean
 Default: true
 _Description: Should the Dashboard be installed on HTTPS?
+ Please choose if you would like Horizon to be installed on HTTPS only, with a
+ redirection to HTTPS if HTTP is in use.
