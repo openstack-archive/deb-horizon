@@ -1,9 +1,6 @@
-horizon (2012.2-1) experimental; urgency=low
+horizon (2012.2.1-1) experimental; urgency=low
 
-  [ Mehdi Abaakouk ]
-  * New upstream release 2012.2
-
-  [ Thomas Goirand ]
+  * New upstream release 2012.2.1
   * Recommends: memcached and use it as default on localhost.
   * Rewrote Apache vhost, diables apache "default" vhost by default, (probably
   we should ask for permission to do that using debconf).
@@ -14,8 +11,9 @@ horizon (2012.2-1) experimental; urgency=low
   * Added missing dependency on node-less.
   * The package had only Build-Depends:, now setting lots of them in
   Build-Depends-Indep: as it should be.
+  * Using pkgos.make in debian/rules.
 
- -- Thomas Goirand <zigo@debian.org>  Wed, 28 Nov 2012 13:49:15 +0000
+ -- Thomas Goirand <zigo@debian.org>  Sun, 02 Dec 2012 11:59:19 +0000
 
 horizon (2012.2~rc1-1) experimental; urgency=low
 
