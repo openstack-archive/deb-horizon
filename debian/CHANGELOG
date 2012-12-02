@@ -1,3 +1,62 @@
+commit 9647138fdb2d1d6b2f2b303239d94ebc7407edc0
+Author: Mark McLoughlin <markmc@redhat.com>
+Date:   Thu Nov 29 21:34:23 2012 +0000
+
+    Final versioning for 2012.2.1
+    
+    Change-Id: I3cee9306c7df2c5c5042afc6f1c5f47449dfee55
+
+commit 7f038bddc26e5bf8fe99f598a2a2369725da2ddc
+Merge: 65c2ab8 53954a7
+Author: Jenkins <jenkins@review.openstack.org>
+Date:   Wed Nov 14 20:51:27 2012 +0000
+
+    Merge "Fixes JavaScript count bug in tables." into stable/folsom
+
+commit 53954a7b1adf773e5a8917f179f061418673f368
+Author: Matthias Runge <mrunge@redhat.com>
+Date:   Mon Oct 15 09:52:32 2012 +0200
+
+    Fixes JavaScript count bug in tables.
+    
+    When showing tables, and you had the summary, "No items to display",
+    the counter at table footer says "Displaying 1 items". This commit fixes
+    the inclusion of the empty line into line count.
+    Affected sub-pages: Instances, Volumes, Images & Snapshots, etc.
+    
+    Change-Id: I24da50d506be477dffdbb0f497d88b1bd3ceacdc
+    (cherry picked from commit 0c85d7214e992fe83cad1f00dbeebc2f3a58d1eb)
+
+commit 65c2ab80f4324c214a3c995bf53cbc911e1a1974
+Author: Julie Pichon <jpichon@redhat.com>
+Date:   Thu Nov 8 16:48:42 2012 +0000
+
+    When editing an image, correctly set the 'is_public' checkbox.
+    
+    Fixes bug 1076216.
+    
+    Change-Id: Ie185f110a18593295ed0712cd848a3f14a13f2b0
+
+commit cb7aa15cd92761b38b7267b59e489e1ae4c5dfd6
+Author: Mark McLoughlin <markmc@redhat.com>
+Date:   Sat Oct 13 22:45:28 2012 +0100
+
+    Set defaultbranch in .gitreview to stable/folsom
+    
+    This allows people run git-review without any arguments.
+    
+    Change-Id: I2b2488ffffd783b64e5c760324e7d4a00d5a39db
+
+commit 1e9b87095cca267f5b531479d14bf146646d53d5
+Author: Thierry Carrez <thierry@openstack.org>
+Date:   Fri Sep 28 16:18:22 2012 +0200
+
+    Bump next version to 2012.2.1
+    
+    Open stable/folsom by bumping next version to 2012.2.1.
+    
+    Change-Id: I3ab154f33e90705ccca486b00dc95d70e733d737
+
 commit cee6b626d372c8d420b439038a3fe0580d8fcc89
 Merge: fcba390 d842573
 Author: Jenkins <jenkins@review.openstack.org>
