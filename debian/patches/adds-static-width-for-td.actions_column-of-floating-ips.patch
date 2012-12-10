@@ -1,0 +1,17 @@
+Description: Adds static width for the #floating-ips td.actions
+Author: Jiang Yong <jiangyong.hn@gmail.com>
+Origin: upstream, https://review.openstack.org/#/c/17530/
+Bug-Ubuntu: https://launchpad.net/bugs/1081875
+
+--- horizon-2012.2.1.orig/openstack_dashboard/static/dashboard/less/horizon.less
++++ horizon-2012.2.1/openstack_dashboard/static/dashboard/less/horizon.less
+@@ -823,6 +823,9 @@ td.actions_column {
+   min-width: 140px;
+   min-height: 20px;
+ }
++#floating_ips td.actions_column {
++  width: 180px;
++}
+ 
+ td.actions_column .row_actions a,
+ td.actions_column .row_actions input,
