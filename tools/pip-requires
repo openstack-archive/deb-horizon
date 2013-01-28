@@ -1,11 +1,12 @@
 # Horizon Core Requirements
 Django>=1.4
 django_compressor
-django_openstack_auth
+django_openstack_auth>=1.0.3
+netaddr
 python-cinderclient
 python-glanceclient<2
 python-keystoneclient
-python-novaclient
+python-novaclient>=2.10.0,<3
 python-quantumclient>=2.0
 python-swiftclient>1.1,<2
 pytz

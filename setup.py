@@ -25,7 +25,7 @@ from distutils.core import setup
 from distutils.command.install import INSTALL_SCHEMES
 
 from horizon import version
-from horizon.openstack.common import setup as os_common_setup
+from openstack_dashboard.openstack.common import setup as os_common_setup
 
 
 requires = os_common_setup.parse_requirements()
@@ -102,5 +102,6 @@ setup(name="horizon",
                    'License :: OSI Approved :: Apache Software License',
                    'Operating System :: OS Independent',
                    'Programming Language :: Python',
-                   'Topic :: Internet :: WWW/HTTP']
+                   'Topic :: Internet :: WWW/HTTP',
+                   'Environment :: OpenStack']
 )

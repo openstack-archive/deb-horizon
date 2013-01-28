@@ -21,7 +21,7 @@ from django import shortcuts
 from django.conf import settings
 from django.core import urlresolvers
 from django.utils.functional import Promise
-from django.utils.translation import string_concat, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import messages
@@ -524,7 +524,7 @@ class BatchAction(Action):
                     action_failure.append(datum_display)
                 exceptions.handle(request, ignore=ignore)
 
-        #Begin with success message class, downgrade to info if problems
+        # Begin with success message class, downgrade to info if problems.
         success_message_level = messages.success
         if action_not_allowed:
             msg = _('You do not have permission to %(action)s: %(objs)s')

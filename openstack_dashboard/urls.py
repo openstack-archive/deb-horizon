@@ -31,9 +31,10 @@ import horizon
 
 
 urlpatterns = patterns('',
-    url(r'^$', 'horizon.views.splash', name='splash'),
+    url(r'^$', 'openstack_dashboard.views.splash', name='splash'),
     url(r'^auth/', include('openstack_auth.urls')),
-    url(r'', include(horizon.urls)))
+    url(r'', include(horizon.urls))
+)
 
 # Development static app and project media serving using the staticfiles app.
 urlpatterns += staticfiles_urlpatterns()
@@ -42,3 +43,8 @@ urlpatterns += staticfiles_urlpatterns()
 # development. Only active if DEBUG==True and the URL prefix is a local
 # path. Production media should NOT be served by Django.
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url(r'^500/$', 'django.views.defaults.server_error')
+    )

@@ -21,8 +21,12 @@
 import logging
 import os
 import sys
+import warnings
 
 from openstack_dashboard import exceptions
+
+warnings.formatwarning = lambda message, category, *args, **kwargs: \
+                                '%s: %s' % (category.__name__, message)
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 BIN_DIR = os.path.abspath(os.path.join(ROOT_PATH, '..', 'bin'))
@@ -51,9 +55,9 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
 HORIZON_CONFIG = {
-    'dashboards': ('nova', 'syspanel', 'settings',),
-    'default_dashboard': 'nova',
-    'user_home': 'horizon.views.base.get_user_home',
+    'dashboards': ('project', 'admin', 'settings',),
+    'default_dashboard': 'project',
+    'user_home': 'openstack_dashboard.views.get_user_home',
     'ajax_queue_limit': 10,
     'help_url': "http://docs.openstack.org",
     'exceptions': {'recoverable': exceptions.RECOVERABLE,
@@ -80,6 +84,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
     'horizon.context_processors.horizon',
+    'openstack_dashboard.context_processors.openstack',
 )
 
 TEMPLATE_LOADERS = (
@@ -121,9 +126,9 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'compressor',
     'horizon',
-    'horizon.dashboards.nova',
-    'horizon.dashboards.syspanel',
-    'horizon.dashboards.settings',
+    'openstack_dashboard.dashboards.project',
+    'openstack_dashboard.dashboards.admin',
+    'openstack_dashboard.dashboards.settings',
     'openstack_auth',
 )
 
@@ -162,10 +167,38 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = 'Member'
 
 DEFAULT_EXCEPTION_REPORTER_FILTER = 'horizon.exceptions.HorizonReporterFilter'
 
+if DEBUG:
+    logging.basicConfig(level=logging.DEBUG)
+
+
 try:
     from local.local_settings import *
 except ImportError:
     logging.warning("No local_settings file found.")
 
-if DEBUG:
-    logging.basicConfig(level=logging.DEBUG)
+
+# Deprecation for Essex/Folsom dashboard names; remove this code in H.
+_renames = (
+    ('horizon.dashboards.nova', 'openstack_dashboard.dashboards.project'),
+    ('horizon.dashboards.syspanel', 'openstack_dashboard.dashboards.admin'),
+    ('horizon.dashboards.settings', 'openstack_dashboard.dashboards.settings')
+)
+
+INSTALLED_APPS = list(INSTALLED_APPS)
+_dashboards = list(HORIZON_CONFIG['dashboards'])
+
+for old, new in _renames:
+    if old in INSTALLED_APPS:
+        warnings.warn('The "%s" package is deprecated. Please update your '
+                      'INSTALLED_APPS setting to use the new "%s" package.\n'
+                      % (old, new), Warning)
+        INSTALLED_APPS[INSTALLED_APPS.index(old)] = new
+    _old_name = old.split(".")[-1]
+    if _old_name in HORIZON_CONFIG['dashboards'] and _old_name != "settings":
+        _new_name = new.split(".")[-1]
+        warnings.warn('The "%s" dashboard name is deprecated. Please update '
+                      'your HORIZON_CONFIG["dashboards"] setting to use the '
+                      'new "%s" dashboard name.\n' % (_old_name, _new_name),
+                      Warning)
+        _dashboards[_dashboards.index(_old_name)] = _new_name
+HORIZON_CONFIG['dashboards'] = _dashboards
