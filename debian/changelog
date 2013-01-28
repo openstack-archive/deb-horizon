@@ -1,3 +1,9 @@
+horizon (2013.1~g2-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 28 Jan 2013 22:39:15 +0800
+
 horizon (2012.2.1-1) experimental; urgency=low
 
   * New upstream release 2012.2.1
