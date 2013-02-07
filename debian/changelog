@@ -1,9 +1,15 @@
-horizon (2012.1.1-9) unstable; urgency=low
+horizon (2012.1.1-10) unstable; urgency=low
 
   * Added patch: Launch from volume with valid volume size. Thanks to Julien
     Cristau <julien.cristau@logilab.fr> for reporting (Closes: 699906).
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 07 Feb 2013 17:50:55 +0800
+
+horizon (2012.1.1-9) unstable; urgency=high
+
+  * Re-uploading with urgency=high.
+
+ -- Thomas Goirand <zigo@debian.org>  Sun, 18 Nov 2012 15:09:51 +0000
 
 horizon (2012.1.1-8) unstable; urgency=low
 
