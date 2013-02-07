@@ -1,0 +1,72 @@
+Description: Launch from volume with valid volume size
+Author: Sascha Peilicke <saschpe@suse.de>
+Origin: upstream, https://review.openstack.org/gitweb?p=openstack/horizon.git;a=patch;h=fd2291bd28a5a4331d9a7baf961c76effd17b85a
+Bug-Debian: http://bugs.debian.org/699906
+Bug-Ubuntu: https://launchpad.net/bugs/1047568
+Date: 2012-10-18
+
+diff --git a/AUTHORS b/AUTHORS
+index 4110431..677253f 100644
+--- a/AUTHORS
++++ b/AUTHORS
+@@ -41,6 +41,7 @@ Monty Taylor <mordred@inaugust.com>
+ Neil Johnston <onewheeldrive.net@gmail.com>
+ Paul McMillan <paul.mcmillan@nebula.com>
+ Sam Morrison <sorrison@gmail.com>
++Sascha Peilicke <saschpe@suse.de>
+ Stephane Angot <sa@hydre.org>
+ termie <github@anarkystic.com>
+ Thierry Carrez <thierry@openstack.org>
+diff --git a/horizon/dashboards/nova/images_and_snapshots/images/forms.py b/horizon/dashboards/nova/images_and_snapshots/images/forms.py
+index bc4851d..a6cdbad 100644
+--- a/horizon/dashboards/nova/images_and_snapshots/images/forms.py
++++ b/horizon/dashboards/nova/images_and_snapshots/images/forms.py
+@@ -164,7 +164,7 @@ class LaunchForm(forms.SelfHandlingForm):
+                 else:
+                     delete_on_terminate = 0
+                 dev_mapping = {data['device_name']:
+-                        ("%s::%s" % (data['volume'], delete_on_terminate))}
++                        ("%s:%s" % (data['volume'], delete_on_terminate))}
+             else:
+                 dev_mapping = None
+ 
+diff --git a/horizon/dashboards/nova/images_and_snapshots/images/tests.py b/horizon/dashboards/nova/images_and_snapshots/images/tests.py
+index aa02325..3615288 100644
+--- a/horizon/dashboards/nova/images_and_snapshots/images/tests.py
++++ b/horizon/dashboards/nova/images_and_snapshots/images/tests.py
+@@ -118,8 +118,8 @@ class ImageViewTests(test.TestCase):
+         sec_group = self.security_groups.first()
+         USER_DATA = 'user data'
+         device_name = u'vda'
+-        volume_choice = "%s:vol" % volume.id
+-        block_device_mapping = {device_name: u"%s::0" % volume_choice}
++        volume_choice = "%s:vol:%s" % (volume.id, volume.size)
++        block_device_mapping = {device_name: u"%s:0" % volume_choice}
+ 
+         self.mox.StubOutWithMock(api, 'image_get_meta')
+         self.mox.StubOutWithMock(api, 'flavor_list')
+@@ -269,7 +269,7 @@ class ImageViewTests(test.TestCase):
+         sec_group = self.security_groups.first()
+         USER_DATA = 'user data'
+         device_name = u'vda'
+-        volume_choice = "%s:vol" % volume.id
++        volume_choice = "%s:vol:%s" % (volume.id, volume.size)
+ 
+         self.mox.StubOutWithMock(api, 'image_get_meta')
+         self.mox.StubOutWithMock(api, 'flavor_list')
+diff --git a/horizon/dashboards/nova/images_and_snapshots/images/views.py b/horizon/dashboards/nova/images_and_snapshots/images/views.py
+index 1803f97..0b6ec5c 100644
+--- a/horizon/dashboards/nova/images_and_snapshots/images/views.py
++++ b/horizon/dashboards/nova/images_and_snapshots/images/views.py
+@@ -117,7 +117,7 @@ class LaunchView(forms.ModalFormView):
+             else:
+                 vol_type = "vol"
+                 visible_label = _("Volume")
+-            return (("%s:%s" % (volume.id, vol_type)),
++            return (("%s:%s:%s" % (volume.id, vol_type, volume.size)),
+                     ("%s - %s GB (%s)" % (volume.display_name,
+                                          volume.size,
+                                          visible_label)))
+-- 
+1.7.9.5
+
