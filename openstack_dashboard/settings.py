@@ -65,6 +65,11 @@ HORIZON_CONFIG = {
                    'unauthorized': exceptions.UNAUTHORIZED},
 }
 
+# Set to True to allow users to upload images to glance via Horizon server.
+# When enabled, a file form field will appear on the create image form.
+# See documentation for deployment considerations.
+HORIZON_IMAGES_ALLOW_UPLOAD = True
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,6 +79,7 @@ MIDDLEWARE_CLASSES = (
     'horizon.middleware.HorizonMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -167,14 +173,19 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = 'Member'
 
 DEFAULT_EXCEPTION_REPORTER_FILTER = 'horizon.exceptions.HorizonReporterFilter'
 
-if DEBUG:
-    logging.basicConfig(level=logging.DEBUG)
-
-
 try:
     from local.local_settings import *
 except ImportError:
     logging.warning("No local_settings file found.")
+
+# Add HORIZON_CONFIG to the context information for offline compression
+COMPRESS_OFFLINE_CONTEXT = {
+    'STATIC_URL': STATIC_URL,
+    'HORIZON_CONFIG': HORIZON_CONFIG
+}
+
+if DEBUG:
+    logging.basicConfig(level=logging.DEBUG)
 
 
 # Deprecation for Essex/Folsom dashboard names; remove this code in H.

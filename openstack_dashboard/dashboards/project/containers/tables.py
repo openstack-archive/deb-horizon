@@ -24,7 +24,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import tables
 
 from openstack_dashboard import api
-from openstack_dashboard.api import FOLDER_DELIMITER
+from openstack_dashboard.api.swift import FOLDER_DELIMITER
 
 
 LOG = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ class DeleteContainer(tables.DeleteAction):
     success_url = "horizon:project:containers:index"
 
     def delete(self, request, obj_id):
-        api.swift_delete_container(request, obj_id)
+        api.swift.swift_delete_container(request, obj_id)
 
     def get_success_url(self, request=None):
         """
@@ -141,21 +141,14 @@ class DeleteObject(tables.DeleteAction):
     def delete(self, request, obj_id):
         obj = self.table.get_object_by_id(obj_id)
         container_name = obj.container_name
-        api.swift_delete_object(request, container_name, obj_id)
-
-
-class DeleteSubfolder(DeleteObject):
-    name = "delete_subfolder"
-    data_type_singular = _("Folder")
-    data_type_plural = _("Folders")
-    allowed_data_types = ("subfolders",)
+        api.swift.swift_delete_object(request, container_name, obj_id)
 
 
 class DeleteMultipleObjects(DeleteObject):
     name = "delete_multiple_objects"
     data_type_singular = _("Object")
     data_type_plural = _("Objects")
-    allowed_data_types = ("subfolders", "objects",)
+    allowed_data_types = ("objects",)
 
 
 class CopyObject(tables.LinkAction):
@@ -190,21 +183,21 @@ class ObjectFilterAction(tables.FilterAction):
         container = self.table.kwargs['container_name']
         subfolder = self.table.kwargs['subfolder_path']
         prefix = wrap_delimiter(subfolder) if subfolder else ''
-        self.filtered_data = api.swift_filter_objects(request,
-                                                        filter_string,
-                                                        container,
-                                                        prefix=prefix)
+        self.filtered_data = api.swift.swift_filter_objects(request,
+                                                            filter_string,
+                                                            container,
+                                                            prefix=prefix)
         return self.filtered_data
 
     def filter_subfolders_data(self, table, objects, filter_string):
         data = self._filtered_data(table, filter_string)
         return [datum for datum in data if
-                datum.content_type == "application/directory"]
+                datum.content_type == "application/pseudo-folder"]
 
     def filter_objects_data(self, table, objects, filter_string):
         data = self._filtered_data(table, filter_string)
         return [datum for datum in data if
-                datum.content_type != "application/directory"]
+                datum.content_type != "application/pseudo-folder"]
 
     def allowed(self, request, datum=None):
         if self.table.kwargs.get('container_name', None):
@@ -228,24 +221,6 @@ def get_link_subfolder(subfolder):
                           http.urlquote(wrap_delimiter(subfolder.name))))
 
 
-class CreateSubfolder(CreateContainer):
-    verbose_name = _("Create Folder")
-    url = "horizon:project:containers:create"
-
-    def get_link_url(self):
-        container = self.table.kwargs['container_name']
-        subfolders = self.table.kwargs['subfolder_path']
-        parent = FOLDER_DELIMITER.join((bit for bit in [container,
-                                                        subfolders] if bit))
-        parent = parent.rstrip(FOLDER_DELIMITER)
-        return reverse(self.url, args=[http.urlquote(wrap_delimiter(parent))])
-
-    def allowed(self, request, datum=None):
-        if self.table.kwargs.get('container_name', None):
-            return True
-        return False
-
-
 class ObjectsTable(tables.DataTable):
     name = tables.Column("name",
                          link=get_link_subfolder,
@@ -255,16 +230,12 @@ class ObjectsTable(tables.DataTable):
 
     size = tables.Column(get_size, verbose_name=_('Size'))
 
-    def get_object_id(self, obj):
-        return obj.name
-
     class Meta:
         name = "objects"
         verbose_name = _("Objects")
-        table_actions = (ObjectFilterAction, CreateSubfolder,
-                            UploadObject, DeleteMultipleObjects)
-        row_actions = (DownloadObject, CopyObject, DeleteObject,
-                        DeleteSubfolder)
+        table_actions = (ObjectFilterAction, UploadObject,
+                         DeleteMultipleObjects)
+        row_actions = (DownloadObject, CopyObject, DeleteObject)
         data_types = ("subfolders", "objects")
         browser_table = "content"
         footer = False

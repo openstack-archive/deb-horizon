@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import copy
 import json
 import uuid
 
@@ -23,6 +24,7 @@ from novaclient.v1_1 import (flavors, keypairs, servers, volumes,
                              security_groups as sec_groups)
 
 from openstack_dashboard.api.base import Quota, QuotaSet as QuotaSetWrapper
+from openstack_dashboard.api.nova import FloatingIp as NetFloatingIp
 from openstack_dashboard.usage.quotas import QuotaUsage
 from .utils import TestDataContainer
 
@@ -150,6 +152,11 @@ def data(TEST):
     TEST.volume_snapshots = TestDataContainer()
     TEST.volume_types = TestDataContainer()
 
+    # Data return by novaclient.
+    # It is used if API layer does data conversion.
+    TEST.api_floating_ips = TestDataContainer()
+    TEST.api_floating_ips_uuid = TestDataContainer()
+
     # Volumes
     volume = volumes.Volume(volumes.VolumeManager(None),
                             dict(id="41023e92-8008-4c8b-8059-7f2293ff3775",
@@ -236,6 +243,12 @@ def data(TEST):
                                             "id": 2,
                                             "name": u"other_group",
                                             "description": u"Not default."})
+    sec_group_3 = sec_groups.SecurityGroup(sg_manager,
+                                           {"rules": [],
+                                            "tenant_id": TEST.tenant.id,
+                                            "id": 3,
+                                            "name": u"another_group",
+                                            "description": u"Not default."})
 
     rule = {'id': 1,
             'ip_protocol': u"tcp",
@@ -271,7 +284,7 @@ def data(TEST):
 
     sec_group_1.rules = [rule_obj]
     sec_group_2.rules = [rule_obj]
-    TEST.security_groups.add(sec_group_1, sec_group_2)
+    TEST.security_groups.add(sec_group_1, sec_group_2, sec_group_3)
 
     # Security Group Rules
 
@@ -346,32 +359,46 @@ def data(TEST):
     # VNC Console Data
     console = {u'console': {u'url': u'http://example.com:6080/vnc_auto.html',
                             u'type': u'novnc'}}
-    TEST.servers.console_data = console
+    TEST.servers.vnc_console_data = console
+    # SPICE Console Data
+    console = {u'console': {u'url': u'http://example.com:6080/spice_auto.html',
+                            u'type': u'spice'}}
+    TEST.servers.spice_console_data = console
     # Floating IPs
     fip_1 = floating_ips.FloatingIP(floating_ips.FloatingIPManager(None),
                                     {'id': 1,
                                      'fixed_ip': '10.0.0.4',
                                      'instance_id': server_1.id,
-                                     'ip': '58.58.58.58'})
+                                     'ip': '58.58.58.58',
+                                     'pool': 'pool1'})
     fip_2 = floating_ips.FloatingIP(floating_ips.FloatingIPManager(None),
                                     {'id': 2,
                                      'fixed_ip': None,
                                      'instance_id': None,
-                                     'ip': '58.58.58.58'})
-    TEST.floating_ips.add(fip_1, fip_2)
+                                     'ip': '58.58.58.58',
+                                     'pool': 'pool2'})
+    TEST.api_floating_ips.add(fip_1, fip_2)
 
-    # Floating IP with UUID id (for Floating IP with Quantum)
+    TEST.floating_ips.add(NetFloatingIp(copy.deepcopy(fip_1)),
+                          NetFloatingIp(copy.deepcopy(fip_2)))
+
+    # Floating IP with UUID id (for Floating IP with Quantum Proxy)
     fip_3 = floating_ips.FloatingIP(floating_ips.FloatingIPManager(None),
                                     {'id': str(uuid.uuid4()),
                                      'fixed_ip': '10.0.0.4',
                                      'instance_id': server_1.id,
-                                     'ip': '58.58.58.58'})
+                                     'ip': '58.58.58.58',
+                                     'pool': 'pool1'})
     fip_4 = floating_ips.FloatingIP(floating_ips.FloatingIPManager(None),
                                     {'id': str(uuid.uuid4()),
                                      'fixed_ip': None,
                                      'instance_id': None,
-                                     'ip': '58.58.58.58'})
-    TEST.floating_ips_uuid.add(fip_3, fip_4)
+                                     'ip': '58.58.58.58',
+                                     'pool': 'pool2'})
+    TEST.api_floating_ips_uuid.add(fip_3, fip_4)
+
+    TEST.floating_ips_uuid.add(NetFloatingIp(copy.deepcopy(fip_3)),
+                               NetFloatingIp(copy.deepcopy(fip_4)))
 
     # Usage
     usage_vals = {"tenant_id": TEST.tenant.id,

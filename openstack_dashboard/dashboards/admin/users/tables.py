@@ -22,9 +22,7 @@ class CreateUserLink(tables.LinkAction):
     classes = ("ajax-modal", "btn-create")
 
     def allowed(self, request, user):
-        if api.keystone_can_edit_user():
-            return True
-        return False
+        return api.keystone.keystone_can_edit_user()
 
 
 class EditUserLink(tables.LinkAction):
@@ -32,6 +30,9 @@ class EditUserLink(tables.LinkAction):
     verbose_name = _("Edit")
     url = "horizon:admin:users:update"
     classes = ("ajax-modal", "btn-edit")
+
+    def allowed(self, request, user):
+        return api.keystone.keystone_can_edit_user()
 
 
 class ToggleEnabled(tables.BatchAction):
@@ -43,6 +44,9 @@ class ToggleEnabled(tables.BatchAction):
     classes = ("btn-enable",)
 
     def allowed(self, request, user=None):
+        if not api.keystone.keystone_can_edit_user():
+            return False
+
         self.enabled = True
         if not user:
             return self.enabled
@@ -76,7 +80,7 @@ class DeleteUsersAction(tables.DeleteAction):
     data_type_plural = _("Users")
 
     def allowed(self, request, datum):
-        if not api.keystone_can_edit_user() or \
+        if not api.keystone.keystone_can_edit_user() or \
                 (datum and datum.id == request.user.id):
             return False
         return True
@@ -90,8 +94,8 @@ class UserFilterAction(tables.FilterAction):
         """ Naive case-insensitive search """
         q = filter_string.lower()
         return [user for user in users
-                if q in user.get('name', '').lower()
-                or q in user.get('email', '').lower()]
+                if q in user.name.lower()
+                or q in user.email.lower()]
 
 
 class UsersTable(tables.DataTable):

@@ -30,7 +30,8 @@ from django.utils.translation import ugettext as _
 from cinderclient.v1 import client as cinder_client
 
 from openstack_dashboard.api.base import url_for
-from openstack_dashboard.api import nova, QuotaSet
+from openstack_dashboard.api import nova
+from openstack_dashboard.api.base import QuotaSet
 from horizon import exceptions
 
 LOG = logging.getLogger(__name__)
@@ -65,7 +66,10 @@ def volume_list(request, search_opts=None):
     To see all volumes in the cloud as an admin you can pass in a special
     search option: {'all_tenants': 1}
     """
-    return cinderclient(request).volumes.list(search_opts=search_opts)
+    c_client = cinderclient(request)
+    if c_client is None:
+        return []
+    return c_client.volumes.list(search_opts=search_opts)
 
 
 def volume_get(request, volume_id):
@@ -84,10 +88,10 @@ def volume_get(request, volume_id):
 
 
 def volume_create(request, size, name, description, volume_type,
-                  snapshot_id=None):
+                  snapshot_id=None, metadata=None):
     return cinderclient(request).volumes.create(size, display_name=name,
             display_description=description, volume_type=volume_type,
-            snapshot_id=snapshot_id)
+            snapshot_id=snapshot_id, metadata=metadata)
 
 
 def volume_delete(request, volume_id):

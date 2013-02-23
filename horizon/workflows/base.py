@@ -58,21 +58,20 @@ class WorkflowContext(dict):
 
 class ActionMetaclass(forms.forms.DeclarativeFieldsMetaclass):
     def __new__(mcs, name, bases, attrs):
-        super(ActionMetaclass, mcs).__new__(mcs, name, bases, attrs)
-
-        # Process options from Meta
+        # Pop Meta for later processing
         opts = attrs.pop("Meta", None)
-        attrs['name'] = getattr(opts, "name", name)
-        attrs['slug'] = getattr(opts, "slug", slugify(name))
-        attrs['permissions'] = getattr(opts, "permissions", ())
-        attrs['progress_message'] = getattr(opts,
+        # Create our new class
+        cls = super(ActionMetaclass, mcs).__new__(mcs, name, bases, attrs)
+        # Process options from Meta
+        cls.name = getattr(opts, "name", name)
+        cls.slug = getattr(opts, "slug", slugify(name))
+        cls.permissions = getattr(opts, "permissions", ())
+        cls.progress_message = getattr(opts,
                                             "progress_message",
                                             _("Processing..."))
-        attrs['help_text'] = getattr(opts, "help_text", "")
-        attrs['help_text_template'] = getattr(opts, "help_text_template", None)
-
-        # Create our new class!
-        return type.__new__(mcs, name, bases, attrs)
+        cls.help_text = getattr(opts, "help_text", "")
+        cls.help_text_template = getattr(opts, "help_text_template", None)
+        return cls
 
 
 class Action(forms.Form):
@@ -437,6 +436,38 @@ class WorkflowMetaclass(type):
         super(WorkflowMetaclass, mcs).__new__(mcs, name, bases, attrs)
         attrs["_cls_registry"] = set([])
         return type.__new__(mcs, name, bases, attrs)
+
+
+class UpdateMembersStep(Step):
+    """A step that allows a user to add/remove members from a group.
+
+    .. attribute:: show_roles
+
+        Set to False to disable the display of the roles dropdown.
+
+    .. attribute:: available_list_title
+
+        The title used for the available list column.
+
+    .. attribute:: members_list_title
+
+        The title used for the members list column.
+
+    .. attribute:: no_available_text
+
+        The placeholder text used when the available list is empty.
+
+    .. attribute:: no_members_text
+
+        The placeholder text used when the members list is empty.
+
+    """
+    template_name = "horizon/common/_workflow_step_update_members.html"
+    show_roles = True
+    available_list_title = _("All available")
+    members_list_title = _("Members")
+    no_available_text = _("None available.")
+    no_members_text = _("No members.")
 
 
 class Workflow(html.HTMLElement):

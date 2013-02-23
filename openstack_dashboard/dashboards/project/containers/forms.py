@@ -53,7 +53,7 @@ class CreateContainer(forms.SelfHandlingForm):
         try:
             if not data['parent']:
                 # Create a container
-                api.swift_create_container(request, data["name"])
+                api.swift.swift_create_container(request, data["name"])
                 messages.success(request, _("Container created successfully."))
             else:
                 # Create a pseudo-folder
@@ -62,9 +62,9 @@ class CreateContainer(forms.SelfHandlingForm):
                 subfolder_name = "/".join([bit for bit
                                            in (remainder, data['name'])
                                            if bit])
-                api.swift_create_subfolder(request,
-                                           container,
-                                           subfolder_name)
+                api.swift.swift_create_subfolder(request,
+                                                 container,
+                                                 subfolder_name)
                 messages.success(request, _("Folder created successfully."))
             return True
         except:
@@ -77,7 +77,9 @@ class UploadObject(forms.SelfHandlingForm):
                            widget=forms.HiddenInput)
     name = forms.CharField(max_length=255,
                            label=_("Object Name"),
-                           validators=[no_slash_validator])
+                           help_text=_("Slashes are allowed, and are treated "
+                                       "as pseudo-folders by the Object "
+                                       "Store."))
     object_file = forms.FileField(label=_("File"), allow_empty_file=True)
     container_name = forms.CharField(widget=forms.HiddenInput())
 
@@ -88,10 +90,10 @@ class UploadObject(forms.SelfHandlingForm):
         else:
             object_path = data['name']
         try:
-            obj = api.swift_upload_object(request,
-                                          data['container_name'],
-                                          object_path,
-                                          object_file)
+            obj = api.swift.swift_upload_object(request,
+                                                data['container_name'],
+                                                object_path,
+                                                object_file)
             messages.success(request, _("Object was successfully uploaded."))
             return obj
         except:
@@ -124,30 +126,13 @@ class CopyObject(forms.SelfHandlingForm):
             path = path + "/"
         new_path = "%s%s" % (path, new_object)
 
-        # Iteratively make sure all the directory markers exist.
-        if path:
-            path_component = ""
-            for bit in [i for i in path.split("/") if i]:
-                path_component += bit
-                try:
-                    api.swift.swift_create_subfolder(request,
-                                                     new_container,
-                                                     path_component)
-                except:
-                    redirect = reverse(index,
-                                       args=(wrap_delimiter(orig_container),))
-                    exceptions.handle(request,
-                                      _("Unable to copy object."),
-                                      redirect=redirect)
-                path_component += "/"
-
         # Now copy the object itself.
         try:
-            api.swift_copy_object(request,
-                                  orig_container,
-                                  orig_object,
-                                  new_container,
-                                  new_path)
+            api.swift.swift_copy_object(request,
+                                        orig_container,
+                                        orig_object,
+                                        new_container,
+                                        new_path)
             dest = "%s/%s" % (new_container, path)
             vals = {"dest": dest.rstrip("/"),
                     "orig": orig_object.split("/")[-1],

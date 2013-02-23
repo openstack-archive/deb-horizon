@@ -18,7 +18,7 @@ horizon.datatables = {
       // Trigger the update handlers.
       $rows_to_update.each(function(index, row) {
         var $row = $(this),
-            $table = $row.closest('table');
+            $table = $row.closest('table.datatable');
         horizon.ajax.queue({
           url: $row.attr('data-update-url'),
           error: function (jqXHR, textStatus, errorThrown) {
@@ -128,13 +128,35 @@ horizon.datatables = {
 horizon.datatables.confirm = function (action) {
   var $action = $(action),
       $modal_parent = $(action).closest('.modal'),
-      action_string, title, body, modal, form;
+      name_array = new Array(),
+      name_thead, row_index, col_index, closest_table_id,
+      action_string, name_string, title, body, modal, form;
   if($action.hasClass("disabled")) {
     return;
   }
   action_string = $action.text();
+  name_string = "";
+  // Searchs a name field
+  closest_table_id = $(action).closest("table").attr("id");
+  name_thead = $("#"+closest_table_id+" thead").first().find("th:contains('Name')");
+  row_index = $(name_thead).parent().index("tr");
+  col_index = $(name_thead).index("tr:eq("+row_index+") th");
+  if (col_index != -1) {
+   name_string = gettext("You have selected ");
+   if($(action).closest("div").hasClass("table_actions")) {
+       // One or more checkboxes selected
+       $("#"+closest_table_id+" tr").has(":checkbox:checked").find("td:eq("+col_index+")").each(function() {
+	   name_array.push(" \"" + $(this).text() + "\"");
+       });
+       name_array.join(", ");
+       name_string += name_array.toString() + ". ";
+    } else {
+       // If no checkbox is selected
+       name_string += " \"" + $(action).closest("tr").find("td:eq("+col_index+")").text() + "\". ";
+    }
+  }
   title = gettext("Confirm ") + action_string;
-  body = gettext("Please confirm your selection. This action cannot be undone.");
+  body = name_string + gettext("Please confirm your selection. This action cannot be undone.");
   modal = horizon.modals.create(title, body, action_string);
   modal.modal();
   if($modal_parent.length) {
@@ -185,10 +207,10 @@ horizon.datatables.update_footer_count = function (el, modifier) {
   // code paths for table or browser footers...
   $browser = $el.closest("#browser_wrapper");
   if ($browser.length) {
-    $footer = $($browser.find('.tfoot span')[1]);
+    $footer = $browser.find('.tfoot span.content_table_count');
   }
   else {
-    $footer = $el.find('tr:last span:first');
+    $footer = $el.find('tfoot span.table_count');
   }
   row_count = $el.find('tbody tr:visible').length + modifier - $el.find('.empty').length;
   footer_text_template = ngettext("Displaying %s item", "Displaying %s items", row_count);
@@ -196,9 +218,23 @@ horizon.datatables.update_footer_count = function (el, modifier) {
   $footer.text(footer_text);
 };
 
+horizon.datatables.add_no_results_row = function (table) {
+  // Add a "no results" row if there are no results.
+  template = horizon.templates.compiled_templates["#empty_row_template"];
+  if (!table.find("tbody tr:visible").length && typeof(template) !== "undefined") {
+    colspan = table.find("th[colspan]").attr('colspan');
+    params = {"colspan": colspan};
+    table.find("tbody").append(template.render(params));
+  }
+};
+
+horizon.datatables.remove_no_results_row = function (table) {
+  table.find("tr.empty").remove();
+};
+
 horizon.datatables.set_table_sorting = function (parent) {
 // Function to initialize the tablesorter plugin strictly on sortable columns.
-$(parent).find("table.table").each(function () {
+$(parent).find("table.datatable").each(function () {
   var $table = $(this),
       header_options = {};
   // Disable if not sortable or has <= 1 item
@@ -230,11 +266,11 @@ horizon.datatables.add_table_checkboxes = function(parent) {
   });
 };
 
-horizon.datatables.set_table_filter = function (parent) {
+horizon.datatables.set_table_query_filter = function (parent) {
   $(parent).find('table').each(function (index, elm) {
     var input = $($(elm).find('div.table_search input')),
         table_selector;
-    if (input) {
+    if (input.length > 0) {
       // Disable server-side searcing if we have client-side searching since
       // (for now) the client-side is actually superior. Server-side filtering
       // remains as a noscript fallback.
@@ -258,23 +294,14 @@ horizon.datatables.set_table_filter = function (parent) {
         'show': this.show,
         'hide': this.hide,
         onBefore: function () {
-          // Clear the "no results" row.
           var table = $(table_selector);
-          table.find("tr.empty").remove();
+          horizon.datatables.remove_no_results_row(table);
         },
         onAfter: function () {
           var template, table, colspan, params;
           table = $(table_selector);
           horizon.datatables.update_footer_count(table);
-          // Add a "no results" row if there are no results.
-          template = horizon.templates.compiled_templates["#empty_row_template"];
-          if (!$(table_selector + " tbody tr:visible").length && typeof(template) !== "undefined") {
-            colspan = table.find("th[colspan]").attr('colspan');
-            params = {"colspan": colspan};
-            table.find("tbody").append(template.render(params));
-          }
-          // Update footer count
-
+          horizon.datatables.add_no_results_row(table);
         },
         prepareQuery: function (val) {
           return new RegExp(val, "i");
@@ -287,9 +314,32 @@ horizon.datatables.set_table_filter = function (parent) {
   });
 };
 
+horizon.datatables.set_table_fixed_filter = function (parent) {
+  $(parent).find('table.datatable').each(function (index, elm) {
+    $(elm).on('click', 'div.table_filter button', function(evt) {
+      var table = $(elm);
+      var category = $(this).val();
+      evt.preventDefault();
+      horizon.datatables.remove_no_results_row(table);
+      table.find('tbody tr').hide();
+      table.find('tbody tr.category-' + category).show();
+      horizon.datatables.update_footer_count(table);
+      horizon.datatables.add_no_results_row(table);
+    });
+    $(elm).find('div.table_filter button').each(function (i, button) {
+      // Select the first non-empty category
+      if ($(button).text().indexOf(' (0)') == -1) {
+        $(button).addClass('active');
+        $(button).trigger('click');
+        return false;
+      }
+    });
+  });
+};
+
 horizon.addInitFunction(function() {
   horizon.datatables.validate_button();
-  horizon.datatables.update_footer_count($.find('table'),0);
+  horizon.datatables.update_footer_count($.find('table.datatable'),0);
   // Bind the "select all" checkbox action.
   $('div.table_wrapper, #modal_wrapper').on('click', 'table thead .multi_select_column :checkbox', function(evt) {
     var $this = $(this),
@@ -298,7 +348,13 @@ horizon.addInitFunction(function() {
         checkboxes = $table.find('tbody :visible:checkbox');
     checkboxes.prop('checked', is_checked);
   });
-
+  // Change "select all" checkbox behaviour while any checkbox is checked/unchecked.
+  $("div.table_wrapper, #modal_wrapper").on("click", 'table tbody :checkbox', function (evt) {
+    var $table = $(this).closest('table');
+    var $multi_select_checkbox = $table.find('thead .multi_select_column :checkbox'); 
+    var any_unchecked = $table.find("tbody :checkbox").not(":checked");
+    $multi_select_checkbox.prop('checked', !(any_unchecked.length > 0));
+  });
   // Enable dangerous buttons only if one or more checkbox is checked.
   $("div.table_wrapper, #modal_wrapper").on("click", ':checkbox', function (evt) {
     var $form = $(this).closest("form");
@@ -313,12 +369,14 @@ horizon.addInitFunction(function() {
   // Trigger run-once setup scripts for tables.
   horizon.datatables.add_table_checkboxes($('body'));
   horizon.datatables.set_table_sorting($('body'));
-  horizon.datatables.set_table_filter($('body'));
+  horizon.datatables.set_table_query_filter($('body'));
+  horizon.datatables.set_table_fixed_filter($('body'));
 
   // Also apply on tables in modal views.
   horizon.modals.addModalInitFunction(horizon.datatables.add_table_checkboxes);
   horizon.modals.addModalInitFunction(horizon.datatables.set_table_sorting);
-  horizon.modals.addModalInitFunction(horizon.datatables.set_table_filter);
+  horizon.modals.addModalInitFunction(horizon.datatables.set_table_query_filter);
+  horizon.modals.addModalInitFunction(horizon.datatables.set_table_fixed_filter);
 
   horizon.datatables.update();
 });

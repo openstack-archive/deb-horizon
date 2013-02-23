@@ -33,7 +33,7 @@ from horizon.utils.filters import replace_underscores
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.access_and_security \
         .floating_ips.workflows import IPAssociationWorkflow
-from .tabs import InstanceDetailTabs, LogTab, VNCTab
+from .tabs import InstanceDetailTabs, LogTab, ConsoleTab
 
 
 LOG = logging.getLogger(__name__)
@@ -83,13 +83,13 @@ class TerminateInstance(tables.BatchAction):
         return True
 
     def action(self, request, obj_id):
-        api.server_delete(request, obj_id)
+        api.nova.server_delete(request, obj_id)
 
 
 class RebootInstance(tables.BatchAction):
     name = "reboot"
-    action_present = _("Reboot")
-    action_past = _("Rebooted")
+    action_present = _("Hard Reboot")
+    action_past = _("Hard Rebooted")
     data_type_singular = _("Instance")
     data_type_plural = _("Instances")
     classes = ('btn-danger', 'btn-reboot')
@@ -100,13 +100,22 @@ class RebootInstance(tables.BatchAction):
                 and not is_deleting(instance))
 
     def action(self, request, obj_id):
-        api.server_reboot(request, obj_id)
+        api.nova.server_reboot(request, obj_id, api.nova.REBOOT_HARD)
+
+
+class SoftRebootInstance(RebootInstance):
+    name = "soft_reboot"
+    action_present = _("Soft Reboot")
+    action_past = _("Soft Rebooted")
+
+    def action(self, request, obj_id):
+        api.nova.server_reboot(request, obj_id, api.nova.REBOOT_SOFT)
 
 
 class TogglePause(tables.BatchAction):
     name = "pause"
-    action_present = (_("Pause"), _("Unpause"))
-    action_past = (_("Paused"), _("Unpaused"))
+    action_present = (_("Pause"), _("Resume"))
+    action_past = (_("Paused"), _("Resumed"))
     data_type_singular = _("Instance")
     data_type_plural = _("Instances")
     classes = ("btn-pause",)
@@ -125,10 +134,10 @@ class TogglePause(tables.BatchAction):
 
     def action(self, request, obj_id):
         if self.paused:
-            api.server_unpause(request, obj_id)
+            api.nova.server_unpause(request, obj_id)
             self.current_past_action = UNPAUSE
         else:
-            api.server_pause(request, obj_id)
+            api.nova.server_pause(request, obj_id)
             self.current_past_action = PAUSE
 
 
@@ -154,10 +163,10 @@ class ToggleSuspend(tables.BatchAction):
 
     def action(self, request, obj_id):
         if self.suspended:
-            api.server_resume(request, obj_id)
+            api.nova.server_resume(request, obj_id)
             self.current_past_action = RESUME
         else:
-            api.server_suspend(request, obj_id)
+            api.nova.server_suspend(request, obj_id)
             self.current_past_action = SUSPEND
 
 
@@ -169,7 +178,7 @@ class LaunchLink(tables.LinkAction):
 
     def allowed(self, request, datum):
         try:
-            limits = api.tenant_absolute_limits(request, reserved=True)
+            limits = api.nova.tenant_absolute_limits(request, reserved=True)
 
             instances_available = limits['maxTotalInstances'] \
                 - limits['totalInstancesUsed']
@@ -201,8 +210,29 @@ class EditInstance(tables.LinkAction):
     url = "horizon:project:instances:update"
     classes = ("ajax-modal", "btn-edit")
 
+    def get_link_url(self, project):
+        return self._get_link_url(project, 'instance_info')
+
+    def _get_link_url(self, project, step_slug):
+        base_url = urlresolvers.reverse(self.url, args=[project.id])
+        param = urlencode({"step": step_slug})
+        return "?".join([base_url, param])
+
     def allowed(self, request, instance):
         return not is_deleting(instance)
+
+
+class EditInstanceSecurityGroups(EditInstance):
+    name = "edit_secgroups"
+    verbose_name = _("Edit Security Groups")
+
+    def get_link_url(self, project):
+        return self._get_link_url(project, 'update_security_groups')
+
+    def allowed(self, request, instance=None):
+        return (instance.status in ACTIVE_STATES and
+                not is_deleting(instance) and
+                request.user.tenant_id == instance.tenant_id)
 
 
 class CreateSnapshot(tables.LinkAction):
@@ -217,7 +247,7 @@ class CreateSnapshot(tables.LinkAction):
 
 class ConsoleLink(tables.LinkAction):
     name = "console"
-    verbose_name = _("VNC Console")
+    verbose_name = _("Console")
     url = "horizon:project:instances:detail"
     classes = ("btn-console",)
 
@@ -226,7 +256,7 @@ class ConsoleLink(tables.LinkAction):
 
     def get_link_url(self, datum):
         base_url = super(ConsoleLink, self).get_link_url(datum)
-        tab_query_string = VNCTab(InstanceDetailTabs).get_query_string()
+        tab_query_string = ConsoleTab(InstanceDetailTabs).get_query_string()
         return "?".join([base_url, tab_query_string])
 
 
@@ -254,7 +284,7 @@ class ConfirmResize(tables.Action):
         return instance.status == 'VERIFY_RESIZE'
 
     def single(self, table, request, instance):
-        api.server_confirm_resize(request, instance)
+        api.nova.server_confirm_resize(request, instance)
 
 
 class RevertResize(tables.Action):
@@ -266,7 +296,7 @@ class RevertResize(tables.Action):
         return instance.status == 'VERIFY_RESIZE'
 
     def single(self, table, request, instance):
-        api.server_revert_resize(request, instance)
+        api.nova.server_revert_resize(request, instance)
 
 
 class AssociateIP(tables.LinkAction):
@@ -276,7 +306,8 @@ class AssociateIP(tables.LinkAction):
     classes = ("ajax-modal", "btn-associate")
 
     def allowed(self, request, instance):
-        if HORIZON_CONFIG["simple_ip_management"]:
+        fip = api.network.NetworkClient(request).floating_ips
+        if fip.is_simple_associate_supported():
             return False
         return not is_deleting(instance)
 
@@ -290,19 +321,20 @@ class AssociateIP(tables.LinkAction):
 
 
 class SimpleAssociateIP(tables.Action):
-    name = "associate"
+    name = "associate-simple"
     verbose_name = _("Associate Floating IP")
-    classes = ("btn-associate",)
+    classes = ("btn-associate-simple",)
 
     def allowed(self, request, instance):
-        if not HORIZON_CONFIG["simple_ip_management"]:
+        fip = api.network.NetworkClient(request).floating_ips
+        if not fip.is_simple_associate_supported():
             return False
         return not is_deleting(instance)
 
     def single(self, table, request, instance):
         try:
-            fip = api.nova.tenant_floating_ip_allocate(request)
-            api.nova.server_add_floating_ip(request, instance, fip.id)
+            fip = api.network.tenant_floating_ip_allocate(request)
+            api.network.floating_ip_associate(request, fip.id, instance)
             messages.success(request,
                              _("Successfully associated floating IP: %s")
                              % fip.ip)
@@ -310,12 +342,6 @@ class SimpleAssociateIP(tables.Action):
             exceptions.handle(request,
                               _("Unable to associate floating IP."))
         return shortcuts.redirect("horizon:project:instances:index")
-
-
-if HORIZON_CONFIG["simple_ip_management"]:
-    CurrentAssociateIP = SimpleAssociateIP
-else:
-    CurrentAssociateIP = AssociateIP
 
 
 class SimpleDisassociateIP(tables.Action):
@@ -330,16 +356,15 @@ class SimpleDisassociateIP(tables.Action):
 
     def single(self, table, request, instance_id):
         try:
-            fips = [fip for fip in api.nova.tenant_floating_ip_list(request)
-                    if fip.instance_id == instance_id]
+            fips = [fip for fip in api.network.tenant_floating_ip_list(request)
+                    if fip.port_id == instance_id]
             # Removing multiple floating IPs at once doesn't work, so this pops
             # off the first one.
             if fips:
                 fip = fips.pop()
-                api.nova.server_remove_floating_ip(request,
-                                                   instance_id,
-                                                   fip.id)
-                api.nova.tenant_floating_ip_release(request, fip.id)
+                api.network.floating_ip_disassociate(request,
+                                                     fip.id, instance_id)
+                api.network.tenant_floating_ip_release(request, fip.id)
                 messages.success(request,
                                  _("Successfully disassociated "
                                    "floating IP: %s") % fip.ip)
@@ -355,8 +380,9 @@ class UpdateRow(tables.Row):
     ajax = True
 
     def get_data(self, request, instance_id):
-        instance = api.server_get(request, instance_id)
-        instance.full_flavor = api.flavor_get(request, instance.flavor["id"])
+        instance = api.nova.server_get(request, instance_id)
+        instance.full_flavor = api.nova.flavor_get(request,
+                                                   instance.flavor["id"])
         return instance
 
 
@@ -404,6 +430,7 @@ TASK_DISPLAY_CHOICES = (
     ("resize_finish", "Finishing Resize or Migrate"),
     ("resize_confirming", "Confirming Resize or Nigrate"),
     ("resize_reverting", "Reverting Resize or Migrate"),
+    ("unpausing", "Resuming"),
 )
 
 
@@ -450,6 +477,8 @@ class InstancesTable(tables.DataTable):
         row_class = UpdateRow
         table_actions = (LaunchLink, TerminateInstance)
         row_actions = (ConfirmResize, RevertResize, CreateSnapshot,
-                       CurrentAssociateIP, SimpleDisassociateIP, EditInstance,
-                       ConsoleLink, LogLink, TogglePause, ToggleSuspend,
+                       SimpleAssociateIP, AssociateIP,
+                       SimpleDisassociateIP, EditInstance,
+                       EditInstanceSecurityGroups, ConsoleLink, LogLink,
+                       TogglePause, ToggleSuspend, SoftRebootInstance,
                        RebootInstance, TerminateInstance)

@@ -19,7 +19,8 @@
 #    under the License.
 
 
-from django.utils.translation import ugettext as _
+from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
 from horizon import exceptions
@@ -38,16 +39,18 @@ ADD_USER_URL = "horizon:admin:projects:create_user"
 
 class UpdateProjectQuotaAction(workflows.Action):
     ifcb_label = _("Injected File Content Bytes")
-    metadata_items = forms.IntegerField(min_value=0, label=_("Metadata Items"))
-    cores = forms.IntegerField(min_value=0, label=_("VCPUs"))
-    instances = forms.IntegerField(min_value=0, label=_("Instances"))
-    injected_files = forms.IntegerField(min_value=0, label=_("Injected Files"))
-    injected_file_content_bytes = forms.IntegerField(min_value=0,
+    metadata_items = forms.IntegerField(min_value=-1,
+            label=_("Metadata Items"))
+    cores = forms.IntegerField(min_value=-1, label=_("VCPUs"))
+    instances = forms.IntegerField(min_value=-1, label=_("Instances"))
+    injected_files = forms.IntegerField(min_value=-1,
+            label=_("Injected Files"))
+    injected_file_content_bytes = forms.IntegerField(min_value=-1,
                                                      label=ifcb_label)
-    volumes = forms.IntegerField(min_value=0, label=_("Volumes"))
-    gigabytes = forms.IntegerField(min_value=0, label=_("Gigabytes"))
-    ram = forms.IntegerField(min_value=0, label=_("RAM (MB)"))
-    floating_ips = forms.IntegerField(min_value=0, label=_("Floating IPs"))
+    volumes = forms.IntegerField(min_value=-1, label=_("Volumes"))
+    gigabytes = forms.IntegerField(min_value=-1, label=_("Gigabytes"))
+    ram = forms.IntegerField(min_value=-1, label=_("RAM (MB)"))
+    floating_ips = forms.IntegerField(min_value=-1, label=_("Floating IPs"))
 
     class Meta:
         name = _("Quota")
@@ -108,12 +111,19 @@ class UpdateProjectMembersAction(workflows.Action):
 
         # Get the default role
         try:
-            default_role = api.get_default_role(self.request).id
+            default_role = api.keystone.get_default_role(self.request)
+            # Default role is necessary to add members to a project
+            if default_role is None:
+                default = getattr(settings,
+                                  "OPENSTACK_KEYSTONE_DEFAULT_ROLE", None)
+                msg = _('Could not find default role "%s" in Keystone'
+                        % default)
+                raise exceptions.NotFound(msg)
         except:
             exceptions.handle(self.request,
                               err_msg,
                               redirect=reverse(INDEX_URL))
-        self.fields['default_role'].initial = default_role
+        self.fields['default_role'].initial = default_role.id
 
         # Get list of available users
         all_users = []
@@ -143,9 +153,9 @@ class UpdateProjectMembersAction(workflows.Action):
         if project_id:
             for user in all_users:
                 try:
-                    roles = api.roles_for_user(self.request,
-                                               user.id,
-                                               project_id)
+                    roles = api.keystone.roles_for_user(self.request,
+                                                        user.id,
+                                                        project_id)
                 except:
                     exceptions.handle(request,
                                       err_msg,
@@ -159,9 +169,12 @@ class UpdateProjectMembersAction(workflows.Action):
         slug = "update_members"
 
 
-class UpdateProjectMembers(workflows.Step):
+class UpdateProjectMembers(workflows.UpdateMembersStep):
     action_class = UpdateProjectMembersAction
-    template_name = "admin/projects/_update_members.html"
+    available_list_title = _("All Users")
+    members_list_title = _("Project Members")
+    no_available_text = _("No users found.")
+    no_members_text = _("No users.")
 
     def contribute(self, data, context):
         if data:
@@ -179,9 +192,9 @@ class UpdateProjectMembers(workflows.Step):
 
 
 class CreateProject(workflows.Workflow):
-    slug = "add_project"
-    name = _("Add Project")
-    finalize_button_name = _("Finish")
+    slug = "create_project"
+    name = _("Create Project")
+    finalize_button_name = _("Create Project")
     success_message = _('Created new project "%s".')
     failure_message = _('Unable to create project "%s".')
     success_url = "horizon:admin:projects:index"
@@ -220,10 +233,10 @@ class CreateProject(workflows.Workflow):
                 role_list = data["role_" + role.id]
                 users_added = 0
                 for user in role_list:
-                    api.add_tenant_user_role(request,
-                                             tenant_id=project_id,
-                                             user_id=user,
-                                             role_id=role.id)
+                    api.keystone.add_tenant_user_role(request,
+                                                      tenant_id=project_id,
+                                                      user_id=user,
+                                                      role_id=role.id)
                     users_added += 1
                 users_to_add -= users_added
         except:
@@ -285,11 +298,11 @@ class UpdateProject(workflows.Workflow):
         project_id = data['project_id']
         # update project info
         try:
-            api.tenant_update(request,
-                              tenant_id=project_id,
-                              tenant_name=data['name'],
-                              description=data['description'],
-                              enabled=data['enabled'])
+            api.keystone.tenant_update(request,
+                                       tenant_id=project_id,
+                                       tenant_name=data['name'],
+                                       description=data['description'],
+                                       enabled=data['enabled'])
         except:
             exceptions.handle(request, ignore=True)
             return False
@@ -303,9 +316,9 @@ class UpdateProject(workflows.Workflow):
             users_to_modify = len(project_members)
             for user in project_members:
                 current_roles = [role for role in
-                                 api.roles_for_user(self.request,
-                                                    user.id,
-                                                    project_id)]
+                                 api.keystone.roles_for_user(self.request,
+                                                             user.id,
+                                                             project_id)]
                 effective_roles = []
                 for role in available_roles:
                     role_list = data["role_" + role.id]
@@ -313,10 +326,11 @@ class UpdateProject(workflows.Workflow):
                         effective_roles.append(role)
                         if role not in current_roles:
                             # user role has changed
-                            api.add_tenant_user_role(request,
-                                                     tenant_id=project_id,
-                                                     user_id=user.id,
-                                                     role_id=role.id)
+                            api.keystone.add_tenant_user_role(
+                                request,
+                                tenant_id=project_id,
+                                user_id=user.id,
+                                role_id=role.id)
                         else:
                             # user role is unchanged
                             current_roles.pop(current_roles.index(role))
@@ -332,10 +346,11 @@ class UpdateProject(workflows.Workflow):
                 else:
                     # delete user's removed roles
                     for to_delete in current_roles:
-                        api.remove_tenant_user_role(request,
-                                                    tenant_id=project_id,
-                                                    user_id=user.id,
-                                                    role_id=to_delete.id)
+                        api.keystone.remove_tenant_user_role(
+                            request,
+                            tenant_id=project_id,
+                            user_id=user.id,
+                            role_id=to_delete.id)
                 users_to_modify -= 1
 
             # add new roles to project
@@ -348,10 +363,10 @@ class UpdateProject(workflows.Workflow):
                 users_added = 0
                 for user_id in role_list:
                     if not filter(lambda x: user_id == x.id, project_members):
-                        api.add_tenant_user_role(request,
-                                                 tenant_id=project_id,
-                                                 user_id=user_id,
-                                                 role_id=role.id)
+                        api.keystone.add_tenant_user_role(request,
+                                                          tenant_id=project_id,
+                                                          user_id=user_id,
+                                                          role_id=role.id)
                     users_added += 1
                 users_to_modify -= users_added
         except:

@@ -33,6 +33,27 @@ how to customize it, and where other components may take over:
 
 .. _a known bug in python-keystoneclient: https://bugs.launchpad.net/keystone/+bug/1004114
 
+File Uploads
+============
+
+Horizon allows users to upload files via their web browser to other OpenStack
+services such as Glance and Swift. Files uploaded through this mechanism are
+first stored on the Horizon server before being forwarded on - files are not
+uploaded directly or streamed as Horizon receives them. As Horizon itself does
+not impose any restrictions on the size of file uploads, production deployments
+will want to consider configuring their server hosting the Horizon application
+to enforce such a limit to prevent large uploads exhausting system resources
+and disrupting services. Deployments using Apache2 can use the
+`LimitRequestBody directive`_ to achieve this.
+
+Uploads to the Glance image store service tend to be particularly large - in
+the order of hundreds of megabytes to multiple gigabytes. Deployments are able
+to disable the ability to upload images through Horizon by setting
+``HORIZON_IMAGES_ALLOW_UPLOAD`` to ``False`` in your ``local_settings.py``
+file.
+
+ .. _LimitRequestBody directive: http://httpd.apache.org/docs/2.2/mod/core.html#limitrequestbody
+
 Session Storage
 ===============
 
@@ -145,3 +166,25 @@ For a thorough discussion of the security implications of this session backend,
 please read the `Django documentation on cookie-based sessions`_.
 
 .. _Django documentation on cookie-based sessions: https://docs.djangoproject.com/en/dev/topics/http/sessions/#using-cookie-based-sessions
+
+Secure Site Recommendations
+---------------------------
+
+When implementing Horizon for public usage, with the website served through
+HTTPS, it is recommended that the following settings are applied.
+
+To help protect the session cookies from `cross-site scripting`_, add the
+following to ``local_settings.py`` :
+
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+
+Note that the CSRF_COOKIE_SECURE option is only available from Django 1.4. It
+does no harm to have the setting in earlier versions, but it does not take effect.
+
+You can also disable `browser autocompletion`_ for the authentication form by
+changing the ``password_autocomplete`` attribute to ``off`` in ``horizon/conf/default.py``
+
+.. _cross-site scripting: https://www.owasp.org/index.php/HttpOnly
+.. _browser autocompletion: https://wiki.mozilla.org/The_autocomplete_attribute_and_web_documents_using_XHTML

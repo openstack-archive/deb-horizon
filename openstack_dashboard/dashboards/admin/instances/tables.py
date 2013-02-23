@@ -26,12 +26,16 @@ from horizon.utils.filters import replace_underscores
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances.tables import (
         TerminateInstance, EditInstance, ConsoleLink, LogLink, CreateSnapshot,
-        TogglePause, ToggleSuspend, RebootInstance, ConfirmResize,
-        RevertResize, get_size, UpdateRow, get_ips, get_power_state,
-        is_deleting, ACTIVE_STATES, STATUS_DISPLAY_CHOICES,
+        TogglePause, ToggleSuspend, RebootInstance, SoftRebootInstance,
+        ConfirmResize, RevertResize, get_size, UpdateRow, get_ips,
+        get_power_state, is_deleting, ACTIVE_STATES, STATUS_DISPLAY_CHOICES,
         TASK_DISPLAY_CHOICES)
 
 LOG = logging.getLogger(__name__)
+
+
+class AdminEditInstance(EditInstance):
+    url = "horizon:admin:instances:update"
 
 
 class MigrateInstance(tables.BatchAction):
@@ -48,7 +52,7 @@ class MigrateInstance(tables.BatchAction):
                 and not is_deleting(instance))
 
     def action(self, request, obj_id):
-        api.server_migrate(request, obj_id)
+        api.nova.server_migrate(request, obj_id)
 
 
 class AdminUpdateRow(UpdateRow):
@@ -112,6 +116,7 @@ class AdminInstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         table_actions = (TerminateInstance,)
         row_class = AdminUpdateRow
-        row_actions = (ConfirmResize, RevertResize, EditInstance, ConsoleLink,
-                       LogLink, CreateSnapshot, TogglePause, ToggleSuspend,
-                       MigrateInstance, RebootInstance, TerminateInstance)
+        row_actions = (ConfirmResize, RevertResize, AdminEditInstance,
+                       ConsoleLink, LogLink, CreateSnapshot, TogglePause,
+                       ToggleSuspend, MigrateInstance, SoftRebootInstance,
+                       RebootInstance, TerminateInstance)

@@ -31,6 +31,7 @@ class CreateForm(forms.SelfHandlingForm):
     type = forms.ChoiceField(label=_("Type"),
                              required=False)
     size = forms.IntegerField(min_value=1, label=_("Size (GB)"))
+    encryption = forms.ChoiceField(label=_("Encryption"), required=False)
     snapshot_source = forms.ChoiceField(label=_("Use snapshot as a source"),
                                         widget=SelectWidget(
                                           attrs={'class': 'snapshot-selector'},
@@ -46,6 +47,25 @@ class CreateForm(forms.SelfHandlingForm):
         self.fields['type'].choices = [("", "")] + \
                                       [(type.name, type.name)
                                        for type in volume_types]
+
+        # Hide the volume encryption field if the hypervisor doesn't support it
+        # NOTE: as of Grizzly this is not yet supported in Nova so enabling
+        # this setting will not do anything useful
+        hypervisor_features = getattr(settings,
+                                      "OPENSTACK_HYPERVISOR_FEATURES",
+                                      {})
+        can_encrypt_volumes = hypervisor_features.get("can_encrypt_volumes",
+                                                      False)
+
+        if can_encrypt_volumes:
+            # TODO(laura-glendenning) get from api call in future
+            encryption_options = {"LUKS": "dmcrypt LUKS"}
+            self.fields['encryption'].choices = [("", "")] + \
+                [(enc, display) for enc, display in encryption_options.items()]
+        else:
+            self.fields['encryption'].widget = forms.widgets.HiddenInput()
+            self.fields['encryption'].required = False
+
         if ("snapshot_id" in request.GET):
             try:
                 snapshot = self.get_snapshot(request,
@@ -115,12 +135,18 @@ class CreateForm(forms.SelfHandlingForm):
                                   ' volumes.')
                 raise ValidationError(error_message)
 
+            metadata = {}
+
+            if data['encryption']:
+                metadata['encryption'] = data['encryption']
+
             volume = cinder.volume_create(request,
                                           data['size'],
                                           data['name'],
                                           data['description'],
                                           data['type'],
-                                          snapshot_id=snapshot_id)
+                                          snapshot_id=snapshot_id,
+                                          metadata=metadata)
             message = 'Creating volume "%s"' % data['name']
             messages.info(request, message)
             return volume
@@ -188,17 +214,19 @@ class AttachForm(forms.SelfHandlingForm):
         # it, so let's slice that off...
         instance_name = instance_name.rsplit(" (")[0]
         try:
-            vol = api.instance_volume_attach(request,
-                                             data['volume_id'],
-                                             data['instance'],
-                                             data.get('device', ''))
-            vol_name = cinder.volume_get(request,
-                                         data['volume_id']).display_name
-
+            attach = api.nova.instance_volume_attach(request,
+                                                     data['volume_id'],
+                                                     data['instance'],
+                                                     data.get('device', ''))
+            volume = cinder.volume_get(request, data['volume_id'])
+            if not volume.display_name:
+                volume_name = volume.id
+            else:
+                volume_name = volume.display_name
             message = _('Attaching volume %(vol)s to instance '
-                         '%(inst)s on %(dev)s.') % {"vol": vol_name,
+                         '%(inst)s on %(dev)s.') % {"vol": volume_name,
                                                     "inst": instance_name,
-                                                    "dev": vol.device}
+                                                    "dev": attach.device}
             messages.info(request, message)
             return True
         except:

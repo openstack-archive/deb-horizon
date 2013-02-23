@@ -14,6 +14,11 @@ TEMPLATE_DEBUG = DEBUG
 # https://docs.djangoproject.com/en/1.4/ref/settings/#secure-proxy-ssl-header
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
+# If Horizon is being served through SSL, then uncomment the following two
+# settings to better secure the cookies from security exploits
+#CSRF_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE = True
+
 # Default OpenStack Dashboard configuration.
 HORIZON_CONFIG = {
     'dashboards': ('project', 'admin', 'settings',),
@@ -87,11 +92,16 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = "Member"
 # TODO(tres): Remove these once Keystone has an API to identify auth backend.
 OPENSTACK_KEYSTONE_BACKEND = {
     'name': 'native',
-    'can_edit_user': True
+    'can_edit_user': True,
+    'can_edit_project': True
 }
 
 OPENSTACK_HYPERVISOR_FEATURES = {
-    'can_set_mount_point': True
+    'can_set_mount_point': True,
+
+    # NOTE: as of Grizzly this is not yet supported in Nova so enabling this
+    # setting will not do anything useful
+    'can_encrypt_volumes': False
 }
 
 # OPENSTACK_ENDPOINT_TYPE specifies the endpoint type to use for the endpoints

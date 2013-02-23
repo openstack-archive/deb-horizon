@@ -55,6 +55,11 @@ HORIZON_CONFIG = {
                    'unauthorized': UNAUTHORIZED},
 }
 
+# Set to True to allow users to upload images to glance via Horizon server.
+# When enabled, a file form field will appear on the create image form.
+# See documentation for deployment considerations.
+HORIZON_IMAGES_ALLOW_UPLOAD = True
+
 AVAILABLE_REGIONS = [
     ('http://localhost:5000/v2.0', 'local'),
     ('http://remote:5000/v2.0', 'remote'),
@@ -65,11 +70,16 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = "Member"
 
 OPENSTACK_KEYSTONE_BACKEND = {
     'name': 'native',
-    'can_edit_user': True
+    'can_edit_user': True,
+    'can_edit_project': True
 }
 
 OPENSTACK_HYPERVISOR_FEATURES = {
-    'can_set_mount_point': True
+    'can_set_mount_point': True,
+
+    # NOTE: as of Grizzly this is not yet supported in Nova so enabling this
+    # setting will not do anything useful
+    'can_encrypt_volumes': False
 }
 
 LOGGING['loggers']['openstack_dashboard'] = {

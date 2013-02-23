@@ -30,12 +30,14 @@ from django.utils.translation import ugettext as _
 from novaclient.v1_1 import client as nova_client
 from novaclient.v1_1 import security_group_rules as nova_rules
 from novaclient.v1_1.security_groups import SecurityGroup as NovaSecurityGroup
-from novaclient.v1_1.servers import REBOOT_HARD
+from novaclient.v1_1.servers import REBOOT_HARD, REBOOT_SOFT
 
+from horizon.conf import HORIZON_CONFIG
 from horizon.utils.memoized import memoized
 
 from openstack_dashboard.api.base import (APIResourceWrapper, QuotaSet,
                                           APIDictWrapper, url_for)
+from openstack_dashboard.api import network
 
 
 LOG = logging.getLogger(__name__)
@@ -49,6 +51,13 @@ VOLUME_STATE_AVAILABLE = "available"
 class VNCConsole(APIDictWrapper):
     """Wrapper for the "console" dictionary returned by the
     novaclient.servers.get_vnc_console method.
+    """
+    _attrs = ['url', 'type']
+
+
+class SPICEConsole(APIDictWrapper):
+    """Wrapper for the "console" dictionary returned by the
+    novaclient.servers.get_spice_console method.
     """
     _attrs = ['url', 'type']
 
@@ -175,6 +184,71 @@ class FlavorExtraSpec(object):
         self.value = val
 
 
+class FloatingIp(APIResourceWrapper):
+    _attrs = ['id', 'ip', 'fixed_ip', 'port_id', 'instance_id', 'pool']
+
+    def __init__(self, fip):
+        fip.__setattr__('port_id', fip.instance_id)
+        super(FloatingIp, self).__init__(fip)
+
+
+class FloatingIpPool(APIDictWrapper):
+    def __init__(self, pool):
+        pool_dict = {'id': pool.name,
+                     'name': pool.name}
+        super(FloatingIpPool, self).__init__(pool_dict)
+
+
+class FloatingIpTarget(APIDictWrapper):
+    def __init__(self, server):
+        server_dict = {'name': '%s (%s)' % (server.name, server.id),
+                       'id': server.id}
+        super(FloatingIpTarget, self).__init__(server_dict)
+
+
+class FloatingIpManager(network.FloatingIpManager):
+    def __init__(self, request):
+        self.request = request
+        self.client = novaclient(request)
+
+    def list_pools(self):
+        return [FloatingIpPool(pool)
+                for pool in self.client.floating_ip_pools.list()]
+
+    def list(self):
+        return [FloatingIp(fip)
+                for fip in self.client.floating_ips.list()]
+
+    def get(self, floating_ip_id):
+        return FloatingIp(self.client.floating_ips.get(floating_ip_id))
+
+    def allocate(self, pool):
+        return FloatingIp(self.client.floating_ips.create(pool=pool))
+
+    def release(self, floating_ip_id):
+        self.client.floating_ips.delete(floating_ip_id)
+
+    def associate(self, floating_ip_id, port_id):
+        # In Nova implied port_id is instance_id
+        server = self.client.servers.get(port_id)
+        fip = self.client.floating_ips.get(floating_ip_id)
+        self.client.servers.add_floating_ip(server.id, fip.ip)
+
+    def disassociate(self, floating_ip_id, port_id):
+        fip = self.client.floating_ips.get(floating_ip_id)
+        server = self.client.servers.get(fip.instance_id)
+        self.client.servers.remove_floating_ip(server.id, fip.ip)
+
+    def list_targets(self):
+        return [FloatingIpTarget(s) for s in self.client.servers.list()]
+
+    def get_target_id_by_instance(self, instance_id):
+        return instance_id
+
+    def is_simple_associate_supported(self):
+        return HORIZON_CONFIG["simple_ip_management"]
+
+
 def novaclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     LOG.debug('novaclient connection created using token "%s" and url "%s"' %
@@ -193,6 +267,11 @@ def novaclient(request):
 def server_vnc_console(request, instance_id, console_type='novnc'):
     return VNCConsole(novaclient(request).servers.get_vnc_console(instance_id,
                                                   console_type)['console'])
+
+
+def server_spice_console(request, instance_id, console_type='spice-html5'):
+    return SPICEConsole(novaclient(request).servers.get_spice_console(
+            instance_id, console_type)['console'])
 
 
 def flavor_create(request, name, memory, vcpu, disk, ephemeral=0, swap=0,
@@ -241,33 +320,6 @@ def flavor_extra_set(request, flavor_id, metadata):
     if (not metadata):  # not a way to delete keys
         return None
     return flavor.set_keys(metadata)
-
-
-def tenant_floating_ip_list(request):
-    """Fetches a list of all floating ips."""
-    return novaclient(request).floating_ips.list()
-
-
-def floating_ip_pools_list(request):
-    """Fetches a list of all floating ip pools."""
-    return novaclient(request).floating_ip_pools.list()
-
-
-def tenant_floating_ip_get(request, floating_ip_id):
-    """Fetches a floating ip."""
-    return novaclient(request).floating_ips.get(floating_ip_id)
-
-
-def tenant_floating_ip_allocate(request, pool=None):
-    """Allocates a floating ip to tenant. Optionally you may provide a pool
-    for which you would like the IP.
-    """
-    return novaclient(request).floating_ips.create(pool=pool)
-
-
-def tenant_floating_ip_release(request, floating_ip_id):
-    """Releases floating ip from the pool of a tenant."""
-    return novaclient(request).floating_ips.delete(floating_ip_id)
 
 
 def snapshot_create(request, instance_id, name):
@@ -348,6 +400,17 @@ def server_security_groups(request, instance_id):
     return security_groups
 
 
+def server_add_security_group(request, instance_id, security_group_name):
+    return novaclient(request).servers.add_security_group(instance_id,
+                                                          security_group_name)
+
+
+def server_remove_security_group(request, instance_id, security_group_name):
+    return novaclient(request).servers.remove_security_group(
+                instance_id,
+                security_group_name)
+
+
 def server_pause(request, instance_id):
     novaclient(request).servers.pause(instance_id)
 
@@ -388,22 +451,6 @@ def server_confirm_resize(request, instance_id):
 
 def server_revert_resize(request, instance_id):
     novaclient(request).servers.revert_resize(instance_id)
-
-
-def server_add_floating_ip(request, server, floating_ip):
-    """Associates floating IP to server's fixed IP.
-    """
-    server = novaclient(request).servers.get(server)
-    fip = novaclient(request).floating_ips.get(floating_ip)
-    return novaclient(request).servers.add_floating_ip(server.id, fip.ip)
-
-
-def server_remove_floating_ip(request, server, floating_ip):
-    """Removes relationship between floating and server's fixed ip.
-    """
-    fip = novaclient(request).floating_ips.get(floating_ip)
-    server = novaclient(request).servers.get(fip.instance_id)
-    return novaclient(request).servers.remove_floating_ip(server.id, fip.ip)
 
 
 def tenant_quota_get(request, tenant_id):
@@ -500,5 +547,9 @@ def tenant_absolute_limits(request, reserved=False):
     limits = novaclient(request).limits.get(reserved=reserved).absolute
     limits_dict = {}
     for limit in limits:
-        limits_dict[limit.name] = limit.value
+        # -1 is used to represent unlimited quotas
+        if limit.value == -1:
+            limits_dict[limit.name] = float("inf")
+        else:
+            limits_dict[limit.name] = limit.value
     return limits_dict
