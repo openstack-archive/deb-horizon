@@ -5,7 +5,7 @@
 {% block form_action %}{% url horizon:project:routers:addinterface router.id %}
 {% endblock %}
 
-{% block modal-header %}{% trans "Add interface" %}{% endblock %}
+{% block modal-header %}{% trans "Add Interface" %}{% endblock %}
 
 {% block modal-body %}
 <div class="left">
@@ -15,7 +15,7 @@
 </div>
 <div class="right">
     <h3>{% trans "Description" %}:</h3>
-    <p>{% trans "You can add interface to the network with subnet_id." %}</p>
+    <p>{% trans "You can connect a specified subnet to the router." %}</p>
 </div>
 {% endblock %}
 

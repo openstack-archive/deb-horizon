@@ -18,24 +18,9 @@ import logging
 
 from horizon import tabs
 from .tabs import PortDetailTabs
-from .forms import (AddInterface, SetGatewayForm)
-from openstack_dashboard.dashboards.project.routers.ports import views
 
 
 LOG = logging.getLogger(__name__)
-
-
-class AddInterfaceView(views.AddInterfaceView):
-    form_class = AddInterface
-    template_name = 'admin/routers/ports/create.html'
-    success_url = 'horizon:admin:routers:detail'
-    failure_url = 'horizon:admin:routers:detail'
-
-
-class SetGatewayView(views.SetGatewayView):
-    form_class = SetGatewayForm
-    success_url = 'horizon:admin:routers:detail'
-    failure_url = 'horizon:admin:routers:detail'
 
 
 class DetailView(tabs.TabView):

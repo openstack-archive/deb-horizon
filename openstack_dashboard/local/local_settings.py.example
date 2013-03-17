@@ -57,8 +57,19 @@ LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # We recommend you use memcached for development; otherwise after every reload
 # of the django development server, you will have to login again. To use
-# memcached set CACHE_BACKED to something like 'memcached://127.0.0.1:11211/'
-CACHE_BACKEND = 'locmem://'
+# memcached set CACHES to something like 
+# CACHES = {
+#    'default': {
+#        'BACKEND' : 'django.core.cache.backends.memcached.MemcachedCache',
+#        'LOCATION' : '127.0.0.1:11211',
+#    }
+#}
+
+CACHES = {
+    'default': {
+        'BACKEND' : 'django.core.cache.backends.locmem.LocMemCache'
+    }
+}
 
 # Send email to the console by default
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -102,6 +113,13 @@ OPENSTACK_HYPERVISOR_FEATURES = {
     # NOTE: as of Grizzly this is not yet supported in Nova so enabling this
     # setting will not do anything useful
     'can_encrypt_volumes': False
+}
+
+# The OPENSTACK_QUANTUM_NETWORK settings can be used to enable optional
+# services provided by quantum.  Currently only the load balancer service
+# is available.
+OPENSTACK_QUANTUM_NETWORK = {
+    'enable_lb': True
 }
 
 # OPENSTACK_ENDPOINT_TYPE specifies the endpoint type to use for the endpoints

@@ -28,7 +28,10 @@ LOG = logging.getLogger(__name__)
 
 
 class AddInterface(forms.SelfHandlingForm):
-    subnet_id = forms.ChoiceField(label=_("Subnet ID"), required=False)
+    subnet_id = forms.ChoiceField(label=_("Subnet"), required=False)
+    router_name = forms.CharField(label=_("Router Name"),
+                                  widget=forms.TextInput(
+                                      attrs={'readonly': 'readonly'}))
     router_id = forms.CharField(label=_("Router ID"),
                                 widget=forms.TextInput(
                                     attrs={'readonly': 'readonly'}))
@@ -84,11 +87,14 @@ class AddInterface(forms.SelfHandlingForm):
 
 
 class SetGatewayForm(forms.SelfHandlingForm):
-    network_id = forms.ChoiceField(label=_("Network ID"), required=False)
+    network_id = forms.ChoiceField(label=_("External Network"), required=False)
+    router_name = forms.CharField(label=_("Router Name"),
+                                  widget=forms.TextInput(
+                                      attrs={'readonly': 'readonly'}))
     router_id = forms.CharField(label=_("Router ID"),
                                 widget=forms.TextInput(
                                     attrs={'readonly': 'readonly'}))
-    failure_url = 'horizon:project:routers:detail'
+    failure_url = 'horizon:project:routers:index'
 
     def __init__(self, request, *args, **kwargs):
         super(SetGatewayForm, self).__init__(request, *args, **kwargs)
@@ -103,8 +109,7 @@ class SetGatewayForm(forms.SelfHandlingForm):
             msg = _('Failed to get network list %s') % e.message
             LOG.info(msg)
             messages.error(request, msg)
-            redirect = reverse(self.failure_url,
-                               args=[request.REQUEST['router_id']])
+            redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)
             return
         choices = [(network.id, network.name or network.id)
@@ -128,5 +133,5 @@ class SetGatewayForm(forms.SelfHandlingForm):
             msg = _('Failed to set gateway %s') % e.message
             LOG.info(msg)
             messages.error(request, msg)
-            redirect = reverse(self.failure_url, args=[data['router_id']])
+            redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)

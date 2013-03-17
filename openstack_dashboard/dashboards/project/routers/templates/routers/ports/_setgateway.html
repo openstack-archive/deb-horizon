@@ -5,7 +5,7 @@
 {% block form_action %}{% url horizon:project:routers:setgateway router.id %}
 {% endblock %}
 
-{% block modal-header %}{% trans "Add Gateway Interface" %}{% endblock %}
+{% block modal-header %}{% trans "Set Gateway" %}{% endblock %}
 
 {% block modal-body %}
 <div class="left">
@@ -15,7 +15,7 @@
 </div>
 <div class="right">
     <h3>{% trans "Description" %}:</h3>
-    <p>{% trans "You can add inteface for Gateway. In this interface, NAT rule of floating IP will be set." %}</p>
+    <p>{% trans "You can connect a specified external network to the router. The external network is regarded as a default route of the router and the router acts as a gateway for external connectivity." %}</p>
 </div>
 {% endblock %}
 
