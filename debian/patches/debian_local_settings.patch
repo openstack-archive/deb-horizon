@@ -1,11 +1,13 @@
 Description: Enable Offline Compresssion
 Author: Mehdi Abaakouk <sileht@sileht.net>
 
---- a/openstack_dashboard/local/local_settings.py.example
-+++ b/openstack_dashboard/local/local_settings.py.example
-@@ -145,3 +145,8 @@
-             }
+Index: horizon/openstack_dashboard/local/local_settings.py.example
+===================================================================
+--- horizon.orig/openstack_dashboard/local/local_settings.py.example	2013-03-23 03:20:09.000000000 +0800
++++ horizon/openstack_dashboard/local/local_settings.py.example	2013-03-23 03:25:10.000000000 +0800
+@@ -200,3 +200,8 @@
          }
+     }
  }
 +
 +# The Debian package includes pre-compressed JS and compiled CSS to allow
