@@ -37,19 +37,6 @@ from .workflows import CreateProject, UpdateProject
 
 LOG = logging.getLogger(__name__)
 
-
-QUOTA_FIELDS = ("metadata_items",
-                "cores",
-                "instances",
-                "injected_files",
-                "injected_file_content_bytes",
-                "volumes",
-                "gigabytes",
-                "ram",
-                "floating_ips",
-                "security_groups",
-                "security_group_rules")
-
 PROJECT_INFO_FIELDS = ("name",
                        "description",
                        "enabled")
@@ -149,7 +136,7 @@ class CreateProjectView(workflows.WorkflowView):
         # get initial quota defaults
         try:
             quota_defaults = quotas.get_default_quota_data(self.request)
-            for field in QUOTA_FIELDS:
+            for field in quotas.QUOTA_FIELDS:
                 initial[field] = quota_defaults.get(field).limit
 
         except:
@@ -177,13 +164,14 @@ class UpdateProjectView(workflows.WorkflowView):
                 initial[field] = getattr(project_info, field, None)
 
             # get initial project quota
-            quota_data = quotas.get_tenant_quota_data(self.request)
-            for field in QUOTA_FIELDS:
+            quota_data = quotas.get_tenant_quota_data(self.request,
+                                                      tenant_id=project_id)
+            for field in quotas.QUOTA_FIELDS:
                 initial[field] = quota_data.get(field).limit
         except:
             exceptions.handle(self.request,
-                                _('Unable to retrieve project details.'),
-                                redirect=reverse(INDEX_URL))
+                              _('Unable to retrieve project details.'),
+                              redirect=reverse(INDEX_URL))
         return initial
 
 

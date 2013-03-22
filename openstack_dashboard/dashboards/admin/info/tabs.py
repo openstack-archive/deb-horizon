@@ -33,11 +33,8 @@ class DefaultQuotasTab(tabs.TableTab):
 
     def get_quotas_data(self):
         request = self.tab_group.request
-        disabled_quotas = []
-        if not is_service_enabled(self.request, 'volume'):
-            disabled_quotas.extend(['volumes', 'gigabytes'])
         try:
-            quota_set = quotas.get_default_quota_data(request, disabled_quotas)
+            quota_set = quotas.get_default_quota_data(request)
             data = quota_set.items
         except:
             data = []

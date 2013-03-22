@@ -27,7 +27,6 @@ from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 from openstack_dashboard.usage import quotas
 from .workflows import CreateProject, UpdateProject
-from .views import QUOTA_FIELDS
 
 INDEX_URL = reverse('horizon:admin:projects:index')
 
@@ -59,7 +58,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
 
     def _get_quota_info(self, quota):
         quota_data = {}
-        for field in QUOTA_FIELDS:
+        for field in quotas.QUOTA_FIELDS:
             quota_data[field] = int(quota.get(field).limit)
         return quota_data
 
@@ -151,9 +150,16 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
                                                       user_id=user_id,
                                                       role_id=role.id)
 
+        nova_updated_quota = dict([(key, quota_data[key]) for key in
+                                   quotas.NOVA_QUOTA_FIELDS])
         api.nova.tenant_quota_update(IsA(http.HttpRequest),
                                      project.id,
-                                     **quota_data)
+                                     **nova_updated_quota)
+        cinder_updated_quota = dict([(key, quota_data[key]) for key in
+                                   quotas.CINDER_QUOTA_FIELDS])
+        api.cinder.tenant_quota_update(IsA(http.HttpRequest),
+                                       project.id,
+                                       **cinder_updated_quota)
 
         self.mox.ReplayAll()
 
@@ -274,9 +280,11 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
                                                       user_id=user_id,
                                                       role_id=role.id)
 
+        nova_updated_quota = dict([(key, quota_data[key]) for key in
+                                   quotas.NOVA_QUOTA_FIELDS])
         api.nova.tenant_quota_update(IsA(http.HttpRequest),
                                      project.id,
-                                     **quota_data) \
+                                     **nova_updated_quota) \
            .AndRaise(self.exceptions.nova)
 
         self.mox.ReplayAll()
@@ -295,6 +303,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
                                        'get_default_role',
                                        'add_tenant_user_role'),
                         quotas: ('get_default_quota_data',),
+                        api.cinder: ('tenant_quota_update',),
                         api.nova: ('tenant_quota_update',)})
     def test_add_project_user_update_error(self):
         project = self.tenants.first()
@@ -336,9 +345,17 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
                     break
             break
 
+        nova_updated_quota = dict([(key, quota_data[key]) for key in
+                                   quotas.NOVA_QUOTA_FIELDS])
         api.nova.tenant_quota_update(IsA(http.HttpRequest),
                                      project.id,
-                                     **quota_data)
+                                     **nova_updated_quota)
+
+        cinder_updated_quota = dict([(key, quota_data[key]) for key in
+                                    quotas.CINDER_QUOTA_FIELDS])
+        api.cinder.tenant_quota_update(IsA(http.HttpRequest),
+                                       project.id,
+                                       **cinder_updated_quota)
 
         self.mox.ReplayAll()
 
@@ -386,7 +403,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
 class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
     def _get_quota_info(self, quota):
         quota_data = {}
-        for field in QUOTA_FIELDS:
+        for field in quotas.QUOTA_FIELDS:
             quota_data[field] = int(quota.get(field).limit)
         return quota_data
 
@@ -406,7 +423,9 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
         api.keystone.tenant_get(IsA(http.HttpRequest),
                                 self.tenant.id, admin=True) \
             .AndReturn(project)
-        quotas.get_tenant_quota_data(IsA(http.HttpRequest)).AndReturn(quota)
+        quotas.get_tenant_quota_data(IsA(http.HttpRequest),
+                                     tenant_id=self.tenant.id) \
+            .AndReturn(quota)
 
         api.keystone.get_default_role(IsA(http.HttpRequest)) \
             .AndReturn(default_role)
@@ -463,7 +482,9 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
         api.keystone.tenant_get(IsA(http.HttpRequest),
                                 self.tenant.id, admin=True) \
             .AndReturn(project)
-        quotas.get_tenant_quota_data(IsA(http.HttpRequest)).AndReturn(quota)
+        quotas.get_tenant_quota_data(IsA(http.HttpRequest),
+                                     tenant_id=self.tenant.id) \
+            .AndReturn(quota)
 
         api.keystone.get_default_role(IsA(http.HttpRequest)) \
             .AndReturn(default_role)
@@ -537,13 +558,17 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
                                           user_id='3',
                                           role_id='1')
 
+        nova_updated_quota = dict([(key, updated_quota[key]) for key in
+                                   quotas.NOVA_QUOTA_FIELDS])
         api.nova.tenant_quota_update(IsA(http.HttpRequest),
                                      project.id,
-                                     **updated_quota)
+                                     **nova_updated_quota)
+
+        cinder_updated_quota = dict([(key, updated_quota[key]) for key in
+                                   quotas.CINDER_QUOTA_FIELDS])
         api.cinder.tenant_quota_update(IsA(http.HttpRequest),
                                        project.id,
-                                       volumes=updated_quota['volumes'],
-                                       gigabytes=updated_quota['gigabytes'])
+                                       **cinder_updated_quota)
         self.mox.ReplayAll()
 
         # submit form data
@@ -597,7 +622,9 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
         api.keystone.tenant_get(IsA(http.HttpRequest), self.tenant.id,
                                 admin=True) \
             .AndReturn(project)
-        quotas.get_tenant_quota_data(IsA(http.HttpRequest)).AndReturn(quota)
+        quotas.get_tenant_quota_data(IsA(http.HttpRequest),
+                                     tenant_id=self.tenant.id) \
+            .AndReturn(quota)
 
         api.keystone.get_default_role(IsA(http.HttpRequest)) \
             .AndReturn(default_role)
@@ -670,7 +697,9 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
         api.keystone.tenant_get(IsA(http.HttpRequest), self.tenant.id,
                                 admin=True) \
             .AndReturn(project)
-        quotas.get_tenant_quota_data(IsA(http.HttpRequest)).AndReturn(quota)
+        quotas.get_tenant_quota_data(IsA(http.HttpRequest),
+                                     tenant_id=self.tenant.id) \
+            .AndReturn(quota)
 
         api.keystone.get_default_role(IsA(http.HttpRequest)) \
             .AndReturn(default_role)
@@ -731,10 +760,12 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
                                           user_id='3',
                                           role_id='2')
 
+        nova_updated_quota = dict([(key, updated_quota[key]) for key in
+                                   quotas.NOVA_QUOTA_FIELDS])
         api.nova.tenant_quota_update(IsA(http.HttpRequest),
                                      project.id,
-                                     **updated_quota) \
-                           .AndRaise(self.exceptions.nova)
+                                     **nova_updated_quota) \
+                            .AndRaise(self.exceptions.nova)
 
         self.mox.ReplayAll()
 
@@ -773,7 +804,9 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
         api.keystone.tenant_get(IsA(http.HttpRequest), self.tenant.id,
                                 admin=True) \
             .AndReturn(project)
-        quotas.get_tenant_quota_data(IsA(http.HttpRequest)).AndReturn(quota)
+        quotas.get_tenant_quota_data(IsA(http.HttpRequest),
+                                     tenant_id=self.tenant.id) \
+            .AndReturn(quota)
 
         api.keystone.get_default_role(IsA(http.HttpRequest)) \
             .AndReturn(default_role)
@@ -860,7 +893,9 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
         api.keystone.tenant_get(IsA(http.HttpRequest), self.tenant.id,
                                 admin=True) \
             .AndReturn(project)
-        quotas.get_tenant_quota_data(IsA(http.HttpRequest)).AndReturn(quota)
+        quotas.get_tenant_quota_data(IsA(http.HttpRequest),
+                                     tenant_id=self.tenant.id) \
+            .AndReturn(quota)
         self.mox.ReplayAll()
 
         url = reverse('horizon:admin:projects:update',
