@@ -1,6 +1,7 @@
 horizon (2013.1~rc1-1) experimental; urgency=low
 
   * New upstream release.
+  * Kills the COMPRESS_OFFLINE = True patch, no longer needed.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 28 Jan 2013 22:39:15 +0800
 
