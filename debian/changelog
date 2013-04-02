@@ -1,4 +1,4 @@
-horizon (2013.1~rc1-1) experimental; urgency=low
+horizon (2013.1~rc2-1) experimental; urgency=low
 
   * New upstream release.
   * Kills the COMPRESS_OFFLINE = True patch, no longer needed.
