@@ -21,8 +21,15 @@
 import logging
 import os
 import sys
+import warnings
+
+from openstack_dashboard import exceptions
+
+warnings.formatwarning = lambda message, category, *args, **kwargs: \
+                                '%s: %s' % (category.__name__, message)
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+BIN_DIR = os.path.abspath(os.path.join(ROOT_PATH, '..', 'bin'))
 
 if ROOT_PATH not in sys.path:
     sys.path.append(ROOT_PATH)
@@ -30,12 +37,13 @@ if ROOT_PATH not in sys.path:
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-SITE_ID = 1
-SITE_BRANDING = 'OpenStack'
-SITE_NAME = 'openstack'
-ENABLE_VNC = True
+SITE_BRANDING = 'OpenStack Dashboard'
 
-LOGIN_URL = '/auth/login'
+LOGIN_URL = '/auth/login/'
+LOGOUT_URL = '/auth/logout/'
+# LOGIN_REDIRECT_URL can be used as an alternative for
+# HORIZON_CONFIG.user_home, if user_home is not set.
+# Do not set it to '/home/', as this will cause circular redirect loop
 LOGIN_REDIRECT_URL = '/'
 
 MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'media'))
@@ -44,26 +52,39 @@ STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
 STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-CREDENTIAL_AUTHORIZATION_DAYS = '5'
-
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
 HORIZON_CONFIG = {
-    'dashboards': ('nova', 'syspanel', 'settings',),
-    'default_dashboard': 'nova',
-    'user_home': 'openstack_dashboard.views.user_home',
-    'ajax_queue_limit': 10
+    'dashboards': ('project', 'admin', 'settings',),
+    'default_dashboard': 'project',
+    'user_home': 'openstack_dashboard.views.get_user_home',
+    'ajax_queue_limit': 10,
+    'auto_fade_alerts': {
+        'delay': 3000,
+        'fade_duration': 1500,
+        'types': ['alert-success', 'alert-info']
+    },
+    'help_url': "http://docs.openstack.org",
+    'exceptions': {'recoverable': exceptions.RECOVERABLE,
+                   'not_found': exceptions.NOT_FOUND,
+                   'unauthorized': exceptions.UNAUTHORIZED},
 }
+
+# Set to True to allow users to upload images to glance via Horizon server.
+# When enabled, a file form field will appear on the create image form.
+# See documentation for deployment considerations.
+HORIZON_IMAGES_ALLOW_UPLOAD = True
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'openstack_dashboard.middleware.DashboardLogUnhandledExceptionsMiddleware',
     'horizon.middleware.HorizonMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -74,76 +95,126 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
     'horizon.context_processors.horizon',
+    'openstack_dashboard.context_processors.openstack',
 )
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader'
+    'django.template.loaders.app_directories.Loader',
+    'horizon.loaders.TemplateLoader'
 )
 
 TEMPLATE_DIRS = (
     os.path.join(ROOT_PATH, 'templates'),
 )
 
-STATICFILES_DIRS = (
-    os.path.join(ROOT_PATH, 'static'),
+STATICFILES_FINDERS = (
+    'compressor.finders.CompressorFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+less_binary = os.path.join(BIN_DIR, 'less', 'lessc')
+COMPRESS_PRECOMPILERS = (
+    ('text/less', (less_binary + ' {infile} {outfile}')),
+)
+
+COMPRESS_CSS_FILTERS = (
+    'compressor.filters.css_default.CssAbsoluteFilter',
+)
+
+COMPRESS_ENABLED = True
+COMPRESS_OUTPUT_DIR = 'dashboard'
+COMPRESS_CSS_HASHING_METHOD = 'hash'
+COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 
 INSTALLED_APPS = (
     'openstack_dashboard',
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_nose',
+    'django.contrib.humanize',
+    'compressor',
     'horizon',
-    'horizon.dashboards.nova',
-    'horizon.dashboards.syspanel',
-    'horizon.dashboards.settings',
+    'openstack_dashboard.dashboards.project',
+    'openstack_dashboard.dashboards.admin',
+    'openstack_dashboard.dashboards.settings',
+    'openstack_auth',
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_COOKIE_HTTPONLY = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-TIME_ZONE = None
+SESSION_COOKIE_SECURE = False
+
 gettext_noop = lambda s: s
 LANGUAGES = (
+    ('bg', gettext_noop('Bulgarian (Bulgaria)')),
+    ('cs', gettext_noop('Czech')),
     ('en', gettext_noop('English')),
-    ('it', gettext_noop('Italiano')),
     ('es', gettext_noop('Spanish')),
     ('fr', gettext_noop('French')),
+    ('it', gettext_noop('Italiano')),
     ('ja', gettext_noop('Japanese')),
-    ('pt', gettext_noop('Portuguese')),
+    ('ko', gettext_noop('Korean (Korea)')),
+    ('nl', gettext_noop('Dutch (Netherlands)')),
     ('pl', gettext_noop('Polish')),
+    ('pt', gettext_noop('Portuguese')),
+    ('pt-br', gettext_noop('Portuguese (Brazil)')),
     ('zh-cn', gettext_noop('Simplified Chinese')),
     ('zh-tw', gettext_noop('Traditional Chinese')),
 )
 LANGUAGE_CODE = 'en'
 USE_I18N = True
-
-ACCOUNT_ACTIVATION_DAYS = 7
-
-TOTAL_CLOUD_RAM_GB = 10
+USE_L10N = True
+USE_TZ = True
 
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = 'Member'
-LIVE_SERVER_PORT = 8000
+
+DEFAULT_EXCEPTION_REPORTER_FILTER = 'horizon.exceptions.HorizonReporterFilter'
 
 try:
     from local.local_settings import *
 except ImportError:
     logging.warning("No local_settings file found.")
 
+# Add HORIZON_CONFIG to the context information for offline compression
+COMPRESS_OFFLINE_CONTEXT = {
+    'STATIC_URL': STATIC_URL,
+    'HORIZON_CONFIG': HORIZON_CONFIG
+}
+
 if DEBUG:
     logging.basicConfig(level=logging.DEBUG)
 
-    try:
-        import debug_toolbar
 
-        INSTALLED_APPS += ('debug_toolbar',)
-        MIDDLEWARE_CLASSES += (
-                'debug_toolbar.middleware.DebugToolbarMiddleware',)
-    except ImportError:
-        _logger = logging.getLogger(__name__)
-        _logger.debug('Running in debug mode without debug_toolbar.')
+# Deprecation for Essex/Folsom dashboard names; remove this code in H.
+_renames = (
+    ('horizon.dashboards.nova', 'openstack_dashboard.dashboards.project'),
+    ('horizon.dashboards.syspanel', 'openstack_dashboard.dashboards.admin'),
+    ('horizon.dashboards.settings', 'openstack_dashboard.dashboards.settings')
+)
+
+INSTALLED_APPS = list(INSTALLED_APPS)
+_dashboards = list(HORIZON_CONFIG['dashboards'])
+
+for old, new in _renames:
+    if old in INSTALLED_APPS:
+        warnings.warn('The "%s" package is deprecated. Please update your '
+                      'INSTALLED_APPS setting to use the new "%s" package.\n'
+                      % (old, new), Warning)
+        INSTALLED_APPS[INSTALLED_APPS.index(old)] = new
+    _old_name = old.split(".")[-1]
+    if _old_name in HORIZON_CONFIG['dashboards'] and _old_name != "settings":
+        _new_name = new.split(".")[-1]
+        warnings.warn('The "%s" dashboard name is deprecated. Please update '
+                      'your HORIZON_CONFIG["dashboards"] setting to use the '
+                      'new "%s" dashboard name.\n' % (_old_name, _new_name),
+                      Warning)
+        _dashboards[_dashboards.index(_old_name)] = _new_name
+HORIZON_CONFIG['dashboards'] = _dashboards

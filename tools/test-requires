@@ -1,12 +1,18 @@
+distribute>=0.6.24
+
 # Testing Requirements
-CherryPy
 coverage
-django-nose-selenium
+django-nose
 mox
 nose
-pep8
+nose-exclude
+nosexcover
+openstack.nose_plugin
+nosehtmloutput
+pep8>=1.3
 pylint
-distribute>=0.6.24
+selenium
 
 # Docs Requirements
 sphinx
+docutils==0.9.1 # for bug 1091333, remove after sphinx >1.1.3 is released.

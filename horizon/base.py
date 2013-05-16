@@ -26,6 +26,7 @@ import collections
 import copy
 import inspect
 import logging
+import os
 
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url, include
@@ -37,24 +38,12 @@ from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
 from django.utils.translation import ugettext as _
 
-from horizon.decorators import (require_auth, require_roles,
-                                require_services, _current_component)
+from horizon import loaders
+from horizon import conf
+from horizon.decorators import require_auth, require_perms, _current_component
 
 
 LOG = logging.getLogger(__name__)
-
-
-# Default configuration dictionary. Do not mutate directly. Use copy.copy().
-HORIZON_CONFIG = {
-    # Allow for ordering dashboards; list or tuple if provided.
-    'dashboards': None,
-    # Name of a default dashboard; defaults to first alphabetically if None
-    'default_dashboard': None,
-    'user_home': None,
-    'exceptions': {'unauthorized': [],
-                   'not_found': [],
-                   'recoverable': []}
-}
 
 
 def _decorate_urlconf(urlpatterns, decorator, *args, **kwargs):
@@ -170,7 +159,7 @@ class Panel(HorizonComponent):
 
     All Horizon dashboard panels should extend from this class. It provides
     the appropriate hooks for automatically constructing URLconfs, and
-    providing role-based access control.
+    providing permission-based access control.
 
     .. attribute:: name
 
@@ -183,17 +172,12 @@ class Panel(HorizonComponent):
         A unique "short name" for the panel. The slug is used as
         a component of the URL path for the panel. Default: ``''``.
 
-    .. attribute: roles
+    .. attribute:: permissions
 
-        A list of role names, all of which a user must possess in order
+        A list of permission names, all of which a user must possess in order
         to access any view associated with this panel. This attribute
-        is combined cumulatively with any roles required on the
+        is combined cumulatively with any permissions required on the
         ``Dashboard`` class with which it is registered.
-
-    .. attribute:: services
-
-        A list of service names, all of which must be in the service catalog
-        in order for this panel to be available.
 
     .. attribute:: urls
 
@@ -235,10 +219,10 @@ class Panel(HorizonComponent):
             return reverse('horizon:%s:%s:%s' % (self._registered_with.slug,
                                                  self.slug,
                                                  self.index_url_name))
-        except:
+        except Exception as exc:
             # Logging here since this will often be called in a template
             # where the exception would be hidden.
-            LOG.exception("Error reversing absolute URL for %s." % self)
+            LOG.info("Error reversing absolute URL for %s: %s" % (self, exc))
             raise
 
     @property
@@ -246,10 +230,8 @@ class Panel(HorizonComponent):
         urlpatterns = self._get_default_urlpatterns()
 
         # Apply access controls to all views in the patterns
-        roles = getattr(self, 'roles', [])
-        services = getattr(self, 'services', [])
-        _decorate_urlconf(urlpatterns, require_roles, roles)
-        _decorate_urlconf(urlpatterns, require_services, services)
+        permissions = getattr(self, 'permissions', [])
+        _decorate_urlconf(urlpatterns, require_perms, permissions)
         _decorate_urlconf(urlpatterns, _current_component, panel=self)
 
         # Return the three arguments to django.conf.urls.defaults.include
@@ -304,8 +286,8 @@ class Dashboard(Registry, HorizonComponent):
 
     All Horizon dashboards should extend from this base class. It provides the
     appropriate hooks for automatic discovery of :class:`~horizon.Panel`
-    modules, automatically constructing URLconfs, and providing role-based
-    access control.
+    modules, automatically constructing URLconfs, and providing
+    permission-based access control.
 
     .. attribute:: name
 
@@ -357,17 +339,12 @@ class Dashboard(Registry, HorizonComponent):
         for this dashboard, that's the panel that is displayed.
         Default: ``None``.
 
-    .. attribute:: roles
+    .. attribute:: permissions
 
-        A list of role names, all of which a user must possess in order
+        A list of permission names, all of which a user must possess in order
         to access any panel registered with this dashboard. This attribute
-        is combined cumulatively with any roles required on individual
+        is combined cumulatively with any permissions required on individual
         :class:`~horizon.Panel` classes.
-
-    .. attribute:: services
-
-        A list of service names, all of which must be in the service catalog
-        in order for this dashboard to be available.
 
     .. attribute:: urls
 
@@ -488,10 +465,8 @@ class Dashboard(Registry, HorizonComponent):
         if not self.public:
             _decorate_urlconf(urlpatterns, require_auth)
         # Apply access controls to all views in the patterns
-        roles = getattr(self, 'roles', [])
-        services = getattr(self, 'services', [])
-        _decorate_urlconf(urlpatterns, require_roles, roles)
-        _decorate_urlconf(urlpatterns, require_services, services)
+        permissions = getattr(self, 'permissions', [])
+        _decorate_urlconf(urlpatterns, require_perms, permissions)
         _decorate_urlconf(urlpatterns, _current_component, dashboard=self)
 
         # Return the three arguments to django.conf.urls.defaults.include
@@ -541,12 +516,26 @@ class Dashboard(Registry, HorizonComponent):
     @classmethod
     def register(cls, panel):
         """ Registers a :class:`~horizon.Panel` with this dashboard. """
-        return Horizon.register_panel(cls, panel)
+        panel_class = Horizon.register_panel(cls, panel)
+        # Support template loading from panel template directories.
+        panel_mod = import_module(panel.__module__)
+        panel_dir = os.path.dirname(panel_mod.__file__)
+        template_dir = os.path.join(panel_dir, "templates")
+        if os.path.exists(template_dir):
+            key = os.path.join(cls.slug, panel.slug)
+            loaders.panel_template_dirs[key] = template_dir
+        return panel_class
 
     @classmethod
     def unregister(cls, panel):
         """ Unregisters a :class:`~horizon.Panel` from this dashboard. """
-        return Horizon.unregister_panel(cls, panel)
+        success = Horizon.unregister_panel(cls, panel)
+        if success:
+            # Remove the panel's template directory.
+            key = os.path.join(cls.slug, panel.slug)
+            if key in loaders.panel_template_dirs:
+                del loaders.panel_template_dirs[key]
+        return success
 
 
 class Workflow(object):
@@ -589,9 +578,7 @@ class Site(Registry, HorizonComponent):
 
     @property
     def _conf(self):
-        conf = copy.copy(HORIZON_CONFIG)
-        conf.update(getattr(settings, 'HORIZON_CONFIG', {}))
-        return conf
+        return conf.HORIZON_CONFIG
 
     @property
     def dashboards(self):
@@ -631,11 +618,11 @@ class Site(Registry, HorizonComponent):
         """ Returns an ordered tuple of :class:`~horizon.Dashboard` modules.
 
         Orders dashboards according to the ``"dashboards"`` key in
-        ``settings.HORIZON_CONFIG`` or else returns all registered dashboards
+        ``HORIZON_CONFIG`` or else returns all registered dashboards
         in alphabetical order.
 
         Any remaining :class:`~horizon.Dashboard` classes registered with
-        Horizon but not listed in ``settings.HORIZON_CONFIG['dashboards']``
+        Horizon but not listed in ``HORIZON_CONFIG['dashboards']``
         will be appended to the end of the list alphabetically.
         """
         if self.dashboards:
@@ -658,7 +645,7 @@ class Site(Registry, HorizonComponent):
     def get_default_dashboard(self):
         """ Returns the default :class:`~horizon.Dashboard` instance.
 
-        If ``"default_dashboard"`` is specified in ``settings.HORIZON_CONFIG``
+        If ``"default_dashboard"`` is specified in ``HORIZON_CONFIG``
         then that dashboard will be returned. If not, the first dashboard
         returned by :func:`~horizon.get_dashboards` will be returned.
         """
@@ -678,15 +665,17 @@ class Site(Registry, HorizonComponent):
 
         An alternative function can be supplied to customize this behavior
         by specifying a either a URL or a function which returns a URL via
-        the ``"user_home"`` key in ``settings.HORIZON_CONFIG``. Each of these
+        the ``"user_home"`` key in ``HORIZON_CONFIG``. Each of these
         would be valid::
 
             {"user_home": "/home",}  # A URL
             {"user_home": "my_module.get_user_home",}  # Path to a function
             {"user_home": lambda user: "/" + user.name,}  # A function
+            {"user_home": None,}  # Will always return the default dashboard
 
         This can be useful if the default dashboard may not be accessible
-        to all users.
+        to all users. When user_home is missing from HORIZON_CONFIG,
+        it will default to the settings.LOGIN_REDIRECT_URL value.
         """
         user_home = self._conf['user_home']
         if user_home:
@@ -737,9 +726,8 @@ class Site(Registry, HorizonComponent):
             dash._autodiscover()
 
         # Allow for override modules
-        config = getattr(settings, "HORIZON_CONFIG", {})
-        if config.get("customization_module", None):
-            customization_module = config["customization_module"]
+        if self._conf.get("customization_module", None):
+            customization_module = self._conf["customization_module"]
             bits = customization_module.split('.')
             mod_name = bits.pop()
             package = '.'.join(bits)

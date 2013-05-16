@@ -1,0 +1,16 @@
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www
+
+    <Directory />
+    	AllowOverride None
+    </Directory>
+
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    LogLevel warn
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+ </VirtualHost>

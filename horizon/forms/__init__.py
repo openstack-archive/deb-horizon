@@ -14,11 +14,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-# FIXME(gabriel): Legacy imports from django-openstack.forms
-# for API compatibility.
+# FIXME(gabriel): Legacy imports for API compatibility.
 from django.forms import *
 from django.forms import widgets
 
 # Convenience imports for public API components.
-from .base import SelfHandlingForm, DateForm
-from .views import ModalFormView
+from .base import SelfHandlingMixin, SelfHandlingForm, DateForm
+from .views import ModalFormView, ModalFormMixin
+from .fields import DynamicTypedChoiceField, DynamicChoiceField

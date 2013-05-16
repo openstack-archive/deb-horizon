@@ -1,0 +1,23 @@
+# These templates have been reviewed by the debian-l10n-english
+# team
+#
+# If modifications/additions/rewording are needed, please ask
+# debian-l10n-english@lists.debian.org for advice.
+#
+# Even minor modifications require translation updates and such
+# changes should be coordinated with translators and reviewers.
+
+Template: horizon/activate_vhost
+Type: boolean
+Default: false
+_Description: Activate Dashboard and disable default VirtualHost?
+ In Debian, Apache comes with a default website and a default page, configured
+ in /etc/apache2/sites-available/default. Select if this configuration should be
+ disabled and replaced by the Openstack Dashboard configuration.
+
+Template: horizon/use_ssl
+Type: boolean
+Default: true
+_Description: Should the Dashboard be installed on HTTPS?
+ Please choose if you would like Horizon to be installed on HTTPS only, with a
+ redirection to HTTPS if HTTP is in use.

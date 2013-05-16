@@ -3,5 +3,8 @@
 set -e
 
 a2dissite openstack-dashboard
+a2dissite openstack-dashboard-ssl-redirect
+a2dissite openstack-dashboard-ssl
+a2ensite default
 
 #DEBHELPER#

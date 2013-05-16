@@ -6,7 +6,7 @@ set -o errexit
 # Increment me any time the environment should be rebuilt.
 # This includes dependncy changes, directory renames, etc.
 # Simple integer secuence: 1, 2, 3...
-environment_version=14
+environment_version=31
 #--------------------------------------------------------#
 
 function usage {
@@ -21,12 +21,15 @@ function usage {
   echo "  -f, --force              Force a clean re-build of the virtual"
   echo "                           environment. Useful when dependencies have"
   echo "                           been added."
-  echo "  -m, --makemessages       Update all translation files."
+  echo "  -m, --manage             Run a Django management command."
+  echo "  --makemessages           Update all translation files."
+  echo "  --compilemessages        Compile all translation files."
   echo "  -p, --pep8               Just run pep8"
   echo "  -t, --tabs               Check for tab characters in files."
   echo "  -y, --pylint             Just run pylint"
   echo "  -q, --quiet              Run non-interactively. (Relatively) quiet."
   echo "                           Implies -V if -N is not set."
+  echo "  --only-selenium          Run only the Selenium unit tests"
   echo "  --with-selenium          Run unit tests including Selenium tests"
   echo "  --runserver              Run the Django development server for"
   echo "                           openstack_dashboard in the virtual"
@@ -64,10 +67,14 @@ never_venv=0
 quiet=0
 restore_env=0
 runserver=0
-selenium=0
+only_selenium=0
+with_selenium=0
+testopts=""
 testargs=""
 with_coverage=0
 makemessages=0
+compilemessages=0
+manage=0
 
 # Jenkins sets a "JOB_NAME" variable, if it's not set, we'll make it "default"
 [ "$JOB_NAME" ] || JOB_NAME="default"
@@ -83,20 +90,28 @@ function process_option {
     -t|--tabs) just_tabs=1;;
     -q|--quiet) quiet=1;;
     -c|--coverage) with_coverage=1;;
-    -m|--makemessages) makemessages=1;;
-    --with-selenium) selenium=1;;
+    -m|--manage) manage=1;;
+    --makemessages) makemessages=1;;
+    --compilemessages) compilemessages=1;;
+    --only-selenium) only_selenium=1;;
+    --with-selenium) with_selenium=1;;
     --docs) just_docs=1;;
     --runserver) runserver=1;;
     --backup-environment) backup_env=1;;
     --restore-environment) restore_env=1;;
     --destroy-environment) destroy=1;;
+    -*) testopts="$testopts $1";;
     *) testargs="$testargs $1"
   esac
 }
 
+function run_management_command {
+  ${command_wrapper} python $root/manage.py $testopts $testargs
+}
+
 function run_server {
   echo "Starting Django development server..."
-  ${command_wrapper} python $root/manage.py runserver $testargs
+  ${command_wrapper} python $root/manage.py runserver $testopts $testargs
   echo "Server stopped."
 }
 
@@ -116,26 +131,13 @@ function run_pylint {
 
 function run_pep8 {
   echo "Running pep8 ..."
-  rm -f pep8.txt
-  PEP8_EXCLUDE=vcsversion.py
-  PEP8_IGNORE=W602
-  PEP8_OPTIONS="--exclude=$PEP8_EXCLUDE --ignore=$PEP8_IGNORE --repeat"
-  ${command_wrapper} pep8 $PEP8_OPTIONS $included_dirs > pep8.txt || true
-  PEP8_COUNT=`wc -l pep8.txt | awk '{ print $1 }'`
-  if [ $PEP8_COUNT -ge 1 ]; then
-    echo "PEP8 violations found ($PEP8_COUNT):"
-    cat pep8.txt
-    echo "Please fix all PEP8 violations before committing."
-  else
-    echo "No violations found. Good job!"
-  fi
-  exit $PEP8_COUNT
+  ${command_wrapper} pep8 $included_dirs
 }
 
 function run_sphinx {
     echo "Building sphinx..."
     export DJANGO_SETTINGS_MODULE=openstack_dashboard.settings
-    ${command_wrapper} sphinx-build -b html docs/source docs/build/html
+    ${command_wrapper} sphinx-build -b html doc/source doc/build/html
     echo "Build complete."
 }
 
@@ -189,6 +191,9 @@ function environment_check {
     read update_env
     if [ "x$update_env" = "xY" -o "x$update_env" = "x" -o "x$update_env" = "xy" ]; then
       install_venv
+    else
+      # Set our command wrapper anyway.
+      command_wrapper="${root}/${with_venv}"
     fi
   fi
 }
@@ -200,13 +205,6 @@ function sanity_check {
     if [ ! -e ${venv} ]; then
       echo "Virtualenv not found at $venv. Did install_venv.py succeed?"
       exit 1
-    fi
-  fi
-  if [ $selenium -eq 1 ]; then
-    SELENIUM_JOB=`ps -elf | grep "selenium" | grep -v grep`
-    if [ $? -eq 0 ]; then
-      echo "WARNING: Selenium doesn't appear to be running. Please start a selenium server process."
-      selenium=0
     fi
   fi
   # Remove .pyc files. This is sanity checking because they can linger
@@ -269,20 +267,42 @@ function install_venv {
 function run_tests {
   sanity_check
 
+  if [ $with_selenium -eq 1 ]; then
+    export WITH_SELENIUM=1
+  elif [ $only_selenium -eq 1 ]; then
+    export WITH_SELENIUM=1
+    export SKIP_UNITTESTS=1
+  fi
+
+  if [ -z "$testargs" ]; then
+     run_tests_all
+  else
+     run_tests_subset
+  fi
+}
+
+function run_tests_subset {
+  project=`echo $testargs | awk -F. '{print $1}'`
+  ${command_wrapper} python $root/manage.py test --settings=$project.test.settings $testopts $testargs
+}
+
+function run_tests_all {
   echo "Running Horizon application tests"
   export NOSE_XUNIT_FILE=horizon/nosetests.xml
+  if [ "$NOSE_WITH_HTML_OUTPUT" = '1' ]; then
+    export NOSE_HTML_OUT_FILE='horizon_nose_results.html'
+  fi
   ${command_wrapper} coverage erase
-  ${command_wrapper} coverage run -p $root/manage.py test horizon --settings=horizon.tests.testsettings $testargs
+  ${command_wrapper} coverage run -p $root/manage.py test horizon --settings=horizon.test.settings $testopts
   # get results of the Horizon tests
   HORIZON_RESULT=$?
 
   echo "Running openstack_dashboard tests"
   export NOSE_XUNIT_FILE=openstack_dashboard/nosetests.xml
-  if [ $selenium -eq 1 ]; then
-      ${command_wrapper} coverage run -p $root/manage.py test openstack_dashboard --settings=horizon.tests.testsettings --with-selenium --with-cherrypyliveserver $testargs
-    else
-      ${command_wrapper} coverage run -p $root/manage.py test openstack_dashboard --settings=horizon.tests.testsettings $testargs
+  if [ "$NOSE_WITH_HTML_OUTPUT" = '1' ]; then
+    export NOSE_HTML_OUT_FILE='dashboard_nose_results.html'
   fi
+  ${command_wrapper} coverage run -p $root/manage.py test openstack_dashboard --settings=openstack_dashboard.test.settings $testopts
   # get results of the openstack_dashboard tests
   DASHBOARD_RESULT=$?
 
@@ -305,13 +325,26 @@ function run_tests {
 
 function run_makemessages {
   cd horizon
-  ${command_wrapper} $root/manage.py makemessages --all
-  HORIZON_RESULT=$?
+  ${command_wrapper} $root/manage.py makemessages --all --no-obsolete
+  HORIZON_PY_RESULT=$?
+  ${command_wrapper} $root/manage.py makemessages -d djangojs --all --no-obsolete
+  HORIZON_JS_RESULT=$?
   cd ../openstack_dashboard
-  ${command_wrapper} $root/manage.py makemessages --all
+  ${command_wrapper} $root/manage.py makemessages --all --no-obsolete
   DASHBOARD_RESULT=$?
   cd ..
-  exit $(($HORIZON_RESULT || $DASHBOARD_RESULT))
+  exit $(($HORIZON_PY_RESULT || $HORIZON_JS_RESULT || $DASHBOARD_RESULT))
+}
+
+function run_compilemessages {
+  cd horizon
+  ${command_wrapper} $root/manage.py compilemessages
+  HORIZON_PY_RESULT=$?
+  cd ../openstack_dashboard
+  ${command_wrapper} $root/manage.py compilemessages
+  DASHBOARD_RESULT=$?
+  cd ..
+  exit $(($HORIZON_PY_RESULT || $DASHBOARD_RESULT))
 }
 
 
@@ -357,6 +390,12 @@ fi
 
 # ---------EXERCISE THE CODE------------ #
 
+# Run management commands
+if [ $manage -eq 1 ]; then
+    run_management_command
+    exit $?
+fi
+
 # Build the docs
 if [ $just_docs -eq 1 ]; then
     run_sphinx
@@ -366,6 +405,12 @@ fi
 # Update translation files
 if [ $makemessages -eq 1 ]; then
     run_makemessages
+    exit $?
+fi
+
+# Compile translation files
+if [ $compilemessages -eq 1 ]; then
+    run_compilemessages
     exit $?
 fi
 

@@ -21,18 +21,19 @@
 Middleware provided and used by Horizon.
 """
 
+import json
 import logging
 
 from django import http
 from django import shortcuts
-
-from django.core.urlresolvers import reverse
-from django.contrib import messages
+from django.conf import settings
+from django.contrib import messages as django_messages
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.views import redirect_to_login
+from django.utils import timezone
 from django.utils.encoding import iri_to_uri
 
 from horizon import exceptions
-from horizon import users
 
 
 LOG = logging.getLogger(__name__)
@@ -42,53 +43,48 @@ class HorizonMiddleware(object):
     """ The main Horizon middleware class. Required for use of Horizon. """
 
     def process_request(self, request):
-        """ Adds data necessary for Horizon to function to the request.
+        """ Adds data necessary for Horizon to function to the request. """
+        # Activate timezone handling
+        tz = request.session.get('django_timezone')
+        if tz:
+            timezone.activate(tz)
 
-        Adds the current "active" :class:`~horizon.Dashboard` and
-        :class:`~horizon.Panel` to ``request.horizon``.
-
-        Adds a :class:`~horizon.users.User` object to ``request.user``.
-        """
-        # A quick and dirty way to log users out
-        def user_logout(request):
-            if hasattr(request, '_cached_user'):
-                del request._cached_user
-            # Use flush instead of clear, so we rotate session keys in
-            # addition to clearing all the session data
-            request.session.flush()
-        request.__class__.user_logout = user_logout
-
-        request.__class__.user = users.LazyUser()
-        request.horizon = {'dashboard': None, 'panel': None}
+        request.horizon = {'dashboard': None,
+                           'panel': None,
+                           'async_messages': []}
 
     def process_exception(self, request, exception):
         """
         Catches internal Horizon exception classes such as NotAuthorized,
         NotFound and Http302 and handles them gracefully.
         """
-        if isinstance(exception,
-                (exceptions.NotAuthorized, exceptions.NotAuthenticated)):
-            auth_url = reverse("horizon:auth_login")
+        if isinstance(exception, (exceptions.NotAuthorized,
+                                  exceptions.NotAuthenticated)):
+            auth_url = settings.LOGIN_URL
             next_url = iri_to_uri(request.get_full_path())
             if next_url != auth_url:
-                param = "?%s=%s" % (REDIRECT_FIELD_NAME, next_url)
-                redirect_to = "".join((auth_url, param))
+                field_name = REDIRECT_FIELD_NAME
             else:
-                redirect_to = auth_url
-            messages.error(request, unicode(exception))
+                field_name = None
+            login_url = request.build_absolute_uri(auth_url)
+            response = redirect_to_login(next_url, login_url=login_url,
+                                         redirect_field_name=field_name)
+
+            # TODO(gabriel): Find a way to display an appropriate message to
+            # the user *on* the login form...
             if request.is_ajax():
                 response_401 = http.HttpResponse(status=401)
-                response_401['X-Horizon-Location'] = redirect_to
+                response_401['X-Horizon-Location'] = response['location']
                 return response_401
-            return shortcuts.redirect(redirect_to)
+            return response
 
         # If an internal "NotFound" error gets this far, return a real 404.
         if isinstance(exception, exceptions.NotFound):
             raise http.Http404(exception)
 
         if isinstance(exception, exceptions.Http302):
-            if exception.message:
-                messages.error(request, exception.message)
+            # TODO(gabriel): Find a way to display an appropriate message to
+            # the user *on* the login form...
             return shortcuts.redirect(exception.location)
 
     def process_response(self, request, response):
@@ -97,8 +93,21 @@ class HorizonMiddleware(object):
         to allow ajax request to redirect url
         """
         if request.is_ajax():
+            queued_msgs = request.horizon['async_messages']
             if type(response) == http.HttpResponseRedirect:
+                # Drop our messages back into the session as per usual so they
+                # don't disappear during the redirect. Not that we explicitly
+                # use django's messages methods here.
+                for tag, message, extra_tags in queued_msgs:
+                    getattr(django_messages, tag)(request, message, extra_tags)
                 redirect_response = http.HttpResponse()
                 redirect_response['X-Horizon-Location'] = response['location']
                 return redirect_response
+            if queued_msgs:
+                # TODO(gabriel): When we have an async connection to the
+                # client (e.g. websockets) this should be pushed to the
+                # socket queue rather than being sent via a header.
+                # The header method has notable drawbacks (length limits,
+                # etc.) and is not meant as a long-term solution.
+                response['X-Horizon-Messages'] = json.dumps(queued_msgs)
         return response

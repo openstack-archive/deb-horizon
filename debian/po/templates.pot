@@ -1,0 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: horizon\n"
+"Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
+"POT-Creation-Date: 2012-11-28 14:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid "Activate Dashboard and disable default VirtualHost?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"In Debian, Apache comes with a default website and a default page, "
+"configured in /etc/apache2/sites-available/default. Select if this "
+"configuration should be disabled and replaced by the Openstack Dashboard "
+"configuration."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid "Should the Dashboard be installed on HTTPS?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid ""
+"Please choose if you would like Horizon to be installed on HTTPS only, with "
+"a redirection to HTTPS if HTTP is in use."
+msgstr ""

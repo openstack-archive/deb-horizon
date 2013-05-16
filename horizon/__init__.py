@@ -14,7 +14,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-""" The Horizon OpenStack Dashboard interface.
+""" The Horizon interface.
 
 Contains the core Horizon classes--:class:`~horizon.Dashboard` and
 :class:`horizon.Panel`--the dynamic URLconf for Horizon, and common interface
@@ -39,11 +39,6 @@ except ImportError:
     warnings.warn(msg, Warning)
 
 if Horizon:
-    # This can be removed once the upstream bug is fixed.
-    import django
-    if django.VERSION < (1, 4):
-        from horizon.utils import reverse_bugfix
-
     register = Horizon.register
     unregister = Horizon.unregister
     get_absolute_url = Horizon.get_absolute_url

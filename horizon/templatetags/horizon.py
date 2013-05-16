@@ -17,41 +17,29 @@
 from __future__ import absolute_import
 
 from django import template
-from django.utils.translation import ugettext as _
 from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext as _
 
 from horizon.base import Horizon
+from horizon import conf
 
 
 register = template.Library()
 
 
 @register.filter
-def can_haz(user, component):
+def has_permissions(user, component):
     """
-    Checks if the given user meets the requirements for the component. This
-    includes both user roles and services in the service catalog.
+    Checks if the given user meets the permissions requirements for
+    the component.
     """
-    if hasattr(user, 'roles'):
-        user_roles = set([role['name'].lower() for role in user.roles])
-    else:
-        user_roles = set([])
-    roles_statisfied = set(getattr(component, 'roles', [])) <= user_roles
-
-    if hasattr(user, 'service_catalog'):
-        services = set([service['type'] for service in user.service_catalog])
-    else:
-        services = set([])
-    services_statisfied = set(getattr(component, 'services', [])) <= services
-
-    if roles_statisfied and services_statisfied:
-        return True
-    return False
+    return user.has_perms(getattr(component, 'permissions', set()))
 
 
 @register.filter
-def can_haz_list(components, user):
-    return [component for component in components if can_haz(user, component)]
+def has_permissions_on_list(components, user):
+    return [component for component
+                in components if has_permissions(user, component)]
 
 
 @register.inclusion_tag('horizon/_nav_list.html', takes_context=True)
@@ -132,16 +120,26 @@ class JSTemplateNode(template.Node):
 
     def render(self, context, ):
         output = self.nodelist.render(context)
-        return output.replace('[[', '{{').replace(']]', '}}')
+        output = output.replace('[[[', '{{{').replace(']]]', '}}}')
+        output = output.replace('[[', '{{').replace(']]', '}}')
+        output = output.replace('[%', '{%').replace('%]', '%}')
+        return output
 
 
 @register.tag
 def jstemplate(parser, token):
     """
-    Replaces ``[[`` and ``]]`` with ``{{`` and ``}}`` to avoid conflicts
+    Replaces ``[[[`` and ``]]]`` with ``{{{`` and ``}}}``,
+    ``[[`` and ``]]`` with ``{{`` and ``}}``  and
+    ``[%`` and ``%]`` with ``{%`` and ``%}`` to avoid conflicts
     with Django's template engine when using any of the Mustache-based
     templating libraries.
     """
     nodelist = parser.parse(('endjstemplate',))
     parser.delete_first_token()
     return JSTemplateNode(nodelist)
+
+
+@register.assignment_tag
+def load_config():
+    return conf.HORIZON_CONFIG

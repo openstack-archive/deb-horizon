@@ -14,18 +14,19 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import json
 import os
 
 from django import http
 from django.views import generic
 
+from horizon import exceptions
 
-class ModalFormView(generic.TemplateView):
-    form_class = None
-    initial = {}
-    context_form_name = "form"
-    context_object_name = "object"
 
+ADD_TO_FIELD_HEADER = "HTTP_X_HORIZON_ADD_TO_FIELD"
+
+
+class ModalFormMixin(object):
     def get_template_names(self):
         if self.request.is_ajax():
             if not hasattr(self, "ajax_template_name"):
@@ -38,47 +39,77 @@ class ModalFormView(generic.TemplateView):
             template = self.template_name
         return template
 
-    def get_object(self, *args, **kwargs):
-        return None
+    def get_context_data(self, **kwargs):
+        context = super(ModalFormMixin, self).get_context_data(**kwargs)
+        if self.request.is_ajax():
+            context['hide'] = True
+        if ADD_TO_FIELD_HEADER in self.request.META:
+            context['add_to_field'] = self.request.META[ADD_TO_FIELD_HEADER]
+        return context
 
-    def get_initial(self):
-        return self.initial
 
-    def get_form_kwargs(self):
-        kwargs = {'initial': self.get_initial()}
-        return kwargs
+class ModalFormView(ModalFormMixin, generic.FormView):
+    """
+    The main view class from which all views which handle forms in Horizon
+    should inherit. It takes care of all details with processing
+    :class:`~horizon.forms.base.SelfHandlingForm` classes, and modal concerns
+    when the associated template inherits from
+    `horizon/common/_modal_form.html`.
 
-    def maybe_handle(self):
-        if not self.form_class:
-            raise AttributeError('You must specify a SelfHandlingForm class '
-                                 'for the "form_class" attribute on %s.'
-                                 % self.__class__.__name__)
-        if not hasattr(self, "form"):
-            form = self.form_class
-            kwargs = self.get_form_kwargs()
-            self.form, self.handled = form.maybe_handle(self.request, **kwargs)
-        return self.form, self.handled
+    Subclasses must define a ``form_class`` and ``template_name`` attribute
+    at minimum.
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object(*args, **kwargs)
-        form, handled = self.maybe_handle()
+    See Django's documentation on the `FormView <https://docs.djangoproject.com
+    /en/dev/ref/class-based-views/generic-editing/#formview>`_ class for
+    more details.
+    """
+
+    def get_object_id(self, obj):
+        """
+        For dynamic insertion of resources created in modals, this method
+        returns the id of the created object. Defaults to returning the ``id``
+        attribute.
+        """
+        return obj.id
+
+    def get_object_display(self, obj):
+        """
+        For dynamic insertion of resources created in modals, this method
+        returns the display name of the created object. Defaults to returning
+        the ``name`` attribute.
+        """
+        return obj.name
+
+    def get_form(self, form_class):
+        """
+        Returns an instance of the form to be used in this view.
+        """
+        return form_class(self.request, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        try:
+            handled = form.handle(self.request, form.cleaned_data)
+        except:
+            handled = None
+            exceptions.handle(self.request)
+
         if handled:
-            if self.request.is_ajax():
+            if ADD_TO_FIELD_HEADER in self.request.META:
+                field_id = self.request.META[ADD_TO_FIELD_HEADER]
+                data = [self.get_object_id(handled),
+                        self.get_object_display(handled)]
+                response = http.HttpResponse(json.dumps(data))
+                response["X-Horizon-Add-To-Field"] = field_id
+            else:
+                success_url = self.get_success_url()
+                response = http.HttpResponseRedirect(success_url)
                 # TODO(gabriel): This is not a long-term solution to how
                 # AJAX should be handled, but it's an expedient solution
                 # until the blueprint for AJAX handling is architected
                 # and implemented.
-                response = http.HttpResponse()
-                response['X-Horizon-Location'] = handled['location']
-                return response
-            return handled
-        context = self.get_context_data(**kwargs)
-        context[self.context_form_name] = form
-        context[self.context_object_name] = self.object
-        if self.request.is_ajax():
-            context['hide'] = True
-        return self.render_to_response(context)
-
-    def post(self, request, *args, **kwargs):
-        """ Placeholder to allow POST; handled the same as GET. """
-        return self.get(self, request, *args, **kwargs)
+                response['X-Horizon-Location'] = success_url
+            return response
+        else:
+            # If handled didn't return, we can assume something went
+            # wrong, and we should send back the form as-is.
+            return self.form_invalid(form)

@@ -1,35 +1,36 @@
-horizon (2012.1.1-10) unstable; urgency=low
+horizon (2013.1-1) experimental; urgency=low
 
-  * Added patch: Launch from volume with valid volume size. Thanks to Julien
-    Cristau <julien.cristau@logilab.fr> for reporting (Closes: 699906).
+  * New upstream release.
+  * Kills the COMPRESS_OFFLINE = True patch, no longer needed.
 
- -- Thomas Goirand <zigo@debian.org>  Thu, 07 Feb 2013 17:50:55 +0800
+ -- Thomas Goirand <zigo@debian.org>  Mon, 28 Jan 2013 22:39:15 +0800
 
-horizon (2012.1.1-9) unstable; urgency=high
+horizon (2012.2.1-1) experimental; urgency=low
 
-  * Re-uploading with urgency=high.
+  * New upstream release 2012.2.1
+  * Recommends: memcached and use it as default on localhost.
+  * Rewrote Apache vhost, diables apache "default" vhost by default, (probably
+  we should ask for permission to do that using debconf).
+  * Now writing css and js script in /var, plus we aren't doing chown www-data
+  of all the static, but only css + js in /var.
+  * Now asking using debconf if we should disable the default apache vhost,
+  and activate the Dasboard, and if we should use SSL or not.
+  * Added missing dependency on node-less.
+  * The package had only Build-Depends:, now setting lots of them in
+  Build-Depends-Indep: as it should be.
+  * Using pkgos.make in debian/rules.
 
- -- Thomas Goirand <zigo@debian.org>  Sun, 18 Nov 2012 15:09:51 +0000
+ -- Thomas Goirand <zigo@debian.org>  Sun, 02 Dec 2012 11:59:19 +0000
 
-horizon (2012.1.1-8) unstable; urgency=low
+horizon (2012.2~rc1-1) experimental; urgency=low
 
-  * Syntax error in debian/openstack-dashboard.postinst (Closes: #693479).
+  [ Mehdi Abaakouk ]
+  * New upstream version
+  * Remove CVE-2012-3540 fixed by upstream
+  [ Thomas Goirand ]
+  * Now using xz compression level 9 for the debs.
 
- -- Thomas Goirand <zigo@debian.org>  Sun, 18 Nov 2012 03:59:08 +0000
-
-horizon (2012.1.1-7) unstable; urgency=high
-
-  * CVE-2012-5474: The file /etc/openstack-dashboard/local_settings is not
-  world readable anymore (Closes: #693287).
-
- -- Thomas Goirand <zigo@debian.org>  Thu, 15 Nov 2012 08:47:18 +0000
-
-horizon (2012.1.1-6) unstable; urgency=low
-
-  * Keyerror when displaying Instances & Volumes:
-  replace the name of a missing instance with UNKNOWN (Closes: #688254).
-
- -- Loic Dachary (OuoU) <loic@debian.org>  Fri, 21 Sep 2012 14:49:12 +0200
+ -- Mehdi Abaakouk <sileht@sileht.net>  Mon, 10 Sep 2012 17:56:09 +0200
 
 horizon (2012.1.1-5) unstable; urgency=low
 

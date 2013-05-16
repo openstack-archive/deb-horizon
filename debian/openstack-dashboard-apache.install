@@ -1,1 +1,3 @@
-etc/apache2/sites-available
+debian/apache-sites-available/openstack-dashboard	/etc/apache2/sites-available
+debian/apache-sites-available/openstack-dashboard-ssl	/etc/apache2/sites-available
+debian/apache-sites-available/openstack-dashboard-ssl-redirect	/etc/apache2/sites-available

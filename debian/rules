@@ -1,42 +1,54 @@
 #!/usr/bin/make -f
 
-# Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
+
+include /usr/share/openstack-pkg-tools/pkgos.make
+
+export OSLO_PACKAGE_VERSION=$(VERSION)
 
 %:
 	dh $@ --with python2
 
 override_dh_auto_install:
 	python setup.py install --root=$(CURDIR)/debian/tmp --no-compile -O0 --install-layout=deb
+
 	install -d -m 755  $(CURDIR)/debian/tmp/usr/share/openstack-dashboard
 	install -d -m 755 $(CURDIR)/debian/tmp/etc/openstack-dashboard
 
-
 	cp -a $(CURDIR)/openstack_dashboard/ $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
 
+	# Sets memcached by default in local_settings.py
 	cp $(CURDIR)/openstack_dashboard/local/local_settings.py.example \
 		$(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
+	sed -i -e 's|^[ \t#]*CACHE_BACKEND[ \t#]*=.*|CACHE_BACKEND = "memcached://127.0.0.1:11211/"|' \
+		$(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
+	sed -i -e 's|^[ \t#]*COMPRESS_OFFLINE[ \t#]*=.*|COMPRESS_OFFLINE = False|' \
+		$(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
+
 	cp $(CURDIR)/manage.py \
 		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
 	ln -fs /etc/openstack-dashboard/local_settings.py \
 		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/local/local_settings.py
 
-	# openstack-dashboard-apache
-	install -d -m 755 $(CURDIR)/debian/tmp/etc/apache2/sites-available/
-	cp -a $(CURDIR)/debian/openstack-dashboard-apache.conf $(CURDIR)/debian/tmp/etc/apache2/sites-available/openstack-dashboard
+	# compressed js and css
+	DJANGO_SETTINGS_MODULE="openstack_dashboard.settings" python -c 'import os, sys; from django.core.management import execute_from_command_line ; sys.path.append("$(CURDIR)") ;execute_from_command_line(["", "compress", "--force"])'
+	cp -a $(CURDIR)/static/dashboard/js $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
+	cp -a $(CURDIR)/static/dashboard/css $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
+	cp $(CURDIR)/static/dashboard/manifest.json $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/
+	chmod 644 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js/*.js
+	chmod 644 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css/*.css
+	chmod 644 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/manifest.json
+
+override_dh_install:
+	dh_install
+	rm -r $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
+	rm -r $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
+	ln -s /var/lib/openstack-dashboard/static/js $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
+	ln -s /var/lib/openstack-dashboard/static/css $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
 
 override_dh_auto_clean:
 	dh_auto_clean
+	rm -rf $(CURDIR)/static
 	rm -rf $(CURDIR)/horizon/build
 	rm -rf $(CURDIR)/horizon.egg-info
 	rm -rf $(CURDIR)/openstack_dashboard/openstack_dashboard.egg-info
-
-get-vcs-source:
-	git remote add upstream git://github.com/openstack/horizon.git || true
-	git fetch upstream
-	git archive --prefix=horizon-2012.1.1/ 2012.1.1 | xz >../horizon_2012.1.1.orig.tar.xz
-	if ! git checkout master ; then \
-		echo "No upstream branch: checking out" ; \
-		git checkout -b master upstream/master ; \
-	fi
-	git checkout debian/unstable
