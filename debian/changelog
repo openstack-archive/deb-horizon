@@ -1,6 +1,7 @@
-horizon (2013.1-2) unstable; urgency=low
+horizon (2013.1.1-1) unstable; urgency=low
 
   * Uploading to unstable.
+  * New upstream release.
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 16 May 2013 14:14:58 +0000
 
