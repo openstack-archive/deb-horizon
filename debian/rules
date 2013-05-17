@@ -52,3 +52,6 @@ override_dh_auto_clean:
 	rm -rf $(CURDIR)/horizon/build
 	rm -rf $(CURDIR)/horizon.egg-info
 	rm -rf $(CURDIR)/openstack_dashboard/openstack_dashboard.egg-info
+	rm -rf doc/source/sourcecode
+	rm -rf $(CURDIR)/doc/build
+	rm -f horizon/openstack_dashboard/test/.secret_key_store
