@@ -49,6 +49,7 @@ override_dh_install:
 
 override_dh_auto_clean:
 	dh_auto_clean
+	python setup.py clean
 	rm -rf $(CURDIR)/static
 	rm -rf $(CURDIR)/horizon/build
 	rm -rf $(CURDIR)/horizon.egg-info
@@ -56,3 +57,5 @@ override_dh_auto_clean:
 	rm -rf doc/source/sourcecode
 	rm -rf $(CURDIR)/doc/build
 	rm -f horizon/openstack_dashboard/test/.secret_key_store
+	find $(CURDIR)/openstack_dashboard -iname '*.pyc' -delete
+
