@@ -2,6 +2,8 @@ horizon (2013.1.1-1) unstable; urgency=low
 
   * Uploading to unstable.
   * New upstream release.
+  * Removes the build of static CSS and JS, as they are done dynamically.
+  * Cleans better the package now (rebuild twice should work).
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 16 May 2013 14:14:58 +0000
 
