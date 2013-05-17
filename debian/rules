@@ -32,7 +32,7 @@ override_dh_auto_install:
 
 	# compressed js and css
 	make -C doc html
-	DJANGO_SETTINGS_MODULE="openstack_dashboard.settings" python -c 'import os, sys; from django.core.management import execute_from_command_line ; sys.path.append("$(CURDIR)") ;execute_from_command_line(["", "compress", "--force"])'
+	# DJANGO_SETTINGS_MODULE="openstack_dashboard.settings" python -c 'import os, sys; from django.core.management import execute_from_command_line ; sys.path.append("$(CURDIR)") ;execute_from_command_line(["", "compress", "--force"])'
 	cp -a $(CURDIR)/static/dashboard/js $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
 	cp -a $(CURDIR)/static/dashboard/css $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
 	cp $(CURDIR)/static/dashboard/manifest.json $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/
