@@ -30,23 +30,6 @@ override_dh_auto_install:
 	ln -fs /etc/openstack-dashboard/local_settings.py \
 		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/local/local_settings.py
 
-	# compressed js and css
-	make -C doc html
-	# DJANGO_SETTINGS_MODULE="openstack_dashboard.settings" python -c 'import os, sys; from django.core.management import execute_from_command_line ; sys.path.append("$(CURDIR)") ;execute_from_command_line(["", "compress", "--force"])'
-	cp -a $(CURDIR)/static/dashboard/js $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
-	cp -a $(CURDIR)/static/dashboard/css $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
-	cp $(CURDIR)/static/dashboard/manifest.json $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/
-	chmod 644 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js/*.js
-	chmod 644 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css/*.css
-	chmod 644 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/manifest.json
-
-override_dh_install:
-	dh_install
-	rm -r $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
-	rm -r $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
-	ln -s /var/lib/openstack-dashboard/static/js $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
-	ln -s /var/lib/openstack-dashboard/static/css $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
-
 override_dh_auto_clean:
 	dh_auto_clean
 	python setup.py clean
@@ -58,4 +41,3 @@ override_dh_auto_clean:
 	rm -rf $(CURDIR)/doc/build
 	rm -f horizon/openstack_dashboard/test/.secret_key_store
 	find $(CURDIR)/openstack_dashboard -iname '*.pyc' -delete
-
