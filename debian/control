@@ -8,32 +8,32 @@ Uploaders: Loic Dachary (OuoU) <loic@debian.org>,
            Ghe Rivero <ghe.rivero@stackops.com>,
            Mehdi Abaakouk <sileht@sileht.net>
 Build-Depends: debhelper (>= 9),
- po-debconf,
- python-all (>= 2.6.6-3~),
- python-setuptools
-Build-Depends-Indep: openstack-pkg-tools,
- pep8 (>= 1.3.3),
- python-cloudfiles,
- python-compressor,
- python-coverage,
- python-django-nose,
- python-docutils,
- python-glanceclient,
- python-cinderclient,
- python-keystoneclient,
- python-mox,
- python-netaddr,
- python-nose,
- python-nosexcover,
- python-novaclient (>= 2:2.10),
- python-openstack-auth,
- python-quantumclient (>= 1:2.0),
- python-sphinx,
- python-swiftclient,
- python-tz,
- pylint,
- nodejs-legacy, 
- node-less
+               po-debconf,
+               python-all (>= 2.6.6-3~),
+               python-setuptools
+Build-Depends-Indep: node-less,
+                     nodejs-legacy,
+                     openstack-pkg-tools,
+                     pep8 (>= 1.3.3),
+                     pylint,
+                     python-cinderclient,
+                     python-cloudfiles,
+                     python-compressor,
+                     python-coverage,
+                     python-django-nose,
+                     python-docutils,
+                     python-glanceclient,
+                     python-keystoneclient,
+                     python-mox,
+                     python-netaddr,
+                     python-nose,
+                     python-nosexcover,
+                     python-novaclient (>= 2:2.10),
+                     python-openstack-auth,
+                     python-quantumclient (>= 1:2.0),
+                     python-sphinx,
+                     python-swiftclient,
+                     python-tz
 Standards-Version: 3.9.3
 Homepage: http://horizon.openstack.org
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
@@ -43,22 +43,23 @@ Package: python-django-horizon
 Section: python
 Architecture: all
 Pre-Depends: dpkg (>= 1.15.6~)
-Depends: ${misc:Depends}, ${python:Depends},
- python-cinderclient,
- python-cloudfiles,
- python-compressor,
- python-django,
- python-django-nose,
- python-glanceclient,
- python-keystoneclient,
- python-lockfile,
- python-memcache,
- python-netaddr,
- python-novaclient (>= 2:2.10),
- python-openstack-auth,
- python-quantumclient (>= 1:2.0),
- python-swiftclient,
- python-tz,
+Depends: python-cinderclient,
+         python-cloudfiles,
+         python-compressor,
+         python-django,
+         python-django-nose,
+         python-glanceclient,
+         python-keystoneclient,
+         python-lockfile,
+         python-memcache,
+         python-netaddr,
+         python-novaclient (>= 2:2.10),
+         python-openstack-auth,
+         python-quantumclient (>= 1:2.0),
+         python-swiftclient,
+         python-tz,
+         ${misc:Depends},
+         ${python:Depends}
 Recommends: memcached
 Description: Django module providing web interaction with OpenStack
  The OpenStack Dashboard is a Web application allowing to control an OpenStack
@@ -72,15 +73,15 @@ Description: Django module providing web interaction with OpenStack
 Package: openstack-dashboard
 Architecture: all
 Pre-Depends: dpkg (>= 1.15.6~)
-Depends: ${shlibs:Depends},
- ${misc:Depends},
- ${python:Depends},
- python-django-horizon (= ${source:Version}),
- libjs-jquery,
- libjs-jquery-cookie,
- node-less,
- adduser,
- libapache2-mod-wsgi (>= 2.3)
+Depends: adduser,
+         libapache2-mod-wsgi (>= 2.3),
+         libjs-jquery,
+         libjs-jquery-cookie,
+         node-less,
+         python-django-horizon (= ${source:Version}),
+         ${misc:Depends},
+         ${python:Depends},
+         ${shlibs:Depends}
 Recommends: memcached, openstack-dashboard-apache
 Description: OpenStack Dashboard
  The OpenStack Dashboard is a Web application allowing to control an OpenStack
@@ -91,9 +92,7 @@ Description: OpenStack Dashboard
 Package: openstack-dashboard-apache
 Architecture: all
 Pre-Depends: dpkg (>= 1.15.6~)
-Depends: debconf,
- openstack-dashboard,
- ${misc:Depends}
+Depends: debconf, openstack-dashboard, ${misc:Depends}
 Description: OpenStack Dashboard - Apache support
  The OpenStack Dashboard is a Web application allowing to control an OpenStack
  cloud. It connects to OpenStack services including Nova, Swift, Keystone, etc.

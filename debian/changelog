@@ -1,3 +1,9 @@
+horizon (2013.1.1-3) UNRELEASED; urgency=low
+
+  * Ran wrap-and-sort.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 30 May 2013 11:23:28 +0800
+
 horizon (2013.1.1-2) unstable; urgency=low
 
   * Added missing symlink to /var for the css and js dynamic generation folder.
