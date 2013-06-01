@@ -10,12 +10,9 @@ if [ "$1" = "configure" ] ; then
 
         mkdir -p /var/lib/openstack-dashboard/static/js
         mkdir -p /var/lib/openstack-dashboard/static/css
-        chown -R www-data:www-data /var/lib/openstack-dashboard/static
-
-	#if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static ] ; then
-	#	chown -R www-data:www-data \
-	#		/usr/share/openstack-dashboard/openstack_dashboard/static
-	#fi
+        chown www-data:www-data /var/lib/openstack-dashboard/static
+        chown www-data:www-data /var/lib/openstack-dashboard/static/css
+        chown www-data:www-data /var/lib/openstack-dashboard/static/js
 fi
 
 #DEBHELPER#
