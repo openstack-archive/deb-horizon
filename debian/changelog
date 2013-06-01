@@ -1,6 +1,7 @@
-horizon (2013.1.1-3) UNRELEASED; urgency=low
+horizon (2013.1.1-3) unstable; urgency=low
 
   * Ran wrap-and-sort.
+  * Also rm -rf /var/lib/horizon on purge (Closes: #668760).
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 30 May 2013 11:23:28 +0800
 
