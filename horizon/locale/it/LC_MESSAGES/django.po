@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # Loris Strozzini <lstrozzini@gmail.com>, 2012
 # Salvatore Orlando <sorlando@nicira.com>, 2012
 # Stefano Maffulli <smaffulli@gmail.com>, 2012

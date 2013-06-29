@@ -24,14 +24,14 @@ from openstack_dashboard import api
 INDEX_URL = reverse('horizon:admin:info:index')
 
 
-class ServicessViewTests(test.BaseAdminViewTests):
+class ServicesViewTests(test.BaseAdminViewTests):
     def test_index(self):
         self.mox.StubOutWithMock(api.nova, 'default_quota_get')
         self.mox.StubOutWithMock(api.cinder, 'default_quota_get')
         api.nova.default_quota_get(IsA(http.HttpRequest),
                                    self.tenant.id).AndReturn(self.quotas.nova)
         api.cinder.default_quota_get(IsA(http.HttpRequest), self.tenant.id) \
-                .AndReturn(self.quotas.nova)
+                .AndReturn(self.cinder_quotas.first())
 
         self.mox.ReplayAll()
 
@@ -47,7 +47,8 @@ class ServicessViewTests(test.BaseAdminViewTests):
                                   '<Service: identity (native backend)>',
                                   '<Service: object-store>',
                                   '<Service: network>',
-                                  '<Service: ec2>'])
+                                  '<Service: ec2>',
+                                  '<Service: orchestration>'])
 
         quotas_tab = res.context['tab_group'].get_tab('quotas')
         self.assertQuerysetEqual(quotas_tab._tables['quotas'].data,
@@ -59,6 +60,7 @@ class ServicessViewTests(test.BaseAdminViewTests):
                                  '<Quota: (floating_ips, 1)>',
                                  '<Quota: (fixed_ips, 10)>',
                                  '<Quota: (instances, 10)>',
+                                 '<Quota: (snapshots, 1)>',
                                  '<Quota: (volumes, 1)>',
                                  '<Quota: (cores, 10)>',
                                  '<Quota: (security_groups, 10)>',

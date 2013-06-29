@@ -18,7 +18,7 @@ import logging
 
 from django.utils import http
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 from openstack_dashboard import api
@@ -31,13 +31,13 @@ class AddPoolLink(tables.LinkAction):
     name = "addpool"
     verbose_name = _("Add Pool")
     url = "horizon:project:loadbalancers:addpool"
-    classes = ("btn-addpool",)
+    classes = ("ajax-modal", "btn-addpool",)
 
 
 class AddVipLink(tables.LinkAction):
     name = "addvip"
-    verbose_name = _("Add Vip")
-    classes = ("btn-addvip",)
+    verbose_name = _("Add VIP")
+    classes = ("ajax-modal", "btn-addvip",)
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:addvip",
@@ -54,22 +54,22 @@ class AddMemberLink(tables.LinkAction):
     name = "addmember"
     verbose_name = _("Add Member")
     url = "horizon:project:loadbalancers:addmember"
-    classes = ("btn-addmember",)
+    classes = ("ajax-modal", "btn-addmember",)
 
 
 class AddMonitorLink(tables.LinkAction):
     name = "addmonitor"
     verbose_name = _("Add Monitor")
     url = "horizon:project:loadbalancers:addmonitor"
-    classes = ("btn-addmonitor",)
+    classes = ("ajax-modal", "btn-addmonitor",)
 
 
 class DeleteVipLink(tables.DeleteAction):
     name = "deletevip"
     action_present = _("Delete")
     action_past = _("Scheduled deletion of")
-    data_type_singular = _("Vip")
-    data_type_plural = _("Vips")
+    data_type_singular = _("VIP")
+    data_type_plural = _("VIPs")
 
     def allowed(self, request, datum=None):
         if datum and not datum.vip_id:
@@ -101,6 +101,17 @@ class DeleteMemberLink(tables.DeleteAction):
     data_type_plural = _("Members")
 
 
+class UpdatePoolLink(tables.LinkAction):
+    name = "updatepool"
+    verbose_name = _("Edit Pool")
+    classes = ("btn-updatepool",)
+
+    def get_link_url(self, pool):
+        base_url = reverse("horizon:project:loadbalancers:updatepool",
+                           kwargs={'pool_id': pool.id})
+        return base_url
+
+
 def get_vip_link(pool):
     return reverse("horizon:project:loadbalancers:vipdetails",
                    args=(http.urlquote(pool.vip_id),))
@@ -120,7 +131,8 @@ class PoolsTable(tables.DataTable):
         name = "poolstable"
         verbose_name = _("Pools")
         table_actions = (AddPoolLink, DeletePoolLink)
-        row_actions = (AddVipLink, DeleteVipLink, DeletePoolLink)
+        row_actions = (UpdatePoolLink, AddVipLink, DeleteVipLink,
+                       DeletePoolLink)
 
 
 def get_pool_link(member):
@@ -136,7 +148,8 @@ def get_member_link(member):
 class MembersTable(tables.DataTable):
     address = tables.Column('address',
                             verbose_name=_("IP Address"),
-                            link=get_member_link)
+                            link=get_member_link,
+                            attrs={'data-type': "ip"})
     protocol_port = tables.Column('protocol_port',
                                   verbose_name=_("Protocol Port"))
     pool_name = tables.Column("pool_name",

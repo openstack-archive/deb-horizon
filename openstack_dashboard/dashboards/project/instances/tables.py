@@ -39,6 +39,7 @@ from .tabs import InstanceDetailTabs, LogTab, ConsoleTab
 LOG = logging.getLogger(__name__)
 
 ACTIVE_STATES = ("ACTIVE",)
+SNAPSHOT_READY_STATES = ("ACTIVE", "SHUTOFF")
 
 POWER_STATES = {
     0: "NO STATE",
@@ -237,7 +238,8 @@ class CreateSnapshot(tables.LinkAction):
     classes = ("ajax-modal", "btn-camera")
 
     def allowed(self, request, instance=None):
-        return instance.status in ACTIVE_STATES and not is_deleting(instance)
+        return instance.status in SNAPSHOT_READY_STATES \
+            and not is_deleting(instance)
 
 
 class ConsoleLink(tables.LinkAction):
@@ -326,10 +328,15 @@ class SimpleAssociateIP(tables.Action):
             return False
         return not is_deleting(instance)
 
-    def single(self, table, request, instance):
+    def single(self, table, request, instance_id):
         try:
+            # target_id is port_id for Quantum and instance_id for Nova Network
+            # (Quantum API wrapper returns a 'portid_fixedip' string)
+            target_id = api.network.floating_ip_target_get_by_instance(
+                request, instance_id).split('_')[0]
+
             fip = api.network.tenant_floating_ip_allocate(request)
-            api.network.floating_ip_associate(request, fip.id, instance)
+            api.network.floating_ip_associate(request, fip.id, target_id)
             messages.success(request,
                              _("Successfully associated floating IP: %s")
                              % fip.ip)
@@ -351,14 +358,19 @@ class SimpleDisassociateIP(tables.Action):
 
     def single(self, table, request, instance_id):
         try:
+            # target_id is port_id for Quantum and instance_id for Nova Network
+            # (Quantum API wrapper returns a 'portid_fixedip' string)
+            target_id = api.network.floating_ip_target_get_by_instance(
+                request, instance_id).split('_')[0]
+
             fips = [fip for fip in api.network.tenant_floating_ip_list(request)
-                    if fip.port_id == instance_id]
+                    if fip.port_id == target_id]
             # Removing multiple floating IPs at once doesn't work, so this pops
             # off the first one.
             if fips:
                 fip = fips.pop()
                 api.network.floating_ip_disassociate(request,
-                                                     fip.id, instance_id)
+                                                     fip.id, target_id)
                 api.network.tenant_floating_ip_release(request, fip.id)
                 messages.success(request,
                                  _("Successfully disassociated "
@@ -429,6 +441,15 @@ TASK_DISPLAY_CHOICES = (
 )
 
 
+class InstancesFilterAction(tables.FilterAction):
+
+    def filter(self, table, instances, filter_string):
+        """ Naive case-insensitive search. """
+        q = filter_string.lower()
+        return [instance for instance in instances
+                if q in instance.name.lower()]
+
+
 class InstancesTable(tables.DataTable):
     TASK_STATUS_CHOICES = (
         (None, True),
@@ -444,7 +465,9 @@ class InstancesTable(tables.DataTable):
     name = tables.Column("name",
                          link=("horizon:project:instances:detail"),
                          verbose_name=_("Instance Name"))
-    ip = tables.Column(get_ips, verbose_name=_("IP Address"))
+    ip = tables.Column(get_ips,
+                       verbose_name=_("IP Address"),
+                       attrs={'data-type': "ip"})
     size = tables.Column(get_size,
                          verbose_name=_("Size"),
                          attrs={'data-type': 'size'})
@@ -470,7 +493,7 @@ class InstancesTable(tables.DataTable):
         verbose_name = _("Instances")
         status_columns = ["status", "task"]
         row_class = UpdateRow
-        table_actions = (LaunchLink, TerminateInstance)
+        table_actions = (LaunchLink, TerminateInstance, InstancesFilterAction)
         row_actions = (ConfirmResize, RevertResize, CreateSnapshot,
                        SimpleAssociateIP, AssociateIP,
                        SimpleDisassociateIP, EditInstance,

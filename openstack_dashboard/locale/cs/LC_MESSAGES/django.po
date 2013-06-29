@@ -5,19 +5,17 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # _AdamCz_ <a.skotnicky@tcpisek.cz>, 2013
 # jui <appukonrad@gmail.com>, 2012
 # pavlija7 <pavlk.jakub@gmail.com>, 2013
 # Jaroslav Henner <jaroslav.henner@gmail.com>, 2012
-# Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/horizon\n"
 "POT-Creation-Date: 2013-03-12 04:09+0000\n"
-"PO-Revision-Date: 2013-05-12 07:00+0000\n"
-"Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
+"PO-Revision-Date: 2013-04-29 08:35+0000\n"
+"Last-Translator: Gabriel Hurley <gabriel@strikeawe.com>\n"
 "Language-Team: English (http://www.transifex.com/projects/p/openstack/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,11 +25,11 @@ msgstr ""
 
 #: settings.py:152
 msgid "Bulgarian (Bulgaria)"
-msgstr "Bulharština (Bulharsko)"
+msgstr "bulharsky"
 
 #: settings.py:153
 msgid "Czech"
-msgstr "Čeština"
+msgstr "česky"
 
 #: settings.py:154
 msgid "English"
@@ -39,35 +37,35 @@ msgstr "anglicky"
 
 #: settings.py:155
 msgid "Spanish"
-msgstr "Španělština"
+msgstr "španělsky"
 
 #: settings.py:156
 msgid "French"
-msgstr "Francouzština"
+msgstr "francouzsky"
 
 #: settings.py:157
 msgid "Italiano"
-msgstr "Italština"
+msgstr "italsky"
 
 #: settings.py:158
 msgid "Japanese"
-msgstr "Japonština"
+msgstr "japonsky"
 
 #: settings.py:159
 msgid "Korean (Korea)"
-msgstr "Korejština (Korea)"
+msgstr "korejsky"
 
 #: settings.py:160
 msgid "Dutch (Netherlands)"
-msgstr "Holandština (Nizozemsko)"
+msgstr "holandsky"
 
 #: settings.py:161
 msgid "Polish"
-msgstr "Polština"
+msgstr "polsky"
 
 #: settings.py:162
 msgid "Portuguese"
-msgstr "Portugalština"
+msgstr "portugalsky"
 
 #: settings.py:163
 msgid "Portuguese (Brazil)"
@@ -75,11 +73,11 @@ msgstr "Portugalsky"
 
 #: settings.py:164
 msgid "Simplified Chinese"
-msgstr "Zjednodušená čínština"
+msgstr "zjednodušená čínština"
 
 #: settings.py:165
 msgid "Traditional Chinese"
-msgstr "Tradiční čínština"
+msgstr "tradiční čínština"
 
 #: api/cinder.py:86
 msgid "Unknown instance"
@@ -88,7 +86,7 @@ msgstr "Neznámá instance"
 #: api/keystone.py:57
 #, python-format
 msgid "%(type)s (%(backend)s backend)"
-msgstr "%(type)s (podpůrná vrstva %(backend)s)"
+msgstr "%(type)s (%(backend)s backend)"
 
 #: api/nova.py:171
 #, python-format
@@ -106,7 +104,7 @@ msgstr "Systémový panel"
 
 #: dashboards/admin/dashboard.py:30
 msgid "Admin"
-msgstr "Správce"
+msgstr "Admin"
 
 #: dashboards/admin/flavors/forms.py:36 dashboards/admin/info/tables.py:67
 #: dashboards/admin/instances/tables.py:91
@@ -164,7 +162,7 @@ msgstr "RAM MB"
 
 #: dashboards/admin/flavors/forms.py:39
 msgid "Root Disk GB"
-msgstr "Kořenový Disk GB"
+msgstr "Root Disk GB"
 
 #: dashboards/admin/flavors/forms.py:40
 msgid "Ephemeral Disk GB"
@@ -186,27 +184,27 @@ msgstr "Název \"%s\" je již využíván jiným flavor."
 #: dashboards/admin/flavors/forms.py:70
 #, python-format
 msgid "Created flavor \"%s\"."
-msgstr "Vytvořena konfigurace \"%s\"."
+msgstr "Vytvořen flavor \"%s\"."
 
 #: dashboards/admin/flavors/forms.py:74
 msgid "Unable to create flavor."
-msgstr "Nelze vytvořit konfiguraci."
+msgstr "Nelze vytvořit flavor."
 
 #: dashboards/admin/flavors/forms.py:106
 #, python-format
 msgid "Updated flavor \"%s\"."
-msgstr "Konfigurace \"%s\" aktualizována."
+msgstr "Upraven flavor \"%s\"."
 
 #: dashboards/admin/flavors/forms.py:110
 msgid "Unable to update flavor."
-msgstr "Nelze aktualizovat konfiguraci."
+msgstr "Nelze upravit flavor."
 
 #: dashboards/admin/flavors/panel.py:29 dashboards/admin/flavors/tables.py:15
 #: dashboards/admin/flavors/tables.py:66
 #: dashboards/admin/flavors/templates/flavors/index.html:3
 #: dashboards/admin/flavors/templates/flavors/index.html:6
 msgid "Flavors"
-msgstr "Konfigurace"
+msgstr "Flavory"
 
 #: dashboards/admin/flavors/tables.py:14
 #: dashboards/admin/flavors/templates/flavors/extras/create.html:7
@@ -215,7 +213,7 @@ msgstr "Konfigurace"
 #: dashboards/project/instances/templates/instances/_detail_overview.html:22
 #: dashboards/project/instances/workflows/create_instance.py:180
 msgid "Flavor"
-msgstr "Konfigurace"
+msgstr "Flavor"
 
 #: dashboards/admin/flavors/tables.py:23
 #: dashboards/admin/flavors/templates/flavors/_create.html:8
@@ -223,14 +221,14 @@ msgstr "Konfigurace"
 #: dashboards/admin/flavors/templates/flavors/create.html:3
 #: dashboards/admin/flavors/templates/flavors/create.html:6
 msgid "Create Flavor"
-msgstr "Vytvořit konfiguraci"
+msgstr "Vytvořit flavor"
 
 #: dashboards/admin/flavors/tables.py:30
 #: dashboards/admin/flavors/templates/flavors/_edit.html:8
 #: dashboards/admin/flavors/templates/flavors/edit.html:3
 #: dashboards/admin/flavors/templates/flavors/edit.html:6
 msgid "Edit Flavor"
-msgstr "Upravit konfiguraci"
+msgstr "Upravit flavor"
 
 #: dashboards/admin/flavors/tables.py:37
 msgid "View Extra Specs"
@@ -243,7 +241,7 @@ msgstr "%s MB"
 
 #: dashboards/admin/flavors/tables.py:51
 msgid "Flavor Name"
-msgstr "Název konfigurace"
+msgstr "Název flavoru"
 
 #: dashboards/admin/flavors/tables.py:54
 #: dashboards/project/instances/templates/instances/_detail_overview.html:24
@@ -255,13 +253,13 @@ msgstr "RAM"
 #: dashboards/admin/flavors/tables.py:56
 #: dashboards/project/instances/templates/instances/_launch_details_help.html:11
 msgid "Root Disk"
-msgstr "Kořenový disk"
+msgstr "Root Disk"
 
 #: dashboards/admin/flavors/tables.py:58
 #: dashboards/project/instances/templates/instances/_detail_overview.html:31
 #: dashboards/project/instances/templates/instances/_launch_details_help.html:12
 msgid "Ephemeral Disk"
-msgstr "Efemérní disk"
+msgstr "Efemérní Disk GB"
 
 #: dashboards/admin/flavors/tables.py:60
 msgid "Swap Disk"
@@ -269,12 +267,12 @@ msgstr "Swap disk"
 
 #: dashboards/admin/flavors/views.py:49
 msgid "Unable to retrieve flavor list."
-msgstr "Nelze získat seznam konfigurací."
+msgstr "Nelze získat seznam flavoru."
 
 #: dashboards/admin/flavors/views.py:76
 #: dashboards/admin/flavors/extras/views.py:45
 msgid "Unable to retrieve flavor data."
-msgstr "Nelze získat data konfigurací."
+msgstr "Nelze získat flavor data."
 
 #: dashboards/admin/flavors/extras/forms.py:34
 #: dashboards/admin/flavors/extras/forms.py:52
@@ -385,7 +383,7 @@ msgstr "Popis"
 
 #: dashboards/admin/flavors/templates/flavors/_create.html:18
 msgid "From here you can define the sizing of a new flavor."
-msgstr "Odsud můžete nastavit velikost nové konfigurace."
+msgstr "Nastavte velikosti pro nový flavor."
 
 #: dashboards/admin/flavors/templates/flavors/_create.html:24
 #: dashboards/admin/flavors/templates/flavors/_edit.html:25
@@ -434,13 +432,13 @@ msgstr "Zrušit"
 
 #: dashboards/admin/flavors/templates/flavors/_edit.html:18
 msgid "From here you can alter the sizing of the current flavor."
-msgstr "Odsud můžete změnit velikost současné konfigurace."
+msgstr "Odsud můžete změnit velikost současného flavoru."
 
 #: dashboards/admin/flavors/templates/flavors/_edit.html:19
 msgid ""
 "Note: this will not affect the resources allocated to any existing instances"
 " using this flavor."
-msgstr "Poznámka: toto neovlivní zdroje přidělené k jakékoliv existující instanci používající tuto konfiguraci."
+msgstr "Poznámka: toto neovlivní zdroje přidělené k jakékoliv existující instanci používající tento flavor."
 
 #: dashboards/admin/flavors/templates/flavors/_edit.html:24
 #: dashboards/admin/flavors/templates/flavors/extras/_edit.html:24
@@ -483,17 +481,17 @@ msgstr "Zavřít"
 #: dashboards/project/images_and_snapshots/images/tables.py:50
 #: dashboards/project/images_and_snapshots/images/tables.py:190
 msgid "Images"
-msgstr "Obrazy"
+msgstr "Image"
 
 #: dashboards/admin/images/tables.py:45
 #: dashboards/project/images_and_snapshots/images/tables.py:171
 #: dashboards/project/instances/templates/instances/_detail_overview.html:78
 msgid "Image Name"
-msgstr "Název obrazu"
+msgstr "Jméno Image"
 
 #: dashboards/admin/images/views.py:56
 msgid "Unable to retrieve image list."
-msgstr "Nele získat seznam obrazů."
+msgstr "Nemožné získat image seznam."
 
 #: dashboards/admin/images/templates/images/_create.html:8
 #: dashboards/admin/images/templates/images/create.html:3
@@ -557,12 +555,12 @@ msgstr "Vytvořit image"
 #: dashboards/project/images_and_snapshots/templates/images_and_snapshots/images/update.html:3
 #: dashboards/project/images_and_snapshots/templates/images_and_snapshots/images/update.html:6
 msgid "Update Image"
-msgstr "Aktualizovat obraz"
+msgstr "Aktualizovat image"
 
 #: dashboards/admin/images/templates/images/_update.html:18
 #: dashboards/project/images_and_snapshots/templates/images_and_snapshots/images/_update.html:17
 msgid "From here you can modify different properties of an image."
-msgstr "Odsud můžete upravit různé vlastnosti obrazu."
+msgstr "Zde můžete upravit různé vlastnosti image."
 
 #: dashboards/admin/info/panel.py:29
 #: dashboards/admin/info/templates/info/index.html:3
@@ -594,14 +592,14 @@ msgstr "Služba"
 #: dashboards/admin/info/tables.py:69 dashboards/admin/instances/tables.py:87
 #: dashboards/admin/volumes/tables.py:28
 msgid "Host"
-msgstr "Hostitel"
+msgstr "Host"
 
 #: dashboards/admin/info/tables.py:71 dashboards/admin/projects/tables.py:100
 #: dashboards/admin/projects/workflows.py:88
 #: dashboards/admin/projects/workflows.py:275
 #: dashboards/admin/users/tables.py:41 dashboards/admin/users/tables.py:113
 msgid "Enabled"
-msgstr "Povoleno"
+msgstr "Povolit"
 
 #: dashboards/admin/info/tables.py:76 dashboards/admin/info/tabs.py:50
 msgid "Services"
@@ -609,11 +607,11 @@ msgstr "Služby"
 
 #: dashboards/admin/info/tabs.py:30
 msgid "Default Quotas"
-msgstr "Výchozí kvóta"
+msgstr "Základní kvóta"
 
 #: dashboards/admin/info/tabs.py:44
 msgid "Unable to get quota info."
-msgstr "Nelze získat informace o kvótě."
+msgstr "Nelze načíst informace o kvótě."
 
 #: dashboards/admin/instances/panel.py:29
 #: dashboards/admin/instances/tables.py:46
@@ -710,18 +708,18 @@ msgstr "Úloha"
 #: dashboards/admin/instances/tables.py:111
 #: dashboards/project/instances/tables.py:466
 msgid "Power State"
-msgstr "Stav napájení"
+msgstr "Stav"
 
 #: dashboards/admin/instances/views.py:55
 #: dashboards/project/access_and_security/tabs.py:97
 #: dashboards/project/access_and_security/floating_ips/workflows.py:86
 msgid "Unable to retrieve instance list."
-msgstr "Nelze získat seznam instancí."
+msgstr "Nelze získat seznam instance."
 
 #: dashboards/admin/instances/views.py:69
 #: dashboards/admin/networks/views.py:48
 msgid "Unable to retrieve instance tenant information."
-msgstr "Nelze získat informace o nájemníkovi instance."
+msgstr "Nelze získat informace o nájemníkově instanci."
 
 #: dashboards/admin/instances/views.py:86
 #: dashboards/project/instances/views.py:81
@@ -750,7 +748,7 @@ msgstr "Všechny instance."
 #: dashboards/project/networks/templates/networks/ports/_detail_overview.html:33
 #: dashboards/project/routers/ports/tables.py:83
 msgid "Admin State"
-msgstr "Stav správce"
+msgstr "Admin status"
 
 #: dashboards/admin/networks/forms.py:39 dashboards/admin/networks/forms.py:81
 #: dashboards/admin/networks/tables.py:72
@@ -780,7 +778,7 @@ msgstr "Síť %s byla úspěšně vytvořena."
 #: dashboards/admin/networks/forms.py:70
 #, python-format
 msgid "Failed to create network %s"
-msgstr "Vytváření sítě %s selhalo"
+msgstr "Neúspěch při vytváření sítě %s"
 
 #: dashboards/admin/networks/forms.py:77
 #: dashboards/admin/networks/templates/networks/ports/_update.html:12
@@ -810,7 +808,7 @@ msgstr "Síť %s byla úspěšně aktualizována."
 #: dashboards/project/networks/forms.py:56
 #, python-format
 msgid "Failed to update network %s"
-msgstr "Aktualizace sítě %s selhala"
+msgstr "Neúspěch při aktualizování síťě %s"
 
 #: dashboards/admin/networks/panel.py:25
 #: dashboards/admin/networks/tables.py:35
@@ -837,7 +835,7 @@ msgstr "Síť"
 #: dashboards/project/networks/tables.py:59
 #, python-format
 msgid "Failed to delete network %s"
-msgstr "Nelze smazat síť %s"
+msgstr "Neúspěch při vymazávání síťě %s"
 
 #: dashboards/admin/networks/tables.py:49
 #: dashboards/admin/networks/templates/networks/_create.html:8
@@ -870,30 +868,30 @@ msgstr "Název sítě"
 #: dashboards/admin/networks/tables.py:71
 #: dashboards/project/networks/tables.py:97
 msgid "Subnets Associated"
-msgstr "Podsítě připojeny"
+msgstr "Subnety připojeny"
 
 #: dashboards/admin/networks/views.py:60
 #: dashboards/project/networks/views.py:52
 msgid "Network list can not be retrieved."
-msgstr "Nelze získat seznam sítí."
+msgstr "Nelze získat seznam sítě."
 
 #: dashboards/admin/networks/views.py:91
 #: dashboards/project/networks/views.py:110
 msgid "Subnet list can not be retrieved."
-msgstr "Nelze získat seznam podsítí."
+msgstr "Nelze získat seznam subnetu."
 
 #: dashboards/admin/networks/views.py:103
 #: dashboards/project/networks/views.py:122
 #: dashboards/project/routers/views.py:137
 msgid "Port list can not be retrieved."
-msgstr "Nelze získat seznam portů."
+msgstr "Nelze získat seznam portu."
 
 #: dashboards/admin/networks/views.py:118
 #: dashboards/project/networks/views.py:135
 #: dashboards/project/networks/subnets/tables.py:96
 #, python-format
 msgid "Unable to retrieve details for network \"%s\"."
-msgstr "Nelze získat podrovností pro síť \"%s\"."
+msgstr "Nelze získat detaily pro síť \"%s\"."
 
 #: dashboards/admin/networks/ports/forms.py:38
 #: dashboards/project/networks/templates/networks/ports/_detail_overview.html:14
@@ -921,7 +919,7 @@ msgstr "Port %s byl úspěšně vytvořen."
 #: dashboards/admin/networks/ports/forms.py:68
 #, python-format
 msgid "Failed to create a port for network %s"
-msgstr "Nelze vytvořit port pro síť %s"
+msgstr "Neúspěch při vytváření portu pro síť %s"
 
 #: dashboards/admin/networks/ports/forms.py:94
 #: dashboards/project/networks/ports/forms.py:47
@@ -933,7 +931,7 @@ msgstr "Port %s byl úspěšně aktualizován."
 #: dashboards/project/networks/ports/forms.py:52
 #, python-format
 msgid "Failed to update port %s"
-msgstr "Aktualizace portu %s selhala"
+msgstr "Neúspěch při aktualizaci portu %s"
 
 #: dashboards/admin/networks/ports/tables.py:34
 #: dashboards/project/access_and_security/security_groups/forms.py:73
@@ -954,7 +952,7 @@ msgstr "Porty"
 #: dashboards/project/networks/subnets/tables.py:51
 #, python-format
 msgid "Failed to delete subnet %s"
-msgstr "Nelze smazat podsíť %s"
+msgstr "Neúspěch při vymazávání subnetu %s"
 
 #: dashboards/admin/networks/ports/tables.py:51
 #: dashboards/admin/networks/templates/networks/ports/_create.html:8
@@ -976,7 +974,7 @@ msgstr "Upravit port"
 #: dashboards/project/networks/ports/tables.py:59
 #: dashboards/project/routers/ports/tables.py:77
 msgid "Fixed IPs"
-msgstr "Statické IP"
+msgstr "Statické IP adresy"
 
 #: dashboards/admin/networks/ports/tables.py:76
 #: dashboards/admin/routers/ports/tables.py:46
@@ -1004,12 +1002,12 @@ msgstr "Přehled"
 #: dashboards/project/networks/ports/tabs.py:42
 #: dashboards/project/routers/ports/tabs.py:40
 msgid "Unable to retrieve port details."
-msgstr "Nelze získat podrobnosti portu."
+msgstr "Nelze získat detaily portu."
 
 #: dashboards/admin/networks/ports/views.py:53
 #: dashboards/project/networks/subnets/views.py:50
 msgid "Unable to retrieve network."
-msgstr "Nelez získat síť."
+msgstr "Nelez načíst síť."
 
 #: dashboards/admin/networks/subnets/tables.py:32
 #: dashboards/project/loadbalancers/tables.py:114
@@ -1018,14 +1016,14 @@ msgstr "Nelez získat síť."
 #: dashboards/project/networks/templates/networks/subnets/_detail_overview.html:6
 #: dashboards/project/routers/ports/forms.py:31
 msgid "Subnet"
-msgstr "Podsíť"
+msgstr "Subnet"
 
 #: dashboards/admin/networks/subnets/tables.py:33
 #: dashboards/admin/networks/subnets/tables.py:81
 #: dashboards/project/networks/subnets/tables.py:45
 #: dashboards/project/networks/subnets/tables.py:104
 msgid "Subnets"
-msgstr "Podsítě"
+msgstr "Subnety"
 
 #: dashboards/admin/networks/subnets/tables.py:49
 #: dashboards/admin/networks/templates/networks/subnets/create.html:3
@@ -1036,12 +1034,12 @@ msgstr "Podsítě"
 #: dashboards/project/networks/templates/networks/subnets/create.html:3
 #: dashboards/project/networks/templates/networks/subnets/create.html:6
 msgid "Create Subnet"
-msgstr "Vytvořit podsíť"
+msgstr "Vytvořit subnet"
 
 #: dashboards/admin/networks/subnets/tables.py:60
 #: dashboards/project/networks/subnets/tables.py:72
 msgid "Edit Subnet"
-msgstr "Upravit podsíť"
+msgstr "Upravit subnet"
 
 #: dashboards/admin/networks/subnets/tables.py:72
 #: dashboards/project/access_and_security/security_groups/forms.py:133
@@ -1056,7 +1054,7 @@ msgstr "CIDR"
 #: dashboards/project/networks/subnets/tables.py:85
 #: dashboards/project/networks/subnets/workflows.py:106
 msgid "IP Version"
-msgstr "Verze IP"
+msgstr "IP verze"
 
 #: dashboards/admin/networks/subnets/tables.py:74
 #: dashboards/project/networks/subnets/tables.py:86
@@ -1067,17 +1065,17 @@ msgstr "IP brány"
 #: dashboards/admin/networks/subnets/workflows.py:48
 #, python-format
 msgid "Failed to retrieve network %s for a subnet"
-msgstr "Nelze získat síť %s pro podsíť"
+msgstr "Neúspěch při načítání sítě %s pro subnet"
 
 #: dashboards/admin/networks/templates/networks/_create.html:18
 #: dashboards/project/networks/templates/networks/_create.html:17
 msgid "Select a name for your network."
-msgstr "Vyberte název pro vaši síť."
+msgstr "Vyberte název pro vaší síť."
 
 #: dashboards/admin/networks/templates/networks/_update.html:17
 #: dashboards/project/networks/templates/networks/_update.html:17
 msgid "You may update the editable properties of your network here."
-msgstr "Zde můžete aktualizovat upravitelné vlastnosti vaší sítě."
+msgstr "Zde můžete upravit vlastnosti vaší sítě."
 
 #: dashboards/admin/networks/templates/networks/_update.html:22
 #: dashboards/admin/networks/templates/networks/ports/_update.html:27
@@ -1097,25 +1095,25 @@ msgstr "Aktualizovat síť"
 msgid ""
 "You can create a port for the network. If you specify device ID to be "
 "attached, the device specified will be attached to the port created."
-msgstr "Pro síť můžete vytvořit port. Pokud zadáte ID zařízení, které má být připojeno, zařízení se připojí přes vytvořený port."
+msgstr "Můžete vytvořit port pro síť. Pokud specifikujete ID zařízení, které má být připojeno, zařízení se připojí na port který vytvoříte."
 
 #: dashboards/admin/networks/templates/networks/ports/_update.html:22
 #: dashboards/project/networks/templates/networks/ports/_update.html:22
 msgid "You may update the editable properties of your port here."
-msgstr "Zde můžete aktualizovat upravitelné vlastnosti vašeho portu."
+msgstr "Zde můžete upravit vlastnosti vašeho portu."
 
 #: dashboards/admin/networks/templates/networks/ports/update.html:3
 #: dashboards/admin/networks/templates/networks/ports/update.html:6
 #: dashboards/project/networks/templates/networks/ports/update.html:3
 #: dashboards/project/networks/templates/networks/ports/update.html:6
 msgid "Update Port"
-msgstr "Aktualizovat port"
+msgstr "Upravit port"
 
 #: dashboards/admin/networks/templates/networks/subnets/index.html:3
 #: dashboards/admin/networks/templates/networks/subnets/index.html:6
 #: dashboards/project/networks/templates/networks/detail.html:3
 msgid "Network Detail"
-msgstr "Podrobnosti sítě"
+msgstr "Detail síťě"
 
 #: dashboards/admin/networks/templates/networks/subnets/update.html:3
 #: dashboards/admin/networks/templates/networks/subnets/update.html:6
@@ -1123,7 +1121,7 @@ msgstr "Podrobnosti sítě"
 #: dashboards/project/networks/templates/networks/subnets/update.html:3
 #: dashboards/project/networks/templates/networks/subnets/update.html:6
 msgid "Update Subnet"
-msgstr "Aktualizovat podsíť"
+msgstr "Upravit subnet"
 
 #: dashboards/admin/overview/templates/overview/usage.html:3
 msgid "Usage Overview"
@@ -1131,7 +1129,7 @@ msgstr "Přehled využití"
 
 #: dashboards/admin/overview/templates/overview/usage.html:12
 msgid "Monitoring"
-msgstr "Sledování"
+msgstr "Monitoring"
 
 #: dashboards/admin/projects/panel.py:29
 #: dashboards/admin/projects/tables.py:72
@@ -1144,11 +1142,11 @@ msgstr "Projekty"
 
 #: dashboards/admin/projects/tables.py:19
 msgid "Modify Users"
-msgstr "Změnit uživatele"
+msgstr "Upravit uživatele"
 
 #: dashboards/admin/projects/tables.py:32
 msgid "View Usage"
-msgstr "Zobrazit využití"
+msgstr "Náhled využití"
 
 #: dashboards/admin/projects/tables.py:39
 #: dashboards/admin/projects/workflows.py:201
@@ -1173,15 +1171,15 @@ msgstr "Upravit projekt"
 #: dashboards/project/networks/templates/networks/_detail_overview.html:11
 #: dashboards/project/networks/templates/networks/ports/_detail_overview.html:16
 msgid "Project ID"
-msgstr "ID projektu"
+msgstr "Projekt ID"
 
 #: dashboards/admin/projects/tables.py:113
 msgid "Remove"
-msgstr "Odstranit"
+msgstr "Vymazat"
 
 #: dashboards/admin/projects/tables.py:114
 msgid "Removed"
-msgstr "Odstraněno"
+msgstr "Vymazáno"
 
 #: dashboards/admin/projects/tables.py:115 dashboards/admin/users/tables.py:42
 #: dashboards/admin/users/tables.py:79
@@ -1199,7 +1197,7 @@ msgstr "Uživatelé"
 
 #: dashboards/admin/projects/tables.py:134
 msgid "Unable to retrieve role information."
-msgstr "Nelze získat informace o roli."
+msgstr "Nelze načíst informaci o roli."
 
 #: dashboards/admin/projects/tables.py:139
 msgid "Roles"
@@ -1219,35 +1217,35 @@ msgstr "Přidat nové uživatele"
 
 #: dashboards/admin/projects/views.py:70
 msgid "Unable to retrieve project information."
-msgstr "Nelze získat informace o projektu."
+msgstr "Nelze načíst informace o projektu."
 
 #: dashboards/admin/projects/views.py:90
 msgid "Unable to retrieve project list."
-msgstr "Nelze získaz seznam projektu."
+msgstr "Nelze načíst seznam projektu."
 
 #: dashboards/admin/projects/views.py:113
 msgid "Unable to retrieve users."
-msgstr "Nelze získat uživatele."
+msgstr "Nelze načíst uživatele."
 
 #: dashboards/admin/projects/views.py:156
 msgid "Unable to retrieve default quota values."
-msgstr "Nelze získat výchozí hodnoty kvóty."
+msgstr "Nelze načíst hodnoty základní kvóty."
 
 #: dashboards/admin/projects/views.py:185
 msgid "Unable to retrieve project details."
-msgstr "Nelze získat podrobnostiprojektu."
+msgstr "Nelze načíst detaily projektu."
 
 #: dashboards/admin/projects/workflows.py:41
 msgid "Injected File Content Bytes"
-msgstr "Bajty obsahu vloženého souboru"
+msgstr "Injektovaný soubor obsahuje Byty(Bytes)"
 
 #: dashboards/admin/projects/workflows.py:43
 msgid "Metadata Items"
-msgstr "Položky popisných dat"
+msgstr "Metadata položky"
 
 #: dashboards/admin/projects/workflows.py:47
 msgid "Injected Files"
-msgstr "Vložené soubory"
+msgstr "Injektované soubory"
 
 #: dashboards/admin/projects/workflows.py:50
 #: dashboards/admin/volumes/panel.py:9 dashboards/admin/volumes/tables.py:33
@@ -1264,7 +1262,7 @@ msgstr "Svazky"
 
 #: dashboards/admin/projects/workflows.py:51
 msgid "Gigabytes"
-msgstr "Gigabajty"
+msgstr "Gigabytes"
 
 #: dashboards/admin/projects/workflows.py:52
 msgid "RAM (MB)"
@@ -1298,21 +1296,21 @@ msgstr "Kvóta"
 
 #: dashboards/admin/projects/workflows.py:62
 msgid "From here you can set quotas (max limits) for the project."
-msgstr "Zde můžete nastavit kvóty (max. limity) pro projekt."
+msgstr "Zde můžete nastavit kvóty (max. limity) pro projekty."
 
 #: dashboards/admin/projects/workflows.py:93
 #: dashboards/admin/projects/workflows.py:278
 msgid "Project Info"
-msgstr "Informace o projektu"
+msgstr "Projekt info"
 
 #: dashboards/admin/projects/workflows.py:94
 #: dashboards/admin/projects/templates/projects/_create.html:18
 msgid "From here you can create a new project to organize users."
-msgstr "Odsud můžete vytvořit nový projekt pro organizaci uživatelů."
+msgstr "Zde můžete vytvořit nový projekt pro organizaci uživatelů."
 
 #: dashboards/admin/projects/workflows.py:113
 msgid "Unable to retrieve user list. Please try again later."
-msgstr "Nelze získat seznam uživatelů. Zkuste to prosím později."
+msgstr "Nelze načíst seznam uživatelů. Prosím zkuste to později."
 
 #: dashboards/admin/projects/workflows.py:125
 #, python-format
@@ -1334,7 +1332,7 @@ msgstr "Všichni uživatelé"
 #: dashboards/admin/projects/templates/projects/_update_members.html:25
 #: dashboards/admin/projects/templates/projects/_update_members.html:32
 msgid "No users found."
-msgstr "Žádní uživatelé nenalezeni."
+msgstr "Nenalezeni žádní uživatelé."
 
 #: dashboards/admin/projects/workflows.py:182
 msgid "No users."
@@ -1343,7 +1341,7 @@ msgstr "Žádní uživatelé."
 #: dashboards/admin/projects/workflows.py:190
 #: dashboards/admin/users/views.py:47
 msgid "Unable to retrieve user list."
-msgstr "Nelze získat seznam uživatelů."
+msgstr "Nelze načíst seznam uživatelů."
 
 #: dashboards/admin/projects/workflows.py:203
 #, python-format
@@ -1358,25 +1356,25 @@ msgstr "Nelze vytvořit projekt \"%s\"."
 #: dashboards/admin/projects/workflows.py:248
 #, python-format
 msgid "Failed to add %s project members and set project quotas."
-msgstr "Nelze přidat %s členů projektu a nastavit kvóty projektu."
+msgstr "Neúspěch při přidávání uživatelů a nastavování kvót pro projekt %s."
 
 #: dashboards/admin/projects/workflows.py:270
 msgid "Unable to set project quotas."
-msgstr "Nelze nastavit kvótu projektu."
+msgstr "Nelze nastavit kvótu pro projekt."
 
 #: dashboards/admin/projects/workflows.py:280
 msgid "From here you can edit the project details."
-msgstr "Zde můžete upravit podrobnosti projektu. "
+msgstr "Zde můžete upravit detaily projektu. "
 
 #: dashboards/admin/projects/workflows.py:295
 #, python-format
 msgid "Modified project \"%s\"."
-msgstr "Projekt \"%s\" změněn."
+msgstr "Upraven projekt \"%s\"."
 
 #: dashboards/admin/projects/workflows.py:296
 #, python-format
 msgid "Unable to modify project \"%s\"."
-msgstr "Nelze změnit projekt \"%s\"."
+msgstr "Nelze upravit projekt \"%s\"."
 
 #: dashboards/admin/projects/workflows.py:349
 msgid ""
@@ -1388,13 +1386,13 @@ msgstr "Nemůžete odstranit \"admin\" roli z projektu do kterého jste právě 
 #: dashboards/admin/projects/workflows.py:381
 #, python-format
 msgid "Failed to modify %s project members and update project quotas."
-msgstr "Nelze změnit %s členů projektu a aktualizovat kvóty projektu."
+msgstr "Neúspěch při upravování uživatelů a kvót pro projekt %s."
 
 #: dashboards/admin/projects/workflows.py:414
 msgid ""
 "Modified project information and members, but unable to modify project "
 "quotas."
-msgstr "Informace o projektu a členové změněni, ale nebylo možné změnit kvóty projektu."
+msgstr "Upraveni uživatelé a informace o projektu, ale nebylo možné upravit kvótu projektu."
 
 #: dashboards/admin/projects/templates/projects/_add_user.html:8
 #: dashboards/admin/projects/templates/projects/add_user.html:3
@@ -1452,13 +1450,13 @@ msgstr "Aktualizovat projekt"
 
 #: dashboards/admin/projects/templates/projects/_update.html:18
 msgid "From here you can edit a project."
-msgstr "Zde můžete projekt upravit."
+msgstr "Zde můžete upravit projekt."
 
 #: dashboards/admin/projects/templates/projects/_update_members.html:7
 msgid ""
 "From here you can add and remove members to this project from the list of "
 "all available users."
-msgstr "Zde můžete přidat a odebrat uživatele tohoto projektu ze seznamu všech dostupných uživatelů."
+msgstr "Zde můžete přidat nebo odebrat uživatele tohoto projektu z listu dostupných uživatelů."
 
 #: dashboards/admin/projects/templates/projects/create_user.html:3
 #: dashboards/admin/projects/templates/projects/create_user.html:6
@@ -1618,7 +1616,7 @@ msgstr "Můžete připojit specifikovanou externí síť do routeru. Externí s�
 
 #: dashboards/admin/users/forms.py:54
 msgid "Passwords do not match."
-msgstr "Hesla se neshodují."
+msgstr "Hesla se neschodují."
 
 #: dashboards/admin/users/forms.py:62 dashboards/admin/users/forms.py:115
 #: dashboards/admin/users/tables.py:106
@@ -1628,7 +1626,7 @@ msgstr "Uživatelské jméno"
 #: dashboards/admin/users/forms.py:63 dashboards/admin/users/forms.py:116
 #: dashboards/admin/users/tables.py:107
 msgid "Email"
-msgstr "E-mail"
+msgstr "Email"
 
 #: dashboards/admin/users/forms.py:65 dashboards/admin/users/forms.py:117
 msgid "Password"
@@ -1640,7 +1638,7 @@ msgstr "Potvrdit heslo"
 
 #: dashboards/admin/users/forms.py:73 dashboards/admin/users/forms.py:127
 msgid "Primary Project"
-msgstr "Hlavní projekt"
+msgstr "Primární projekt"
 
 #: dashboards/admin/users/forms.py:75
 msgid "Role"
@@ -1653,7 +1651,7 @@ msgstr "Uživatel \"%s\" byl úspěšně vytvořen."
 
 #: dashboards/admin/users/forms.py:106
 msgid "Unable to add userto primary project."
-msgstr "Nelze přidat uživatele do hlavního projektu."
+msgstr "Nelze přidat uživatele do primárního projektu."
 
 #: dashboards/admin/users/forms.py:110
 msgid "Unable to create user."
@@ -1665,16 +1663,16 @@ msgstr "jméno"
 
 #: dashboards/admin/users/forms.py:151
 msgid "email"
-msgstr "e-mail"
+msgstr "email"
 
 #: dashboards/admin/users/forms.py:160
 msgid "primary project"
-msgstr "hlavní projekt"
+msgstr "primární projekt"
 
 #: dashboards/admin/users/forms.py:173
 #, python-format
 msgid "The user %s has no role defined for"
-msgstr "Uživatel %s nemá určenu žádnou roli pro"
+msgstr "Uživatel %s nemá definovanou roli pro"
 
 #: dashboards/admin/users/forms.py:181
 msgid "password"
@@ -1682,12 +1680,12 @@ msgstr "heslo"
 
 #: dashboards/admin/users/forms.py:190
 msgid "User has been updated successfully."
-msgstr "Uživatel byl úspěšně aktualizován."
+msgstr "Uživatel byl úspěšně upraven."
 
 #: dashboards/admin/users/forms.py:194
 #, python-format
 msgid "Unable to update %(attributes)s for the user."
-msgstr "Nelze aktualizovat %(attributes)s pro uživatele."
+msgstr "Nelze upravit %(attributes)s pro uživatele."
 
 #: dashboards/admin/users/tables.py:40
 msgid "Enable"
@@ -1703,19 +1701,19 @@ msgstr "Zakázáno"
 
 #: dashboards/admin/users/tables.py:67
 msgid "You cannot disable the user you are currently logged in as."
-msgstr "Nemůžete zakázat uživatele pod kterým jste zrovna přihlášeni."
+msgstr "Nemůžete zakázat uživatele pod kterým jste zrovna přihlášen."
 
 #: dashboards/admin/users/tables.py:112
 msgid "User ID"
-msgstr "ID uživatele"
+msgstr "Uživatelovo ID"
 
 #: dashboards/admin/users/views.py:70
 msgid "Unable to update user."
-msgstr "Nelze aktualizovat uživatele."
+msgstr "Nelze upravit uživatele."
 
 #: dashboards/admin/users/views.py:104
 msgid "Unable to retrieve user roles."
-msgstr "Nelze získat uživatelské role."
+msgstr "Nelze načíst uživatelovi role."
 
 #: dashboards/admin/users/templates/users/_create.html:17
 msgid "From here you can create a new user and assign them to a project."
@@ -1731,7 +1729,7 @@ msgstr "Aktualizovat uživatele"
 #: dashboards/admin/users/templates/users/_update.html:17
 msgid ""
 "From here you can edit the user's details, including their default project."
-msgstr "Zde můžete upravit údaje uživatelů, včetně jejich výchozích projektů. "
+msgstr "Zde můžete upravit detaily uživatelů, včetně jejich základních projektů. "
 
 #: dashboards/admin/volumes/forms.py:38
 #, python-format
@@ -1781,50 +1779,50 @@ msgstr "Vytvořit typ svazku"
 #: dashboards/admin/volumes/templates/volumes/detail.html:3
 #: dashboards/project/volumes/templates/volumes/detail.html:3
 msgid "Volume Details"
-msgstr "Podrobnosti svazku"
+msgstr "Detaily svazku"
 
 #: dashboards/admin/volumes/templates/volumes/detail.html:6
 #: dashboards/project/volumes/templates/volumes/detail.html:6
 msgid "Volume Detail"
-msgstr "Podrobnosti svazku"
+msgstr "Detail svazku"
 
 #: dashboards/project/dashboard.py:24
 msgid "Manage Compute"
-msgstr "Správa Compute"
+msgstr "Spravovat Compute"
 
 #: dashboards/project/dashboard.py:38
 msgid "Object Store"
-msgstr "Úložiště objektů"
+msgstr "Objektové úložiště"
 
 #: dashboards/project/access_and_security/panel.py:26
 #: dashboards/project/instances/workflows/create_instance.py:352
 msgid "Access & Security"
-msgstr "Přístup a zabezpečení"
+msgstr "Přístup a bezpečnost"
 
 #: dashboards/project/access_and_security/tabs.py:50
 #: dashboards/project/access_and_security/security_groups/views.py:85
 msgid "Unable to retrieve security groups."
-msgstr "Nelze získat bezpečnostní skupiny."
+msgstr "Nelze načíst bezpečnostní skupiny."
 
 #: dashboards/project/access_and_security/tabs.py:56
 #: dashboards/project/access_and_security/keypairs/tables.py:31
 #: dashboards/project/access_and_security/keypairs/tables.py:60
 msgid "Keypairs"
-msgstr "Páry klíčů"
+msgstr "Keypairs"
 
 #: dashboards/project/access_and_security/tabs.py:66
 msgid "Unable to retrieve keypair list."
-msgstr "Nelze získat seznam párů klíče."
+msgstr "Nelze načíst keypair seznam."
 
 #: dashboards/project/access_and_security/tabs.py:82
 #: dashboards/project/access_and_security/floating_ips/workflows.py:70
 msgid "Unable to retrieve floating IP addresses."
-msgstr "Nelze získat plovoucí IP adresy."
+msgstr "Nelze načíst plovoucí IP adresy."
 
 #: dashboards/project/access_and_security/tabs.py:89
 #: dashboards/project/access_and_security/floating_ips/views.py:66
 msgid "Unable to retrieve floating IP pools."
-msgstr "Nelze získat zásoby plovoucích IP."
+msgstr "Nelze načíst pool plovoucích IP."
 
 #: dashboards/project/access_and_security/tabs.py:111
 msgid "API Access"
@@ -1868,20 +1866,20 @@ msgstr "Chyba při stahování RC souboru: %s"
 #: dashboards/project/loadbalancers/workflows.py:249
 #: dashboards/project/loadbalancers/workflows.py:364
 msgid "Pool"
-msgstr "Zásoba"
+msgstr "Pool"
 
 #: dashboards/project/access_and_security/floating_ips/forms.py:44
 #, python-format
 msgid "Allocated Floating IP %(ip)s."
-msgstr "Přidělené plovoucí IP %(ip)s."
+msgstr "Alokované plovoucí IP %(ip)s."
 
 #: dashboards/project/access_and_security/floating_ips/forms.py:48
 msgid "Unable to allocate Floating IP."
-msgstr "Nelze přidělit plovoucí IP."
+msgstr "Nelze alokovat plovoucí IP."
 
 #: dashboards/project/access_and_security/floating_ips/tables.py:39
 msgid "Allocate IP To Project"
-msgstr "Přidělit IP do projektu"
+msgstr "Alokovat IP do projektu"
 
 #: dashboards/project/access_and_security/floating_ips/tables.py:49
 msgid "Release"
@@ -1902,35 +1900,35 @@ msgstr "Plovoucí IP"
 #: dashboards/project/instances/tables.py:299
 #: dashboards/project/instances/tables.py:320
 msgid "Associate Floating IP"
-msgstr "Přidružit plovoucí IP"
+msgstr "Připojit plovoucí IP"
 
 #: dashboards/project/access_and_security/floating_ips/tables.py:78
 #: dashboards/project/instances/tables.py:344
 msgid "Disassociate Floating IP"
-msgstr "Odloučit plovoucí IP"
+msgstr "Odpojit plovoucí IP"
 
 #: dashboards/project/access_and_security/floating_ips/tables.py:93
 #, python-format
 msgid "Successfully disassociated Floating IP: %s"
-msgstr "Úspěšně odloučeny plovoucí IP: %s"
+msgstr "Úspěšně odpojena plovoucí IP: %s"
 
 #: dashboards/project/access_and_security/floating_ips/tables.py:97
 #: dashboards/project/instances/tables.py:370
 msgid "Unable to disassociate floating IP."
-msgstr "Nelze odloučit plovoucí IP."
+msgstr "Nelze odpojit plovoucí IP."
 
 #: dashboards/project/access_and_security/floating_ips/tables.py:120
 msgid "Floating IP Pool"
-msgstr "Zásoba plovoucích IP"
+msgstr "Pool plovoucích IP"
 
 #: dashboards/project/access_and_security/floating_ips/views.py:69
 msgid "No floating IP pools available."
-msgstr "Žádná zásoba plovoucích IP není dostupná."
+msgstr "Žádný pool plovoucích IP není dostupný."
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:42
 msgid ""
 "Select the IP address you wish to associate with the selected instance."
-msgstr "Vyberte IP adresu, kterou chcete přidružit k vybrané instanci."
+msgstr "Vyberte IP adresu, kterou si přejete připojit k vybrané instanci."
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:48
 msgid "Port to be associated"
@@ -1942,11 +1940,11 @@ msgstr "Instance, která má být spojena"
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:74
 msgid "Select an IP address"
-msgstr "Vyberte IP adresu"
+msgstr "Vyberte IP adresu."
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:76
 msgid "No IP addresses available"
-msgstr "Nejsou dostupné žádné IP adresy"
+msgstr "Žádné dostupné IP adresy"
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:98
 msgid "Select a port"
@@ -1968,32 +1966,32 @@ msgstr "Žádné dostupné instance"
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:126
 msgid "Manage Floating IP Associations"
-msgstr "Správa přidružených plovoucích IP"
+msgstr "Spravovat připojené plovoucí IP"
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:127
 msgid "Associate"
-msgstr "Přidružit"
+msgstr "Připojit"
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:128
 #, python-format
 msgid "IP address %s associated."
-msgstr "IP adresa %s přidružena."
+msgstr "Připojené IP adresy %s."
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:129
 #, python-format
 msgid "Unable to associate IP address %s."
-msgstr "Nelze přidružit IP adresu %s."
+msgstr "Nelze připojit IP adresu %s."
 
 #: dashboards/project/access_and_security/keypairs/forms.py:38
 #: dashboards/project/access_and_security/keypairs/forms.py:49
 #: dashboards/project/access_and_security/keypairs/tables.py:52
 msgid "Keypair Name"
-msgstr "Název páru klíčů"
+msgstr "Název keypair"
 
 #: dashboards/project/access_and_security/keypairs/forms.py:40
 msgid ""
 "Keypair names may only contain letters, numbers, underscores and hyphens."
-msgstr "Názvy páru klíčů mohou obsahovat pouze písmena, čísla, podtržítka a pomlčky."
+msgstr "Keypair názvy mohou obsahovat pouze písmena, čísla, potržítka a pomlčky."
 
 #: dashboards/project/access_and_security/keypairs/forms.py:51
 msgid "Public Key"
@@ -2002,17 +2000,17 @@ msgstr "Veřejný klíč"
 #: dashboards/project/access_and_security/keypairs/forms.py:60
 #, python-format
 msgid "Successfully imported public key: %s"
-msgstr "Úspěšně importován veřejný klíč: %s"
+msgstr "Úspěšně importované veřejné klíče: %s"
 
 #: dashboards/project/access_and_security/keypairs/forms.py:65
 msgid "Unable to import keypair."
-msgstr "Nelze importovat pár klíčů."
+msgstr "Nelze importovat keypair."
 
 #: dashboards/project/access_and_security/keypairs/tables.py:30
 #: dashboards/project/instances/tables.py:451
 #: dashboards/project/instances/workflows/create_instance.py:339
 msgid "Keypair"
-msgstr "Pár klíčů"
+msgstr "Keypair"
 
 #: dashboards/project/access_and_security/keypairs/tables.py:39
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:7
@@ -2020,7 +2018,7 @@ msgstr "Pár klíčů"
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/import.html:3
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/import.html:6
 msgid "Import Keypair"
-msgstr "Importovat pár klíčů"
+msgstr "Importovat keypair"
 
 #: dashboards/project/access_and_security/keypairs/tables.py:46
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_create.html:7
@@ -2028,7 +2026,7 @@ msgstr "Importovat pár klíčů"
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/create.html:3
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/create.html:6
 msgid "Create Keypair"
-msgstr "Vytvořit pár klíčů"
+msgstr "Vytvořit keypair"
 
 #: dashboards/project/access_and_security/keypairs/tables.py:53
 msgid "Fingerprint"
@@ -2037,7 +2035,7 @@ msgstr "Otisk"
 #: dashboards/project/access_and_security/keypairs/views.py:74
 #, python-format
 msgid "Unable to create keypair: %(exc)s"
-msgstr "Nelze vytvořit pár klíčů: %(exc)s"
+msgstr "Nelze vytvořit keypair: %(exc)s"
 
 #: dashboards/project/access_and_security/security_groups/forms.py:38
 msgid "This field is required."
@@ -2075,7 +2073,7 @@ msgstr "ICMP"
 
 #: dashboards/project/access_and_security/security_groups/forms.py:66
 msgid "The protocol which this rule should be applied to."
-msgstr "Protokol na který by toto pravidlo melo být použito."
+msgstr "Protokol na který bude aplikováno pravidlo."
 
 #: dashboards/project/access_and_security/security_groups/forms.py:72
 #: dashboards/project/access_and_security/security_groups/forms.py:79
@@ -2097,7 +2095,7 @@ msgstr "Zadejte číslo mezi 1 a 65535."
 #: dashboards/project/access_and_security/security_groups/forms.py:99
 #: dashboards/project/access_and_security/security_groups/tables.py:107
 msgid "From Port"
-msgstr "Od portu"
+msgstr "Z portu"
 
 #: dashboards/project/access_and_security/security_groups/forms.py:102
 #: dashboards/project/access_and_security/security_groups/forms.py:109
@@ -2147,19 +2145,19 @@ msgstr "Žádné bezpečnostní skupiny nejsou dostupné"
 
 #: dashboards/project/access_and_security/security_groups/forms.py:192
 msgid "The ICMP type is invalid."
-msgstr "Typ ICMP je neplatný."
+msgstr "ICMP typ je neplatný."
 
 #: dashboards/project/access_and_security/security_groups/forms.py:195
 msgid "The ICMP code is invalid."
-msgstr "Kód ICMP je neplatný."
+msgstr "ICMP kód je neplatný."
 
 #: dashboards/project/access_and_security/security_groups/forms.py:198
 msgid "The ICMP type not in range (-1, 255)"
-msgstr "Typ ICMP není v rozsahu (-1, 255)"
+msgstr "ICMP typ není v rozsahu (-1, 255)"
 
 #: dashboards/project/access_and_security/security_groups/forms.py:201
 msgid "The ICMP code not in range (-1, 255)"
-msgstr "Kód ICMP není v rozsahu (-1, 255)"
+msgstr "ICMP kód není v rozsahu (-1, 255)"
 
 #: dashboards/project/access_and_security/security_groups/forms.py:210
 msgid "The specified port is invalid."
@@ -2167,7 +2165,7 @@ msgstr "Zvolený port je špatný."
 
 #: dashboards/project/access_and_security/security_groups/forms.py:214
 msgid "The \"from\" port number is invalid."
-msgstr "Číslo portu \"Od\" je neplatné."
+msgstr "Číslo portu \"Z\" je neplatné."
 
 #: dashboards/project/access_and_security/security_groups/forms.py:217
 msgid "The \"to\" port number is invalid."
@@ -2177,7 +2175,7 @@ msgstr "Číslo portu \"Do\" je neplatné."
 msgid ""
 "The \"to\" port number must be greater than or equal to the \"from\" port "
 "number."
-msgstr "Číslo portu \"Do\" musí být vyšší nebo stejné číslu portu \"Od\"."
+msgstr "Číslo portu \"Do\"musí být vyšší nebo stejné jako číslo portu \"Z\"."
 
 #: dashboards/project/access_and_security/security_groups/forms.py:242
 #, python-format
@@ -2217,26 +2215,26 @@ msgstr "Pravidla"
 
 #: dashboards/project/access_and_security/security_groups/views.py:55
 msgid "Unable to retrieve security group."
-msgstr "Nelze získat bezpečnostní skupinu."
+msgstr "Nelze načíst bezpečnostní skupinu."
 
 #: dashboards/project/access_and_security/security_groups/views.py:91
 #, python-format
 msgid "%s (current)"
-msgstr "%s (současné)"
+msgstr "%s (aktuálně)"
 
 #: dashboards/project/access_and_security/templates/access_and_security/index.html:3
 #: dashboards/project/access_and_security/templates/access_and_security/index.html:6
 msgid "Access &amp; Security"
-msgstr "Přístup a zabezpečení"
+msgstr "Přístup a bezpečnost"
 
 #: dashboards/project/access_and_security/templates/access_and_security/floating_ips/_allocate.html:8
 #: dashboards/project/access_and_security/templates/access_and_security/floating_ips/allocate.html:3
 msgid "Allocate Floating IP"
-msgstr "Přidělit plovoucí IP"
+msgstr "Alokovat plovoucí IP"
 
 #: dashboards/project/access_and_security/templates/access_and_security/floating_ips/_allocate.html:18
 msgid "Allocate a floating IP from a given floating ip pool."
-msgstr "Přidělit plovoucí IP ze zadané zásoby plovoucích IP."
+msgstr "Alokovat plovoucí IP z přiděleného poolu plovoucích IP."
 
 #: dashboards/project/access_and_security/templates/access_and_security/floating_ips/_allocate.html:20
 #: dashboards/project/instances/templates/instances/_launch_details_help.html:19
@@ -2245,7 +2243,7 @@ msgstr "Kvóty projektu"
 
 #: dashboards/project/access_and_security/templates/access_and_security/floating_ips/_allocate.html:31
 msgid "Allocate IP"
-msgstr "Přidělit IP"
+msgstr "Alokovat IP"
 
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_create.html:17
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:17
@@ -2253,17 +2251,17 @@ msgid ""
 "Keypairs are ssh credentials which are injected into images when they are "
 "launched. Creating a new key pair registers the public key and downloads the"
 " private key (a .pem file)."
-msgstr "Páry klíčů jsou přihlašovací údaje ssh, které jsou vloženy do obrazu při spuštění. Vytvořením nového páru klíče je registrován veřejný klíč a stáhnut soukromý klíč (soubor .pem)."
+msgstr "Keypairs jsou ssh klíče, které jsou injektovány do image při jeho startu. Pro vytvoření nového keypair zaregistrujte veřejný klíč a stáhněte privátní klíč (.pem soubor)."
 
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_create.html:18
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:18
 msgid "Protect and use the key as you would any normal ssh private key."
-msgstr "Klíč chraňte a používejte jako kterýkoliv jiný normální soukromý klíč ssh."
+msgstr "Chraňte a používejte klíč jako kterýkoliv jiný normální ssh privátní klíč."
 
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/download.html:3
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/download.html:6
 msgid "Download Keypair"
-msgstr "Stáhnout pár klíčů."
+msgstr "Stáhnout keypair"
 
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/download.html:11
 #, python-format
@@ -2319,7 +2317,7 @@ msgstr "Musíte specifikovat zdroj provozu který má být povolen skrze toto pr
 
 #: dashboards/project/access_and_security/templates/access_and_security/security_groups/_create.html:18
 msgid "From here you can create a new security group"
-msgstr "Odsud můžete vytvořit novou bezpečnostní skupinu"
+msgstr "Zde můžete vytvořit novou bezpečnostní skupinu"
 
 #: dashboards/project/access_and_security/templates/access_and_security/security_groups/detail.html:3
 #: dashboards/project/access_and_security/templates/access_and_security/security_groups/detail.html:6
@@ -2443,15 +2441,15 @@ msgstr "Stáhnout"
 
 #: dashboards/project/containers/views.py:53
 msgid "Unable to retrieve container list."
-msgstr "Nelze získat seznam kontejnerů."
+msgstr "Nelze načíst seznam kontejneru."
 
 #: dashboards/project/containers/views.py:83
 msgid "Unable to retrieve object list."
-msgstr "Nelze získat seznam objektů."
+msgstr "Nelze načíst seznam objektu."
 
 #: dashboards/project/containers/views.py:168
 msgid "Unable to retrieve object."
-msgstr "Nelze získat objekt."
+msgstr "Nelze načíst objekt."
 
 #: dashboards/project/containers/views.py:203
 msgid "Unable to list containers."
@@ -2469,7 +2467,7 @@ msgid ""
 "Make a new copy of an existing object to store in this or another container."
 " You may also specify a path at which the new copy should live inside of the"
 " selected container."
-msgstr "Vytvořte novou kopii existujícího objektu pro uložení v tomto nebo v jiném kontejneru. Můžete také zadat cestu ve zvoleném kontejneru, do které by nová kopie měla být umístěna."
+msgstr "Vytvořte novou kopii existujícího objektu pro uložení v tomto nebo v jiném kontejneru. Můžete také zadat cestu, v které nová kopie musí být uvnitř vybraného kontejneru."
 
 #: dashboards/project/containers/templates/containers/_create.html:17
 msgid ""
@@ -3968,7 +3966,7 @@ msgstr "Název subnetu. Toto pole je volitelné."
 #: dashboards/project/networks/subnets/tables.py:84
 #: dashboards/project/networks/subnets/workflows.py:85
 msgid "Network Address"
-msgstr "Síťová adresa"
+msgstr "Síťové adresy"
 
 #: dashboards/project/networks/workflows.py:68
 #: dashboards/project/networks/subnets/workflows.py:90
@@ -4143,7 +4141,7 @@ msgstr "Připojené zařízení"
 
 #: dashboards/project/networks/ports/views.py:53
 msgid "Unable to retrieve port details"
-msgstr "Nelze získat podrobnosti portu"
+msgstr "Nelze načíst detaily portu"
 
 #: dashboards/project/networks/subnets/tabs.py:42
 msgid "Unable to retrieve subnet details."
@@ -4151,7 +4149,7 @@ msgstr "Nelze načíst detaily subnetu"
 
 #: dashboards/project/networks/subnets/views.py:71
 msgid "Unable to retrieve subnet details"
-msgstr "Nelze získat podrobnosti podsítě"
+msgstr "Nelze načíst detaily subnetu"
 
 #: dashboards/project/networks/subnets/workflows.py:43
 msgid ""
@@ -4261,7 +4259,7 @@ msgstr "Přehled subnetu"
 
 #: dashboards/project/networks/templates/networks/subnets/_detail_overview.html:16
 msgid "IP version"
-msgstr "Verze IP"
+msgstr "IP verze"
 
 #: dashboards/project/networks/templates/networks/subnets/_detail_overview.html:20
 msgid "IP allocation pool"
@@ -4646,7 +4644,7 @@ msgstr "Stránka nenalezena"
 
 #: templates/404.html:9
 msgid "The page you were looking for doesn't exist"
-msgstr "Stránka, kterou hledáte, neexistuje"
+msgstr "Stránka kterou hledáte, neexistuje"
 
 #: templates/404.html:10
 msgid "You may have mistyped the address or the page may have moved."
@@ -4700,7 +4698,7 @@ msgstr "VCPU hodiny"
 
 #: usage/tables.py:30
 msgid "Project Name"
-msgstr "Název projektu"
+msgstr "Jméno projektu"
 
 #: usage/tables.py:32
 msgid "Disk GB Hours"

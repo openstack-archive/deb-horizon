@@ -19,6 +19,7 @@ NOVA_QUOTA_FIELDS = ("metadata_items",
                      "security_group_rules",)
 
 CINDER_QUOTA_FIELDS = ("volumes",
+                       "snapshots",
                        "gigabytes",)
 
 QUOTA_FIELDS = NOVA_QUOTA_FIELDS + CINDER_QUOTA_FIELDS
@@ -119,7 +120,7 @@ def tenant_quota_usages(request):
     # Get our usages.
     floating_ips = network.tenant_floating_ip_list(request)
     flavors = dict([(f.id, f) for f in nova.flavor_list(request)])
-    instances = nova.server_list(request)
+    instances, has_more = nova.server_list(request)
     # Fetch deleted flavors if necessary.
     missing_flavors = [instance.flavor['id'] for instance in instances
                        if instance.flavor['id'] not in flavors]
@@ -136,8 +137,10 @@ def tenant_quota_usages(request):
 
     if 'volumes' not in disabled_quotas:
         volumes = cinder.volume_list(request)
+        snapshots = cinder.volume_snapshot_list(request)
         usages.tally('gigabytes', sum([int(v.size) for v in volumes]))
         usages.tally('volumes', len(volumes))
+        usages.tally('snapshots', len(snapshots))
 
     # Sum our usage based on the flavors of the instances.
     for flavor in [flavors[instance.flavor['id']] for instance in instances]:

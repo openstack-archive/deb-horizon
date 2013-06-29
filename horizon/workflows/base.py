@@ -24,7 +24,7 @@ from django.core import urlresolvers
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_unicode
 from django.utils.importlib import import_module
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import linebreaks, safe
 from django.forms.forms import NON_FIELD_ERRORS
 
@@ -570,6 +570,7 @@ class Workflow(html.HTMLElement):
     success_message = _("%s completed successfully.")
     failure_message = _("%s did not complete.")
     redirect_param_name = "next"
+    multipart = False
     _registerable_class = Step
 
     def __unicode__(self):

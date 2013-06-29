@@ -58,7 +58,7 @@ class ReleaseIPs(tables.BatchAction):
 
 class AssociateIP(tables.LinkAction):
     name = "associate"
-    verbose_name = _("Associate Floating IP")
+    verbose_name = _("Associate")
     url = "horizon:project:access_and_security:floating_ips:associate"
     classes = ("ajax-modal", "btn-associate")
 
@@ -75,7 +75,7 @@ class AssociateIP(tables.LinkAction):
 
 class DisassociateIP(tables.Action):
     name = "disassociate"
-    verbose_name = _("Disassociate Floating IP")
+    verbose_name = _("Disassociate")
     classes = ("btn-disassociate", "btn-danger")
 
     def allowed(self, request, fip):
@@ -111,7 +111,9 @@ def get_instance_link(datum):
 
 
 class FloatingIPsTable(tables.DataTable):
-    ip = tables.Column("ip", verbose_name=_("IP Address"))
+    ip = tables.Column("ip",
+                       verbose_name=_("IP Address"),
+                       attrs={'data-type': "ip"})
     instance = tables.Column(get_instance_info,
                              link=get_instance_link,
                              verbose_name=_("Instance"),

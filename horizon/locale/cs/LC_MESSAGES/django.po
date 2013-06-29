@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # _AdamCz_ <a.skotnicky@tcpisek.cz>, 2013
 # pavlija7 <pavlk.jakub@gmail.com>, 2013
 # Jaroslav Henner <jaroslav.henner@gmail.com>, 2012

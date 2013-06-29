@@ -7,6 +7,13 @@ from openstack_dashboard import exceptions
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# Required for Django 1.5.
+# If horizon is running in production (DEBUG is False), set this
+# with the list of host/domain names that the application can serve.
+# For more information see:
+# https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
+#ALLOWED_HOSTS = ['horizon.example.com', ]
+
 # Set SSL proxy settings:
 # For Django 1.4+ pass this header from the proxy after terminating the SSL,
 # and don't forget to strip it from the client's request.
@@ -18,6 +25,23 @@ TEMPLATE_DEBUG = DEBUG
 # settings to better secure the cookies from security exploits
 #CSRF_COOKIE_SECURE = True
 #SESSION_COOKIE_SECURE = True
+
+# Overrides for OpenStack API versions. Use this setting to force the
+# OpenStack dashboard to use a specfic API version for a given service API.
+# NOTE: The version should be formatted as it appears in the URL for the
+# service API. For example, The identity service APIs have inconsistent
+# use of the decimal point, so valid options would be "2.0" or "3".
+# OPENSTACK_API_VERSIONS = {
+#     "identity": 3
+# }
+
+# Set this to True if running on multi-domain model. When this is enabled, it
+# will require user to enter the Domain name in addition to username for login.
+# OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = False
+
+# Overrides the default domain used when running on single-domain model
+# with Keystone V3. All entities will be created in the default domain.
+# OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
 
 # Default OpenStack Dashboard configuration.
 HORIZON_CONFIG = {
@@ -60,8 +84,8 @@ LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 # behind a load-balancer). Either you have to make sure that a session gets all
 # requests routed to the same dashboard instance or you set the same SECRET_KEY
 # for all of them.
-# from horizon.utils import secret_key
-# SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH, '.secret_key_store'))
+from horizon.utils import secret_key
+SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH, '.secret_key_store'))
 
 # We recommend you use memcached for development; otherwise after every reload
 # of the django development server, you will have to login again. To use
@@ -112,7 +136,10 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = "Member"
 OPENSTACK_KEYSTONE_BACKEND = {
     'name': 'native',
     'can_edit_user': True,
-    'can_edit_project': True
+    'can_edit_group': True,
+    'can_edit_project': True,
+    'can_edit_domain': True,
+    'can_edit_role': True
 }
 
 OPENSTACK_HYPERVISOR_FEATURES = {
@@ -183,6 +210,10 @@ LOGGING = {
             'propagate': False,
         },
         'novaclient': {
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'cinderclient': {
             'handlers': ['console'],
             'propagate': False,
         },

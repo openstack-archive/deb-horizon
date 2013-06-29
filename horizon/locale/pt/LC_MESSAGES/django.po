@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # FIRST AUTHOR Jeffrey Wilcox, 2011
 msgid ""
 msgstr ""

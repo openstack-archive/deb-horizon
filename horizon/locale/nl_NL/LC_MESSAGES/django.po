@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # Erik-Martijn Kasimier <erik.kasimier@nouveaumedia.nl>, 2012
 # Erik-Martijn Kasimier <erik.kasimier@nouveaumedia.nl>, 2012
 msgid ""

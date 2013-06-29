@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # Andi Chandler <andi@gowling.com>, 2013
 msgid ""
 msgstr ""

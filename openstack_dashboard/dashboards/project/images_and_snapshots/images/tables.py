@@ -50,6 +50,9 @@ class DeleteImage(tables.DeleteAction):
     data_type_plural = _("Images")
 
     def allowed(self, request, image=None):
+        # Protected images can not be deleted.
+        if image and image.protected:
+            return False
         if image:
             return image.owner == request.user.tenant_id
         # Return True to allow table-level bulk delete action to appear.
@@ -81,6 +84,23 @@ class EditImage(tables.LinkAction):
         return False
 
 
+class CreateVolumeFromImage(tables.LinkAction):
+    name = "create_volume_from_image"
+    verbose_name = _("Create Volume")
+    url = "horizon:project:volumes:create"
+    classes = ("ajax-modal", "btn-camera")
+
+    def get_link_url(self, datum):
+        base_url = reverse(self.url)
+        params = urlencode({"image_id": self.table.get_object_id(datum)})
+        return "?".join([base_url, params])
+
+    def allowed(self, request, image=None):
+        if image:
+            return image.status == "active"
+        return False
+
+
 def filter_tenants():
     return getattr(settings, 'IMAGES_LIST_FILTER_TENANTS', [])
 
@@ -95,13 +115,13 @@ class OwnerFilter(tables.FixedFilterAction):
         def make_dict(text, tenant, icon):
             return dict(text=text, value=tenant, icon=icon)
 
-        buttons = [make_dict('Project', 'project', 'icon-home')]
+        buttons = [make_dict(_('Project'), 'project', 'icon-home')]
         for button_dict in filter_tenants():
             new_dict = button_dict.copy()
             new_dict['value'] = new_dict['tenant']
             buttons.append(new_dict)
-        buttons.append(make_dict('Shared with Me', 'shared', 'icon-share'))
-        buttons.append(make_dict('Public', 'public', 'icon-fire'))
+        buttons.append(make_dict(_('Shared with Me'), 'shared', 'icon-share'))
+        buttons.append(make_dict(_('Public'), 'public', 'icon-fire'))
         return buttons
 
     def categorize(self, table, images):
@@ -181,6 +201,10 @@ class ImagesTable(tables.DataTable):
                            verbose_name=_("Public"),
                            empty_value=False,
                            filters=(filters.yesno, filters.capfirst))
+    protected = tables.Column("protected",
+                              verbose_name=_("Protected"),
+                              empty_value=False,
+                              filters=(filters.yesno, filters.capfirst))
     disk_format = tables.Column(get_format, verbose_name=_("Format"))
 
     class Meta:
@@ -190,7 +214,8 @@ class ImagesTable(tables.DataTable):
         verbose_name = _("Images")
         # Hide the image_type column. Done this way so subclasses still get
         # all the columns by default.
-        columns = ["name", "status", "public", "disk_format"]
+        columns = ["name", "status", "public", "protected", "disk_format"]
         table_actions = (OwnerFilter, CreateImage, DeleteImage,)
-        row_actions = (LaunchImage, EditImage, DeleteImage,)
+        row_actions = (LaunchImage, CreateVolumeFromImage,
+                       EditImage, DeleteImage,)
         pagination_param = "image_marker"

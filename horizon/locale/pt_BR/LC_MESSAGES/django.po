@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # Josemar Müller Lohn <j@lo.hn>, 2013
 # Leonardo Rodrigues de Mello <leonardo@gridstack.com.br>, 2012
 # Leonardo Rodrigues de Mello <leonardo@gridstack.com.br>, 2012

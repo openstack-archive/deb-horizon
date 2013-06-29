@@ -33,6 +33,38 @@ __all__ = ('APIResourceWrapper', 'APIDictWrapper',
 LOG = logging.getLogger(__name__)
 
 
+class APIVersionManager(object):
+    """ Object to store and manage API versioning data and utility methods. """
+
+    SETTINGS_KEY = "OPENSTACK_API_VERSIONS"
+
+    def __init__(self, service_type, preferred_version=None):
+        self.service_type = service_type
+        self.preferred = preferred_version
+        self._active = None
+        self.supported = {}
+
+    @property
+    def active(self):
+        if self._active is None:
+            self.get_active_version()
+        return self._active
+
+    def load_supported_version(self, version, data):
+        self.supported[version] = data
+
+    def get_active_version(self):
+        if self._active is not None:
+            return self.supported[self._active]
+        key = getattr(settings, self.SETTINGS_KEY, {}).get(self.service_type)
+        if key is None:
+            # TODO: support API version discovery here; we'll leave the setting
+            # in as a way of overriding the latest available version.
+            key = self.preferred
+        self._active = key
+        return self.supported[self._active]
+
+
 class APIResourceWrapper(object):
     """ Simple wrapper for api objects
 
@@ -148,18 +180,42 @@ def get_service_from_catalog(catalog, service_type):
     return None
 
 
+def get_version_from_service(service):
+    if service:
+        endpoint = service['endpoints'][0]
+        if 'interface' in endpoint:
+            return 3
+        else:
+            return 2.0
+    return 2.0
+
+
+# Mapping of V2 Catalog Endpoint_type to V3 Catalog Interfaces
+ENDPOINT_TYPE_TO_INTERFACE = {
+    'publicURL': 'public',
+    'internalURL': 'internal',
+    'adminURL': 'admin',
+}
+
+
 def url_for(request, service_type, admin=False, endpoint_type=None):
     endpoint_type = endpoint_type or getattr(settings,
                                              'OPENSTACK_ENDPOINT_TYPE',
                                              'publicURL')
     catalog = request.user.service_catalog
     service = get_service_from_catalog(catalog, service_type)
+    identity_version = get_version_from_service(service)
+    if admin:
+        endpoint_type = 'adminURL'
     if service:
         try:
-            if admin:
-                return service['endpoints'][0]['adminURL']
-            else:
+            if identity_version < 3:
                 return service['endpoints'][0][endpoint_type]
+            else:
+                interface = ENDPOINT_TYPE_TO_INTERFACE.get(endpoint_type, '')
+                for endpoint in service['endpoints']:
+                    if endpoint['interface'] == interface:
+                        return endpoint['url']
         except (IndexError, KeyError):
             raise exceptions.ServiceCatalogException(service_type)
     else:

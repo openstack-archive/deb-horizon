@@ -17,8 +17,9 @@
 from __future__ import absolute_import
 
 from django import template
+from django.utils.encoding import force_unicode
 from django.utils.datastructures import SortedDict
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon.base import Horizon
 from horizon import conf
@@ -85,32 +86,14 @@ def horizon_dashboard_nav(context):
             'request': context['request']}
 
 
-@register.inclusion_tag('horizon/common/_progress_bar.html')
-def horizon_progress_bar(current_val, max_val):
-    """ Renders a progress bar based on parameters passed to the tag. The first
-    parameter is the current value and the second is the max value.
-
-    Example: ``{% progress_bar 25 50 %}``
-
-    This will generate a half-full progress bar.
-
-    The rendered progress bar will fill the area of its container. To constrain
-    the rendered size of the bar provide a container with appropriate width and
-    height styles.
-
-    """
-    return {'current_val': current_val,
-            'max_val': max_val}
-
-
 @register.filter
 def quota(val, units=None):
     if val == float("inf"):
         return _("No Limit")
     elif units is not None:
-        return "%s %s %s" % (val, units, _("Available"))
+        return "%s %s %s" % (val, units, force_unicode(_("Available")))
     else:
-        return "%s %s" % (val, _("Available"))
+        return "%s %s" % (val, force_unicode(_("Available")))
 
 
 class JSTemplateNode(template.Node):

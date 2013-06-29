@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # Nika Chkhikvishvili <frrrredo@gmail.com>, 2013
 msgid ""
 msgstr ""

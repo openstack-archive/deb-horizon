@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # Sergi Almacellas <pokoli@gmail.com>, 2012
 msgid ""
 msgstr ""

@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # Chao-Hsiung Liao <pesder@gmail.com>, 2012
 msgid ""
 msgstr ""

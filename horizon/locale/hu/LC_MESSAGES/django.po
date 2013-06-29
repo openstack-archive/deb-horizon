@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2012
 # kelemeng <kelemeng@gnome.hu>, 2013
 # marton.kiss <marton.kiss@gmail.com>, 2012

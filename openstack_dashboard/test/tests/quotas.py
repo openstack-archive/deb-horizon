@@ -31,12 +31,33 @@ from openstack_dashboard.usage import quotas
 
 
 class QuotaTests(test.APITestCase):
+
+    def get_usages(self, with_volume=True):
+        quotas = {'injected_file_content_bytes': {'quota': 1},
+                  'metadata_items': {'quota': 1},
+                  'injected_files': {'quota': 1},
+                  'security_groups': {'quota': 10},
+                  'security_group_rules': {'quota': 20},
+                  'fixed_ips': {'quota': 10},
+                  'ram': {'available': 8976, 'used': 1024, 'quota': 10000},
+                  'floating_ips': {'available': 0, 'used': 2, 'quota': 1},
+                  'instances': {'available': 8, 'used': 2, 'quota': 10},
+                  'cores': {'available': 8, 'used': 2, 'quota': 10}}
+        if with_volume:
+            quotas.update({'volumes': {'available': 0, 'used': 3, 'quota': 1},
+                           'snapshots': {'available': 0, 'used': 3,
+                                         'quota': 1},
+                           'gigabytes': {'available': 920, 'used': 80,
+                                         'quota': 1000}})
+        return quotas
+
     @test.create_stubs({api.nova: ('server_list',
                                    'flavor_list',
                                    'tenant_quota_get',),
                         api.network: ('tenant_floating_ip_list',),
                         quotas: ('is_service_enabled',),
-                        cinder: ('volume_list', 'tenant_quota_get',)})
+                        cinder: ('volume_list', 'volume_snapshot_list',
+                                 'tenant_quota_get',)})
     def test_tenant_quota_usages(self):
         quotas.is_service_enabled(IsA(http.HttpRequest),
                                   'volume').AndReturn(True)
@@ -47,29 +68,18 @@ class QuotaTests(test.APITestCase):
         api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
                 .AndReturn(self.floating_ips.list())
         api.nova.server_list(IsA(http.HttpRequest)) \
-                .AndReturn(self.servers.list())
+                .AndReturn([self.servers.list(), False])
         cinder.volume_list(IsA(http.HttpRequest)) \
                 .AndReturn(self.volumes.list())
+        cinder.volume_snapshot_list(IsA(http.HttpRequest)) \
+                .AndReturn(self.snapshots.list())
         cinder.tenant_quota_get(IsA(http.HttpRequest), '1') \
-            .AndReturn(self.quotas.first())
+            .AndReturn(self.cinder_quotas.first())
 
         self.mox.ReplayAll()
 
         quota_usages = quotas.tenant_quota_usages(self.request)
-        expected_output = {
-            'injected_file_content_bytes': {'quota': 1},
-            'metadata_items': {'quota': 1},
-            'injected_files': {'quota': 1},
-            'security_groups': {'quota': 10},
-            'security_group_rules': {'quota': 20},
-            'fixed_ips': {'quota': 10},
-            'gigabytes': {'available': 920, 'used': 80, 'quota': 1000},
-            'ram': {'available': 8976, 'used': 1024, 'quota': 10000},
-            'floating_ips': {'available': 0, 'used': 2, 'quota': 1},
-            'instances': {'available': 8, 'used': 2, 'quota': 10},
-            'volumes': {'available': 0, 'used': 3, 'quota': 1},
-            'cores': {'available': 8, 'used': 2, 'quota': 10}
-        }
+        expected_output = self.get_usages()
 
         # Compare internal structure of usages to expected.
         self.assertEquals(quota_usages.usages, expected_output)
@@ -89,23 +99,12 @@ class QuotaTests(test.APITestCase):
         api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
                 .AndReturn(self.floating_ips.list())
         api.nova.server_list(IsA(http.HttpRequest)) \
-                .AndReturn(self.servers.list())
+                .AndReturn([self.servers.list(), False])
 
         self.mox.ReplayAll()
 
         quota_usages = quotas.tenant_quota_usages(self.request)
-        expected_output = {
-            'injected_file_content_bytes': {'quota': 1},
-            'metadata_items': {'quota': 1},
-            'injected_files': {'quota': 1},
-            'security_groups': {'quota': 10},
-            'security_group_rules': {'quota': 20},
-            'fixed_ips': {'quota': 10},
-            'ram': {'available': 8976, 'used': 1024, 'quota': 10000},
-            'floating_ips': {'available': 0, 'used': 2, 'quota': 1},
-            'instances': {'available': 8, 'used': 2, 'quota': 10},
-            'cores': {'available': 8, 'used': 2, 'quota': 10}
-        }
+        expected_output = self.get_usages(with_volume=False)
 
         # Compare internal structure of usages to expected.
         self.assertEquals(quota_usages.usages, expected_output)
@@ -124,23 +123,18 @@ class QuotaTests(test.APITestCase):
                 .AndReturn(self.quotas.first())
         api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
                 .AndReturn([])
-        api.nova.server_list(IsA(http.HttpRequest)).AndReturn([])
+        api.nova.server_list(IsA(http.HttpRequest)).AndReturn([[], False])
 
         self.mox.ReplayAll()
 
         quota_usages = quotas.tenant_quota_usages(self.request)
-        expected_output = {
-            'injected_file_content_bytes': {'quota': 1},
-            'metadata_items': {'quota': 1},
-            'injected_files': {'quota': 1},
-            'security_groups': {'quota': 10},
-            'security_group_rules': {'quota': 20},
-            'fixed_ips': {'quota': 10},
-            'ram': {'available': 10000, 'used': 0, 'quota': 10000},
-            'floating_ips': {'available': 1, 'used': 0, 'quota': 1},
-            'instances': {'available': 10, 'used': 0, 'quota': 10},
-            'cores': {'available': 10, 'used': 0, 'quota': 10}
-        }
+        expected_output = self.get_usages(with_volume=False)
+
+        expected_output.update({
+                'ram': {'available': 10000, 'used': 0, 'quota': 10000},
+                'floating_ips': {'available': 1, 'used': 0, 'quota': 1},
+                'instances': {'available': 10, 'used': 0, 'quota': 10},
+                'cores': {'available': 10, 'used': 0, 'quota': 10}})
 
         # Compare internal structure of usages to expected.
         self.assertEquals(quota_usages.usages, expected_output)
@@ -150,7 +144,8 @@ class QuotaTests(test.APITestCase):
                                    'tenant_quota_get',),
                         api.network: ('tenant_floating_ip_list',),
                         quotas: ('is_service_enabled',),
-                        cinder: ('volume_list', 'tenant_quota_get',)})
+                        cinder: ('volume_list', 'volume_snapshot_list',
+                                 'tenant_quota_get',)})
     def test_tenant_quota_usages_unlimited_quota(self):
         inf_quota = self.quotas.first()
         inf_quota['ram'] = -1
@@ -164,30 +159,21 @@ class QuotaTests(test.APITestCase):
         api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
                 .AndReturn(self.floating_ips.list())
         api.nova.server_list(IsA(http.HttpRequest)) \
-                .AndReturn(self.servers.list())
+                .AndReturn([self.servers.list(), False])
         cinder.volume_list(IsA(http.HttpRequest)) \
                 .AndReturn(self.volumes.list())
+        cinder.volume_snapshot_list(IsA(http.HttpRequest)) \
+                .AndReturn(self.snapshots.list())
         cinder.tenant_quota_get(IsA(http.HttpRequest), '1') \
-            .AndReturn(inf_quota)
+            .AndReturn(self.cinder_quotas.first())
 
         self.mox.ReplayAll()
 
         quota_usages = quotas.tenant_quota_usages(self.request)
-        expected_output = {
-            'injected_file_content_bytes': {'quota': 1},
-            'metadata_items': {'quota': 1},
-            'injected_files': {'quota': 1},
-            'security_groups': {'quota': 10},
-            'security_group_rules': {'quota': 20},
-            'fixed_ips': {'quota': 10},
-            'gigabytes': {'available': 920, 'used': 80, 'quota': 1000},
-            'ram': {'available': float("inf"), 'used': 1024,
-                    'quota': float("inf")},
-            'floating_ips': {'available': 0, 'used': 2, 'quota': 1},
-            'instances': {'available': 8, 'used': 2, 'quota': 10},
-            'volumes': {'available': 0, 'used': 3, 'quota': 1},
-            'cores': {'available': 8, 'used': 2, 'quota': 10}
-        }
+        expected_output = self.get_usages()
+        expected_output.update({'ram': {'available': float("inf"),
+                                        'used': 1024,
+                                        'quota': float("inf")}})
 
         # Compare internal structure of usages to expected.
         self.assertEquals(quota_usages.usages, expected_output)

@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # copard <ari.karhunen@pard.co>, 2013
 msgid ""
 msgstr ""

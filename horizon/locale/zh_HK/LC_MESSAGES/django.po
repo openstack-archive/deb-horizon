@@ -5,7 +5,6 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # MXKiN <mxkckin@gmail.com>, 2013
 msgid ""
 msgstr ""

@@ -19,7 +19,7 @@
 #    under the License.
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 
@@ -41,7 +41,7 @@ class GlobalOverview(usage.UsageView):
         data = super(GlobalOverview, self).get_data()
         # Pre-fill tenant names
         try:
-            tenants = api.keystone.tenant_list(self.request, admin=True)
+            tenants = api.keystone.tenant_list(self.request)
         except:
             tenants = []
             exceptions.handle(self.request,

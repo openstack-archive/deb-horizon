@@ -5,15 +5,13 @@
 # Translators:
 # Translators:
 # Translators:
-# Translators:
 # Dimitar Dimitrov <dimitrov@linuxmail.org>, 2012
-# ttrifonov <t.trifonov@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: https://launchpad.net/horizon\n"
 "POT-Creation-Date: 2013-03-12 04:09+0000\n"
-"PO-Revision-Date: 2013-05-08 08:24+0000\n"
+"PO-Revision-Date: 2013-04-29 08:35+0000\n"
 "Last-Translator: Gabriel Hurley <gabriel@strikeawe.com>\n"
 "Language-Team: English (http://www.transifex.com/projects/p/openstack/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -24,11 +22,11 @@ msgstr ""
 
 #: settings.py:152
 msgid "Bulgarian (Bulgaria)"
-msgstr "Български"
+msgstr ""
 
 #: settings.py:153
 msgid "Czech"
-msgstr "Чешки"
+msgstr ""
 
 #: settings.py:154
 msgid "English"
@@ -52,11 +50,11 @@ msgstr "Японски"
 
 #: settings.py:159
 msgid "Korean (Korea)"
-msgstr "Корейски"
+msgstr ""
 
 #: settings.py:160
 msgid "Dutch (Netherlands)"
-msgstr "Холандски"
+msgstr ""
 
 #: settings.py:161
 msgid "Polish"
@@ -103,7 +101,7 @@ msgstr ""
 
 #: dashboards/admin/dashboard.py:30
 msgid "Admin"
-msgstr "Админ"
+msgstr ""
 
 #: dashboards/admin/flavors/forms.py:36 dashboards/admin/info/tables.py:67
 #: dashboards/admin/instances/tables.py:91
@@ -145,7 +143,7 @@ msgstr "Админ"
 #: dashboards/project/volumes/tables.py:172
 #: dashboards/project/volumes/templates/volumes/_detail_overview.html:9
 msgid "Name"
-msgstr "Име"
+msgstr ""
 
 #: dashboards/admin/flavors/forms.py:37 dashboards/admin/flavors/tables.py:52
 #: dashboards/admin/projects/workflows.py:44
@@ -161,11 +159,11 @@ msgstr ""
 
 #: dashboards/admin/flavors/forms.py:39
 msgid "Root Disk GB"
-msgstr "Основен диск GB"
+msgstr ""
 
 #: dashboards/admin/flavors/forms.py:40
 msgid "Ephemeral Disk GB"
-msgstr "Допълнителен диск GB"
+msgstr ""
 
 #: dashboards/admin/flavors/forms.py:41
 msgid "Swap Disk MB"
@@ -252,13 +250,13 @@ msgstr ""
 #: dashboards/admin/flavors/tables.py:56
 #: dashboards/project/instances/templates/instances/_launch_details_help.html:11
 msgid "Root Disk"
-msgstr "Основен диск"
+msgstr ""
 
 #: dashboards/admin/flavors/tables.py:58
 #: dashboards/project/instances/templates/instances/_detail_overview.html:31
 #: dashboards/project/instances/templates/instances/_launch_details_help.html:12
 msgid "Ephemeral Disk"
-msgstr "Допълнителен диск"
+msgstr ""
 
 #: dashboards/admin/flavors/tables.py:60
 msgid "Swap Disk"
@@ -378,7 +376,7 @@ msgstr ""
 #: dashboards/project/volumes/templates/volumes/_create_snapshot.html:17
 #: dashboards/project/volumes/templates/volumes/_detail_overview.html:14
 msgid "Description"
-msgstr "Описание"
+msgstr ""
 
 #: dashboards/admin/flavors/templates/flavors/_create.html:18
 msgid "From here you can define the sizing of a new flavor."
@@ -427,7 +425,7 @@ msgstr ""
 #: dashboards/project/volumes/templates/volumes/_create_snapshot.html:24
 #: dashboards/settings/user/templates/user/_settings.html:24
 msgid "Cancel"
-msgstr "Отказ"
+msgstr ""
 
 #: dashboards/admin/flavors/templates/flavors/_edit.html:18
 msgid "From here you can alter the sizing of the current flavor."
@@ -445,7 +443,7 @@ msgstr ""
 #: dashboards/project/instances/workflows/update_instance.py:162
 #: dashboards/settings/user/templates/user/_settings.html:23
 msgid "Save"
-msgstr "Записване"
+msgstr ""
 
 #: dashboards/admin/flavors/templates/flavors/extras/_create.html:9
 #: dashboards/admin/flavors/templates/flavors/extras/create.html:4
@@ -512,7 +510,7 @@ msgstr ""
 #: dashboards/project/networks/templates/networks/ports/_update.html:21
 #: dashboards/settings/user/templates/user/_settings.html:17
 msgid "Description:"
-msgstr "Описание:"
+msgstr ""
 
 #: dashboards/admin/images/templates/images/_create.html:19
 #: dashboards/project/images_and_snapshots/templates/images_and_snapshots/images/_create.html:19
@@ -598,7 +596,7 @@ msgstr ""
 #: dashboards/admin/projects/workflows.py:275
 #: dashboards/admin/users/tables.py:41 dashboards/admin/users/tables.py:113
 msgid "Enabled"
-msgstr "Включен"
+msgstr ""
 
 #: dashboards/admin/info/tables.py:76 dashboards/admin/info/tabs.py:50
 msgid "Services"
@@ -655,7 +653,7 @@ msgstr ""
 #: dashboards/project/dashboard.py:43
 #: dashboards/project/instances/workflows/create_instance.py:41
 msgid "Project"
-msgstr "Проект"
+msgstr ""
 
 #: dashboards/admin/instances/tables.py:92
 #: dashboards/project/access_and_security/floating_ips/tables.py:114
@@ -664,7 +662,7 @@ msgstr "Проект"
 #: dashboards/project/instances/tables.py:447
 #: dashboards/project/loadbalancers/tables.py:138
 msgid "IP Address"
-msgstr "IP адрес"
+msgstr ""
 
 #: dashboards/admin/instances/tables.py:94
 #: dashboards/project/containers/tables.py:231
@@ -674,7 +672,7 @@ msgstr "IP адрес"
 #: dashboards/project/volumes/tables.py:158
 #: dashboards/project/volumes/templates/volumes/_detail_overview.html:26
 msgid "Size"
-msgstr "Размер"
+msgstr ""
 
 #: dashboards/admin/instances/tables.py:99
 #: dashboards/admin/networks/tables.py:74
@@ -697,12 +695,12 @@ msgstr "Размер"
 #: dashboards/project/volumes/tables.py:162
 #: dashboards/project/volumes/templates/volumes/_detail_overview.html:17
 msgid "Status"
-msgstr "Статус"
+msgstr ""
 
 #: dashboards/admin/instances/tables.py:104
 #: dashboards/project/instances/tables.py:459
 msgid "Task"
-msgstr "Задача"
+msgstr ""
 
 #: dashboards/admin/instances/tables.py:111
 #: dashboards/project/instances/tables.py:466
@@ -754,7 +752,7 @@ msgstr ""
 #: dashboards/project/networks/tables.py:98
 #: dashboards/project/networks/templates/networks/_detail_overview.html:17
 msgid "Shared"
-msgstr "Споделен"
+msgstr ""
 
 #: dashboards/admin/networks/forms.py:41 dashboards/admin/networks/forms.py:82
 #: dashboards/admin/routers/tables.py:70
@@ -767,17 +765,17 @@ msgstr ""
 #: dashboards/admin/networks/forms.py:50 dashboards/admin/routers/forms.py:42
 #: dashboards/admin/users/forms.py:42
 msgid "Select a project"
-msgstr "Избери проект"
+msgstr ""
 
 #: dashboards/admin/networks/forms.py:64
 #, python-format
 msgid "Network %s was successfully created."
-msgstr "Мрежа %s беше създадена успешно."
+msgstr ""
 
 #: dashboards/admin/networks/forms.py:70
 #, python-format
 msgid "Failed to create network %s"
-msgstr "Неуспешно създаване на мрежа %s"
+msgstr ""
 
 #: dashboards/admin/networks/forms.py:77
 #: dashboards/admin/networks/templates/networks/ports/_update.html:12
@@ -795,19 +793,19 @@ msgstr "Неуспешно създаване на мрежа %s"
 #: dashboards/project/routers/templates/routers/_detail_overview.html:9
 #: dashboards/project/volumes/templates/volumes/_detail_overview.html:11
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #: dashboards/admin/networks/forms.py:93
 #: dashboards/project/networks/forms.py:51
 #, python-format
 msgid "Network %s was successfully updated."
-msgstr "Мрежа %s беше обновена успешно"
+msgstr ""
 
 #: dashboards/admin/networks/forms.py:98
 #: dashboards/project/networks/forms.py:56
 #, python-format
 msgid "Failed to update network %s"
-msgstr "Мрежа %s не може да бъде обновена"
+msgstr ""
 
 #: dashboards/admin/networks/panel.py:25
 #: dashboards/admin/networks/tables.py:35
@@ -821,20 +819,20 @@ msgstr "Мрежа %s не може да бъде обновена"
 #: dashboards/project/networks/templates/networks/index.html:3
 #: dashboards/project/networks/templates/networks/index.html:6
 msgid "Networks"
-msgstr "Мрежи"
+msgstr ""
 
 #: dashboards/admin/networks/tables.py:34
 #: dashboards/project/networks/tables.py:43
 #: dashboards/project/networks/templates/networks/subnets/index.html:3
 #: dashboards/project/networks/templates/networks/subnets/index.html:6
 msgid "Network"
-msgstr "Мрежа"
+msgstr ""
 
 #: dashboards/admin/networks/tables.py:41
 #: dashboards/project/networks/tables.py:59
 #, python-format
 msgid "Failed to delete network %s"
-msgstr "Мрежа %s не може да бъде изтрита"
+msgstr ""
 
 #: dashboards/admin/networks/tables.py:49
 #: dashboards/admin/networks/templates/networks/_create.html:8
@@ -849,41 +847,41 @@ msgstr "Мрежа %s не може да бъде изтрита"
 #: dashboards/project/networks/templates/networks/create.html:3
 #: dashboards/project/networks/templates/networks/create.html:6
 msgid "Create Network"
-msgstr "Създай мрежа"
+msgstr ""
 
 #: dashboards/admin/networks/tables.py:56
 #: dashboards/admin/networks/templates/networks/_update.html:7
 #: dashboards/project/networks/tables.py:74
 #: dashboards/project/networks/templates/networks/_update.html:7
 msgid "Edit Network"
-msgstr "Редактирай мрежа"
+msgstr ""
 
 #: dashboards/admin/networks/tables.py:68
 #: dashboards/admin/networks/ports/forms.py:35
 #: dashboards/project/networks/workflows.py:38
 msgid "Network Name"
-msgstr "Име на мрежа"
+msgstr ""
 
 #: dashboards/admin/networks/tables.py:71
 #: dashboards/project/networks/tables.py:97
 msgid "Subnets Associated"
-msgstr "Присъединени подмрежи"
+msgstr ""
 
 #: dashboards/admin/networks/views.py:60
 #: dashboards/project/networks/views.py:52
 msgid "Network list can not be retrieved."
-msgstr "Списъкът от мрежи не може да бъде получен."
+msgstr ""
 
 #: dashboards/admin/networks/views.py:91
 #: dashboards/project/networks/views.py:110
 msgid "Subnet list can not be retrieved."
-msgstr "Списъкът от подмрежи не може да бъде получен."
+msgstr ""
 
 #: dashboards/admin/networks/views.py:103
 #: dashboards/project/networks/views.py:122
 #: dashboards/project/routers/views.py:137
 msgid "Port list can not be retrieved."
-msgstr "Списъкът от портове не може да бъде получен."
+msgstr ""
 
 #: dashboards/admin/networks/views.py:118
 #: dashboards/project/networks/views.py:135
@@ -995,7 +993,7 @@ msgstr ""
 #: dashboards/project/routers/ports/tabs.py:29
 #: dashboards/project/volumes/tabs.py:27
 msgid "Overview"
-msgstr "Преглед"
+msgstr ""
 
 #: dashboards/admin/networks/ports/tabs.py:42
 #: dashboards/project/networks/ports/tabs.py:42
@@ -1015,14 +1013,14 @@ msgstr ""
 #: dashboards/project/networks/templates/networks/subnets/_detail_overview.html:6
 #: dashboards/project/routers/ports/forms.py:31
 msgid "Subnet"
-msgstr "Подмрежа"
+msgstr ""
 
 #: dashboards/admin/networks/subnets/tables.py:33
 #: dashboards/admin/networks/subnets/tables.py:81
 #: dashboards/project/networks/subnets/tables.py:45
 #: dashboards/project/networks/subnets/tables.py:104
 msgid "Subnets"
-msgstr "Подмрежи"
+msgstr ""
 
 #: dashboards/admin/networks/subnets/tables.py:49
 #: dashboards/admin/networks/templates/networks/subnets/create.html:3
@@ -1033,12 +1031,12 @@ msgstr "Подмрежи"
 #: dashboards/project/networks/templates/networks/subnets/create.html:3
 #: dashboards/project/networks/templates/networks/subnets/create.html:6
 msgid "Create Subnet"
-msgstr "Създай подмрежа"
+msgstr ""
 
 #: dashboards/admin/networks/subnets/tables.py:60
 #: dashboards/project/networks/subnets/tables.py:72
 msgid "Edit Subnet"
-msgstr "Редактирай подмрежа"
+msgstr ""
 
 #: dashboards/admin/networks/subnets/tables.py:72
 #: dashboards/project/access_and_security/security_groups/forms.py:133
@@ -1046,14 +1044,14 @@ msgstr "Редактирай подмрежа"
 #: dashboards/project/access_and_security/security_groups/forms.py:155
 #: dashboards/project/networks/templates/networks/subnets/_detail_overview.html:18
 msgid "CIDR"
-msgstr "CIDR"
+msgstr ""
 
 #: dashboards/admin/networks/subnets/tables.py:73
 #: dashboards/project/networks/workflows.py:73
 #: dashboards/project/networks/subnets/tables.py:85
 #: dashboards/project/networks/subnets/workflows.py:106
 msgid "IP Version"
-msgstr "IP версия"
+msgstr ""
 
 #: dashboards/admin/networks/subnets/tables.py:74
 #: dashboards/project/networks/subnets/tables.py:86
@@ -1069,7 +1067,7 @@ msgstr ""
 #: dashboards/admin/networks/templates/networks/_create.html:18
 #: dashboards/project/networks/templates/networks/_create.html:17
 msgid "Select a name for your network."
-msgstr "Изберете мрежа за вашата мрежа."
+msgstr ""
 
 #: dashboards/admin/networks/templates/networks/_update.html:17
 #: dashboards/project/networks/templates/networks/_update.html:17
@@ -1081,14 +1079,14 @@ msgstr ""
 #: dashboards/project/networks/templates/networks/_update.html:22
 #: dashboards/project/networks/templates/networks/ports/_update.html:27
 msgid "Save Changes"
-msgstr "Запазване на промените"
+msgstr ""
 
 #: dashboards/admin/networks/templates/networks/update.html:3
 #: dashboards/admin/networks/templates/networks/update.html:6
 #: dashboards/project/networks/templates/networks/update.html:3
 #: dashboards/project/networks/templates/networks/update.html:6
 msgid "Update Network"
-msgstr "Обновяване на мрежата"
+msgstr ""
 
 #: dashboards/admin/networks/templates/networks/ports/_create.html:18
 msgid ""
@@ -1112,7 +1110,7 @@ msgstr ""
 #: dashboards/admin/networks/templates/networks/subnets/index.html:6
 #: dashboards/project/networks/templates/networks/detail.html:3
 msgid "Network Detail"
-msgstr "Детайли за мрежа"
+msgstr ""
 
 #: dashboards/admin/networks/templates/networks/subnets/update.html:3
 #: dashboards/admin/networks/templates/networks/subnets/update.html:6
@@ -1120,15 +1118,15 @@ msgstr "Детайли за мрежа"
 #: dashboards/project/networks/templates/networks/subnets/update.html:3
 #: dashboards/project/networks/templates/networks/subnets/update.html:6
 msgid "Update Subnet"
-msgstr "Обновяване на подмрежа"
+msgstr ""
 
 #: dashboards/admin/overview/templates/overview/usage.html:3
 msgid "Usage Overview"
-msgstr "Преглед на потреблението"
+msgstr ""
 
 #: dashboards/admin/overview/templates/overview/usage.html:12
 msgid "Monitoring"
-msgstr "Мониторинг"
+msgstr ""
 
 #: dashboards/admin/projects/panel.py:29
 #: dashboards/admin/projects/tables.py:72
@@ -1141,11 +1139,11 @@ msgstr "Проекти"
 
 #: dashboards/admin/projects/tables.py:19
 msgid "Modify Users"
-msgstr "Промяна на потребителите"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:32
 msgid "View Usage"
-msgstr "Виж потреблението"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:39
 #: dashboards/admin/projects/workflows.py:201
@@ -1155,14 +1153,14 @@ msgstr "Виж потреблението"
 #: dashboards/admin/projects/templates/projects/create.html:3
 #: dashboards/admin/projects/templates/projects/create.html:6
 msgid "Create Project"
-msgstr "Създаване на проект"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:49
 #: dashboards/admin/projects/workflows.py:293
 #: dashboards/admin/projects/templates/projects/update.html:3
 #: dashboards/admin/projects/templates/projects/update.html:6
 msgid "Edit Project"
-msgstr "Редактиране на проект"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:99
 #: dashboards/admin/routers/templates/routers/_detail_overview.html:11
@@ -1174,17 +1172,17 @@ msgstr ""
 
 #: dashboards/admin/projects/tables.py:113
 msgid "Remove"
-msgstr "Премахни"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:114
 msgid "Removed"
-msgstr "Премахнат"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:115 dashboards/admin/users/tables.py:42
 #: dashboards/admin/users/tables.py:79
 #: dashboards/project/instances/workflows/create_instance.py:42
 msgid "User"
-msgstr "Потребител"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:116 dashboards/admin/users/panel.py:29
 #: dashboards/admin/users/tables.py:43 dashboards/admin/users/tables.py:80
@@ -1192,39 +1190,39 @@ msgstr "Потребител"
 #: dashboards/admin/users/templates/users/index.html:3
 #: dashboards/admin/users/templates/users/index.html:6
 msgid "Users"
-msgstr "Потребители"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:134
 msgid "Unable to retrieve role information."
-msgstr "Информация за ролите не може да бъде получена."
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:139
 msgid "Roles"
-msgstr "Роли"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:143
 msgid "Users For Project"
-msgstr "Потребители за проект"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:151
 msgid "Add To Project"
-msgstr "Добави към проект"
+msgstr ""
 
 #: dashboards/admin/projects/tables.py:163
 msgid "Add New Users"
-msgstr "Добавяне на нови потребители"
+msgstr ""
 
 #: dashboards/admin/projects/views.py:70
 msgid "Unable to retrieve project information."
-msgstr "Информацията за проекта не може да бъде получена."
+msgstr ""
 
 #: dashboards/admin/projects/views.py:90
 msgid "Unable to retrieve project list."
-msgstr "Списъкът с проектите не може да бъде получен."
+msgstr ""
 
 #: dashboards/admin/projects/views.py:113
 msgid "Unable to retrieve users."
-msgstr "Потребителите не могат да бъдат получени."
+msgstr ""
 
 #: dashboards/admin/projects/views.py:156
 msgid "Unable to retrieve default quota values."
@@ -1287,7 +1285,7 @@ msgstr ""
 #: dashboards/admin/projects/workflows.py:57
 #: dashboards/project/access_and_security/security_groups/tables.py:119
 msgid "Security Group Rules"
-msgstr "Правила на групата за сигурност"
+msgstr ""
 
 #: dashboards/admin/projects/workflows.py:60
 msgid "Quota"
@@ -1325,7 +1323,7 @@ msgstr ""
 #: dashboards/admin/projects/workflows.py:179
 #: dashboards/admin/projects/templates/projects/_update_members.html:10
 msgid "All Users"
-msgstr "Всички потребители"
+msgstr ""
 
 #: dashboards/admin/projects/workflows.py:181
 #: dashboards/admin/projects/templates/projects/_update_members.html:25
@@ -1472,7 +1470,7 @@ msgstr ""
 
 #: dashboards/admin/projects/templates/projects/usage.html:7
 msgid "Project Usage"
-msgstr "Потребление на проекта"
+msgstr ""
 
 #: dashboards/admin/projects/templates/projects/users.html:3
 msgid "Project Users"
@@ -1620,28 +1618,28 @@ msgstr ""
 #: dashboards/admin/users/forms.py:62 dashboards/admin/users/forms.py:115
 #: dashboards/admin/users/tables.py:106
 msgid "User Name"
-msgstr "Потребителско име"
+msgstr ""
 
 #: dashboards/admin/users/forms.py:63 dashboards/admin/users/forms.py:116
 #: dashboards/admin/users/tables.py:107
 msgid "Email"
-msgstr "Имейл"
+msgstr ""
 
 #: dashboards/admin/users/forms.py:65 dashboards/admin/users/forms.py:117
 msgid "Password"
-msgstr "Парола"
+msgstr ""
 
 #: dashboards/admin/users/forms.py:70 dashboards/admin/users/forms.py:124
 msgid "Confirm Password"
-msgstr "Парола отново"
+msgstr ""
 
 #: dashboards/admin/users/forms.py:73 dashboards/admin/users/forms.py:127
 msgid "Primary Project"
-msgstr "Основен проект"
+msgstr ""
 
 #: dashboards/admin/users/forms.py:75
 msgid "Role"
-msgstr "Роля"
+msgstr ""
 
 #: dashboards/admin/users/forms.py:96
 #, python-format
@@ -1807,7 +1805,7 @@ msgstr ""
 #: dashboards/project/access_and_security/keypairs/tables.py:31
 #: dashboards/project/access_and_security/keypairs/tables.py:60
 msgid "Keypairs"
-msgstr "Ключови двойки"
+msgstr ""
 
 #: dashboards/project/access_and_security/tabs.py:66
 msgid "Unable to retrieve keypair list."
@@ -1969,12 +1967,12 @@ msgstr ""
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:127
 msgid "Associate"
-msgstr "Присъедини"
+msgstr ""
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:128
 #, python-format
 msgid "IP address %s associated."
-msgstr "IP адрес %s е присъединен"
+msgstr ""
 
 #: dashboards/project/access_and_security/floating_ips/workflows.py:129
 #, python-format
@@ -1985,7 +1983,7 @@ msgstr ""
 #: dashboards/project/access_and_security/keypairs/forms.py:49
 #: dashboards/project/access_and_security/keypairs/tables.py:52
 msgid "Keypair Name"
-msgstr "Име на ключова двойка"
+msgstr ""
 
 #: dashboards/project/access_and_security/keypairs/forms.py:40
 msgid ""
@@ -1994,12 +1992,12 @@ msgstr ""
 
 #: dashboards/project/access_and_security/keypairs/forms.py:51
 msgid "Public Key"
-msgstr "Публичен ключ"
+msgstr ""
 
 #: dashboards/project/access_and_security/keypairs/forms.py:60
 #, python-format
 msgid "Successfully imported public key: %s"
-msgstr "Успешно зареждане на публичен ключ: %s"
+msgstr ""
 
 #: dashboards/project/access_and_security/keypairs/forms.py:65
 msgid "Unable to import keypair."
@@ -2009,7 +2007,7 @@ msgstr ""
 #: dashboards/project/instances/tables.py:451
 #: dashboards/project/instances/workflows/create_instance.py:339
 msgid "Keypair"
-msgstr "Ключова двойка"
+msgstr ""
 
 #: dashboards/project/access_and_security/keypairs/tables.py:39
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:7
@@ -2017,7 +2015,7 @@ msgstr "Ключова двойка"
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/import.html:3
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/import.html:6
 msgid "Import Keypair"
-msgstr "Зареждане на ключова двойка"
+msgstr ""
 
 #: dashboards/project/access_and_security/keypairs/tables.py:46
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_create.html:7
@@ -2025,11 +2023,11 @@ msgstr "Зареждане на ключова двойка"
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/create.html:3
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/create.html:6
 msgid "Create Keypair"
-msgstr "Създаване на ключова двойка"
+msgstr ""
 
 #: dashboards/project/access_and_security/keypairs/tables.py:53
 msgid "Fingerprint"
-msgstr "Отпечатък"
+msgstr ""
 
 #: dashboards/project/access_and_security/keypairs/views.py:74
 #, python-format
@@ -2109,7 +2107,7 @@ msgstr ""
 #: dashboards/project/access_and_security/security_groups/forms.py:122
 #: dashboards/project/access_and_security/security_groups/forms.py:129
 msgid "Code"
-msgstr "Код"
+msgstr ""
 
 #: dashboards/project/access_and_security/security_groups/forms.py:124
 msgid "Enter a value for ICMP code in the range (-1: 255)"
@@ -2119,7 +2117,7 @@ msgstr ""
 #: dashboards/project/access_and_security/security_groups/tables.py:109
 #: dashboards/project/access_and_security/templates/access_and_security/security_groups/_add_rule.html:21
 msgid "Source"
-msgstr "Източник"
+msgstr ""
 
 #: dashboards/project/access_and_security/security_groups/forms.py:134
 #: dashboards/project/access_and_security/security_groups/forms.py:157
@@ -2202,19 +2200,19 @@ msgstr ""
 #: dashboards/project/access_and_security/templates/access_and_security/security_groups/add_rule.html:3
 #: dashboards/project/access_and_security/templates/access_and_security/security_groups/add_rule.html:6
 msgid "Add Rule"
-msgstr "Добавяне на правило"
+msgstr ""
 
 #: dashboards/project/access_and_security/security_groups/tables.py:82
 msgid "Rule"
-msgstr "Правило"
+msgstr ""
 
 #: dashboards/project/access_and_security/security_groups/tables.py:83
 msgid "Rules"
-msgstr "Правила"
+msgstr ""
 
 #: dashboards/project/access_and_security/security_groups/views.py:55
 msgid "Unable to retrieve security group."
-msgstr "Групата за сигурност не може да бъде получена."
+msgstr ""
 
 #: dashboards/project/access_and_security/security_groups/views.py:91
 #, python-format
@@ -2330,7 +2328,7 @@ msgstr ""
 #: dashboards/project/containers/browsers.py:29
 #: dashboards/project/containers/tables.py:40
 msgid "Container"
-msgstr "Контейнер"
+msgstr ""
 
 #: dashboards/project/containers/forms.py:39
 msgid "Slash is not an allowed character."
@@ -2356,7 +2354,7 @@ msgstr ""
 #: dashboards/project/containers/forms.py:79
 #: dashboards/project/containers/tables.py:228
 msgid "Object Name"
-msgstr "Име на обект"
+msgstr ""
 
 #: dashboards/project/containers/forms.py:80
 msgid ""
@@ -2365,15 +2363,15 @@ msgstr ""
 
 #: dashboards/project/containers/forms.py:83
 msgid "File"
-msgstr "Файл"
+msgstr ""
 
 #: dashboards/project/containers/forms.py:97
 msgid "Object was successfully uploaded."
-msgstr "Обектът беше качен успешно."
+msgstr ""
 
 #: dashboards/project/containers/forms.py:100
 msgid "Unable to upload object."
-msgstr "Обектът не може да бъде качен."
+msgstr ""
 
 #: dashboards/project/containers/forms.py:104
 msgid "Destination container"
@@ -2398,7 +2396,7 @@ msgstr ""
 #: dashboards/project/containers/templates/containers/index.html:3
 #: dashboards/project/containers/templates/containers/index.html:7
 msgid "Containers"
-msgstr "Контейнери"
+msgstr ""
 
 #: dashboards/project/containers/tables.py:62
 #: dashboards/project/containers/templates/containers/_create.html:7
@@ -2422,21 +2420,21 @@ msgstr ""
 #: dashboards/project/containers/tables.py:149
 #: dashboards/project/containers/templates/containers/_upload.html:18
 msgid "Object"
-msgstr "Обект"
+msgstr ""
 
 #: dashboards/project/containers/tables.py:138
 #: dashboards/project/containers/tables.py:150
 #: dashboards/project/containers/tables.py:235
 msgid "Objects"
-msgstr "Обекти"
+msgstr ""
 
 #: dashboards/project/containers/tables.py:156
 msgid "Copy"
-msgstr "Копиране"
+msgstr ""
 
 #: dashboards/project/containers/tables.py:169
 msgid "Download"
-msgstr "Сваляне"
+msgstr ""
 
 #: dashboards/project/containers/views.py:53
 msgid "Unable to retrieve container list."
@@ -2584,7 +2582,7 @@ msgstr ""
 #: dashboards/project/images_and_snapshots/images/tables.py:181
 #: dashboards/project/images_and_snapshots/templates/images_and_snapshots/images/_detail_overview.html:15
 msgid "Public"
-msgstr "Публичен"
+msgstr ""
 
 #: dashboards/project/images_and_snapshots/images/forms.py:99
 msgid "A image or external image location must be specified."
@@ -3965,7 +3963,7 @@ msgstr ""
 #: dashboards/project/networks/subnets/tables.py:84
 #: dashboards/project/networks/subnets/workflows.py:85
 msgid "Network Address"
-msgstr "Мрежов адрес"
+msgstr ""
 
 #: dashboards/project/networks/workflows.py:68
 #: dashboards/project/networks/subnets/workflows.py:90
@@ -4148,7 +4146,7 @@ msgstr ""
 
 #: dashboards/project/networks/subnets/views.py:71
 msgid "Unable to retrieve subnet details"
-msgstr "Детайлите на подмрежата не могат да бъдат получени"
+msgstr ""
 
 #: dashboards/project/networks/subnets/workflows.py:43
 msgid ""
@@ -4258,7 +4256,7 @@ msgstr ""
 
 #: dashboards/project/networks/templates/networks/subnets/_detail_overview.html:16
 msgid "IP version"
-msgstr "IP версия"
+msgstr ""
 
 #: dashboards/project/networks/templates/networks/subnets/_detail_overview.html:20
 msgid "IP allocation pool"
@@ -4697,7 +4695,7 @@ msgstr ""
 
 #: usage/tables.py:30
 msgid "Project Name"
-msgstr "Име на проекта"
+msgstr ""
 
 #: usage/tables.py:32
 msgid "Disk GB Hours"

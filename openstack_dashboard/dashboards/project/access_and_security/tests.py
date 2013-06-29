@@ -27,6 +27,7 @@ from mox import IsA
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
+from horizon.workflows.views import WorkflowView
 
 
 class AccessAndSecurityTests(test.TestCase):
@@ -43,7 +44,8 @@ class AccessAndSecurityTests(test.TestCase):
         self.mox.StubOutWithMock(api.nova, 'server_list')
 
         api.nova.server_list(IsA(http.HttpRequest),
-                             all_tenants=True).AndReturn(self.servers.list())
+                             all_tenants=True).AndReturn([self.servers.list(),
+                                                          False])
         api.nova.keypair_list(IsA(http.HttpRequest)).AndReturn(keypairs)
         api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
             .AndReturn(floating_ips)
@@ -85,8 +87,7 @@ class AccessAndSecurityTests(test.TestCase):
 
         res = self.client.get(reverse("horizon:project:access_and_security:"
                                       "floating_ips:associate"))
-        self.assertTemplateUsed(res,
-                    'project/access_and_security/floating_ips/associate.html')
+        self.assertTemplateUsed(res, WorkflowView.template_name)
 
         self.assertContains(res,
                             '<option value="1">server_1 (1)</option>')

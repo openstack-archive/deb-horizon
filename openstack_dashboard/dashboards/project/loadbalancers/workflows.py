@@ -17,11 +17,12 @@
 import logging
 import re
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import fields
+from horizon.utils.validators import validate_port_range
 from horizon import workflows
 
 from openstack_dashboard import api
@@ -63,7 +64,7 @@ class AddPoolAction(workflows.Action):
         protocol_choices.append(('HTTPS', 'HTTPS'))
         self.fields['protocol'].choices = protocol_choices
 
-        lb_method_choices = [('', _("Select a Protocol"))]
+        lb_method_choices = [('', _("Select a Method"))]
         lb_method_choices.append(('ROUND_ROBIN', 'ROUND_ROBIN'))
         lb_method_choices.append(('LEAST_CONNECTIONS', 'LEAST_CONNECTIONS'))
         lb_method_choices.append(('SOURCE_IP', 'SOURCE_IP'))
@@ -78,7 +79,7 @@ class AddPoolAction(workflows.Action):
                       "pool must be on. "
                       "Select the protocol and load balancing method "
                       "for this pool. "
-                      "Admin State is UP (checked) by defaul.t")
+                      "Admin State is UP (checked) by default.")
 
 
 class AddPoolStep(workflows.Step):
@@ -96,8 +97,8 @@ class AddPool(workflows.Workflow):
     slug = "addpool"
     name = _("Add Pool")
     finalize_button_name = _("Add")
-    success_message = _('Added Pool "%s".')
-    failure_message = _('Unable to add Pool "%s".')
+    success_message = _('Added pool "%s".')
+    failure_message = _('Unable to add pool "%s".')
     success_url = "horizon:project:loadbalancers:index"
     default_steps = (AddPoolStep,)
 
@@ -110,8 +111,6 @@ class AddPool(workflows.Workflow):
             pool = api.lbaas.pool_create(request, **context)
             return True
         except:
-            msg = self.format_status_message(self.failure_message)
-            exceptions.handle(request, msg)
             return False
 
 
@@ -121,14 +120,17 @@ class AddVipAction(workflows.Action):
         initial="", required=False,
         max_length=80, label=_("Description"))
     floatip_address = forms.ChoiceField(
-        label=_("Vip Address from Floating IPs"),
+        label=_("VIP Address from Floating IPs"),
         widget=forms.Select(attrs={'disabled': 'disabled'}),
         required=False)
     other_address = fields.IPField(required=False,
                                    initial="",
                                    version=fields.IPv4,
                                    mask=False)
-    protocol_port = forms.CharField(max_length=80, label=_("Protocol Port"))
+    protocol_port = forms.IntegerField(label=_("Protocol Port"), min_value=1,
+                              help_text=_("Enter an integer value "
+                                          "between 1 and 65535."),
+                              validators=[validate_port_range])
     protocol = forms.ChoiceField(label=_("Protocol"))
     session_persistence = forms.ChoiceField(
         required=False, initial={}, label=_("Session Persistence"))
@@ -137,8 +139,10 @@ class AddVipAction(workflows.Action):
         max_length=80, label=_("Cookie Name"),
         help_text=_("Required for APP_COOKIE persistence;"
                     " Ignored otherwise."))
-    connection_limit = forms.CharField(
-        max_length=80, label=_("Connection Limit"))
+    connection_limit = forms.IntegerField(
+        min_value=-1, label=_("Connection Limit"),
+        help_text=_("Maximum number of connections allowed "
+                    "for the VIP or '-1' if the limit is not set"))
     admin_state_up = forms.BooleanField(
         label=_("Admin State"), initial=True, required=False)
 
@@ -163,14 +167,22 @@ class AddVipAction(workflows.Action):
         floatip_address_choices = [('', _("Currently Not Supported"))]
         self.fields['floatip_address'].choices = floatip_address_choices
 
+    def clean(self):
+        cleaned_data = super(AddVipAction, self).clean()
+        if (cleaned_data.get('session_persistence') == 'APP_COOKIE' and
+                not cleaned_data.get('cookie_name')):
+            msg = _('Cookie name is required for APP_COOKIE persistence.')
+            self._errors['cookie_name'] = self.error_class([msg])
+        return cleaned_data
+
     class Meta:
         name = _("AddVip")
         permissions = ('openstack.services.network',)
-        help_text = _("Create a vip (virtual IP) for this pool. "
-                      "Assign a name and description for the vip. "
-                      "Specify an IP address and port for the vip. "
+        help_text = _("Create a VIP for this pool. "
+                      "Assign a name and description for the VIP. "
+                      "Specify an IP address and port for the VIP. "
                       "Choose the protocol and session persistence "
-                      "method for the vip."
+                      "method for the VIP."
                       "Specify the max connections allowed. "
                       "Admin State is UP (checked) by default.")
 
@@ -190,10 +202,10 @@ class AddVipStep(workflows.Step):
 
 class AddVip(workflows.Workflow):
     slug = "addvip"
-    name = _("Add Vip")
+    name = _("Add VIP")
     finalize_button_name = _("Add")
-    success_message = _('Added Vip "%s".')
-    failure_message = _('Unable to add Vip "%s".')
+    success_message = _('Added VIP "%s".')
+    failure_message = _('Unable to add VIP "%s".')
     success_url = "horizon:project:loadbalancers:index"
     default_steps = (AddVipStep,)
 
@@ -206,8 +218,8 @@ class AddVip(workflows.Workflow):
             context['address'] = context['floatip_address']
         else:
             if not context['floatip_address'] == '':
-                self.failure_message = _('Only one address can be specified.'
-                                         'Unable to add Vip %s.')
+                self.failure_message = _('Only one address can be specified. '
+                                         'Unable to add VIP "%s".')
                 return False
             else:
                 context['address'] = context['other_address']
@@ -216,21 +228,16 @@ class AddVip(workflows.Workflow):
             context['subnet_id'] = pool['subnet_id']
         except:
             context['subnet_id'] = None
-            exceptions.handle(request,
-                              _('Unable to retrieve pool.'))
+            self.failure_message = _('Unable to retrieve the specified pool. '
+                                     'Unable to add VIP "%s".')
             return False
 
         if context['session_persistence']:
             stype = context['session_persistence']
             if stype == 'APP_COOKIE':
-                if context['cookie_name'] == "":
-                    self.failure_message = _('Cookie name must be specified '
-                                             'with APP_COOKIE persistence.')
-                    return False
-                else:
-                    cookie = context['cookie_name']
-                    context['session_persistence'] = {'type': stype,
-                                                      'cookie_name': cookie}
+                cookie = context['cookie_name']
+                context['session_persistence'] = {'type': stype,
+                                                  'cookie_name': cookie}
             else:
                 context['session_persistence'] = {'type': stype}
         else:
@@ -240,8 +247,6 @@ class AddVip(workflows.Workflow):
             api.lbaas.vip_create(request, **context)
             return True
         except:
-            msg = self.format_status_message(self.failure_message)
-            exceptions.handle(request, msg)
             return False
 
 
@@ -252,9 +257,16 @@ class AddMemberAction(workflows.Action):
         required=True,
         initial=["default"],
         widget=forms.CheckboxSelectMultiple(),
+        error_messages={'required':
+                            _('At least one member must be specified')},
         help_text=_("Select members for this pool "))
-    weight = forms.CharField(max_length=80, label=_("Weight"))
-    protocol_port = forms.CharField(max_length=80, label=_("Protocol Port"))
+    weight = forms.IntegerField(max_value=256, min_value=0, label=_("Weight"),
+                                help_text=_("Relative part of requests this "
+                                "pool member serves compared to others"))
+    protocol_port = forms.IntegerField(label=_("Protocol Port"), min_value=1,
+                              help_text=_("Enter an integer value "
+                                          "between 1 and 65535."),
+                              validators=[validate_port_range])
     admin_state_up = forms.BooleanField(label=_("Admin State"),
                                         initial=True, required=False)
 
@@ -276,7 +288,7 @@ class AddMemberAction(workflows.Action):
 
         members_choices = []
         try:
-            servers = api.nova.server_list(request)
+            servers, has_more = api.nova.server_list(request)
         except:
             servers = []
             exceptions.handle(request,
@@ -324,25 +336,17 @@ class AddMember(workflows.Workflow):
     slug = "addmember"
     name = _("Add Member")
     finalize_button_name = _("Add")
-    success_message = _('Added Member "%s".')
-    failure_message = _('Unable to add Member %s.')
+    success_message = _('Added member(s).')
+    failure_message = _('Unable to add member(s).')
     success_url = "horizon:project:loadbalancers:index"
     default_steps = (AddMemberStep,)
 
     def handle(self, request, context):
-        if context['members'] == []:
-            self.failure_message = _('No instances available.%s')
-            context['member_id'] = ''
-            return False
-
         for m in context['members']:
             params = {'device_id': m}
             try:
                 plist = api.quantum.port_list(request, **params)
             except:
-                plist = []
-                exceptions.handle(request,
-                                  _('Unable to retrieve ports list.'))
                 return False
             if plist:
                 context['address'] = plist[0].fixed_ips[0]['ip_address']
@@ -350,25 +354,75 @@ class AddMember(workflows.Workflow):
                 context['member_id'] = api.lbaas.member_create(
                     request, **context).id
             except:
-                exceptions.handle(request, _("Unable to add member."))
                 return False
         return True
 
 
 class AddMonitorAction(workflows.Action):
     pool_id = forms.ChoiceField(label=_("Pool"))
-    type = forms.ChoiceField(label=_("Type"))
-    delay = forms.CharField(max_length=80, label=_("Delay"))
-    timeout = forms.CharField(max_length=80, label=_("Timeout"))
-    max_retries = forms.CharField(max_length=80,
-                                  label=_("Max Retries (1~10)"))
+    type = forms.ChoiceField(
+        label=_("Type"),
+        choices=[('ping', _('PING')),
+                 ('tcp', _('TCP')),
+                 ('http', _('HTTP')),
+                 ('https', _('HTTPS'))],
+        widget=forms.Select(attrs={
+            'class': 'switchable',
+            'data-slug': 'type'
+        }))
+    delay = forms.IntegerField(
+        min_value=1,
+        label=_("Delay"),
+        help_text=_("The minimum time in seconds between regular checks "
+                    "of a member"))
+    timeout = forms.IntegerField(
+        min_value=1,
+        label=_("Timeout"),
+        help_text=_("The maximum time in seconds for a monitor to wait "
+                    "for a reply"))
+    max_retries = forms.IntegerField(
+        max_value=10, min_value=1,
+        label=_("Max Retries (1~10)"),
+        help_text=_("Number of permissible failures before changing "
+                    "the status of member to inactive"))
     http_method = forms.ChoiceField(
-        initial="GET", required=False, label=_("HTTP Method"))
+        initial="GET",
+        required=False,
+        choices=[('GET', _('GET'))],
+        label=_("HTTP Method"),
+        help_text=_("HTTP method used to check health status of a member"),
+        widget=forms.Select(attrs={
+            'class': 'switched',
+            'data-switch-on': 'type',
+            'data-type-http': _('HTTP Method'),
+            'data-type-https': _('HTTP Method')
+        }))
     url_path = forms.CharField(
-        initial="/", required=False, max_length=80, label=_("URL"))
-    expected_codes = forms.CharField(
-        initial="200", required=False, max_length=80,
-        label=_("Expected HTTP Status Codes"))
+        initial="/",
+        required=False,
+        max_length=80,
+        label=_("URL"),
+        widget=forms.TextInput(attrs={
+            'class': 'switched',
+            'data-switch-on': 'type',
+            'data-type-http': _('URL'),
+            'data-type-https': _('URL')
+        }))
+    expected_codes = forms.RegexField(
+        initial="200",
+        required=False,
+        max_length=80,
+        regex=r'^(\d{3}(\s*,\s*\d{3})*)$|^(\d{3}-\d{3})$',
+        label=_("Expected HTTP Status Codes"),
+        help_text=_("Expected code may be a single value (e.g. 200), "
+                    "a list of values (e.g. 200, 202), "
+                    "or range of values (e.g. 200-204)"),
+        widget=forms.TextInput(attrs={
+            'class': 'switched',
+            'data-switch-on': 'type',
+            'data-type-http': _('Expected HTTP Status Codes'),
+            'data-type-https': _('Expected HTTP Status Codes')
+        }))
     admin_state_up = forms.BooleanField(label=_("Admin State"),
                                         initial=True, required=False)
 
@@ -385,16 +439,27 @@ class AddMonitorAction(workflows.Action):
                               _('Unable to retrieve pools list.'))
         self.fields['pool_id'].choices = pool_id_choices
 
-        type_choices = [('', _("Select Type"))]
-        type_choices.append(('PING', 'PING'))
-        type_choices.append(('TCP', 'TCP'))
-        type_choices.append(('HTTP', 'HTTP'))
-        type_choices.append(('HTTPS', 'HTTPS'))
-        self.fields['type'].choices = type_choices
+    def clean(self):
+        cleaned_data = super(AddMonitorAction, self).clean()
+        type_opt = cleaned_data.get('type')
 
-        http_method_choices = [('', _("Select HTTP Method"))]
-        http_method_choices.append(('GET', 'GET'))
-        self.fields['http_method'].choices = http_method_choices
+        if type_opt in ['http', 'https']:
+            http_method_opt = cleaned_data.get('http_method')
+            url_path = cleaned_data.get('url_path')
+            expected_codes = cleaned_data.get('expected_codes')
+
+            if not http_method_opt:
+                msg = _('Please choose a HTTP method')
+                self._errors['http_method'] = self.error_class([msg])
+            if not url_path:
+                msg = _('Please specify an URL')
+                self._errors['url_path'] = self.error_class([msg])
+            if not expected_codes:
+                msg = _('Please enter a single value (e.g. 200), '
+                        'a list of values (e.g. 200, 202), '
+                        'or range of values (e.g. 200-204)')
+                self._errors['expected_codes'] = self.error_class([msg])
+        return cleaned_data
 
     class Meta:
         name = _("MonitorDetails")
@@ -423,8 +488,8 @@ class AddMonitor(workflows.Workflow):
     slug = "addmonitor"
     name = _("Add Monitor")
     finalize_button_name = _("Add")
-    success_message = _('Added Monitor "%s".')
-    failure_message = _('Unable to add Monitor "%s".')
+    success_message = _('Added monitor')
+    failure_message = _('Unable to add monitor')
     success_url = "horizon:project:loadbalancers:index"
     default_steps = (AddMonitorStep,)
 

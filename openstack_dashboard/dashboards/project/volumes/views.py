@@ -47,14 +47,17 @@ class VolumeTableMixIn(object):
         except:
             exceptions.handle(self.request,
                               _('Unable to retrieve volume list.'))
+            return []
 
     def _get_instances(self):
         try:
-            return api.nova.server_list(self.request)
+            instances, has_more = api.nova.server_list(self.request)
+            return instances
         except:
             exceptions.handle(self.request,
                               _("Unable to retrieve volume/instance "
                                 "attachment information"))
+            return []
 
     def _set_id_if_nameless(self, volumes, instances):
         for volume in volumes:
@@ -110,6 +113,10 @@ class CreateSnapshotView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(CreateSnapshotView, self).get_context_data(**kwargs)
         context['volume_id'] = self.kwargs['volume_id']
+        try:
+            context['usages'] = quotas.tenant_quota_usages(self.request)
+        except:
+            exceptions.handle(self.request)
         return context
 
     def get_initial(self):
@@ -145,7 +152,7 @@ class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
 
     def get_initial(self):
         try:
-            instances = api.nova.server_list(self.request)
+            instances, has_more = api.nova.server_list(self.request)
         except:
             instances = []
             exceptions.handle(self.request,

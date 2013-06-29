@@ -18,6 +18,8 @@ from django.conf import settings
 from django.utils import datetime_safe
 
 from keystoneclient.v2_0 import users, tenants, tokens, roles, ec2
+from keystoneclient.v3 import domains, groups
+
 
 from .utils import TestDataContainer
 
@@ -81,14 +83,24 @@ SERVICE_CATALOG = [
         {"region": "RegionOne",
          "adminURL": "http://admin.nova.example.com:8773/services/Admin",
          "publicURL": "http://public.nova.example.com:8773/services/Cloud",
-         "internalURL": "http://int.nova.example.com:8773/services/Cloud"}]}
+         "internalURL": "http://int.nova.example.com:8773/services/Cloud"}]},
+    {"type": "orchestration",
+     "name": "Heat",
+     "endpoints_links": [],
+     "endpoints": [
+        {"region": "RegionOne",
+         "adminURL": "http://admin.heat.example.com:8004/v1",
+         "publicURL": "http://public.heat.example.com:8004/v1",
+         "internalURL": "http://int.heat.example.com:8004/v1"}]}
 ]
 
 
 def data(TEST):
     TEST.service_catalog = SERVICE_CATALOG
     TEST.tokens = TestDataContainer()
+    TEST.domains = TestDataContainer()
     TEST.users = TestDataContainer()
+    TEST.groups = TestDataContainer()
     TEST.tenants = TestDataContainer()
     TEST.roles = TestDataContainer()
     TEST.ec2 = TestDataContainer()
@@ -103,11 +115,25 @@ def data(TEST):
     TEST.roles.admin = admin_role
     TEST.roles.member = member_role
 
+    domain_dict = {'id': "1",
+                   'name': 'test_domain',
+                   'description': "a test domain.",
+                   'enabled': True}
+    domain_dict_2 = {'id': "2",
+                     'name': 'disabled_domain',
+                     'description': "a disabled test domain.",
+                     'enabled': False}
+    domain = domains.Domain(domains.DomainManager, domain_dict)
+    disabled_domain = domains.Domain(domains.DomainManager, domain_dict_2)
+    TEST.domains.add(domain, disabled_domain)
+    TEST.domain = domain  # Your "current" domain
+
     user_dict = {'id': "1",
                  'name': 'test_user',
                  'email': 'test@example.com',
                  'password': 'password',
                  'token': 'test_token',
+                 'project_id': '1',
                  'enabled': True}
     user = users.User(users.UserManager(None), user_dict)
     user_dict = {'id': "2",
@@ -115,6 +141,7 @@ def data(TEST):
                  'email': 'two@example.com',
                  'password': 'password',
                  'token': 'test_token',
+                 'project_id': '1',
                  'enabled': True}
     user2 = users.User(users.UserManager(None), user_dict)
     user_dict = {'id': "3",
@@ -122,11 +149,24 @@ def data(TEST):
                  'email': 'three@example.com',
                  'password': 'password',
                  'token': 'test_token',
+                 'project_id': '1',
                  'enabled': True}
     user3 = users.User(users.UserManager(None), user_dict)
     TEST.users.add(user, user2, user3)
     TEST.user = user  # Your "current" user
     TEST.user.service_catalog = SERVICE_CATALOG
+
+    group_dict = {'id': "1",
+                 'name': 'group_one',
+                 'description': 'group one description',
+                 'domain_id': '1'}
+    group = groups.Group(groups.GroupManager(None), group_dict)
+    group_dict = {'id': "2",
+                 'name': 'group_two',
+                 'description': 'group two description',
+                 'domain_id': '1'}
+    group2 = groups.Group(groups.GroupManager(None), group_dict)
+    TEST.groups.add(group, group2)
 
     tenant_dict = {'id': "1",
                    'name': 'test_tenant',

@@ -23,6 +23,7 @@ from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 from openstack_dashboard.dashboards.project.networks.tests \
     import form_data_subnet
+from horizon.workflows.views import WorkflowView
 
 
 INDEX_URL = reverse('horizon:admin:networks:index')
@@ -35,7 +36,7 @@ class NetworkTests(test.BaseAdminViewTests):
         tenants = self.tenants.list()
         api.quantum.network_list(IsA(http.HttpRequest)) \
             .AndReturn(self.networks.list())
-        api.keystone.tenant_list(IsA(http.HttpRequest), admin=True)\
+        api.keystone.tenant_list(IsA(http.HttpRequest))\
             .AndReturn(tenants)
 
         self.mox.ReplayAll()
@@ -151,7 +152,7 @@ class NetworkTests(test.BaseAdminViewTests):
     @test.create_stubs({api.keystone: ('tenant_list',)})
     def test_network_create_get(self):
         tenants = self.tenants.list()
-        api.keystone.tenant_list(IsA(http.HttpRequest), admin=True)\
+        api.keystone.tenant_list(IsA(http.HttpRequest))\
             .AndReturn(tenants)
         self.mox.ReplayAll()
 
@@ -166,7 +167,7 @@ class NetworkTests(test.BaseAdminViewTests):
         tenants = self.tenants.list()
         tenant_id = self.tenants.first().id
         network = self.networks.first()
-        api.keystone.tenant_list(IsA(http.HttpRequest), admin=True)\
+        api.keystone.tenant_list(IsA(http.HttpRequest))\
             .AndReturn(tenants)
         params = {'name': network.name,
                   'tenant_id': tenant_id,
@@ -194,7 +195,7 @@ class NetworkTests(test.BaseAdminViewTests):
         tenants = self.tenants.list()
         tenant_id = self.tenants.first().id
         network = self.networks.first()
-        api.keystone.tenant_list(IsA(http.HttpRequest), admin=True)\
+        api.keystone.tenant_list(IsA(http.HttpRequest))\
             .AndReturn(tenants)
         params = {'name': network.name,
                   'tenant_id': tenant_id,
@@ -301,7 +302,7 @@ class NetworkTests(test.BaseAdminViewTests):
     def test_delete_network(self):
         tenants = self.tenants.list()
         network = self.networks.first()
-        api.keystone.tenant_list(IsA(http.HttpRequest), admin=True)\
+        api.keystone.tenant_list(IsA(http.HttpRequest))\
             .AndReturn(tenants)
         api.quantum.network_list(IsA(http.HttpRequest))\
             .AndReturn([network])
@@ -320,7 +321,7 @@ class NetworkTests(test.BaseAdminViewTests):
     def test_delete_network_exception(self):
         tenants = self.tenants.list()
         network = self.networks.first()
-        api.keystone.tenant_list(IsA(http.HttpRequest), admin=True)\
+        api.keystone.tenant_list(IsA(http.HttpRequest))\
             .AndReturn(tenants)
         api.quantum.network_list(IsA(http.HttpRequest))\
             .AndReturn([network])
@@ -381,7 +382,7 @@ class NetworkSubnetTests(test.BaseAdminViewTests):
                       args=[network.id])
         res = self.client.get(url)
 
-        self.assertTemplateUsed(res, 'admin/networks/subnets/create.html')
+        self.assertTemplateUsed(res, WorkflowView.template_name)
 
     @test.create_stubs({api.quantum: ('network_get',
                                       'subnet_create',)})

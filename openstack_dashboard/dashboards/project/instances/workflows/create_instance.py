@@ -23,15 +23,17 @@ import logging
 
 from django.utils.text import normalize_newlines
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.debug import sensitive_variables
 
 from horizon import exceptions
 from horizon import forms
 from horizon import workflows
+from horizon.utils import validators
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
-from openstack_dashboard.api import glance
 from openstack_dashboard.usage import quotas
+from ...images_and_snapshots.utils import get_available_images
 
 
 LOG = logging.getLogger(__name__)
@@ -112,9 +114,10 @@ class VolumeOptionsAction(workflows.Action):
             vol_type = "vol"
             visible_label = _("Volume")
         return (("%s:%s" % (volume.id, vol_type)),
-                ("%s - %s GB (%s)" % (volume.display_name,
-                                     volume.size,
-                                     visible_label)))
+                (_("%(name)s - %(size)s GB (%(label)s)") %
+                 {'name': volume.display_name,
+                  'size': volume.size,
+                  'label': visible_label}))
 
     def populate_volume_id_choices(self, request, context):
         volume_options = [("", _("Select Volume"))]
@@ -196,21 +199,30 @@ class SetInstanceDetailsAction(workflows.Action):
         source = cleaned_data['source_type']
         # There should always be at least one image_id choice, telling the user
         # that there are "No Images Available" so we check for 2 here...
-        if source == 'image_id' and not \
-                filter(lambda x: x[0] != '', self.fields['image_id'].choices):
-            raise forms.ValidationError(_("There are no image sources "
-                                          "available; you must first create "
-                                          "an image before attempting to "
-                                          "launch an instance."))
-        if not cleaned_data[source]:
-            raise forms.ValidationError(_("Please select an option for the "
-                                          "instance source."))
+        volume_type = self.data.get('volume_type', None)
+        if volume_type:  # Boot from volume
+            if cleaned_data[source]:
+                raise forms.ValidationError(_("You can't select an instance "
+                                              "source when booting from a "
+                                              "Volume. The Volume is your "
+                                              "source and should contain "
+                                              "the operating system."))
+        else:  # Boot from image / image_snapshot
+            if source == 'image_id' and not \
+                 filter(lambda x: x[0] != '', self.fields['image_id'].choices):
+                raise forms.ValidationError(_("There are no image sources "
+                                              "available; you must first "
+                                              "create an image before "
+                                              "attemtping to launch an "
+                                              "instance."))
+            elif not cleaned_data[source]:
+                raise forms.ValidationError(_("Please select an option for the"
+                                              " instance source."))
 
         # Prevent launching multiple instances with the same volume.
         # TODO(gabriel): is it safe to launch multiple instances with
         # a snapshot since it should be cloned to new volumes?
         count = cleaned_data.get('count', 1)
-        volume_type = self.data.get('volume_type', None)
         if volume_type and count > 1:
             msg = _('Launching multiple instances is only supported for '
                     'images and instance snapshots.')
@@ -218,52 +230,14 @@ class SetInstanceDetailsAction(workflows.Action):
 
         return cleaned_data
 
-    def _get_available_images(self, request, context):
-        project_id = context.get('project_id', None)
-        if not hasattr(self, "_public_images"):
-            public = {"is_public": True,
-                      "status": "active"}
-            try:
-                public_images, _more = glance.image_list_detailed(
-                    request, filters=public)
-            except:
-                public_images = []
-                exceptions.handle(request,
-                                  _("Unable to retrieve public images."))
-            self._public_images = public_images
-
-        # Preempt if we don't have a project_id yet.
-        if project_id is None:
-            setattr(self, "_images_for_%s" % project_id, [])
-
-        if not hasattr(self, "_images_for_%s" % project_id):
-            owner = {"property-owner_id": project_id,
-                     "status": "active"}
-            try:
-                owned_images, _more = glance.image_list_detailed(
-                    request, filters=owner)
-            except:
-                owned_images = []
-                exceptions.handle(request,
-                                  _("Unable to retrieve images for "
-                                    "the current project."))
-            setattr(self, "_images_for_%s" % project_id, owned_images)
-
-        owned_images = getattr(self, "_images_for_%s" % project_id)
-        images = owned_images + self._public_images
-
-        # Remove duplicate images
-        image_ids = []
-        final_images = []
-        for image in images:
-            if image.id not in image_ids:
-                image_ids.append(image.id)
-                final_images.append(image)
-        return [image for image in final_images
-                if image.container_format not in ('aki', 'ari')]
+    def _init_images_cache(self):
+        if not hasattr(self, '_images_cache'):
+            self._images_cache = {}
 
     def populate_image_id_choices(self, request, context):
-        images = self._get_available_images(request, context)
+        self._init_images_cache()
+        images = get_available_images(request, context.get('project_id'),
+                                      self._images_cache)
         choices = [(image.id, image.name)
                    for image in images
                    if image.properties.get("image_type", '') != "snapshot"]
@@ -274,7 +248,9 @@ class SetInstanceDetailsAction(workflows.Action):
         return choices
 
     def populate_instance_snapshot_id_choices(self, request, context):
-        images = self._get_available_images(request, context)
+        self._init_images_cache()
+        images = get_available_images(request, context.get('project_id'),
+                                      self._images_cache)
         choices = [(image.id, image.name)
                    for image in images
                    if image.properties.get("image_type", '') == "snapshot"]
@@ -341,6 +317,16 @@ class SetAccessControlsAction(workflows.Action):
                                        help_text=_("Which keypair to use for "
                                                    "authentication."),
                                        add_item_link=KEYPAIR_IMPORT_URL)
+    admin_pass = forms.RegexField(
+            label=_("Admin Pass"),
+            required=False,
+            widget=forms.PasswordInput(render_value=False),
+            regex=validators.password_validator(),
+            error_messages={'invalid': validators.password_validator_msg()})
+    confirm_admin_pass = forms.CharField(
+            label=_("Confirm Admin Pass"),
+            required=False,
+            widget=forms.PasswordInput(render_value=False))
     groups = forms.MultipleChoiceField(label=_("Security Groups"),
                                        required=True,
                                        initial=["default"],
@@ -379,17 +365,29 @@ class SetAccessControlsAction(workflows.Action):
             security_group_list = []
         return security_group_list
 
+    def clean(self):
+        '''Check to make sure password fields match.'''
+        cleaned_data = super(SetAccessControlsAction, self).clean()
+        if 'admin_pass' in cleaned_data:
+            if cleaned_data['admin_pass'] != cleaned_data.get(
+                    'confirm_admin_pass', None):
+                raise forms.ValidationError(_('Passwords do not match.'))
+        return cleaned_data
+
 
 class SetAccessControls(workflows.Step):
     action_class = SetAccessControlsAction
     depends_on = ("project_id", "user_id")
-    contributes = ("keypair_id", "security_group_ids")
+    contributes = ("keypair_id", "security_group_ids",
+            "admin_pass", "confirm_admin_pass")
 
     def contribute(self, data, context):
         if data:
             post = self.workflow.request.POST
             context['security_group_ids'] = post.getlist("groups")
             context['keypair_id'] = data.get("keypair", "")
+            context['admin_pass'] = data.get("admin_pass", "")
+            context['confirm_admin_pass'] = data.get("confirm_admin_pass", "")
         return context
 
 
@@ -483,6 +481,7 @@ class LaunchInstance(workflows.Workflow):
         else:
             return message % {"count": _("instance"), "name": name}
 
+    @sensitive_variables('context')
     def handle(self, request, context):
         custom_script = context.get('customization_script', '')
 
@@ -515,7 +514,8 @@ class LaunchInstance(workflows.Workflow):
                                    context['security_group_ids'],
                                    dev_mapping,
                                    nics=nics,
-                                   instance_count=int(context['count']))
+                                   instance_count=int(context['count']),
+                                   admin_pass=context['admin_pass'])
             return True
         except:
             exceptions.handle(request)

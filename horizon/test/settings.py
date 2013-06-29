@@ -35,6 +35,8 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 TESTSERVER = 'http://testserver'
 
+SECRET_KEY = 'elj1IWiLoWHgcyYxFVLj7cM5rGOOxWl0'
+
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -96,6 +98,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--nocapture',
              '--nologcapture',
              '--exclude-dir=horizon/conf/',
+             '--exclude-dir=horizon/test/customization',
              '--cover-package=horizon',
              '--cover-inclusive',
              '--all-modules']

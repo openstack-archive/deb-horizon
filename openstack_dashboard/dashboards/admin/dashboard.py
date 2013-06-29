@@ -23,7 +23,8 @@ class SystemPanels(horizon.PanelGroup):
     slug = "admin"
     name = _("System Panel")
     panels = ('overview', 'instances', 'volumes', 'flavors',
-              'images', 'projects', 'users', 'networks', 'routers', 'info')
+              'images', 'domains', 'projects', 'users', 'groups',
+              'roles', 'networks', 'routers', 'info')
 
 
 class Admin(horizon.Dashboard):

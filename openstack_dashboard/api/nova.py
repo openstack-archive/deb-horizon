@@ -25,7 +25,7 @@ from __future__ import absolute_import
 import logging
 
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from novaclient.v1_1 import client as nova_client
 from novaclient.v1_1 import security_group_rules as nova_rules
@@ -344,13 +344,13 @@ def keypair_list(request):
 
 def server_create(request, name, image, flavor, key_name, user_data,
                   security_groups, block_device_mapping, nics=None,
-                  instance_count=1):
+                  instance_count=1, admin_pass=None):
     return Server(novaclient(request).servers.create(
             name, image, flavor, userdata=user_data,
             security_groups=security_groups,
             key_name=key_name, block_device_mapping=block_device_mapping,
             nics=nics,
-            min_count=instance_count), request)
+            min_count=instance_count, admin_pass=admin_pass), request)
 
 
 def server_delete(request, instance):
@@ -362,14 +362,32 @@ def server_get(request, instance_id):
 
 
 def server_list(request, search_opts=None, all_tenants=False):
+    page_size = request.session.get('horizon_pagesize',
+                                    getattr(settings, 'API_RESULT_PAGE_SIZE',
+                                            20))
+    paginate = False
     if search_opts is None:
         search_opts = {}
+    elif 'paginate' in search_opts:
+        paginate = search_opts.pop('paginate')
+        if paginate:
+            search_opts['limit'] = page_size + 1
+
     if all_tenants:
         search_opts['all_tenants'] = True
     else:
         search_opts['project_id'] = request.user.tenant_id
-    return [Server(s, request)
-            for s in novaclient(request).servers.list(True, search_opts)]
+    servers = [Server(s, request)
+                for s in novaclient(request).servers.list(True, search_opts)]
+
+    has_more_data = False
+    if paginate and len(servers) > page_size:
+        servers.pop(-1)
+        has_more_data = True
+    elif paginate and len(servers) == getattr(settings, 'API_RESULT_LIMIT',
+                                              1000):
+        has_more_data = True
+    return (servers, has_more_data)
 
 
 def server_console_output(request, instance_id, tail_length=None):
