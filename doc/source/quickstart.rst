@@ -140,7 +140,7 @@ Application
 Structure
 ---------
 
-An application would have the following structure (we'll use project as
+An application would have the following structure (we'll use syspanel as
 an example)::
 
     project/
