@@ -1,3 +1,2 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
-fix-package-version-detection-when-building-doc.patch
