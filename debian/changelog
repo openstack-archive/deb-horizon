@@ -1,6 +1,8 @@
 horizon (2013.1.2-3) unstable; urgency=low
 
   * Now works with Sid apache 2.4 (Closes: #669836).
+  * Debconf and long description rewrite from the debian-l10n-english team: a
+    big thanks to them (Closes: #709000).
 
  -- Thomas Goirand <zigo@debian.org>  Sun, 14 Jul 2013 06:13:46 +0000
 
