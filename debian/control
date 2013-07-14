@@ -70,9 +70,9 @@ Depends: python-cinderclient,
          ${python:Depends}
 Recommends: memcached
 Description: Django module providing web interaction with OpenStack
- The OpenStack Dashboard is a Web application allowing to control an OpenStack
- cloud. It connects to OpenStack services including Nova, Swift, Keystone, etc.
- using the Openstack REST API just like you would do with the command line
+ The OpenStack Dashboard is a web application to control an OpenStack
+ cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
+ using the OpenStack REST API just as you would with the command line
  clients.
  .
  Horizon is a Django module that permits interaction with an OpenStack
@@ -92,9 +92,9 @@ Depends: adduser,
          ${shlibs:Depends}
 Recommends: memcached, openstack-dashboard-apache
 Description: OpenStack Dashboard
- The OpenStack Dashboard is a Web application allowing to control an OpenStack
- cloud. It connects to OpenStack services including Nova, Swift, Keystone, etc.
- using the Openstack REST API just like you would do with the command line
+ The OpenStack Dashboard is a web application to control an OpenStack
+ cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
+ using the OpenStack REST API just as you would with the command line
  clients.
 
 Package: openstack-dashboard-apache
@@ -102,9 +102,9 @@ Architecture: all
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: debconf, openstack-dashboard, ${misc:Depends}
 Description: OpenStack Dashboard - Apache support
- The OpenStack Dashboard is a Web application allowing to control an OpenStack
- cloud. It connects to OpenStack services including Nova, Swift, Keystone, etc.
- using the Openstack REST API just like you would do with the command line
+ The OpenStack Dashboard is a web application to control an OpenStack
+ cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
+ using the OpenStack REST API just as you would with the command line
  clients.
  .
  This package includes the configuration files to use within Apache. If you
