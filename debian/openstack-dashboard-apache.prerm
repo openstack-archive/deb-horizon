@@ -4,10 +4,10 @@ set -e
 
 if [ -x /usr/sbin/a2dissite ] ; then
 	for i in openstack-dashboard openstack-dashboard-ssl-redirect openstack-dashboard-ssl ; do
-		if [ -L /etc/apache2/sites-available/${i} ] ; then
+		if [ -L /etc/apache2/sites-enabled/${i} ] ; then
 			a2dissite ${i} || true
 		fi
-		if [ -L /etc/apache2/sites-available/${i}.conf ] ; then
+		if [ -L /etc/apache2/sites-enabled/${i}.conf ] ; then
 			a2dissite ${i}.conf
 		fi
 	done
