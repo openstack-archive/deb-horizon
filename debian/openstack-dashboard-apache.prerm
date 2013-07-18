@@ -3,9 +3,14 @@
 set -e
 
 if [ -x /usr/sbin/a2dissite ] ; then
-	a2dissite openstack-dashboard
-	a2dissite openstack-dashboard-ssl-redirect
-	a2dissite openstack-dashboard-ssl
+	for i in openstack-dashboard openstack-dashboard-ssl-redirect openstack-dashboard-ssl ; do
+		if [ -L /etc/apache2/sites-available/${i} ] ; then
+			a2dissite ${i} || true
+		fi
+		if [ -L /etc/apache2/sites-available/${i}.conf ] ; then
+			a2dissite ${i}.conf
+		fi
+	done
 fi
 
 #DEBHELPER#
