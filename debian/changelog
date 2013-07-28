@@ -1,6 +1,8 @@
 horizon (2013.2~b2-1) unstable; urgency=low
 
   * New upstream release.
+  * Removed python-selenium from build-depends (it's non-free), and replaced
+    python-quantumclient by python-neutronclient.
 
  -- Thomas Goirand <zigo@debian.org>  Sat, 29 Jun 2013 22:17:52 +0800
 
