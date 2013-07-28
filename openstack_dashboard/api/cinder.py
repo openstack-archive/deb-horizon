@@ -29,10 +29,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from cinderclient.v1 import client as cinder_client
 
+from horizon import exceptions
+
+from openstack_dashboard.api.base import QuotaSet
 from openstack_dashboard.api.base import url_for
 from openstack_dashboard.api import nova
-from openstack_dashboard.api.base import QuotaSet
-from horizon import exceptions
 
 LOG = logging.getLogger(__name__)
 
@@ -144,3 +145,15 @@ def volume_type_create(request, name):
 
 def volume_type_delete(request, volume_type_id):
     return cinderclient(request).volume_types.delete(volume_type_id)
+
+
+def tenant_absolute_limits(request):
+    limits = cinderclient(request).limits.get().absolute
+    limits_dict = {}
+    for limit in limits:
+        # -1 is used to represent unlimited quotas
+        if limit.value == -1:
+            limits_dict[limit.name] = float("inf")
+        else:
+            limits_dict[limit.name] = limit.value
+    return limits_dict

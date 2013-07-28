@@ -29,7 +29,9 @@ import logging
 import os
 
 from django.conf import settings
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls.defaults import include
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import SortedDict
@@ -38,9 +40,11 @@ from django.utils.importlib import import_module
 from django.utils.module_loading import module_has_submodule
 from django.utils.translation import ugettext_lazy as _
 
-from horizon import loaders
 from horizon import conf
-from horizon.decorators import require_auth, require_perms, _current_component
+from horizon.decorators import _current_component
+from horizon.decorators import require_auth
+from horizon.decorators import require_perms
+from horizon import loaders
 
 
 LOG = logging.getLogger(__name__)
@@ -276,7 +280,7 @@ class PanelGroup(object):
         for name in self.panels:
             try:
                 panel_instances.append(self.dashboard.get_panel(name))
-            except NotRegistered, e:
+            except NotRegistered as e:
                 LOG.debug(e)
         return iter(panel_instances)
 
@@ -411,10 +415,11 @@ class Dashboard(Registry, HorizonComponent):
         panel_groups = []
 
         # Gather our known panels
-        for panel_group in self._panel_groups.values():
-            for panel in panel_group:
-                registered.pop(panel.__class__)
-            panel_groups.append((panel_group.slug, panel_group))
+        if self._panel_groups is not None:
+            for panel_group in self._panel_groups.values():
+                for panel in panel_group:
+                    registered.pop(panel.__class__)
+                panel_groups.append((panel_group.slug, panel_group))
 
         # Deal with leftovers (such as add-on registrations)
         if len(registered):
@@ -560,6 +565,16 @@ class LazyURLPattern(SimpleLazyObject):
         if self._wrapped is empty:
             self._setup()
         return reversed(self._wrapped)
+
+    def __len__(self):
+        if self._wrapped is empty:
+            self._setup()
+        return len(self._wrapped)
+
+    def __getitem__(self, idx):
+        if self._wrapped is empty:
+            self._setup()
+        return self._wrapped[idx]
 
 
 class Site(Registry, HorizonComponent):

@@ -18,16 +18,23 @@
 Admin views for managing volumes.
 """
 
+from django.core.urlresolvers import reverse
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+
 from openstack_dashboard.dashboards.project.volumes.views import \
-        VolumeTableMixIn, DetailView as _DetailView
+        DetailView as _DetailView
+from openstack_dashboard.dashboards.project.volumes.views import \
+        VolumeTableMixIn
+
 from openstack_dashboard.api import cinder
 from openstack_dashboard.api import keystone
 
-from .tables import VolumesTable, VolumeTypesTable
-from .forms import CreateVolumeType
+from openstack_dashboard.dashboards.admin.volumes.forms import CreateVolumeType
+from openstack_dashboard.dashboards.admin.volumes.tables import VolumesTable
+from openstack_dashboard.dashboards.admin.volumes.tables \
+    import VolumeTypesTable
+
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
@@ -38,17 +45,17 @@ class IndexView(tables.MultiTableView, VolumeTableMixIn):
     template_name = "admin/volumes/index.html"
 
     def get_volumes_data(self):
-        volumes = self._get_volumes(search_opts={'all_tenants': 1})
-        instances = self._get_instances()
+        volumes = self._get_volumes(search_opts={'all_tenants': True})
+        instances = self._get_instances(search_opts={'all_tenants': True})
         self._set_id_if_nameless(volumes, instances)
         self._set_attachments_string(volumes, instances)
 
         # Gather our tenants to correlate against IDs
         try:
-            tenants = keystone.tenant_list(self.request)
+            tenants, has_more = keystone.tenant_list(self.request)
         except:
             tenants = []
-            msg = _('Unable to retrieve volume tenant information.')
+            msg = _('Unable to retrieve volume project information.')
             exceptions.handle(self.request, msg)
 
         tenant_dict = SortedDict([(t.id, t) for t in tenants])

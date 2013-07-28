@@ -15,7 +15,7 @@
 #    under the License.
 
 """
-Views for managing Quantum Routers.
+Views for managing Neutron Routers.
 """
 
 import logging
@@ -28,8 +28,9 @@ from openstack_dashboard import api
 from openstack_dashboard.dashboards.admin.networks import views as n_views
 from openstack_dashboard.dashboards.project.routers import views as r_views
 
-from .ports.tables import PortsTable
-from .tables import RoutersTable
+from openstack_dashboard.dashboards.admin.routers.ports.tables \
+    import PortsTable
+from openstack_dashboard.dashboards.admin.routers.tables import RoutersTable
 
 
 LOG = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class IndexView(r_views.IndexView, n_views.IndexView):
 
     def _get_routers(self, search_opts=None):
         try:
-            routers = api.quantum.router_list(self.request,
+            routers = api.neutron.router_list(self.request,
                                               search_opts=search_opts)
         except:
             routers = []

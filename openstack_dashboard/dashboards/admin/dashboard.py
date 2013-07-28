@@ -22,15 +22,20 @@ import horizon
 class SystemPanels(horizon.PanelGroup):
     slug = "admin"
     name = _("System Panel")
-    panels = ('overview', 'instances', 'volumes', 'flavors',
-              'images', 'domains', 'projects', 'users', 'groups',
-              'roles', 'networks', 'routers', 'info')
+    panels = ('overview', 'hypervisors', 'instances', 'volumes', 'flavors',
+              'images', 'networks', 'routers', 'info')
+
+
+class IdentityPanels(horizon.PanelGroup):
+    slug = "identity"
+    name = _("Identity Panel")
+    panels = ('domains', 'projects', 'users', 'groups', 'roles')
 
 
 class Admin(horizon.Dashboard):
     name = _("Admin")
     slug = "admin"
-    panels = (SystemPanels,)
+    panels = (SystemPanels, IdentityPanels)
     default_panel = 'overview'
     permissions = ('openstack.roles.admin',)
 

@@ -19,12 +19,11 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
-from horizon import workflows
 from horizon import forms
+from horizon import workflows
 
 from openstack_dashboard import api
-
-from .utils import get_int_or_uuid
+from openstack_dashboard.utils.filters import get_int_or_uuid
 
 
 ALLOCATE_URL = "horizon:project:access_and_security:floating_ips:allocate"
@@ -51,7 +50,7 @@ class AssociateIPAction(workflows.Action):
         self.fields['instance_id'].label = label
 
         # If AssociateIP is invoked from instance menu, instance_id parameter
-        # is passed in URL. In Quantum based Floating IP implementation
+        # is passed in URL. In Neutron based Floating IP implementation
         # an association target is not an instance but a port, so we need
         # to get an association target based on a received instance_id
         # and set the initial value of instance_id ChoiceField.
@@ -92,15 +91,15 @@ class AssociateIPAction(workflows.Action):
         # Sort instances for easy browsing
         instances = sorted(instances, key=lambda x: x[1])
 
-        quantum_enabled = api.base.is_service_enabled(request, 'network')
+        neutron_enabled = api.base.is_service_enabled(request, 'network')
         if instances:
-            if quantum_enabled:
+            if neutron_enabled:
                 label = _("Select a port")
             else:
                 label = _("Select an instance")
             instances.insert(0, ("", label))
         else:
-            if quantum_enabled:
+            if neutron_enabled:
                 label = _("No ports available")
             else:
                 label = _("No instances available")

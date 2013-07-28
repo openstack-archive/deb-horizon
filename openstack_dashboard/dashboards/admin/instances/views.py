@@ -31,11 +31,32 @@ from openstack_dashboard import api
 from openstack_dashboard.dashboards.admin.instances.tables import \
         AdminInstancesTable
 from openstack_dashboard.dashboards.project.instances.views import \
-        console, DetailView, vnc, spice, UpdateView
+        console as p_console
+from openstack_dashboard.dashboards.project.instances.views import \
+        spice as p_spice
+from openstack_dashboard.dashboards.project.instances.views import \
+        UpdateView
+from openstack_dashboard.dashboards.project.instances.views import \
+        vnc as p_vnc
 from openstack_dashboard.dashboards.project.instances.workflows.\
         update_instance import AdminUpdateInstance
 
 LOG = logging.getLogger(__name__)
+
+
+# re-use console from project.instances.views to make reflection work
+def console(args, **kvargs):
+    return p_console(args, **kvargs)
+
+
+# re-use vnc from project.instances.views to make reflection work
+def vnc(args, **kvargs):
+    return p_vnc(args, **kvargs)
+
+
+# re-use spice from project.instances.views to make reflection work
+def spice(args, **kvargs):
+    return p_spice(args, **kvargs)
 
 
 class AdminUpdateView(UpdateView):
@@ -73,10 +94,10 @@ class AdminIndexView(tables.DataTableView):
 
             # Gather our tenants to correlate against IDs
             try:
-                tenants = api.keystone.tenant_list(self.request)
+                tenants, has_more = api.keystone.tenant_list(self.request)
             except:
                 tenants = []
-                msg = _('Unable to retrieve instance tenant information.')
+                msg = _('Unable to retrieve instance project information.')
                 exceptions.handle(self.request, msg)
 
             full_flavors = SortedDict([(f.id, f) for f in flavors])

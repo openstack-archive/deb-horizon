@@ -20,8 +20,8 @@
 
 import logging
 
-from django.core import validators
 from django.core.urlresolvers import reverse
+from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -29,7 +29,8 @@ from horizon import forms
 from horizon import messages
 
 from openstack_dashboard import api
-from .tables import wrap_delimiter
+from openstack_dashboard.dashboards.project.containers.tables import \
+    wrap_delimiter
 
 
 LOG = logging.getLogger(__name__)
@@ -141,7 +142,7 @@ class CopyObject(forms.SelfHandlingForm):
                              _('Copied "%(orig)s" to "%(dest)s" as "%(new)s".')
                              % vals)
             return True
-        except exceptions.HorizonException, exc:
+        except exceptions.HorizonException as exc:
             messages.error(request, exc)
             raise exceptions.Http302(reverse(index,
                                      args=[wrap_delimiter(orig_container)]))

@@ -20,7 +20,8 @@
 
 import operator
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
@@ -30,8 +31,10 @@ from horizon import forms
 from horizon import tables
 
 from openstack_dashboard import api
-from .forms import CreateUserForm, UpdateUserForm
-from .tables import UsersTable
+
+from openstack_dashboard.dashboards.admin.users.forms import CreateUserForm
+from openstack_dashboard.dashboards.admin.users.forms import UpdateUserForm
+from openstack_dashboard.dashboards.admin.users.tables import UsersTable
 
 
 class IndexView(tables.DataTableView):
@@ -40,8 +43,10 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         users = []
+        domain_context = self.request.session.get('domain_context', None)
         try:
-            users = api.keystone.user_list(self.request)
+            users = api.keystone.user_list(self.request,
+                                           domain=domain_context)
         except:
             exceptions.handle(self.request,
                               _('Unable to retrieve user list.'))

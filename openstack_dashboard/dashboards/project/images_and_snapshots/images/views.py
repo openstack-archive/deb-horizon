@@ -24,7 +24,8 @@ Views for managing images.
 
 import logging
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -32,9 +33,13 @@ from horizon import forms
 from horizon import tabs
 
 from openstack_dashboard import api
-from .forms import UpdateImageForm
-from .forms import CreateImageForm
-from .tabs import ImageDetailTabs
+
+from openstack_dashboard.dashboards.project.images_and_snapshots.images.forms \
+    import CreateImageForm
+from openstack_dashboard.dashboards.project.images_and_snapshots.images.forms \
+    import UpdateImageForm
+from openstack_dashboard.dashboards.project.images_and_snapshots.images.tabs \
+    import ImageDetailTabs
 
 
 LOG = logging.getLogger(__name__)
@@ -72,6 +77,7 @@ class UpdateView(forms.ModalFormView):
         image = self.get_object()
         return {'image_id': self.kwargs['image_id'],
                 'name': image.name,
+                'description': image.properties.get('description', ''),
                 'kernel': image.properties.get('kernel_id', ''),
                 'ramdisk': image.properties.get('ramdisk_id', ''),
                 'architecture': image.properties.get('architecture', ''),

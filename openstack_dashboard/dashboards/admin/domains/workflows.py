@@ -19,13 +19,13 @@ import logging
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
-from horizon import workflows
 from horizon import forms
-from horizon import messages
+from horizon import workflows
 
 from openstack_dashboard import api
 
-from .constants import DOMAINS_INDEX_URL
+from openstack_dashboard.dashboards.admin.domains.constants \
+    import DOMAINS_INDEX_URL
 
 LOG = logging.getLogger(__name__)
 

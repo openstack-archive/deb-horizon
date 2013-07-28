@@ -5,7 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 from horizon.test.settings import *
 from horizon.utils.secret_key import generate_or_read_from_file
 
-from openstack_dashboard.exceptions import UNAUTHORIZED, RECOVERABLE, NOT_FOUND
+from openstack_dashboard.exceptions import NOT_FOUND
+from openstack_dashboard.exceptions import RECOVERABLE
+from openstack_dashboard.exceptions import UNAUTHORIZED
 
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -82,7 +84,7 @@ OPENSTACK_KEYSTONE_BACKEND = {
     'can_edit_role': True
 }
 
-OPENSTACK_QUANTUM_NETWORK = {
+OPENSTACK_NEUTRON_NETWORK = {
     'enable_lb': True
 }
 
@@ -97,6 +99,21 @@ OPENSTACK_HYPERVISOR_FEATURES = {
 LOGGING['loggers']['openstack_dashboard'] = {
     'handlers': ['test'],
     'propagate': False,
+}
+
+SECURITY_GROUP_RULES = {
+    'all_tcp': {
+        'name': 'ALL TCP',
+        'ip_protocol': 'tcp',
+        'from_port': '1',
+        'to_port': '65535',
+    },
+    'http': {
+        'name': 'HTTP',
+        'ip_protocol': 'tcp',
+        'from_port': '80',
+        'to_port': '80',
+    },
 }
 
 NOSE_ARGS = ['--nocapture',

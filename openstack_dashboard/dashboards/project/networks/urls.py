@@ -14,14 +14,24 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls.defaults import include
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .views import IndexView, CreateView, DetailView, UpdateView
-from .subnets.views import CreateView as AddSubnetView
-from .subnets.views import UpdateView as EditSubnetView
-from .subnets import urls as subnet_urls
-from .ports.views import UpdateView as EditPortView
-from .ports import urls as port_urls
+from openstack_dashboard.dashboards.project.networks.ports \
+    import urls as port_urls
+from openstack_dashboard.dashboards.project.networks.ports.views \
+    import UpdateView as EditPortView
+from openstack_dashboard.dashboards.project.networks.subnets \
+    import urls as subnet_urls
+from openstack_dashboard.dashboards.project.networks.subnets.views \
+    import CreateView as AddSubnetView
+from openstack_dashboard.dashboards.project.networks.subnets.views \
+    import UpdateView as EditSubnetView
+from openstack_dashboard.dashboards.project.networks.views import CreateView
+from openstack_dashboard.dashboards.project.networks.views import DetailView
+from openstack_dashboard.dashboards.project.networks.views import IndexView
+from openstack_dashboard.dashboards.project.networks.views import UpdateView
 
 
 NETWORKS = r'^(?P<network_id>[^/]+)/%s$'

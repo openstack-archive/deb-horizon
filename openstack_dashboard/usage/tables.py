@@ -1,6 +1,7 @@
 from django.core import urlresolvers
+from django.template.defaultfilters import floatformat
+from django.template.defaultfilters import timesince
 from django.utils.translation import ugettext_lazy as _
-from django.template.defaultfilters import timesince, floatformat
 
 from horizon import tables
 from horizon.templatetags.sizeformat import mbformat
@@ -27,7 +28,7 @@ class BaseUsageTable(tables.DataTable):
 
 
 class GlobalUsageTable(BaseUsageTable):
-    tenant = tables.Column('tenant_name', verbose_name=_("Project Name"))
+    project = tables.Column('project_name', verbose_name=_("Project Name"))
     disk_hours = tables.Column('disk_gb_hours',
                                verbose_name=_("Disk GB Hours"),
                                filters=(lambda v: floatformat(v, 2),))
@@ -38,7 +39,7 @@ class GlobalUsageTable(BaseUsageTable):
     class Meta:
         name = "global_usage"
         verbose_name = _("Usage Summary")
-        columns = ("tenant", "vcpus", "disk", "memory",
+        columns = ("project", "vcpus", "disk", "memory",
                    "hours", "disk_hours")
         table_actions = (CSVSummary,)
         multi_select = False
@@ -52,7 +53,7 @@ def get_instance_link(datum):
         return None
 
 
-class TenantUsageTable(BaseUsageTable):
+class ProjectUsageTable(BaseUsageTable):
     instance = tables.Column('name',
                              verbose_name=_("Instance Name"),
                              link=get_instance_link)
@@ -64,7 +65,7 @@ class TenantUsageTable(BaseUsageTable):
         return datum.get('instance_id', id(datum))
 
     class Meta:
-        name = "tenant_usage"
+        name = "project_usage"
         verbose_name = _("Usage Summary")
         columns = ("instance", "vcpus", "disk", "memory", "uptime")
         table_actions = (CSVSummary,)

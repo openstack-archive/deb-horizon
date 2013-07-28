@@ -14,6 +14,20 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from .base import BaseUsage, TenantUsage, GlobalUsage, almost_now
-from .views import UsageView
-from .tables import BaseUsageTable, TenantUsageTable, GlobalUsageTable
+from openstack_dashboard.usage.base import almost_now
+from openstack_dashboard.usage.base import BaseUsage
+from openstack_dashboard.usage.base import GlobalUsage
+from openstack_dashboard.usage.base import ProjectUsage
+from openstack_dashboard.usage.tables import BaseUsageTable
+from openstack_dashboard.usage.tables import GlobalUsageTable
+from openstack_dashboard.usage.tables import ProjectUsageTable
+from openstack_dashboard.usage.views import UsageView
+
+assert BaseUsage
+assert ProjectUsage
+assert GlobalUsage
+assert almost_now
+assert UsageView
+assert BaseUsageTable
+assert ProjectUsageTable
+assert GlobalUsageTable

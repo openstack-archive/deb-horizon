@@ -27,13 +27,14 @@ from django.views.decorators.debug import sensitive_variables
 
 from horizon import exceptions
 from horizon import forms
-from horizon import workflows
 from horizon.utils import validators
+from horizon import workflows
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
-from openstack_dashboard.usage import quotas
-from ...images_and_snapshots.utils import get_available_images
+
+from openstack_dashboard.dashboards.project.images_and_snapshots.utils \
+    import get_available_images
 
 
 LOG = logging.getLogger(__name__)
@@ -115,7 +116,7 @@ class VolumeOptionsAction(workflows.Action):
             visible_label = _("Volume")
         return (("%s:%s" % (volume.id, vol_type)),
                 (_("%(name)s - %(size)s GB (%(label)s)") %
-                 {'name': volume.display_name,
+                 {'name': volume.display_name or volume.id,
                   'size': volume.size,
                   'label': visible_label}))
 
@@ -179,6 +180,8 @@ class SetInstanceDetailsAction(workflows.Action):
     image_id = forms.ChoiceField(label=_("Image"), required=False)
     instance_snapshot_id = forms.ChoiceField(label=_("Instance Snapshot"),
                                              required=False)
+    availability_zone = forms.ChoiceField(label=_("Availability Zone"),
+                                          required=False)
     name = forms.CharField(max_length=80, label=_("Instance Name"))
     flavor = forms.ChoiceField(label=_("Flavor"),
                                help_text=_("Size of image to launch."))
@@ -271,10 +274,27 @@ class SetInstanceDetailsAction(workflows.Action):
                               _('Unable to retrieve instance flavors.'))
         return sorted(flavor_list)
 
+    def populate_availability_zone_choices(self, request, context):
+        try:
+            zones = api.nova.availability_zone_list(request)
+        except:
+            zones = []
+            exceptions.handle(request,
+                              _('Unable to retrieve availability zones.'))
+
+        zone_list = [(zone.zoneName, zone.zoneName)
+                      for zone in zones if zone.zoneState['available']]
+        zone_list.sort()
+        if zone_list:
+            zone_list.insert(0, ("", _("Any Availability Zone")))
+        else:
+            zone_list.insert(0, ("", _("No availability zones found.")))
+        return zone_list
+
     def get_help_text(self):
         extra = {}
         try:
-            extra['usages'] = quotas.tenant_quota_usages(self.request)
+            extra['usages'] = api.nova.tenant_absolute_limits(self.request)
             extra['usages_json'] = json.dumps(extra['usages'])
             flavors = json.dumps([f._info for f in
                                        api.nova.flavor_list(self.request)])
@@ -287,7 +307,8 @@ class SetInstanceDetailsAction(workflows.Action):
 
 class SetInstanceDetails(workflows.Step):
     action_class = SetInstanceDetailsAction
-    contributes = ("source_type", "source_id", "name", "count", "flavor")
+    contributes = ("source_type", "source_id", "availability_zone",
+                   "name", "count", "flavor")
 
     def prepare_action_context(self, request, context):
         if 'source_type' in context and 'source_id' in context:
@@ -357,7 +378,7 @@ class SetAccessControlsAction(workflows.Action):
 
     def populate_groups_choices(self, request, context):
         try:
-            groups = api.nova.security_group_list(request)
+            groups = api.network.security_group_list(request)
             security_group_list = [(sg.name, sg.name) for sg in groups]
         except:
             exceptions.handle(request,
@@ -421,7 +442,7 @@ class SetNetworkAction(workflows.Action):
                                                 "At least one network must"
                                                 " be specified.")},
                                         help_text=_("Launch instance with"
-                                                    "these networks"))
+                                                    " these networks"))
 
     class Meta:
         name = _("Networking")
@@ -431,7 +452,7 @@ class SetNetworkAction(workflows.Action):
     def populate_network_choices(self, request, context):
         try:
             tenant_id = self.request.user.tenant_id
-            networks = api.quantum.network_list_for_tenant(request, tenant_id)
+            networks = api.neutron.network_list_for_tenant(request, tenant_id)
             for n in networks:
                 n.set_id_as_name_if_empty()
             network_list = [(network.id, network.name) for network in networks]
@@ -504,6 +525,8 @@ class LaunchInstance(workflows.Workflow):
         else:
             nics = None
 
+        avail_zone = context.get('availability_zone', None)
+
         try:
             api.nova.server_create(request,
                                    context['name'],
@@ -514,6 +537,7 @@ class LaunchInstance(workflows.Workflow):
                                    context['security_group_ids'],
                                    dev_mapping,
                                    nics=nics,
+                                   availability_zone=avail_zone,
                                    instance_count=int(context['count']),
                                    admin_pass=context['admin_pass'])
             return True

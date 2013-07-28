@@ -1,5 +1,5 @@
-from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 import horizon
 
@@ -12,5 +12,10 @@ class LoadBalancer(horizon.Panel):
     permissions = ('openstack.services.network',)
 
 
-if getattr(settings, 'OPENSTACK_QUANTUM_NETWORK', {}).get('enable_lb', False):
+network_config = (
+    getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {}) or
+    getattr(settings, 'OPENSTACK_QUANTUM_NETWORK', {})
+)
+
+if network_config.get('enable_lb'):
     dashboard.Project.register(LoadBalancer)

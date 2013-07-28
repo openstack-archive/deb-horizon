@@ -14,16 +14,28 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import patterns, url, include
-from .views import IndexView, CreateView, DetailView, UpdateView
+from django.conf.urls.defaults import include
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .subnets.views import CreateView as AddSubnetView
-from .subnets.views import UpdateView as EditSubnetView
-from .ports.views import CreateView as AddPortView
-from .ports.views import UpdateView as EditPortView
+from openstack_dashboard.dashboards.admin.networks.views import CreateView
+from openstack_dashboard.dashboards.admin.networks.views import DetailView
+from openstack_dashboard.dashboards.admin.networks.views import IndexView
+from openstack_dashboard.dashboards.admin.networks.views import UpdateView
 
-from .subnets import urls as subnet_urls
-from .ports import urls as port_urls
+from openstack_dashboard.dashboards.admin.networks.subnets \
+    import urls as subnet_urls
+from openstack_dashboard.dashboards.admin.networks.subnets.views \
+    import CreateView as AddSubnetView
+from openstack_dashboard.dashboards.admin.networks.subnets.views \
+    import UpdateView as EditSubnetView
+
+from openstack_dashboard.dashboards.admin.networks.ports \
+    import urls as port_urls
+from openstack_dashboard.dashboards.admin.networks.ports.views \
+    import CreateView as AddPortView
+from openstack_dashboard.dashboards.admin.networks.ports.views \
+    import UpdateView as EditPortView
 
 
 NETWORKS = r'^(?P<network_id>[^/]+)/%s$'

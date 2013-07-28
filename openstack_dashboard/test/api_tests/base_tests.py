@@ -22,8 +22,8 @@ from __future__ import absolute_import
 
 from horizon import exceptions
 
-from openstack_dashboard.test import helpers as test
 from openstack_dashboard.api import base as api_base
+from openstack_dashboard.test import helpers as test
 
 
 class APIResource(api_base.APIResourceWrapper):
@@ -115,19 +115,14 @@ class ApiHelperTests(test.TestCase):
         url = api_base.url_for(self.request, 'image')
         self.assertEqual(url, 'http://public.glance.example.com:9292/v1')
 
-        url = api_base.url_for(self.request, 'image', admin=False)
-        self.assertEqual(url, 'http://public.glance.example.com:9292/v1')
-
-        url = api_base.url_for(self.request, 'image', admin=True)
+        url = api_base.url_for(self.request, 'image', endpoint_type='adminURL')
         self.assertEqual(url, 'http://admin.glance.example.com:9292/v1')
 
         url = api_base.url_for(self.request, 'compute')
         self.assertEqual(url, 'http://public.nova.example.com:8774/v2')
 
-        url = api_base.url_for(self.request, 'compute', admin=False)
-        self.assertEqual(url, 'http://public.nova.example.com:8774/v2')
-
-        url = api_base.url_for(self.request, 'compute', admin=True)
+        url = api_base.url_for(self.request, 'compute',
+                               endpoint_type='adminURL')
         self.assertEqual(url, 'http://admin.nova.example.com:8774/v2')
 
         url = api_base.url_for(self.request, 'volume')
@@ -137,13 +132,33 @@ class ApiHelperTests(test.TestCase):
                                endpoint_type="internalURL")
         self.assertEqual(url, 'http://int.nova.example.com:8776/v1')
 
-        url = api_base.url_for(self.request, 'volume', admin=False)
-        self.assertEqual(url, 'http://public.nova.example.com:8776/v1')
-
-        url = api_base.url_for(self.request, 'volume', admin=True)
+        url = api_base.url_for(self.request, 'volume',
+                               endpoint_type='adminURL')
         self.assertEqual(url, 'http://admin.nova.example.com:8776/v1')
 
         self.assertNotIn('notAnApi', self.request.user.service_catalog,
                          'Select a new nonexistent service catalog key')
         with self.assertRaises(exceptions.ServiceCatalogException):
             url = api_base.url_for(self.request, 'notAnApi')
+
+        self.request.user.services_region = "RegionTwo"
+        url = api_base.url_for(self.request, 'compute')
+        self.assertEqual(url, 'http://public.nova2.example.com:8774/v2')
+
+        self.request.user.services_region = "RegionTwo"
+        url = api_base.url_for(self.request, 'compute',
+                               endpoint_type='adminURL')
+        self.assertEqual(url, 'http://admin.nova2.example.com:8774/v2')
+
+        self.request.user.services_region = "RegionTwo"
+        with self.assertRaises(exceptions.ServiceCatalogException):
+            url = api_base.url_for(self.request, 'image')
+
+        self.request.user.services_region = "bogus_value"
+        url = api_base.url_for(self.request, 'identity',
+                               endpoint_type='adminURL')
+        self.assertEqual(url, 'http://admin.keystone.example.com:35357/v2.0')
+
+        self.request.user.services_region = "bogus_value"
+        with self.assertRaises(exceptions.ServiceCatalogException):
+            url = api_base.url_for(self.request, 'image')

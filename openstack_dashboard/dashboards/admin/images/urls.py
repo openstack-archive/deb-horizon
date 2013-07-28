@@ -18,9 +18,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .views import IndexView, CreateView, UpdateView, DetailView
+from openstack_dashboard.dashboards.admin.images.views import CreateView
+from openstack_dashboard.dashboards.admin.images.views import DetailView
+from openstack_dashboard.dashboards.admin.images.views import IndexView
+from openstack_dashboard.dashboards.admin.images.views import UpdateView
 
 
 urlpatterns = patterns('openstack_dashboard.dashboards.admin.images.views',

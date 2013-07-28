@@ -14,27 +14,49 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-import re
-
-from django import http
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
-from horizon import tables
 from horizon import tabs
 from horizon import workflows
 
+import logging
+
 from openstack_dashboard import api
+from openstack_dashboard.dashboards.project.loadbalancers.forms import \
+    UpdateMember
+from openstack_dashboard.dashboards.project.loadbalancers.forms import \
+    UpdateMonitor
+from openstack_dashboard.dashboards.project.loadbalancers.forms import \
+    UpdatePool
+from openstack_dashboard.dashboards.project.loadbalancers.forms import \
+    UpdateVip
+from openstack_dashboard.dashboards.project.loadbalancers.tabs import \
+    LoadBalancerTabs
+from openstack_dashboard.dashboards.project.loadbalancers.tabs import \
+    MemberDetailsTabs
+from openstack_dashboard.dashboards.project.loadbalancers.tabs import \
+    MonitorDetailsTabs
+from openstack_dashboard.dashboards.project.loadbalancers.tabs import \
+    PoolDetailsTabs
+from openstack_dashboard.dashboards.project.loadbalancers.tabs import \
+    VipDetailsTabs
+from openstack_dashboard.dashboards.project.loadbalancers.workflows import \
+    AddMember
+from openstack_dashboard.dashboards.project.loadbalancers.workflows import \
+    AddMonitor
+from openstack_dashboard.dashboards.project.loadbalancers.workflows import \
+    AddPMAssociation
+from openstack_dashboard.dashboards.project.loadbalancers.workflows import \
+    AddPool
+from openstack_dashboard.dashboards.project.loadbalancers.workflows import \
+    AddVip
+from openstack_dashboard.dashboards.project.loadbalancers.workflows import \
+    DeletePMAssociation
 
-from .workflows import AddPool, AddMember, AddMonitor, AddVip
-from .forms import UpdatePool
-from .tabs import LoadBalancerTabs, PoolDetailsTabs, VipDetailsTabs
-from .tabs import MemberDetailsTabs, MonitorDetailsTabs
-from .tables import DeleteMonitorLink
-
+import re
 
 LOG = logging.getLogger(__name__)
 
@@ -106,7 +128,7 @@ class AddVipView(workflows.WorkflowView):
         initial['pool_id'] = self.kwargs['pool_id']
         try:
             pool = api.lbaas.pool_get(self.request, initial['pool_id'])
-            initial['subnet'] = api.quantum.subnet_get(
+            initial['subnet'] = api.neutron.subnet_get(
                 self.request, pool.subnet_id).cidr
         except:
             initial['subnet'] = ''
@@ -179,4 +201,138 @@ class UpdatePoolView(forms.ModalFormView):
                 'pool_id': pool['id'],
                 'description': pool['description'],
                 'lb_method': pool['lb_method'],
-                'admin_state': pool['admin_state_up']}
+                'admin_state_up': pool['admin_state_up']}
+
+
+class UpdateVipView(forms.ModalFormView):
+    form_class = UpdateVip
+    template_name = "project/loadbalancers/updatevip.html"
+    context_object_name = 'vip'
+    success_url = reverse_lazy("horizon:project:loadbalancers:index")
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateVipView, self).get_context_data(**kwargs)
+        context["vip_id"] = self.kwargs['vip_id']
+        return context
+
+    def _get_object(self, *args, **kwargs):
+        if not hasattr(self, "_object"):
+            vip_id = self.kwargs['vip_id']
+            try:
+                self._object = api.lbaas.vip_get(self.request, vip_id)
+            except:
+                redirect = self.success_url
+                msg = _('Unable to retrieve vip details.')
+                exceptions.handle(self.request, msg, redirect=redirect)
+        return self._object
+
+    def get_initial(self):
+        vip = self._get_object()
+        stype = vip['session_persistence']
+        if stype['type'] == 'APP_COOKIE':
+            cookie = stype['cookie_name']
+        else:
+            cookie = ''
+
+        return {'name': vip['name'],
+                'vip_id': vip['id'],
+                'description': vip['description'],
+                'pool_id': vip['pool_id'],
+                'session_persistence': vip['session_persistence']['type'],
+                'cookie_name': cookie,
+                'connection_limit': vip['connection_limit'],
+                'admin_state_up': vip['admin_state_up']}
+
+
+class UpdateMemberView(forms.ModalFormView):
+    form_class = UpdateMember
+    template_name = "project/loadbalancers/updatemember.html"
+    context_object_name = 'member'
+    success_url = reverse_lazy("horizon:project:loadbalancers:index")
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateMemberView, self).get_context_data(**kwargs)
+        context["member_id"] = self.kwargs['member_id']
+        return context
+
+    def _get_object(self, *args, **kwargs):
+        if not hasattr(self, "_object"):
+            member_id = self.kwargs['member_id']
+            try:
+                self._object = api.lbaas.member_get(self.request, member_id)
+            except:
+                redirect = self.success_url
+                msg = _('Unable to retrieve member details.')
+                exceptions.handle(self.request, msg, redirect=redirect)
+        return self._object
+
+    def get_initial(self):
+        member = self._get_object()
+        return {'member_id': member['id'],
+                'pool_id': member['pool_id'],
+                'weight': member['weight'],
+                'admin_state_up': member['admin_state_up']}
+
+
+class UpdateMonitorView(forms.ModalFormView):
+    form_class = UpdateMonitor
+    template_name = "project/loadbalancers/updatemonitor.html"
+    context_object_name = 'monitor'
+    success_url = reverse_lazy("horizon:project:loadbalancers:index")
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateMonitorView, self).get_context_data(**kwargs)
+        context["monitor_id"] = self.kwargs['monitor_id']
+        return context
+
+    def _get_object(self, *args, **kwargs):
+        if not hasattr(self, "_object"):
+            monitor_id = self.kwargs['monitor_id']
+            try:
+                self._object = api.lbaas.pool_health_monitor_get(
+                                    self.request, monitor_id)
+            except:
+                redirect = self.success_url
+                msg = _('Unable to retrieve health monitor details.')
+                exceptions.handle(self.request, msg, redirect=redirect)
+        return self._object
+
+    def get_initial(self):
+        monitor = self._get_object()
+        return {'monitor_id': monitor['id'],
+                'delay': monitor['delay'],
+                'timeout': monitor['timeout'],
+                'max_retries': monitor['max_retries'],
+                'admin_state_up': monitor['admin_state_up']}
+
+
+class AddPMAssociationView(workflows.WorkflowView):
+    workflow_class = AddPMAssociation
+
+    def get_initial(self):
+        initial = super(AddPMAssociationView, self).get_initial()
+        initial['pool_id'] = self.kwargs['pool_id']
+        try:
+            pool = api.lbaas.pool_get(self.request, initial['pool_id'])
+            initial['pool_name'] = pool.name
+            initial['pool_monitors'] = pool.health_monitors
+        except:
+            msg = _('Unable to retrieve pool.')
+            exceptions.handle(self.request, msg)
+        return initial
+
+
+class DeletePMAssociationView(workflows.WorkflowView):
+    workflow_class = DeletePMAssociation
+
+    def get_initial(self):
+        initial = super(DeletePMAssociationView, self).get_initial()
+        initial['pool_id'] = self.kwargs['pool_id']
+        try:
+            pool = api.lbaas.pool_get(self.request, initial['pool_id'])
+            initial['pool_name'] = pool.name
+            initial['pool_monitors'] = pool.health_monitors
+        except:
+            msg = _('Unable to retrieve pool.')
+            exceptions.handle(self.request, msg)
+        return initial

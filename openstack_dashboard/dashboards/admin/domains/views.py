@@ -22,10 +22,18 @@ from horizon import tables
 from horizon import workflows
 
 from openstack_dashboard import api
-from .constants import DOMAIN_INFO_FIELDS, DOMAINS_INDEX_URL, \
-    DOMAINS_INDEX_VIEW_TEMPLATE
-from .tables import DomainsTable
-from .workflows import CreateDomain, UpdateDomain
+
+from openstack_dashboard.dashboards.admin.domains.constants \
+    import DOMAIN_INFO_FIELDS
+from openstack_dashboard.dashboards.admin.domains.constants \
+    import DOMAINS_INDEX_URL
+from openstack_dashboard.dashboards.admin.domains.constants \
+    import DOMAINS_INDEX_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.domains.tables import DomainsTable
+from openstack_dashboard.dashboards.admin.domains.workflows \
+    import CreateDomain
+from openstack_dashboard.dashboards.admin.domains.workflows \
+    import UpdateDomain
 
 
 class IndexView(tables.DataTableView):
@@ -34,8 +42,14 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         domains = []
+        domain_context = self.request.session.get('domain_context', None)
         try:
-            domains = api.keystone.domain_list(self.request)
+            if domain_context:
+                domain = api.keystone.domain_get(self.request,
+                                                 domain_context)
+                domains.append(domain)
+            else:
+                domains = api.keystone.domain_list(self.request)
         except:
             exceptions.handle(self.request,
                               _('Unable to retrieve domain list.'))

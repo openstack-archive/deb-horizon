@@ -12,9 +12,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from glanceclient.v1.images import Image, ImageManager
+from glanceclient.v1.images import Image
+from glanceclient.v1.images import ImageManager
 
-from .utils import TestDataContainer
+from openstack_dashboard.test.test_data.utils import TestDataContainer
 
 
 def data(TEST):

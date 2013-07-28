@@ -24,8 +24,14 @@ from horizon import tables
 
 from openstack_dashboard import api
 
-from .constants import GROUPS_CREATE_URL, GROUPS_UPDATE_URL, \
-    GROUPS_MANAGE_URL, GROUPS_ADD_MEMBER_URL
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_ADD_MEMBER_URL
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_CREATE_URL
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_MANAGE_URL
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_UPDATE_URL
 
 
 LOG = logging.getLogger(__name__)
@@ -133,7 +139,7 @@ class RemoveMembers(tables.DeleteAction):
         api.keystone.remove_group_user(request,
                                        group_id=group_id,
                                        user_id=user_obj.id)
-        # TODO: Fix the bug when removing current user
+        # TODO(lin-hua-cheng): Fix the bug when removing current user
         # Keystone revokes the token of the user removed from the group.
         # If the logon user was removed, redirect the user to logout.
 
@@ -190,7 +196,7 @@ class AddMembers(tables.BatchAction):
         api.keystone.add_group_user(request,
                                     group_id=group_id,
                                     user_id=user_obj.id)
-        # TODO: Fix the bug when adding current user
+        # TODO(lin-hua-cheng): Fix the bug when adding current user
         # Keystone revokes the token of the user added to the group.
         # If the logon user was added, redirect the user to logout.
 

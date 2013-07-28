@@ -19,9 +19,13 @@
 #    under the License.
 
 
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .views import (NetworkTopology, JSONView)
+from openstack_dashboard.dashboards.project.network_topology.views \
+    import JSONView
+from openstack_dashboard.dashboards.project.network_topology.views \
+    import NetworkTopology
 
 
 urlpatterns = patterns(

@@ -18,9 +18,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .views import CreateView, ImportView, DownloadView, GenerateView
+from openstack_dashboard.dashboards.project.access_and_security.\
+    keypairs.views import CreateView
+from openstack_dashboard.dashboards.project.access_and_security.\
+    keypairs.views import DownloadView
+from openstack_dashboard.dashboards.project.access_and_security.\
+    keypairs.views import GenerateView
+from openstack_dashboard.dashboards.project.access_and_security.\
+    keypairs.views import ImportView
 
 
 urlpatterns = patterns('',

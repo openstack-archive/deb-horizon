@@ -14,10 +14,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .views import (IndexView, CreateView, DetailView)
-from .ports.views import (AddInterfaceView, SetGatewayView)
+from openstack_dashboard.dashboards.project.routers.ports.views \
+    import AddInterfaceView
+from openstack_dashboard.dashboards.project.routers.ports.views \
+    import SetGatewayView
+from openstack_dashboard.dashboards.project.routers.views import CreateView
+from openstack_dashboard.dashboards.project.routers.views import DetailView
+from openstack_dashboard.dashboards.project.routers.views import IndexView
 
 
 urlpatterns = patterns('horizon.dashboards.project.routers.views',

@@ -15,7 +15,7 @@
 #    under the License.
 
 """
-Views for managing Quantum Networks.
+Views for managing Neutron Networks.
 """
 import logging
 
@@ -28,11 +28,16 @@ from horizon import tables
 from horizon import workflows
 
 from openstack_dashboard import api
-from .tables import NetworksTable
-from .subnets.tables import SubnetsTable
-from .ports.tables import PortsTable
-from .forms import UpdateNetwork
-from .workflows import CreateNetwork
+
+from openstack_dashboard.dashboards.project.networks.forms import UpdateNetwork
+from openstack_dashboard.dashboards.project.networks.ports.tables \
+    import PortsTable
+from openstack_dashboard.dashboards.project.networks.subnets.tables \
+    import SubnetsTable
+from openstack_dashboard.dashboards.project.networks.tables \
+    import NetworksTable
+from openstack_dashboard.dashboards.project.networks.workflows \
+    import CreateNetwork
 
 
 LOG = logging.getLogger(__name__)
@@ -45,7 +50,7 @@ class IndexView(tables.DataTableView):
     def get_data(self):
         try:
             tenant_id = self.request.user.tenant_id
-            networks = api.quantum.network_list_for_tenant(self.request,
+            networks = api.neutron.network_list_for_tenant(self.request,
                                                            tenant_id)
         except:
             networks = []
@@ -78,7 +83,7 @@ class UpdateView(forms.ModalFormView):
         if not hasattr(self, "_object"):
             network_id = self.kwargs['network_id']
             try:
-                self._object = api.quantum.network_get(self.request,
+                self._object = api.neutron.network_get(self.request,
                                                        network_id)
             except:
                 redirect = self.success_url
@@ -102,7 +107,7 @@ class DetailView(tables.MultiTableView):
     def get_subnets_data(self):
         try:
             network = self._get_data()
-            subnets = api.quantum.subnet_list(self.request,
+            subnets = api.neutron.subnet_list(self.request,
                                               network_id=network.id)
         except:
             subnets = []
@@ -115,7 +120,7 @@ class DetailView(tables.MultiTableView):
     def get_ports_data(self):
         try:
             network_id = self.kwargs['network_id']
-            ports = api.quantum.port_list(self.request, network_id=network_id)
+            ports = api.neutron.port_list(self.request, network_id=network_id)
         except:
             ports = []
             msg = _('Port list can not be retrieved.')
@@ -128,7 +133,7 @@ class DetailView(tables.MultiTableView):
         if not hasattr(self, "_network"):
             try:
                 network_id = self.kwargs['network_id']
-                network = api.quantum.network_get(self.request, network_id)
+                network = api.neutron.network_get(self.request, network_id)
                 network.set_id_as_name_if_empty(length=0)
             except:
                 msg = _('Unable to retrieve details for network "%s".') \

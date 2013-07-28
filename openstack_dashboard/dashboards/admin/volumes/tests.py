@@ -14,8 +14,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django import http
 from django.core.urlresolvers import reverse
+from django import http
 from mox import IsA
 
 from openstack_dashboard import api
@@ -31,13 +31,14 @@ class VolumeTests(test.BaseAdminViewTests):
                         keystone: ('tenant_list',)})
     def test_index(self):
         cinder.volume_list(IsA(http.HttpRequest), search_opts={
-                           'all_tenants': 1}).AndReturn(self.volumes.list())
-        api.nova.server_list(IsA(http.HttpRequest)).\
-                             AndReturn([self.servers.list(), False])
+                           'all_tenants': True}).AndReturn(self.volumes.list())
+        api.nova.server_list(IsA(http.HttpRequest), search_opts={
+                             'all_tenants': True}) \
+                       .AndReturn([self.servers.list(), False])
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                AndReturn(self.volume_types.list())
         keystone.tenant_list(IsA(http.HttpRequest)) \
-                .AndReturn(self.tenants.list())
+                .AndReturn([self.tenants.list(), False])
 
         self.mox.ReplayAll()
 
@@ -73,15 +74,16 @@ class VolumeTests(test.BaseAdminViewTests):
         formData = {'action': 'volume_types__delete__%s' % volume_type.id}
 
         cinder.volume_list(IsA(http.HttpRequest), search_opts={
-                           'all_tenants': 1}).AndReturn(self.volumes.list())
-        api.nova.server_list(IsA(http.HttpRequest)).\
-                             AndReturn([self.servers.list(), False])
+                           'all_tenants': True}).AndReturn(self.volumes.list())
+        api.nova.server_list(IsA(http.HttpRequest), search_opts={
+                             'all_tenants': True}) \
+                         .AndReturn([self.servers.list(), False])
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
         cinder.volume_type_delete(IsA(http.HttpRequest),
                                   str(volume_type.id))
         keystone.tenant_list(IsA(http.HttpRequest)) \
-                .AndReturn(self.tenants.list())
+                .AndReturn([self.tenants.list(), False])
         self.mox.ReplayAll()
 
         res = self.client.post(reverse('horizon:admin:volumes:index'),

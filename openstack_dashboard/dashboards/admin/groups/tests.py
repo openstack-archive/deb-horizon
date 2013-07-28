@@ -14,21 +14,29 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django import http
 from django.core.urlresolvers import reverse
+from django import http
 
-from mox import IgnoreArg, IsA
+from mox import IgnoreArg
+from mox import IsA
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 
-from .constants import GROUPS_INDEX_VIEW_TEMPLATE, \
-    GROUPS_MANAGE_VIEW_TEMPLATE, \
-    GROUPS_INDEX_URL as index_url, \
-    GROUPS_CREATE_URL as create_url, \
-    GROUPS_UPDATE_URL as update_url, \
-    GROUPS_MANAGE_URL as manage_url, \
-    GROUPS_ADD_MEMBER_URL as add_member_url
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_ADD_MEMBER_URL as add_member_url
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_CREATE_URL as create_url
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_INDEX_URL as index_url
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_INDEX_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_MANAGE_URL as manage_url
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_MANAGE_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_UPDATE_URL as update_url
 
 
 GROUPS_INDEX_URL = reverse(index_url)
@@ -39,25 +47,51 @@ GROUP_ADD_MEMBER_URL = reverse(add_member_url, args=[1])
 
 
 class GroupsViewTests(test.BaseAdminViewTests):
+    def _get_domain_id(self):
+        return self.request.session.get('domain_context', None)
+
+    def _get_groups(self, domain_id):
+        if not domain_id:
+            groups = self.groups.list()
+        else:
+            groups = [group for group in self.groups.list()
+                      if group.domain_id == domain_id]
+        return groups
+
     @test.create_stubs({api.keystone: ('group_list',)})
     def test_index(self):
-        api.keystone.group_list(IgnoreArg()).AndReturn(self.groups.list())
+        domain_id = self._get_domain_id()
+        groups = self._get_groups(domain_id)
+
+        api.keystone.group_list(IgnoreArg()).AndReturn(groups)
 
         self.mox.ReplayAll()
 
         res = self.client.get(GROUPS_INDEX_URL)
 
         self.assertTemplateUsed(res, GROUPS_INDEX_VIEW_TEMPLATE)
-        self.assertItemsEqual(res.context['table'].data, self.groups.list())
+        self.assertItemsEqual(res.context['table'].data, groups)
+        if domain_id:
+            for group in res.context['table'].data:
+                self.assertItemsEqual(group.domain_id, domain_id)
 
         self.assertContains(res, 'Create Group')
         self.assertContains(res, 'Edit')
         self.assertContains(res, 'Delete Group')
 
+    def test_index_with_domain(self):
+        domain = self.domains.get(id="1")
+        self.setSessionValues(domain_context=domain.id,
+                              domain_context_name=domain.name)
+        self.test_index()
+
     @test.create_stubs({api.keystone: ('group_list',
                                        'keystone_can_edit_group')})
     def test_index_with_keystone_can_edit_group_false(self):
-        api.keystone.group_list(IgnoreArg()).AndReturn(self.groups.list())
+        domain_id = self._get_domain_id()
+        groups = self._get_groups(domain_id)
+
+        api.keystone.group_list(IgnoreArg()).AndReturn(groups)
         api.keystone.keystone_can_edit_group() \
             .MultipleTimes().AndReturn(False)
 
@@ -66,7 +100,7 @@ class GroupsViewTests(test.BaseAdminViewTests):
         res = self.client.get(GROUPS_INDEX_URL)
 
         self.assertTemplateUsed(res, GROUPS_INDEX_VIEW_TEMPLATE)
-        self.assertItemsEqual(res.context['table'].data, self.groups.list())
+        self.assertItemsEqual(res.context['table'].data, groups)
 
         self.assertNotContains(res, 'Create Group')
         self.assertNotContains(res, 'Edit')
@@ -74,11 +108,12 @@ class GroupsViewTests(test.BaseAdminViewTests):
 
     @test.create_stubs({api.keystone: ('group_create', )})
     def test_create(self):
+        domain_id = self._get_domain_id()
         group = self.groups.get(id="1")
 
         api.keystone.group_create(IsA(http.HttpRequest),
                                   description=group.description,
-                                  domain_id=None,
+                                  domain_id=domain_id,
                                   name=group.name).AndReturn(group)
 
         self.mox.ReplayAll()
@@ -90,6 +125,12 @@ class GroupsViewTests(test.BaseAdminViewTests):
 
         self.assertNoFormErrors(res)
         self.assertMessageCount(success=1)
+
+    def test_create_with_domain(self):
+        domain = self.domains.get(id="1")
+        self.setSessionValues(domain_context=domain.id,
+                              domain_context_name=domain.name)
+        self.test_create()
 
     @test.create_stubs({api.keystone: ('group_get',
                                        'group_update')})

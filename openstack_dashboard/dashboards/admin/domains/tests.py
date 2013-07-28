@@ -15,21 +15,27 @@
 #    under the License.
 
 
-from django import http
 from django.core.urlresolvers import reverse
+from django import http
 
-from mox import IgnoreArg, IsA
+from mox import IgnoreArg
+from mox import IsA
 
 from horizon.workflows.views import WorkflowView
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 
-from .constants import DOMAINS_INDEX_VIEW_TEMPLATE, \
-    DOMAINS_INDEX_URL as index_url, \
-    DOMAINS_CREATE_URL as create_url, \
-    DOMAINS_UPDATE_URL as update_url
-from .workflows import CreateDomain, UpdateDomain
+from openstack_dashboard.dashboards.admin.domains.constants \
+    import DOMAINS_CREATE_URL as create_url
+from openstack_dashboard.dashboards.admin.domains.constants \
+    import DOMAINS_INDEX_URL as index_url
+from openstack_dashboard.dashboards.admin.domains.constants \
+    import DOMAINS_INDEX_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.domains.constants \
+    import DOMAINS_UPDATE_URL as update_url
+from openstack_dashboard.dashboards.admin.domains.workflows import CreateDomain
+from openstack_dashboard.dashboards.admin.domains.workflows import UpdateDomain
 
 
 DOMAINS_INDEX_URL = reverse(index_url)
@@ -97,6 +103,32 @@ class DomainsViewTests(test.BaseAdminViewTests):
 
         self.assertRedirectsNoFollow(res, DOMAINS_INDEX_URL)
         self.assertMessageCount(error=2)
+
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'domain_list', )})
+    def test_set_clear_domain_context(self):
+        domain = self.domains.get(id="1")
+
+        api.keystone.domain_get(IgnoreArg(), domain.id).AndReturn(domain)
+        api.keystone.domain_get(IgnoreArg(), domain.id).AndReturn(domain)
+
+        api.keystone.domain_list(IgnoreArg()).AndReturn(self.domains.list())
+
+        self.mox.ReplayAll()
+
+        formData = {'action': 'domains__set_domain_context__%s' % domain.id}
+        res = self.client.post(DOMAINS_INDEX_URL, formData)
+
+        self.assertTemplateUsed(res, DOMAINS_INDEX_VIEW_TEMPLATE)
+        self.assertItemsEqual(res.context['table'].data, [domain, ])
+        self.assertContains(res, "<em>test_domain:</em>")
+
+        formData = {'action': 'domains__clear_domain_context__%s' % domain.id}
+        res = self.client.post(DOMAINS_INDEX_URL, formData)
+
+        self.assertTemplateUsed(res, DOMAINS_INDEX_VIEW_TEMPLATE)
+        self.assertItemsEqual(res.context['table'].data, self.domains.list())
+        self.assertNotContains(res, "<em>test_domain:</em>")
 
 
 class CreateDomainWorkflowTests(test.BaseAdminViewTests):

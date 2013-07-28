@@ -17,8 +17,8 @@
 
 import logging
 
-from django import shortcuts
 from django.core import urlresolvers
+from django import shortcuts
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
@@ -27,8 +27,7 @@ from horizon import messages
 from horizon import tables
 
 from openstack_dashboard import api
-
-from .utils import get_int_or_uuid
+from openstack_dashboard.utils.filters import get_int_or_uuid
 
 
 LOG = logging.getLogger(__name__)

@@ -1,6 +1,10 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .views import IndexView, DetailView, CreateVolumeTypeView
+from openstack_dashboard.dashboards.admin.volumes.views \
+    import CreateVolumeTypeView
+from openstack_dashboard.dashboards.admin.volumes.views import DetailView
+from openstack_dashboard.dashboards.admin.volumes.views import IndexView
 
 urlpatterns = patterns('',
     url(r'^$', IndexView.as_view(), name='index'),

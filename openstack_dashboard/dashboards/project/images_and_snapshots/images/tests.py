@@ -20,11 +20,11 @@
 
 import tempfile
 
-from django import http
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.forms.widgets import HiddenInput
+from django import http
 from django.test.utils import override_settings
 
 from mox import IsA
@@ -33,8 +33,10 @@ from horizon import tables as horizon_tables
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 
-from . import tables
-from .forms import CreateImageForm
+from openstack_dashboard.dashboards.project.images_and_snapshots.images.forms \
+    import CreateImageForm
+from openstack_dashboard.dashboards.project.images_and_snapshots.images \
+    import tables
 
 
 IMAGES_INDEX_URL = reverse('horizon:project:images_and_snapshots:index')
@@ -48,6 +50,7 @@ class CreateImageFormTests(test.TestCase):
         """
         post = {
             'name': u'Ubuntu 11.10',
+            'description': u'Login with admin/admin',
             'disk_format': u'qcow2',
             'minimum_disk': 15,
             'minimum_ram': 512,
@@ -78,6 +81,7 @@ class ImageViewTests(test.TestCase):
     def test_image_create_post_copy_from(self):
         data = {
             'name': u'Ubuntu 11.10',
+            'description': u'Login with admin/admin',
             'copy_from': u'http://cloud-images.ubuntu.com/releases/'
                         u'oneiric/release/ubuntu-11.10-server-cloudimg'
                         u'-amd64-disk1.img',
@@ -96,6 +100,8 @@ class ImageViewTests(test.TestCase):
                                 protected=False,
                                 min_disk=data['minimum_disk'],
                                 min_ram=data['minimum_ram'],
+                                properties={
+                                    'description': data['description']},
                                 name=data['name']). \
                         AndReturn(self.images.first())
         self.mox.ReplayAll()
@@ -114,6 +120,7 @@ class ImageViewTests(test.TestCase):
         temp_file.seek(0)
         data = {
             'name': u'Test Image',
+            'description': u'Login with admin/admin',
             'image_file': temp_file,
             'disk_format': u'qcow2',
             'minimum_disk': 15,
@@ -129,6 +136,8 @@ class ImageViewTests(test.TestCase):
                                 protected=False,
                                 min_disk=data['minimum_disk'],
                                 min_ram=data['minimum_ram'],
+                                properties={
+                                    'description': data['description']},
                                 name=data['name'],
                                 data=IsA(InMemoryUploadedFile)). \
                         AndReturn(self.images.first())

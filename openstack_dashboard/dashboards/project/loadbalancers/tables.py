@@ -14,14 +14,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
 
-from django.utils import http
 from django.core.urlresolvers import reverse
+from django.utils import http
 from django.utils.translation import ugettext_lazy as _
 
+from horizon import exceptions
 from horizon import tables
+
 from openstack_dashboard import api
+
+import logging
 
 
 LOG = logging.getLogger(__name__)
@@ -31,13 +34,13 @@ class AddPoolLink(tables.LinkAction):
     name = "addpool"
     verbose_name = _("Add Pool")
     url = "horizon:project:loadbalancers:addpool"
-    classes = ("ajax-modal", "btn-addpool",)
+    classes = ("ajax-modal", "btn-create",)
 
 
 class AddVipLink(tables.LinkAction):
     name = "addvip"
     verbose_name = _("Add VIP")
-    classes = ("ajax-modal", "btn-addvip",)
+    classes = ("ajax-modal", "btn-create",)
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:addvip",
@@ -54,14 +57,14 @@ class AddMemberLink(tables.LinkAction):
     name = "addmember"
     verbose_name = _("Add Member")
     url = "horizon:project:loadbalancers:addmember"
-    classes = ("ajax-modal", "btn-addmember",)
+    classes = ("ajax-modal", "btn-create",)
 
 
 class AddMonitorLink(tables.LinkAction):
     name = "addmonitor"
     verbose_name = _("Add Monitor")
     url = "horizon:project:loadbalancers:addmonitor"
-    classes = ("ajax-modal", "btn-addmonitor",)
+    classes = ("ajax-modal", "btn-create",)
 
 
 class DeleteVipLink(tables.DeleteAction):
@@ -104,7 +107,7 @@ class DeleteMemberLink(tables.DeleteAction):
 class UpdatePoolLink(tables.LinkAction):
     name = "updatepool"
     verbose_name = _("Edit Pool")
-    classes = ("btn-updatepool",)
+    classes = ("btn-update",)
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:updatepool",
@@ -112,9 +115,73 @@ class UpdatePoolLink(tables.LinkAction):
         return base_url
 
 
+class UpdateVipLink(tables.LinkAction):
+    name = "updatevip"
+    verbose_name = _("Edit VIP")
+
+    def get_link_url(self, pool):
+        base_url = reverse("horizon:project:loadbalancers:updatevip",
+                           kwargs={'vip_id': pool.vip_id})
+        return base_url
+
+    def allowed(self, request, datum=None):
+        if datum and not datum.vip_id:
+            return False
+        return True
+
+
+class UpdateMemberLink(tables.LinkAction):
+    name = "updatemember"
+    verbose_name = _("Edit Member")
+
+    def get_link_url(self, member):
+        base_url = reverse("horizon:project:loadbalancers:updatemember",
+                           kwargs={'member_id': member.id})
+        return base_url
+
+
+class UpdateMonitorLink(tables.LinkAction):
+    name = "updatemonitor"
+    verbose_name = _("Edit Monitor")
+
+    def get_link_url(self, monitor):
+        base_url = reverse("horizon:project:loadbalancers:updatemonitor",
+                           kwargs={'monitor_id': monitor.id})
+        return base_url
+
+
 def get_vip_link(pool):
     return reverse("horizon:project:loadbalancers:vipdetails",
                    args=(http.urlquote(pool.vip_id),))
+
+
+class AddPMAssociationLink(tables.LinkAction):
+    name = "addassociation"
+    verbose_name = _("Add Health Monitor")
+    url = "horizon:project:loadbalancers:addassociation"
+
+    def allowed(self, request, datum=None):
+        try:
+            monitors = api.lbaas.pool_health_monitors_get(request)
+            for m in monitors:
+                if m.id not in datum['health_monitors']:
+                    return True
+        except:
+            exceptions.handle(request,
+                              _('Failed to retrieve health monitors.'))
+        return False
+
+
+class DeletePMAssociationLink(tables.LinkAction):
+    name = "deleteassociation"
+    verbose_name = _("Delete Health Monitor")
+    url = "horizon:project:loadbalancers:deleteassociation"
+    classes = ("btn-delete", "btn-danger")
+
+    def allowed(self, request, datum=None):
+        if datum and not datum['health_monitors']:
+            return False
+        return True
 
 
 class PoolsTable(tables.DataTable):
@@ -131,8 +198,9 @@ class PoolsTable(tables.DataTable):
         name = "poolstable"
         verbose_name = _("Pools")
         table_actions = (AddPoolLink, DeletePoolLink)
-        row_actions = (UpdatePoolLink, AddVipLink, DeleteVipLink,
-                       DeletePoolLink)
+        row_actions = (UpdatePoolLink, AddVipLink, UpdateVipLink,
+                       DeleteVipLink, AddPMAssociationLink,
+                       DeletePMAssociationLink, DeletePoolLink)
 
 
 def get_pool_link(member):
@@ -159,7 +227,7 @@ class MembersTable(tables.DataTable):
         name = "memberstable"
         verbose_name = _("Members")
         table_actions = (AddMemberLink, DeleteMemberLink)
-        row_actions = (DeleteMemberLink,)
+        row_actions = (UpdateMemberLink, DeleteMemberLink)
 
 
 class MonitorsTable(tables.DataTable):
@@ -172,4 +240,4 @@ class MonitorsTable(tables.DataTable):
         name = "monitorstable"
         verbose_name = _("Monitors")
         table_actions = (AddMonitorLink, DeleteMonitorLink)
-        row_actions = (DeleteMonitorLink,)
+        row_actions = (UpdateMonitorLink, DeleteMonitorLink)

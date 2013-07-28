@@ -4,15 +4,15 @@
 # All rights reserved.
 
 """
-Views for managing Quantum Routers.
+Views for managing Neutron Routers.
 """
 import logging
 
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from horizon import forms
 from horizon import exceptions
+from horizon import forms
 from horizon import messages
 from openstack_dashboard import api
 
@@ -28,9 +28,9 @@ class CreateForm(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            router = api.quantum.router_create(request,
+            router = api.neutron.router_create(request,
                                                name=data['name'])
-            message = 'Router created "%s"' % data['name']
+            message = _('Router %s was successfully created.') % data['name']
             messages.success(request, message)
             return router
         except:

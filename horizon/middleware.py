@@ -21,17 +21,19 @@
 Middleware provided and used by Horizon.
 """
 
+import datetime
 import json
 import logging
 
-from django import http
-from django import shortcuts
 from django.conf import settings
-from django.contrib import messages as django_messages
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
-from django.utils import timezone
+from django.contrib import messages as django_messages
+from django import http
+from django.http import HttpResponseRedirect
+from django import shortcuts
 from django.utils.encoding import iri_to_uri
+from django.utils import timezone
 
 from horizon import exceptions
 
@@ -48,6 +50,20 @@ class HorizonMiddleware(object):
         tz = request.session.get('django_timezone')
         if tz:
             timezone.activate(tz)
+
+        # Check for session timeout
+        timeout = 1800
+        try:
+            timeout = settings.SESSION_TIMEOUT
+        except AttributeError:
+            pass
+
+        last_activity = request.session.get('last_activity', None)
+        timestamp = datetime.datetime.now()
+        if last_activity and (timestamp - last_activity).seconds > timeout:
+            request.session.pop('last_activity')
+            return HttpResponseRedirect(settings.LOGOUT_URL)
+        request.session['last_activity'] = timestamp
 
         request.horizon = {'dashboard': None,
                            'panel': None,

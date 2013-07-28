@@ -20,21 +20,22 @@
 
 
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
-from horizon import workflows
 from horizon import forms
 from horizon import messages
+from horizon import workflows
 
 from openstack_dashboard import api
-from openstack_dashboard.api import cinder, nova
 from openstack_dashboard.api.base import is_service_enabled
-from openstack_dashboard.usage.quotas import (NOVA_QUOTA_FIELDS,
-                                              CINDER_QUOTA_FIELDS,
-                                              QUOTA_FIELDS,
-                                              get_disabled_quotas)
+from openstack_dashboard.api import cinder
+from openstack_dashboard.api import nova
+from openstack_dashboard.usage.quotas import CINDER_QUOTA_FIELDS
+from openstack_dashboard.usage.quotas import get_disabled_quotas
+from openstack_dashboard.usage.quotas import NOVA_QUOTA_FIELDS
+from openstack_dashboard.usage.quotas import QUOTA_FIELDS
 
 INDEX_URL = "horizon:admin:projects:index"
 ADD_USER_URL = "horizon:admin:projects:create_user"
@@ -137,8 +138,10 @@ class UpdateProjectMembersAction(workflows.Action):
 
         # Get list of available users
         all_users = []
+        domain_context = request.session.get('domain_context', None)
         try:
-            all_users = api.keystone.user_list(request)
+            all_users = api.keystone.user_list(request,
+                                               domain=domain_context)
         except:
             exceptions.handle(request, err_msg)
         users_list = [(user.id, user.name) for user in all_users]
@@ -216,12 +219,14 @@ class CreateProject(workflows.Workflow):
 
     def handle(self, request, data):
         # create the project
+        domain_context = self.request.session.get('domain_context', None)
         try:
             desc = data['description']
             self.object = api.keystone.tenant_create(request,
                                                      name=data['name'],
                                                      description=desc,
-                                                     enabled=data['enabled'])
+                                                     enabled=data['enabled'],
+                                                     domain=domain_context)
         except:
             exceptions.handle(request, ignore=True)
             return False

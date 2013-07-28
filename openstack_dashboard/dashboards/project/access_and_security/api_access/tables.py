@@ -14,14 +14,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import title
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
-
-
-def get_endpoint(service):
-    return service.endpoints[0]['publicURL']
 
 
 def pretty_service_names(name):
@@ -53,7 +49,7 @@ class EndpointsTable(tables.DataTable):
     api_name = tables.Column('type',
                              verbose_name=_("Service"),
                              filters=(pretty_service_names,))
-    api_endpoint = tables.Column(get_endpoint,
+    api_endpoint = tables.Column('public_url',
                                  verbose_name=_("Service Endpoint"))
 
     class Meta:

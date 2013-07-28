@@ -14,17 +14,19 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django import http
 from django.core.urlresolvers import reverse
+from django import http
 from django.utils.html import escape
 
+from horizon.workflows.views import WorkflowView
+
 from mox import IsA
-import netaddr
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
-from .workflows import CreateNetwork
-from horizon.workflows.views import WorkflowView
+
+from openstack_dashboard.dashboards.project.networks.workflows \
+    import CreateNetwork
 
 
 INDEX_URL = reverse('horizon:project:networks:index')
@@ -94,13 +96,13 @@ def _str_host_routes(host_routes):
 
 class NetworkTests(test.TestCase):
 
-    @test.create_stubs({api.quantum: ('network_list',)})
+    @test.create_stubs({api.neutron: ('network_list',)})
     def test_index(self):
-        api.quantum.network_list(
+        api.neutron.network_list(
             IsA(http.HttpRequest),
             tenant_id=self.tenant.id,
             shared=False).AndReturn(self.networks.list())
-        api.quantum.network_list(
+        api.neutron.network_list(
             IsA(http.HttpRequest),
             shared=True).AndReturn([])
 
@@ -112,12 +114,12 @@ class NetworkTests(test.TestCase):
         networks = res.context['networks_table'].data
         self.assertItemsEqual(networks, self.networks.list())
 
-    @test.create_stubs({api.quantum: ('network_list',)})
+    @test.create_stubs({api.neutron: ('network_list',)})
     def test_index_network_list_exception(self):
-        api.quantum.network_list(
+        api.neutron.network_list(
             IsA(http.HttpRequest),
             tenant_id=self.tenant.id,
-            shared=False).AndRaise(self.exceptions.quantum)
+            shared=False).AndRaise(self.exceptions.neutron)
         self.mox.ReplayAll()
 
         res = self.client.get(INDEX_URL)
@@ -126,18 +128,18 @@ class NetworkTests(test.TestCase):
         self.assertEqual(len(res.context['networks_table'].data), 0)
         self.assertMessageCount(res, error=1)
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_list',
                                       'port_list',)})
     def test_network_detail(self):
         network_id = self.networks.first().id
-        api.quantum.network_get(IsA(http.HttpRequest), network_id)\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id)\
             .AndReturn(self.networks.first())
-        api.quantum.subnet_list(IsA(http.HttpRequest), network_id=network_id)\
+        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network_id)\
             .AndReturn([self.subnets.first()])
-        api.quantum.port_list(IsA(http.HttpRequest), network_id=network_id)\
+        api.neutron.port_list(IsA(http.HttpRequest), network_id=network_id)\
             .AndReturn([self.ports.first()])
-        api.quantum.network_get(IsA(http.HttpRequest), network_id)\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id)\
             .AndReturn(self.networks.first())
 
         self.mox.ReplayAll()
@@ -151,13 +153,13 @@ class NetworkTests(test.TestCase):
         self.assertItemsEqual(subnets, [self.subnets.first()])
         self.assertItemsEqual(ports, [self.ports.first()])
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_list',
                                       'port_list',)})
     def test_network_detail_network_exception(self):
         network_id = self.networks.first().id
-        api.quantum.network_get(IsA(http.HttpRequest), network_id)\
-            .AndRaise(self.exceptions.quantum)
+        api.neutron.network_get(IsA(http.HttpRequest), network_id)\
+            .AndRaise(self.exceptions.neutron)
         self.mox.ReplayAll()
 
         url = reverse('horizon:project:networks:detail', args=[network_id])
@@ -166,19 +168,19 @@ class NetworkTests(test.TestCase):
         redir_url = INDEX_URL
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_list',
                                       'port_list',)})
     def test_network_detail_subnet_exception(self):
         network_id = self.networks.first().id
-        api.quantum.network_get(IsA(http.HttpRequest), network_id).\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id).\
             AndReturn(self.networks.first())
-        api.quantum.subnet_list(IsA(http.HttpRequest), network_id=network_id).\
-            AndRaise(self.exceptions.quantum)
-        api.quantum.port_list(IsA(http.HttpRequest), network_id=network_id).\
+        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network_id).\
+            AndRaise(self.exceptions.neutron)
+        api.neutron.port_list(IsA(http.HttpRequest), network_id=network_id).\
             AndReturn([self.ports.first()])
         # Called from SubnetTable
-        api.quantum.network_get(IsA(http.HttpRequest), network_id).\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id).\
             AndReturn(self.networks.first())
 
         self.mox.ReplayAll()
@@ -192,19 +194,19 @@ class NetworkTests(test.TestCase):
         self.assertEqual(len(subnets), 0)
         self.assertItemsEqual(ports, [self.ports.first()])
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_list',
                                       'port_list',)})
     def test_network_detail_port_exception(self):
         network_id = self.networks.first().id
-        api.quantum.network_get(IsA(http.HttpRequest), network_id).\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id).\
             AndReturn(self.networks.first())
-        api.quantum.subnet_list(IsA(http.HttpRequest), network_id=network_id).\
+        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network_id).\
             AndReturn([self.subnets.first()])
-        api.quantum.port_list(IsA(http.HttpRequest), network_id=network_id).\
-            AndRaise(self.exceptions.quantum)
+        api.neutron.port_list(IsA(http.HttpRequest), network_id=network_id).\
+            AndRaise(self.exceptions.neutron)
         # Called from SubnetTable
-        api.quantum.network_get(IsA(http.HttpRequest), network_id).\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id).\
             AndReturn(self.networks.first())
 
         self.mox.ReplayAll()
@@ -233,10 +235,10 @@ class NetworkTests(test.TestCase):
                          '<CreateSubnetDetail: createsubnetdetailaction>']
         self.assertQuerysetEqual(workflow.steps, expected_objs)
 
-    @test.create_stubs({api.quantum: ('network_create',)})
+    @test.create_stubs({api.neutron: ('network_create',)})
     def test_network_create_post(self):
         network = self.networks.first()
-        api.quantum.network_create(IsA(http.HttpRequest), name=network.name,
+        api.neutron.network_create(IsA(http.HttpRequest), name=network.name,
                                    admin_state_up=network.admin_state_up)\
             .AndReturn(network)
         self.mox.ReplayAll()
@@ -252,15 +254,15 @@ class NetworkTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_create',
+    @test.create_stubs({api.neutron: ('network_create',
                                       'subnet_create',)})
     def test_network_create_post_with_subnet(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_create(IsA(http.HttpRequest), name=network.name,
+        api.neutron.network_create(IsA(http.HttpRequest), name=network.name,
                                    admin_state_up=network.admin_state_up)\
             .AndReturn(network)
-        api.quantum.subnet_create(IsA(http.HttpRequest),
+        api.neutron.subnet_create(IsA(http.HttpRequest),
                                   network_id=network.id,
                                   name=subnet.name,
                                   cidr=subnet.cidr,
@@ -280,12 +282,12 @@ class NetworkTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_create',)})
+    @test.create_stubs({api.neutron: ('network_create',)})
     def test_network_create_post_network_exception(self):
         network = self.networks.first()
-        api.quantum.network_create(IsA(http.HttpRequest), name=network.name,
+        api.neutron.network_create(IsA(http.HttpRequest), name=network.name,
                                    admin_state_up=network.admin_state_up)\
-            .AndRaise(self.exceptions.quantum)
+            .AndRaise(self.exceptions.neutron)
         self.mox.ReplayAll()
 
         form_data = {'net_name': network.name,
@@ -299,13 +301,13 @@ class NetworkTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_create',)})
+    @test.create_stubs({api.neutron: ('network_create',)})
     def test_network_create_post_with_subnet_network_exception(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_create(IsA(http.HttpRequest), name=network.name,
+        api.neutron.network_create(IsA(http.HttpRequest), name=network.name,
                                    admin_state_up=network.admin_state_up)\
-            .AndRaise(self.exceptions.quantum)
+            .AndRaise(self.exceptions.neutron)
         self.mox.ReplayAll()
 
         form_data = {'net_name': network.name,
@@ -318,24 +320,24 @@ class NetworkTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_create',
+    @test.create_stubs({api.neutron: ('network_create',
                                       'network_delete',
                                       'subnet_create',)})
     def test_network_create_post_with_subnet_subnet_exception(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_create(IsA(http.HttpRequest), name=network.name,
+        api.neutron.network_create(IsA(http.HttpRequest), name=network.name,
                                    admin_state_up=network.admin_state_up)\
             .AndReturn(network)
-        api.quantum.subnet_create(IsA(http.HttpRequest),
+        api.neutron.subnet_create(IsA(http.HttpRequest),
                                   network_id=network.id,
                                   name=subnet.name,
                                   cidr=subnet.cidr,
                                   ip_version=subnet.ip_version,
                                   gateway_ip=subnet.gateway_ip,
                                   enable_dhcp=subnet.enable_dhcp)\
-            .AndRaise(self.exceptions.quantum)
-        api.quantum.network_delete(IsA(http.HttpRequest),
+            .AndRaise(self.exceptions.neutron)
+        api.neutron.network_delete(IsA(http.HttpRequest),
                                    network.id)
         self.mox.ReplayAll()
 
@@ -415,10 +417,10 @@ class NetworkTests(test.TestCase):
 
         self.assertContains(res, 'Gateway IP and IP version are inconsistent.')
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_network_update_get(self):
         network = self.networks.first()
-        api.quantum.network_get(IsA(http.HttpRequest), network.id)\
+        api.neutron.network_get(IsA(http.HttpRequest), network.id)\
             .AndReturn(network)
 
         self.mox.ReplayAll()
@@ -428,11 +430,11 @@ class NetworkTests(test.TestCase):
 
         self.assertTemplateUsed(res, 'project/networks/update.html')
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_network_update_get_exception(self):
         network = self.networks.first()
-        api.quantum.network_get(IsA(http.HttpRequest), network.id)\
-            .AndRaise(self.exceptions.quantum)
+        api.neutron.network_get(IsA(http.HttpRequest), network.id)\
+            .AndRaise(self.exceptions.neutron)
 
         self.mox.ReplayAll()
 
@@ -442,15 +444,15 @@ class NetworkTests(test.TestCase):
         redir_url = INDEX_URL
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('network_modify',
+    @test.create_stubs({api.neutron: ('network_modify',
                                       'network_get',)})
     def test_network_update_post(self):
         network = self.networks.first()
-        api.quantum.network_modify(IsA(http.HttpRequest), network.id,
+        api.neutron.network_modify(IsA(http.HttpRequest), network.id,
                                    name=network.name,
                                    admin_state_up=network.admin_state_up)\
             .AndReturn(network)
-        api.quantum.network_get(IsA(http.HttpRequest), network.id)\
+        api.neutron.network_get(IsA(http.HttpRequest), network.id)\
             .AndReturn(network)
         self.mox.ReplayAll()
 
@@ -463,15 +465,15 @@ class NetworkTests(test.TestCase):
 
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_modify',
+    @test.create_stubs({api.neutron: ('network_modify',
                                       'network_get',)})
     def test_network_update_post_exception(self):
         network = self.networks.first()
-        api.quantum.network_modify(IsA(http.HttpRequest), network.id,
+        api.neutron.network_modify(IsA(http.HttpRequest), network.id,
                                    name=network.name,
                                    admin_state_up=network.admin_state_up)\
-            .AndRaise(self.exceptions.quantum)
-        api.quantum.network_get(IsA(http.HttpRequest), network.id)\
+            .AndRaise(self.exceptions.neutron)
+        api.neutron.network_get(IsA(http.HttpRequest), network.id)\
             .AndReturn(network)
         self.mox.ReplayAll()
 
@@ -484,21 +486,21 @@ class NetworkTests(test.TestCase):
 
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_list',
+    @test.create_stubs({api.neutron: ('network_list',
                                       'subnet_list',
                                       'network_delete')})
     def test_delete_network_no_subnet(self):
         network = self.networks.first()
-        api.quantum.network_list(IsA(http.HttpRequest),
+        api.neutron.network_list(IsA(http.HttpRequest),
                                  tenant_id=network.tenant_id,
                                  shared=False)\
             .AndReturn([network])
-        api.quantum.network_list(IsA(http.HttpRequest),
+        api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True)\
             .AndReturn([])
-        api.quantum.subnet_list(IsA(http.HttpRequest), network_id=network.id)\
+        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network.id)\
             .AndReturn([])
-        api.quantum.network_delete(IsA(http.HttpRequest), network.id)
+        api.neutron.network_delete(IsA(http.HttpRequest), network.id)
 
         self.mox.ReplayAll()
 
@@ -507,23 +509,23 @@ class NetworkTests(test.TestCase):
 
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_list',
+    @test.create_stubs({api.neutron: ('network_list',
                                       'subnet_list',
                                       'network_delete',
                                       'subnet_delete')})
     def test_delete_network_with_subnet(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_list(IsA(http.HttpRequest),
+        api.neutron.network_list(IsA(http.HttpRequest),
                                  tenant_id=network.tenant_id,
                                  shared=False)\
             .AndReturn([network])
-        api.quantum.network_list(IsA(http.HttpRequest), shared=True)\
+        api.neutron.network_list(IsA(http.HttpRequest), shared=True)\
             .AndReturn([])
-        api.quantum.subnet_list(IsA(http.HttpRequest), network_id=network.id)\
+        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network.id)\
             .AndReturn([subnet])
-        api.quantum.subnet_delete(IsA(http.HttpRequest), subnet.id)
-        api.quantum.network_delete(IsA(http.HttpRequest), network.id)
+        api.neutron.subnet_delete(IsA(http.HttpRequest), subnet.id)
+        api.neutron.network_delete(IsA(http.HttpRequest), network.id)
 
         self.mox.ReplayAll()
 
@@ -532,25 +534,25 @@ class NetworkTests(test.TestCase):
 
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_list',
+    @test.create_stubs({api.neutron: ('network_list',
                                       'subnet_list',
                                       'network_delete',
                                       'subnet_delete')})
     def test_delete_network_exception(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_list(IsA(http.HttpRequest),
+        api.neutron.network_list(IsA(http.HttpRequest),
                                  tenant_id=network.tenant_id,
                                  shared=False)\
             .AndReturn([network])
-        api.quantum.network_list(IsA(http.HttpRequest),
+        api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True)\
             .AndReturn([])
-        api.quantum.subnet_list(IsA(http.HttpRequest), network_id=network.id)\
+        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network.id)\
             .AndReturn([subnet])
-        api.quantum.subnet_delete(IsA(http.HttpRequest), subnet.id)
-        api.quantum.network_delete(IsA(http.HttpRequest), network.id)\
-            .AndRaise(self.exceptions.quantum)
+        api.neutron.subnet_delete(IsA(http.HttpRequest), subnet.id)
+        api.neutron.network_delete(IsA(http.HttpRequest), network.id)\
+            .AndRaise(self.exceptions.neutron)
 
         self.mox.ReplayAll()
 
@@ -562,10 +564,10 @@ class NetworkTests(test.TestCase):
 
 class NetworkSubnetTests(test.TestCase):
 
-    @test.create_stubs({api.quantum: ('subnet_get',)})
+    @test.create_stubs({api.neutron: ('subnet_get',)})
     def test_subnet_detail(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(self.subnets.first())
 
         self.mox.ReplayAll()
@@ -577,11 +579,11 @@ class NetworkSubnetTests(test.TestCase):
         self.assertTemplateUsed(res, 'project/networks/subnets/detail.html')
         self.assertEqual(res.context['subnet'].id, subnet.id)
 
-    @test.create_stubs({api.quantum: ('subnet_get',)})
+    @test.create_stubs({api.neutron: ('subnet_get',)})
     def test_subnet_detail_exception(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
-            .AndRaise(self.exceptions.quantum)
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
+            .AndRaise(self.exceptions.neutron)
 
         self.mox.ReplayAll()
 
@@ -591,10 +593,10 @@ class NetworkSubnetTests(test.TestCase):
 
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_get(self):
         network = self.networks.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id)\
             .AndReturn(self.networks.first())
         self.mox.ReplayAll()
@@ -605,15 +607,15 @@ class NetworkSubnetTests(test.TestCase):
 
         self.assertTemplateUsed(res, WorkflowView.template_name)
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_create',)})
     def test_subnet_create_post(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id)\
             .AndReturn(self.networks.first())
-        api.quantum.subnet_create(IsA(http.HttpRequest),
+        api.neutron.subnet_create(IsA(http.HttpRequest),
                                   network_id=network.id,
                                   name=subnet.name,
                                   cidr=subnet.cidr,
@@ -634,15 +636,15 @@ class NetworkSubnetTests(test.TestCase):
                             args=[subnet.network_id])
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_create',)})
     def test_subnet_create_post_with_additional_attributes(self):
         network = self.networks.list()[1]
         subnet = self.subnets.list()[1]
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id)\
             .AndReturn(self.networks.first())
-        api.quantum.subnet_create(IsA(http.HttpRequest),
+        api.neutron.subnet_create(IsA(http.HttpRequest),
                                   network_id=network.id,
                                   name=subnet.name,
                                   cidr=subnet.cidr,
@@ -665,15 +667,15 @@ class NetworkSubnetTests(test.TestCase):
                             args=[subnet.network_id])
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_create',)})
-    def test_subnet_create_post_with_additional_attributes(self):
+    def test_subnet_create_post_with_additional_attributes_no_gateway(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id)\
             .AndReturn(self.networks.first())
-        api.quantum.subnet_create(IsA(http.HttpRequest),
+        api.neutron.subnet_create(IsA(http.HttpRequest),
                                   network_id=network.id,
                                   name=subnet.name,
                                   cidr=subnet.cidr,
@@ -694,14 +696,14 @@ class NetworkSubnetTests(test.TestCase):
                             args=[subnet.network_id])
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_create',)})
     def test_subnet_create_post_network_exception(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id)\
-            .AndRaise(self.exceptions.quantum)
+            .AndRaise(self.exceptions.neutron)
         self.mox.ReplayAll()
 
         form_data = form_data_subnet(subnet,
@@ -713,22 +715,22 @@ class NetworkSubnetTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('network_get',
+    @test.create_stubs({api.neutron: ('network_get',
                                       'subnet_create',)})
     def test_subnet_create_post_subnet_exception(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id)\
             .AndReturn(self.networks.first())
-        api.quantum.subnet_create(IsA(http.HttpRequest),
+        api.neutron.subnet_create(IsA(http.HttpRequest),
                                   network_id=network.id,
                                   name=subnet.name,
                                   cidr=subnet.cidr,
                                   ip_version=subnet.ip_version,
                                   gateway_ip=subnet.gateway_ip,
                                   enable_dhcp=subnet.enable_dhcp)\
-            .AndRaise(self.exceptions.quantum)
+            .AndRaise(self.exceptions.neutron)
         self.mox.ReplayAll()
 
         form_data = form_data_subnet(subnet,
@@ -741,11 +743,11 @@ class NetworkSubnetTests(test.TestCase):
                             args=[subnet.network_id])
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_cidr_inconsistent(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id)\
             .AndReturn(self.networks.first())
         self.mox.ReplayAll()
@@ -762,11 +764,11 @@ class NetworkSubnetTests(test.TestCase):
         self.assertFormErrors(res, 1, expected_msg)
         self.assertTemplateUsed(res, WorkflowView.template_name)
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_gw_inconsistent(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id)\
             .AndReturn(self.networks.first())
         self.mox.ReplayAll()
@@ -781,11 +783,11 @@ class NetworkSubnetTests(test.TestCase):
 
         self.assertContains(res, 'Gateway IP and IP version are inconsistent.')
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_pools_start_only(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -801,11 +803,11 @@ class NetworkSubnetTests(test.TestCase):
                             'Start and end addresses must be specified '
                             '(value=%s)' % allocation_pools)
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_pools_three_entries(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -821,11 +823,11 @@ class NetworkSubnetTests(test.TestCase):
                             'Start and end addresses must be specified '
                             '(value=%s)' % allocation_pools)
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_pools_invalid_address(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -841,11 +843,11 @@ class NetworkSubnetTests(test.TestCase):
                             'allocation_pools: Invalid IP address '
                             '(value=%s)' % allocation_pools.split(',')[1])
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_pools_ip_network(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -861,11 +863,11 @@ class NetworkSubnetTests(test.TestCase):
                             'allocation_pools: Invalid IP address '
                             '(value=%s)' % allocation_pools.split(',')[0])
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_pools_start_larger_than_end(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -881,11 +883,11 @@ class NetworkSubnetTests(test.TestCase):
                             'Start address is larger than end address '
                             '(value=%s)' % allocation_pools)
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_nameservers(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -901,11 +903,11 @@ class NetworkSubnetTests(test.TestCase):
                             'dns_nameservers: Invalid IP address '
                             '(value=%s)' % dns_nameservers[1])
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_routes_destination_only(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -923,11 +925,11 @@ class NetworkSubnetTests(test.TestCase):
                             'Destination CIDR and nexthop must be specified '
                             '(value=%s)' % host_routes)
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_routes_three_entries(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -945,11 +947,11 @@ class NetworkSubnetTests(test.TestCase):
                             'Destination CIDR and nexthop must be specified '
                             '(value=%s)' % host_routes)
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_routes_invalid_destination(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -966,11 +968,11 @@ class NetworkSubnetTests(test.TestCase):
                             'host_routes: Invalid IP address '
                             '(value=%s)' % host_routes.split(',')[0])
 
-    @test.create_stubs({api.quantum: ('network_get',)})
+    @test.create_stubs({api.neutron: ('network_get',)})
     def test_subnet_create_post_invalid_routes_nexthop_ip_network(self):
         network = self.networks.first()
         subnet = self.subnets.first()
-        api.quantum.network_get(IsA(http.HttpRequest),
+        api.neutron.network_get(IsA(http.HttpRequest),
                                 network.id).AndReturn(network)
         self.mox.ReplayAll()
 
@@ -987,36 +989,13 @@ class NetworkSubnetTests(test.TestCase):
                             'host_routes: Invalid IP address '
                             '(value=%s)' % host_routes.split(',')[1])
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
-        api.quantum.subnet_modify(IsA(http.HttpRequest), subnet.id,
-                                  name=subnet.name,
-                                  gateway_ip=subnet.gateway_ip,
-                                  enable_dhcp=subnet.enable_dhcp)\
-            .AndReturn(subnet)
-        self.mox.ReplayAll()
-
-        form_data = form_data_subnet(subnet,
-                                     allocation_pools=[])
-        url = reverse('horizon:project:networks:editsubnet',
-                      args=[subnet.network_id, subnet.id])
-        res = self.client.post(url, form_data)
-
-        redir_url = reverse('horizon:project:networks:detail',
-                            args=[subnet.network_id])
-        self.assertRedirectsNoFollow(res, redir_url)
-
-    @test.create_stubs({api.quantum: ('subnet_modify',
-                                      'subnet_get',)})
-    def test_subnet_update_post(self):
-        subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
-            .AndReturn(subnet)
-        api.quantum.subnet_modify(IsA(http.HttpRequest), subnet.id,
+        api.neutron.subnet_modify(IsA(http.HttpRequest), subnet.id,
                                   name=subnet.name,
                                   gateway_ip=subnet.gateway_ip,
                                   enable_dhcp=subnet.enable_dhcp,
@@ -1035,13 +1014,13 @@ class NetworkSubnetTests(test.TestCase):
                             args=[subnet.network_id])
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post_no_gateway(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
-        api.quantum.subnet_modify(IsA(http.HttpRequest), subnet.id,
+        api.neutron.subnet_modify(IsA(http.HttpRequest), subnet.id,
                                   name=subnet.name,
                                   gateway_ip=None,
                                   enable_dhcp=subnet.enable_dhcp,
@@ -1061,13 +1040,13 @@ class NetworkSubnetTests(test.TestCase):
                             args=[subnet.network_id])
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post_with_additional_attributes(self):
         subnet = self.subnets.list()[1]
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
-        api.quantum.subnet_modify(IsA(http.HttpRequest), subnet.id,
+        api.neutron.subnet_modify(IsA(http.HttpRequest), subnet.id,
                                   name=subnet.name,
                                   gateway_ip=subnet.gateway_ip,
                                   enable_dhcp=False,
@@ -1086,11 +1065,11 @@ class NetworkSubnetTests(test.TestCase):
                             args=[subnet.network_id])
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post_gw_inconsistent(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
         self.mox.ReplayAll()
 
@@ -1104,11 +1083,11 @@ class NetworkSubnetTests(test.TestCase):
 
         self.assertContains(res, 'Gateway IP and IP version are inconsistent.')
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post_invalid_nameservers(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
         self.mox.ReplayAll()
 
@@ -1124,11 +1103,11 @@ class NetworkSubnetTests(test.TestCase):
                             'dns_nameservers: Invalid IP address '
                             '(value=%s)' % dns_nameservers[1])
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post_invalid_routes_destination_only(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
         self.mox.ReplayAll()
 
@@ -1146,11 +1125,11 @@ class NetworkSubnetTests(test.TestCase):
                             'Destination CIDR and nexthop must be specified '
                             '(value=%s)' % host_routes)
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post_invalid_routes_three_entries(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
         self.mox.ReplayAll()
 
@@ -1168,11 +1147,11 @@ class NetworkSubnetTests(test.TestCase):
                             'Destination CIDR and nexthop must be specified '
                             '(value=%s)' % host_routes)
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post_invalid_routes_invalid_destination(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
         self.mox.ReplayAll()
 
@@ -1189,11 +1168,11 @@ class NetworkSubnetTests(test.TestCase):
                             'host_routes: Invalid IP address '
                             '(value=%s)' % host_routes.split(',')[0])
 
-    @test.create_stubs({api.quantum: ('subnet_modify',
+    @test.create_stubs({api.neutron: ('subnet_modify',
                                       'subnet_get',)})
     def test_subnet_update_post_invalid_routes_nexthop_ip_network(self):
         subnet = self.subnets.first()
-        api.quantum.subnet_get(IsA(http.HttpRequest), subnet.id)\
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
         self.mox.ReplayAll()
 
@@ -1210,22 +1189,22 @@ class NetworkSubnetTests(test.TestCase):
                             'host_routes: Invalid IP address '
                             '(value=%s)' % host_routes.split(',')[1])
 
-    @test.create_stubs({api.quantum: ('subnet_delete',
+    @test.create_stubs({api.neutron: ('subnet_delete',
                                       'subnet_list',
                                       'network_get',
                                       'port_list',)})
     def test_subnet_delete(self):
         subnet = self.subnets.first()
         network_id = subnet.network_id
-        api.quantum.subnet_delete(IsA(http.HttpRequest), subnet.id)
-        api.quantum.subnet_list(IsA(http.HttpRequest), network_id=network_id)\
+        api.neutron.subnet_delete(IsA(http.HttpRequest), subnet.id)
+        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network_id)\
             .AndReturn([self.subnets.first()])
-        api.quantum.network_get(IsA(http.HttpRequest), network_id)\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id)\
             .AndReturn(self.networks.first())
-        api.quantum.port_list(IsA(http.HttpRequest), network_id=network_id)\
+        api.neutron.port_list(IsA(http.HttpRequest), network_id=network_id)\
             .AndReturn([self.ports.first()])
         # Called from SubnetTable
-        api.quantum.network_get(IsA(http.HttpRequest), network_id)\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id)\
             .AndReturn(self.networks.first())
         self.mox.ReplayAll()
 
@@ -1236,23 +1215,23 @@ class NetworkSubnetTests(test.TestCase):
 
         self.assertRedirectsNoFollow(res, url)
 
-    @test.create_stubs({api.quantum: ('subnet_delete',
+    @test.create_stubs({api.neutron: ('subnet_delete',
                                       'subnet_list',
                                       'network_get',
                                       'port_list',)})
     def test_subnet_delete_excceeption(self):
         subnet = self.subnets.first()
         network_id = subnet.network_id
-        api.quantum.subnet_delete(IsA(http.HttpRequest), subnet.id)\
-            .AndRaise(self.exceptions.quantum)
-        api.quantum.subnet_list(IsA(http.HttpRequest), network_id=network_id)\
+        api.neutron.subnet_delete(IsA(http.HttpRequest), subnet.id)\
+            .AndRaise(self.exceptions.neutron)
+        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network_id)\
             .AndReturn([self.subnets.first()])
-        api.quantum.network_get(IsA(http.HttpRequest), network_id)\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id)\
             .AndReturn(self.networks.first())
-        api.quantum.port_list(IsA(http.HttpRequest), network_id=network_id)\
+        api.neutron.port_list(IsA(http.HttpRequest), network_id=network_id)\
             .AndReturn([self.ports.first()])
         # Called from SubnetTable
-        api.quantum.network_get(IsA(http.HttpRequest), network_id)\
+        api.neutron.network_get(IsA(http.HttpRequest), network_id)\
             .AndReturn(self.networks.first())
         self.mox.ReplayAll()
 
@@ -1266,10 +1245,10 @@ class NetworkSubnetTests(test.TestCase):
 
 class NetworkPortTests(test.TestCase):
 
-    @test.create_stubs({api.quantum: ('port_get',)})
+    @test.create_stubs({api.neutron: ('port_get',)})
     def test_port_detail(self):
         port = self.ports.first()
-        api.quantum.port_get(IsA(http.HttpRequest), port.id)\
+        api.neutron.port_get(IsA(http.HttpRequest), port.id)\
             .AndReturn(self.ports.first())
 
         self.mox.ReplayAll()
@@ -1280,11 +1259,11 @@ class NetworkPortTests(test.TestCase):
         self.assertTemplateUsed(res, 'project/networks/ports/detail.html')
         self.assertEqual(res.context['port'].id, port.id)
 
-    @test.create_stubs({api.quantum: ('port_get',)})
+    @test.create_stubs({api.neutron: ('port_get',)})
     def test_port_detail_exception(self):
         port = self.ports.first()
-        api.quantum.port_get(IsA(http.HttpRequest), port.id)\
-            .AndRaise(self.exceptions.quantum)
+        api.neutron.port_get(IsA(http.HttpRequest), port.id)\
+            .AndRaise(self.exceptions.neutron)
 
         self.mox.ReplayAll()
 
@@ -1293,10 +1272,10 @@ class NetworkPortTests(test.TestCase):
 
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs({api.quantum: ('port_get',)})
+    @test.create_stubs({api.neutron: ('port_get',)})
     def test_port_update_get(self):
         port = self.ports.first()
-        api.quantum.port_get(IsA(http.HttpRequest),
+        api.neutron.port_get(IsA(http.HttpRequest),
                              port.id)\
             .AndReturn(port)
         self.mox.ReplayAll()
@@ -1307,13 +1286,13 @@ class NetworkPortTests(test.TestCase):
 
         self.assertTemplateUsed(res, 'project/networks/ports/update.html')
 
-    @test.create_stubs({api.quantum: ('port_get',
+    @test.create_stubs({api.neutron: ('port_get',
                                       'port_modify')})
     def test_port_update_post(self):
         port = self.ports.first()
-        api.quantum.port_get(IsA(http.HttpRequest), port.id)\
+        api.neutron.port_get(IsA(http.HttpRequest), port.id)\
             .AndReturn(port)
-        api.quantum.port_modify(IsA(http.HttpRequest), port.id,
+        api.neutron.port_modify(IsA(http.HttpRequest), port.id,
                                 name=port.name,
                                 admin_state_up=port.admin_state_up)\
             .AndReturn(port)
@@ -1331,16 +1310,16 @@ class NetworkPortTests(test.TestCase):
                             args=[port.network_id])
         self.assertRedirectsNoFollow(res, redir_url)
 
-    @test.create_stubs({api.quantum: ('port_get',
+    @test.create_stubs({api.neutron: ('port_get',
                                       'port_modify')})
     def test_port_update_post_exception(self):
         port = self.ports.first()
-        api.quantum.port_get(IsA(http.HttpRequest), port.id)\
+        api.neutron.port_get(IsA(http.HttpRequest), port.id)\
             .AndReturn(port)
-        api.quantum.port_modify(IsA(http.HttpRequest), port.id,
+        api.neutron.port_modify(IsA(http.HttpRequest), port.id,
                                 name=port.name,
                                 admin_state_up=port.admin_state_up)\
-            .AndRaise(self.exceptions.quantum)
+            .AndRaise(self.exceptions.neutron)
         self.mox.ReplayAll()
 
         form_data = {'network_id': port.network_id,

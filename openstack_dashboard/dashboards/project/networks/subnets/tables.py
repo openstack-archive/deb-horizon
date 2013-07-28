@@ -16,7 +16,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -46,7 +47,7 @@ class DeleteSubnet(CheckNetworkEditable, tables.DeleteAction):
 
     def delete(self, request, obj_id):
         try:
-            api.quantum.subnet_delete(request, obj_id)
+            api.neutron.subnet_delete(request, obj_id)
         except:
             msg = _('Failed to delete subnet %s') % obj_id
             LOG.info(msg)
@@ -90,7 +91,7 @@ class SubnetsTable(tables.DataTable):
         if not hasattr(self, "_network"):
             try:
                 network_id = self.kwargs['network_id']
-                network = api.quantum.network_get(self.request, network_id)
+                network = api.neutron.network_get(self.request, network_id)
                 network.set_id_as_name_if_empty(length=0)
             except:
                 msg = _('Unable to retrieve details for network "%s".') \

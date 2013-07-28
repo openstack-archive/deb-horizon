@@ -6,7 +6,7 @@ set -o errexit
 # Increment me any time the environment should be rebuilt.
 # This includes dependncy changes, directory renames, etc.
 # Simple integer secuence: 1, 2, 3...
-environment_version=34
+environment_version=38
 #--------------------------------------------------------#
 
 function usage {
@@ -137,7 +137,7 @@ function run_pylint {
 
 function run_pep8 {
   echo "Running flake8 ..."
-  ${command_wrapper} flake8 $included_dirs
+  DJANGO_SETTINGS_MODULE=openstack_dashboard.test.settings ${command_wrapper} flake8 $included_dirs
 }
 
 function run_sphinx {

@@ -21,8 +21,9 @@ from horizon import tabs
 
 from openstack_dashboard.api import keystone
 from openstack_dashboard.usage import quotas
-from .tables import QuotasTable, ServicesTable
-from openstack_dashboard.api.base import is_service_enabled
+
+from openstack_dashboard.dashboards.admin.info.tables import QuotasTable
+from openstack_dashboard.dashboards.admin.info.tables import ServicesTable
 
 
 class DefaultQuotasTab(tabs.TableTab):
@@ -53,7 +54,8 @@ class ServicesTab(tabs.TableTab):
         services = []
         for i, service in enumerate(request.user.service_catalog):
             service['id'] = i
-            services.append(keystone.Service(service))
+            services.append(
+                keystone.Service(service, request.user.services_region))
         return services
 
 

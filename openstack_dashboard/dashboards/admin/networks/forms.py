@@ -48,7 +48,8 @@ class CreateNetwork(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         super(CreateNetwork, self).__init__(request, *args, **kwargs)
         tenant_choices = [('', _("Select a project"))]
-        for tenant in api.keystone.tenant_list(request):
+        tenants, has_more = api.keystone.tenant_list(request)
+        for tenant in tenants:
             if tenant.enabled:
                 tenant_choices.append((tenant.id, tenant.name))
         self.fields['tenant_id'].choices = tenant_choices
@@ -60,7 +61,7 @@ class CreateNetwork(forms.SelfHandlingForm):
                       'admin_state_up': data['admin_state'],
                       'shared': data['shared'],
                       'router:external': data['external']}
-            network = api.quantum.network_create(request, **params)
+            network = api.neutron.network_create(request, **params)
             msg = _('Network %s was successfully created.') % data['name']
             LOG.debug(msg)
             messages.success(request, msg)
@@ -88,7 +89,7 @@ class UpdateNetwork(forms.SelfHandlingForm):
                       'admin_state_up': data['admin_state'],
                       'shared': data['shared'],
                       'router:external': data['external']}
-            network = api.quantum.network_modify(request, data['network_id'],
+            network = api.neutron.network_modify(request, data['network_id'],
                                                  **params)
             msg = _('Network %s was successfully updated.') % data['name']
             LOG.debug(msg)

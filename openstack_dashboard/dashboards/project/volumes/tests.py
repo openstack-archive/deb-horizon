@@ -18,29 +18,31 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django import http
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.forms import widgets
+from django import http
 
 from mox import IsA
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
 from openstack_dashboard.test import helpers as test
-from openstack_dashboard.usage import quotas
 
 
 class VolumeViewTests(test.TestCase):
     @test.create_stubs({cinder: ('volume_create',
                                  'volume_snapshot_list',
-                                 'volume_type_list',),
-                        api.glance: ('image_list_detailed',),
-                        quotas: ('tenant_quota_usages',)})
+                                 'volume_type_list',
+                                 'tenant_absolute_limits',
+                                 'volume_list',),
+                        api.glance: ('image_list_detailed',)})
     def test_create_volume(self):
         volume = self.volumes.first()
         volume_type = self.volume_types.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 250,
+         'gigabytesUsed': 20,
+         'maxTotalVolumes': 6}
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
                     'method': u'CreateForm',
@@ -50,7 +52,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                    AndReturn(self.volumes.list())
         cinder.volume_snapshot_list(IsA(http.HttpRequest)).\
                                     AndReturn(self.volume_snapshots.list())
         api.glance.image_list_detailed(IsA(http.HttpRequest),
@@ -80,12 +85,14 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_create',
                                  'volume_snapshot_list',
-                                 'volume_type_list',),
-                        api.glance: ('image_list_detailed',),
-                        quotas: ('tenant_quota_usages',)})
+                                 'volume_type_list',
+                                 'tenant_absolute_limits',
+                                 'volume_list',),
+                        api.glance: ('image_list_detailed',)})
     def test_create_volume_dropdown(self):
         volume = self.volumes.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 250,
+                 'maxTotalVolumes': 6}
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
                     'method': u'CreateForm',
@@ -107,7 +114,10 @@ class VolumeViewTests(test.TestCase):
                             filters={'property-owner_id': self.tenant.id,
                                      'status': 'active'}) \
                   .AndReturn([[], False])
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                    AndReturn(self.volumes.list())
         cinder.volume_create(IsA(http.HttpRequest),
                              formData['size'],
                              formData['name'],
@@ -129,11 +139,13 @@ class VolumeViewTests(test.TestCase):
     @test.create_stubs({cinder: ('volume_create',
                                  'volume_snapshot_get',
                                  'volume_get',
-                                 'volume_type_list',),
-                        quotas: ('tenant_quota_usages',)})
+                                 'volume_type_list',
+                                 'tenant_absolute_limits',
+                                 'volume_list',)})
     def test_create_volume_from_snapshot(self):
         volume = self.volumes.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 250,
+                 'maxTotalVolumes': 6}
         snapshot = self.volume_snapshots.first()
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
@@ -144,7 +156,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                    AndReturn(self.volumes.list())
         cinder.volume_snapshot_get(IsA(http.HttpRequest),
                                    str(snapshot.id)).AndReturn(snapshot)
         cinder.volume_get(IsA(http.HttpRequest), snapshot.volume_id).\
@@ -173,12 +188,14 @@ class VolumeViewTests(test.TestCase):
                                  'volume_snapshot_list',
                                  'volume_snapshot_get',
                                  'volume_get',
-                                 'volume_type_list',),
-                        api.glance: ('image_list_detailed',),
-                        quotas: ('tenant_quota_usages',)})
+                                 'volume_type_list',
+                                 'tenant_absolute_limits',
+                                 'volume_list',),
+                        api.glance: ('image_list_detailed',)})
     def test_create_volume_from_snapshot_dropdown(self):
         volume = self.volumes.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 250,
+                 'maxTotalVolumes': 6}
         snapshot = self.volume_snapshots.first()
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
@@ -200,7 +217,10 @@ class VolumeViewTests(test.TestCase):
                             filters={'property-owner_id': self.tenant.id,
                                      'status': 'active'}) \
                   .AndReturn([[], False])
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                AndReturn(self.volumes.list())
         cinder.volume_snapshot_get(IsA(http.HttpRequest),
                                    str(snapshot.id)).AndReturn(snapshot)
         cinder.volume_create(IsA(http.HttpRequest),
@@ -224,11 +244,13 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_snapshot_get',
                                  'volume_type_list',
-                                 'volume_get',),
-                        api.glance: ('image_list_detailed',),
-                        quotas: ('tenant_quota_usages',)})
+                                 'volume_get',
+                                 'tenant_absolute_limits',
+                                 'volume_list',),
+                        api.glance: ('image_list_detailed',)})
     def test_create_volume_from_snapshot_invalid_size(self):
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 100,
+                 'maxTotalVolumes': 6}
         snapshot = self.volume_snapshots.first()
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
@@ -237,12 +259,18 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                    AndReturn(self.volumes.list())
         cinder.volume_snapshot_get(IsA(http.HttpRequest),
                                    str(snapshot.id)).AndReturn(snapshot)
         cinder.volume_get(IsA(http.HttpRequest), snapshot.volume_id).\
                           AndReturn(self.volumes.first())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                    AndReturn(self.volumes.list())
 
         self.mox.ReplayAll()
 
@@ -256,12 +284,14 @@ class VolumeViewTests(test.TestCase):
                              "snapshot size (40GB)")
 
     @test.create_stubs({cinder: ('volume_create',
-                                 'volume_type_list',),
-                        api.glance: ('image_get',),
-                        quotas: ('tenant_quota_usages',)})
+                                 'volume_type_list',
+                                 'tenant_absolute_limits',
+                                 'volume_list',),
+                        api.glance: ('image_get',)})
     def test_create_volume_from_image(self):
         volume = self.volumes.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 200,
+                 'maxTotalVolumes': 6}
         image = self.images.first()
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
@@ -272,7 +302,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                    AndReturn(self.volumes.list())
         api.glance.image_get(IsA(http.HttpRequest),
                              str(image.id)).AndReturn(image)
         cinder.volume_create(IsA(http.HttpRequest),
@@ -298,13 +331,15 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_create',
                                  'volume_type_list',
-                                 'volume_snapshot_list',),
+                                 'volume_snapshot_list',
+                                 'tenant_absolute_limits',
+                                 'volume_list',),
                         api.glance: ('image_get',
-                                     'image_list_detailed'),
-                        quotas: ('tenant_quota_usages',)})
+                                     'image_list_detailed')})
     def test_create_volume_from_image_dropdown(self):
         volume = self.volumes.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 200,
+                 'maxTotalVolumes': 6}
         image = self.images.first()
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
@@ -327,7 +362,10 @@ class VolumeViewTests(test.TestCase):
                             filters={'property-owner_id': self.tenant.id,
                                      'status': 'active'}) \
                   .AndReturn([[], False])
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)) \
+                  .AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)) \
+                  .AndReturn(self.volumes.list())
         api.glance.image_get(IsA(http.HttpRequest),
                              str(image.id)).AndReturn(image)
         cinder.volume_create(IsA(http.HttpRequest),
@@ -349,12 +387,13 @@ class VolumeViewTests(test.TestCase):
         redirect_url = reverse('horizon:project:volumes:index')
         self.assertRedirectsNoFollow(res, redirect_url)
 
-    @test.create_stubs({cinder: ('volume_type_list',),
+    @test.create_stubs({cinder: ('volume_type_list', 'tenant_absolute_limits',
+                                 'volume_list',),
                         api.glance: ('image_get',
-                                     'image_list_detailed'),
-                        quotas: ('tenant_quota_usages',)})
+                                     'image_list_detailed')})
     def test_create_volume_from_image_invalid_size(self):
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 100,
+                 'maxTotalVolumes': 6}
         image = self.images.first()
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
@@ -363,10 +402,16 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                AndReturn(self.volumes.list())
         api.glance.image_get(IsA(http.HttpRequest),
                              str(image.id)).AndReturn(image)
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                AndReturn(self.volumes.list())
 
         self.mox.ReplayAll()
 
@@ -379,11 +424,12 @@ class VolumeViewTests(test.TestCase):
                              "The volume size cannot be less than the "
                              "image size (20.0 GB)")
 
-    @test.create_stubs({cinder: ('volume_snapshot_list', 'volume_type_list',),
-                        api.glance: ('image_list_detailed',),
-                        quotas: ('tenant_quota_usages',)})
+    @test.create_stubs({cinder: ('volume_snapshot_list', 'volume_type_list',
+                                 'tenant_absolute_limits', 'volume_list',),
+                        api.glance: ('image_list_detailed',)})
     def test_create_volume_gb_used_over_alloted_quota(self):
-        usage = {'gigabytes': {'available': 100, 'used': 20}}
+        usage_limit = {'maxTotalVolumeGigabytes': 100,
+                 'maxTotalVolumes': 6}
         formData = {'name': u'This Volume Is Huge!',
                     'description': u'This is a volume that is just too big!',
                     'method': u'CreateForm',
@@ -391,7 +437,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                AndReturn(self.volumes.list())
         cinder.volume_snapshot_list(IsA(http.HttpRequest)).\
                                     AndReturn(self.volume_snapshots.list())
         api.glance.image_list_detailed(IsA(http.HttpRequest),
@@ -402,7 +451,10 @@ class VolumeViewTests(test.TestCase):
                             filters={'property-owner_id': self.tenant.id,
                                      'status': 'active'}) \
                   .AndReturn([[], False])
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                AndReturn(self.volumes.list())
 
         self.mox.ReplayAll()
 
@@ -410,15 +462,15 @@ class VolumeViewTests(test.TestCase):
         res = self.client.post(url, formData)
 
         expected_error = [u'A volume of 5000GB cannot be created as you only'
-                          ' have 100GB of your quota available.']
+                          ' have 20GB of your quota available.']
         self.assertEqual(res.context['form'].errors['__all__'], expected_error)
 
-    @test.create_stubs({cinder: ('volume_snapshot_list', 'volume_type_list',),
-                        api.glance: ('image_list_detailed',),
-                        quotas: ('tenant_quota_usages',)})
+    @test.create_stubs({cinder: ('volume_snapshot_list', 'volume_type_list',
+                                 'tenant_absolute_limits', 'volume_list',),
+                        api.glance: ('image_list_detailed',)})
     def test_create_volume_number_over_alloted_quota(self):
-        usage = {'gigabytes': {'available': 100, 'used': 20},
-                 'volumes': {'available': 0}}
+        usage_limit = {'maxTotalVolumeGigabytes': 100,
+                 'maxTotalVolumes': len(self.volumes.list())}
         formData = {'name': u'Too Many...',
                     'description': u'We have no volumes left!',
                     'method': u'CreateForm',
@@ -426,7 +478,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                AndReturn(self.volumes.list())
         cinder.volume_snapshot_list(IsA(http.HttpRequest)).\
                                     AndReturn(self.volume_snapshots.list())
         api.glance.image_list_detailed(IsA(http.HttpRequest),
@@ -437,7 +492,10 @@ class VolumeViewTests(test.TestCase):
                             filters={'property-owner_id': self.tenant.id,
                                      'status': 'active'}) \
                   .AndReturn([[], False])
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                    AndReturn(self.volumes.list())
 
         self.mox.ReplayAll()
 
@@ -450,13 +508,16 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_create',
                                  'volume_snapshot_list',
-                                 'volume_type_list',),
-                        api.glance: ('image_list_detailed',),
-                        quotas: ('tenant_quota_usages',)})
+                                 'volume_type_list',
+                                 'tenant_absolute_limits',
+                                 'volume_list',),
+                        api.glance: ('image_list_detailed',)})
     def test_create_volume_encrypted(self):
         volume = self.volumes.first()
         volume_type = self.volume_types.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 250,
+                 'gigabytesUsed': 20,
+                 'maxTotalVolumes': 6}
         formData = {'name': u'An Encrypted Volume',
                     'description': u'This volume has metadata for encryption.',
                     'method': u'CreateForm',
@@ -471,7 +532,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                AndReturn(self.volumes.list())
         cinder.volume_snapshot_list(IsA(http.HttpRequest)).\
                                     AndReturn(self.volume_snapshots.list())
         api.glance.image_list_detailed(IsA(http.HttpRequest),
@@ -501,9 +565,9 @@ class VolumeViewTests(test.TestCase):
 
         settings.OPENSTACK_HYPERVISOR_FEATURES['can_encrypt_volumes'] = PREV
 
-    @test.create_stubs({cinder: ('volume_snapshot_list', 'volume_type_list',),
-                        api.glance: ('image_list_detailed',),
-                        quotas: ('tenant_quota_usages',)})
+    @test.create_stubs({cinder: ('volume_snapshot_list', 'volume_type_list',
+                                 'tenant_absolute_limits', 'volume_list',),
+                        api.glance: ('image_list_detailed',)})
     def test_create_volume_cannot_encrypt(self):
         volume = self.volumes.first()
         volume_type = self.volume_types.first()
@@ -522,11 +586,16 @@ class VolumeViewTests(test.TestCase):
 
         volume = self.volumes.first()
         volume_type = self.volume_types.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
+        usage_limit = {'maxTotalVolumeGigabytes': 250,
+                 'gigabytesUsed': 20,
+                 'maxTotalVolumes': 6}
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                 AndReturn(self.volume_types.list())
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
+        cinder.volume_list(IsA(http.HttpRequest)).\
+                                AndReturn(self.volumes.list())
         cinder.volume_snapshot_list(IsA(http.HttpRequest)).\
                                     AndReturn(self.volume_snapshots.list())
         api.glance.image_list_detailed(IsA(http.HttpRequest),
@@ -561,11 +630,11 @@ class VolumeViewTests(test.TestCase):
         cinder.volume_list(IsA(http.HttpRequest), search_opts=None).\
                            AndReturn(self.volumes.list())
         cinder.volume_delete(IsA(http.HttpRequest), volume.id)
-        api.nova.server_list(IsA(http.HttpRequest)).\
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=None).\
                              AndReturn([self.servers.list(), False])
         cinder.volume_list(IsA(http.HttpRequest), search_opts=None).\
                            AndReturn(self.volumes.list())
-        api.nova.server_list(IsA(http.HttpRequest)).\
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=None).\
                              AndReturn([self.servers.list(), False])
 
         self.mox.ReplayAll()
@@ -589,11 +658,11 @@ class VolumeViewTests(test.TestCase):
                            AndReturn(self.volumes.list())
         cinder.volume_delete(IsA(http.HttpRequest), volume.id).\
                              AndRaise(exc)
-        api.nova.server_list(IsA(http.HttpRequest)).\
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=None).\
                              AndReturn([self.servers.list(), False])
         cinder.volume_list(IsA(http.HttpRequest), search_opts=None).\
                            AndReturn(self.volumes.list())
-        api.nova.server_list(IsA(http.HttpRequest)).\
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=None).\
                              AndReturn([self.servers.list(), False])
 
         self.mox.ReplayAll()
@@ -609,7 +678,8 @@ class VolumeViewTests(test.TestCase):
     @test.create_stubs({cinder: ('volume_get',), api.nova: ('server_list',)})
     def test_edit_attachments(self):
         volume = self.volumes.first()
-        servers = self.servers.list()
+        servers = [s for s in self.servers.list()
+                   if s.tenant_id == self.request.user.tenant_id]
 
         cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
         api.nova.server_list(IsA(http.HttpRequest)).AndReturn([servers, False])
@@ -632,7 +702,8 @@ class VolumeViewTests(test.TestCase):
         settings.OPENSTACK_HYPERVISOR_FEATURES['can_set_mount_point'] = False
 
         volume = self.volumes.first()
-        servers = self.servers.list()
+        servers = [s for s in self.servers.list()
+                   if s.tenant_id == self.request.user.tenant_id]
 
         cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
         api.nova.server_list(IsA(http.HttpRequest)).AndReturn([servers, False])
@@ -649,13 +720,15 @@ class VolumeViewTests(test.TestCase):
     @test.create_stubs({cinder: ('volume_get',),
                         api.nova: ('server_get', 'server_list',)})
     def test_edit_attachments_attached_volume(self):
-        server = self.servers.first()
+        servers = [s for s in self.servers.list()
+                   if s.tenant_id == self.request.user.tenant_id]
+        server = servers[0]
         volume = self.volumes.list()[0]
 
         cinder.volume_get(IsA(http.HttpRequest), volume.id) \
                           .AndReturn(volume)
         api.nova.server_list(IsA(http.HttpRequest)) \
-                             .AndReturn([self.servers.list(), False])
+                             .AndReturn([servers, False])
 
         self.mox.ReplayAll()
 

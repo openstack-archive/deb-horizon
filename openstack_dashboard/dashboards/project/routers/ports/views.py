@@ -18,12 +18,18 @@ import logging
 
 from django.core.urlresolvers import reverse
 
-from horizon import tabs
-from horizon import forms
 from horizon import exceptions
+from horizon import forms
+from horizon import tabs
+
 from openstack_dashboard import api
-from .tabs import PortDetailTabs
-from .forms import (AddInterface, SetGatewayForm)
+
+from openstack_dashboard.dashboards.project.routers.ports.forms \
+    import AddInterface
+from openstack_dashboard.dashboards.project.routers.ports.forms \
+    import SetGatewayForm
+from openstack_dashboard.dashboards.project.routers.ports.tabs \
+    import PortDetailTabs
 
 
 LOG = logging.getLogger(__name__)
@@ -43,7 +49,7 @@ class AddInterfaceView(forms.ModalFormView):
         if not hasattr(self, "_object"):
             try:
                 router_id = self.kwargs["router_id"]
-                self._object = api.quantum.router_get(self.request,
+                self._object = api.neutron.router_get(self.request,
                                                       router_id)
             except:
                 redirect = reverse(self.failure_url, args=[router_id])
@@ -75,7 +81,7 @@ class SetGatewayView(forms.ModalFormView):
         if not hasattr(self, "_object"):
             try:
                 router_id = self.kwargs["router_id"]
-                self._object = api.quantum.router_get(self.request,
+                self._object = api.neutron.router_get(self.request,
                                                       router_id)
             except:
                 redirect = reverse(self.failure_url)

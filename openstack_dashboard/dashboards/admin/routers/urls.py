@@ -14,9 +14,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .views import (IndexView, DetailView)
+from openstack_dashboard.dashboards.admin.routers.views import DetailView
+from openstack_dashboard.dashboards.admin.routers.views import IndexView
 
 
 urlpatterns = patterns('horizon.dashboards.admin.routers.views',

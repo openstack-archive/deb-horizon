@@ -14,7 +14,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -22,8 +23,10 @@ from horizon import forms
 from horizon import tables
 
 from openstack_dashboard import api
-from .forms import CreateRoleForm, UpdateRoleForm
-from .tables import RolesTable
+
+from openstack_dashboard.dashboards.admin.roles.forms import CreateRoleForm
+from openstack_dashboard.dashboards.admin.roles.forms import UpdateRoleForm
+from openstack_dashboard.dashboards.admin.roles.tables import RolesTable
 
 
 class IndexView(tables.DataTableView):

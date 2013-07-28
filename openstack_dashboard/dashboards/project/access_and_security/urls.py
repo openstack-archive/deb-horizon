@@ -18,13 +18,20 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import url, patterns, include
+from django.conf.urls.defaults import include
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .api_access import urls as api_access_urls
-from .floating_ips import urls as fip_urls
-from .keypairs import urls as keypair_urls
-from .security_groups import urls as sec_group_urls
-from .views import IndexView
+from openstack_dashboard.dashboards.project.access_and_security.\
+    api_access import urls as api_access_urls
+from openstack_dashboard.dashboards.project.access_and_security.\
+    floating_ips import urls as fip_urls
+from openstack_dashboard.dashboards.project.access_and_security.\
+    keypairs import urls as keypair_urls
+from openstack_dashboard.dashboards.project.access_and_security.\
+    security_groups import urls as sec_group_urls
+from openstack_dashboard.dashboards.project.access_and_security.views \
+    import IndexView
 
 
 urlpatterns = patterns('',

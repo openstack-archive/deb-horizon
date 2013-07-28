@@ -15,8 +15,30 @@
 #    under the License.
 
 # Convenience imports for public API components.
-from .actions import (Action, BatchAction, DeleteAction,
-                      LinkAction, FilterAction, FixedFilterAction)
-from .base import DataTable, Column, Row
-from .views import DataTableView, MultiTableView, MultiTableMixin, \
-                    MixedDataTableView
+from horizon.tables.actions import Action
+from horizon.tables.actions import BatchAction
+from horizon.tables.actions import DeleteAction
+from horizon.tables.actions import FilterAction
+from horizon.tables.actions import FixedFilterAction
+from horizon.tables.actions import LinkAction
+from horizon.tables.base import Column
+from horizon.tables.base import DataTable
+from horizon.tables.base import Row
+from horizon.tables.views import DataTableView
+from horizon.tables.views import MixedDataTableView
+from horizon.tables.views import MultiTableMixin
+from horizon.tables.views import MultiTableView
+
+assert Action
+assert BatchAction
+assert DeleteAction
+assert LinkAction
+assert FilterAction
+assert FixedFilterAction
+assert DataTable
+assert Column
+assert Row
+assert DataTableView
+assert MultiTableView
+assert MultiTableMixin
+assert MixedDataTableView

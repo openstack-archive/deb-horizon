@@ -43,6 +43,10 @@ TEMPLATE_DEBUG = DEBUG
 # with Keystone V3. All entities will be created in the default domain.
 # OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
 
+# Set Console type:
+# valid options would be "AUTO", "VNC" or "SPICE"
+# CONSOLE_TYPE = "AUTO"
+
 # Default OpenStack Dashboard configuration.
 HORIZON_CONFIG = {
     'dashboards': ('project', 'admin', 'settings',),
@@ -150,17 +154,25 @@ OPENSTACK_HYPERVISOR_FEATURES = {
     'can_encrypt_volumes': False
 }
 
-# The OPENSTACK_QUANTUM_NETWORK settings can be used to enable optional
-# services provided by quantum.  Currently only the load balancer service
+# The OPENSTACK_NEUTRON_NETWORK settings can be used to enable optional
+# services provided by neutron.  Currently only the load balancer service
 # is available.
-OPENSTACK_QUANTUM_NETWORK = {
-    'enable_lb': False
+OPENSTACK_NEUTRON_NETWORK = {
+    'enable_security_group': True,
+    'enable_lb': False,
 }
 
 # OPENSTACK_ENDPOINT_TYPE specifies the endpoint type to use for the endpoints
 # in the Keystone service catalog. Use this setting when Horizon is running
-# external to the OpenStack environment. The default is 'internalURL'.
+# external to the OpenStack environment. The default is 'publicURL'.
 #OPENSTACK_ENDPOINT_TYPE = "publicURL"
+
+# SECONDARY_ENDPOINT_TYPE specifies the fallback endpoint type to use in the
+# case that OPENSTACK_ENDPOINT_TYPE is not present in the endpoints
+# in the Keystone service catalog. Use this setting when Horizon is running
+# external to the OpenStack environment. The default is None.  This
+# value should differ from OPENSTACK_ENDPOINT_TYPE if used.
+#SECONDARY_ENDPOINT_TYPE = "publicURL"
 
 # The number of objects (Swift containers/objects or images) to display
 # on a single page before providing a paging element (a "more" link)
@@ -225,9 +237,118 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+        'heatclient': {
+            'handlers': ['console'],
+            'propagate': False,
+        },
         'nose.plugins.manager': {
             'handlers': ['console'],
             'propagate': False,
         }
     }
+}
+
+SECURITY_GROUP_RULES = {
+    'all_tcp': {
+        'name': 'ALL TCP',
+        'ip_protocol': 'tcp',
+        'from_port': '1',
+        'to_port': '65535',
+    },
+    'all_udp': {
+        'name': 'ALL UDP',
+        'ip_protocol': 'udp',
+        'from_port': '1',
+        'to_port': '65535',
+    },
+    'all_icmp': {
+        'name': 'ALL ICMP',
+        'ip_protocol': 'icmp',
+        'from_port': '-1',
+        'to_port': '-1',
+    },
+    'ssh': {
+        'name': 'SSH',
+        'ip_protocol': 'tcp',
+        'from_port': '22',
+        'to_port': '22',
+    },
+    'smtp': {
+        'name': 'SMTP',
+        'ip_protocol': 'tcp',
+        'from_port': '25',
+        'to_port': '25',
+    },
+    'dns': {
+        'name': 'DNS',
+        'ip_protocol': 'tcp',
+        'from_port': '53',
+        'to_port': '53',
+    },
+    'http': {
+        'name': 'HTTP',
+        'ip_protocol': 'tcp',
+        'from_port': '80',
+        'to_port': '80',
+    },
+    'pop3': {
+        'name': 'POP3',
+        'ip_protocol': 'tcp',
+        'from_port': '110',
+        'to_port': '110',
+    },
+    'imap': {
+        'name': 'IMAP',
+        'ip_protocol': 'tcp',
+        'from_port': '143',
+        'to_port': '143',
+    },
+    'ldap': {
+        'name': 'LDAP',
+        'ip_protocol': 'tcp',
+        'from_port': '389',
+        'to_port': '389',
+    },
+    'https': {
+        'name': 'HTTPS',
+        'ip_protocol': 'tcp',
+        'from_port': '443',
+        'to_port': '443',
+    },
+    'smtps': {
+        'name': 'SMTPS',
+        'ip_protocol': 'tcp',
+        'from_port': '465',
+        'to_port': '465',
+    },
+    'imaps': {
+        'name': 'IMAPS',
+        'ip_protocol': 'tcp',
+        'from_port': '993',
+        'to_port': '993',
+    },
+    'pop3s': {
+        'name': 'POP3S',
+        'ip_protocol': 'tcp',
+        'from_port': '995',
+        'to_port': '995',
+    },
+    'ms_sql': {
+        'name': 'MS SQL',
+        'ip_protocol': 'tcp',
+        'from_port': '1443',
+        'to_port': '1443',
+    },
+    'mysql': {
+        'name': 'MYSQL',
+        'ip_protocol': 'tcp',
+        'from_port': '3306',
+        'to_port': '3306',
+    },
+    'rdp': {
+        'name': 'RDP',
+        'ip_protocol': 'tcp',
+        'from_port': '3389',
+        'to_port': '3389',
+    },
 }

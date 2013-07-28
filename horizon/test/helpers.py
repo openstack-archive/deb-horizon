@@ -18,22 +18,34 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import logging
 import os
 import socket
 
-from django import http
-from django import test as django_test
+from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.contrib.auth.models import Permission
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.storage import default_storage
-from django.contrib.auth.middleware import AuthenticationMiddleware
-from django.contrib.auth.models import User
 from django.core.handlers import wsgi
+from django import http
+from django import test as django_test
 from django.test.client import RequestFactory
 from django.utils import unittest
 
-from selenium.webdriver.firefox.webdriver import WebDriver
-from selenium.webdriver.support import ui as selenium_ui
+LOG = logging.getLogger(__name__)
+
+
+try:
+    from selenium.webdriver.firefox.webdriver import WebDriver
+    from selenium.webdriver.support import ui as selenium_ui
+except ImportError as e:
+    # NOTE(saschpe): Several distribution can't ship selenium due to it's
+    # non-free license. So they have to patch it out of test-requirements.txt
+    # Avoid import failure and force not running selenium tests.
+    LOG.warning("{0}, force WITH_SELENIUM=False".format(str(e)))
+    os.environ['WITH_SELENIUM'] = ''
+
 
 import mox
 

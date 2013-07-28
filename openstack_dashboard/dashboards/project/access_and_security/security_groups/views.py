@@ -23,7 +23,8 @@ Views for managing instances.
 """
 import logging
 
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -31,9 +32,14 @@ from horizon import forms
 from horizon import tables
 
 from openstack_dashboard import api
-from ..floating_ips.utils import get_int_or_uuid
-from .forms import CreateGroup, AddRule
-from .tables import RulesTable
+from openstack_dashboard.utils.filters import get_int_or_uuid
+
+from openstack_dashboard.dashboards.project.access_and_security.\
+    security_groups.forms import AddRule
+from openstack_dashboard.dashboards.project.access_and_security.\
+    security_groups.forms import CreateGroup
+from openstack_dashboard.dashboards.project.access_and_security.\
+    security_groups.tables import RulesTable
 
 
 LOG = logging.getLogger(__name__)
@@ -43,19 +49,25 @@ class DetailView(tables.DataTableView):
     table_class = RulesTable
     template_name = 'project/access_and_security/security_groups/detail.html'
 
+    def _get_data(self):
+        if not hasattr(self, '_sg'):
+            sg_id = get_int_or_uuid(self.kwargs['security_group_id'])
+            try:
+                self._sg = api.network.security_group_get(self.request, sg_id)
+            except:
+                redirect = reverse('horizon:project:access_and_security:index')
+                exceptions.handle(self.request,
+                                  _('Unable to retrieve security group.'),
+                                  redirect=redirect)
+        return self._sg
+
     def get_data(self):
-        security_group_id = get_int_or_uuid(self.kwargs['security_group_id'])
-        try:
-            self.object = api.nova.security_group_get(self.request,
-                                                      security_group_id)
-            rules = [api.nova.SecurityGroupRule(rule) for
-                     rule in self.object.rules]
-        except:
-            redirect = reverse('horizon:project:access_and_security:index')
-            exceptions.handle(self.request,
-                              _('Unable to retrieve security group.'),
-                              redirect=redirect)
-        return rules
+        return self._get_data().rules
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailView, self).get_context_data(**kwargs)
+        context["security_group"] = self._get_data()
+        return context
 
 
 class AddRuleView(forms.ModalFormView):
@@ -79,7 +91,7 @@ class AddRuleView(forms.ModalFormView):
         kwargs = super(AddRuleView, self).get_form_kwargs()
 
         try:
-            groups = api.nova.security_group_list(self.request)
+            groups = api.network.security_group_list(self.request)
         except:
             groups = []
             exceptions.handle(self.request,

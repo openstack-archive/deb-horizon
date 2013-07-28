@@ -14,7 +14,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -22,13 +23,28 @@ from horizon import forms
 from horizon import tables
 
 from openstack_dashboard import api
-from .constants import GROUPS_INDEX_URL, GROUPS_INDEX_VIEW_TEMPLATE, \
-    GROUPS_CREATE_VIEW_TEMPLATE, GROUPS_UPDATE_VIEW_TEMPLATE, \
-    GROUPS_MANAGE_VIEW_TEMPLATE, GROUPS_ADD_MEMBER_VIEW_TEMPLATE, \
-    GROUPS_ADD_MEMBER_AJAX_VIEW_TEMPLATE
-from .forms import CreateGroupForm, UpdateGroupForm
-from .tables import GroupsTable, GroupMembersTable, \
-    GroupNonMembersTable
+
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_ADD_MEMBER_AJAX_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_ADD_MEMBER_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_CREATE_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_INDEX_URL
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_INDEX_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_MANAGE_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.groups.constants \
+    import GROUPS_UPDATE_VIEW_TEMPLATE
+from openstack_dashboard.dashboards.admin.groups.forms import CreateGroupForm
+from openstack_dashboard.dashboards.admin.groups.forms import UpdateGroupForm
+from openstack_dashboard.dashboards.admin.groups.tables \
+    import GroupMembersTable
+from openstack_dashboard.dashboards.admin.groups.tables \
+    import GroupNonMembersTable
+from openstack_dashboard.dashboards.admin.groups.tables import GroupsTable
 
 
 class IndexView(tables.DataTableView):
@@ -37,8 +53,17 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         groups = []
+        domain_context = self.request.session.get('domain_context', None)
         try:
+            # TODO(dklyle): once keystoneclient supports filtering by
+            # domain change this to use that cleaner method
             groups = api.keystone.group_list(self.request)
+            if domain_context:
+                domain_groups = []
+                for group in groups:
+                    if group.domain_id == domain_context:
+                        domain_groups.append(group)
+                groups = domain_groups
         except:
             exceptions.handle(self.request,
                               _('Unable to retrieve group list.'))

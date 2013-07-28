@@ -14,14 +14,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
 
+from django.core import urlresolvers
 from django import shortcuts
 from django import template
-from django.core import urlresolvers
 from django.template.defaultfilters import title
 from django.utils.http import urlencode
-from django.utils.translation import string_concat, ugettext_lazy as _
+from django.utils.translation import string_concat
+from django.utils.translation import ugettext_lazy as _
 
 from horizon.conf import HORIZON_CONFIG
 from horizon import exceptions
@@ -30,10 +30,18 @@ from horizon import tables
 from horizon.templatetags import sizeformat
 from horizon.utils.filters import replace_underscores
 
+import logging
+
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.access_and_security \
         .floating_ips.workflows import IPAssociationWorkflow
-from .tabs import InstanceDetailTabs, LogTab, ConsoleTab
+from openstack_dashboard.dashboards.project.instances.tabs import ConsoleTab
+from openstack_dashboard.dashboards.project.instances.tabs import \
+    InstanceDetailTabs
+from openstack_dashboard.dashboards.project.instances.tabs import LogTab
+
+from novaclient.v1_1.servers import REBOOT_HARD
+from novaclient.v1_1.servers import REBOOT_SOFT
 
 
 LOG = logging.getLogger(__name__)
@@ -96,7 +104,7 @@ class RebootInstance(tables.BatchAction):
                 and not is_deleting(instance))
 
     def action(self, request, obj_id):
-        api.nova.server_reboot(request, obj_id, api.nova.REBOOT_HARD)
+        api.nova.server_reboot(request, obj_id, REBOOT_HARD)
 
 
 class SoftRebootInstance(RebootInstance):
@@ -105,7 +113,7 @@ class SoftRebootInstance(RebootInstance):
     action_past = _("Soft Rebooted")
 
     def action(self, request, obj_id):
-        api.nova.server_reboot(request, obj_id, api.nova.REBOOT_SOFT)
+        api.nova.server_reboot(request, obj_id, REBOOT_SOFT)
 
 
 class TogglePause(tables.BatchAction):
@@ -272,6 +280,26 @@ class LogLink(tables.LinkAction):
         return "?".join([base_url, tab_query_string])
 
 
+class ResizeLink(tables.LinkAction):
+    name = "resize"
+    verbose_name = _("Resize Instance")
+    url = "horizon:project:instances:resize"
+    classes = ("ajax-modal", "btn-resize")
+
+    def get_link_url(self, project):
+        return self._get_link_url(project, 'flavor_choice')
+
+    def _get_link_url(self, project, step_slug):
+        base_url = urlresolvers.reverse(self.url, args=[project.id])
+        param = urlencode({"step": step_slug})
+        return "?".join([base_url, param])
+
+    def allowed(self, request, instance):
+        return ((instance.status in ACTIVE_STATES
+                 or instance.status == 'SHUTOFF')
+                and not is_deleting(instance))
+
+
 class ConfirmResize(tables.Action):
     name = "confirm"
     verbose_name = _("Confirm Resize/Migrate")
@@ -330,8 +358,8 @@ class SimpleAssociateIP(tables.Action):
 
     def single(self, table, request, instance_id):
         try:
-            # target_id is port_id for Quantum and instance_id for Nova Network
-            # (Quantum API wrapper returns a 'portid_fixedip' string)
+            # target_id is port_id for Neutron and instance_id for Nova Network
+            # (Neutron API wrapper returns a 'portid_fixedip' string)
             target_id = api.network.floating_ip_target_get_by_instance(
                 request, instance_id).split('_')[0]
 
@@ -358,8 +386,8 @@ class SimpleDisassociateIP(tables.Action):
 
     def single(self, table, request, instance_id):
         try:
-            # target_id is port_id for Quantum and instance_id for Nova Network
-            # (Quantum API wrapper returns a 'portid_fixedip' string)
+            # target_id is port_id for Neutron and instance_id for Nova Network
+            # (Neutron API wrapper returns a 'portid_fixedip' string)
             target_id = api.network.floating_ip_target_get_by_instance(
                 request, instance_id).split('_')[0]
 
@@ -391,6 +419,37 @@ class UpdateRow(tables.Row):
         instance.full_flavor = api.nova.flavor_get(request,
                                                    instance.flavor["id"])
         return instance
+
+
+class StartInstance(tables.BatchAction):
+    name = "start"
+    action_present = _("Start")
+    action_past = _("Started")
+    data_type_singular = _("Instance")
+    data_type_plural = _("Instances")
+
+    def allowed(self, request, instance):
+        return instance.status in ("SHUTDOWN", "SHUTOFF", "CRASHED")
+
+    def action(self, request, obj_id):
+        api.nova.server_start(request, obj_id)
+
+
+class StopInstance(tables.BatchAction):
+    name = "stop"
+    action_present = _("Shut Off")
+    action_past = _("Shut Off")
+    data_type_singular = _("Instance")
+    data_type_plural = _("Instances")
+    classes = ('btn-danger',)
+
+    def allowed(self, request, instance):
+        return ((get_power_state(instance)
+                in ("RUNNING", "PAUSED", "SUSPENDED"))
+                and not is_deleting(instance))
+
+    def action(self, request, obj_id):
+        api.nova.server_stop(request, obj_id)
 
 
 def get_ips(instance):
@@ -465,6 +524,8 @@ class InstancesTable(tables.DataTable):
     name = tables.Column("name",
                          link=("horizon:project:instances:detail"),
                          verbose_name=_("Instance Name"))
+    image_name = tables.Column("image_name",
+                               verbose_name=_("Image Name"))
     ip = tables.Column(get_ips,
                        verbose_name=_("IP Address"),
                        attrs={'data-type': "ip"})
@@ -494,9 +555,10 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions = (LaunchLink, TerminateInstance, InstancesFilterAction)
-        row_actions = (ConfirmResize, RevertResize, CreateSnapshot,
-                       SimpleAssociateIP, AssociateIP,
+        row_actions = (StartInstance, ConfirmResize, RevertResize,
+                       CreateSnapshot, SimpleAssociateIP, AssociateIP,
                        SimpleDisassociateIP, EditInstance,
                        EditInstanceSecurityGroups, ConsoleLink, LogLink,
-                       TogglePause, ToggleSuspend, SoftRebootInstance,
-                       RebootInstance, TerminateInstance)
+                       TogglePause, ToggleSuspend, ResizeLink,
+                       SoftRebootInstance, RebootInstance, StopInstance,
+                       TerminateInstance)

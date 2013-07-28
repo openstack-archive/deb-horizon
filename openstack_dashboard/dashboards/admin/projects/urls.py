@@ -18,11 +18,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 
-from .views import (IndexView, TenantUsageView,
-                    CreateProjectView, UpdateProjectView,
-                    CreateUserView)
+from openstack_dashboard.dashboards.admin.projects.views \
+    import CreateProjectView
+from openstack_dashboard.dashboards.admin.projects.views import CreateUserView
+from openstack_dashboard.dashboards.admin.projects.views import IndexView
+from openstack_dashboard.dashboards.admin.projects.views \
+    import ProjectUsageView
+from openstack_dashboard.dashboards.admin.projects.views \
+    import UpdateProjectView
 
 
 urlpatterns = patterns('',
@@ -31,7 +37,7 @@ urlpatterns = patterns('',
     url(r'^(?P<tenant_id>[^/]+)/update/$',
         UpdateProjectView.as_view(), name='update'),
     url(r'^(?P<tenant_id>[^/]+)/usage/$',
-        TenantUsageView.as_view(), name='usage'),
+        ProjectUsageView.as_view(), name='usage'),
     url(r'^(?P<tenant_id>[^/]+)/create_user/$',
         CreateUserView.as_view(), name='create_user'),
 )

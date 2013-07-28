@@ -12,21 +12,30 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import copy
 import json
 import uuid
 
-from novaclient.v1_1 import (flavors, keypairs, servers, volumes,
-                             volume_types, quotas,
-                             floating_ips, usage, certs,
-                             volume_snapshots as vol_snaps,
-                             security_group_rules as rules,
-                             security_groups as sec_groups)
+from novaclient.v1_1 import availability_zones
+from novaclient.v1_1 import certs
+from novaclient.v1_1 import flavors
+from novaclient.v1_1 import floating_ips
+from novaclient.v1_1 import hypervisors
+from novaclient.v1_1 import keypairs
+from novaclient.v1_1 import quotas
+from novaclient.v1_1 import security_group_rules as rules
+from novaclient.v1_1 import security_groups as sec_groups
+from novaclient.v1_1 import servers
+from novaclient.v1_1 import usage
+from novaclient.v1_1 import volume_snapshots as vol_snaps
+from novaclient.v1_1 import volume_types
+from novaclient.v1_1 import volumes
 
-from openstack_dashboard.api.base import Quota, QuotaSet as QuotaSetWrapper
+from openstack_dashboard.api.base import Quota
+from openstack_dashboard.api.base import QuotaSet as QuotaSetWrapper
 from openstack_dashboard.api.nova import FloatingIp as NetFloatingIp
 from openstack_dashboard.usage.quotas import QuotaUsage
-from .utils import TestDataContainer
+
+from openstack_dashboard.test.test_data.utils import TestDataContainer
 
 
 SERVER_DATA = """
@@ -153,6 +162,8 @@ def data(TEST):
     TEST.certs = TestDataContainer()
     TEST.volume_snapshots = TestDataContainer()
     TEST.volume_types = TestDataContainer()
+    TEST.availability_zones = TestDataContainer()
+    TEST.hypervisors = TestDataContainer()
 
     # Data return by novaclient.
     # It is used if API layer does data conversion.
@@ -361,6 +372,8 @@ def data(TEST):
     TEST.limits = limits
 
     # Servers
+    tenant3 = TEST.tenants.list()[2]
+
     vals = {"host": "http://nova.example.com:8774",
             "name": "server_1",
             "status": "ACTIVE",
@@ -377,7 +390,13 @@ def data(TEST):
                  "server_id": "2"})
     server_2 = servers.Server(servers.ServerManager(None),
                               json.loads(SERVER_DATA % vals)['server'])
-    TEST.servers.add(server_1, server_2)
+    vals.update({"name": u'\u4e91\u89c4\u5219',
+                 "status": "ACTIVE",
+                 "tenant_id": tenant3.id,
+                "server_id": "3"})
+    server_3 = servers.Server(servers.ServerManager(None),
+                              json.loads(SERVER_DATA % vals)['server'])
+    TEST.servers.add(server_1, server_2, server_3)
 
     # VNC Console Data
     console = {u'console': {u'url': u'http://example.com:6080/vnc_auto.html',
@@ -408,7 +427,7 @@ def data(TEST):
     TEST.floating_ips.add(NetFloatingIp(generate_fip(fip_1)),
                           NetFloatingIp(generate_fip(fip_2)))
 
-    # Floating IP with UUID id (for Floating IP with Quantum Proxy)
+    # Floating IP with UUID id (for Floating IP with Neutron Proxy)
     fip_3 = {'id': str(uuid.uuid4()),
              'fixed_ip': '10.0.0.4',
              'instance_id': server_1.id,
@@ -435,6 +454,16 @@ def data(TEST):
                             json.loads(USAGE_DATA % usage_vals))
     TEST.usages.add(usage_obj)
 
+    usage_2_vals = {"tenant_id": tenant3.id,
+                    "instance_name": server_3.name,
+                    "flavor_name": flavor_1.name,
+                    "flavor_vcpus": flavor_1.vcpus,
+                    "flavor_disk": flavor_1.disk,
+                    "flavor_ram": flavor_1.ram}
+    usage_obj_2 = usage.Usage(usage.UsageManager(None),
+                               json.loads(USAGE_DATA % usage_2_vals))
+    TEST.usages.add(usage_obj_2)
+
     volume_snapshot = vol_snaps.Snapshot(vol_snaps.SnapshotManager(None),
                         {'id': '40f3fabf-3613-4f5e-90e5-6c9a08333fc3',
                          'display_name': 'test snapshot',
@@ -448,3 +477,38 @@ def data(TEST):
                  'data': 'certificate_data'}
     certificate = certs.Certificate(certs.CertificateManager(None), cert_data)
     TEST.certs.add(certificate)
+
+    # Availability Zones
+    TEST.availability_zones.add(
+        availability_zones.AvailabilityZone(
+            availability_zones.AvailabilityZoneManager(None),
+            {'zoneName': 'nova', 'zoneState': {'available': True}}
+        )
+    )
+
+    # hypervisors
+    hypervisor_1 = hypervisors.Hypervisor(hypervisors.HypervisorManager(None),
+        {
+            "service": {"host": "devstack001", "id": 3},
+            "vcpus_used": 1,
+            "hypervisor_type": "QEMU",
+            "local_gb_used": 20,
+            "hypervisor_hostname": "devstack001",
+            "memory_mb_used": 1500,
+            "memory_mb": 2000,
+            "current_workload": 0,
+            "vcpus": 1,
+            "cpu_info": '{"vendor": "Intel", "model": "core2duo",'
+                        '"arch": "x86_64", "features": ["lahf_lm"'
+                        ', "rdtscp"], "topology": {"cores": 1, "t'
+                        'hreads": 1, "sockets": 1}}',
+            "running_vms": 1,
+            "free_disk_gb": 9,
+            "hypervisor_version": 1002000,
+            "disk_available_least": 6,
+            "local_gb": 29,
+            "free_ram_mb": 500,
+            "id": 1
+        }
+    )
+    TEST.hypervisors.add(hypervisor_1)

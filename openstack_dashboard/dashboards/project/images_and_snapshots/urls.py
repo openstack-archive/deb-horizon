@@ -20,9 +20,14 @@
 
 from django.conf.urls.defaults import *
 
-from .images import urls as image_urls
-from .snapshots import urls as snapshot_urls
-from .views import IndexView, DetailView
+from openstack_dashboard.dashboards.project.images_and_snapshots.images \
+    import urls as image_urls
+from openstack_dashboard.dashboards.project.images_and_snapshots.snapshots \
+    import urls as snapshot_urls
+from openstack_dashboard.dashboards.project.images_and_snapshots.views \
+    import DetailView
+from openstack_dashboard.dashboards.project.images_and_snapshots.views \
+    import IndexView
 
 
 urlpatterns = patterns('',

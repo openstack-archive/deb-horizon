@@ -21,10 +21,9 @@
 """
 Views for managing Swift containers.
 """
-import os
 
-from django import http
 from django.core.urlresolvers import reverse
+from django import http
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import browsers
@@ -33,9 +32,17 @@ from horizon import forms
 
 from openstack_dashboard import api
 from openstack_dashboard.api.swift import FOLDER_DELIMITER
-from .browsers import ContainerBrowser
-from .forms import CreateContainer, UploadObject, CopyObject
-from .tables import wrap_delimiter
+from openstack_dashboard.dashboards.project.containers.browsers \
+    import ContainerBrowser
+from openstack_dashboard.dashboards.project.containers.forms import CopyObject
+from openstack_dashboard.dashboards.project.containers.forms \
+    import CreateContainer
+from openstack_dashboard.dashboards.project.containers.forms \
+    import UploadObject
+from openstack_dashboard.dashboards.project.containers.tables \
+    import wrap_delimiter
+
+import os
 
 
 class ContainerView(browsers.ResourceBrowserView):
@@ -106,8 +113,8 @@ class ContainerView(browsers.ResourceBrowserView):
         context['container_name'] = self.kwargs["container_name"]
         context['subfolders'] = []
         if self.kwargs["subfolder_path"]:
-            (parent, slash, folder) = self.kwargs["subfolder_path"].\
-                                              strip('/').rpartition('/')
+            (parent, slash, folder) = self.kwargs["subfolder_path"] \
+                                          .strip('/').rpartition('/')
             while folder:
                 path = "%s%s%s/" % (parent, slash, folder)
                 context['subfolders'].insert(0, (folder, path))

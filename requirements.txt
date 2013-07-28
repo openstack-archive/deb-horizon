@@ -1,0 +1,22 @@
+d2to1>=0.2.10,<0.3
+pbr>=0.5.16,<0.6
+# Horizon Core Requirements
+django>=1.4,<1.6
+django_compressor>=1.3
+django_openstack_auth>=1.0.11,!=1.1.0
+eventlet>=0.12.0
+kombu>2.4.7
+iso8601>=0.1.4
+netaddr
+python-cinderclient>=1.0.4,<2
+python-glanceclient>=0.9.0,<2
+python-heatclient>=0.2.2
+python-keystoneclient>=0.2,<0.3
+python-novaclient>=2.12.0,<3
+python-neutronclient>=2.2.3,<3.0.0
+python-swiftclient>=1.2,<2
+python-ceilometerclient>=1.0.1
+pytz>=2010h
+# Horizon Utility Requirements
+# for SECURE_KEY generation
+lockfile>=0.8

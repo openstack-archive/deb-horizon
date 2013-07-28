@@ -16,10 +16,11 @@
 
 import logging
 
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.core.urlresolvers import NoReverseMatch
+from django.core.urlresolvers import reverse
 from django.template.defaultfilters import title
-from django.utils import safestring
 from django.utils.html import strip_tags
+from django.utils import safestring
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -167,6 +168,15 @@ class VolumesTableBase(tables.DataTable):
         return obj.display_name
 
 
+class VolumesFilterAction(tables.FilterAction):
+
+    def filter(self, table, volumes, filter_string):
+        """ Naive case-insensitive search. """
+        q = filter_string.lower()
+        return [volume for volume in volumes
+                if q in volume.display_name.lower()]
+
+
 class VolumesTable(VolumesTableBase):
     name = tables.Column("display_name",
                          verbose_name=_("Name"),
@@ -182,7 +192,7 @@ class VolumesTable(VolumesTableBase):
         verbose_name = _("Volumes")
         status_columns = ["status"]
         row_class = UpdateRow
-        table_actions = (CreateVolume, DeleteVolume,)
+        table_actions = (CreateVolume, DeleteVolume, VolumesFilterAction)
         row_actions = (EditAttachments, CreateSnapshot, DeleteVolume)
 
 

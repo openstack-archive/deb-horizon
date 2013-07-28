@@ -15,7 +15,6 @@
 #    under the License.
 
 import logging
-import re
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -49,7 +48,7 @@ class AddPoolAction(workflows.Action):
 
         subnet_id_choices = [('', _("Select a Subnet"))]
         try:
-            networks = api.quantum.network_list_for_tenant(request, tenant_id)
+            networks = api.neutron.network_list_for_tenant(request, tenant_id)
         except:
             exceptions.handle(request,
                               _('Unable to retrieve networks list.'))
@@ -71,7 +70,7 @@ class AddPoolAction(workflows.Action):
         self.fields['lb_method'].choices = lb_method_choices
 
     class Meta:
-        name = _("PoolDetails")
+        name = _("Add New Pool")
         permissions = ('openstack.services.network',)
         help_text = _("Create Pool for current tenant.\n\n"
                       "Assign a name and description for the pool. "
@@ -176,7 +175,7 @@ class AddVipAction(workflows.Action):
         return cleaned_data
 
     class Meta:
-        name = _("AddVip")
+        name = _("Specify VIP")
         permissions = ('openstack.services.network',)
         help_text = _("Create a VIP for this pool. "
                       "Assign a name and description for the VIP. "
@@ -312,7 +311,7 @@ class AddMemberAction(workflows.Action):
             key=lambda member: member[1])
 
     class Meta:
-        name = _("MemberDetails")
+        name = _("Add New Member")
         permissions = ('openstack.services.network',)
         help_text = _("Add member to selected pool.\n\n"
                       "Choose one or more listed instances to be "
@@ -345,7 +344,7 @@ class AddMember(workflows.Workflow):
         for m in context['members']:
             params = {'device_id': m}
             try:
-                plist = api.quantum.port_list(request, **params)
+                plist = api.neutron.port_list(request, **params)
             except:
                 return False
             if plist:
@@ -359,7 +358,6 @@ class AddMember(workflows.Workflow):
 
 
 class AddMonitorAction(workflows.Action):
-    pool_id = forms.ChoiceField(label=_("Pool"))
     type = forms.ChoiceField(
         label=_("Type"),
         choices=[('ping', _('PING')),
@@ -429,16 +427,6 @@ class AddMonitorAction(workflows.Action):
     def __init__(self, request, *args, **kwargs):
         super(AddMonitorAction, self).__init__(request, *args, **kwargs)
 
-        pool_id_choices = [('', _("Select a Pool"))]
-        try:
-            pools = api.lbaas.pools_get(request)
-            for p in pools:
-                pool_id_choices.append((p.id, p.name))
-        except:
-            exceptions.handle(request,
-                              _('Unable to retrieve pools list.'))
-        self.fields['pool_id'].choices = pool_id_choices
-
     def clean(self):
         cleaned_data = super(AddMonitorAction, self).clean()
         type_opt = cleaned_data.get('type')
@@ -462,10 +450,10 @@ class AddMonitorAction(workflows.Action):
         return cleaned_data
 
     class Meta:
-        name = _("MonitorDetails")
+        name = _("Add New Monitor")
         permissions = ('openstack.services.network',)
-        help_text = _("Create a monitor for a pool.\n\n"
-                      "Select target pool and type of monitoring. "
+        help_text = _("Create a monitor template.\n\n"
+                      "Select type of monitoring. "
                       "Specify delay, timeout, and retry limits "
                       "required by the monitor. "
                       "Specify method, URL path, and expected "
@@ -474,7 +462,7 @@ class AddMonitorAction(workflows.Action):
 
 class AddMonitorStep(workflows.Step):
     action_class = AddMonitorAction
-    contributes = ("pool_id", "type", "delay", "timeout", "max_retries",
+    contributes = ("type", "delay", "timeout", "max_retries",
                    "http_method", "url_path", "expected_codes",
                    "admin_state_up")
 
@@ -500,4 +488,122 @@ class AddMonitor(workflows.Workflow):
             return True
         except:
             exceptions.handle(request, _("Unable to add monitor."))
+        return False
+
+
+class AddPMAssociationAction(workflows.Action):
+    monitor_id = forms.ChoiceField(label=_("Monitor"))
+
+    def __init__(self, request, *args, **kwargs):
+        super(AddPMAssociationAction, self).__init__(request, *args, **kwargs)
+
+    def populate_monitor_id_choices(self, request, context):
+        self.fields['monitor_id'].label = _("Select a monitor template "
+                                            "for %s" % context['pool_name'])
+
+        monitor_id_choices = [('', _("Select a Monitor"))]
+        try:
+            monitors = api.lbaas.pool_health_monitors_get(request)
+            for m in monitors:
+                if m.id not in context['pool_monitors']:
+                    monitor_id_choices.append((m.id, m.id))
+        except:
+            exceptions.handle(request,
+                              _('Unable to retrieve monitors list.'))
+        self.fields['monitor_id'].choices = monitor_id_choices
+
+        return monitor_id_choices
+
+    class Meta:
+        name = _("Association Details")
+        permissions = ('openstack.services.network',)
+        help_text = _("Associate a health monitor with target pool.")
+
+
+class AddPMAssociationStep(workflows.Step):
+    action_class = AddPMAssociationAction
+    depends_on = ("pool_id", "pool_name", "pool_monitors")
+    contributes = ("monitor_id",)
+
+    def contribute(self, data, context):
+        context = super(AddPMAssociationStep, self).contribute(data, context)
+        if data:
+            return context
+
+
+class AddPMAssociation(workflows.Workflow):
+    slug = "addassociation"
+    name = _("Add Association")
+    finalize_button_name = _("Add")
+    success_message = _('Added association.')
+    failure_message = _('Unable to add association.')
+    success_url = "horizon:project:loadbalancers:index"
+    default_steps = (AddPMAssociationStep,)
+
+    def handle(self, request, context):
+        try:
+            context['monitor_id'] = api.lbaas.pool_monitor_association_create(
+                request, **context)
+            return True
+        except:
+            exceptions.handle(request, _("Unable to add association."))
+        return False
+
+
+class DeletePMAssociationAction(workflows.Action):
+    monitor_id = forms.ChoiceField(label=_("Monitor"))
+
+    def __init__(self, request, *args, **kwargs):
+        super(DeletePMAssociationAction, self).__init__(
+                                                request, *args, **kwargs)
+
+    def populate_monitor_id_choices(self, request, context):
+        self.fields['monitor_id'].label = _("Select a health monitor of %s" %
+                                               context['pool_name'])
+
+        monitor_id_choices = [('', _("Select a Monitor"))]
+        try:
+            for m_id in context['pool_monitors']:
+                monitor_id_choices.append((m_id, m_id))
+        except:
+            exceptions.handle(request,
+                              _('Unable to retrieve monitors list.'))
+        self.fields['monitor_id'].choices = monitor_id_choices
+
+        return monitor_id_choices
+
+    class Meta:
+        name = _("Association Details")
+        permissions = ('openstack.services.network',)
+        help_text = _("Disassociate a health monitor from target pool. ")
+
+
+class DeletePMAssociationStep(workflows.Step):
+    action_class = DeletePMAssociationAction
+    depends_on = ("pool_id", "pool_name", "pool_monitors")
+    contributes = ("monitor_id",)
+
+    def contribute(self, data, context):
+        context = super(DeletePMAssociationStep, self).contribute(
+                                                            data, context)
+        if data:
+            return context
+
+
+class DeletePMAssociation(workflows.Workflow):
+    slug = "deleteassociation"
+    name = _("Delete Association")
+    finalize_button_name = _("Delete")
+    success_message = _('Deleted association.')
+    failure_message = _('Unable to delete association.')
+    success_url = "horizon:project:loadbalancers:index"
+    default_steps = (DeletePMAssociationStep,)
+
+    def handle(self, request, context):
+        try:
+            context['monitor_id'] = api.lbaas.pool_monitor_association_delete(
+                request, **context)
+            return True
+        except:
+            exceptions.handle(request, _("Unable to delete association."))
         return False

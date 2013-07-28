@@ -23,22 +23,29 @@ Views for managing instances.
 """
 import logging
 
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django import http
 from django import shortcuts
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
-from horizon import forms
-from horizon import tabs
 from horizon import tables
+from horizon import tabs
 from horizon import workflows
 
 from openstack_dashboard import api
-from .tabs import InstanceDetailTabs
-from .tables import InstancesTable
-from .workflows import LaunchInstance, UpdateInstance
+from openstack_dashboard.dashboards.project.instances.tables import \
+    InstancesTable
+from openstack_dashboard.dashboards.project.instances.tabs import \
+    InstanceDetailTabs
+from openstack_dashboard.dashboards.project.instances.workflows import \
+    LaunchInstance
+from openstack_dashboard.dashboards.project.instances.workflows import \
+    ResizeInstance
+from openstack_dashboard.dashboards.project.instances.workflows import \
+    UpdateInstance
 
 
 LOG = logging.getLogger(__name__)
@@ -189,7 +196,7 @@ class DetailView(tabs.TabView):
                 instance.volumes.sort(key=lambda vol: vol.device)
                 instance.full_flavor = api.nova.flavor_get(
                     self.request, instance.flavor["id"])
-                instance.security_groups = api.nova.server_security_groups(
+                instance.security_groups = api.network.server_security_groups(
                                            self.request, instance_id)
             except:
                 redirect = reverse('horizon:project:instances:index')
@@ -203,3 +210,53 @@ class DetailView(tabs.TabView):
     def get_tabs(self, request, *args, **kwargs):
         instance = self.get_data()
         return self.tab_group_class(request, instance=instance, **kwargs)
+
+
+class ResizeView(workflows.WorkflowView):
+    workflow_class = ResizeInstance
+    success_url = reverse_lazy("horizon:project:instances:index")
+
+    def get_context_data(self, **kwargs):
+        context = super(ResizeView, self).get_context_data(**kwargs)
+        context["instance_id"] = self.kwargs['instance_id']
+        return context
+
+    def get_object(self, *args, **kwargs):
+        if not hasattr(self, "_object"):
+            instance_id = self.kwargs['instance_id']
+            try:
+                self._object = api.nova.server_get(self.request, instance_id)
+                flavor_id = self._object.flavor['id']
+                flavors = self.get_flavors()
+                if flavor_id in flavors:
+                    self._object.flavor_name = flavors[flavor_id].name
+                else:
+                    flavor = api.nova.flavor_get(self.request, flavor_id)
+                    self._object.flavor_name = flavor.name
+            except:
+                redirect = reverse("horizon:project:instances:index")
+                msg = _('Unable to retrieve instance details.')
+                exceptions.handle(self.request, msg, redirect=redirect)
+        return self._object
+
+    def get_flavors(self, *args, **kwargs):
+        if not hasattr(self, "_flavors"):
+            try:
+                flavors = api.nova.flavor_list(self.request)
+                self._flavors = SortedDict([(str(flavor.id), flavor)
+                                        for flavor in flavors])
+            except:
+                redirect = reverse("horizon:project:instances:index")
+                exceptions.handle(self.request,
+                    _('Unable to retrieve flavors.'), redirect=redirect)
+        return self._flavors
+
+    def get_initial(self):
+        initial = super(ResizeView, self).get_initial()
+        _object = self.get_object()
+        if _object:
+            initial.update({'instance_id': self.kwargs['instance_id'],
+                'old_flavor_id': _object.flavor['id'],
+                'old_flavor_name': getattr(_object, 'flavor_name', ''),
+                'flavors': self.get_flavors()})
+        return initial

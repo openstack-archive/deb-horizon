@@ -1,7 +1,7 @@
 import logging
 
 from horizon import tables
-from .base import BaseUsage
+from openstack_dashboard.usage.base import BaseUsage
 
 
 LOG = logging.getLogger(__name__)
@@ -28,10 +28,10 @@ class UsageView(tables.DataTableView):
         return "text/html"
 
     def get_data(self):
-        tenant_id = self.kwargs.get('tenant_id', self.request.user.tenant_id)
-        self.usage = self.usage_class(self.request, tenant_id)
+        project_id = self.kwargs.get('project_id', self.request.user.tenant_id)
+        self.usage = self.usage_class(self.request, project_id)
         self.usage.summarize(*self.usage.get_date_range())
-        self.usage.get_quotas()
+        self.usage.get_limits()
         self.kwargs['usage'] = self.usage
         return self.usage.usage_list
 
@@ -43,12 +43,14 @@ class UsageView(tables.DataTableView):
         return context
 
     def render_to_response(self, context, **response_kwargs):
-        resp = self.response_class(request=self.request,
-                                   template=self.get_template_names(),
-                                   context=context,
-                                   content_type=self.get_content_type(),
-                                   **response_kwargs)
         if self.request.GET.get('format', 'html') == 'csv':
-            resp['Content-Disposition'] = 'attachment; filename=usage.csv'
-            resp['Content-Type'] = 'text/csv'
+            render_class = self.csv_response_class
+            response_kwargs.setdefault("filename", "usage.csv")
+        else:
+            render_class = self.response_class
+        resp = render_class(request=self.request,
+                            template=self.get_template_names(),
+                            context=context,
+                            content_type=self.get_content_type(),
+                            **response_kwargs)
         return resp

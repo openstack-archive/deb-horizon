@@ -24,7 +24,9 @@ from horizon import tables
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.networks.ports.tables import \
-        get_fixed_ips, get_attached
+        get_attached
+from openstack_dashboard.dashboards.project.networks.ports.tables import \
+        get_fixed_ips
 
 
 LOG = logging.getLogger(__name__)
@@ -36,7 +38,7 @@ class DeletePort(tables.DeleteAction):
 
     def delete(self, request, obj_id):
         try:
-            api.quantum.port_delete(request, obj_id)
+            api.neutron.port_delete(request, obj_id)
         except:
             msg = _('Failed to delete subnet %s') % obj_id
             LOG.info(msg)

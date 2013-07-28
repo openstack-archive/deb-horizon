@@ -16,20 +16,20 @@
 
 from __future__ import absolute_import
 
-from openstack_dashboard.api.quantum import QuantumAPIDictWrapper
-from openstack_dashboard.api.quantum import quantumclient
-from openstack_dashboard.api.quantum import subnet_get
+from openstack_dashboard.api.neutron import NeutronAPIDictWrapper
+from openstack_dashboard.api.neutron import neutronclient
+from openstack_dashboard.api.neutron import subnet_get
 
 
-class Vip(QuantumAPIDictWrapper):
-    """Wrapper for quantum load balancer vip"""
+class Vip(NeutronAPIDictWrapper):
+    """Wrapper for neutron load balancer vip"""
 
     def __init__(self, apiresource):
         super(Vip, self).__init__(apiresource)
 
 
-class Pool(QuantumAPIDictWrapper):
-    """Wrapper for quantum load balancer pool"""
+class Pool(NeutronAPIDictWrapper):
+    """Wrapper for neutron load balancer pool"""
 
     def __init__(self, apiresource):
         super(Pool, self).__init__(apiresource)
@@ -45,7 +45,8 @@ class Pool(QuantumAPIDictWrapper):
         pFormatted = {'id': self.id,
                       'name': self.name,
                       'description': self.description,
-                      'protocol': self.protocol}
+                      'protocol': self.protocol,
+                      'health_monitors': self.health_monitors}
         try:
             pFormatted['subnet_id'] = self.subnet_id
             pFormatted['subnet_name'] = subnet_get(
@@ -69,8 +70,8 @@ class Pool(QuantumAPIDictWrapper):
         return self.AttributeDict(pFormatted)
 
 
-class Member(QuantumAPIDictWrapper):
-    """Wrapper for quantum load balancer member"""
+class Member(NeutronAPIDictWrapper):
+    """Wrapper for neutron load balancer member"""
 
     def __init__(self, apiresource):
         super(Member, self).__init__(apiresource)
@@ -97,15 +98,15 @@ class Member(QuantumAPIDictWrapper):
         return self.AttributeDict(mFormatted)
 
 
-class PoolStats(QuantumAPIDictWrapper):
-    """Wrapper for quantum load balancer pool stats"""
+class PoolStats(NeutronAPIDictWrapper):
+    """Wrapper for neutron load balancer pool stats"""
 
     def __init__(self, apiresource):
         super(PoolStats, self).__init__(apiresource)
 
 
-class PoolMonitor(QuantumAPIDictWrapper):
-    """Wrapper for quantum load balancer pool health monitor"""
+class PoolMonitor(NeutronAPIDictWrapper):
+    """Wrapper for neutron load balancer pool health monitor"""
 
     def __init__(self, apiresource):
         super(PoolMonitor, self).__init__(apiresource)
@@ -133,28 +134,27 @@ def vip_create(request, **kwargs):
                     'connection_limit': kwargs['connection_limit'],
                     'admin_state_up': kwargs['admin_state_up']
                     }}
-    vip = quantumclient(request).create_vip(body).get('vip')
+    vip = neutronclient(request).create_vip(body).get('vip')
     return Vip(vip)
 
 
 def vips_get(request, **kwargs):
-    vips = quantumclient(request).list_vips().get('vips')
+    vips = neutronclient(request).list_vips().get('vips')
     return [Vip(v) for v in vips]
 
 
 def vip_get(request, vip_id):
-    vip = quantumclient(request).show_vip(vip_id).get('vip')
+    vip = neutronclient(request).show_vip(vip_id).get('vip')
     return Vip(vip)
 
 
-# not linked to UI yet
 def vip_update(request, vip_id, **kwargs):
-    vip = quantumclient(request).update_vip(vip_id, kwargs).get('vip')
+    vip = neutronclient(request).update_vip(vip_id, kwargs).get('vip')
     return Vip(vip)
 
 
 def vip_delete(request, vip_id):
-    quantumclient(request).delete_vip(vip_id)
+    neutronclient(request).delete_vip(vip_id)
 
 
 def pool_create(request, **kwargs):
@@ -175,37 +175,37 @@ def pool_create(request, **kwargs):
                      'lb_method': kwargs['lb_method'],
                      'admin_state_up': kwargs['admin_state_up']
                      }}
-    pool = quantumclient(request).create_pool(body).get('pool')
+    pool = neutronclient(request).create_pool(body).get('pool')
     return Pool(pool)
 
 
 def pools_get(request, **kwargs):
-    pools = quantumclient(request).list_pools().get('pools')
+    pools = neutronclient(request).list_pools().get('pools')
     return [Pool(p) for p in pools]
 
 
 def pool_get(request, pool_id):
-    pool = quantumclient(request).show_pool(pool_id).get('pool')
+    pool = neutronclient(request).show_pool(pool_id).get('pool')
     return Pool(pool)
 
 
 def pool_update(request, pool_id, **kwargs):
-    pool = quantumclient(request).update_pool(pool_id, kwargs).get('pool')
+    pool = neutronclient(request).update_pool(pool_id, kwargs).get('pool')
     return Pool(pool)
 
 
 def pool_delete(request, pool):
-    quantumclient(request).delete_pool(pool)
+    neutronclient(request).delete_pool(pool)
 
 
 # not linked to UI yet
 def pool_stats(request, pool_id, **kwargs):
-    stats = quantumclient(request).retrieve_pool_stats(pool_id, **kwargs)
+    stats = neutronclient(request).retrieve_pool_stats(pool_id, **kwargs)
     return PoolStats(stats)
 
 
 def pool_health_monitor_create(request, **kwargs):
-    """Create a health monitor and associate with pool
+    """Create a health monitor
 
     :param request: request context
     :param type: type of monitor
@@ -228,29 +228,32 @@ def pool_health_monitor_create(request, **kwargs):
         body['health_monitor']['http_method'] = kwargs['http_method']
         body['health_monitor']['url_path'] = kwargs['url_path']
         body['health_monitor']['expected_codes'] = kwargs['expected_codes']
-    mon = quantumclient(request).create_health_monitor(body).get(
+    mon = neutronclient(request).create_health_monitor(body).get(
         'health_monitor')
-    body = {'health_monitor': {'id': mon['id']}}
-    quantumclient(request).associate_health_monitor(
-        kwargs['pool_id'], body)
+
     return PoolMonitor(mon)
 
 
 def pool_health_monitors_get(request, **kwargs):
-    monitors = quantumclient(request
+    monitors = neutronclient(request
                              ).list_health_monitors().get('health_monitors')
     return [PoolMonitor(m) for m in monitors]
 
 
 def pool_health_monitor_get(request, monitor_id):
-    monitor = quantumclient(request
+    monitor = neutronclient(request
                             ).show_health_monitor(monitor_id
                                                   ).get('health_monitor')
     return PoolMonitor(monitor)
 
 
+def pool_health_monitor_update(request, monitor_id, **kwargs):
+    monitor = neutronclient(request).update_health_monitor(monitor_id, kwargs)
+    return PoolMonitor(monitor)
+
+
 def pool_health_monitor_delete(request, mon_id):
-    quantumclient(request).delete_health_monitor(mon_id)
+    neutronclient(request).delete_health_monitor(mon_id)
 
 
 def member_create(request, **kwargs):
@@ -269,25 +272,50 @@ def member_create(request, **kwargs):
                        'weight': kwargs['weight'],
                        'admin_state_up': kwargs['admin_state_up']
                        }}
-    member = quantumclient(request).create_member(body).get('member')
+    member = neutronclient(request).create_member(body).get('member')
     return Member(member)
 
 
 def members_get(request, **kwargs):
-    members = quantumclient(request).list_members().get('members')
+    members = neutronclient(request).list_members().get('members')
     return [Member(m) for m in members]
 
 
 def member_get(request, member_id):
-    member = quantumclient(request).show_member(member_id).get('member')
+    member = neutronclient(request).show_member(member_id).get('member')
     return Member(member)
 
 
-# not linked to UI yet
 def member_update(request, member_id, **kwargs):
-    member = quantumclient(request).update_member(member_id, kwargs)
+    member = neutronclient(request).update_member(member_id, kwargs)
     return Member(member)
 
 
 def member_delete(request, mem_id):
-    quantumclient(request).delete_member(mem_id)
+    neutronclient(request).delete_member(mem_id)
+
+
+def pool_monitor_association_create(request, **kwargs):
+    """Associate a health monitor with pool
+
+    :param request: request context
+    :param monitor_id: id of monitor
+    :param pool_id: id of pool
+    """
+
+    body = {'health_monitor': {'id': kwargs['monitor_id'], }}
+
+    neutronclient(request).associate_health_monitor(
+        kwargs['pool_id'], body)
+
+
+def pool_monitor_association_delete(request, **kwargs):
+    """Disassociate a health monitor from pool
+
+    :param request: request context
+    :param monitor_id: id of monitor
+    :param pool_id: id of pool
+    """
+
+    neutronclient(request).disassociate_health_monitor(
+        kwargs['pool_id'], kwargs['monitor_id'])

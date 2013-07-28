@@ -17,8 +17,8 @@
 import logging
 
 from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
 from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -26,10 +26,14 @@ from horizon import tables
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.networks import views as user_views
-from .tables import NetworksTable
-from .subnets.tables import SubnetsTable
-from .ports.tables import PortsTable
-from .forms import CreateNetwork, UpdateNetwork
+
+from openstack_dashboard.dashboards.admin.networks.forms import CreateNetwork
+from openstack_dashboard.dashboards.admin.networks.forms import UpdateNetwork
+from openstack_dashboard.dashboards.admin.networks.ports.tables \
+    import PortsTable
+from openstack_dashboard.dashboards.admin.networks.subnets.tables \
+    import SubnetsTable
+from openstack_dashboard.dashboards.admin.networks.tables import NetworksTable
 
 
 LOG = logging.getLogger(__name__)
@@ -42,10 +46,10 @@ class IndexView(tables.DataTableView):
     def _get_tenant_list(self):
         if not hasattr(self, "_tenants"):
             try:
-                tenants = api.keystone.tenant_list(self.request)
+                tenants, has_more = api.keystone.tenant_list(self.request)
             except:
                 tenants = []
-                msg = _('Unable to retrieve instance tenant information.')
+                msg = _('Unable to retrieve instance project information.')
                 exceptions.handle(self.request, msg)
 
             tenant_dict = SortedDict([(t.id, t) for t in tenants])
@@ -54,7 +58,7 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         try:
-            networks = api.quantum.network_list(self.request)
+            networks = api.neutron.network_list(self.request)
         except:
             networks = []
             msg = _('Network list can not be retrieved.')
@@ -84,7 +88,7 @@ class DetailView(tables.MultiTableView):
     def get_subnets_data(self):
         try:
             network_id = self.kwargs['network_id']
-            subnets = api.quantum.subnet_list(self.request,
+            subnets = api.neutron.subnet_list(self.request,
                                               network_id=network_id)
         except:
             subnets = []
@@ -97,7 +101,7 @@ class DetailView(tables.MultiTableView):
     def get_ports_data(self):
         try:
             network_id = self.kwargs['network_id']
-            ports = api.quantum.port_list(self.request, network_id=network_id)
+            ports = api.neutron.port_list(self.request, network_id=network_id)
         except:
             ports = []
             msg = _('Port list can not be retrieved.')
@@ -110,7 +114,7 @@ class DetailView(tables.MultiTableView):
         if not hasattr(self, "_network"):
             try:
                 network_id = self.kwargs['network_id']
-                network = api.quantum.network_get(self.request, network_id)
+                network = api.neutron.network_get(self.request, network_id)
                 network.set_id_as_name_if_empty(length=0)
             except:
                 redirect = self.failure_url

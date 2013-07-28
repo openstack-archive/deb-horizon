@@ -2,8 +2,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 from openstack_dashboard.api import cinder
-from openstack_dashboard.dashboards.project.volumes.tables import (UpdateRow,
-        VolumesTable as _VolumesTable, DeleteVolume)
+from openstack_dashboard.dashboards.project.volumes.tables import \
+        DeleteVolume
+from openstack_dashboard.dashboards.project.volumes.tables import \
+        UpdateRow
+from openstack_dashboard.dashboards.project.volumes.tables import \
+        VolumesTable as _VolumesTable
 
 
 class CreateVolumeType(tables.LinkAction):
@@ -21,6 +25,15 @@ class DeleteVolumeType(tables.DeleteAction):
         cinder.volume_type_delete(request, obj_id)
 
 
+class VolumesFilterAction(tables.FilterAction):
+
+    def filter(self, table, volumes, filter_string):
+        """ Naive case-insensitive search. """
+        q = filter_string.lower()
+        return [volume for volume in volumes
+                if q in volume.display_name.lower()]
+
+
 class VolumesTable(_VolumesTable):
     name = tables.Column("display_name",
                          verbose_name=_("Name"),
@@ -33,7 +46,7 @@ class VolumesTable(_VolumesTable):
         verbose_name = _("Volumes")
         status_columns = ["status"]
         row_class = UpdateRow
-        table_actions = (DeleteVolume,)
+        table_actions = (DeleteVolume, VolumesFilterAction)
         row_actions = (DeleteVolume,)
         columns = ('tenant', 'host', 'name', 'size', 'status', 'volume_type',
                    'attachments',)

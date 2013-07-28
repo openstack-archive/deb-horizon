@@ -20,7 +20,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -28,12 +29,19 @@ from horizon import tables
 from horizon import workflows
 
 from openstack_dashboard import api
+from openstack_dashboard.dashboards.admin.users.views import CreateView
 from openstack_dashboard import usage
 from openstack_dashboard.usage import quotas
-from openstack_dashboard.dashboards.admin.users.views import CreateView
-from .forms import CreateUser
-from .tables import TenantsTable, TenantUsersTable, AddUsersTable
-from .workflows import CreateProject, UpdateProject
+
+from openstack_dashboard.dashboards.admin.projects.forms import CreateUser
+from openstack_dashboard.dashboards.admin.projects.tables import AddUsersTable
+from openstack_dashboard.dashboards.admin.projects.tables import TenantsTable
+from openstack_dashboard.dashboards.admin.projects.tables \
+    import TenantUsersTable
+from openstack_dashboard.dashboards.admin.projects.workflows \
+    import CreateProject
+from openstack_dashboard.dashboards.admin.projects.workflows \
+    import UpdateProject
 
 LOG = logging.getLogger(__name__)
 
@@ -68,14 +76,24 @@ class IndexView(tables.DataTableView):
     table_class = TenantsTable
     template_name = 'admin/projects/index.html'
 
+    def has_more_data(self, table):
+        return self._more
+
     def get_data(self):
         tenants = []
+        marker = self.request.GET.get(
+                        TenantsTable._meta.pagination_param, None)
+        domain_context = self.request.session.get('domain_context', None)
         try:
-            tenants = api.keystone.tenant_list(self.request)
+            tenants, self._more = api.keystone.tenant_list(
+                                               self.request,
+                                               domain=domain_context,
+                                               paginate=True,
+                                               marker=marker)
         except:
+            self._more = False
             exceptions.handle(self.request,
                               _("Unable to retrieve project list."))
-        tenants.sort(key=lambda x: x.id, reverse=True)
         return tenants
 
 
@@ -86,11 +104,13 @@ class UsersView(tables.MultiTableView):
     def _get_shared_data(self, *args, **kwargs):
         tenant_id = self.kwargs["tenant_id"]
         if not hasattr(self, "_shared_data"):
+            domain_context = self.request.session.get('domain_context', None)
             try:
                 tenant = api.keystone.tenant_get(self.request,
                                                  tenant_id,
                                                  admin=True)
-                all_users = api.keystone.user_list(self.request)
+                all_users = api.keystone.user_list(self.request,
+                                                   domain=domain_context)
                 tenant_users = api.keystone.user_list(self.request, tenant_id)
                 self._shared_data = {'tenant': tenant,
                                      'all_users': all_users,
@@ -116,13 +136,13 @@ class UsersView(tables.MultiTableView):
         return context
 
 
-class TenantUsageView(usage.UsageView):
-    table_class = usage.TenantUsageTable
-    usage_class = usage.TenantUsage
+class ProjectUsageView(usage.UsageView):
+    table_class = usage.ProjectUsageTable
+    usage_class = usage.ProjectUsage
     template_name = 'admin/projects/usage.html'
 
     def get_data(self):
-        super(TenantUsageView, self).get_data()
+        super(ProjectUsageView, self).get_data()
         return self.usage.get_instances()
 
 

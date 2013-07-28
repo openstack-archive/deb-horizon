@@ -77,12 +77,17 @@ class Service(base.APIDictWrapper):
     """ Wrapper for a dict based on the service data from keystone. """
     _attrs = ['id', 'type', 'name']
 
-    def __init__(self, service, *args, **kwargs):
+    def __init__(self, service, region, *args, **kwargs):
         super(Service, self).__init__(service, *args, **kwargs)
-        self.url = service['endpoints'][0]['internalURL']
-        self.host = urlparse.urlparse(self.url).hostname
-        self.region = service['endpoints'][0]['region']
+        self.public_url = base.get_url_for_service(service, region,
+                                                   'publicURL')
+        self.url = base.get_url_for_service(service, region, 'internalURL')
+        if self.url:
+            self.host = urlparse.urlparse(self.url).hostname
+        else:
+            self.host = None
         self.disabled = None
+        self.region = region
 
     def __unicode__(self):
         if(self.type == "identity"):
@@ -104,7 +109,7 @@ def _get_endpoint_url(request, endpoint_type, catalog=None):
         auth_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL')
         url = request.session.get('region_endpoint', auth_url)
 
-    # TODO: When the Service Catalog no longer contains API versions
+    # TODO(gabriel): When the Service Catalog no longer contains API versions
     # in the endpoints this can be removed.
     bits = urlparse.urlparse(url)
     root = "://".join((bits.scheme, bits.netloc))
@@ -221,12 +226,22 @@ def tenant_delete(request, project):
     return manager.delete(project)
 
 
-def tenant_list(request, domain=None, user=None):
+def tenant_list(request, paginate=False, marker=None, domain=None, user=None):
     manager = VERSIONS.get_project_manager(request, admin=True)
+    page_size = getattr(settings, 'API_RESULT_PAGE_SIZE', 20)
+    limit = None
+    if paginate:
+        limit = page_size + 1
+
+    has_more_data = False
     if VERSIONS.active < 3:
-        return manager.list()
+        tenants = manager.list(limit, marker)
+        if paginate and len(tenants) > page_size:
+            tenants.pop(-1)
+            has_more_data = True
     else:
-        return manager.list(domain=domain, user=user)
+        tenants = manager.list(domain=domain, user=user)
+    return (tenants, has_more_data)
 
 
 def tenant_update(request, project, name=None, description=None,
@@ -322,6 +337,8 @@ def user_update(request, user, **data):
 
     # v3 API is so much simpler...
     else:
+        if not data['password']:
+            data.pop('password')
         user = manager.update(user, **data)
 
     return VERSIONS.upgrade_v2_user(user)

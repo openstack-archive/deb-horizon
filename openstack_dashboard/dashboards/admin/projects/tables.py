@@ -1,14 +1,15 @@
 import logging
 
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
 from django.utils.http import urlencode
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tables
 
 from openstack_dashboard import api
-from ..users.tables import UsersTable
+
+from openstack_dashboard.dashboards.admin.users.tables import UsersTable
 
 
 LOG = logging.getLogger(__name__)
@@ -106,6 +107,7 @@ class TenantsTable(tables.DataTable):
                        ModifyQuotas, DeleteTenantsAction)
         table_actions = (TenantFilterAction, CreateProject,
                          DeleteTenantsAction)
+        pagination_param = "tenant_marker"
 
 
 class RemoveUserAction(tables.BatchAction):

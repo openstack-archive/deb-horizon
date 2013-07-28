@@ -18,23 +18,31 @@
 Views for managing volumes.
 """
 
-import logging
-
 from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
 from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext_lazy as _
+
+from openstack_dashboard.dashboards.project.volumes.forms import AttachForm
+from openstack_dashboard.dashboards.project.volumes.forms import CreateForm
+from openstack_dashboard.dashboards.project.volumes.forms \
+    import CreateSnapshotForm
 
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from horizon import tabs
 
+import logging
+
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
 from openstack_dashboard.usage import quotas
-from .forms import CreateForm, AttachForm, CreateSnapshotForm
-from .tables import AttachmentsTable, VolumesTable
-from .tabs import VolumeDetailTabs
+
+from openstack_dashboard.dashboards.project.volumes.tables \
+    import AttachmentsTable
+from openstack_dashboard.dashboards.project.volumes.tables import VolumesTable
+from openstack_dashboard.dashboards.project.volumes.tabs \
+    import VolumeDetailTabs
 
 
 LOG = logging.getLogger(__name__)
@@ -49,9 +57,10 @@ class VolumeTableMixIn(object):
                               _('Unable to retrieve volume list.'))
             return []
 
-    def _get_instances(self):
+    def _get_instances(self, search_opts=None):
         try:
-            instances, has_more = api.nova.server_list(self.request)
+            instances, has_more = api.nova.server_list(self.request,
+                                                       search_opts=search_opts)
             return instances
         except:
             exceptions.handle(self.request,
@@ -99,7 +108,15 @@ class CreateView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         try:
-            context['usages'] = quotas.tenant_quota_usages(self.request)
+            tenant_id = self.kwargs.get('tenant_id',
+                                        self.request.user.tenant_id)
+            context['usages'] = cinder.tenant_absolute_limits(self.request)
+            volumes = cinder.volume_list(self.request)
+            total_size = sum([getattr(volume, 'size', 0) for volume
+                              in volumes])
+            context['usages']['gigabytesUsed'] = total_size
+            context['usages']['volumesUsed'] = len(volumes)
+
         except:
             exceptions.handle(self.request)
         return context

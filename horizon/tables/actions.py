@@ -14,19 +14,20 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from collections import defaultdict
 import logging
 import new
-from collections import defaultdict
 
-from django import shortcuts
 from django.conf import settings
 from django.core import urlresolvers
+from django import shortcuts
 from django.utils.functional import Promise
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import messages
-from horizon.utils import html, functions
+from horizon.utils import functions
+from horizon.utils import html
 
 
 LOG = logging.getLogger(__name__)
@@ -307,7 +308,7 @@ class LinkAction(BaseAction):
                 return urlresolvers.reverse(self.url, args=(obj_id,))
             else:
                 return urlresolvers.reverse(self.url)
-        except urlresolvers.NoReverseMatch, ex:
+        except urlresolvers.NoReverseMatch as ex:
             LOG.info('No reverse found for "%s": %s' % (self.url, ex))
             return self.url
 
@@ -573,7 +574,7 @@ class BatchAction(Action):
                 self.success_ids.append(datum_id)
                 LOG.info('%s: "%s"' %
                          (self._conjugate(past=True), datum_display))
-            except Exception, ex:
+            except Exception as ex:
                 # Handle the exception but silence it since we'll display
                 # an aggregate error message later. Otherwise we'd get
                 # multiple error messages displayed to the user.
