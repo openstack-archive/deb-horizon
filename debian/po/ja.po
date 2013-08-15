@@ -1,0 +1,59 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the horizon package.
+# victory <victory.deb@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: horizon\n"
+"Report-Msgid-Bugs-To: openstack-devel@lists.alioth.debian.org\n"
+"POT-Creation-Date: 2013-07-19 14:32+0000\n"
+"PO-Revision-Date: 2013-07-19 23:32+0900\n"
+"Last-Translator: victory <victory.deb@gmail.com>\n"
+"Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid "Activate Dashboard and disable default VirtualHost?"
+msgstr "Dashboard を有効にしてデフォルトのバーチャルホストを無効にしますか?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"The Apache package sets up a default web site and a default page, configured "
+"in /etc/apache2/sites-available/default."
+msgstr ""
+"Apache パッケージがデフォルトウェブサイトやデフォルトページを用意しています。"
+"これは /etc/apache2/sites-available/default で設定されています。"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"Choose this option to replace that default with the OpenStack Dashboard "
+"configuration."
+msgstr ""
+"そのデフォルトを OpenStack の Dashboard 設定で置き換える場合はこのオプションを"
+"選択してください。"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid "Should the Dashboard use HTTPS?"
+msgstr "Dashboard で HTTPS を使いますか?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid ""
+"Select this option if you would like Horizon to be served over HTTPS only, "
+"with a redirection to HTTPS if HTTP is in use."
+msgstr ""
+"Horizon を HTTPS だけで使い、HTTP によるアクセスを HTTPS に転送する場合はこの"
+"オプションを選択してください。"
