@@ -1,3 +1,10 @@
+horizon (2013.1.2-5) unstable; urgency=low
+
+  * Added ja.po japaneese translation thanks to victory <victory.deb@gmail.com>
+    (Closes: #719723).
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 15 Aug 2013 18:15:35 +0200
+
 horizon (2013.1.2-4) unstable; urgency=low
 
   * Fixes prerm so that it uninstalls the correct .conf files for apache, since
