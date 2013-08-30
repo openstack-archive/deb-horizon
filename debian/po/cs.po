@@ -1,0 +1,52 @@
+# Czech PO debconf template translation of horizon.
+# Copyright (C) 2013 Michal Simunek <michal.simunek@gmail.com>
+# This file is distributed under the same license as the horizon package.
+# Michal Simunek <michal.simunek@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: horizon 2013.1.2-4\n"
+"Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
+"POT-Creation-Date: 2012-11-28 14:00+0000\n"
+"PO-Revision-Date: 2013-08-29 10:41+0200\n"
+"Last-Translator: Michal Simunek <michal.simunek@gmail.com>\n"
+"Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid "Activate Dashboard and disable default VirtualHost?"
+msgstr "Aktivovat Ovládací panel a zakázat výchozího virtuálního hosta?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"In Debian, Apache comes with a default website and a default page, "
+"configured in /etc/apache2/sites-available/default. Select if this "
+"configuration should be disabled and replaced by the Openstack Dashboard "
+"configuration."
+msgstr ""
+"V Debianu má Apache výchozí web a výchozí stránku nastavené v "
+"/etc/apache2/sites-available/default. Zvolte si, zda se má toto nastavení "
+"zakázat a nahradit Ovládacím panelem pro Openstack."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid "Should the Dashboard be installed on HTTPS?"
+msgstr "Má se Ovládací panel nainstalovat na HTTPS?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid ""
+"Please choose if you would like Horizon to be installed on HTTPS only, with "
+"a redirection to HTTPS if HTTP is in use."
+msgstr ""
+"Zvolte si prosím, zda se má Horizon nainstalovat pouze na HTTPS s "
+"přesměrováním na HTTPS v případě, že se použije HTTP."

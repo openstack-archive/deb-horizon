@@ -1,0 +1,54 @@
+# Danish translation nova.
+# Copyright (C) 2013 nova & nedenstående oversættere.
+# This file is distributed under the same license as the nova package.
+# Joe Hansen <joedalton2@yahoo.dk>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: horizon\n"
+"Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
+"POT-Creation-Date: 2012-11-28 14:00+0000\n"
+"PO-Revision-Date: 2013-08-17 23:51+0200\n"
+"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid "Activate Dashboard and disable default VirtualHost?"
+msgstr "Aktiver Dashboard og deaktiver standard-VirtualHost?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"In Debian, Apache comes with a default website and a default page, "
+"configured in /etc/apache2/sites-available/default. Select if this "
+"configuration should be disabled and replaced by the Openstack Dashboard "
+"configuration."
+msgstr ""
+"I Debian har Apache en standardnetside og en standardside, "
+"konfigureret i /etc/apache2/sites-available/default. Vælg om denne "
+"konfiguration skal være deaktiveret og erstattet af Openstack Dashboard-"
+"konfiguration."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid "Should the Dashboard be installed on HTTPS?"
+msgstr "Skal Dashboard installeres på HTTPS?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid ""
+"Please choose if you would like Horizon to be installed on HTTPS only, with "
+"a redirection to HTTPS if HTTP is in use."
+msgstr ""
+"Vælg venligst om du ønsker, at Horizon kun skal installeres på HTTPS, med "
+"en videresendelse til HTTPS hvis HTTP er i brug."
+
