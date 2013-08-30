@@ -1,8 +1,12 @@
 horizon (2013.1.3-1) unstable; urgency=low
 
   * New upstream point release.
-  * Added ja.po japaneese translation thanks to victory <victory.deb@gmail.com>
-    (Closes: #719723).
+  * Added a few Debconf translations:
+    - japaneese, thanks to victory (Closes: #719723).
+    - Danish, thanks to Joe Dalton (Closes: #720012).
+    - Italian, thanks to Beatrice Torracca (Closes: #720644).
+    - Czech, thanks to Michal Šimůnek (Closes: #721223).
+    - Russian, thanks to Yuri Kozlov (Closes: #721306).
 
  -- Thomas Goirand <zigo@debian.org>  Fri, 30 Aug 2013 16:52:24 +0800
 
