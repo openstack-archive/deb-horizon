@@ -9,13 +9,11 @@ export OSLO_PACKAGE_VERSION=$(VERSION)
 	dh $@ --with python2
 
 override_dh_auto_install:
-	python setup.py egg_info
 	set -e && for pyvers in $(PYTHONS); do \
 		python$$pyvers setup.py install \
 			--install-layout=deb \
 			--root $(CURDIR)/debian/python-django-horizon \
 			--no-compile -O0; \
-		cp -rf horizon.egg-info $(CURDIR)/debian/python-django-horizon/usr/lib/python$$pyvers/dist-packages ; \
 	done
 
 	install -d -m 755  $(CURDIR)/debian/tmp/usr/share/openstack-dashboard
