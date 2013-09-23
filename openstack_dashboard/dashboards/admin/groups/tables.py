@@ -16,22 +16,15 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django.template import defaultfilters
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import tables
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_ADD_MEMBER_URL
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_CREATE_URL
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_MANAGE_URL
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_UPDATE_URL
+from openstack_dashboard.dashboards.admin.groups import constants
 
 
 LOG = logging.getLogger(__name__)
@@ -45,8 +38,9 @@ STATUS_CHOICES = (
 class CreateGroupLink(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Group")
-    url = GROUPS_CREATE_URL
+    url = constants.GROUPS_CREATE_URL
     classes = ("ajax-modal", "btn-create")
+    policy_rules = (("identity", "identity:create_group"),)
 
     def allowed(self, request, group):
         return api.keystone.keystone_can_edit_group()
@@ -55,8 +49,9 @@ class CreateGroupLink(tables.LinkAction):
 class EditGroupLink(tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit Group")
-    url = GROUPS_UPDATE_URL
+    url = constants.GROUPS_UPDATE_URL
     classes = ("ajax-modal", "btn-edit")
+    policy_rules = (("identity", "identity:update_group"),)
 
     def allowed(self, request, group):
         return api.keystone.keystone_can_edit_group()
@@ -66,6 +61,7 @@ class DeleteGroupsAction(tables.DeleteAction):
     name = "delete"
     data_type_singular = _("Group")
     data_type_plural = _("Groups")
+    policy_rules = (("identity", "identity:delete_group"),)
 
     def allowed(self, request, datum):
         return api.keystone.keystone_can_edit_group()
@@ -78,8 +74,10 @@ class DeleteGroupsAction(tables.DeleteAction):
 class ManageUsersLink(tables.LinkAction):
     name = "users"
     verbose_name = _("Modify Users")
-    url = GROUPS_MANAGE_URL
+    url = constants.GROUPS_MANAGE_URL
     classes = ("btn-edit")
+    policy_rules = (("identity", "identity:get_group"),
+                    ("identity", "identity:list_users"),)
 
     def allowed(self, request, datum):
         return api.keystone.keystone_can_edit_group()
@@ -127,6 +125,7 @@ class RemoveMembers(tables.DeleteAction):
     action_past = _("Removed")
     data_type_singular = _("User")
     data_type_plural = _("Users")
+    policy_rules = (("identity", "identity:remove_user_from_group"),)
 
     def allowed(self, request, user=None):
         return api.keystone.keystone_can_edit_group()
@@ -148,7 +147,9 @@ class AddMembersLink(tables.LinkAction):
     name = "add_user_link"
     verbose_name = _("Add...")
     classes = ("ajax-modal", "btn-create")
-    url = GROUPS_ADD_MEMBER_URL
+    url = constants.GROUPS_ADD_MEMBER_URL
+    policy_rules = (("identity", "identity:list_users"),
+                    ("identity", "identity:add_user_to_group"),)
 
     def allowed(self, request, user=None):
         return api.keystone.keystone_can_edit_group()
@@ -183,7 +184,8 @@ class AddMembers(tables.BatchAction):
     data_type_plural = _("Users")
     classes = ("btn-create", )
     requires_input = True
-    success_url = GROUPS_MANAGE_URL
+    success_url = constants.GROUPS_MANAGE_URL
+    policy_rules = (("identity", "identity:add_user_to_group"),)
 
     def allowed(self, request, user=None):
         return api.keystone.keystone_can_edit_group()

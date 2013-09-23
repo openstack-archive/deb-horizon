@@ -20,14 +20,13 @@
 
 import datetime
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django import http
 from django.utils import timezone
 
-from mox import Func
-from mox import IsA
+from mox import IsA  # noqa
 
-from horizon.templatetags.sizeformat import mbformat
+from horizon.templatetags import sizeformat
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
@@ -40,19 +39,27 @@ INDEX_URL = reverse('horizon:project:overview:index')
 class UsageViewTests(test.BaseAdminViewTests):
 
     @test.create_stubs({api.nova: ('usage_list', 'tenant_absolute_limits', ),
-                        api.keystone: ('tenant_list',)})
+                        api.keystone: ('tenant_list',),
+                        api.network: ('tenant_floating_ip_list',)})
     def test_usage(self):
         now = timezone.now()
         usage_obj = api.nova.NovaUsage(self.usages.first())
         api.keystone.tenant_list(IsA(http.HttpRequest)) \
                     .AndReturn([self.tenants.list(), False])
         api.nova.usage_list(IsA(http.HttpRequest),
-                            datetime.datetime(now.year, now.month, 1, 0, 0, 0),
-                            Func(usage.almost_now)) \
-            .AndReturn([usage_obj])
-        api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
+                            datetime.datetime(now.year,
+                                              now.month,
+                                              now.day, 0, 0, 0, 0),
+                            datetime.datetime(now.year,
+                                              now.month,
+                                              now.day, 23, 59, 59, 0)) \
+                                              .AndReturn([usage_obj])
+        api.nova.tenant_absolute_limits(IsA(http.HttpRequest)) \
             .AndReturn(self.limits['absolute'])
+        api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
+                           .AndReturn(self.floating_ips.list())
         self.mox.ReplayAll()
+
         res = self.client.get(reverse('horizon:admin:overview:index'))
         self.assertTemplateUsed(res, 'admin/overview/usage.html')
         self.assertTrue(isinstance(res.context['usage'], usage.GlobalUsage))
@@ -66,24 +73,32 @@ class UsageViewTests(test.BaseAdminViewTests):
                             '<td class="sortable normal_column">%.2f</td>' %
                             (usage_obj.vcpus,
                              usage_obj.disk_gb_hours,
-                             mbformat(usage_obj.memory_mb),
+                             sizeformat.mbformat(usage_obj.memory_mb),
                              usage_obj.vcpu_hours,
                              usage_obj.total_local_gb_usage))
 
     @test.create_stubs({api.nova: ('usage_list', 'tenant_absolute_limits', ),
-                        api.keystone: ('tenant_list',)})
+                        api.keystone: ('tenant_list',),
+                        api.network: ('tenant_floating_ip_list',)})
     def test_usage_csv(self):
         now = timezone.now()
         usage_obj = [api.nova.NovaUsage(u) for u in self.usages.list()]
         api.keystone.tenant_list(IsA(http.HttpRequest)) \
                     .AndReturn([self.tenants.list(), False])
         api.nova.usage_list(IsA(http.HttpRequest),
-                            datetime.datetime(now.year, now.month, 1, 0, 0, 0),
-                            Func(usage.almost_now)) \
-            .AndReturn(usage_obj)
+                            datetime.datetime(now.year,
+                                              now.month,
+                                              now.day, 0, 0, 0, 0),
+                            datetime.datetime(now.year,
+                                              now.month,
+                                              now.day, 23, 59, 59, 0)) \
+                                              .AndReturn(usage_obj)
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
             .AndReturn(self.limits['absolute'])
+        api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
+                           .AndReturn(self.floating_ips.list())
         self.mox.ReplayAll()
+
         csv_url = reverse('horizon:admin:overview:index') + "?format=csv"
         res = self.client.get(csv_url)
         self.assertTemplateUsed(res, 'admin/overview/usage.csv')

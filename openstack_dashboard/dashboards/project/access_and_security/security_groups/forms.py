@@ -22,21 +22,20 @@ import logging
 
 import netaddr
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.conf import settings  # noqa
+from django.core.urlresolvers import reverse  # noqa
 from django.core import validators
-from django.forms import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.forms import ValidationError  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
 from horizon.utils import fields
-from horizon.utils.validators import validate_ip_protocol
-from horizon.utils.validators import validate_port_range
+from horizon.utils import validators as utils_validators
 
 from openstack_dashboard import api
-from openstack_dashboard.utils.filters import get_int_or_uuid
+from openstack_dashboard.utils import filters
 
 
 LOG = logging.getLogger(__name__)
@@ -60,10 +59,37 @@ class CreateGroup(forms.SelfHandlingForm):
                              _('Successfully created security group: %s')
                                % data['name'])
             return sg
-        except:
+        except Exception:
             redirect = reverse("horizon:project:access_and_security:index")
             exceptions.handle(request,
                               _('Unable to create security group.'),
+                              redirect=redirect)
+
+
+class UpdateGroup(forms.SelfHandlingForm):
+    id = forms.CharField(widget=forms.HiddenInput())
+    name = forms.CharField(label=_("Name"),
+                           error_messages={
+                            'required': _('This field is required.'),
+                            'invalid': _("The string may only contain"
+                                         " ASCII characters and numbers.")},
+                           validators=[validators.validate_slug])
+    description = forms.CharField(label=_("Description"))
+
+    def handle(self, request, data):
+        try:
+            sg = api.network.security_group_update(request,
+                                                   data['id'],
+                                                   data['name'],
+                                                   data['description'])
+            messages.success(request,
+                             _('Successfully updated security group: %s')
+                               % data['name'])
+            return sg
+        except Exception:
+            redirect = reverse("horizon:project:access_and_security:index")
+            exceptions.handle(request,
+                              _('Unable to update security group.'),
                               redirect=redirect)
 
 
@@ -96,7 +122,7 @@ class AddRule(forms.SelfHandlingForm):
         label=_('IP Protocol'), required=False,
         help_text=_("Enter an integer value between 0 and 255 "
                     "(or -1 which means wildcard)."),
-        validators=[validate_ip_protocol],
+        validators=[utils_validators.validate_ip_protocol],
         widget=forms.TextInput(attrs={
             'class': 'switched',
             'data-switch-on': 'rule_menu',
@@ -121,7 +147,8 @@ class AddRule(forms.SelfHandlingForm):
                                    'class': 'switched',
                                    'data-switch-on': 'range',
                                    'data-range-port': _('Port')}),
-                              validators=[validate_port_range])
+                              validators=[
+                                  utils_validators.validate_port_range])
 
     from_port = forms.IntegerField(label=_("From Port"),
                                    required=False,
@@ -131,7 +158,8 @@ class AddRule(forms.SelfHandlingForm):
                                         'class': 'switched',
                                         'data-switch-on': 'range',
                                         'data-range-range': _('From Port')}),
-                                   validators=[validate_port_range])
+                                   validators=[
+                                       utils_validators.validate_port_range])
 
     to_port = forms.IntegerField(label=_("To Port"),
                                  required=False,
@@ -141,7 +169,8 @@ class AddRule(forms.SelfHandlingForm):
                                         'class': 'switched',
                                         'data-switch-on': 'range',
                                         'data-range-range': _('To Port')}),
-                                 validators=[validate_port_range])
+                                 validators=[
+                                     utils_validators.validate_port_range])
 
     icmp_type = forms.IntegerField(label=_("Type"),
                                    required=False,
@@ -151,7 +180,8 @@ class AddRule(forms.SelfHandlingForm):
                                         'class': 'switched',
                                         'data-switch-on': 'rule_menu',
                                         'data-rule_menu-icmp': _('Type')}),
-                                   validators=[validate_port_range])
+                                   validators=[
+                                       utils_validators.validate_port_range])
 
     icmp_code = forms.IntegerField(label=_("Code"),
                                    required=False,
@@ -161,7 +191,8 @@ class AddRule(forms.SelfHandlingForm):
                                           'class': 'switched',
                                           'data-switch-on': 'rule_menu',
                                           'data-rule_menu-icmp': _('Code')}),
-                                   validators=[validate_port_range])
+                                   validators=[
+                                       utils_validators.validate_port_range])
 
     remote = forms.ChoiceField(label=_('Remote'),
                                choices=[('cidr', _('CIDR')),
@@ -335,7 +366,7 @@ class AddRule(forms.SelfHandlingForm):
         try:
             rule = api.network.security_group_rule_create(
                         request,
-                        get_int_or_uuid(data['id']),
+                        filters.get_int_or_uuid(data['id']),
                         data['direction'],
                         data['ethertype'],
                         data['ip_protocol'],
@@ -346,7 +377,7 @@ class AddRule(forms.SelfHandlingForm):
             messages.success(request,
                              _('Successfully added rule: %s') % unicode(rule))
             return rule
-        except:
+        except Exception:
             redirect = reverse("horizon:project:access_and_security:"
                                "security_groups:detail", args=[data['id']])
             exceptions.handle(request,

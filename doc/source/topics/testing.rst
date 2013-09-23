@@ -11,7 +11,7 @@ foot.
 
 If you already know everything about testing but are fed up with trying to
 debug why a specific test failed, you can skip the intro and jump
-stright to :ref:`debugging_unit_tests`.
+straight to :ref:`debugging_unit_tests`.
 
 An overview of testing
 ======================
@@ -22,7 +22,7 @@ Unit tests
 ----------
 
 These are isolated, stand-alone tests with no external dependencies. They are
-written from the a perspective of "knowing the code", and test the assumptions
+written from the perspective of "knowing the code", and test the assumptions
 of the codebase and the developer.
 
 Pros:
@@ -120,7 +120,7 @@ If you do the first suggestion above *first* it makes the second one far less
 painful. Write once, use everywhere.
 
 To make your life even easier, if your codebase doesn't have a built-in
-ORM-like function to manage your test data you can consider buidling (or
+ORM-like function to manage your test data you can consider building (or
 borrowing) one yourself. Being able to do simple retrieval queries on your
 test data is incredibly valuable.
 
@@ -172,7 +172,7 @@ necessary.
 To that end, Horizon includes several custom assertions to make these tasks
 easier. :meth:`~horizon.test.helpers.TestCase.assertNoFormErrors`,
 :meth:`~horizon.test.helpers.TestCase.assertMessageCount`, and
-:meth:`~horizon.test.helpers.TestCase.asertNoMessages` all exist for exactly
+:meth:`~horizon.test.helpers.TestCase.assertNoMessages` all exist for exactly
 these purposes. Moreover, they provide useful output when things go wrong so
 you're not left scratching your head wondering why your view test didn't
 redirect as expected when you posted a form.
@@ -191,7 +191,7 @@ Tips and tricks
    tell you what the error was.
 
 #. Use :meth:`~horizon.test.helpers.TestCase.assertMessageCount` and
-   :meth:`~horizon.test.helpers.TestCase.asertNoMessages` when a piece of code
+   :meth:`~horizon.test.helpers.TestCase.assertNoMessages` when a piece of code
    is failing inexplicably. Since the core error handlers attach user-facing
    error messages (and since the core logging is silenced during test runs)
    these methods give you the dual benefit of verifying the output you expect
@@ -268,7 +268,7 @@ Expected Method Never Called
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This one is the opposite of the unexpected method call. This one means you
-tol mox to expect a call and it didn't happen. This is almost always the
+told mox to expect a call and it didn't happen. This is almost always the
 result of an error in the conditions of the test. Using the
 :meth:`~horizon.test.helpers.TestCase.assertNoFormErrors` and
 :meth:`~horizon.test.helpers.TestCase.assertMessageCount` will make it readily

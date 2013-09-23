@@ -20,33 +20,37 @@
 
 import logging
 
-from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
-from horizon import forms
 from horizon import tables
+from horizon import workflows
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.admin.flavors.forms import CreateFlavor
-from openstack_dashboard.dashboards.admin.flavors.forms import EditFlavor
-from openstack_dashboard.dashboards.admin.flavors.tables import FlavorsTable
+from openstack_dashboard.dashboards.admin.flavors \
+    import tables as project_tables
+from openstack_dashboard.dashboards.admin.flavors \
+    import workflows as flavor_workflows
 
 
 LOG = logging.getLogger(__name__)
 
+INDEX_URL = "horizon:admin:flavors:index"
+
 
 class IndexView(tables.DataTableView):
-    table_class = FlavorsTable
+    table_class = project_tables.FlavorsTable
     template_name = 'admin/flavors/index.html'
 
     def get_data(self):
         request = self.request
         flavors = []
         try:
-            flavors = api.nova.flavor_list(request)
-        except:
+            # "is_public=None" will return all flavors.
+            flavors = api.nova.flavor_list(request, None)
+        except Exception:
             exceptions.handle(request,
                               _('Unable to retrieve flavor list.'))
         # Sort flavors by size
@@ -54,28 +58,25 @@ class IndexView(tables.DataTableView):
         return flavors
 
 
-class CreateView(forms.ModalFormView):
-    form_class = CreateFlavor
+class CreateView(workflows.WorkflowView):
+    workflow_class = flavor_workflows.CreateFlavor
     template_name = 'admin/flavors/create.html'
-    success_url = reverse_lazy('horizon:admin:flavors:index')
 
 
-class EditView(forms.ModalFormView):
-    form_class = EditFlavor
-    template_name = 'admin/flavors/edit.html'
-    success_url = reverse_lazy('horizon:admin:flavors:index')
-
-    def get_context_data(self, **kwargs):
-        context = super(EditView, self).get_context_data(**kwargs)
-        context['flavor_id'] = self.kwargs['id']
-        return context
+class UpdateView(workflows.WorkflowView):
+    workflow_class = flavor_workflows.UpdateFlavor
+    template_name = 'admin/flavors/update.html'
 
     def get_initial(self):
+        flavor_id = self.kwargs['id']
+
         try:
-            flavor = api.nova.flavor_get(self.request, self.kwargs['id'])
-        except:
+            # Get initial flavor information
+            flavor = api.nova.flavor_get(self.request, flavor_id)
+        except Exception:
             exceptions.handle(self.request,
-                              _("Unable to retrieve flavor data."))
+                              _('Unable to retrieve flavor data.'),
+                              redirect=reverse_lazy(INDEX_URL))
         return {'flavor_id': flavor.id,
                 'name': flavor.name,
                 'vcpus': flavor.vcpus,

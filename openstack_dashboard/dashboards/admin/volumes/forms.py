@@ -18,7 +18,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -38,7 +38,7 @@ class CreateVolumeType(forms.SelfHandlingForm):
             messages.success(request, _('Successfully created volume type: %s')
                                       % data['name'])
             return volume_type
-        except:
+        except Exception:
             exceptions.handle(request,
                               _('Unable to create volume type.'))
             return False

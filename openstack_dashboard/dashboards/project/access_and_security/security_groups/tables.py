@@ -16,14 +16,14 @@
 
 import logging
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import tables
 
 from openstack_dashboard import api
-from openstack_dashboard.utils.filters import get_int_or_uuid
+from openstack_dashboard.utils import filters
 
 
 LOG = logging.getLogger(__name__)
@@ -49,6 +49,18 @@ class CreateGroup(tables.LinkAction):
     classes = ("ajax-modal", "btn-create")
 
 
+class EditGroup(tables.LinkAction):
+    name = "edit"
+    verbose_name = _("Edit Security Group")
+    url = "horizon:project:access_and_security:security_groups:update"
+    classes = ("ajax-modal", "btn-edit")
+
+    def allowed(self, request, security_group=None):
+        if not security_group:
+            return True
+        return security_group.name != 'default'
+
+
 class EditRules(tables.LinkAction):
     name = "edit_rules"
     verbose_name = _("Edit Rules")
@@ -61,13 +73,13 @@ class SecurityGroupsTable(tables.DataTable):
     description = tables.Column("description", verbose_name=_("Description"))
 
     def sanitize_id(self, obj_id):
-        return get_int_or_uuid(obj_id)
+        return filters.get_int_or_uuid(obj_id)
 
     class Meta:
         name = "security_groups"
         verbose_name = _("Security Groups")
         table_actions = (CreateGroup, DeleteGroup)
-        row_actions = (EditRules, DeleteGroup)
+        row_actions = (EditRules, EditGroup, DeleteGroup)
 
 
 class CreateRule(tables.LinkAction):
@@ -156,7 +168,7 @@ class RulesTable(tables.DataTable):
     remote = tables.Column(get_remote, verbose_name=_("Remote"))
 
     def sanitize_id(self, obj_id):
-        return get_int_or_uuid(obj_id)
+        return filters.get_int_or_uuid(obj_id)
 
     def get_object_display(self, rule):
         return unicode(rule)

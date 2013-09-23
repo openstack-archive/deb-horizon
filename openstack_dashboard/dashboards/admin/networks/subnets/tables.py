@@ -16,8 +16,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tables
@@ -35,7 +35,7 @@ class DeleteSubnet(tables.DeleteAction):
     def delete(self, request, obj_id):
         try:
             api.neutron.subnet_delete(request, obj_id)
-        except:
+        except Exception:
             msg = _('Failed to delete subnet %s') % obj_id
             LOG.info(msg)
             network_id = self.table.kwargs['network_id']

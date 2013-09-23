@@ -20,11 +20,11 @@
 
 import operator
 
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.debug import sensitive_post_parameters
+from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.decorators import method_decorator  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
+from django.views.decorators.debug import sensitive_post_parameters  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -32,13 +32,14 @@ from horizon import tables
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.admin.users.forms import CreateUserForm
-from openstack_dashboard.dashboards.admin.users.forms import UpdateUserForm
-from openstack_dashboard.dashboards.admin.users.tables import UsersTable
+from openstack_dashboard.dashboards.admin.users \
+    import forms as project_forms
+from openstack_dashboard.dashboards.admin.users \
+    import tables as project_tables
 
 
 class IndexView(tables.DataTableView):
-    table_class = UsersTable
+    table_class = project_tables.UsersTable
     template_name = 'admin/users/index.html'
 
     def get_data(self):
@@ -47,14 +48,14 @@ class IndexView(tables.DataTableView):
         try:
             users = api.keystone.user_list(self.request,
                                            domain=domain_context)
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve user list.'))
         return users
 
 
 class UpdateView(forms.ModalFormView):
-    form_class = UpdateUserForm
+    form_class = project_forms.UpdateUserForm
     template_name = 'admin/users/update.html'
     success_url = reverse_lazy('horizon:admin:users:index')
 
@@ -69,7 +70,7 @@ class UpdateView(forms.ModalFormView):
                 self._object = api.keystone.user_get(self.request,
                                                      self.kwargs['user_id'],
                                                      admin=True)
-            except:
+            except Exception:
                 redirect = reverse("horizon:admin:users:index")
                 exceptions.handle(self.request,
                                   _('Unable to update user.'),
@@ -83,14 +84,27 @@ class UpdateView(forms.ModalFormView):
 
     def get_initial(self):
         user = self.get_object()
-        return {'id': user.id,
+        domain_id = getattr(user, "domain_id", None)
+        domain_name = ''
+        # Retrieve the domain name where the project belong
+        if api.keystone.VERSIONS.active >= 3:
+            try:
+                domain = api.keystone.domain_get(self.request,
+                                                    domain_id)
+                domain_name = domain.name
+            except Exception:
+                exceptions.handle(self.request,
+                    _('Unable to retrieve project domain.'))
+        return {'domain_id': domain_id,
+                'domain_name': domain_name,
+                'id': user.id,
                 'name': user.name,
                 'project': user.project_id,
                 'email': user.email}
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreateUserForm
+    form_class = project_forms.CreateUserForm
     template_name = 'admin/users/create.html'
     success_url = reverse_lazy('horizon:admin:users:index')
 
@@ -103,7 +117,7 @@ class CreateView(forms.ModalFormView):
         kwargs = super(CreateView, self).get_form_kwargs()
         try:
             roles = api.keystone.role_list(self.request)
-        except:
+        except Exception:
             redirect = reverse("horizon:admin:users:index")
             exceptions.handle(self.request,
                               _("Unable to retrieve user roles."),
@@ -113,5 +127,9 @@ class CreateView(forms.ModalFormView):
         return kwargs
 
     def get_initial(self):
+        # Set the domain of the user
+        domain = api.keystone.get_default_domain(self.request)
         default_role = api.keystone.get_default_role(self.request)
-        return {'role_id': getattr(default_role, "id", None)}
+        return {'domain_id': domain.id,
+                'domain_name': domain.name,
+                'role_id': getattr(default_role, "id", None)}

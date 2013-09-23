@@ -1,14 +1,19 @@
-from collections import defaultdict
+from collections import defaultdict  # noqa
 import itertools
+import logging
 
 from horizon import exceptions
-from horizon.utils.memoized import memoized
+from horizon.utils.memoized import memoized  # noqa
 
-from openstack_dashboard.api.base import is_service_enabled
-from openstack_dashboard.api.base import QuotaSet
+from openstack_dashboard.api import base
 from openstack_dashboard.api import cinder
 from openstack_dashboard.api import network
+from openstack_dashboard.api import neutron
 from openstack_dashboard.api import nova
+
+
+LOG = logging.getLogger(__name__)
+
 
 NOVA_QUOTA_FIELDS = ("metadata_items",
                      "cores",
@@ -21,11 +26,20 @@ NOVA_QUOTA_FIELDS = ("metadata_items",
                      "security_groups",
                      "security_group_rules",)
 
+MISSING_QUOTA_FIELDS = ("key_pairs",
+                        "injected_file_path_bytes",)
+
 CINDER_QUOTA_FIELDS = ("volumes",
                        "snapshots",
                        "gigabytes",)
 
-QUOTA_FIELDS = NOVA_QUOTA_FIELDS + CINDER_QUOTA_FIELDS
+NEUTRON_QUOTA_FIELDS = ("network",
+                        "subnet",
+                        "port",
+                        "router",
+                        "floatingip",)
+
+QUOTA_FIELDS = NOVA_QUOTA_FIELDS + CINDER_QUOTA_FIELDS + NEUTRON_QUOTA_FIELDS
 
 
 class QuotaUsage(dict):
@@ -78,7 +92,7 @@ def _get_quota_data(request, method_name, disabled_quotas=None,
     if not tenant_id:
         tenant_id = request.user.tenant_id
     quotasets.append(getattr(nova, method_name)(request, tenant_id))
-    qs = QuotaSet()
+    qs = base.QuotaSet()
     if disabled_quotas is None:
         disabled_quotas = get_disabled_quotas(request)
     if 'volumes' not in disabled_quotas:
@@ -97,16 +111,51 @@ def get_default_quota_data(request, disabled_quotas=None, tenant_id=None):
 
 
 def get_tenant_quota_data(request, disabled_quotas=None, tenant_id=None):
-    return _get_quota_data(request,
-                           "tenant_quota_get",
-                           disabled_quotas=disabled_quotas,
-                           tenant_id=tenant_id)
+    qs = _get_quota_data(request,
+                         "tenant_quota_get",
+                         disabled_quotas=disabled_quotas,
+                         tenant_id=tenant_id)
+
+    # TODO(jpichon): There is no API to get the default system quotas
+    # in Neutron (cf. LP#1204956), so for now handle tenant quotas here.
+    # This should be handled in _get_quota_data() eventually.
+    if disabled_quotas and 'floating_ips' in disabled_quotas:
+        # Neutron with quota extension disabled
+        if 'floatingip' in disabled_quotas:
+            qs.add(base.QuotaSet({'floating_ips': -1}))
+        # Neutron with quota extension enabled
+        else:
+            tenant_id = tenant_id or request.user.tenant_id
+            neutron_quotas = neutron.tenant_quota_get(request, tenant_id)
+            # Rename floatingip to floating_ips since that's how it's
+            # expected in some places (e.g. Security & Access' Floating IPs)
+            fips_quota = neutron_quotas.get('floatingip').limit
+            qs.add(base.QuotaSet({'floating_ips': fips_quota}))
+
+    return qs
 
 
 def get_disabled_quotas(request):
     disabled_quotas = []
-    if not is_service_enabled(request, 'volume'):
+
+    # Cinder
+    if not base.is_service_enabled(request, 'volume'):
         disabled_quotas.extend(CINDER_QUOTA_FIELDS)
+
+    # Neutron
+    if not base.is_service_enabled(request, 'network'):
+        disabled_quotas.extend(NEUTRON_QUOTA_FIELDS)
+    else:
+        # Remove the nova network quotas
+        disabled_quotas.extend(['floating_ips', 'fixed_ips'])
+
+        try:
+            if not neutron.is_quotas_extension_supported(request):
+                disabled_quotas.extend(NEUTRON_QUOTA_FIELDS)
+        except Exception:
+            LOG.exception("There was an error checking if the Neutron "
+                          "quotas extension is enabled.")
+
     return disabled_quotas
 
 
@@ -131,7 +180,7 @@ def tenant_quota_usages(request):
         if missing not in flavors:
             try:
                 flavors[missing] = nova.flavor_get(request, missing)
-            except:
+            except Exception:
                 flavors[missing] = {}
                 exceptions.handle(request, ignore=True)
 

@@ -19,24 +19,21 @@
 #    under the License.
 
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import workflows
 
 from openstack_dashboard import api
-from openstack_dashboard.utils.filters import get_int_or_uuid
-
+from openstack_dashboard.utils import filters
 
 INDEX_URL = "horizon:projects:instances:index"
 ADD_USER_URL = "horizon:projects:instances:create_user"
+INSTANCE_SEC_GROUP_SLUG = "update_security_groups"
 
 
-class UpdateInstanceSecurityGroupsAction(workflows.Action):
-    default_role = forms.CharField(required=False)
-    role_member = forms.MultipleChoiceField(required=False)
-
+class UpdateInstanceSecurityGroupsAction(workflows.MembershipAction):
     def __init__(self, request, *args, **kwargs):
         super(UpdateInstanceSecurityGroupsAction, self).__init__(request,
                                                                  *args,
@@ -46,13 +43,15 @@ class UpdateInstanceSecurityGroupsAction(workflows.Action):
         context = args[0]
         instance_id = context.get('instance_id', '')
 
-        self.fields['default_role'].initial = 'member'
+        default_role_name = self.get_default_role_field_name()
+        self.fields[default_role_name] = forms.CharField(required=False)
+        self.fields[default_role_name].initial = 'member'
 
         # Get list of available security groups
         all_groups = []
         try:
             all_groups = api.network.security_group_list(request)
-        except:
+        except Exception:
             exceptions.handle(request, err_msg)
         groups_list = [(group.id, group.name) for group in all_groups]
 
@@ -62,13 +61,15 @@ class UpdateInstanceSecurityGroupsAction(workflows.Action):
                                                                  instance_id)
         except Exception:
             exceptions.handle(request, err_msg)
-        self.fields['role_member'].choices = groups_list
-        self.fields['role_member'].initial = [group.id
-                                              for group in instance_groups]
+        field_name = self.get_member_field_name('member')
+        self.fields[field_name] = forms.MultipleChoiceField(required=False)
+        self.fields[field_name].choices = groups_list
+        self.fields[field_name].initial = [group.id
+                                           for group in instance_groups]
 
     def handle(self, request, data):
         instance_id = data['instance_id']
-        wanted_groups = map(get_int_or_uuid, data['wanted_groups'])
+        wanted_groups = map(filters.get_int_or_uuid, data['wanted_groups'])
         try:
             api.network.server_update_security_groups(request, instance_id,
                                                       wanted_groups)
@@ -79,7 +80,7 @@ class UpdateInstanceSecurityGroupsAction(workflows.Action):
 
     class Meta:
         name = _("Security Groups")
-        slug = "update_security_groups"
+        slug = INSTANCE_SEC_GROUP_SLUG
 
 
 class UpdateInstanceSecurityGroups(workflows.UpdateMembersStep):
@@ -97,7 +98,8 @@ class UpdateInstanceSecurityGroups(workflows.UpdateMembersStep):
     def contribute(self, data, context):
         request = self.workflow.request
         if data:
-            context["wanted_groups"] = request.POST.getlist("role_member")
+            field_name = self.get_member_field_name('member')
+            context["wanted_groups"] = request.POST.getlist(field_name)
         return context
 
 
@@ -109,7 +111,7 @@ class UpdateInstanceInfoAction(workflows.Action):
             api.nova.server_update(request,
                                    data['instance_id'],
                                    data['name'])
-        except:
+        except Exception:
             exceptions.handle(request, ignore=True)
             return False
         return True

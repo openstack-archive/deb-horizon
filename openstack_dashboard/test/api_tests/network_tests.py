@@ -19,9 +19,9 @@ import itertools
 import uuid
 
 from django import http
-from mox import IsA
+from mox import IsA  # noqa
 
-from novaclient.v1_1.floating_ip_pools import FloatingIPPool
+from novaclient.v1_1 import floating_ip_pools
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
@@ -38,7 +38,8 @@ class NetworkApiNovaTestBase(test.APITestCase):
 class NetworkApiNovaFloatingIpTests(NetworkApiNovaTestBase):
     def test_floating_ip_pools_list(self):
         pool_names = ['pool1', 'pool2']
-        pools = [FloatingIPPool(None, {'name': pool}) for pool in pool_names]
+        pools = [floating_ip_pools.FloatingIPPool(
+            None, {'name': pool}) for pool in pool_names]
         novaclient = self.stub_novaclient()
         novaclient.floating_ip_pools = self.mox.CreateMockAnything()
         novaclient.floating_ip_pools.list().AndReturn(pools)
@@ -232,6 +233,23 @@ class NetworkApiNeutronSecurityGroupTests(NetworkApiNeutronTestBase):
                                                 secgroup['description'])
         self._cmp_sg(secgroup, ret)
 
+    def test_security_group_update(self):
+        secgroup = self.api_q_secgroups.list()[1]
+        secgroup = copy.deepcopy(secgroup)
+        secgroup['name'] = 'newname'
+        secgroup['description'] = 'new description'
+        body = {'security_group':
+                    {'name': secgroup['name'],
+                     'description': secgroup['description']}}
+        self.qclient.update_security_group(secgroup['id'], body) \
+            .AndReturn({'security_group': secgroup})
+        self.mox.ReplayAll()
+        ret = api.network.security_group_update(self.request,
+                                                secgroup['id'],
+                                                secgroup['name'],
+                                                secgroup['description'])
+        self._cmp_sg(secgroup, ret)
+
     def test_security_group_delete(self):
         secgroup = self.api_q_secgroups.first()
         self.qclient.delete_security_group(secgroup['id'])
@@ -293,7 +311,7 @@ class NetworkApiNeutronSecurityGroupTests(NetworkApiNeutronTestBase):
             .AndReturn({'security_groups': secgroups})
         self.mox.ReplayAll()
 
-        ret = api.network.server_security_groups(self.request, instance_id)
+        api.network.server_security_groups(self.request, instance_id)
 
     def test_server_update_security_groups(self):
         cur_sg_ids = [self.api_q_secgroups.first()['id']]
@@ -306,7 +324,7 @@ class NetworkApiNeutronSecurityGroupTests(NetworkApiNeutronTestBase):
             body = {'port': {'security_groups': new_sg_ids}}
             self.qclient.update_port(p['id'], body=body).AndReturn({'port': p})
         self.mox.ReplayAll()
-        ret = api.network.server_update_security_groups(
+        api.network.server_update_security_groups(
             self.request, instance_id, new_sg_ids)
 
     def test_security_group_backend(self):

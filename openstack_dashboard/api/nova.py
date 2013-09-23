@@ -24,21 +24,19 @@ from __future__ import absolute_import
 
 import logging
 
-from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from novaclient.v1_1 import client as nova_client
+from novaclient.v1_1.contrib import list_extensions as nova_list_extensions
 from novaclient.v1_1 import security_group_rules as nova_rules
-from novaclient.v1_1.security_groups import SecurityGroup as NovaSecurityGroup
-from novaclient.v1_1.servers import REBOOT_HARD
+from novaclient.v1_1 import security_groups as nova_security_groups
+from novaclient.v1_1 import servers as nova_servers
 
-from horizon.conf import HORIZON_CONFIG
-from horizon.utils.memoized import memoized
+from horizon import conf
+from horizon.utils.memoized import memoized  # noqa
 
-from openstack_dashboard.api.base import APIDictWrapper
-from openstack_dashboard.api.base import APIResourceWrapper
-from openstack_dashboard.api.base import QuotaSet
-from openstack_dashboard.api.base import url_for
+from openstack_dashboard.api import base
 from openstack_dashboard.api import network_base
 
 
@@ -48,23 +46,24 @@ LOG = logging.getLogger(__name__)
 # API static values
 INSTANCE_ACTIVE_STATE = 'ACTIVE'
 VOLUME_STATE_AVAILABLE = "available"
+DEFAULT_QUOTA_NAME = 'default'
 
 
-class VNCConsole(APIDictWrapper):
+class VNCConsole(base.APIDictWrapper):
     """Wrapper for the "console" dictionary returned by the
     novaclient.servers.get_vnc_console method.
     """
     _attrs = ['url', 'type']
 
 
-class SPICEConsole(APIDictWrapper):
+class SPICEConsole(base.APIDictWrapper):
     """Wrapper for the "console" dictionary returned by the
     novaclient.servers.get_spice_console method.
     """
     _attrs = ['url', 'type']
 
 
-class Server(APIResourceWrapper):
+class Server(base.APIResourceWrapper):
     """Simple wrapper around novaclient.server.Server
 
        Preserves the request info so image name can later be retrieved
@@ -75,7 +74,7 @@ class Server(APIResourceWrapper):
              'image_name', 'VirtualInterfaces', 'flavor', 'key_name',
              'tenant_id', 'user_id', 'OS-EXT-STS:power_state',
              'OS-EXT-STS:task_state', 'OS-EXT-SRV-ATTR:instance_name',
-             'OS-EXT-SRV-ATTR:host']
+             'OS-EXT-SRV-ATTR:host', 'created']
 
     def __init__(self, apiresource, request):
         super(Server, self).__init__(apiresource)
@@ -85,6 +84,8 @@ class Server(APIResourceWrapper):
     def image_name(self):
         import glanceclient.exc as glance_exceptions
         from openstack_dashboard.api import glance
+        if not self.image:
+            return "(not found)"
         try:
             image = glance.image_get(self.request, self.image['id'])
             return image.name
@@ -95,11 +96,8 @@ class Server(APIResourceWrapper):
     def internal_name(self):
         return getattr(self, 'OS-EXT-SRV-ATTR:instance_name', "")
 
-    def reboot(self, hardness=REBOOT_HARD):
-        novaclient(self.request).servers.reboot(self.id, hardness)
 
-
-class NovaUsage(APIResourceWrapper):
+class NovaUsage(base.APIResourceWrapper):
     """Simple wrapper around contrib/simple_usage.py."""
     _attrs = ['start', 'server_usages', 'stop', 'tenant_id',
              'total_local_gb_usage', 'total_memory_mb_usage',
@@ -141,7 +139,7 @@ class NovaUsage(APIResourceWrapper):
         return getattr(self, "total_local_gb_usage", 0)
 
 
-class SecurityGroup(APIResourceWrapper):
+class SecurityGroup(base.APIResourceWrapper):
     """Wrapper around novaclient.security_groups.SecurityGroup which wraps its
     rules in SecurityGroupRule objects and allows access to them.
     """
@@ -158,7 +156,7 @@ class SecurityGroup(APIResourceWrapper):
         return self.__dict__['_rules']
 
 
-class SecurityGroupRule(APIResourceWrapper):
+class SecurityGroupRule(base.APIResourceWrapper):
     """ Wrapper for individual rules in a SecurityGroup. """
     _attrs = ['id', 'ip_protocol', 'from_port', 'to_port', 'ip_range', 'group']
 
@@ -201,6 +199,10 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
     def create(self, name, desc):
         return SecurityGroup(self.client.security_groups.create(name, desc))
 
+    def update(self, sg_id, name, desc):
+        return SecurityGroup(self.client.security_groups.update(sg_id,
+                                                                name, desc))
+
     def delete(self, security_group_id):
         self.client.security_groups.delete(security_group_id)
 
@@ -230,8 +232,8 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
                                         % instance_id)
         if body:
             # Wrap data in SG objects as novaclient would.
-            sg_objs = [NovaSecurityGroup(nclient.security_groups, sg,
-                                         loaded=True)
+            sg_objs = [nova_security_groups.SecurityGroup(
+                nclient.security_groups, sg, loaded=True)
                        for sg in body.get('security_groups', [])]
             # Then wrap novaclient's object with our own. Yes, sadly wrapping
             # with two layers of objects is necessary.
@@ -274,7 +276,7 @@ class FlavorExtraSpec(object):
         self.value = val
 
 
-class FloatingIp(APIResourceWrapper):
+class FloatingIp(base.APIResourceWrapper):
     _attrs = ['id', 'ip', 'fixed_ip', 'port_id', 'instance_id', 'pool']
 
     def __init__(self, fip):
@@ -282,14 +284,14 @@ class FloatingIp(APIResourceWrapper):
         super(FloatingIp, self).__init__(fip)
 
 
-class FloatingIpPool(APIDictWrapper):
+class FloatingIpPool(base.APIDictWrapper):
     def __init__(self, pool):
         pool_dict = {'id': pool.name,
                      'name': pool.name}
         super(FloatingIpPool, self).__init__(pool_dict)
 
 
-class FloatingIpTarget(APIDictWrapper):
+class FloatingIpTarget(base.APIDictWrapper):
     def __init__(self, server):
         server_dict = {'name': '%s (%s)' % (server.name, server.id),
                        'id': server.id}
@@ -336,21 +338,23 @@ class FloatingIpManager(network_base.FloatingIpManager):
         return instance_id
 
     def is_simple_associate_supported(self):
-        return HORIZON_CONFIG["simple_ip_management"]
+        return conf.HORIZON_CONFIG["simple_ip_management"]
 
 
 def novaclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+    cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
     LOG.debug('novaclient connection created using token "%s" and url "%s"' %
-              (request.user.token.id, url_for(request, 'compute')))
+              (request.user.token.id, base.url_for(request, 'compute')))
     c = nova_client.Client(request.user.username,
                            request.user.token.id,
                            project_id=request.user.tenant_id,
-                           auth_url=url_for(request, 'compute'),
+                           auth_url=base.url_for(request, 'compute'),
                            insecure=insecure,
+                           cacert=cacert,
                            http_log_debug=settings.DEBUG)
     c.client.auth_token = request.user.token.id
-    c.client.management_url = url_for(request, 'compute')
+    c.client.management_url = base.url_for(request, 'compute')
     return c
 
 
@@ -364,11 +368,12 @@ def server_spice_console(request, instance_id, console_type='spice-html5'):
             instance_id, console_type)['console'])
 
 
-def flavor_create(request, name, memory, vcpu, disk, ephemeral=0, swap=0,
-                  metadata=None):
+def flavor_create(request, name, memory, vcpu, disk, flavorid='auto',
+                  ephemeral=0, swap=0, metadata=None, is_public=True):
     flavor = novaclient(request).flavors.create(name, memory, vcpu, disk,
+                                                flavorid=flavorid,
                                                 ephemeral=ephemeral,
-                                                swap=swap)
+                                                swap=swap, is_public=is_public)
     if (metadata):
         flavor_extra_set(request, flavor.id, metadata)
     return flavor
@@ -383,9 +388,27 @@ def flavor_get(request, flavor_id):
 
 
 @memoized
-def flavor_list(request):
+def flavor_list(request, is_public=True):
     """Get the list of available instance sizes (flavors)."""
-    return novaclient(request).flavors.list()
+    return novaclient(request).flavors.list(is_public=is_public)
+
+
+@memoized
+def flavor_access_list(request, flavor=None):
+    """Get the list of access instance sizes (flavors)."""
+    return novaclient(request).flavor_access.list(flavor=flavor)
+
+
+def add_tenant_to_flavor(request, flavor, tenant):
+    """Add a tenant to the given flavor access list."""
+    return novaclient(request).flavor_access.add_tenant_access(
+            flavor=flavor, tenant=tenant)
+
+
+def remove_tenant_from_flavor(request, flavor, tenant):
+    """Remove a tenant from the given flavor access list."""
+    return novaclient(request).flavor_access.remove_tenant_access(
+            flavor=flavor, tenant=tenant)
 
 
 def flavor_get_extras(request, flavor_id, raw=False):
@@ -433,12 +456,14 @@ def keypair_list(request):
 
 
 def server_create(request, name, image, flavor, key_name, user_data,
-                  security_groups, block_device_mapping, nics=None,
+                  security_groups, block_device_mapping=None,
+                  block_device_mapping_v2=None, nics=None,
                   availability_zone=None, instance_count=1, admin_pass=None):
     return Server(novaclient(request).servers.create(
             name, image, flavor, userdata=user_data,
             security_groups=security_groups,
             key_name=key_name, block_device_mapping=block_device_mapping,
+            block_device_mapping_v2=block_device_mapping_v2,
             nics=nics, availability_zone=availability_zone,
             min_count=instance_count, admin_pass=admin_pass), request)
 
@@ -502,18 +527,20 @@ def server_resume(request, instance_id):
     novaclient(request).servers.resume(instance_id)
 
 
-def server_reboot(request, instance_id, hardness=REBOOT_HARD):
-    server = server_get(request, instance_id)
-    server.reboot(hardness)
+def server_reboot(request, instance_id, soft_reboot=False):
+    hardness = nova_servers.REBOOT_HARD
+    if soft_reboot:
+        hardness = nova_servers.REBOOT_SOFT
+    novaclient(request).servers.reboot(instance_id, hardness)
+
+
+def server_rebuild(request, instance_id, image_id, password=None):
+    return novaclient(request).servers.rebuild(instance_id, image_id,
+                                               password)
 
 
 def server_update(request, instance_id, name):
-    response = novaclient(request).servers.update(instance_id, name=name)
-    # TODO(gabriel): servers.update method doesn't return anything. :-(
-    if response is None:
-        return True
-    else:
-        return response
+    return novaclient(request).servers.update(instance_id, name=name)
 
 
 def server_migrate(request, instance_id):
@@ -541,7 +568,7 @@ def server_stop(request, instance_id):
 
 
 def tenant_quota_get(request, tenant_id):
-    return QuotaSet(novaclient(request).quotas.get(tenant_id))
+    return base.QuotaSet(novaclient(request).quotas.get(tenant_id))
 
 
 def tenant_quota_update(request, tenant_id, **kwargs):
@@ -549,7 +576,11 @@ def tenant_quota_update(request, tenant_id, **kwargs):
 
 
 def default_quota_get(request, tenant_id):
-    return QuotaSet(novaclient(request).quotas.defaults(tenant_id))
+    return base.QuotaSet(novaclient(request).quotas.defaults(tenant_id))
+
+
+def default_quota_update(request, **kwargs):
+    novaclient(request).quota_classes.update(DEFAULT_QUOTA_NAME, **kwargs)
 
 
 def usage_get(request, tenant_id, start, end):
@@ -585,7 +616,7 @@ def instance_volume_detach(request, instance_id, att_id):
 
 
 def instance_volumes_list(request, instance_id):
-    from openstack_dashboard.api.cinder import cinderclient
+    from openstack_dashboard.api.cinder import cinderclient  # noqa
 
     volumes = novaclient(request).volumes.get_server_volumes(instance_id)
 
@@ -598,6 +629,10 @@ def instance_volumes_list(request, instance_id):
 
 def hypervisor_list(request):
     return novaclient(request).hypervisors.list()
+
+
+def hypervisor_stats(request):
+    return novaclient(request).hypervisors.statistics()
 
 
 def tenant_absolute_limits(request, reserved=False):
@@ -614,3 +649,34 @@ def tenant_absolute_limits(request, reserved=False):
 
 def availability_zone_list(request, detailed=False):
     return novaclient(request).availability_zones.list(detailed=detailed)
+
+
+def service_list(request):
+    return novaclient(request).services.list()
+
+
+def aggregate_list(request):
+    result = []
+    for aggregate in novaclient(request).aggregates.list():
+        result.append(novaclient(request).aggregates.get_details(aggregate.id))
+
+    return result
+
+
+@memoized
+def list_extensions(request):
+    return nova_list_extensions.ListExtManager(novaclient(request)).show_all()
+
+
+@memoized
+def extension_supported(extension_name, request):
+    """
+    this method will determine if nova supports a given extension name.
+    example values for the extension_name include AdminActions, ConsoleOutput,
+    etc.
+    """
+    extensions = list_extensions(request)
+    for extension in extensions:
+        if extension.name == extension_name:
+            return True
+    return False

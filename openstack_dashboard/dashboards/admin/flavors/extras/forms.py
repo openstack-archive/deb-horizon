@@ -20,7 +20,7 @@
 
 import logging
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from openstack_dashboard import api
 
@@ -44,7 +44,7 @@ class CreateExtraSpec(forms.SelfHandlingForm):
             msg = _('Created extra spec "%s".') % data['key']
             messages.success(request, msg)
             return True
-        except:
+        except Exception:
             exceptions.handle(request,
                               _("Unable to create flavor extra spec."))
 
@@ -63,5 +63,5 @@ class EditExtraSpec(forms.SelfHandlingForm):
             msg = _('Saved extra spec "%s".') % data['key']
             messages.success(request, msg)
             return True
-        except:
+        except Exception:
             exceptions.handle(request, _("Unable to edit extra spec."))

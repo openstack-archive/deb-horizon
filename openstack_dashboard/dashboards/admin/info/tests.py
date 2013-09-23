@@ -14,9 +14,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django import http
-from mox import IsA
+from mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
@@ -24,14 +24,21 @@ from openstack_dashboard.test import helpers as test
 INDEX_URL = reverse('horizon:admin:info:index')
 
 
-class ServicesViewTests(test.BaseAdminViewTests):
+class SystemInfoViewTests(test.BaseAdminViewTests):
+
+    @test.create_stubs({api.nova: ('service_list',
+                                   'availability_zone_list',
+                                   'aggregate_list'),
+                        api.neutron: ('agent_list',)})
     def test_index(self):
-        self.mox.StubOutWithMock(api.nova, 'default_quota_get')
-        self.mox.StubOutWithMock(api.cinder, 'default_quota_get')
-        api.nova.default_quota_get(IsA(http.HttpRequest),
-                                   self.tenant.id).AndReturn(self.quotas.nova)
-        api.cinder.default_quota_get(IsA(http.HttpRequest), self.tenant.id) \
-                .AndReturn(self.cinder_quotas.first())
+        services = self.services.list()
+        api.nova.service_list(IsA(http.HttpRequest)).AndReturn(services)
+        api.nova.availability_zone_list(IsA(http.HttpRequest), detailed=True) \
+            .AndReturn(self.availability_zones.list())
+        api.nova.aggregate_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.aggregates.list())
+        agents = self.agents.list()
+        api.neutron.agent_list(IsA(http.HttpRequest)).AndReturn(agents)
 
         self.mox.ReplayAll()
 
@@ -48,21 +55,20 @@ class ServicesViewTests(test.BaseAdminViewTests):
                                   '<Service: object-store>',
                                   '<Service: network>',
                                   '<Service: ec2>',
-                                  '<Service: orchestration>'])
+                                  '<Service: metering>',
+                                  '<Service: orchestration>',
+                                  '<Service: database>'])
 
-        quotas_tab = res.context['tab_group'].get_tab('quotas')
-        self.assertQuerysetEqual(quotas_tab._tables['quotas'].data,
-                                 ['<Quota: (injected_file_content_bytes, 1)>',
-                                 '<Quota: (metadata_items, 1)>',
-                                 '<Quota: (injected_files, 1)>',
-                                 '<Quota: (gigabytes, 1000)>',
-                                 '<Quota: (ram, 10000)>',
-                                 '<Quota: (floating_ips, 1)>',
-                                 '<Quota: (fixed_ips, 10)>',
-                                 '<Quota: (instances, 10)>',
-                                 '<Quota: (snapshots, 1)>',
-                                 '<Quota: (volumes, 1)>',
-                                 '<Quota: (cores, 10)>',
-                                 '<Quota: (security_groups, 10)>',
-                                 '<Quota: (security_group_rules, 20)>'],
-                                 ordered=False)
+        zones_tab = res.context['tab_group'].get_tab('zones')
+        self.assertQuerysetEqual(zones_tab._tables['zones'].data,
+                                 ['<AvailabilityZone: nova>'])
+
+        aggregates_tab = res.context['tab_group'].get_tab('aggregates')
+        self.assertQuerysetEqual(aggregates_tab._tables['aggregates'].data,
+                                 ['<Aggregate: 1>', '<Aggregate: 2>'])
+
+        network_agents_tab = res.context['tab_group'].get_tab('network_agents')
+        self.assertQuerysetEqual(
+            network_agents_tab._tables['network_agents'].data,
+            [agent.__repr__() for agent in self.agents.list()]
+        )

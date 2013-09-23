@@ -5,20 +5,54 @@ horizon.forms = {
       var $option = $(this).find("option:selected");
       var $form = $(this).closest('form');
       var $volName = $form.find('input#id_name');
-      $volName.val($option.data("display_name"));
+      if (_.isEmpty($volName.val())) {
+        $volName.val($option.data("display_name"));
+      }
       var $volSize = $form.find('input#id_size');
-      $volSize.val($option.data("size"));
+      var volSize = parseInt($volSize.val(), 10) || -1;
+      var dataSize = parseInt($option.data("size"), 10) || -1;
+      if (volSize < dataSize) {
+        $volSize.val(dataSize);
+      }
     });
   },
+
   handle_image_source: function() {
     $("div.table_wrapper, #modal_wrapper").on("change", "select#id_image_source", function(evt) {
       var $option = $(this).find("option:selected");
       var $form = $(this).closest('form');
       var $volName = $form.find('input#id_name');
-      $volName.val($option.data("name"));
+      if (_.isEmpty($volName.val())) {
+        $volName.val($option.data("name"));
+      }
       var $volSize = $form.find('input#id_size');
-      $volSize.val($option.data("size"));
+      var volSize = parseInt($volSize.val(), 10) || -1;
+      var dataSize = parseInt($option.data("size"), 10) || -1;
+      if (volSize < dataSize) {
+        $volSize.val(dataSize);
+      }
     });
+  },
+
+  datepicker: function() {
+       var startDate = $('input#id_start').datepicker()
+          .on('changeDate', function(ev) {
+          if (ev.date.valueOf() > endDate.date.valueOf()) {
+              var newDate = new Date(ev.date)
+              newDate.setDate(newDate.getDate() + 1);
+              endDate.setValue(newDate);
+              $('input#id_end')[0].focus();
+          }
+          startDate.hide();
+      }).data('datepicker');
+
+      var endDate = $('input#id_end').datepicker({
+          onRender: function(date) {
+              return date.valueOf() < startDate.date.valueOf() ? 'disabled' : '';
+          }
+      }).on('changeDate', function(ev) {
+          endDate.hide();
+      }).data('datepicker');
   }
 };
 
@@ -78,6 +112,7 @@ horizon.addInitFunction(function () {
 
   horizon.forms.handle_snapshot_source();
   horizon.forms.handle_image_source();
+  horizon.forms.datepicker();
 
   // Bind event handlers to confirm dangerous actions.
   $("body").on("click", "form button.btn-danger", function (evt) {
@@ -162,6 +197,13 @@ horizon.addInitFunction(function () {
   $(document).on('mousedown keydown', '.form-field select', function (evt) {
     $(this).tooltip('hide');
   });
+  // Hide the tooltip after escape button pressed
+  $(document).on('keydown.esc_btn', function (evt) {
+    if (evt.keyCode == 27) {
+      $('.tooltip').hide();
+    }
+  });
+
   // Hide the help text for js-capable browsers
   $('span.help-block').hide();
 });

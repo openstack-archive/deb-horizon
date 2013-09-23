@@ -18,17 +18,18 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from copy import deepcopy
+from copy import deepcopy  # noqa
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django import http
 
-from mox import IsA
+from mox import IsA  # noqa
 
-from horizon.workflows.views import WorkflowView
+from horizon.workflows import views
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
+from openstack_dashboard.usage import quotas
 
 
 class AccessAndSecurityTests(test.TestCase):
@@ -39,19 +40,22 @@ class AccessAndSecurityTests(test.TestCase):
         keypairs = self.keypairs.list()
         sec_groups = self.security_groups.list()
         floating_ips = self.floating_ips.list()
+        quota_data = self.quota_usages.first()
         self.mox.StubOutWithMock(api.network, 'tenant_floating_ip_list')
         self.mox.StubOutWithMock(api.network, 'security_group_list')
         self.mox.StubOutWithMock(api.nova, 'keypair_list')
         self.mox.StubOutWithMock(api.nova, 'server_list')
+        self.mox.StubOutWithMock(quotas, 'tenant_quota_usages')
 
-        api.nova.server_list(IsA(http.HttpRequest),
-                             all_tenants=True).AndReturn([self.servers.list(),
-                                                          False])
+        api.nova.server_list(IsA(http.HttpRequest)) \
+                    .AndReturn([self.servers.list(), False])
         api.nova.keypair_list(IsA(http.HttpRequest)).AndReturn(keypairs)
         api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
             .AndReturn(floating_ips)
         api.network.security_group_list(IsA(http.HttpRequest)) \
             .AndReturn(sec_groups)
+        quotas.tenant_quota_usages(IsA(http.HttpRequest)).MultipleTimes()\
+            .AndReturn(quota_data)
 
         self.mox.ReplayAll()
 
@@ -88,7 +92,7 @@ class AccessAndSecurityTests(test.TestCase):
 
         res = self.client.get(reverse("horizon:project:access_and_security:"
                                       "floating_ips:associate"))
-        self.assertTemplateUsed(res, WorkflowView.template_name)
+        self.assertTemplateUsed(res, views.WorkflowView.template_name)
 
         self.assertContains(res,
                             '<option value="1">server_1 (1)</option>')

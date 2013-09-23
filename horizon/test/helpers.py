@@ -22,22 +22,22 @@ import logging
 import os
 import socket
 
-from django.contrib.auth.middleware import AuthenticationMiddleware
-from django.contrib.auth.models import Permission
-from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.messages.storage import default_storage
+from django.contrib.auth.middleware import AuthenticationMiddleware  # noqa
+from django.contrib.auth.models import Permission  # noqa
+from django.contrib.auth.models import User  # noqa
+from django.contrib.contenttypes.models import ContentType  # noqa
+from django.contrib.messages.storage import default_storage  # noqa
 from django.core.handlers import wsgi
 from django import http
 from django import test as django_test
-from django.test.client import RequestFactory
+from django.test.client import RequestFactory  # noqa
 from django.utils import unittest
 
 LOG = logging.getLogger(__name__)
 
 
 try:
-    from selenium.webdriver.firefox.webdriver import WebDriver
+    from selenium.webdriver.firefox.webdriver import WebDriver  # noqa
     from selenium.webdriver.support import ui as selenium_ui
 except ImportError as e:
     # NOTE(saschpe): Several distribution can't ship selenium due to it's
@@ -60,14 +60,14 @@ class RequestFactoryWithMessages(RequestFactory):
     def get(self, *args, **kwargs):
         req = super(RequestFactoryWithMessages, self).get(*args, **kwargs)
         req.user = User()
-        req.session = []
+        req.session = {}
         req._messages = default_storage(req)
         return req
 
     def post(self, *args, **kwargs):
         req = super(RequestFactoryWithMessages, self).post(*args, **kwargs)
         req.user = User()
-        req.session = []
+        req.session = {}
         req._messages = default_storage(req)
         return req
 

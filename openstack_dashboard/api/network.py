@@ -21,7 +21,7 @@ introduced to abstract the differences between them for seamless consumption by
 different dashboard implementations.
 """
 
-from django.conf import settings
+from django.conf import settings  # noqa
 
 from openstack_dashboard.api import base
 from openstack_dashboard.api import neutron
@@ -101,6 +101,10 @@ def security_group_create(request, name, desc):
 
 def security_group_delete(request, sg_id):
     return NetworkClient(request).secgroups.delete(sg_id)
+
+
+def security_group_update(request, sg_id, name, desc):
+    return NetworkClient(request).secgroups.update(sg_id, name, desc)
 
 
 def security_group_rule_create(request, parent_group_id,

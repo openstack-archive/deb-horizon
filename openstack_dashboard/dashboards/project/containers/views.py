@@ -22,31 +22,28 @@
 Views for managing Swift containers.
 """
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django import http
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
+from django.views import generic
 
 from horizon import browsers
 from horizon import exceptions
 from horizon import forms
 
 from openstack_dashboard import api
-from openstack_dashboard.api.swift import FOLDER_DELIMITER
-from openstack_dashboard.dashboards.project.containers.browsers \
-    import ContainerBrowser
-from openstack_dashboard.dashboards.project.containers.forms import CopyObject
-from openstack_dashboard.dashboards.project.containers.forms \
-    import CreateContainer
-from openstack_dashboard.dashboards.project.containers.forms \
-    import UploadObject
-from openstack_dashboard.dashboards.project.containers.tables \
-    import wrap_delimiter
+from openstack_dashboard.api import swift
+from openstack_dashboard.dashboards.project.containers \
+    import browsers as project_browsers
+from openstack_dashboard.dashboards.project.containers \
+    import forms as project_forms
+from openstack_dashboard.dashboards.project.containers import tables
 
 import os
 
 
 class ContainerView(browsers.ResourceBrowserView):
-    browser_class = ContainerBrowser
+    browser_class = project_browsers.ContainerBrowser
     template_name = "project/containers/index.html"
 
     def get_containers_data(self):
@@ -56,7 +53,7 @@ class ContainerView(browsers.ResourceBrowserView):
         try:
             containers, self._more = api.swift.swift_get_containers(
                 self.request, marker=marker)
-        except:
+        except Exception:
             msg = _('Unable to retrieve container list.')
             exceptions.handle(self.request, msg)
         return containers
@@ -84,7 +81,7 @@ class ContainerView(browsers.ResourceBrowserView):
                         container_name,
                         marker=marker,
                         prefix=prefix)
-                except:
+                except Exception:
                     self._more = None
                     objects = []
                     msg = _('Unable to retrieve object list.')
@@ -123,21 +120,22 @@ class ContainerView(browsers.ResourceBrowserView):
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreateContainer
+    form_class = project_forms.CreateContainer
     template_name = 'project/containers/create.html'
     success_url = "horizon:project:containers:index"
 
     def get_success_url(self):
         parent = self.request.POST.get('parent', None)
         if parent:
-            container, slash, remainder = parent.partition(FOLDER_DELIMITER)
-            container += FOLDER_DELIMITER
-            if remainder and not remainder.endswith(FOLDER_DELIMITER):
-                remainder = "".join([remainder, FOLDER_DELIMITER])
+            container, slash, remainder = parent.partition(
+                swift.FOLDER_DELIMITER)
+            container += swift.FOLDER_DELIMITER
+            if remainder and not remainder.endswith(swift.FOLDER_DELIMITER):
+                remainder = "".join([remainder, swift.FOLDER_DELIMITER])
             return reverse(self.success_url, args=(container, remainder))
         else:
             return reverse(self.success_url, args=[self.request.POST['name'] +
-                                                   FOLDER_DELIMITER])
+                                                   swift.FOLDER_DELIMITER])
 
     def get_initial(self):
         initial = super(CreateView, self).get_initial()
@@ -146,14 +144,14 @@ class CreateView(forms.ModalFormView):
 
 
 class UploadView(forms.ModalFormView):
-    form_class = UploadObject
+    form_class = project_forms.UploadObject
     template_name = 'project/containers/upload.html'
     success_url = "horizon:project:containers:index"
 
     def get_success_url(self):
         container_name = self.request.POST['container_name']
         return reverse(self.success_url,
-                       args=(wrap_delimiter(container_name),
+                       args=(tables.wrap_delimiter(container_name),
                              self.request.POST.get('path', '')))
 
     def get_initial(self):
@@ -169,14 +167,14 @@ class UploadView(forms.ModalFormView):
 def object_download(request, container_name, object_path):
     try:
         obj = api.swift.swift_get_object(request, container_name, object_path)
-    except:
+    except Exception:
         redirect = reverse("horizon:project:containers:index")
         exceptions.handle(request,
                           _("Unable to retrieve object."),
                           redirect=redirect)
     # Add the original file extension back on if it wasn't preserved in the
     # name given to the object.
-    filename = object_path.rsplit(FOLDER_DELIMITER)[-1]
+    filename = object_path.rsplit(swift.FOLDER_DELIMITER)[-1]
     if not os.path.splitext(obj.name)[1] and obj.orig_name:
         name, ext = os.path.splitext(obj.orig_name)
         filename = "%s%s" % (filename, ext)
@@ -189,22 +187,22 @@ def object_download(request, container_name, object_path):
 
 
 class CopyView(forms.ModalFormView):
-    form_class = CopyObject
+    form_class = project_forms.CopyObject
     template_name = 'project/containers/copy.html'
     success_url = "horizon:project:containers:index"
 
     def get_success_url(self):
         new_container_name = self.request.POST['new_container_name']
         return reverse(self.success_url,
-                       args=(wrap_delimiter(new_container_name),
-                             wrap_delimiter(self.request.POST.get('path',
-                                                                  ''))))
+                       args=(tables.wrap_delimiter(new_container_name),
+                             tables.wrap_delimiter(
+                                self.request.POST.get('path', ''))))
 
     def get_form_kwargs(self):
         kwargs = super(CopyView, self).get_form_kwargs()
         try:
             containers = api.swift.swift_get_containers(self.request)
-        except:
+        except Exception:
             redirect = reverse("horizon:project:containers:index")
             exceptions.handle(self.request,
                               _('Unable to list containers.'),
@@ -225,4 +223,49 @@ class CopyView(forms.ModalFormView):
         context = super(CopyView, self).get_context_data(**kwargs)
         context['container_name'] = self.kwargs["container_name"]
         context['object_name'] = self.kwargs["object_name"]
+        return context
+
+
+class ContainerDetailView(forms.ModalFormMixin, generic.TemplateView):
+    template_name = 'project/containers/container_detail.html'
+
+    def get_object(self):
+        if not hasattr(self, "_object"):
+            try:
+                self._object = api.swift.swift_get_container(
+                    self.request,
+                    self.kwargs["container_name"])
+            except Exception:
+                redirect = reverse("horizon:project:containers:index")
+                exceptions.handle(self.request,
+                                  _('Unable to retrieve details.'),
+                                  redirect=redirect)
+        return self._object
+
+    def get_context_data(self, **kwargs):
+        context = super(ContainerDetailView, self).get_context_data(**kwargs)
+        context['container'] = self.get_object()
+        return context
+
+
+class ObjectDetailView(forms.ModalFormMixin, generic.TemplateView):
+    template_name = 'project/containers/object_detail.html'
+
+    def get_object(self):
+        if not hasattr(self, "_object"):
+            try:
+                self._object = api.swift.swift_get_object(
+                    self.request,
+                    self.kwargs["container_name"],
+                    self.kwargs["object_path"])
+            except Exception:
+                redirect = reverse("horizon:project:containers:index")
+                exceptions.handle(self.request,
+                                  _('Unable to retrieve details.'),
+                                  redirect=redirect)
+        return self._object
+
+    def get_context_data(self, **kwargs):
+        context = super(ObjectDetailView, self).get_context_data(**kwargs)
+        context['object'] = self.get_object()
         return context

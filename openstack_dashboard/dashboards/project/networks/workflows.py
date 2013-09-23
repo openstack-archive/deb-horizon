@@ -18,8 +18,8 @@
 import logging
 import netaddr
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -36,11 +36,35 @@ LOG = logging.getLogger(__name__)
 class CreateNetworkInfoAction(workflows.Action):
     net_name = forms.CharField(max_length=255,
                                label=_("Network Name"),
-                               help_text=_("Network Name. This field is "
-                                           "optional."),
                                required=False)
+    if api.neutron.is_port_profiles_supported():
+        net_profile_id = forms.ChoiceField(label=_("Network Profile"))
     admin_state = forms.BooleanField(label=_("Admin State"),
                                      initial=True, required=False)
+
+    if api.neutron.is_port_profiles_supported():
+        def __init__(self, request, *args, **kwargs):
+            super(CreateNetworkInfoAction, self).__init__(request,
+                                                          *args, **kwargs)
+            self.fields['net_profile_id'].choices = (
+                self.get_network_profile_choices(request))
+
+        def get_network_profile_choices(self, request):
+            profile_choices = [('', _("Select a profile"))]
+            for profile in self._get_profiles(request, 'network'):
+                profile_choices.append((profile.id, profile.name))
+            return profile_choices
+
+        def _get_profiles(self, request, type_p):
+            try:
+                profiles = api.neutron.profile_list(request, type_p)
+            except Exception:
+                profiles = []
+                msg = _('Network Profiles could not be retrieved.')
+                exceptions.handle(request, msg)
+            return profiles
+    # TODO(absubram): Add ability to view network profile information
+    # in the network detail if a profile is used.
 
     class Meta:
         name = _("Network")
@@ -51,7 +75,10 @@ class CreateNetworkInfoAction(workflows.Action):
 
 class CreateNetworkInfo(workflows.Step):
     action_class = CreateNetworkInfoAction
-    contributes = ("net_name", "admin_state")
+    if api.neutron.is_port_profiles_supported():
+        contributes = ("net_name", "admin_state", "net_profile_id")
+    else:
+        contributes = ("net_name", "admin_state")
 
 
 class CreateSubnetInfoAction(workflows.Action):
@@ -59,8 +86,6 @@ class CreateSubnetInfoAction(workflows.Action):
                                      initial=True, required=False)
     subnet_name = forms.CharField(max_length=255,
                                   label=_("Subnet Name"),
-                                  help_text=_("Subnet Name. This field is "
-                                           "optional."),
                                   required=False)
     cidr = fields.IPField(label=_("Network Address"),
                           required=False,
@@ -72,7 +97,7 @@ class CreateSubnetInfoAction(workflows.Action):
     ip_version = forms.ChoiceField(choices=[(4, 'IPv4'), (6, 'IPv6')],
                                    label=_("IP Version"))
     gateway_ip = fields.IPField(
-                    label=_("Gateway IP (optional)"),
+                    label=_("Gateway IP"),
                     required=False,
                     initial="",
                     help_text=_("IP address of Gateway (e.g. 192.168.0.254) "
@@ -159,7 +184,7 @@ class CreateSubnetDetailAction(workflows.Action):
         label=_("Host Routes"),
         help_text=_("Additional routes announced to the hosts. "
                     "Each entry is &lt;destination_cidr&gt;,&lt;nexthop&gt; "
-                    "(e.g., 192.168.200.0/24,10.56.1.254)"
+                    "(e.g., 192.168.200.0/24,10.56.1.254) "
                     "and one entry per line."),
         required=False)
 
@@ -172,7 +197,8 @@ class CreateSubnetDetailAction(workflows.Action):
             return netaddr.IPAddress(ip)
         except (netaddr.AddrFormatError, ValueError):
             msg = _('%(field_name)s: Invalid IP address '
-                    '(value=%(ip)s)') % locals()
+                    '(value=%(ip)s)' % dict(
+                        field_name=field_name, ip=ip))
             raise forms.ValidationError(msg)
 
     def _convert_ip_network(self, network, field_name):
@@ -180,7 +206,8 @@ class CreateSubnetDetailAction(workflows.Action):
             return netaddr.IPNetwork(network)
         except (netaddr.AddrFormatError, ValueError):
             msg = _('%(field_name)s: Invalid IP address '
-                    '(value=%(network)s)') % locals()
+                    '(value=%(network)s)' % dict(
+                        field_name=field_name, network=network))
             raise forms.ValidationError(msg)
 
     def _check_allocation_pools(self, allocation_pools):
@@ -218,8 +245,8 @@ class CreateSubnetDetailAction(workflows.Action):
                         'Destination CIDR and nexthop must be specified '
                         '(value=%s)') % r
                 raise forms.ValidationError(msg)
-            dest = self._convert_ip_network(route[0], "host_routes")
-            nexthop = self._convert_ip_address(route[1], "host_routes")
+            self._convert_ip_network(route[0], "host_routes")
+            self._convert_ip_address(route[1], "host_routes")
 
     def clean(self):
         cleaned_data = super(CreateSubnetDetailAction, self).clean()
@@ -259,6 +286,8 @@ class CreateNetwork(workflows.Workflow):
         try:
             params = {'name': data['net_name'],
                       'admin_state_up': data['admin_state']}
+            if api.neutron.is_port_profiles_supported():
+                params['net_profile_id'] = data['net_profile_id']
             network = api.neutron.network_create(request, **params)
             network.set_id_as_name_if_empty()
             self.context['net_id'] = network.id
@@ -349,7 +378,7 @@ class CreateNetwork(workflows.Workflow):
             messages.info(request, msg)
             raise exceptions.Http302(redirect)
             #return exceptions.RecoverableError
-        except:
+        except Exception:
             msg = _('Failed to delete network "%s"') % network.name
             LOG.info(msg)
             redirect = self.get_failure_url()

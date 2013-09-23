@@ -24,24 +24,24 @@ Views for managing instance snapshots.
 
 import logging
 
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.project.images_and_snapshots.\
-    snapshots.forms import CreateSnapshot
+from openstack_dashboard.dashboards.project.images_and_snapshots.snapshots \
+    import forms as project_forms
 
 
 LOG = logging.getLogger(__name__)
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreateSnapshot
+    form_class = project_forms.CreateSnapshot
     template_name = 'project/images_and_snapshots/snapshots/create.html'
     success_url = reverse_lazy("horizon:project:images_and_snapshots:index")
 
@@ -50,7 +50,7 @@ class CreateView(forms.ModalFormView):
             try:
                 self._object = api.nova.server_get(self.request,
                                                    self.kwargs["instance_id"])
-            except:
+            except Exception:
                 redirect = reverse('horizon:project:instances:index')
                 exceptions.handle(self.request,
                                   _("Unable to retrieve instance."),

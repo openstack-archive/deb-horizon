@@ -15,8 +15,8 @@
 #    under the License.
 import logging
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tabs
@@ -35,7 +35,7 @@ class OverviewTab(tabs.Tab):
         port_id = self.tab_group.kwargs['port_id']
         try:
             port = api.neutron.port_get(self.request, port_id)
-        except:
+        except Exception:
             redirect = reverse(self.failure_url)
             msg = _('Unable to retrieve port details.')
             exceptions.handle(request, msg, redirect=redirect)

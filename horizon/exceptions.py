@@ -22,18 +22,17 @@ import logging
 import os
 import sys
 
-from django.contrib.auth import logout
-from django.http import HttpRequest
-from django.utils import termcolors
-from django.utils.translation import ugettext_lazy as _
-from django.views.debug import CLEANSED_SUBSTITUTE
-from django.views.debug import SafeExceptionReporterFilter
+from django.contrib.auth import logout  # noqa
+from django.core.management import color_style  # noqa
+from django.http import HttpRequest  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
+from django.views.debug import CLEANSED_SUBSTITUTE  # noqa
+from django.views.debug import SafeExceptionReporterFilter  # noqa
 
-from horizon.conf import HORIZON_CONFIG
+from horizon.conf import HORIZON_CONFIG  # noqa
 from horizon import messages
 
 LOG = logging.getLogger(__name__)
-PALETTE = termcolors.PALETTES[termcolors.DEFAULT_PALETTE]
 
 
 class HorizonReporterFilter(SafeExceptionReporterFilter):
@@ -202,7 +201,7 @@ RECOVERABLE += tuple(HORIZON_CONFIG['exceptions']['recoverable'])
 
 
 def error_color(msg):
-    return termcolors.colorize(msg, **PALETTE['ERROR'])
+    return color_style().ERROR_OUTPUT(msg)
 
 
 def check_message(keywords, message):

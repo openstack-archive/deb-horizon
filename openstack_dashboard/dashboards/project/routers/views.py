@@ -20,26 +20,28 @@ Views for managing Neutron Routers.
 
 import logging
 
-from django.core.urlresolvers import reverse_lazy
-from django.utils.datastructures import SortedDict
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.datastructures import SortedDict  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.project.routers.forms import CreateForm
-from openstack_dashboard.dashboards.project.routers.ports.tables \
-    import PortsTable
-from openstack_dashboard.dashboards.project.routers.tables import RoutersTable
+from openstack_dashboard.dashboards.project.routers \
+    import forms as project_forms
+from openstack_dashboard.dashboards.project.routers.ports \
+    import tables as port_tables
+from openstack_dashboard.dashboards.project.routers \
+    import tables as project_tables
 
 
 LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.DataTableView):
-    table_class = RoutersTable
+    table_class = project_tables.RoutersTable
     template_name = 'project/routers/index.html'
 
     def _get_routers(self, search_opts=None):
@@ -48,7 +50,7 @@ class IndexView(tables.DataTableView):
             routers = api.neutron.router_list(self.request,
                                               tenant_id=tenant_id,
                                               search_opts=search_opts)
-        except:
+        except Exception:
             routers = []
             exceptions.handle(self.request,
                               _('Unable to retrieve router list.'))
@@ -90,7 +92,7 @@ class IndexView(tables.DataTableView):
 
 
 class DetailView(tables.MultiTableView):
-    table_classes = (PortsTable, )
+    table_classes = (port_tables.PortsTable, )
     template_name = 'project/routers/detail.html'
     failure_url = reverse_lazy('horizon:project:routers:index')
 
@@ -100,7 +102,7 @@ class DetailView(tables.MultiTableView):
                 router_id = self.kwargs['router_id']
                 router = api.neutron.router_get(self.request, router_id)
                 router.set_id_as_name_if_empty(length=0)
-            except:
+            except Exception:
                 msg = _('Unable to retrieve details for router "%s".') \
                         % (router_id)
                 exceptions.handle(self.request, msg, redirect=self.failure_url)
@@ -112,7 +114,7 @@ class DetailView(tables.MultiTableView):
                                                       expand_subnet=False)
                     ext_net.set_id_as_name_if_empty(length=0)
                     router.external_gateway_info['network'] = ext_net.name
-                except Exception as e:
+                except Exception:
                     msg = _('Unable to retrieve an external network "%s".') \
                         % (ext_net_id)
                     exceptions.handle(self.request, msg)
@@ -131,7 +133,7 @@ class DetailView(tables.MultiTableView):
             device_id = self.kwargs['router_id']
             ports = api.neutron.port_list(self.request,
                                           device_id=device_id)
-        except:
+        except Exception:
             ports = []
             msg = _('Port list can not be retrieved.')
             exceptions.handle(self.request, msg)
@@ -141,6 +143,6 @@ class DetailView(tables.MultiTableView):
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreateForm
+    form_class = project_forms.CreateForm
     template_name = 'project/routers/create.html'
     success_url = reverse_lazy("horizon:project:routers:index")

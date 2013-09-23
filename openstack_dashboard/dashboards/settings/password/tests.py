@@ -14,10 +14,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django import http
 
-from mox import IsA
+from mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
@@ -31,27 +31,39 @@ class ChangePasswordTests(test.TestCase):
     @test.create_stubs({api.keystone: ('user_update_own_password', )})
     def test_change_password(self):
         api.keystone.user_update_own_password(IsA(http.HttpRequest),
-                                      'oldpwd',
-                                      'normalpwd',).AndReturn(None)
-
+                                              'oldpwd',
+                                              'normalpwd',).AndReturn(None)
         self.mox.ReplayAll()
 
         formData = {'method': 'PasswordForm',
                     'current_password': 'oldpwd',
                     'new_password': 'normalpwd',
                     'confirm_password': 'normalpwd'}
-
         res = self.client.post(INDEX_URL, formData)
 
         self.assertNoFormErrors(res)
 
     def test_change_validation_passwords_not_matching(self):
-
         formData = {'method': 'PasswordForm',
                     'current_password': 'currpasswd',
                     'new_password': 'testpassword',
                     'confirm_password': 'doesnotmatch'}
-
         res = self.client.post(INDEX_URL, formData)
 
         self.assertFormError(res, "form", None, ['Passwords do not match.'])
+
+    @test.create_stubs({api.keystone: ('user_update_own_password', )})
+    def test_change_password_shows_message_on_login_page(self):
+        api.keystone.user_update_own_password(IsA(http.HttpRequest),
+                                              'oldpwd',
+                                              'normalpwd').AndReturn(None)
+        self.mox.ReplayAll()
+
+        formData = {'method': 'PasswordForm',
+                    'current_password': 'oldpwd',
+                    'new_password': 'normalpwd',
+                    'confirm_password': 'normalpwd'}
+        res = self.client.post(INDEX_URL, formData, follow=True)
+
+        info_msg = "Password changed. Please log in again to continue."
+        self.assertContains(res, info_msg)

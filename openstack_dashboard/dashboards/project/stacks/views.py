@@ -20,39 +20,43 @@ from horizon import forms
 from horizon import tables
 from horizon import tabs
 
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.http import HttpResponse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
+from django.views import generic
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.project.stacks.forms import StackCreateForm
-from openstack_dashboard.dashboards.project.stacks.forms import TemplateForm
-from openstack_dashboard.dashboards.project.stacks.tables import StacksTable
-from openstack_dashboard.dashboards.project.stacks.tabs \
-    import ResourceDetailTabs
-from openstack_dashboard.dashboards.project.stacks.tabs import StackDetailTabs
+from openstack_dashboard.dashboards.project.stacks \
+    import api as project_api
+from openstack_dashboard.dashboards.project.stacks \
+    import forms as project_forms
+from openstack_dashboard.dashboards.project.stacks \
+    import tables as project_tables
+from openstack_dashboard.dashboards.project.stacks \
+    import tabs as project_tabs
 
 
 LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.DataTableView):
-    table_class = StacksTable
+    table_class = project_tables.StacksTable
     template_name = 'project/stacks/index.html'
 
     def get_data(self):
         request = self.request
         try:
             stacks = api.heat.stacks_list(self.request)
-        except:
+        except Exception:
             exceptions.handle(request, _('Unable to retrieve stack list.'))
             stacks = []
         return stacks
 
 
 class SelectTemplateView(forms.ModalFormView):
-    form_class = TemplateForm
+    form_class = project_forms.TemplateForm
     template_name = 'project/stacks/select_template.html'
     success_url = reverse_lazy('horizon:project:stacks:launch')
 
@@ -63,7 +67,7 @@ class SelectTemplateView(forms.ModalFormView):
 
 
 class CreateStackView(forms.ModalFormView):
-    form_class = StackCreateForm
+    form_class = project_forms.StackCreateForm
     template_name = 'project/stacks/create.html'
     success_url = reverse_lazy('horizon:project:stacks:index')
 
@@ -88,7 +92,7 @@ class CreateStackView(forms.ModalFormView):
 
 
 class DetailView(tabs.TabView):
-    tab_group_class = StackDetailTabs
+    tab_group_class = project_tabs.StackDetailTabs
     template_name = 'project/stacks/detail.html'
 
     def get_context_data(self, **kwargs):
@@ -104,7 +108,7 @@ class DetailView(tabs.TabView):
                 self._stack = stack
                 request.session['stack_id'] = stack.id
                 request.session['stack_name'] = stack.stack_name
-            except:
+            except Exception:
                 msg = _("Unable to retrieve stack.")
                 redirect = reverse('horizon:project:stacks:index')
                 exceptions.handle(request, msg, redirect=redirect)
@@ -116,7 +120,7 @@ class DetailView(tabs.TabView):
 
 
 class ResourceView(tabs.TabView):
-    tab_group_class = ResourceDetailTabs
+    tab_group_class = project_tabs.ResourceDetailTabs
     template_name = 'project/stacks/resource.html'
 
     def get_context_data(self, **kwargs):
@@ -133,7 +137,7 @@ class ResourceView(tabs.TabView):
                     kwargs['stack_id'],
                     kwargs['resource_name'])
                 self._resource = resource
-            except:
+            except Exception:
                 msg = _("Unable to retrieve resource.")
                 redirect = reverse('horizon:project:stacks:index')
                 exceptions.handle(request, msg, redirect=redirect)
@@ -147,7 +151,7 @@ class ResourceView(tabs.TabView):
                     kwargs['stack_id'],
                     kwargs['resource_name'])
                 self._metadata = json.dumps(metadata, indent=2)
-            except:
+            except Exception:
                 msg = _("Unable to retrieve metadata.")
                 redirect = reverse('horizon:project:stacks:index')
                 exceptions.handle(request, msg, redirect=redirect)
@@ -158,3 +162,9 @@ class ResourceView(tabs.TabView):
         metadata = self.get_metadata(request, **kwargs)
         return self.tab_group_class(
             request, resource=resource, metadata=metadata, **kwargs)
+
+
+class JSONView(generic.View):
+    def get(self, request, stack_id=''):
+        return HttpResponse(project_api.d3_data(request, stack_id=stack_id),
+                            content_type="application/json")

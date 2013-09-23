@@ -18,14 +18,9 @@
 Views for managing volumes.
 """
 
-from django.core.urlresolvers import reverse_lazy
-from django.utils.datastructures import SortedDict
-from django.utils.translation import ugettext_lazy as _
-
-from openstack_dashboard.dashboards.project.volumes.forms import AttachForm
-from openstack_dashboard.dashboards.project.volumes.forms import CreateForm
-from openstack_dashboard.dashboards.project.volumes.forms \
-    import CreateSnapshotForm
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.datastructures import SortedDict  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -38,11 +33,13 @@ from openstack_dashboard import api
 from openstack_dashboard.api import cinder
 from openstack_dashboard.usage import quotas
 
-from openstack_dashboard.dashboards.project.volumes.tables \
-    import AttachmentsTable
-from openstack_dashboard.dashboards.project.volumes.tables import VolumesTable
-from openstack_dashboard.dashboards.project.volumes.tabs \
-    import VolumeDetailTabs
+from openstack_dashboard.dashboards.project.volumes \
+    import forms as project_forms
+
+from openstack_dashboard.dashboards.project.volumes \
+    import tables as project_tables
+from openstack_dashboard.dashboards.project.volumes \
+    import tabs as project_tabs
 
 
 LOG = logging.getLogger(__name__)
@@ -52,7 +49,7 @@ class VolumeTableMixIn(object):
     def _get_volumes(self, search_opts=None):
         try:
             return cinder.volume_list(self.request, search_opts=search_opts)
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve volume list.'))
             return []
@@ -62,7 +59,7 @@ class VolumeTableMixIn(object):
             instances, has_more = api.nova.server_list(self.request,
                                                        search_opts=search_opts)
             return instances
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _("Unable to retrieve volume/instance "
                                 "attachment information"))
@@ -84,7 +81,7 @@ class VolumeTableMixIn(object):
 
 
 class IndexView(tables.DataTableView, VolumeTableMixIn):
-    table_class = VolumesTable
+    table_class = project_tables.VolumesTable
     template_name = 'project/volumes/index.html'
 
     def get_data(self):
@@ -96,20 +93,18 @@ class IndexView(tables.DataTableView, VolumeTableMixIn):
 
 
 class DetailView(tabs.TabView):
-    tab_group_class = VolumeDetailTabs
+    tab_group_class = project_tabs.VolumeDetailTabs
     template_name = 'project/volumes/detail.html'
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreateForm
+    form_class = project_forms.CreateForm
     template_name = 'project/volumes/create.html'
     success_url = reverse_lazy("horizon:project:volumes:index")
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         try:
-            tenant_id = self.kwargs.get('tenant_id',
-                                        self.request.user.tenant_id)
             context['usages'] = cinder.tenant_absolute_limits(self.request)
             volumes = cinder.volume_list(self.request)
             total_size = sum([getattr(volume, 'size', 0) for volume
@@ -117,13 +112,13 @@ class CreateView(forms.ModalFormView):
             context['usages']['gigabytesUsed'] = total_size
             context['usages']['volumesUsed'] = len(volumes)
 
-        except:
+        except Exception:
             exceptions.handle(self.request)
         return context
 
 
 class CreateSnapshotView(forms.ModalFormView):
-    form_class = CreateSnapshotForm
+    form_class = project_forms.CreateSnapshotForm
     template_name = 'project/volumes/create_snapshot.html'
     success_url = reverse_lazy("horizon:project:images_and_snapshots:index")
 
@@ -132,7 +127,7 @@ class CreateSnapshotView(forms.ModalFormView):
         context['volume_id'] = self.kwargs['volume_id']
         try:
             context['usages'] = quotas.tenant_quota_usages(self.request)
-        except:
+        except Exception:
             exceptions.handle(self.request)
         return context
 
@@ -141,8 +136,8 @@ class CreateSnapshotView(forms.ModalFormView):
 
 
 class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
-    table_class = AttachmentsTable
-    form_class = AttachForm
+    table_class = project_tables.AttachmentsTable
+    form_class = project_forms.AttachForm
     template_name = 'project/volumes/attach.html'
     success_url = reverse_lazy("horizon:project:volumes:index")
 
@@ -151,7 +146,7 @@ class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
             volume_id = self.kwargs['volume_id']
             try:
                 self._object = cinder.volume_get(self.request, volume_id)
-            except:
+            except Exception:
                 self._object = None
                 exceptions.handle(self.request,
                                   _('Unable to retrieve volume information.'))
@@ -161,7 +156,7 @@ class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
         try:
             volumes = self.get_object()
             attachments = [att for att in volumes.attachments if att]
-        except:
+        except Exception:
             attachments = []
             exceptions.handle(self.request,
                               _('Unable to retrieve volume information.'))
@@ -170,7 +165,7 @@ class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
     def get_initial(self):
         try:
             instances, has_more = api.nova.server_list(self.request)
-        except:
+        except Exception:
             instances = []
             exceptions.handle(self.request,
                               _("Unable to retrieve attachment information."))

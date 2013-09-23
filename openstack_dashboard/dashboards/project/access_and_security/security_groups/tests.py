@@ -20,19 +20,17 @@
 
 import cgi
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.conf import settings  # noqa
+from django.core.urlresolvers import reverse  # noqa
 from django import http
 
-from mox import IsA
+from mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 
 from openstack_dashboard.dashboards.project.access_and_security.\
-    security_groups.tables import RulesTable
-from openstack_dashboard.dashboards.project.access_and_security.\
-    security_groups.tables import SecurityGroupsTable
+    security_groups import tables
 
 
 INDEX_URL = reverse('horizon:project:access_and_security:index')
@@ -56,6 +54,45 @@ class SecurityGroupsViewTests(test.TestCase):
         self.edit_url = reverse('horizon:project:access_and_security:'
                                 'security_groups:add_rule',
                                 args=[sec_group.id])
+
+    @test.create_stubs({api.network: ('security_group_get',)})
+    def test_update_security_groups_get(self):
+        sec_group = self.security_groups.first()
+        api.network.security_group_get(IsA(http.HttpRequest),
+                                        sec_group.id).AndReturn(sec_group)
+        self.mox.ReplayAll()
+
+        res = self.client.get(reverse('horizon:project:access_and_security:'
+                                      'security_groups:update',
+                                      args=[sec_group.id]))
+        self.assertTemplateUsed(res,
+                'project/access_and_security/security_groups/_update.html')
+        self.assertEqual(res.context['security_group'].name,
+                         sec_group.name)
+
+    @test.create_stubs({api.network: ('security_group_update',
+                                      'security_group_get')})
+    def test_update_security_groups_post(self):
+        sec_group = self.security_groups.get(name="other_group")
+        api.network.security_group_update(IsA(http.HttpRequest),
+                                       str(sec_group.id),
+                                       sec_group.name,
+                                       sec_group.description) \
+            .AndReturn(sec_group)
+        api.network.security_group_get(IsA(http.HttpRequest),
+                                        sec_group.id).AndReturn(sec_group)
+        self.mox.ReplayAll()
+
+        formData = {'method': 'UpdateGroup',
+                    'id': sec_group.id,
+                    'name': sec_group.name,
+                    'description': sec_group.description}
+
+        update_url = reverse('horizon:project:access_and_security:'
+                             'security_groups:update',
+                             args=[sec_group.id])
+        res = self.client.post(update_url, formData)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
 
     def test_create_security_groups_get(self):
         res = self.client.get(SG_CREATE_URL)
@@ -452,7 +489,7 @@ class SecurityGroupsViewTests(test.TestCase):
         form_data = {"action": "rules__delete__%s" % rule.id}
         req = self.factory.post(self.edit_url, form_data)
         kwargs = {'security_group_id': sec_group.id}
-        table = RulesTable(req, sec_group.rules, **kwargs)
+        table = tables.RulesTable(req, sec_group.rules, **kwargs)
         handled = table.maybe_handle()
         self.assertEqual(strip_absolute_base(handled['location']),
                          self.detail_url)
@@ -470,7 +507,8 @@ class SecurityGroupsViewTests(test.TestCase):
         form_data = {"action": "rules__delete__%s" % rule.id}
         req = self.factory.post(self.edit_url, form_data)
         kwargs = {'security_group_id': sec_group.id}
-        table = RulesTable(req, self.security_group_rules.list(), **kwargs)
+        table = tables.RulesTable(
+            req, self.security_group_rules.list(), **kwargs)
         handled = table.maybe_handle()
         self.assertEqual(strip_absolute_base(handled['location']),
                          self.detail_url)
@@ -484,7 +522,7 @@ class SecurityGroupsViewTests(test.TestCase):
 
         form_data = {"action": "security_groups__delete__%s" % sec_group.id}
         req = self.factory.post(INDEX_URL, form_data)
-        table = SecurityGroupsTable(req, self.security_groups.list())
+        table = tables.SecurityGroupsTable(req, self.security_groups.list())
         handled = table.maybe_handle()
         self.assertEqual(strip_absolute_base(handled['location']),
                          INDEX_URL)
@@ -501,7 +539,7 @@ class SecurityGroupsViewTests(test.TestCase):
 
         form_data = {"action": "security_groups__delete__%s" % sec_group.id}
         req = self.factory.post(INDEX_URL, form_data)
-        table = SecurityGroupsTable(req, self.security_groups.list())
+        table = tables.SecurityGroupsTable(req, self.security_groups.list())
         handled = table.maybe_handle()
 
         self.assertEqual(strip_absolute_base(handled['location']),

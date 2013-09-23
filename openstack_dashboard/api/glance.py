@@ -25,24 +25,25 @@ import logging
 import thread
 import urlparse
 
-from django.conf import settings
+from django.conf import settings  # noqa
 
 import glanceclient as glance_client
 
-from openstack_dashboard.api.base import url_for
+from openstack_dashboard.api import base
 
 
 LOG = logging.getLogger(__name__)
 
 
 def glanceclient(request):
-    o = urlparse.urlparse(url_for(request, 'image'))
+    o = urlparse.urlparse(base.url_for(request, 'image'))
     url = "://".join((o.scheme, o.netloc))
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+    cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
     LOG.debug('glanceclient connection created using token "%s" and url "%s"'
               % (request.user.token.id, url))
     return glance_client.Client('1', url, token=request.user.token.id,
-                                insecure=insecure)
+                                insecure=insecure, cacert=cacert)
 
 
 def image_delete(request, image_id):
@@ -59,7 +60,9 @@ def image_get(request, image_id):
 
 def image_list_detailed(request, marker=None, filters=None, paginate=False):
     limit = getattr(settings, 'API_RESULT_LIMIT', 1000)
-    page_size = getattr(settings, 'API_RESULT_PAGE_SIZE', 20)
+    page_size = request.session.get('horizon_pagesize',
+                                    getattr(settings, 'API_RESULT_PAGE_SIZE',
+                                            20))
 
     if paginate:
         request_size = page_size + 1

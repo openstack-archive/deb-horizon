@@ -17,7 +17,7 @@
 
 import os
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError  # noqa
 
 from horizon.test import helpers as test
 from horizon.utils import fields
@@ -189,8 +189,8 @@ class SecretKeyTests(test.TestCase):
         self.assertEqual(key, secret_key.generate_or_read_from_file(key_file))
 
         # Key file only be read/writable by user:
-        self.assertEqual(oct(os.stat(key_file).st_mode & 0777), "0600")
-        os.chmod(key_file, 0777)
+        self.assertEqual(oct(os.stat(key_file).st_mode & 0o777), "0600")
+        os.chmod(key_file, 0o777)
         self.assertRaises(secret_key.FilePermissionError,
                           secret_key.generate_or_read_from_file, key_file)
         os.remove(key_file)

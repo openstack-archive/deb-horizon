@@ -22,7 +22,7 @@ from django import shortcuts
 from django.views import generic
 
 from horizon import exceptions
-from horizon.forms.views import ADD_TO_FIELD_HEADER
+from horizon.forms.views import ADD_TO_FIELD_HEADER  # noqa
 from horizon import messages
 
 
@@ -134,7 +134,7 @@ class WorkflowView(generic.TemplateView):
         if workflow.is_valid():
             try:
                 success = workflow.finalize()
-            except:
+            except Exception:
                 success = False
                 exceptions.handle(request)
             next = self.request.REQUEST.get(workflow.redirect_param_name, None)

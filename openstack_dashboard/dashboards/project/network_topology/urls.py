@@ -19,17 +19,24 @@
 #    under the License.
 
 
-from django.conf.urls.defaults import patterns
-from django.conf.urls.defaults import url
+from django.conf.urls.defaults import patterns  # noqa
+from django.conf.urls.defaults import url  # noqa
 
-from openstack_dashboard.dashboards.project.network_topology.views \
-    import JSONView
-from openstack_dashboard.dashboards.project.network_topology.views \
-    import NetworkTopology
+from openstack_dashboard.dashboards.project.network_topology import views
 
 
 urlpatterns = patterns(
     'openstack_dashboard.dashboards.project.network_topology.views',
-    url(r'^$', NetworkTopology.as_view(), name='index'),
-    url(r'^json$', JSONView.as_view(), name='json'),
+    url(r'^$', views.NetworkTopologyView.as_view(), name='index'),
+    url(r'^router$', views.RouterView.as_view(), name='router'),
+    url(r'^instance$', views.InstanceView.as_view(), name='instance'),
+    url(r'^router/(?P<router_id>[^/]+)/$', views.RouterDetailView.as_view(),
+        name='detail'),
+    url(r'^json$', views.JSONView.as_view(), name='json'),
+    url(r'^launchinstance$', views.NTLaunchInstanceView.as_view(),
+        name='launchinstance'),
+    url(r'^createnetwork$', views.NTCreateNetworkView.as_view(),
+        name='createnetwork'),
+    url(r'^createrouter$', views.NTCreateRouterView.as_view(),
+        name='createrouter'),
 )

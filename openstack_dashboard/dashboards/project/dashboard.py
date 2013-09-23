@@ -14,7 +14,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 import horizon
 
@@ -50,11 +50,22 @@ class OrchestrationPanels(horizon.PanelGroup):
     panels = ('stacks',)
 
 
+class DatabasePanels(horizon.PanelGroup):
+    name = _("Manage Databases")
+    slug = "database"
+    panels = ('databases',
+              'database_backups',)
+
+
 class Project(horizon.Dashboard):
     name = _("Project")
     slug = "project"
     panels = (
-        BasePanels, NetworkPanels, ObjectStorePanels, OrchestrationPanels)
+        BasePanels,
+        NetworkPanels,
+        ObjectStorePanels,
+        OrchestrationPanels,
+        DatabasePanels,)
     default_panel = 'overview'
     supports_tenants = True
 

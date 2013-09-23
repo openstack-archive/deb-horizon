@@ -8,8 +8,8 @@ Views for managing Neutron Routers.
 """
 import logging
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -33,7 +33,7 @@ class CreateForm(forms.SelfHandlingForm):
             message = _('Router %s was successfully created.') % data['name']
             messages.success(request, message)
             return router
-        except:
+        except Exception:
             msg = _('Failed to create router "%s".') % data['name']
             LOG.info(msg)
             redirect = reverse(self.failure_url)

@@ -16,31 +16,43 @@
 
 import logging
 
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.http import urlencode  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
-from keystoneclient.exceptions import ClientException
+from keystoneclient import exceptions
 
 from horizon import messages
 from horizon import tables
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.admin.domains.constants \
-    import DOMAINS_CREATE_URL
-from openstack_dashboard.dashboards.admin.domains.constants \
-    import DOMAINS_INDEX_URL
-from openstack_dashboard.dashboards.admin.domains.constants \
-    import DOMAINS_UPDATE_URL
+from openstack_dashboard.dashboards.admin.domains import constants
 
 
 LOG = logging.getLogger(__name__)
 
 
+class ViewGroupsLink(tables.LinkAction):
+    name = "groups"
+    verbose_name = _("Modify Groups")
+    url = "horizon:admin:domains:update"
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, domain):
+        step = 'update_group_members'
+        base_url = reverse(self.url, args=[domain.id])
+        param = urlencode({"step": step})
+        return "?".join([base_url, param])
+
+
 class CreateDomainLink(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Domain")
-    url = DOMAINS_CREATE_URL
+    url = constants.DOMAINS_CREATE_URL
     classes = ("ajax-modal", "btn-create")
+    policy_rules = (('identity', 'identity:create_domain'),)
 
     def allowed(self, request, domain):
         return api.keystone.keystone_can_edit_domain()
@@ -49,8 +61,9 @@ class CreateDomainLink(tables.LinkAction):
 class EditDomainLink(tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit")
-    url = DOMAINS_UPDATE_URL
+    url = constants.DOMAINS_UPDATE_URL
     classes = ("ajax-modal", "btn-edit")
+    policy_rules = (('identity', 'identity:update_domain'),)
 
     def allowed(self, request, domain):
         return api.keystone.keystone_can_edit_domain()
@@ -60,6 +73,7 @@ class DeleteDomainsAction(tables.DeleteAction):
     name = "delete"
     data_type_singular = _("Domain")
     data_type_plural = _("Domains")
+    policy_rules = (('identity', 'identity:delete_domain'),)
 
     def allowed(self, request, datum):
         return api.keystone.keystone_can_edit_domain()
@@ -70,13 +84,19 @@ class DeleteDomainsAction(tables.DeleteAction):
             msg = _('Domain "%s" must be disabled before it can be deleted.') \
                 % domain.name
             messages.error(request, msg)
-            raise ClientException(409, msg)
+            raise exceptions.ClientException(409, msg)
         else:
             LOG.info('Deleting domain "%s".' % obj_id)
             api.keystone.domain_delete(request, obj_id)
 
 
 class DomainFilterAction(tables.FilterAction):
+    def allowed(self, request, datum):
+        multidomain_support = getattr(settings,
+                                      'OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT',
+                                      False)
+        return multidomain_support
+
     def filter(self, table, domains, filter_string):
         """ Naive case-insensitive search """
         q = filter_string.lower()
@@ -92,10 +112,17 @@ class DomainFilterAction(tables.FilterAction):
 class SetDomainContext(tables.Action):
     name = "set_domain_context"
     verbose_name = _("Set Domain Context")
-    url = DOMAINS_INDEX_URL
+    url = constants.DOMAINS_INDEX_URL
     preempt = True
+    policy_rules = (('identity', 'admin_required'),)
 
     def allowed(self, request, datum):
+        multidomain_support = getattr(settings,
+                                      'OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT',
+                                      False)
+        if not multidomain_support:
+            return False
+
         ctx = request.session.get("domain_context", None)
         if ctx and datum.id == ctx:
             return False
@@ -111,7 +138,7 @@ class SetDomainContext(tables.Action):
                 messages.success(request,
                                 _('Domain Context updated to Domain %s.') %
                                 domain.name)
-            except:
+            except Exception:
                 messages.error(request,
                                _('Unable to set Domain Context.'))
 
@@ -119,9 +146,10 @@ class SetDomainContext(tables.Action):
 class UnsetDomainContext(tables.Action):
     name = "clear_domain_context"
     verbose_name = _("Clear Domain Context")
-    url = DOMAINS_INDEX_URL
+    url = constants.DOMAINS_INDEX_URL
     preempt = True
     requires_input = False
+    policy_rules = (('identity', 'admin_required'),)
 
     def allowed(self, request, datum):
         ctx = request.session.get("domain_context", None)
@@ -144,6 +172,7 @@ class DomainsTable(tables.DataTable):
     class Meta:
         name = "domains"
         verbose_name = _("Domains")
-        row_actions = (SetDomainContext, EditDomainLink, DeleteDomainsAction)
+        row_actions = (SetDomainContext, ViewGroupsLink, EditDomainLink,
+                       DeleteDomainsAction)
         table_actions = (DomainFilterAction, CreateDomainLink,
                          DeleteDomainsAction, UnsetDomainContext)

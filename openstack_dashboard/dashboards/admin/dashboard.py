@@ -14,7 +14,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 import horizon
 
@@ -22,8 +22,8 @@ import horizon
 class SystemPanels(horizon.PanelGroup):
     slug = "admin"
     name = _("System Panel")
-    panels = ('overview', 'hypervisors', 'instances', 'volumes', 'flavors',
-              'images', 'networks', 'routers', 'info')
+    panels = ('overview', 'metering', 'hypervisors', 'instances', 'volumes',
+              'flavors', 'images', 'networks', 'routers', 'defaults', 'info')
 
 
 class IdentityPanels(horizon.PanelGroup):

@@ -14,15 +14,14 @@
 
 import logging
 
-from django.http import Http404
-from django.template.defaultfilters import timesince
-from django.template.defaultfilters import title
-from django.utils.translation import ugettext_lazy as _
+from django.http import Http404  # noqa
+from django.template.defaultfilters import timesince  # noqa
+from django.template.defaultfilters import title  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import messages
 from horizon import tables
-from horizon.utils.filters import parse_isotime
-from horizon.utils.filters import replace_underscores
+from horizon.utils import filters
 
 from heatclient import exc
 
@@ -68,19 +67,21 @@ class StacksUpdateRow(tables.Row):
 class StacksTable(tables.DataTable):
     STATUS_CHOICES = (
         ("Create Complete", True),
+        ("Update Complete", True),
         ("Create Failed", False),
+        ("Update Failed", False),
     )
     name = tables.Column("stack_name",
                          verbose_name=_("Stack Name"),
                          link="horizon:project:stacks:detail",)
     created = tables.Column("creation_time",
                             verbose_name=_("Created"),
-                            filters=(parse_isotime, timesince))
+                            filters=(filters.parse_isotime, timesince))
     updated = tables.Column("updated_time",
                             verbose_name=_("Updated"),
-                            filters=(parse_isotime, timesince))
+                            filters=(filters.parse_isotime, timesince))
     status = tables.Column("stack_status",
-                           filters=(title, replace_underscores),
+                           filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),
                            status=True,
                            status_choices=STATUS_CHOICES)
@@ -99,17 +100,17 @@ class StacksTable(tables.DataTable):
 
 class EventsTable(tables.DataTable):
 
-    logical_resource = tables.Column('logical_resource_id',
+    logical_resource = tables.Column('resource_name',
                                      verbose_name=_("Stack Resource"),
-                                     link=lambda d: d.logical_resource_id,)
+                                     link=lambda d: d.resource_name,)
     physical_resource = tables.Column('physical_resource_id',
                                       verbose_name=_("Resource"),
                                       link=mappings.resource_to_url)
     timestamp = tables.Column('event_time',
                               verbose_name=_("Time Since Event"),
-                              filters=(parse_isotime, timesince))
+                              filters=(filters.parse_isotime, timesince))
     status = tables.Column("resource_status",
-                           filters=(title, replace_underscores),
+                           filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),)
 
     statusreason = tables.Column("resource_status_reason",
@@ -143,9 +144,9 @@ class ResourcesTable(tables.DataTable):
         ("Create Failed", False),
     )
 
-    logical_resource = tables.Column('logical_resource_id',
+    logical_resource = tables.Column('resource_name',
                                      verbose_name=_("Stack Resource"),
-                                     link=lambda d: d.logical_resource_id)
+                                     link=lambda d: d.resource_name)
     physical_resource = tables.Column('physical_resource_id',
                                      verbose_name=_("Resource"),
                                      link=mappings.resource_to_url)
@@ -153,9 +154,9 @@ class ResourcesTable(tables.DataTable):
                            verbose_name=_("Stack Resource Type"),)
     updated_time = tables.Column('updated_time',
                               verbose_name=_("Date Updated"),
-                              filters=(parse_isotime, timesince))
+                              filters=(filters.parse_isotime, timesince))
     status = tables.Column("resource_status",
-                           filters=(title, replace_underscores),
+                           filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),
                            status=True,
                            status_choices=STATUS_CHOICES)
@@ -170,7 +171,7 @@ class ResourcesTable(tables.DataTable):
         self.stack = kwargs['stack']
 
     def get_object_id(self, datum):
-        return datum.logical_resource_id
+        return datum.resource_name
 
     class Meta:
         name = "resources"

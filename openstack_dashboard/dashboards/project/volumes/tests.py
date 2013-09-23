@@ -18,16 +18,18 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.conf import settings  # noqa
+from django.core.urlresolvers import reverse  # noqa
 from django.forms import widgets
 from django import http
 
-from mox import IsA
+from mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
+from openstack_dashboard.dashboards.project.volumes import tables
 from openstack_dashboard.test import helpers as test
+from openstack_dashboard.usage import quotas
 
 
 class VolumeViewTests(test.TestCase):
@@ -506,127 +508,14 @@ class VolumeViewTests(test.TestCase):
                           ' volumes.']
         self.assertEqual(res.context['form'].errors['__all__'], expected_error)
 
-    @test.create_stubs({cinder: ('volume_create',
-                                 'volume_snapshot_list',
-                                 'volume_type_list',
-                                 'tenant_absolute_limits',
-                                 'volume_list',),
-                        api.glance: ('image_list_detailed',)})
-    def test_create_volume_encrypted(self):
-        volume = self.volumes.first()
-        volume_type = self.volume_types.first()
-        usage_limit = {'maxTotalVolumeGigabytes': 250,
-                 'gigabytesUsed': 20,
-                 'maxTotalVolumes': 6}
-        formData = {'name': u'An Encrypted Volume',
-                    'description': u'This volume has metadata for encryption.',
-                    'method': u'CreateForm',
-                    'type': volume_type.name,
-                    'size': 50,
-                    'snapshot_source': '',
-                    'encryption': u'LUKS'}
-
-        # check normal operation with can_encrypt_volumes = true
-        PREV = settings.OPENSTACK_HYPERVISOR_FEATURES['can_encrypt_volumes']
-        settings.OPENSTACK_HYPERVISOR_FEATURES['can_encrypt_volumes'] = True
-
-        cinder.volume_type_list(IsA(http.HttpRequest)).\
-                                AndReturn(self.volume_types.list())
-        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
-                                AndReturn(usage_limit)
-        cinder.volume_list(IsA(http.HttpRequest)).\
-                                AndReturn(self.volumes.list())
-        cinder.volume_snapshot_list(IsA(http.HttpRequest)).\
-                                    AndReturn(self.volume_snapshots.list())
-        api.glance.image_list_detailed(IsA(http.HttpRequest),
-                                       filters={'is_public': True,
-                                                'status': 'active'}) \
-                  .AndReturn([self.images.list(), False])
-        api.glance.image_list_detailed(IsA(http.HttpRequest),
-                            filters={'property-owner_id': self.tenant.id,
-                                     'status': 'active'}) \
-                  .AndReturn([[], False])
-        cinder.volume_create(IsA(http.HttpRequest),
-                             formData['size'],
-                             formData['name'],
-                             formData['description'],
-                             formData['type'],
-                             metadata={'encryption': formData['encryption']},
-                             snapshot_id=None,
-                             image_id=None).AndReturn(volume)
-
-        self.mox.ReplayAll()
-
-        url = reverse('horizon:project:volumes:create')
-        res = self.client.post(url, formData)
-
-        redirect_url = reverse('horizon:project:volumes:index')
-        self.assertRedirectsNoFollow(res, redirect_url)
-
-        settings.OPENSTACK_HYPERVISOR_FEATURES['can_encrypt_volumes'] = PREV
-
-    @test.create_stubs({cinder: ('volume_snapshot_list', 'volume_type_list',
-                                 'tenant_absolute_limits', 'volume_list',),
-                        api.glance: ('image_list_detailed',)})
-    def test_create_volume_cannot_encrypt(self):
-        volume = self.volumes.first()
-        volume_type = self.volume_types.first()
-        usage = {'gigabytes': {'available': 250}, 'volumes': {'available': 6}}
-        formData = {'name': u'An Encrypted Volume',
-                    'description': u'This volume has metadata for encryption.',
-                    'method': u'CreateForm',
-                    'type': volume_type.name,
-                    'size': 50,
-                    'snapshot_source': '',
-                    'encryption': u'LUKS'}
-
-        # check that widget is hidden if can_encrypt_volumes = false
-        PREV = settings.OPENSTACK_HYPERVISOR_FEATURES['can_encrypt_volumes']
-        settings.OPENSTACK_HYPERVISOR_FEATURES['can_encrypt_volumes'] = False
-
-        volume = self.volumes.first()
-        volume_type = self.volume_types.first()
-        usage_limit = {'maxTotalVolumeGigabytes': 250,
-                 'gigabytesUsed': 20,
-                 'maxTotalVolumes': 6}
-
-        cinder.volume_type_list(IsA(http.HttpRequest)).\
-                                AndReturn(self.volume_types.list())
-        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
-                                AndReturn(usage_limit)
-        cinder.volume_list(IsA(http.HttpRequest)).\
-                                AndReturn(self.volumes.list())
-        cinder.volume_snapshot_list(IsA(http.HttpRequest)).\
-                                    AndReturn(self.volume_snapshots.list())
-        api.glance.image_list_detailed(IsA(http.HttpRequest),
-                                       filters={'is_public': True,
-                                                'status': 'active'}) \
-                  .AndReturn([self.images.list(), False])
-        api.glance.image_list_detailed(IsA(http.HttpRequest),
-                            filters={'property-owner_id': self.tenant.id,
-                                     'status': 'active'}) \
-                  .AndReturn([[], False])
-
-        self.mox.ReplayAll()
-
-        url = reverse('horizon:project:volumes:create')
-        res = self.client.get(url)
-
-        # Assert the encryption field is hidden.
-        form = res.context['form']
-        self.assertTrue(isinstance(form.fields['encryption'].widget,
-                                   widgets.HiddenInput))
-
-        settings.OPENSTACK_HYPERVISOR_FEATURES['can_encrypt_volumes'] = PREV
-
     @test.create_stubs({cinder: ('volume_list',
                                  'volume_delete',),
-                        api.nova: ('server_list',)})
+                        api.nova: ('server_list',),
+                        quotas: ('tenant_quota_usages',)})
     def test_delete_volume(self):
         volume = self.volumes.first()
         formData = {'action':
                     'volumes__delete__%s' % volume.id}
-
         cinder.volume_list(IsA(http.HttpRequest), search_opts=None).\
                            AndReturn(self.volumes.list())
         cinder.volume_delete(IsA(http.HttpRequest), volume.id)
@@ -636,6 +525,8 @@ class VolumeViewTests(test.TestCase):
                            AndReturn(self.volumes.list())
         api.nova.server_list(IsA(http.HttpRequest), search_opts=None).\
                              AndReturn([self.servers.list(), False])
+        quotas.tenant_quota_usages(IsA(http.HttpRequest)).MultipleTimes().\
+                                   AndReturn(self.quota_usages.first())
 
         self.mox.ReplayAll()
 
@@ -646,7 +537,8 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_list',
                                  'volume_delete',),
-                        api.nova: ('server_list',)})
+                        api.nova: ('server_list',),
+                        quotas: ('tenant_quota_usages',)})
     def test_delete_volume_error_existing_snapshot(self):
         volume = self.volumes.first()
         formData = {'action':
@@ -664,6 +556,8 @@ class VolumeViewTests(test.TestCase):
                            AndReturn(self.volumes.list())
         api.nova.server_list(IsA(http.HttpRequest), search_opts=None).\
                              AndReturn([self.servers.list(), False])
+        quotas.tenant_quota_usages(IsA(http.HttpRequest)).MultipleTimes().\
+                                   AndReturn(self.quota_usages.first())
 
         self.mox.ReplayAll()
 
@@ -718,7 +612,8 @@ class VolumeViewTests(test.TestCase):
         settings.OPENSTACK_HYPERVISOR_FEATURES['can_set_mount_point'] = PREV
 
     @test.create_stubs({cinder: ('volume_get',),
-                        api.nova: ('server_get', 'server_list',)})
+                        api.nova: ('server_get', 'server_list',),
+                        quotas: ('tenant_quota_usages',)})
     def test_edit_attachments_attached_volume(self):
         servers = [s for s in self.servers.list()
                    if s.tenant_id == self.request.user.tenant_id]
@@ -743,6 +638,40 @@ class VolumeViewTests(test.TestCase):
         self.assertEqual(res.context['form'].fields['instance']._choices[1][0],
                          server.id)
         self.assertEqual(res.status_code, 200)
+
+    @test.create_stubs({cinder: ('volume_list',),
+                        api.nova: ('server_list',),
+                        quotas: ('tenant_quota_usages',)})
+    def test_create_button_disabled_when_quota_exceeded(self):
+        quota_usages = self.quota_usages.first()
+        quota_usages['volumes']['available'] = 0
+
+        cinder.volume_list(IsA(http.HttpRequest), search_opts=None)\
+              .AndReturn(self.volumes.list())
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=None)\
+                .AndReturn([self.servers.list(), False])
+        quotas.tenant_quota_usages(IsA(http.HttpRequest))\
+              .MultipleTimes().AndReturn(quota_usages)
+
+        self.mox.ReplayAll()
+
+        res = self.client.get(reverse('horizon:project:volumes:index'))
+        self.assertTemplateUsed(res, 'project/volumes/index.html')
+
+        volumes = res.context['volumes_table'].data
+        self.assertItemsEqual(volumes, self.volumes.list())
+
+        create_link = tables.CreateVolume()
+        url = create_link.get_link_url()
+        classes = list(create_link.get_default_classes())\
+                    + list(create_link.classes)
+        link_name = "%s (%s)" % (unicode(create_link.verbose_name),
+                                 "Quota exceeded")
+        expected_string = "<a href='%s' title='%s'  class='%s disabled' "\
+                          "id='volumes__action_create'>%s</a>" \
+                            % (url, link_name, " ".join(classes), link_name)
+        self.assertContains(res, expected_string, html=True,
+                            msg_prefix="The create button is not disabled")
 
     @test.create_stubs({cinder: ('volume_get',),
                         api.nova: ('server_get',)})

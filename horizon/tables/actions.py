@@ -14,15 +14,15 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from collections import defaultdict
+from collections import defaultdict  # noqa
 import logging
 import new
 
-from django.conf import settings
+from django.conf import settings  # noqa
 from django.core import urlresolvers
 from django import shortcuts
-from django.utils.functional import Promise
-from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import Promise  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import messages
@@ -43,6 +43,7 @@ class BaseAction(html.HTMLElement):
     handles_multiple = False
     requires_input = False
     preempt = False
+    policy_rules = None
 
     def __init__(self, datum=None):
         super(BaseAction, self).__init__()
@@ -63,6 +64,14 @@ class BaseAction(html.HTMLElement):
                     return False
         return True
 
+    def get_policy_target(self, request, datum):
+        """ Provide the target for a policy request.
+
+        This method is meant to be overridden to return target details when
+        one of the policy checks requires them.  E.g., {"user_id": datum.id}
+        """
+        return {}
+
     def allowed(self, request, datum):
         """ Determine whether this action is allowed for the current request.
 
@@ -71,6 +80,12 @@ class BaseAction(html.HTMLElement):
         return True
 
     def _allowed(self, request, datum):
+        policy_check = getattr(settings, "POLICY_CHECK_FUNCTION", None)
+
+        if policy_check and self.policy_rules:
+            target = self.get_policy_target(request, datum)
+            return (policy_check(self.policy_rules, request, target) and
+                    self.allowed(request, datum))
         return self.allowed(request, datum)
 
     def update(self, request, datum):
@@ -155,6 +170,22 @@ class Action(BaseAction):
 
         Default to be an empty list (``[]``). When set to empty, the action
         will accept any kind of data.
+
+    .. attribute:: policy_rules
+
+        list of scope and rule tuples to do policy checks on, the
+        composition of which is (scope, rule)
+
+            scope: service type managing the policy for action
+            rule: string representing the action to be checked
+
+            for a policy that requires a single rule check:
+                policy_rules should look like
+                    "(("compute", "compute:create_instance"),)"
+            for a policy that requires multiple rule checks:
+                rules should look like
+                    "(("identity", "identity:list_users"),
+                      ("identity", "identity:list_roles"))"
 
     At least one of the following methods must be defined:
 
@@ -426,12 +457,12 @@ class FixedFilterAction(FilterAction):
         """Returns a list of dictionaries describing the fixed buttons
         to use for filtering.
 
-        Each list item should be a dict with the keys:
-            text:  Text to display on the button
-            icon:  Icon class for icon element (inserted before text).
-            value: Value returned when the button is clicked.
-                   This value is passed to ``filter()`` as
-                   ``filter_string``.
+        Each list item should be a dict with the following keys:
+
+        * ``text``: Text to display on the button
+        * ``icon``: Icon class for icon element (inserted before text).
+        * ``value``: Value returned when the button is clicked. This value is
+          passed to ``filter()`` as ``filter_string``.
         """
         raise NotImplementedError("The get_fixed_buttons method has "
                                   "not been implemented by %s." %

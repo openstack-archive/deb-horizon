@@ -23,38 +23,36 @@ Views for managing instances.
 """
 import logging
 
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
 
 from openstack_dashboard import api
-from openstack_dashboard.utils.filters import get_int_or_uuid
+from openstack_dashboard.utils import filters
 
 from openstack_dashboard.dashboards.project.access_and_security.\
-    security_groups.forms import AddRule
+    security_groups import forms as project_forms
 from openstack_dashboard.dashboards.project.access_and_security.\
-    security_groups.forms import CreateGroup
-from openstack_dashboard.dashboards.project.access_and_security.\
-    security_groups.tables import RulesTable
+    security_groups import tables as project_tables
 
 
 LOG = logging.getLogger(__name__)
 
 
 class DetailView(tables.DataTableView):
-    table_class = RulesTable
+    table_class = project_tables.RulesTable
     template_name = 'project/access_and_security/security_groups/detail.html'
 
     def _get_data(self):
         if not hasattr(self, '_sg'):
-            sg_id = get_int_or_uuid(self.kwargs['security_group_id'])
+            sg_id = filters.get_int_or_uuid(self.kwargs['security_group_id'])
             try:
                 self._sg = api.network.security_group_get(self.request, sg_id)
-            except:
+            except Exception:
                 redirect = reverse('horizon:project:access_and_security:index')
                 exceptions.handle(self.request,
                                   _('Unable to retrieve security group.'),
@@ -70,8 +68,37 @@ class DetailView(tables.DataTableView):
         return context
 
 
+class UpdateView(forms.ModalFormView):
+    form_class = project_forms.UpdateGroup
+    template_name = 'project/access_and_security/security_groups/update.html'
+    success_url = reverse_lazy('horizon:project:access_and_security:index')
+
+    def get_object(self):
+        if not hasattr(self, "_object"):
+            sg_id = filters.get_int_or_uuid(self.kwargs['security_group_id'])
+            try:
+                self._object = api.network.security_group_get(self.request,
+                                                              sg_id)
+            except Exception:
+                msg = _('Unable to retrieve security group.')
+                url = reverse('horizon:project:access_and_security:index')
+                exceptions.handle(self.request, msg, redirect=url)
+        return self._object
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateView, self).get_context_data(**kwargs)
+        context["security_group"] = self.get_object()
+        return context
+
+    def get_initial(self):
+        security_group = self.get_object()
+        return {'id': self.kwargs['security_group_id'],
+                'name': security_group.name,
+                'description': security_group.description}
+
+
 class AddRuleView(forms.ModalFormView):
-    form_class = AddRule
+    form_class = project_forms.AddRule
     template_name = 'project/access_and_security/security_groups/add_rule.html'
 
     def get_success_url(self):
@@ -92,14 +119,15 @@ class AddRuleView(forms.ModalFormView):
 
         try:
             groups = api.network.security_group_list(self.request)
-        except:
+        except Exception:
             groups = []
             exceptions.handle(self.request,
                               _("Unable to retrieve security groups."))
 
         security_groups = []
         for group in groups:
-            if group.id == get_int_or_uuid(self.kwargs['security_group_id']):
+            if group.id == filters.get_int_or_uuid(
+                                self.kwargs['security_group_id']):
                 security_groups.append((group.id,
                                         _("%s (current)") % group.name))
             else:
@@ -109,6 +137,6 @@ class AddRuleView(forms.ModalFormView):
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreateGroup
+    form_class = project_forms.CreateGroup
     template_name = 'project/access_and_security/security_groups/create.html'
     success_url = reverse_lazy('horizon:project:access_and_security:index')

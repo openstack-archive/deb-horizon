@@ -16,8 +16,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -65,7 +65,7 @@ class CreatePort(forms.SelfHandlingForm):
             LOG.debug(msg)
             messages.success(request, msg)
             return port
-        except:
+        except Exception:
             msg = _('Failed to create a port for network %s') \
                   % data['network_id']
             LOG.info(msg)

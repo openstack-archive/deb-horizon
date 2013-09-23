@@ -33,17 +33,6 @@ horizon.instances = {
     });
   },
 
-  disable_launch_button: function() {
-    var launch_button = "#instances__action_launch";
-
-    $(launch_button).click(function(e) {
-      if ($(launch_button).hasClass("disabled")) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    });
-  },
-
   /*
    * Gets the html select element associated with a given
    * network id for network_id.
@@ -167,9 +156,6 @@ horizon.addInitFunction(function () {
     evt.preventDefault();
   });
 
-  // Disable the launch button if required
-  horizon.instances.disable_launch_button();
-
   /* Launch instance workflow */
 
   // Handle field toggles for the Launch Instance source type field
@@ -177,13 +163,31 @@ horizon.addInitFunction(function () {
     var $this = $(field),
         base_type = $this.val();
 
-    $this.find("option").each(function () {
-      if (this.value != base_type) {
-        $("#id_" + this.value).closest(".control-group").hide();
-      } else {
-        $("#id_" + this.value).closest(".control-group").show();
-      }
-    });
+    $this.closest(".control-group").nextAll().hide();
+
+    switch(base_type) {
+      case "image_id":
+        $("#id_image_id").closest(".control-group").show();
+        break;
+
+      case "instance_snapshot_id":
+        $("#id_instance_snapshot_id").closest(".control-group").show();
+        break;
+
+      case "volume_id":
+        $("#id_volume_id").closest(".control-group").show();
+        break;
+
+      case "volume_image_id":
+        $("#id_image_id, #id_volume_size, #id_device_name, , #id_delete_on_terminate")
+          .closest(".control-group").show();
+        break;
+
+      case "volume_snapshot_id":
+        $("#id_volume_snapshot_id, #id_device_name, #id_delete_on_terminate")
+          .closest(".control-group").show();
+        break;
+    }
   }
 
   $(document).on('change', '.workflow #id_source_type', function (evt) {
@@ -195,32 +199,18 @@ horizon.addInitFunction(function () {
     $(modal).find("#id_source_type").change();
   });
 
+
   // Handle field toggles for the Launch Instance volume type field
-  function update_launch_volume_displayed_fields (field) {
+  function update_image_id_fields (field) {
     var $this = $(field),
-        volume_opt = $this.val(),
-        $extra_fields = $("#id_delete_on_terminate, #id_device_name");
-
-    $this.find("option").each(function () {
-      if (this.value != volume_opt) {
-        $("#id_" + this.value).closest(".control-group").hide();
-      } else {
-        $("#id_" + this.value).closest(".control-group").show();
-      }
-    });
-
-    if (volume_opt === "volume_id" || volume_opt === "volume_snapshot_id") {
-      $extra_fields.closest(".control-group").show();
-    } else {
-      $extra_fields.closest(".control-group").hide();
-    }
+        volume_opt = $this.val();
+    var $option = $this.find("option:selected");
+    var $form = $this.closest('form');
+    var $volSize = $form.find('input#id_volume_size');
+    $volSize.val($option.data("volume_size"));
   }
-  $(document).on('change', '.workflow #id_volume_type', function (evt) {
-    update_launch_volume_displayed_fields(this);
-  });
 
-  $('.workflow #id_volume_type').change();
-  horizon.modals.addModalInitFunction(function (modal) {
-    $(modal).find("#id_volume_type").change();
+  $(document).on('change', '.workflow #id_image_id', function (evt) {
+    update_image_id_fields(this);
   });
 });

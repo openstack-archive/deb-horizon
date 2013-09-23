@@ -18,18 +18,19 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from functools import wraps
+from functools import wraps  # noqa
 import os
 
-from django.conf import settings
-from django.contrib.auth.middleware import AuthenticationMiddleware
-from django.contrib.messages.storage import default_storage
+from django.conf import settings  # noqa
+from django.contrib.auth.middleware import AuthenticationMiddleware  # noqa
+from django.contrib.messages.storage import default_storage  # noqa
 from django.core.handlers import wsgi
 from django import http
-from django.test.client import RequestFactory
-from django.utils.importlib import import_module
+from django.test.client import RequestFactory  # noqa
+from django.utils.importlib import import_module  # noqa
 from django.utils import unittest
 
+from ceilometerclient.v2 import client as ceilometer_client
 from cinderclient import client as cinder_client
 import glanceclient
 from heatclient import client as heat_client
@@ -37,6 +38,7 @@ from keystoneclient.v2_0 import client as keystone_client
 from neutronclient.v2_0 import client as neutron_client
 from novaclient.v1_1 import client as nova_client
 from swiftclient import client as swift_client
+from troveclient import client as trove_client
 
 import httplib2
 import mox
@@ -49,7 +51,7 @@ from horizon.test import helpers as horizon_helpers
 
 from openstack_dashboard import api
 from openstack_dashboard import context_processors
-from openstack_dashboard.test.test_data.utils import load_test_data
+from openstack_dashboard.test.test_data import utils as test_utils
 
 
 # Makes output of failing mox tests much easier to read.
@@ -115,7 +117,7 @@ class TestCase(horizon_helpers.TestCase):
       * Several handy additional assertion methods.
     """
     def setUp(self):
-        load_test_data(self)
+        test_utils.load_test_data(self)
         self.mox = mox.Mox()
         self.factory = RequestFactoryWithMessages()
         self.context = {'authorized_tenants': self.tenants.list()}
@@ -245,6 +247,7 @@ class APITestCase(TestCase):
     """
     def setUp(self):
         super(APITestCase, self).setUp()
+        utils.patch_middleware_get_user()
 
         def fake_keystoneclient(request, admin=False):
             """
@@ -261,6 +264,8 @@ class APITestCase(TestCase):
         self._original_neutronclient = api.neutron.neutronclient
         self._original_cinderclient = api.cinder.cinderclient
         self._original_heatclient = api.heat.heatclient
+        self._original_ceilometerclient = api.ceilometer.ceilometerclient
+        self._original_troveclient = api.trove.troveclient
 
         # Replace the clients with our stubs.
         api.glance.glanceclient = lambda request: self.stub_glanceclient()
@@ -269,6 +274,9 @@ class APITestCase(TestCase):
         api.neutron.neutronclient = lambda request: self.stub_neutronclient()
         api.cinder.cinderclient = lambda request: self.stub_cinderclient()
         api.heat.heatclient = lambda request: self.stub_heatclient()
+        api.ceilometer.ceilometerclient = lambda request: \
+            self.stub_ceilometerclient()
+        api.trove.troveclient = lambda request: self.stub_troveclient()
 
     def tearDown(self):
         super(APITestCase, self).tearDown()
@@ -278,6 +286,8 @@ class APITestCase(TestCase):
         api.neutron.neutronclient = self._original_neutronclient
         api.cinder.cinderclient = self._original_cinderclient
         api.heat.heatclient = self._original_heatclient
+        api.ceilometer.ceilometerclient = self._original_ceilometerclient
+        api.trove.troveclient = self._original_troveclient
 
     def stub_novaclient(self):
         if not hasattr(self, "novaclient"):
@@ -324,6 +334,7 @@ class APITestCase(TestCase):
                                         None,
                                         preauthtoken=mox.IgnoreArg(),
                                         preauthurl=mox.IgnoreArg(),
+                                        cacert=None,
                                         auth_version="2.0") \
                             .AndReturn(self.swiftclient)
                 expected_calls -= 1
@@ -335,6 +346,19 @@ class APITestCase(TestCase):
             self.heatclient = self.mox.CreateMock(heat_client.Client)
         return self.heatclient
 
+    def stub_ceilometerclient(self):
+        if not hasattr(self, "ceilometerclient"):
+            self.mox.StubOutWithMock(ceilometer_client, 'Client')
+            self.ceilometerclient = self.mox.\
+                CreateMock(ceilometer_client.Client)
+        return self.ceilometerclient
+
+    def stub_troveclient(self):
+        if not hasattr(self, "troveclient"):
+            self.mox.StubOutWithMock(trove_client, 'Client')
+            self.troveclient = self.mox.CreateMock(trove_client.Client)
+        return self.troveclient
+
 
 @unittest.skipUnless(os.environ.get('WITH_SELENIUM', False),
                      "The WITH_SELENIUM env variable is not set.")
@@ -343,7 +367,7 @@ class SeleniumTestCase(horizon_helpers.SeleniumTestCase):
     def setUp(self):
         super(SeleniumTestCase, self).setUp()
 
-        load_test_data(self)
+        test_utils.load_test_data(self)
         self.mox = mox.Mox()
 
         self._real_get_user = utils.get_user

@@ -19,9 +19,9 @@
 #    under the License.
 
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -29,16 +29,17 @@ from horizon import messages
 from horizon import workflows
 
 from openstack_dashboard import api
-from openstack_dashboard.api.base import is_service_enabled
+from openstack_dashboard.api import base
 from openstack_dashboard.api import cinder
+from openstack_dashboard.api import keystone
 from openstack_dashboard.api import nova
-from openstack_dashboard.usage.quotas import CINDER_QUOTA_FIELDS
-from openstack_dashboard.usage.quotas import get_disabled_quotas
-from openstack_dashboard.usage.quotas import NOVA_QUOTA_FIELDS
-from openstack_dashboard.usage.quotas import QUOTA_FIELDS
+from openstack_dashboard.usage import quotas
 
 INDEX_URL = "horizon:admin:projects:index"
 ADD_USER_URL = "horizon:admin:projects:create_user"
+PROJECT_GROUP_ENABLED = keystone.VERSIONS.active >= 3
+PROJECT_USER_MEMBER_SLUG = "update_members"
+PROJECT_GROUP_MEMBER_SLUG = "update_group_members"
 
 
 class UpdateProjectQuotaAction(workflows.Action):
@@ -62,11 +63,18 @@ class UpdateProjectQuotaAction(workflows.Action):
     security_group_rules = forms.IntegerField(min_value=-1,
                                               label=_("Security Group Rules"))
 
+    # Neutron
+    floatingip = forms.IntegerField(min_value=-1, label=_("Floating IPs"))
+    network = forms.IntegerField(min_value=-1, label=_("Networks"))
+    port = forms.IntegerField(min_value=-1, label=_("Ports"))
+    router = forms.IntegerField(min_value=-1, label=_("Routers"))
+    subnet = forms.IntegerField(min_value=-1, label=_("Subnets"))
+
     def __init__(self, request, *args, **kwargs):
         super(UpdateProjectQuotaAction, self).__init__(request,
                                                        *args,
                                                        **kwargs)
-        disabled_quotas = get_disabled_quotas(request)
+        disabled_quotas = quotas.get_disabled_quotas(request)
         for field in disabled_quotas:
             if field in self.fields:
                 self.fields[field].required = False
@@ -82,10 +90,17 @@ class UpdateProjectQuotaAction(workflows.Action):
 class UpdateProjectQuota(workflows.Step):
     action_class = UpdateProjectQuotaAction
     depends_on = ("project_id",)
-    contributes = QUOTA_FIELDS
+    contributes = quotas.QUOTA_FIELDS
 
 
 class CreateProjectInfoAction(workflows.Action):
+    # Hide the domain_id and domain_name by default
+    domain_id = forms.CharField(label=_("Domain ID"),
+                                required=False,
+                                widget=forms.HiddenInput())
+    domain_name = forms.CharField(label=_("Domain Name"),
+                                  required=False,
+                                  widget=forms.HiddenInput())
     name = forms.CharField(label=_("Name"))
     description = forms.CharField(widget=forms.widgets.Textarea(),
                                   label=_("Description"),
@@ -93,6 +108,16 @@ class CreateProjectInfoAction(workflows.Action):
     enabled = forms.BooleanField(label=_("Enabled"),
                                  required=False,
                                  initial=True)
+
+    def __init__(self, request, *args, **kwargs):
+        super(CreateProjectInfoAction, self).__init__(request,
+                                                      *args,
+                                                      **kwargs)
+        # For keystone V3, display the two fields in read-only
+        if keystone.VERSIONS.active >= 3:
+            readonlyInput = forms.TextInput(attrs={'readonly': 'readonly'})
+            self.fields["domain_id"].widget = readonlyInput
+            self.fields["domain_name"].widget = readonlyInput
 
     class Meta:
         name = _("Project Info")
@@ -102,23 +127,25 @@ class CreateProjectInfoAction(workflows.Action):
 
 class CreateProjectInfo(workflows.Step):
     action_class = CreateProjectInfoAction
-    contributes = ("project_id",
+    contributes = ("domain_id",
+                   "domain_name",
+                   "project_id",
                    "name",
                    "description",
                    "enabled")
 
 
-class UpdateProjectMembersAction(workflows.Action):
-    default_role = forms.CharField(required=False)
-
+class UpdateProjectMembersAction(workflows.MembershipAction):
     def __init__(self, request, *args, **kwargs):
         super(UpdateProjectMembersAction, self).__init__(request,
                                                          *args,
                                                          **kwargs)
         err_msg = _('Unable to retrieve user list. Please try again later.')
+        # Use the domain_id from the project
+        domain_id = self.initial.get("domain_id", None)
         project_id = ''
-        if 'project_id' in args[0]:
-            project_id = args[0]['project_id']
+        if 'project_id' in self.initial:
+            project_id = self.initial['project_id']
 
         # Get the default role
         try:
@@ -130,19 +157,20 @@ class UpdateProjectMembersAction(workflows.Action):
                 msg = _('Could not find default role "%s" in Keystone') % \
                         default
                 raise exceptions.NotFound(msg)
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               err_msg,
                               redirect=reverse(INDEX_URL))
-        self.fields['default_role'].initial = default_role.id
+        default_role_name = self.get_default_role_field_name()
+        self.fields[default_role_name] = forms.CharField(required=False)
+        self.fields[default_role_name].initial = default_role.id
 
         # Get list of available users
         all_users = []
-        domain_context = request.session.get('domain_context', None)
         try:
             all_users = api.keystone.user_list(request,
-                                               domain=domain_context)
-        except:
+                                               domain=domain_id)
+        except Exception:
             exceptions.handle(request, err_msg)
         users_list = [(user.id, user.name) for user in all_users]
 
@@ -150,12 +178,12 @@ class UpdateProjectMembersAction(workflows.Action):
         role_list = []
         try:
             role_list = api.keystone.role_list(request)
-        except:
+        except Exception:
             exceptions.handle(request,
                               err_msg,
                               redirect=reverse(INDEX_URL))
         for role in role_list:
-            field_name = "role_" + role.id
+            field_name = self.get_member_field_name(role.id)
             label = _(role.name)
             self.fields[field_name] = forms.MultipleChoiceField(required=False,
                                                                 label=label)
@@ -169,16 +197,17 @@ class UpdateProjectMembersAction(workflows.Action):
                     roles = api.keystone.roles_for_user(self.request,
                                                         user.id,
                                                         project_id)
-                except:
+                except Exception:
                     exceptions.handle(request,
                                       err_msg,
                                       redirect=reverse(INDEX_URL))
                 for role in roles:
-                    self.fields["role_" + role.id].initial.append(user.id)
+                    field_name = self.get_member_field_name(role.id)
+                    self.fields[field_name].initial.append(user.id)
 
     class Meta:
         name = _("Project Members")
-        slug = "update_members"
+        slug = PROJECT_USER_MEMBER_SLUG
 
 
 class UpdateProjectMembers(workflows.UpdateMembersStep):
@@ -192,13 +221,110 @@ class UpdateProjectMembers(workflows.UpdateMembersStep):
         if data:
             try:
                 roles = api.keystone.role_list(self.workflow.request)
-            except:
+            except Exception:
                 exceptions.handle(self.workflow.request,
                                   _('Unable to retrieve user list.'))
 
             post = self.workflow.request.POST
             for role in roles:
-                field = "role_" + role.id
+                field = self.get_member_field_name(role.id)
+                context[field] = post.getlist(field)
+        return context
+
+
+class UpdateProjectGroupsAction(workflows.MembershipAction):
+    def __init__(self, request, *args, **kwargs):
+        super(UpdateProjectGroupsAction, self).__init__(request,
+                                                        *args,
+                                                        **kwargs)
+        err_msg = _('Unable to retrieve group list. Please try again later.')
+        # Use the domain_id from the project
+        domain_id = self.initial.get("domain_id", None)
+        project_id = ''
+        if 'project_id' in self.initial:
+            project_id = self.initial['project_id']
+
+        # Get the default role
+        try:
+            default_role = api.keystone.get_default_role(self.request)
+            # Default role is necessary to add members to a project
+            if default_role is None:
+                default = getattr(settings,
+                                  "OPENSTACK_KEYSTONE_DEFAULT_ROLE", None)
+                msg = _('Could not find default role "%s" in Keystone') % \
+                        default
+                raise exceptions.NotFound(msg)
+        except Exception:
+            exceptions.handle(self.request,
+                              err_msg,
+                              redirect=reverse(INDEX_URL))
+        default_role_name = self.get_default_role_field_name()
+        self.fields[default_role_name] = forms.CharField(required=False)
+        self.fields[default_role_name].initial = default_role.id
+
+        # Get list of available groups
+        all_groups = []
+        try:
+            all_groups = api.keystone.group_list(request,
+                                                 domain=domain_id)
+        except Exception:
+            exceptions.handle(request, err_msg)
+        groups_list = [(group.id, group.name) for group in all_groups]
+
+        # Get list of roles
+        role_list = []
+        try:
+            role_list = api.keystone.role_list(request)
+        except Exception:
+            exceptions.handle(request,
+                              err_msg,
+                              redirect=reverse(INDEX_URL))
+        for role in role_list:
+            field_name = self.get_member_field_name(role.id)
+            label = _(role.name)
+            self.fields[field_name] = forms.MultipleChoiceField(required=False,
+                                                                label=label)
+            self.fields[field_name].choices = groups_list
+            self.fields[field_name].initial = []
+
+        # Figure out groups & roles
+        if project_id:
+            for group in all_groups:
+                try:
+                    roles = api.keystone.roles_for_group(self.request,
+                                                         group=group.id,
+                                                         project=project_id)
+                except Exception:
+                    exceptions.handle(request,
+                                      err_msg,
+                                      redirect=reverse(INDEX_URL))
+                for role in roles:
+                    field_name = self.get_member_field_name(role.id)
+                    self.fields[field_name].initial.append(group.id)
+
+    class Meta:
+        name = _("Project Groups")
+        slug = PROJECT_GROUP_MEMBER_SLUG
+
+
+class UpdateProjectGroups(workflows.UpdateMembersStep):
+    action_class = UpdateProjectGroupsAction
+    available_list_title = _("All Groups")
+    members_list_title = _("Project Groups")
+    no_available_text = _("No groups found.")
+    no_members_text = _("No groups.")
+
+    def contribute(self, data, context):
+        if data:
+            try:
+                roles = api.keystone.role_list(self.workflow.request)
+            except Exception:
+                exceptions.handle(self.workflow.request,
+                                  _('Unable to retrieve role list.'))
+
+            post = self.workflow.request.POST
+            for role in roles:
+                field = self.get_member_field_name(role.id)
                 context[field] = post.getlist(field)
         return context
 
@@ -214,20 +340,33 @@ class CreateProject(workflows.Workflow):
                      UpdateProjectMembers,
                      UpdateProjectQuota)
 
+    def __init__(self, request=None, context_seed=None, entry_point=None,
+                 *args, **kwargs):
+        if PROJECT_GROUP_ENABLED:
+            self.default_steps = (CreateProjectInfo,
+                                  UpdateProjectMembers,
+                                  UpdateProjectGroups,
+                                  UpdateProjectQuota)
+        super(CreateProject, self).__init__(request=request,
+                                            context_seed=context_seed,
+                                            entry_point=entry_point,
+                                            *args,
+                                            **kwargs)
+
     def format_status_message(self, message):
         return message % self.context.get('name', 'unknown project')
 
     def handle(self, request, data):
         # create the project
-        domain_context = self.request.session.get('domain_context', None)
+        domain_id = data['domain_id']
         try:
             desc = data['description']
             self.object = api.keystone.tenant_create(request,
                                                      name=data['name'],
                                                      description=desc,
                                                      enabled=data['enabled'],
-                                                     domain=domain_context)
-        except:
+                                                     domain=domain_id)
+        except Exception:
             exceptions.handle(request, ignore=True)
             return False
 
@@ -237,14 +376,16 @@ class CreateProject(workflows.Workflow):
         users_to_add = 0
         try:
             available_roles = api.keystone.role_list(request)
-
+            member_step = self.get_step(PROJECT_USER_MEMBER_SLUG)
             # count how many users are to be added
             for role in available_roles:
-                role_list = data["role_" + role.id]
+                field_name = member_step.get_member_field_name(role.id)
+                role_list = data[field_name]
                 users_to_add += len(role_list)
             # add new users to project
             for role in available_roles:
-                role_list = data["role_" + role.id]
+                field_name = member_step.get_member_field_name(role.id)
+                role_list = data[field_name]
                 users_added = 0
                 for user in role_list:
                     api.keystone.add_tenant_user_role(request,
@@ -253,23 +394,67 @@ class CreateProject(workflows.Workflow):
                                                       role=role.id)
                     users_added += 1
                 users_to_add -= users_added
-        except:
-            exceptions.handle(request, _('Failed to add %s project members '
-                                         'and set project quotas.'
-                                         % users_to_add))
+        except Exception:
+            if PROJECT_GROUP_ENABLED:
+                group_msg = _(", add project groups")
+            else:
+                group_msg = ""
+            exceptions.handle(request, _('Failed to add %(users_to_add)s '
+                                         'project members%(group_msg)s and '
+                                         'set project quotas.')
+                                      % {'users_to_add': users_to_add,
+                                         'group_msg': group_msg})
+
+        if PROJECT_GROUP_ENABLED:
+            # update project groups
+            groups_to_add = 0
+            try:
+                available_roles = api.keystone.role_list(request)
+                member_step = self.get_step(PROJECT_GROUP_MEMBER_SLUG)
+
+                # count how many groups are to be added
+                for role in available_roles:
+                    field_name = member_step.get_member_field_name(role.id)
+                    role_list = data[field_name]
+                    groups_to_add += len(role_list)
+                # add new groups to project
+                for role in available_roles:
+                    field_name = member_step.get_member_field_name(role.id)
+                    role_list = data[field_name]
+                    groups_added = 0
+                    for group in role_list:
+                        api.keystone.add_group_role(request,
+                                                    role=role.id,
+                                                    group=group,
+                                                    project=project_id)
+                        groups_added += 1
+                    groups_to_add -= groups_added
+            except Exception:
+                exceptions.handle(request, _('Failed to add %s project groups '
+                                             'and update project quotas.'
+                                             % groups_to_add))
 
         # Update the project quota.
-        nova_data = dict([(key, data[key]) for key in NOVA_QUOTA_FIELDS])
+        nova_data = dict(
+            [(key, data[key]) for key in quotas.NOVA_QUOTA_FIELDS])
         try:
             nova.tenant_quota_update(request, project_id, **nova_data)
 
-            if is_service_enabled(request, 'volume'):
+            if base.is_service_enabled(request, 'volume'):
                 cinder_data = dict([(key, data[key]) for key in
-                                    CINDER_QUOTA_FIELDS])
+                                    quotas.CINDER_QUOTA_FIELDS])
                 cinder.tenant_quota_update(request,
                                            project_id,
                                            **cinder_data)
-        except:
+
+            if api.base.is_service_enabled(request, 'network') and \
+                    api.neutron.is_quotas_extension_supported(request):
+                neutron_data = dict([(key, data[key]) for key in
+                                     quotas.NEUTRON_QUOTA_FIELDS])
+                api.neutron.tenant_quota_update(request,
+                                                project_id,
+                                                **neutron_data)
+        except Exception:
             exceptions.handle(request, _('Unable to set project quotas.'))
         return True
 
@@ -286,7 +471,9 @@ class UpdateProjectInfoAction(CreateProjectInfoAction):
 class UpdateProjectInfo(workflows.Step):
     action_class = UpdateProjectInfoAction
     depends_on = ("project_id",)
-    contributes = ("name",
+    contributes = ("domain_id",
+                   "domain_name",
+                   "name",
                    "description",
                    "enabled")
 
@@ -302,6 +489,20 @@ class UpdateProject(workflows.Workflow):
                      UpdateProjectMembers,
                      UpdateProjectQuota)
 
+    def __init__(self, request=None, context_seed=None, entry_point=None,
+                 *args, **kwargs):
+        if PROJECT_GROUP_ENABLED:
+            self.default_steps = (UpdateProjectInfo,
+                                  UpdateProjectMembers,
+                                  UpdateProjectGroups,
+                                  UpdateProjectQuota)
+
+        super(UpdateProject, self).__init__(request=request,
+                                            context_seed=context_seed,
+                                            entry_point=entry_point,
+                                            *args,
+                                            **kwargs)
+
     def format_status_message(self, message):
         return message % self.context.get('name', 'unknown project')
 
@@ -311,23 +512,28 @@ class UpdateProject(workflows.Workflow):
         # pass instead of the multi-pass thing happening now.
 
         project_id = data['project_id']
+        domain_id = ''
         # update project info
         try:
-            api.keystone.tenant_update(request,
-                                       project_id,
-                                       name=data['name'],
-                                       description=data['description'],
-                                       enabled=data['enabled'])
-        except:
+            project = api.keystone.tenant_update(
+                                            request,
+                                            project_id,
+                                            name=data['name'],
+                                            description=data['description'],
+                                            enabled=data['enabled'])
+            # Use the domain_id from the project if available
+            domain_id = getattr(project, "domain_id", None)
+        except Exception:
             exceptions.handle(request, ignore=True)
             return False
 
         # update project members
         users_to_modify = 0
+        # Project-user member step
+        member_step = self.get_step(PROJECT_USER_MEMBER_SLUG)
         try:
             # Get our role options
             available_roles = api.keystone.role_list(request)
-
             # Get the users currently associated with this project so we
             # can diff against it.
             project_members = api.keystone.user_list(request,
@@ -341,9 +547,11 @@ class UpdateProject(workflows.Workflow):
                                                             user.id,
                                                             project_id)
                 current_role_ids = [role.id for role in current_roles]
+
                 for role in available_roles:
+                    field_name = member_step.get_member_field_name(role.id)
                     # Check if the user is in the list of users with this role.
-                    if user.id in data["role_" + role.id]:
+                    if user.id in data[field_name]:
                         # Add it if necessary
                         if role.id not in current_role_ids:
                             # user role has changed
@@ -389,11 +597,13 @@ class UpdateProject(workflows.Workflow):
 
             # Grant new roles on the project.
             for role in available_roles:
+                field_name = member_step.get_member_field_name(role.id)
                 # Count how many users may be added for exception handling.
-                users_to_modify += len(data["role_" + role.id])
+                users_to_modify += len(data[field_name])
             for role in available_roles:
                 users_added = 0
-                for user_id in data["role_" + role.id]:
+                field_name = member_step.get_member_field_name(role.id)
+                for user_id in data[field_name]:
                     if not filter(lambda x: user_id == x.id, project_members):
                         api.keystone.add_tenant_user_role(request,
                                                           project=project_id,
@@ -401,27 +611,113 @@ class UpdateProject(workflows.Workflow):
                                                           role=role.id)
                     users_added += 1
                 users_to_modify -= users_added
-        except:
-            exceptions.handle(request, _('Failed to modify %s project members '
-                                         'and update project quotas.'
-                                         % users_to_modify))
+        except Exception:
+            if PROJECT_GROUP_ENABLED:
+                group_msg = _(", update project groups")
+            else:
+                group_msg = ""
+            exceptions.handle(request, _('Failed to modify %(users_to_modify)s'
+                                         ' project members%(group_msg)s and '
+                                         'update project quotas.')
+                                       % {'users_to_modify': users_to_modify,
+                                          'group_msg': group_msg})
             return True
 
+        if PROJECT_GROUP_ENABLED:
+            # update project groups
+            groups_to_modify = 0
+            member_step = self.get_step(PROJECT_GROUP_MEMBER_SLUG)
+            try:
+                # Get the groups currently associated with this project so we
+                # can diff against it.
+                project_groups = api.keystone.group_list(request,
+                                                         domain=domain_id,
+                                                         project=project_id)
+                groups_to_modify = len(project_groups)
+                for group in project_groups:
+                    # Check if there have been any changes in the roles of
+                    # Existing project members.
+                    current_roles = api.keystone.roles_for_group(
+                        self.request,
+                        group=group.id,
+                        project=project_id)
+                    current_role_ids = [role.id for role in current_roles]
+                    for role in available_roles:
+                        # Check if the group is in the list of groups with
+                        # this role.
+                        field_name = member_step.get_member_field_name(role.id)
+                        if group.id in data[field_name]:
+                            # Add it if necessary
+                            if role.id not in current_role_ids:
+                                # group role has changed
+                                api.keystone.add_group_role(
+                                    request,
+                                    role=role.id,
+                                    group=group.id,
+                                    project=project_id)
+                            else:
+                                # Group role is unchanged, so remove it from
+                                # the remaining roles list to avoid removing it
+                                # later.
+                                index = current_role_ids.index(role.id)
+                                current_role_ids.pop(index)
+
+                    # Revoke any removed roles.
+                    for id_to_delete in current_role_ids:
+                        api.keystone.remove_group_role(request,
+                                                       role=id_to_delete,
+                                                       group=group.id,
+                                                       project=project_id)
+                    groups_to_modify -= 1
+
+                # Grant new roles on the project.
+                for role in available_roles:
+                    field_name = member_step.get_member_field_name(role.id)
+                    # Count how many groups may be added for error handling.
+                    groups_to_modify += len(data[field_name])
+                for role in available_roles:
+                    groups_added = 0
+                    field_name = member_step.get_member_field_name(role.id)
+                    for group_id in data[field_name]:
+                        if not filter(lambda x: group_id == x.id,
+                                      project_groups):
+                            api.keystone.add_group_role(request,
+                                                        role=role.id,
+                                                        group=group_id,
+                                                        project=project_id)
+                        groups_added += 1
+                    groups_to_modify -= groups_added
+            except Exception:
+                exceptions.handle(request, _('Failed to modify %s project '
+                                             'members, update project groups '
+                                             'and update project quotas.'
+                                             % groups_to_modify))
+                return True
+
         # update the project quota
-        nova_data = dict([(key, data[key]) for key in NOVA_QUOTA_FIELDS])
+        nova_data = dict(
+            [(key, data[key]) for key in quotas.NOVA_QUOTA_FIELDS])
         try:
             nova.tenant_quota_update(request,
                                      project_id,
                                      **nova_data)
 
-            if is_service_enabled(request, 'volume'):
+            if base.is_service_enabled(request, 'volume'):
                 cinder_data = dict([(key, data[key]) for key in
-                                    CINDER_QUOTA_FIELDS])
+                                    quotas.CINDER_QUOTA_FIELDS])
                 cinder.tenant_quota_update(request,
                                            project_id,
                                            **cinder_data)
+
+            if api.base.is_service_enabled(request, 'network') and \
+                    api.neutron.is_quotas_extension_supported(request):
+                neutron_data = dict([(key, data[key]) for key in
+                                     quotas.NEUTRON_QUOTA_FIELDS])
+                api.neutron.tenant_quota_update(request,
+                                                project_id,
+                                                **neutron_data)
             return True
-        except:
+        except Exception:
             exceptions.handle(request, _('Modified project information and '
                                          'members, but unable to modify '
                                          'project quotas.'))

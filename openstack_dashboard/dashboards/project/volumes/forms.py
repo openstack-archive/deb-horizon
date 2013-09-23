@@ -7,26 +7,24 @@
 Views for managing volumes.
 """
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.forms import ValidationError
-from django.template.defaultfilters import filesizeformat
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.core.urlresolvers import reverse  # noqa
+from django.forms import ValidationError  # noqa
+from django.template.defaultfilters import filesizeformat  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from horizon.utils.fields import SelectWidget
-from horizon.utils.functions import bytes_to_gigabytes
-from horizon.utils.memoized import memoized
+from horizon.utils import fields
+from horizon.utils import functions
+from horizon.utils.memoized import memoized  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
 from openstack_dashboard.api import glance
-from openstack_dashboard.dashboards.project.images_and_snapshots.utils \
-    import get_available_images
-from openstack_dashboard.dashboards.project.instances.tables \
-    import ACTIVE_STATES
+from openstack_dashboard.dashboards.project.images_and_snapshots import utils
+from openstack_dashboard.dashboards.project.instances import tables
 
 
 class CreateForm(forms.SelfHandlingForm):
@@ -36,11 +34,10 @@ class CreateForm(forms.SelfHandlingForm):
     type = forms.ChoiceField(label=_("Type"),
                              required=False)
     size = forms.IntegerField(min_value=1, label=_("Size (GB)"))
-    encryption = forms.ChoiceField(label=_("Encryption"), required=False)
     volume_source_type = forms.ChoiceField(label=_("Volume Source"),
                                            required=False)
     snapshot_source = forms.ChoiceField(label=_("Use snapshot as a source"),
-                                        widget=SelectWidget(
+                                        widget=fields.SelectWidget(
                                           attrs={'class': 'snapshot-selector'},
                                           data_attrs=('size', 'display_name'),
                                           transform=lambda x:
@@ -48,7 +45,7 @@ class CreateForm(forms.SelfHandlingForm):
                                                                 x.size))),
                                         required=False)
     image_source = forms.ChoiceField(label=_("Use image as a source"),
-                                     widget=SelectWidget(
+                                     widget=fields.SelectWidget(
                                          attrs={'class': 'image-selector'},
                                          data_attrs=('size', 'name'),
                                          transform=lambda x:
@@ -64,24 +61,6 @@ class CreateForm(forms.SelfHandlingForm):
                                       [(type.name, type.name)
                                        for type in volume_types]
 
-        # Hide the volume encryption field if the hypervisor doesn't support it
-        # NOTE: as of Grizzly this is not yet supported in Nova so enabling
-        # this setting will not do anything useful
-        hypervisor_features = getattr(settings,
-                                      "OPENSTACK_HYPERVISOR_FEATURES",
-                                      {})
-        can_encrypt_volumes = hypervisor_features.get("can_encrypt_volumes",
-                                                      False)
-
-        if can_encrypt_volumes:
-            # TODO(laura-glendenning) get from api call in future
-            encryption_options = {"LUKS": "dmcrypt LUKS"}
-            self.fields['encryption'].choices = [("", "")] + \
-                [(enc, display) for enc, display in encryption_options.items()]
-        else:
-            self.fields['encryption'].widget = forms.widgets.HiddenInput()
-            self.fields['encryption'].required = False
-
         if ("snapshot_id" in request.GET):
             try:
                 snapshot = self.get_snapshot(request,
@@ -95,14 +74,14 @@ class CreateForm(forms.SelfHandlingForm):
                     orig_volume = cinder.volume_get(request,
                                                     snapshot.volume_id)
                     self.fields['type'].initial = orig_volume.volume_type
-                except:
+                except Exception:
                     pass
                 self.fields['size'].help_text = _('Volume size must be equal '
                                 'to or greater than the snapshot size (%sGB)'
                                 % snapshot.size)
                 del self.fields['image_source']
                 del self.fields['volume_source_type']
-            except:
+            except Exception:
                 exceptions.handle(request,
                                   _('Unable to load the specified snapshot.'))
         elif ('image_id' in request.GET):
@@ -111,14 +90,15 @@ class CreateForm(forms.SelfHandlingForm):
                                        request.GET["image_id"])
                 image.bytes = image.size
                 self.fields['name'].initial = image.name
-                self.fields['size'].initial = bytes_to_gigabytes(image.size)
+                self.fields['size'].initial = functions.bytes_to_gigabytes(
+                    image.size)
                 self.fields['image_source'].choices = ((image.id, image),)
                 self.fields['size'].help_text = _('Volume size must be equal '
                                 'to or greater than the image size (%s)'
                                 % filesizeformat(image.size))
                 del self.fields['snapshot_source']
                 del self.fields['volume_source_type']
-            except:
+            except Exception:
                 msg = _('Unable to load the specified image. %s')
                 exceptions.handle(request, msg % request.GET['image_id'])
         else:
@@ -134,18 +114,18 @@ class CreateForm(forms.SelfHandlingForm):
                     self.fields['snapshot_source'].choices = choices
                 else:
                     del self.fields['snapshot_source']
-            except:
+            except Exception:
                 exceptions.handle(request, _("Unable to retrieve "
                         "volume snapshots."))
 
-            images = get_available_images(request,
+            images = utils.get_available_images(request,
                                           request.user.tenant_id)
             if images:
                 source_type_choices.append(("image_source", _("Image")))
                 choices = [('', _("Choose an image"))]
                 for image in images:
                     image.bytes = image.size
-                    image.size = bytes_to_gigabytes(image.bytes)
+                    image.size = functions.bytes_to_gigabytes(image.bytes)
                     choices.append((image.id, image))
                 self.fields['image_source'].choices = choices
             else:
@@ -161,10 +141,6 @@ class CreateForm(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
-            # FIXME(johnp): cinderclient currently returns a useless
-            # error message when the quota is exceeded when trying to create
-            # a volume, so we need to check for that scenario here before we
-            # send it off to try and create.
             usages = cinder.tenant_absolute_limits(self.request)
             volumes = cinder.volume_list(self.request)
             total_size = sum([getattr(volume, 'size', 0) for volume
@@ -195,7 +171,7 @@ class CreateForm(forms.SelfHandlingForm):
                 image = self.get_image(request,
                                        data["image_source"])
                 image_id = image.id
-                image_size = bytes_to_gigabytes(image.size)
+                image_size = functions.bytes_to_gigabytes(image.size)
                 if (data['size'] < image_size):
                     error_message = _('The volume size cannot be less than '
                                       'the image size (%s)' %
@@ -219,9 +195,6 @@ class CreateForm(forms.SelfHandlingForm):
 
             metadata = {}
 
-            if data['encryption']:
-                metadata['encryption'] = data['encryption']
-
             volume = cinder.volume_create(request,
                                           data['size'],
                                           data['name'],
@@ -236,7 +209,7 @@ class CreateForm(forms.SelfHandlingForm):
         except ValidationError as e:
             self.api_error(e.messages[0])
             return False
-        except:
+        except Exception:
             exceptions.handle(request, ignore=True)
             self.api_error(_("Unable to create volume."))
             return False
@@ -282,7 +255,7 @@ class AttachForm(forms.SelfHandlingForm):
         instance_list = kwargs.get('initial', {}).get('instances', [])
         instances = []
         for instance in instance_list:
-            if instance.status in ACTIVE_STATES and \
+            if instance.status in tables.ACTIVE_STATES and \
                         not any(instance.id == att["server_id"]
                                 for att in volume.attachments):
                 instances.append((instance.id, '%s (%s)' % (instance.name,
@@ -316,7 +289,7 @@ class AttachForm(forms.SelfHandlingForm):
                                                     "dev": attach.device}
             messages.info(request, message)
             return True
-        except:
+        except Exception:
             redirect = reverse("horizon:project:volumes:index")
             exceptions.handle(request,
                               _('Unable to attach volume.'),
@@ -346,7 +319,7 @@ class CreateSnapshotForm(forms.SelfHandlingForm):
             message = _('Creating volume snapshot "%s"') % data['name']
             messages.info(request, message)
             return snapshot
-        except:
+        except Exception:
             redirect = reverse("horizon:project:images_and_snapshots:index")
             exceptions.handle(request,
                               _('Unable to create volume snapshot.'),

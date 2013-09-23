@@ -18,16 +18,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 import horizon
 
 from openstack_dashboard.dashboards.admin import dashboard
 
 
-class Quotas(horizon.Panel):
+class Info(horizon.Panel):
     name = _("System Info")
     slug = 'info'
 
 
-dashboard.Admin.register(Quotas)
+dashboard.Admin.register(Info)

@@ -20,18 +20,18 @@ import logging
 
 from django.core import urlresolvers
 from django import forms
-from django.forms.forms import NON_FIELD_ERRORS
+from django.forms.forms import NON_FIELD_ERRORS  # noqa
 from django import template
-from django.template.defaultfilters import linebreaks
-from django.template.defaultfilters import safe
-from django.template.defaultfilters import slugify
-from django.utils.encoding import force_unicode
-from django.utils.importlib import import_module
-from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import linebreaks  # noqa
+from django.template.defaultfilters import safe  # noqa
+from django.template.defaultfilters import slugify  # noqa
+from django.utils.encoding import force_unicode  # noqa
+from django.utils.importlib import import_module  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import base
 from horizon import exceptions
-from horizon.templatetags.horizon import has_permissions
+from horizon.templatetags.horizon import has_permissions  # noqa
 from horizon.utils import html
 
 
@@ -139,6 +139,7 @@ class Action(forms.Form):
                                  % self.__class__.__name__)
         self.request = request
         self._populate_choices(request, context)
+        self.required_css_class = 'required'
 
     def __unicode__(self):
         return force_unicode(self.name)
@@ -179,6 +180,20 @@ class Action(forms.Form):
         Returns ``None`` by default, effectively making it a no-op.
         """
         return None
+
+
+class MembershipAction(Action):
+    """
+    An action that allows a user to add/remove members from a group.
+
+    Extend the Action class with additional helper method for membership
+    management.
+    """
+    def get_default_role_field_name(self):
+        return "default_" + self.slug + "_role"
+
+    def get_member_field_name(self, role_id):
+        return self.slug + "_role_" + role_id
 
 
 class Step(object):
@@ -359,7 +374,7 @@ class Step(object):
                                                       workflow_context)
                 self._action = self.action_class(self.workflow.request,
                                                  context)
-            except:
+            except Exception:
                 LOG.exception("Problem instantiating action class.")
                 raise
         return self._action
@@ -431,6 +446,16 @@ class Step(object):
         """
         self.action.add_error(message)
 
+    def has_required_fields(self):
+        """
+        Returns True if action contains any required fields
+        """
+        for key in self.contributes:
+            field = self.action.fields.get(key, None)
+            if (field and field.required):
+                return True
+        return False
+
 
 class WorkflowMetaclass(type):
     def __new__(mcs, name, bases, attrs):
@@ -469,6 +494,12 @@ class UpdateMembersStep(Step):
     members_list_title = _("Members")
     no_available_text = _("None available.")
     no_members_text = _("No members.")
+
+    def get_member_field_name(self, role_id):
+        if issubclass(self.action_class, MembershipAction):
+            return self.action.get_member_field_name(role_id)
+        else:
+            return self.slug + "_role_" + role_id
 
 
 class Workflow(html.HTMLElement):
@@ -775,7 +806,7 @@ class Workflow(html.HTMLElement):
                     partial = True
                 else:
                     self.context = step.contribute(data or {}, self.context)
-            except:
+            except Exception:
                 partial = True
                 exceptions.handle(self.request)
         if not self.handle(self.request, self.context):

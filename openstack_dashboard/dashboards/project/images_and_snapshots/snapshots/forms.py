@@ -20,8 +20,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -50,7 +50,7 @@ class CreateSnapshot(forms.SelfHandlingForm):
             messages.success(request, _('Snapshot "%(name)s" created for '
                                         'instance "%(inst)s"') % vals)
             return snapshot
-        except:
+        except Exception:
             redirect = reverse("horizon:project:instances:index")
             exceptions.handle(request,
                               _('Unable to create snapshot.'),

@@ -1,13 +1,12 @@
 import logging
 
 from django.template import defaultfilters
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import messages
 from horizon import tables
 
 from openstack_dashboard import api
-
 
 LOG = logging.getLogger(__name__)
 
@@ -20,6 +19,10 @@ class CreateUserLink(tables.LinkAction):
     verbose_name = _("Create User")
     url = "horizon:admin:users:create"
     classes = ("ajax-modal", "btn-create")
+    policy_rules = (('identity', 'identity:create_grant'),
+                    ("identity", "identity:create_user"),
+                    ("identity", "identity:list_roles"),
+                    ("identity", "identity:list_projects"),)
 
     def allowed(self, request, user):
         return api.keystone.keystone_can_edit_user()
@@ -30,18 +33,29 @@ class EditUserLink(tables.LinkAction):
     verbose_name = _("Edit")
     url = "horizon:admin:users:update"
     classes = ("ajax-modal", "btn-edit")
+    policy_rules = (("identity", "identity:update_user"),
+                    ("identity", "identity:list_projects"),)
+
+    def get_policy_target(self, request, user):
+        return {"user_id": user.id}
 
     def allowed(self, request, user):
         return api.keystone.keystone_can_edit_user()
 
 
 class ToggleEnabled(tables.BatchAction):
-    name = "enable"
+    name = "toggle"
     action_present = (_("Enable"), _("Disable"))
     action_past = (_("Enabled"), _("Disabled"))
     data_type_singular = _("User")
     data_type_plural = _("Users")
-    classes = ("btn-enable",)
+    classes = ("btn-toggle",)
+    policy_rules = (("identity", "identity:update_user"),)
+
+    def get_policy_target(self, request, user=None):
+        if user:
+            return {"user_id": user.id}
+        return {}
 
     def allowed(self, request, user=None):
         if not api.keystone.keystone_can_edit_user():
@@ -78,10 +92,11 @@ class ToggleEnabled(tables.BatchAction):
 class DeleteUsersAction(tables.DeleteAction):
     data_type_singular = _("User")
     data_type_plural = _("Users")
+    policy_rules = (("identity", "identity:delete_user"),)
 
     def allowed(self, request, datum):
         if not api.keystone.keystone_can_edit_user() or \
-                (datum and datum.id == request.user.id):
+               (datum and datum.id == request.user.id):
             return False
         return True
 

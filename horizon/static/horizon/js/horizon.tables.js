@@ -29,7 +29,7 @@ horizon.datatables = {
                 var $footer, row_count, footer_text, colspan, template, params, $empty_row;
 
                 // existing count minus one for the row we're removing
-                horizon.datatables.update_footer_count($table, -1);
+                row_count = horizon.datatables.update_footer_count($table, -1);
 
                 if(row_count === 0) {
                   colspan = $table.find('th[colspan]').attr('colspan');
@@ -196,6 +196,13 @@ $.tablesorter.addParser({
     type: 'numeric'
 });
 
+horizon.datatables.disable_buttons = function() {
+  $("table .table_actions").on("click", ".btn.disabled", function(event){
+    event.preventDefault();
+    event.stopPropagation();
+  });
+};
+
 horizon.datatables.update_footer_count = function (el, modifier) {
   var $el = $(el),
       $browser, $footer, row_count, footer_text_template, footer_text;
@@ -214,6 +221,7 @@ horizon.datatables.update_footer_count = function (el, modifier) {
   footer_text_template = ngettext("Displaying %s item", "Displaying %s items", row_count);
   footer_text = interpolate(footer_text_template, [row_count]);
   $footer.text(footer_text);
+  return row_count;
 };
 
 horizon.datatables.add_no_results_row = function (table) {
@@ -256,6 +264,7 @@ $(parent).find("table.datatable").each(function () {
     });
     $table.tablesorter({
       headers: header_options,
+      widgets: ['zebra'],
       selectorHeaders: "thead th[class!='table_header']",
       cancelSelection: false
     });
@@ -347,6 +356,7 @@ horizon.datatables.set_table_fixed_filter = function (parent) {
 
 horizon.addInitFunction(function() {
   horizon.datatables.validate_button();
+  horizon.datatables.disable_buttons();
   $('table.datatable').each(function (idx, el) {
     horizon.datatables.update_footer_count($(el), 0);
   });

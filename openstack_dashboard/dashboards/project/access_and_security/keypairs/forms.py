@@ -21,7 +21,7 @@
 import re
 
 from django.core import validators
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -60,7 +60,7 @@ class ImportKeypair(forms.SelfHandlingForm):
             messages.success(request, _('Successfully imported public key: %s')
                                        % data['name'])
             return keypair
-        except:
+        except Exception:
             exceptions.handle(request, ignore=True)
             self.api_error(_('Unable to import keypair.'))
             return False

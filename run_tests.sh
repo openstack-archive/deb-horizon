@@ -6,7 +6,7 @@ set -o errexit
 # Increment me any time the environment should be rebuilt.
 # This includes dependncy changes, directory renames, etc.
 # Simple integer secuence: 1, 2, 3...
-environment_version=38
+environment_version=40
 #--------------------------------------------------------#
 
 function usage {
@@ -37,7 +37,7 @@ function usage {
   echo "  --docs                   Just build the documentation"
   echo "  --backup-environment     Make a backup of the environment on exit"
   echo "  --restore-environment    Restore the environment before running"
-  echo "  --destroy-environment    DEstroy the environment and exit"
+  echo "  --destroy-environment    Destroy the environment and exit"
   echo "  -h, --help               Print this usage message"
   echo ""
   echo "Note: with no options specified, the script will try to run the tests in"
@@ -336,7 +336,7 @@ function run_makemessages {
   ${command_wrapper} $root/manage.py makemessages -d djangojs --all --no-obsolete
   HORIZON_JS_RESULT=$?
   cd ../openstack_dashboard
-  ${command_wrapper} $root/manage.py makemessages --all --no-obsolete
+  ${command_wrapper} $root/manage.py makemessages --all --ignore=openstack/common/* --no-obsolete
   DASHBOARD_RESULT=$?
   cd ..
   exit $(($HORIZON_PY_RESULT || $HORIZON_JS_RESULT || $DASHBOARD_RESULT))

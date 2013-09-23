@@ -14,8 +14,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tabs
@@ -35,7 +35,7 @@ class OverviewTab(tabs.Tab):
             snapshot = cinder.volume_snapshot_get(request, snapshot_id)
             volume = cinder.volume_get(request, snapshot.volume_id)
             volume.display_name = None
-        except:
+        except Exception:
             redirect = reverse('horizon:project:images_and_snapshots:index')
             exceptions.handle(self.request,
                               _('Unable to retrieve snapshot details.'),

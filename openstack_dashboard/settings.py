@@ -37,6 +37,14 @@ if ROOT_PATH not in sys.path:
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+# Ensure that we always have a SECRET_KEY set, even when no local_settings.py
+# file is present. See local_settings.py.example for full documentation on the
+# horizon.utils.secret_key module and its use.
+from horizon.utils import secret_key
+LOCAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'local')
+SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
+                                                   '.secret_key_store'))
+
 SITE_BRANDING = 'OpenStack Dashboard'
 
 LOGIN_URL = '/auth/login/'
@@ -54,7 +62,7 @@ STATIC_URL = '/static/'
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
 HORIZON_CONFIG = {
-    'dashboards': ('project', 'admin', 'settings',),
+    'dashboards': ('project', 'admin', 'settings', 'router',),
     'default_dashboard': 'project',
     'user_home': 'openstack_dashboard.views.get_user_home',
     'ajax_queue_limit': 10,
@@ -112,9 +120,8 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-less_binary = os.path.join(BIN_DIR, 'less', 'lessc')
 COMPRESS_PRECOMPILERS = (
-    ('text/less', (less_binary + ' {infile} {outfile}')),
+    ('text/less', ('lesscpy {infile}')),
 )
 
 COMPRESS_CSS_FILTERS = (
@@ -140,6 +147,7 @@ INSTALLED_APPS = (
     'openstack_dashboard.dashboards.admin',
     'openstack_dashboard.dashboards.settings',
     'openstack_auth',
+    'openstack_dashboard.dashboards.router',
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -178,10 +186,20 @@ OPENSTACK_KEYSTONE_DEFAULT_ROLE = 'Member'
 
 DEFAULT_EXCEPTION_REPORTER_FILTER = 'horizon.exceptions.HorizonReporterFilter'
 
+POLICY_FILES_PATH = os.path.join(ROOT_PATH, "conf")
+# Map of local copy of service policy files
+POLICY_FILES = {
+    'identity': 'keystone_policy.json',
+    'compute': 'nova_policy.json'
+}
+
 try:
-    from local.local_settings import *
+    from local.local_settings import *  # noqa
 except ImportError:
     logging.warning("No local_settings file found.")
+
+from openstack_dashboard import policy
+POLICY_CHECK_FUNCTION = policy.check
 
 # Add HORIZON_CONFIG to the context information for offline compression
 COMPRESS_OFFLINE_CONTEXT = {

@@ -14,8 +14,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tabs
@@ -36,7 +36,7 @@ class OverviewTab(tabs.Tab):
             volume = cinder.volume_get(request, volume_id)
             for att in volume.attachments:
                 att['instance'] = nova.server_get(request, att['server_id'])
-        except:
+        except Exception:
             redirect = reverse('horizon:project:volumes:index')
             exceptions.handle(self.request,
                               _('Unable to retrieve volume details.'),

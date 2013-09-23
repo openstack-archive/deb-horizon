@@ -14,11 +14,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django import http
 
-from mox import IgnoreArg
-from mox import IsA
+from mox import IgnoreArg  # noqa
+from mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
@@ -47,8 +47,6 @@ class RolesViewTests(test.BaseAdminViewTests):
     @test.create_stubs({api.keystone: ('role_list',
                                        'keystone_can_edit_role', )})
     def test_index_with_keystone_can_edit_role_false(self):
-        role = self.roles.first()
-
         api.keystone.role_list(IgnoreArg()).AndReturn(self.roles.list())
         api.keystone.keystone_can_edit_role() \
             .MultipleTimes().AndReturn(False)

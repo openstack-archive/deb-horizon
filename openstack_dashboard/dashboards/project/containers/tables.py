@@ -16,24 +16,31 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
-from django.template.defaultfilters import filesizeformat
+from django.core.urlresolvers import reverse  # noqa
+from django.template.defaultfilters import filesizeformat  # noqa
 from django.utils import http
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import tables
 
 from openstack_dashboard import api
-from openstack_dashboard.api.swift import FOLDER_DELIMITER
+from openstack_dashboard.api import swift
 
 
 LOG = logging.getLogger(__name__)
 
 
 def wrap_delimiter(name):
-    if name and not name.endswith(FOLDER_DELIMITER):
-        return name + FOLDER_DELIMITER
+    if name and not name.endswith(swift.FOLDER_DELIMITER):
+        return name + swift.FOLDER_DELIMITER
     return name
+
+
+class ViewContainer(tables.LinkAction):
+    name = "view"
+    verbose_name = _("View Details")
+    url = "horizon:project:containers:container_detail"
+    classes = ("ajax-modal", "btn-view")
 
 
 class DeleteContainer(tables.DeleteAction):
@@ -127,9 +134,21 @@ class ContainersTable(tables.DataTable):
         name = "containers"
         verbose_name = _("Containers")
         table_actions = (CreateContainer,)
-        row_actions = (DeleteContainer,)
+        row_actions = (ViewContainer, DeleteContainer,)
         browser_table = "navigation"
         footer = False
+
+
+class ViewObject(tables.LinkAction):
+    name = "view"
+    verbose_name = _("View Details")
+    url = "horizon:project:containers:object_detail"
+    classes = ("ajax-modal", "btn-view")
+
+    def get_link_url(self, obj):
+        container_name = self.table.kwargs['container_name']
+        return reverse(self.url, args=(http.urlquote(container_name),
+                                       http.urlquote(obj.name)))
 
 
 class DeleteObject(tables.DeleteAction):
@@ -206,7 +225,7 @@ class ObjectFilterAction(tables.FilterAction):
 
 
 def sanitize_name(name):
-    return name.split(FOLDER_DELIMITER)[-1]
+    return name.split(swift.FOLDER_DELIMITER)[-1]
 
 
 def get_size(obj):
@@ -235,7 +254,7 @@ class ObjectsTable(tables.DataTable):
         verbose_name = _("Objects")
         table_actions = (ObjectFilterAction, UploadObject,
                          DeleteMultipleObjects)
-        row_actions = (DownloadObject, CopyObject, DeleteObject)
+        row_actions = (DownloadObject, CopyObject, ViewObject, DeleteObject)
         data_types = ("subfolders", "objects")
         browser_table = "content"
         footer = False

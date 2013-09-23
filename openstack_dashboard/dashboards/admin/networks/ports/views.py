@@ -16,8 +16,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -26,16 +26,14 @@ from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.networks.ports \
     import views as project_views
 
-from openstack_dashboard.dashboards.admin.networks.ports.forms \
-    import CreatePort
-from openstack_dashboard.dashboards.admin.networks.ports.forms \
-    import UpdatePort
+from openstack_dashboard.dashboards.admin.networks.ports \
+    import forms as project_forms
 
 LOG = logging.getLogger(__name__)
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreatePort
+    form_class = project_forms.CreatePort
     template_name = 'admin/networks/ports/create.html'
     success_url = 'horizon:admin:networks:detail'
     failure_url = 'horizon:admin:networks:detail'
@@ -50,7 +48,7 @@ class CreateView(forms.ModalFormView):
                 network_id = self.kwargs["network_id"]
                 self._object = api.neutron.network_get(self.request,
                                                        network_id)
-            except:
+            except Exception:
                 redirect = reverse(self.failure_url,
                                    args=(self.kwargs['network_id'],))
                 msg = _("Unable to retrieve network.")
@@ -69,7 +67,7 @@ class CreateView(forms.ModalFormView):
 
 
 class UpdateView(project_views.UpdateView):
-    form_class = UpdatePort
+    form_class = project_forms.UpdatePort
     template_name = 'admin/networks/ports/update.html'
     context_object_name = 'port'
     success_url = 'horizon:admin:networks:detail'

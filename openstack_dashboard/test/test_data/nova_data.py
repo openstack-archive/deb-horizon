@@ -15,8 +15,10 @@
 import json
 import uuid
 
+from novaclient.v1_1 import aggregates
 from novaclient.v1_1 import availability_zones
 from novaclient.v1_1 import certs
+from novaclient.v1_1 import flavor_access
 from novaclient.v1_1 import flavors
 from novaclient.v1_1 import floating_ips
 from novaclient.v1_1 import hypervisors
@@ -25,17 +27,17 @@ from novaclient.v1_1 import quotas
 from novaclient.v1_1 import security_group_rules as rules
 from novaclient.v1_1 import security_groups as sec_groups
 from novaclient.v1_1 import servers
+from novaclient.v1_1 import services
 from novaclient.v1_1 import usage
 from novaclient.v1_1 import volume_snapshots as vol_snaps
 from novaclient.v1_1 import volume_types
 from novaclient.v1_1 import volumes
 
-from openstack_dashboard.api.base import Quota
-from openstack_dashboard.api.base import QuotaSet as QuotaSetWrapper
-from openstack_dashboard.api.nova import FloatingIp as NetFloatingIp
-from openstack_dashboard.usage.quotas import QuotaUsage
+from openstack_dashboard.api import base
+from openstack_dashboard.api import nova
+from openstack_dashboard.usage import quotas as usage_quotas
 
-from openstack_dashboard.test.test_data.utils import TestDataContainer
+from openstack_dashboard.test.test_data import utils
 
 
 SERVER_DATA = """
@@ -146,29 +148,32 @@ USAGE_DATA = """
 
 
 def data(TEST):
-    TEST.servers = TestDataContainer()
-    TEST.flavors = TestDataContainer()
-    TEST.keypairs = TestDataContainer()
-    TEST.security_groups = TestDataContainer()
-    TEST.security_groups_uuid = TestDataContainer()
-    TEST.security_group_rules = TestDataContainer()
-    TEST.security_group_rules_uuid = TestDataContainer()
-    TEST.volumes = TestDataContainer()
-    TEST.quotas = TestDataContainer()
-    TEST.quota_usages = TestDataContainer()
-    TEST.floating_ips = TestDataContainer()
-    TEST.floating_ips_uuid = TestDataContainer()
-    TEST.usages = TestDataContainer()
-    TEST.certs = TestDataContainer()
-    TEST.volume_snapshots = TestDataContainer()
-    TEST.volume_types = TestDataContainer()
-    TEST.availability_zones = TestDataContainer()
-    TEST.hypervisors = TestDataContainer()
+    TEST.servers = utils.TestDataContainer()
+    TEST.flavors = utils.TestDataContainer()
+    TEST.flavor_access = utils.TestDataContainer()
+    TEST.keypairs = utils.TestDataContainer()
+    TEST.security_groups = utils.TestDataContainer()
+    TEST.security_groups_uuid = utils.TestDataContainer()
+    TEST.security_group_rules = utils.TestDataContainer()
+    TEST.security_group_rules_uuid = utils.TestDataContainer()
+    TEST.volumes = utils.TestDataContainer()
+    TEST.quotas = utils.TestDataContainer()
+    TEST.quota_usages = utils.TestDataContainer()
+    TEST.floating_ips = utils.TestDataContainer()
+    TEST.floating_ips_uuid = utils.TestDataContainer()
+    TEST.usages = utils.TestDataContainer()
+    TEST.certs = utils.TestDataContainer()
+    TEST.volume_snapshots = utils.TestDataContainer()
+    TEST.volume_types = utils.TestDataContainer()
+    TEST.availability_zones = utils.TestDataContainer()
+    TEST.hypervisors = utils.TestDataContainer()
+    TEST.services = utils.TestDataContainer()
+    TEST.aggregates = utils.TestDataContainer()
 
     # Data return by novaclient.
     # It is used if API layer does data conversion.
-    TEST.api_floating_ips = TestDataContainer()
-    TEST.api_floating_ips_uuid = TestDataContainer()
+    TEST.api_floating_ips = utils.TestDataContainer()
+    TEST.api_floating_ips_uuid = utils.TestDataContainer()
 
     # Volumes
     volume = volumes.Volume(volumes.VolumeManager(None),
@@ -225,6 +230,7 @@ def data(TEST):
                                'ram': 512,
                                'swap': 0,
                                'extra_specs': {},
+                               'os-flavor-access:is_public': True,
                                'OS-FLV-EXT-DATA:ephemeral': 0})
     flavor_2 = flavors.Flavor(flavors.FlavorManager(None),
                               {'id': "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
@@ -234,8 +240,28 @@ def data(TEST):
                                'ram': 10000,
                                'swap': 0,
                                'extra_specs': {'Trusted': True, 'foo': 'bar'},
+                               'os-flavor-access:is_public': True,
                                'OS-FLV-EXT-DATA:ephemeral': 2048})
-    TEST.flavors.add(flavor_1, flavor_2)
+    flavor_3 = flavors.Flavor(flavors.FlavorManager(None),
+                              {'id': "dddddddd-dddd-dddd-dddd-dddddddddddd",
+                               'name': 'm1.secret',
+                               'vcpus': 1000,
+                               'disk': 1024,
+                               'ram': 10000,
+                               'swap': 0,
+                               'extra_specs': {},
+                               'os-flavor-access:is_public': False,
+                               'OS-FLV-EXT-DATA:ephemeral': 2048})
+    TEST.flavors.add(flavor_1, flavor_2, flavor_3)
+
+    flavor_access_manager = flavor_access.FlavorAccessManager(None)
+    flavor_access_1 = flavor_access.FlavorAccess(flavor_access_manager,
+            {"tenant_id": "1",
+             "flavor_id": "dddddddd-dddd-dddd-dddd-dddddddddddd"})
+    flavor_access_2 = flavor_access.FlavorAccess(flavor_access_manager,
+            {"tenant_id": "2",
+             "flavor_id": "dddddddd-dddd-dddd-dddd-dddddddddddd"})
+    TEST.flavor_access.add(flavor_access_1, flavor_access_2)
 
     # Keypairs
     keypair = keypairs.Keypair(keypairs.KeypairManager(None),
@@ -333,8 +359,8 @@ def data(TEST):
                       security_groups='10',
                       security_group_rules='20')
     quota = quotas.QuotaSet(quotas.QuotaSetManager(None), quota_data)
-    TEST.quotas.nova = QuotaSetWrapper(quota)
-    TEST.quotas.add(QuotaSetWrapper(quota))
+    TEST.quotas.nova = base.QuotaSet(quota)
+    TEST.quotas.add(base.QuotaSet(quota))
 
     # Quota Usages
     quota_usage_data = {'gigabytes': {'used': 0,
@@ -344,10 +370,14 @@ def data(TEST):
                         'ram': {'used': 0,
                                 'quota': 10000},
                         'cores': {'used': 0,
-                                  'quota': 20}}
-    quota_usage = QuotaUsage()
+                                  'quota': 20},
+                        'floating_ips': {'used': 0,
+                                         'quota': 10},
+                        'volumes': {'used': 0,
+                                    'quota': 10}}
+    quota_usage = usage_quotas.QuotaUsage()
     for k, v in quota_usage_data.items():
-        quota_usage.add_quota(Quota(k, v['quota']))
+        quota_usage.add_quota(base.Quota(k, v['quota']))
         quota_usage.tally(k, v['used'])
 
     TEST.quota_usages.add(quota_usage)
@@ -424,8 +454,8 @@ def data(TEST):
              'pool': 'pool2'}
     TEST.api_floating_ips.add(generate_fip(fip_1), generate_fip(fip_2))
 
-    TEST.floating_ips.add(NetFloatingIp(generate_fip(fip_1)),
-                          NetFloatingIp(generate_fip(fip_2)))
+    TEST.floating_ips.add(nova.FloatingIp(generate_fip(fip_1)),
+                          nova.FloatingIp(generate_fip(fip_2)))
 
     # Floating IP with UUID id (for Floating IP with Neutron Proxy)
     fip_3 = {'id': str(uuid.uuid4()),
@@ -440,8 +470,8 @@ def data(TEST):
              'pool': 'pool2'}
     TEST.api_floating_ips_uuid.add(generate_fip(fip_3), generate_fip(fip_4))
 
-    TEST.floating_ips_uuid.add(NetFloatingIp(generate_fip(fip_3)),
-                               NetFloatingIp(generate_fip(fip_4)))
+    TEST.floating_ips_uuid.add(nova.FloatingIp(generate_fip(fip_3)),
+                               nova.FloatingIp(generate_fip(fip_4)))
 
     # Usage
     usage_vals = {"tenant_id": TEST.tenant.id,
@@ -482,7 +512,18 @@ def data(TEST):
     TEST.availability_zones.add(
         availability_zones.AvailabilityZone(
             availability_zones.AvailabilityZoneManager(None),
-            {'zoneName': 'nova', 'zoneState': {'available': True}}
+            {
+                'zoneName': 'nova',
+                'zoneState': {'available': True},
+                'hosts': {
+                    "host001": {
+                        "nova-network": {
+                            "active": True,
+                            "available": True
+                        }
+                    }
+                }
+            }
         )
     )
 
@@ -512,3 +553,85 @@ def data(TEST):
         }
     )
     TEST.hypervisors.add(hypervisor_1)
+
+    TEST.hypervisors.stats = {
+        "hypervisor_statistics": {
+            "count": 5,
+            "vcpus_used": 3,
+            "local_gb_used": 15,
+            "memory_mb": 483310,
+            "current_workload": 0,
+            "vcpus": 160,
+            "running_vms": 3,
+            "free_disk_gb": 12548,
+            "disk_available_least": 12556,
+            "local_gb": 12563,
+            "free_ram_mb": 428014,
+            "memory_mb_used": 55296
+        }
+    }
+
+    # Services
+    service_1 = services.Service(services.ServiceManager(None),
+        {
+            "status": "enabled",
+            "binary": "nova-conductor",
+            "zone": "internal",
+            "state": "up",
+            "updated_at": "2013-07-08T05:21:00.000000",
+            "host": "devstack001",
+            "disabled_reason": None
+        }
+    )
+
+    service_2 = services.Service(services.ServiceManager(None),
+        {
+            "status": "enabled",
+            "binary": "nova-compute",
+            "zone": "nova",
+            "state": "up",
+            "updated_at": "2013-07-08T05:20:51.000000",
+            "host": "devstack001",
+            "disabled_reason": None
+        }
+    )
+    TEST.services.add(service_1)
+    TEST.services.add(service_2)
+
+    # Aggregates
+    aggregate_1 = aggregates.Aggregate(aggregates.AggregateManager(None),
+        {
+            "name": "foo",
+            "availability_zone": None,
+            "deleted": 0,
+            "created_at": "2013-07-04T13:34:38.000000",
+            "updated_at": None,
+            "hosts": ["foo", "bar"],
+            "deleted_at": None,
+            "id": 1,
+            "metadata": {
+                "foo": "testing",
+                "bar": "testing"
+            }
+        }
+    )
+
+    aggregate_2 = aggregates.Aggregate(aggregates.AggregateManager(None),
+        {
+            "name": "bar",
+            "availability_zone": "testing",
+            "deleted": 0,
+            "created_at": "2013-07-04T13:34:38.000000",
+            "updated_at": None,
+            "hosts": ["foo", "bar"],
+            "deleted_at": None,
+            "id": 2,
+            "metadata": {
+                "foo": "testing",
+                "bar": "testing"
+            }
+        }
+    )
+
+    TEST.aggregates.add(aggregate_1)
+    TEST.aggregates.add(aggregate_2)

@@ -18,10 +18,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from collections import Sequence
+from collections import Sequence  # noqa
 import logging
 
-from django.conf import settings
+from django.conf import settings  # noqa
 
 from horizon import exceptions
 
@@ -91,9 +91,9 @@ class APIResourceWrapper(object):
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__,
-                               dict((attr,
-                                     getattr(self, attr))
-                                    for attr in self._attrs))
+                             dict((attr, getattr(self, attr))
+                                  for attr in self._attrs
+                                  if hasattr(self, attr)))
 
 
 class APIDictWrapper(object):
@@ -158,7 +158,12 @@ class QuotaSet(Sequence):
     def __init__(self, apiresource=None):
         self.items = []
         if apiresource:
-            for k, v in apiresource._info.items():
+            if hasattr(apiresource, '_info'):
+                items = apiresource._info.items()
+            else:
+                items = apiresource.items()
+
+            for k, v in items:
                 if k == 'id':
                     continue
                 self[k] = v
@@ -171,6 +176,19 @@ class QuotaSet(Sequence):
     def __getitem__(self, index):
         return self.items[index]
 
+    def __add__(self, other):
+        '''Merge another QuotaSet into this one. Existing quotas are
+        not overriden.'''
+        if not isinstance(other, QuotaSet):
+            msg = "Can only add QuotaSet to QuotaSet, " \
+                  "but received %s instead" % type(other)
+            raise ValueError(msg)
+
+        for item in other:
+            if self.get(item.name).limit is None:
+                self.items.append(item)
+        return self
+
     def __len__(self):
         return len(self.items)
 
@@ -180,6 +198,9 @@ class QuotaSet(Sequence):
     def get(self, key, default=None):
         match = [quota for quota in self.items if quota.name == key]
         return match.pop() if len(match) else Quota(key, default)
+
+    def add(self, other):
+        return self.__add__(other)
 
 
 def get_service_from_catalog(catalog, service_type):

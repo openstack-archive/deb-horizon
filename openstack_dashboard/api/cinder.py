@@ -24,15 +24,14 @@ from __future__ import absolute_import
 
 import logging
 
-from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from cinderclient.v1 import client as cinder_client
 
 from horizon import exceptions
 
-from openstack_dashboard.api.base import QuotaSet
-from openstack_dashboard.api.base import url_for
+from openstack_dashboard.api import base
 from openstack_dashboard.api import nova
 
 LOG = logging.getLogger(__name__)
@@ -40,13 +39,15 @@ LOG = logging.getLogger(__name__)
 
 # API static values
 VOLUME_STATE_AVAILABLE = "available"
+DEFAULT_QUOTA_NAME = 'default'
 
 
 def cinderclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+    cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
     cinder_url = ""
     try:
-        cinder_url = url_for(request, 'volume')
+        cinder_url = base.url_for(request, 'volume')
     except exceptions.ServiceCatalogException:
         LOG.debug('no volume service configured.')
         return None
@@ -57,6 +58,7 @@ def cinderclient(request):
                              project_id=request.user.tenant_id,
                              auth_url=cinder_url,
                              insecure=insecure,
+                             cacert=cacert,
                              http_log_debug=settings.DEBUG)
     c.client.auth_token = request.user.token.id
     c.client.management_url = cinder_url
@@ -123,8 +125,8 @@ def volume_snapshot_delete(request, snapshot_id):
 def tenant_quota_get(request, tenant_id):
     c_client = cinderclient(request)
     if c_client is None:
-        return QuotaSet()
-    return QuotaSet(c_client.quotas.get(tenant_id))
+        return base.QuotaSet()
+    return base.QuotaSet(c_client.quotas.get(tenant_id))
 
 
 def tenant_quota_update(request, tenant_id, **kwargs):
@@ -132,7 +134,11 @@ def tenant_quota_update(request, tenant_id, **kwargs):
 
 
 def default_quota_get(request, tenant_id):
-    return QuotaSet(cinderclient(request).quotas.defaults(tenant_id))
+    return base.QuotaSet(cinderclient(request).quotas.defaults(tenant_id))
+
+
+def default_quota_update(request, **kwargs):
+    cinderclient(request).quota_classes.update(DEFAULT_QUOTA_NAME, **kwargs)
 
 
 def volume_type_list(request):

@@ -19,8 +19,8 @@ Views for managing Neutron Networks.
 """
 import logging
 
-from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -29,22 +29,23 @@ from horizon import workflows
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.project.networks.forms import UpdateNetwork
-from openstack_dashboard.dashboards.project.networks.ports.tables \
-    import PortsTable
-from openstack_dashboard.dashboards.project.networks.subnets.tables \
-    import SubnetsTable
-from openstack_dashboard.dashboards.project.networks.tables \
-    import NetworksTable
-from openstack_dashboard.dashboards.project.networks.workflows \
-    import CreateNetwork
+from openstack_dashboard.dashboards.project.networks \
+    import forms as project_forms
+from openstack_dashboard.dashboards.project.networks.ports \
+    import tables as port_tables
+from openstack_dashboard.dashboards.project.networks.subnets \
+    import tables as subnet_tables
+from openstack_dashboard.dashboards.project.networks \
+    import tables as project_tables
+from openstack_dashboard.dashboards.project.networks \
+    import workflows as project_workflows
 
 
 LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.DataTableView):
-    table_class = NetworksTable
+    table_class = project_tables.NetworksTable
     template_name = 'project/networks/index.html'
 
     def get_data(self):
@@ -52,7 +53,7 @@ class IndexView(tables.DataTableView):
             tenant_id = self.request.user.tenant_id
             networks = api.neutron.network_list_for_tenant(self.request,
                                                            tenant_id)
-        except:
+        except Exception:
             networks = []
             msg = _('Network list can not be retrieved.')
             exceptions.handle(self.request, msg)
@@ -62,14 +63,14 @@ class IndexView(tables.DataTableView):
 
 
 class CreateView(workflows.WorkflowView):
-    workflow_class = CreateNetwork
+    workflow_class = project_workflows.CreateNetwork
 
     def get_initial(self):
         pass
 
 
 class UpdateView(forms.ModalFormView):
-    form_class = UpdateNetwork
+    form_class = project_forms.UpdateNetwork
     template_name = 'project/networks/update.html'
     context_object_name = 'network'
     success_url = reverse_lazy("horizon:project:networks:index")
@@ -85,7 +86,7 @@ class UpdateView(forms.ModalFormView):
             try:
                 self._object = api.neutron.network_get(self.request,
                                                        network_id)
-            except:
+            except Exception:
                 redirect = self.success_url
                 msg = _('Unable to retrieve network details.')
                 exceptions.handle(self.request, msg, redirect=redirect)
@@ -100,7 +101,7 @@ class UpdateView(forms.ModalFormView):
 
 
 class DetailView(tables.MultiTableView):
-    table_classes = (SubnetsTable, PortsTable)
+    table_classes = (subnet_tables.SubnetsTable, port_tables.PortsTable)
     template_name = 'project/networks/detail.html'
     failure_url = reverse_lazy('horizon:project:networks:index')
 
@@ -109,7 +110,7 @@ class DetailView(tables.MultiTableView):
             network = self._get_data()
             subnets = api.neutron.subnet_list(self.request,
                                               network_id=network.id)
-        except:
+        except Exception:
             subnets = []
             msg = _('Subnet list can not be retrieved.')
             exceptions.handle(self.request, msg)
@@ -121,7 +122,7 @@ class DetailView(tables.MultiTableView):
         try:
             network_id = self.kwargs['network_id']
             ports = api.neutron.port_list(self.request, network_id=network_id)
-        except:
+        except Exception:
             ports = []
             msg = _('Port list can not be retrieved.')
             exceptions.handle(self.request, msg)
@@ -135,7 +136,7 @@ class DetailView(tables.MultiTableView):
                 network_id = self.kwargs['network_id']
                 network = api.neutron.network_get(self.request, network_id)
                 network.set_id_as_name_if_empty(length=0)
-            except:
+            except Exception:
                 msg = _('Unable to retrieve details for network "%s".') \
                       % (network_id)
                 exceptions.handle(self.request, msg, redirect=self.failure_url)

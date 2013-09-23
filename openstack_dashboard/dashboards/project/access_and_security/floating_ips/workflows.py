@@ -15,15 +15,15 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import workflows
 
 from openstack_dashboard import api
-from openstack_dashboard.utils.filters import get_int_or_uuid
+from openstack_dashboard.utils import filters
 
 
 ALLOCATE_URL = "horizon:project:access_and_security:floating_ips:allocate"
@@ -31,7 +31,7 @@ ALLOCATE_URL = "horizon:project:access_and_security:floating_ips:allocate"
 
 class AssociateIPAction(workflows.Action):
     ip_id = forms.DynamicTypedChoiceField(label=_("IP Address"),
-                                          coerce=get_int_or_uuid,
+                                          coerce=filters.get_int_or_uuid,
                                           empty_value=None,
                                           add_item_link=ALLOCATE_URL)
     instance_id = forms.ChoiceField(label=_("Instance"))
@@ -63,7 +63,7 @@ class AssociateIPAction(workflows.Action):
     def populate_ip_id_choices(self, request, context):
         try:
             ips = api.network.tenant_floating_ip_list(self.request)
-        except:
+        except Exception:
             redirect = reverse('horizon:project:access_and_security:index')
             exceptions.handle(self.request,
                               _('Unable to retrieve floating IP addresses.'),
@@ -79,7 +79,7 @@ class AssociateIPAction(workflows.Action):
     def populate_instance_id_choices(self, request, context):
         try:
             targets = api.network.floating_ip_target_list(self.request)
-        except:
+        except Exception:
             redirect = reverse('horizon:project:access_and_security:index')
             exceptions.handle(self.request,
                               _('Unable to retrieve instance list.'),
@@ -137,7 +137,7 @@ class IPAssociationWorkflow(workflows.Workflow):
             api.network.floating_ip_associate(request,
                                               data['ip_id'],
                                               data['instance_id'])
-        except:
+        except Exception:
             exceptions.handle(request)
             return False
         return True

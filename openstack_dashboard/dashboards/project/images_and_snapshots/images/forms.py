@@ -24,16 +24,20 @@ Views for managing images.
 
 import logging
 
-from django.conf import settings
-from django.forms import ValidationError
-from django.forms.widgets import HiddenInput
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.forms import ValidationError  # noqa
+from django.forms.widgets import HiddenInput  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
 
 from openstack_dashboard import api
+
+
+IMAGE_BACKEND_SETTINGS = getattr(settings, 'OPENSTACK_IMAGE_BACKEND', {})
+IMAGE_FORMAT_CHOICES = IMAGE_BACKEND_SETTINGS.get('image_formats', [])
 
 
 LOG = logging.getLogger(__name__)
@@ -44,34 +48,34 @@ class CreateImageForm(forms.SelfHandlingForm):
     description = forms.CharField(widget=forms.widgets.Textarea(),
                                   label=_("Description"),
                                   required=False)
+
+    source_type = forms.ChoiceField(
+        label=_('Image Source'),
+        choices=[('url', _('Image Location')),
+                 ('file', _('Image File'))],
+        widget=forms.Select(attrs={
+              'class': 'switchable',
+              'data-slug': 'source'}))
+
     copy_from = forms.CharField(max_length="255",
                                 label=_("Image Location"),
                                 help_text=_("An external (HTTP) URL to load "
                                             "the image from."),
+                                widget=forms.TextInput(attrs={
+                                      'class': 'switched',
+                                      'data-switch-on': 'source',
+                                      'data-source-url': _('Image Location')}),
                                 required=False)
     image_file = forms.FileField(label=_("Image File"),
-                                 help_text=("A local image to upload."),
+                                 help_text=_("A local image to upload."),
+                                 widget=forms.FileInput(attrs={
+                                      'class': 'switched',
+                                      'data-switch-on': 'source',
+                                      'data-source-file': _('Image File')}),
                                  required=False)
     disk_format = forms.ChoiceField(label=_('Format'),
                                     required=True,
-                                    choices=[('', ''),
-                                             ('aki',
-                                                _('AKI - Amazon Kernel '
-                                                        'Image')),
-                                             ('ami',
-                                                _('AMI - Amazon Machine '
-                                                        'Image')),
-                                             ('ari',
-                                                _('ARI - Amazon Ramdisk '
-                                                        'Image')),
-                                             ('iso',
-                                                _('ISO - Optical Disk Image')),
-                                             ('qcow2',
-                                                _('QCOW2 - QEMU Emulator')),
-                                             ('raw', 'Raw'),
-                                             ('vdi', 'VDI'),
-                                             ('vhd', 'VHD'),
-                                             ('vmdk', 'VMDK')],
+                                    choices=[],
                                     widget=forms.Select(attrs={'class':
                                                                'switchable'}))
     minimum_disk = forms.IntegerField(label=_("Minimum Disk (GB)"),
@@ -95,6 +99,7 @@ class CreateImageForm(forms.SelfHandlingForm):
         super(CreateImageForm, self).__init__(*args, **kwargs)
         if not settings.HORIZON_IMAGES_ALLOW_UPLOAD:
             self.fields['image_file'].widget = HiddenInput()
+        self.fields['disk_format'].choices = IMAGE_FORMAT_CHOICES
 
     def clean(self):
         data = super(CreateImageForm, self).clean()
@@ -137,10 +142,10 @@ class CreateImageForm(forms.SelfHandlingForm):
         try:
             image = api.glance.image_create(request, **meta)
             messages.success(request,
-                _('Your image %s has been queued for creation.' %
-                    data['name']))
+                _('Your image %s has been queued for creation.') %
+                    data['name'])
             return image
-        except:
+        except Exception:
             exceptions.handle(request, _('Unable to create new image.'))
 
 
@@ -202,5 +207,5 @@ class UpdateImageForm(forms.SelfHandlingForm):
             image = api.glance.image_update(request, image_id, **meta)
             messages.success(request, _('Image was successfully updated.'))
             return image
-        except:
+        except Exception:
             exceptions.handle(request, error_updating % image_id)

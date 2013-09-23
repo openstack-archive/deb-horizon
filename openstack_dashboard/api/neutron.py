@@ -23,12 +23,11 @@ from __future__ import absolute_import
 
 import logging
 
-from django.conf import settings
-from django.utils.datastructures import SortedDict
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.utils.datastructures import SortedDict  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
-from openstack_dashboard.api.base import APIDictWrapper
-from openstack_dashboard.api.base import url_for
+from openstack_dashboard.api import base
 from openstack_dashboard.api import network_base
 from openstack_dashboard.api import nova
 
@@ -39,7 +38,7 @@ LOG = logging.getLogger(__name__)
 IP_VERSION_DICT = {4: 'IPv4', 6: 'IPv6'}
 
 
-class NeutronAPIDictWrapper(APIDictWrapper):
+class NeutronAPIDictWrapper(base.APIDictWrapper):
 
     def set_id_as_name_if_empty(self, length=8):
         try:
@@ -53,6 +52,15 @@ class NeutronAPIDictWrapper(APIDictWrapper):
 
     def items(self):
         return self._apidict.items()
+
+
+class Agent(NeutronAPIDictWrapper):
+    """Wrapper for neutron agents"""
+
+    def __init__(self, apiresource):
+        apiresource['admin_state'] = \
+            'UP' if apiresource['admin_state_up'] else 'DOWN'
+        super(Agent, self).__init__(apiresource)
 
 
 class Network(NeutronAPIDictWrapper):
@@ -83,6 +91,15 @@ class Port(NeutronAPIDictWrapper):
         apiresource['admin_state'] = \
             'UP' if apiresource['admin_state_up'] else 'DOWN'
         super(Port, self).__init__(apiresource)
+
+
+class Profile(NeutronAPIDictWrapper):
+    """Wrapper for neutron profiles."""
+    _attrs = ['profile_id', 'name', 'segment_type',
+              'segment_range', 'multicast_ip_index', 'multicast_ip_range']
+
+    def __init__(self, apiresource):
+        super(Profile, self).__init__(apiresource)
 
 
 class Router(NeutronAPIDictWrapper):
@@ -165,7 +182,7 @@ class SecurityGroupRule(NeutronAPIDictWrapper):
             try:
                 ip_proto = int(self.ip_protocol)
                 proto_port = "ip_proto=%d" % ip_proto
-            except:
+            except Exception:
                 # well-defined IP protocol name like TCP, UDP, ICMP.
                 proto_port = self.ip_protocol
         else:
@@ -212,6 +229,12 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
         body = {'security_group': {'name': name,
                                    'description': desc}}
         secgroup = self.client.create_security_group(body)
+        return SecurityGroup(secgroup.get('security_group'))
+
+    def update(self, sg_id, name, desc):
+        body = {'security_group': {'name': name,
+                                   'description': desc}}
+        secgroup = self.client.update_security_group(sg_id, body)
         return SecurityGroup(secgroup.get('security_group'))
 
     def delete(self, sg_id):
@@ -262,7 +285,7 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
             port_modify(self.request, p.id, **params)
 
 
-class FloatingIp(APIDictWrapper):
+class FloatingIp(base.APIDictWrapper):
     _attrs = ['id', 'ip', 'fixed_ip', 'port_id', 'instance_id', 'pool']
 
     def __init__(self, fip):
@@ -272,11 +295,11 @@ class FloatingIp(APIDictWrapper):
         super(FloatingIp, self).__init__(fip)
 
 
-class FloatingIpPool(APIDictWrapper):
+class FloatingIpPool(base.APIDictWrapper):
     pass
 
 
-class FloatingIpTarget(APIDictWrapper):
+class FloatingIpTarget(base.APIDictWrapper):
     pass
 
 
@@ -381,13 +404,14 @@ def get_ipver_str(ip_version):
 
 def neutronclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+    cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
     LOG.debug('neutronclient connection created using token "%s" and url "%s"'
-              % (request.user.token.id, url_for(request, 'network')))
+              % (request.user.token.id, base.url_for(request, 'network')))
     LOG.debug('user_id=%(user)s, tenant_id=%(tenant)s' %
               {'user': request.user.id, 'tenant': request.user.tenant_id})
     c = neutron_client.Client(token=request.user.token.id,
-                              endpoint_url=url_for(request, 'network'),
-                              insecure=insecure)
+                              endpoint_url=base.url_for(request, 'network'),
+                              insecure=insecure, ca_cert=cacert)
     return c
 
 
@@ -446,6 +470,9 @@ def network_create(request, **kwargs):
     :returns: Subnet object
     """
     LOG.debug("network_create(): kwargs = %s" % kwargs)
+    # In the case network profiles are being used, profile id is needed.
+    if 'net_profile_id' in kwargs:
+        kwargs['n1kv:profile_id'] = kwargs.pop('net_profile_id')
     body = {'network': kwargs}
     network = neutronclient(request).create_network(body=body).get('network')
     return Network(network)
@@ -536,6 +563,9 @@ def port_create(request, network_id, **kwargs):
     :returns: Port object
     """
     LOG.debug("port_create(): netid=%s, kwargs=%s" % (network_id, kwargs))
+    # In the case policy profiles are being used, profile id is needed.
+    if 'policy_profile_id' in kwargs:
+        kwargs['n1kv:profile_id'] = kwargs.pop('policy_profile_id')
     body = {'port': {'network_id': network_id}}
     body['port'].update(kwargs)
     port = neutronclient(request).create_port(body=body).get('port')
@@ -552,6 +582,65 @@ def port_modify(request, port_id, **kwargs):
     body = {'port': kwargs}
     port = neutronclient(request).update_port(port_id, body=body).get('port')
     return Port(port)
+
+
+def profile_list(request, type_p, **params):
+    LOG.debug(_("profile_list(): "
+                "profile_type=%(profile_type)s, params=%(params)s"),
+              {'profile_type': type_p, 'params': params})
+    if type_p == 'network':
+        profiles = neutronclient(request).list_network_profiles(
+            **params).get('network_profiles')
+    elif type_p == 'policy':
+        profiles = neutronclient(request).list_policy_profiles(
+            **params).get('policy_profiles')
+    return [Profile(n) for n in profiles]
+
+
+def profile_get(request, profile_id, **params):
+    LOG.debug(_("profile_get(): "
+                "profileid=%(profileid)s, params=%(params)s"),
+              {'profileid': profile_id, 'params': params})
+    profile = neutronclient(request).show_network_profile(
+        profile_id, **params).get('network_profile')
+    return Profile(profile)
+
+
+def profile_create(request, **kwargs):
+    LOG.debug(_("profile_create(): kwargs=%s") % kwargs)
+    body = {'network_profile': {}}
+    body['network_profile'].update(kwargs)
+    profile = neutronclient(request).create_network_profile(
+        body=body).get('network_profile')
+    return Profile(profile)
+
+
+def profile_delete(request, profile_id):
+    LOG.debug(_("profile_delete(): profile_id=%s") % profile_id)
+    neutronclient(request).delete_network_profile(profile_id)
+
+
+def profile_modify(request, profile_id, **kwargs):
+    LOG.debug(_("profile_modify(): "
+                "profileid=%(profileid)s, kwargs=%(kwargs)s"),
+              {'profileid': profile_id, 'kwargs': kwargs})
+    body = {'network_profile': kwargs}
+    profile = neutronclient(request).update_network_profile(
+        profile_id, body=body).get('network_profile')
+    return Profile(profile)
+
+
+def profile_bindings_list(request, type_p, **params):
+    LOG.debug(_("profile_bindings_list(): "
+                "profile_type=%(profile_type)s params=%(params)s"),
+              {'profile_type': type_p, 'params': params})
+    if type_p == 'network':
+        bindings = neutronclient(request).list_network_profile_bindings(
+            **params).get('network_profile_bindings')
+    elif type_p == 'policy':
+        bindings = neutronclient(request).list_policy_profile_bindings(
+            **params).get('policy_profile_bindings')
+    return [Profile(n) for n in bindings]
 
 
 def router_create(request, **kwargs):
@@ -603,3 +692,62 @@ def router_add_gateway(request, router_id, network_id):
 
 def router_remove_gateway(request, router_id):
     neutronclient(request).remove_gateway_router(router_id)
+
+
+def tenant_quota_get(request, tenant_id):
+    return base.QuotaSet(neutronclient(request).show_quota(tenant_id)['quota'])
+
+
+def tenant_quota_update(request, tenant_id, **kwargs):
+    quotas = {'quota': kwargs}
+    return neutronclient(request).update_quota(tenant_id, quotas)
+
+
+def list_extensions(request):
+    extensions_list = neutronclient(request).list_extensions()
+    if 'extensions' in extensions_list:
+        return extensions_list['extensions']
+    else:
+        return {}
+
+
+def agent_list(request):
+    agents = neutronclient(request).list_agents()
+    return [Agent(a) for a in agents['agents']]
+
+
+def is_extension_supported(request, extension_alias):
+    extensions = list_extensions(request)
+
+    for extension in extensions:
+        if extension['alias'] == extension_alias:
+            return True
+    else:
+        return False
+
+
+def is_quotas_extension_supported(request):
+    network_config = getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {})
+    if network_config.get('enable_quotas', False) and \
+            is_extension_supported(request, 'quotas'):
+        return True
+    else:
+        return False
+
+
+# Using this mechanism till a better plugin/sub-plugin detection
+# mechanism is available.
+# Using local_settings to detect if the "router" dashboard
+# should be turned on or not. When using specific plugins the
+# profile_support can be turned on if needed.
+# Since this is a temporary mechanism used to detect profile_support
+# @memorize is not being used. This is mainly used in the run_tests
+# environment to detect when to use profile_support neutron APIs.
+# TODO(absubram): Change this config variable check with
+# subplugin/plugin detection API when it becomes available.
+def is_port_profiles_supported():
+    network_config = getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {})
+    # Can be used to check for vendor specific plugin
+    profile_support = network_config.get('profile_support', None)
+    if str(profile_support).lower() == 'cisco':
+        return True

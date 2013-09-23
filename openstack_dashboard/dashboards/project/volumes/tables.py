@@ -16,18 +16,21 @@
 
 import logging
 
-from django.core.urlresolvers import NoReverseMatch
-from django.core.urlresolvers import reverse
-from django.template.defaultfilters import title
-from django.utils.html import strip_tags
+from django.core.urlresolvers import NoReverseMatch  # noqa
+from django.core.urlresolvers import reverse  # noqa
+from django.template.defaultfilters import title  # noqa
+from django.utils.html import strip_tags  # noqa
 from django.utils import safestring
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import string_concat  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
+
 
 from horizon import exceptions
 from horizon import tables
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
+from openstack_dashboard.usage import quotas
 
 
 LOG = logging.getLogger(__name__)
@@ -45,7 +48,7 @@ class DeleteVolume(tables.DeleteAction):
         name = self.table.get_object_display(obj)
         try:
             cinder.volume_delete(request, obj_id)
-        except:
+        except Exception:
             msg = _('Unable to delete volume "%s". One or more snapshots '
                     'depend on it.')
             exceptions.check_message(["snapshots", "dependent"], msg % name)
@@ -62,6 +65,20 @@ class CreateVolume(tables.LinkAction):
     verbose_name = _("Create Volume")
     url = "horizon:project:volumes:create"
     classes = ("ajax-modal", "btn-create")
+
+    def allowed(self, request, volume=None):
+        usages = quotas.tenant_quota_usages(request)
+        if usages['gigabytes']['available'] <= 0 or\
+           usages['volumes']['available'] <= 0:
+            if "disabled" not in self.classes:
+                self.classes = [c for c in self.classes] + ['disabled']
+                self.verbose_name = string_concat(self.verbose_name, ' ',
+                                                  _("(Quota exceeded)"))
+        else:
+            self.verbose_name = _("Create Volume")
+            classes = [c for c in self.classes if c != "disabled"]
+            self.classes = classes
+        return True
 
 
 class EditAttachments(tables.LinkAction):
@@ -106,7 +123,7 @@ def get_attachment_name(request, attachment):
         try:
             server = api.nova.server_get(request, server_id)
             name = server.name
-        except:
+        except Exception:
             name = None
             exceptions.handle(request, _("Unable to retrieve "
                                          "attachment information."))

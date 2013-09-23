@@ -15,23 +15,18 @@
 #    under the License.
 
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tabs
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.project.loadbalancers.tables \
-    import MembersTable
-from openstack_dashboard.dashboards.project.loadbalancers.tables \
-    import MonitorsTable
-from openstack_dashboard.dashboards.project.loadbalancers.tables \
-    import PoolsTable
+from openstack_dashboard.dashboards.project.loadbalancers import tables
 
 
 class PoolsTab(tabs.TableTab):
-    table_classes = (PoolsTable,)
+    table_classes = (tables.PoolsTable,)
     name = _("Pools")
     slug = "pools"
     template_name = "horizon/common/_detail_table.html"
@@ -41,7 +36,7 @@ class PoolsTab(tabs.TableTab):
             pools = api.lbaas.pools_get(self.tab_group.request)
             poolsFormatted = [p.readable(self.tab_group.request) for
                               p in pools]
-        except:
+        except Exception:
             poolsFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve pools list.'))
@@ -49,7 +44,7 @@ class PoolsTab(tabs.TableTab):
 
 
 class MembersTab(tabs.TableTab):
-    table_classes = (MembersTable,)
+    table_classes = (tables.MembersTable,)
     name = _("Members")
     slug = "members"
     template_name = "horizon/common/_detail_table.html"
@@ -59,7 +54,7 @@ class MembersTab(tabs.TableTab):
             members = api.lbaas.members_get(self.tab_group.request)
             membersFormatted = [m.readable(self.tab_group.request) for
                                 m in members]
-        except:
+        except Exception:
             membersFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve member list.'))
@@ -67,7 +62,7 @@ class MembersTab(tabs.TableTab):
 
 
 class MonitorsTab(tabs.TableTab):
-    table_classes = (MonitorsTable,)
+    table_classes = (tables.MonitorsTable,)
     name = _("Monitors")
     slug = "monitors"
     template_name = "horizon/common/_detail_table.html"
@@ -76,7 +71,7 @@ class MonitorsTab(tabs.TableTab):
         try:
             monitors = api.lbaas.pool_health_monitors_get(
                 self.tab_group.request)
-        except:
+        except Exception:
             monitors = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve monitor list.'))
@@ -98,7 +93,7 @@ class PoolDetailsTab(tabs.Tab):
         pid = self.tab_group.kwargs['pool_id']
         try:
             pool = api.lbaas.pool_get(request, pid)
-        except:
+        except Exception:
             pool = []
             exceptions.handle(request,
                               _('Unable to retrieve pool details.'))
@@ -114,7 +109,7 @@ class VipDetailsTab(tabs.Tab):
         vid = self.tab_group.kwargs['vip_id']
         try:
             vip = api.lbaas.vip_get(request, vid)
-        except:
+        except Exception:
             vip = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve VIP details.'))
@@ -130,7 +125,7 @@ class MemberDetailsTab(tabs.Tab):
         mid = self.tab_group.kwargs['member_id']
         try:
             member = api.lbaas.member_get(request, mid)
-        except:
+        except Exception:
             member = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve member details.'))
@@ -146,7 +141,7 @@ class MonitorDetailsTab(tabs.Tab):
         mid = self.tab_group.kwargs['monitor_id']
         try:
             monitor = api.lbaas.pool_health_monitor_get(request, mid)
-        except:
+        except Exception:
             monitor = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve monitor details.'))

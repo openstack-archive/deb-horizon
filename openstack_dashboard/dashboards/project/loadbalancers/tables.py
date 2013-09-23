@@ -15,9 +15,9 @@
 #    under the License.
 
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django.utils import http
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tables
@@ -159,6 +159,7 @@ class AddPMAssociationLink(tables.LinkAction):
     name = "addassociation"
     verbose_name = _("Add Health Monitor")
     url = "horizon:project:loadbalancers:addassociation"
+    classes = ("ajax-modal", "btn-create",)
 
     def allowed(self, request, datum=None):
         try:
@@ -166,7 +167,7 @@ class AddPMAssociationLink(tables.LinkAction):
             for m in monitors:
                 if m.id not in datum['health_monitors']:
                     return True
-        except:
+        except Exception:
             exceptions.handle(request,
                               _('Failed to retrieve health monitors.'))
         return False
@@ -176,7 +177,7 @@ class DeletePMAssociationLink(tables.LinkAction):
     name = "deleteassociation"
     verbose_name = _("Delete Health Monitor")
     url = "horizon:project:loadbalancers:deleteassociation"
-    classes = ("btn-delete", "btn-danger")
+    classes = ("ajax-modal", "btn-delete", "btn-danger")
 
     def allowed(self, request, datum=None):
         if datum and not datum['health_monitors']:

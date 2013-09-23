@@ -20,32 +20,28 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tables
 from horizon import workflows
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.admin.users.views import CreateView
+from openstack_dashboard.api import keystone
 from openstack_dashboard import usage
 from openstack_dashboard.usage import quotas
 
-from openstack_dashboard.dashboards.admin.projects.forms import CreateUser
-from openstack_dashboard.dashboards.admin.projects.tables import AddUsersTable
-from openstack_dashboard.dashboards.admin.projects.tables import TenantsTable
-from openstack_dashboard.dashboards.admin.projects.tables \
-    import TenantUsersTable
-from openstack_dashboard.dashboards.admin.projects.workflows \
-    import CreateProject
-from openstack_dashboard.dashboards.admin.projects.workflows \
-    import UpdateProject
+from openstack_dashboard.dashboards.admin.projects \
+    import tables as project_tables
+from openstack_dashboard.dashboards.admin.projects \
+    import workflows as project_workflows
 
 LOG = logging.getLogger(__name__)
 
-PROJECT_INFO_FIELDS = ("name",
+PROJECT_INFO_FIELDS = ("domain_id",
+                       "domain_name",
+                       "name",
                        "description",
                        "enabled")
 
@@ -60,7 +56,7 @@ class TenantContextMixin(object):
                 self._object = api.keystone.tenant_get(self.request,
                                                        tenant_id,
                                                        admin=True)
-            except:
+            except Exception:
                 exceptions.handle(self.request,
                                   _('Unable to retrieve project information.'),
                                   redirect=reverse(INDEX_URL))
@@ -73,7 +69,7 @@ class TenantContextMixin(object):
 
 
 class IndexView(tables.DataTableView):
-    table_class = TenantsTable
+    table_class = project_tables.TenantsTable
     template_name = 'admin/projects/index.html'
 
     def has_more_data(self, table):
@@ -82,7 +78,7 @@ class IndexView(tables.DataTableView):
     def get_data(self):
         tenants = []
         marker = self.request.GET.get(
-                        TenantsTable._meta.pagination_param, None)
+                    project_tables.TenantsTable._meta.pagination_param, None)
         domain_context = self.request.session.get('domain_context', None)
         try:
             tenants, self._more = api.keystone.tenant_list(
@@ -90,50 +86,11 @@ class IndexView(tables.DataTableView):
                                                domain=domain_context,
                                                paginate=True,
                                                marker=marker)
-        except:
+        except Exception:
             self._more = False
             exceptions.handle(self.request,
                               _("Unable to retrieve project list."))
         return tenants
-
-
-class UsersView(tables.MultiTableView):
-    table_classes = (TenantUsersTable, AddUsersTable)
-    template_name = 'admin/projects/users.html'
-
-    def _get_shared_data(self, *args, **kwargs):
-        tenant_id = self.kwargs["tenant_id"]
-        if not hasattr(self, "_shared_data"):
-            domain_context = self.request.session.get('domain_context', None)
-            try:
-                tenant = api.keystone.tenant_get(self.request,
-                                                 tenant_id,
-                                                 admin=True)
-                all_users = api.keystone.user_list(self.request,
-                                                   domain=domain_context)
-                tenant_users = api.keystone.user_list(self.request, tenant_id)
-                self._shared_data = {'tenant': tenant,
-                                     'all_users': all_users,
-                                     'tenant_users': tenant_users}
-            except:
-                exceptions.handle(self.request,
-                                  _("Unable to retrieve users."),
-                                  redirect=reverse(INDEX_URL))
-        return self._shared_data
-
-    def get_tenant_users_data(self):
-        return self._get_shared_data()["tenant_users"]
-
-    def get_add_users_data(self):
-        tenant_users = self._get_shared_data()["tenant_users"]
-        all_users = self._get_shared_data()["all_users"]
-        tenant_user_ids = [user.id for user in tenant_users]
-        return filter(lambda u: u.id not in tenant_user_ids, all_users)
-
-    def get_context_data(self, **kwargs):
-        context = super(UsersView, self).get_context_data(**kwargs)
-        context['tenant'] = self._get_shared_data()["tenant"]
-        return context
 
 
 class ProjectUsageView(usage.UsageView):
@@ -147,18 +104,39 @@ class ProjectUsageView(usage.UsageView):
 
 
 class CreateProjectView(workflows.WorkflowView):
-    workflow_class = CreateProject
+    workflow_class = project_workflows.CreateProject
 
     def get_initial(self):
         initial = super(CreateProjectView, self).get_initial()
 
+        # Set the domain of the project
+        domain = api.keystone.get_default_domain(self.request)
+        initial["domain_id"] = domain.id
+        initial["domain_name"] = domain.name
+
         # get initial quota defaults
         try:
             quota_defaults = quotas.get_default_quota_data(self.request)
+
+            try:
+                if api.base.is_service_enabled(self.request, 'network') and \
+                       api.neutron.is_quotas_extension_supported(self.request):
+                    # TODO(jpichon): There is no API to access the Neutron
+                    # default quotas (LP#1204956). For now, use the values
+                    # from the current project.
+                    project_id = self.request.user.project_id
+                    quota_defaults += api.neutron.tenant_quota_get(
+                                                          self.request,
+                                                          tenant_id=project_id)
+            except Exception:
+                error_msg = _('Unable to retrieve default Neutron quota '
+                              'values.')
+                self.add_error_to_step(error_msg, 'update_quotas')
+
             for field in quotas.QUOTA_FIELDS:
                 initial[field] = quota_defaults.get(field).limit
 
-        except:
+        except Exception:
             error_msg = _('Unable to retrieve default quota values.')
             self.add_error_to_step(error_msg, 'update_quotas')
 
@@ -166,7 +144,7 @@ class CreateProjectView(workflows.WorkflowView):
 
 
 class UpdateProjectView(workflows.WorkflowView):
-    workflow_class = UpdateProject
+    workflow_class = project_workflows.UpdateProject
 
     def get_initial(self):
         initial = super(UpdateProjectView, self).get_initial()
@@ -181,33 +159,28 @@ class UpdateProjectView(workflows.WorkflowView):
             for field in PROJECT_INFO_FIELDS:
                 initial[field] = getattr(project_info, field, None)
 
+            # Retrieve the domain name where the project belong
+            if keystone.VERSIONS.active >= 3:
+                try:
+                    domain = api.keystone.domain_get(self.request,
+                                                     initial["domain_id"])
+                    initial["domain_name"] = domain.name
+                except Exception:
+                    exceptions.handle(self.request,
+                              _('Unable to retrieve project domain.'),
+                              redirect=reverse(INDEX_URL))
+
             # get initial project quota
             quota_data = quotas.get_tenant_quota_data(self.request,
                                                       tenant_id=project_id)
+            if api.base.is_service_enabled(self.request, 'network') and \
+                    api.neutron.is_quotas_extension_supported(self.request):
+                quota_data += api.neutron.tenant_quota_get(self.request,
+                                                          tenant_id=project_id)
             for field in quotas.QUOTA_FIELDS:
                 initial[field] = quota_data.get(field).limit
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve project details.'),
                               redirect=reverse(INDEX_URL))
         return initial
-
-
-class CreateUserView(CreateView):
-    form_class = CreateUser
-    template_name = "admin/projects/create_user.html"
-    success_url = reverse_lazy('horizon:admin:projects:index')
-
-    def get_initial(self):
-        default_role = api.keystone.get_default_role(self.request)
-        return {'role_id': getattr(default_role, "id", None),
-                'project': self.kwargs['tenant_id']}
-
-    def get_context_data(self, **kwargs):
-        context = super(CreateUserView, self).get_context_data(**kwargs)
-        context['tenant_id'] = self.kwargs['tenant_id']
-        context['tenant_name'] = api.keystone.tenant_get(
-            self.request,
-            self.kwargs['tenant_id'],
-            admin=True).name
-        return context

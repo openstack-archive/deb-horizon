@@ -1,20 +1,18 @@
 import os
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
-from horizon.test.settings import *
-from horizon.utils.secret_key import generate_or_read_from_file
+from horizon.test.settings import *  # noqa
+from horizon.utils import secret_key
 
-from openstack_dashboard.exceptions import NOT_FOUND
-from openstack_dashboard.exceptions import RECOVERABLE
-from openstack_dashboard.exceptions import UNAUTHORIZED
+from openstack_dashboard import exceptions
 
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.abspath(os.path.join(TEST_DIR, ".."))
 
-SECRET_KEY = generate_or_read_from_file(os.path.join(TEST_DIR,
-                                                     '.secret_key_store'))
+SECRET_KEY = secret_key.generate_or_read_from_file(
+    os.path.join(TEST_DIR, '.secret_key_store'))
 ROOT_URLCONF = 'openstack_dashboard.urls'
 TEMPLATE_DIRS = (
     os.path.join(TEST_DIR, 'templates'),
@@ -39,6 +37,13 @@ INSTALLED_APPS = (
     'openstack_dashboard.dashboards.project',
     'openstack_dashboard.dashboards.admin',
     'openstack_dashboard.dashboards.settings',
+    # If the profile_support config is turned on in local_settings
+    # the "router" dashboard will be enabled which can be used to
+    # create and use profiles with networks and instances. In which case
+    # using run_tests will require the registration of the "router" dashboard.
+    # TODO (absubram): Need to make this permanent when a better solution
+    # for run_tests is implemented to use with and without the n1k sub-plugin.
+    #'openstack_dashboard.dashboards.router',
 )
 
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
@@ -46,7 +51,15 @@ AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 SITE_BRANDING = 'OpenStack'
 
 HORIZON_CONFIG = {
-    'dashboards': ('project', 'admin', 'settings'),
+    'dashboards': ('project', 'admin', 'settings',),
+    # If the profile_support config is turned on in local_settings
+    # the "router" dashboard will be enabled which can be used to
+    # create and use profiles with networks and instances. In which case
+    # using run_tests will require the registration of the "router" dashboard.
+    # TODO (absubram): Need to make this permanent when a better solution
+    # for run_tests is implemented to use with and without the n1k sub-plugin.
+    #'openstack_dashboard.dashboards.router',
+    #'dashboards': ('project', 'admin', 'settings', 'router',),
     'default_dashboard': 'project',
     "password_validator": {
         "regex": '^.{8,18}$',
@@ -54,9 +67,9 @@ HORIZON_CONFIG = {
     },
     'user_home': None,
     'help_url': "http://docs.openstack.org",
-    'exceptions': {'recoverable': RECOVERABLE,
-                   'not_found': NOT_FOUND,
-                   'unauthorized': UNAUTHORIZED},
+    'exceptions': {'recoverable': exceptions.RECOVERABLE,
+                   'not_found': exceptions.NOT_FOUND,
+                   'unauthorized': exceptions.UNAUTHORIZED},
 }
 
 # Set to True to allow users to upload images to glance via Horizon server.
@@ -85,15 +98,27 @@ OPENSTACK_KEYSTONE_BACKEND = {
 }
 
 OPENSTACK_NEUTRON_NETWORK = {
-    'enable_lb': True
+    'enable_lb': True,
+    'enable_quotas': False  # Enabled in specific tests only
 }
 
 OPENSTACK_HYPERVISOR_FEATURES = {
     'can_set_mount_point': True,
+}
 
-    # NOTE: as of Grizzly this is not yet supported in Nova so enabling this
-    # setting will not do anything useful
-    'can_encrypt_volumes': False
+OPENSTACK_IMAGE_BACKEND = {
+    'image_formats': [
+        ('', ''),
+        ('aki', _('AKI - Amazon Kernel Image')),
+        ('ami', _('AMI - Amazon Machine Image')),
+        ('ari', _('ARI - Amazon Ramdisk Image')),
+        ('iso', _('ISO - Optical Disk Image')),
+        ('qcow2', _('QCOW2 - QEMU Emulator')),
+        ('raw', _('Raw')),
+        ('vdi', _('VDI')),
+        ('vhd', _('VHD')),
+        ('vmdk', _('VMDK'))
+    ]
 }
 
 LOGGING['loggers']['openstack_dashboard'] = {
@@ -121,3 +146,9 @@ NOSE_ARGS = ['--nocapture',
              '--cover-package=openstack_dashboard',
              '--cover-inclusive',
              '--all-modules']
+
+POLICY_FILES_PATH = os.path.join(ROOT_PATH, "conf")
+POLICY_FILES = {
+    'identity': 'keystone_policy.json',
+    'compute': 'nova_policy.json'
+}

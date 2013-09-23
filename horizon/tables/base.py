@@ -17,29 +17,29 @@
 import collections
 import copy
 import logging
-from operator import attrgetter
+from operator import attrgetter  # noqa
 import sys
 
-from django.conf import settings
+from django.conf import settings  # noqa
 from django.core import urlresolvers
 from django import forms
-from django.http import HttpResponse
+from django.http import HttpResponse  # noqa
 from django import template
-from django.template.defaultfilters import truncatechars
-from django.template.loader import render_to_string
-from django.utils.datastructures import SortedDict
-from django.utils.html import escape
+from django.template.defaultfilters import truncatechars  # noqa
+from django.template.loader import render_to_string  # noqa
+from django.utils.datastructures import SortedDict  # noqa
+from django.utils.html import escape  # noqa
 from django.utils import http
-from django.utils.http import urlencode
-from django.utils.safestring import mark_safe
+from django.utils.http import urlencode  # noqa
+from django.utils.safestring import mark_safe  # noqa
 from django.utils import termcolors
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import conf
 from horizon import exceptions
 from horizon import messages
-from horizon.tables.actions import FilterAction
-from horizon.tables.actions import LinkAction
+from horizon.tables.actions import FilterAction  # noqa
+from horizon.tables.actions import LinkAction  # noqa
 from horizon.utils import html
 
 
@@ -110,6 +110,7 @@ class Column(html.HTMLElement):
                     ('true', True)
                     ('up', True),
                     ('active', True),
+                    ('yes', True),
                     ('on', True),
                     ('none', None),
                     ('unknown', None),
@@ -118,6 +119,7 @@ class Column(html.HTMLElement):
                     ('down', False),
                     ('false', False),
                     ('inactive', False),
+                    ('no', False),
                     ('off', False),
                 )
 
@@ -168,6 +170,12 @@ class Column(html.HTMLElement):
         is displayed as a link.
         Example: ``classes=('link-foo', 'link-bar')``.
         Defaults to ``None``.
+
+    .. attribute:: wrap_list
+
+        Boolean value indicating whether the contents of this cell should be
+        wrapped in a ``<ul></ul>`` tag. Useful in conjunction with Django's
+        ``unordered_list`` template filter. Defaults to ``False``.
     """
     summation_methods = {
         "sum": sum,
@@ -183,6 +191,7 @@ class Column(html.HTMLElement):
         ('enabled', True),
         ('true', True),
         ('up', True),
+        ('yes', True),
         ('active', True),
         ('on', True),
         ('none', None),
@@ -192,6 +201,7 @@ class Column(html.HTMLElement):
         ('down', False),
         ('false', False),
         ('inactive', False),
+        ('no', False),
         ('off', False),
     )
 
@@ -199,7 +209,7 @@ class Column(html.HTMLElement):
                  link=None, allowed_data_types=[], hidden=False, attrs=None,
                  status=False, status_choices=None, display_choices=None,
                  empty_value=None, filters=None, classes=None, summation=None,
-                 auto=None, truncate=None, link_classes=None):
+                 auto=None, truncate=None, link_classes=None, wrap_list=False):
         self.classes = list(classes or getattr(self, "classes", []))
         super(Column, self).__init__()
         self.attrs.update(attrs or {})
@@ -228,6 +238,7 @@ class Column(html.HTMLElement):
         self.filters = filters or []
         self.truncate = truncate
         self.link_classes = link_classes or []
+        self.wrap_list = wrap_list
 
         if status_choices:
             self.status_choices = status_choices
@@ -542,6 +553,7 @@ class Cell(html.HTMLElement):
         self.data = data
         self.column = column
         self.row = row
+        self.wrap_list = column.wrap_list
 
     def __repr__(self):
         return '<%s: %s, %s>' % (self.__class__.__name__,
@@ -565,7 +577,7 @@ class Cell(html.HTMLElement):
                     data = self.column.empty_value(self.datum)
                 else:
                     data = self.column.empty_value
-        except:
+        except Exception:
             data = None
             exc_info = sys.exc_info()
             raise template.TemplateSyntaxError, exc_info[1], exc_info[2]
@@ -1210,7 +1222,7 @@ class DataTable(object):
                     datum = new_row.get_data(request, obj_id)
                     new_row.load_cells(datum)
                     error = False
-                except:
+                except Exception:
                     datum = None
                     error = exceptions.handle(request, ignore=True)
                 if request.is_ajax():
@@ -1344,7 +1356,7 @@ class DataTable(object):
                     self.selected = True
                     row.classes.append('current_selected')
                 rows.append(row)
-        except:
+        except Exception:
             # Exceptions can be swallowed at the template level here,
             # re-raising as a TemplateSyntaxError makes them visible.
             LOG.exception("Error while rendering table rows.")

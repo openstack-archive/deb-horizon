@@ -1,11 +1,11 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError  # noqa
 from django.forms import forms
 from django.forms import widgets
-from django.utils.encoding import force_unicode
-from django.utils.functional import Promise
-from django.utils.html import conditional_escape
-from django.utils.html import escape
-from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_unicode  # noqa
+from django.utils.functional import Promise  # noqa
+from django.utils.html import conditional_escape  # noqa
+from django.utils.html import escape  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 import netaddr
 import re
 
@@ -68,7 +68,7 @@ class IPField(forms.Field):
                 self.ip = netaddr.IPNetwork(value)
             else:
                 self.ip = netaddr.IPAddress(value)
-        except:
+        except Exception:
             raise ValidationError(self.invalid_format_message)
 
         if not any([self.version & IPv4 > 0 and self.ip.version == 4,

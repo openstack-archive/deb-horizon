@@ -14,9 +14,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -24,70 +24,47 @@ from horizon import tables
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_ADD_MEMBER_AJAX_VIEW_TEMPLATE
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_ADD_MEMBER_VIEW_TEMPLATE
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_CREATE_VIEW_TEMPLATE
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_INDEX_URL
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_INDEX_VIEW_TEMPLATE
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_MANAGE_VIEW_TEMPLATE
-from openstack_dashboard.dashboards.admin.groups.constants \
-    import GROUPS_UPDATE_VIEW_TEMPLATE
-from openstack_dashboard.dashboards.admin.groups.forms import CreateGroupForm
-from openstack_dashboard.dashboards.admin.groups.forms import UpdateGroupForm
-from openstack_dashboard.dashboards.admin.groups.tables \
-    import GroupMembersTable
-from openstack_dashboard.dashboards.admin.groups.tables \
-    import GroupNonMembersTable
-from openstack_dashboard.dashboards.admin.groups.tables import GroupsTable
+from openstack_dashboard.dashboards.admin.groups import constants
+from openstack_dashboard.dashboards.admin.groups \
+    import forms as project_forms
+from openstack_dashboard.dashboards.admin.groups \
+    import tables as project_tables
 
 
 class IndexView(tables.DataTableView):
-    table_class = GroupsTable
-    template_name = GROUPS_INDEX_VIEW_TEMPLATE
+    table_class = project_tables.GroupsTable
+    template_name = constants.GROUPS_INDEX_VIEW_TEMPLATE
 
     def get_data(self):
         groups = []
         domain_context = self.request.session.get('domain_context', None)
         try:
-            # TODO(dklyle): once keystoneclient supports filtering by
-            # domain change this to use that cleaner method
-            groups = api.keystone.group_list(self.request)
-            if domain_context:
-                domain_groups = []
-                for group in groups:
-                    if group.domain_id == domain_context:
-                        domain_groups.append(group)
-                groups = domain_groups
-        except:
+            groups = api.keystone.group_list(self.request,
+                                             domain=domain_context)
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve group list.'))
         return groups
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreateGroupForm
-    template_name = GROUPS_CREATE_VIEW_TEMPLATE
-    success_url = reverse_lazy(GROUPS_INDEX_URL)
+    form_class = project_forms.CreateGroupForm
+    template_name = constants.GROUPS_CREATE_VIEW_TEMPLATE
+    success_url = reverse_lazy(constants.GROUPS_INDEX_URL)
 
 
 class UpdateView(forms.ModalFormView):
-    form_class = UpdateGroupForm
-    template_name = GROUPS_UPDATE_VIEW_TEMPLATE
-    success_url = reverse_lazy(GROUPS_INDEX_URL)
+    form_class = project_forms.UpdateGroupForm
+    template_name = constants.GROUPS_UPDATE_VIEW_TEMPLATE
+    success_url = reverse_lazy(constants.GROUPS_INDEX_URL)
 
     def get_object(self):
         if not hasattr(self, "_object"):
             try:
                 self._object = api.keystone.group_get(self.request,
                                                       self.kwargs['group_id'])
-            except:
-                redirect = reverse(GROUPS_INDEX_URL)
+            except Exception:
+                redirect = reverse(constants.GROUPS_INDEX_URL)
                 exceptions.handle(self.request,
                                   _('Unable to update group.'),
                                   redirect=redirect)
@@ -132,8 +109,8 @@ class GroupManageMixin(object):
 
 
 class ManageMembersView(GroupManageMixin, tables.DataTableView):
-    table_class = GroupMembersTable
-    template_name = GROUPS_MANAGE_VIEW_TEMPLATE
+    table_class = project_tables.GroupMembersTable
+    template_name = constants.GROUPS_MANAGE_VIEW_TEMPLATE
 
     def get_context_data(self, **kwargs):
         context = super(ManageMembersView, self).get_context_data(**kwargs)
@@ -144,7 +121,7 @@ class ManageMembersView(GroupManageMixin, tables.DataTableView):
         group_members = []
         try:
             group_members = self._get_group_members()
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve group users.'))
         return group_members
@@ -152,9 +129,9 @@ class ManageMembersView(GroupManageMixin, tables.DataTableView):
 
 class NonMembersView(GroupManageMixin, forms.ModalFormMixin,
                      tables.DataTableView):
-    template_name = GROUPS_ADD_MEMBER_VIEW_TEMPLATE
-    ajax_template_name = GROUPS_ADD_MEMBER_AJAX_VIEW_TEMPLATE
-    table_class = GroupNonMembersTable
+    template_name = constants.GROUPS_ADD_MEMBER_VIEW_TEMPLATE
+    ajax_template_name = constants.GROUPS_ADD_MEMBER_AJAX_VIEW_TEMPLATE
+    table_class = project_tables.GroupNonMembersTable
 
     def get_context_data(self, **kwargs):
         context = super(NonMembersView, self).get_context_data(**kwargs)
@@ -165,7 +142,7 @@ class NonMembersView(GroupManageMixin, forms.ModalFormMixin,
         group_non_members = []
         try:
             group_non_members = self._get_group_non_members()
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve users.'))
         return group_non_members

@@ -19,9 +19,7 @@
 #    under the License.
 
 from django import forms
-from django.forms.forms import NON_FIELD_ERRORS
-from django.utils import dates
-from django.utils import timezone
+from django.forms.forms import NON_FIELD_ERRORS  # noqa
 
 
 class SelfHandlingMixin(object):
@@ -38,6 +36,8 @@ class SelfHandlingForm(SelfHandlingMixin, forms.Form):
     A base :class:`Form <django:django.forms.Form>` class which includes
     processing logic in its subclasses.
     """
+    required_css_class = 'required'
+
     def api_error(self, message):
         """
         Adds an error to the form's error dictionary after validation
@@ -49,13 +49,11 @@ class SelfHandlingForm(SelfHandlingMixin, forms.Form):
 
 
 class DateForm(forms.Form):
-    """ A simple form for selecting a start date. """
-    month = forms.ChoiceField(choices=dates.MONTHS.items())
-    year = forms.ChoiceField()
+    """ A simple form for selecting a range of time. """
+    start = forms.DateField(input_formats=("%Y-%m-%d",))
+    end = forms.DateField(input_formats=("%Y-%m-%d",))
 
     def __init__(self, *args, **kwargs):
         super(DateForm, self).__init__(*args, **kwargs)
-        years = [(year, year) for year
-                 in xrange(2009, timezone.now().year + 1)]
-        years.reverse()
-        self.fields['year'].choices = years
+        self.fields['start'].widget.attrs['data-date-format'] = "yyyy-mm-dd"
+        self.fields['end'].widget.attrs['data-date-format'] = "yyyy-mm-dd"

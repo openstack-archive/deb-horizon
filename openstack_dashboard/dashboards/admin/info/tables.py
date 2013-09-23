@@ -1,46 +1,14 @@
 import logging
 
 from django import template
-from django.utils.translation import ugettext_lazy as _
+from django.template import defaultfilters as filters
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import tables
+from horizon.utils import filters as utils_filters
 
 
 LOG = logging.getLogger(__name__)
-
-
-class QuotaFilterAction(tables.FilterAction):
-    def filter(self, table, tenants, filter_string):
-        q = filter_string.lower()
-
-        def comp(tenant):
-            if q in tenant.name.lower():
-                return True
-            return False
-
-        return filter(comp, tenants)
-
-
-def get_quota_name(quota):
-    if quota.name == "cores":
-        return _('VCPUs')
-    if quota.name == "floating_ips":
-        return _('Floating IPs')
-    return quota.name.replace("_", " ").title()
-
-
-class QuotasTable(tables.DataTable):
-    name = tables.Column(get_quota_name, verbose_name=_('Quota Name'))
-    limit = tables.Column("limit", verbose_name=_('Limit'))
-
-    def get_object_id(self, obj):
-        return obj.name
-
-    class Meta:
-        name = "quotas"
-        verbose_name = _("Quotas")
-        table_actions = (QuotaFilterAction,)
-        multi_select = False
 
 
 class ServiceFilterAction(tables.FilterAction):
@@ -85,3 +53,146 @@ class ServicesTable(tables.DataTable):
         table_actions = (ServiceFilterAction,)
         multi_select = False
         status_columns = ["enabled"]
+
+
+def get_available(zone):
+    return zone.zoneState['available']
+
+
+def get_hosts(zone):
+    hosts = zone.hosts
+    host_details = []
+    for name, services in hosts.items():
+        up = all([s['active'] and s['available'] for k, s in services.items()])
+        up = _("Services Up") if up else _("Services Down")
+        host_details.append("%(host)s (%(up)s)" % {'host': name, 'up': up})
+    return host_details
+
+
+class ZonesTable(tables.DataTable):
+    name = tables.Column('zoneName', verbose_name=_('Name'))
+    hosts = tables.Column(get_hosts,
+                          verbose_name=_('Hosts'),
+                          wrap_list=True,
+                          filters=(filters.unordered_list,))
+    available = tables.Column(get_available,
+                              verbose_name=_('Available'),
+                              status=True,
+                              filters=(filters.yesno, filters.capfirst))
+
+    def get_object_id(self, zone):
+        return zone.zoneName
+
+    class Meta:
+        name = "zones"
+        verbose_name = _("Availability Zones")
+        multi_select = False
+        status_columns = ["available"]
+
+
+class NovaServiceFilterAction(tables.FilterAction):
+    def filter(self, table, services, filter_string):
+        q = filter_string.lower()
+
+        def comp(service):
+            if q in service.type.lower():
+                return True
+            return False
+
+        return filter(comp, services)
+
+
+class NovaServicesTable(tables.DataTable):
+    binary = tables.Column("binary", verbose_name=_('Name'))
+    host = tables.Column('host', verbose_name=_('Host'))
+    zone = tables.Column('zone', verbose_name=_('Zone'))
+    status = tables.Column('status', verbose_name=_('Status'))
+    state = tables.Column('state', verbose_name=_('State'))
+    updated_at = tables.Column('updated_at',
+                               verbose_name=_('Updated At'),
+                               filters=(utils_filters.parse_isotime,
+                                        filters.timesince))
+
+    def get_object_id(self, obj):
+        return "%s-%s-%s" % (obj.binary, obj.host, obj.zone)
+
+    class Meta:
+        name = "nova_services"
+        verbose_name = _("Compute Services")
+        table_actions = (NovaServiceFilterAction,)
+        multi_select = False
+
+
+def get_hosts(aggregate):
+    return [host for host in aggregate.hosts]
+
+
+def get_metadata(aggregate):
+    return [' = '.join([key, val]) for key, val
+            in aggregate.metadata.iteritems()]
+
+
+class AggregatesTable(tables.DataTable):
+    name = tables.Column("name",
+                         verbose_name=_("Name"))
+    availability_zone = tables.Column("availability_zone",
+                                      verbose_name=_("Availability Zone"))
+    hosts = tables.Column(get_hosts,
+                          verbose_name=_("Hosts"),
+                          wrap_list=True,
+                          filters=(filters.unordered_list,))
+    metadata = tables.Column(get_metadata,
+                             verbose_name=_("Metadata"),
+                             wrap_list=True,
+                             filters=(filters.unordered_list,))
+
+    class Meta:
+        name = "aggregates"
+        verbose_name = _("Host Aggregates")
+
+
+class NetworkAgentsFilterAction(tables.FilterAction):
+    def filter(self, table, agents, filter_string):
+        q = filter_string.lower()
+
+        def comp(agent):
+            if q in agent.agent_type.lower():
+                return True
+            return False
+
+        return filter(comp, agents)
+
+
+def get_network_agent_status(agent):
+    if agent.admin_state_up:
+        return _('Enabled')
+
+    return _('Disabled')
+
+
+def get_network_agent_state(agent):
+    if agent.alive:
+        return _('Up')
+
+    return _('Down')
+
+
+class NetworkAgentsTable(tables.DataTable):
+    agent_type = tables.Column('agent_type', verbose_name=_('Type'))
+    binary = tables.Column("binary", verbose_name=_('Name'))
+    host = tables.Column('host', verbose_name=_('Host'))
+    status = tables.Column(get_network_agent_status, verbose_name=_('Status'))
+    state = tables.Column(get_network_agent_state, verbose_name=_('State'))
+    heartbeat_timestamp = tables.Column('heartbeat_timestamp',
+                                        verbose_name=_('Updated At'),
+                                        filters=(utils_filters.parse_isotime,
+                                                 filters.timesince))
+
+    def get_object_id(self, obj):
+        return "%s-%s" % (obj.binary, obj.host)
+
+    class Meta:
+        name = "network_agents"
+        verbose_name = _("Network Agents")
+        table_actions = (NetworkAgentsFilterAction,)
+        multi_select = False

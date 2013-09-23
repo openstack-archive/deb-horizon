@@ -14,8 +14,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tabs
@@ -45,7 +45,7 @@ class LogTab(tabs.Tab):
             data = api.nova.server_console_output(request,
                                                   instance.id,
                                                   tail_length=35)
-        except:
+        except Exception:
             data = _('Unable to get log for instance "%s".') % instance.id
             exceptions.handle(request, ignore=True)
         return {"instance": instance,
@@ -70,7 +70,7 @@ class ConsoleTab(tabs.Tab):
                     console.url,
                     getattr(instance, "name", ""),
                     instance.id)
-            except:
+            except Exception:
                 try:
                     console = api.nova.server_spice_console(request,
                                                             instance.id)
@@ -78,7 +78,7 @@ class ConsoleTab(tabs.Tab):
                         console.url,
                         getattr(instance, "name", ""),
                         instance.id)
-                except:
+                except Exception:
                     console_url = None
         elif console_type == 'VNC':
             try:
@@ -87,7 +87,7 @@ class ConsoleTab(tabs.Tab):
                     console.url,
                     getattr(instance, "name", ""),
                     instance.id)
-            except:
+            except Exception:
                 console_url = None
         elif console_type == 'SPICE':
             try:
@@ -96,7 +96,7 @@ class ConsoleTab(tabs.Tab):
                     console.url,
                     getattr(instance, "name", ""),
                     instance.id)
-            except:
+            except Exception:
                 console_url = None
         else:
             console_url = None

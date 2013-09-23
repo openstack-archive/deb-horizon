@@ -15,33 +15,28 @@
 #    under the License.
 
 
+import logging
+
 from django.core import urlresolvers
 from django import shortcuts
 from django import template
-from django.template.defaultfilters import title
-from django.utils.http import urlencode
-from django.utils.translation import string_concat
-from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import timesince  # noqa
+from django.template.defaultfilters import title  # noqa
+from django.utils.http import urlencode  # noqa
+from django.utils.translation import string_concat  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
-from horizon.conf import HORIZON_CONFIG
+from horizon import conf
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
 from horizon.templatetags import sizeformat
-from horizon.utils.filters import replace_underscores
-
-import logging
+from horizon.utils import filters
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.access_and_security \
-        .floating_ips.workflows import IPAssociationWorkflow
-from openstack_dashboard.dashboards.project.instances.tabs import ConsoleTab
-from openstack_dashboard.dashboards.project.instances.tabs import \
-    InstanceDetailTabs
-from openstack_dashboard.dashboards.project.instances.tabs import LogTab
-
-from novaclient.v1_1.servers import REBOOT_HARD
-from novaclient.v1_1.servers import REBOOT_SOFT
+from openstack_dashboard.dashboards.project.access_and_security.floating_ips \
+    import workflows
+from openstack_dashboard.dashboards.project.instances import tabs
 
 
 LOG = logging.getLogger(__name__)
@@ -99,12 +94,15 @@ class RebootInstance(tables.BatchAction):
     classes = ('btn-danger', 'btn-reboot')
 
     def allowed(self, request, instance=None):
-        return ((instance.status in ACTIVE_STATES
-                 or instance.status == 'SHUTOFF')
-                and not is_deleting(instance))
+        if instance is not None:
+            return ((instance.status in ACTIVE_STATES
+                     or instance.status == 'SHUTOFF')
+                    and not is_deleting(instance))
+        else:
+            return True
 
     def action(self, request, obj_id):
-        api.nova.server_reboot(request, obj_id, REBOOT_HARD)
+        api.nova.server_reboot(request, obj_id, soft_reboot=False)
 
 
 class SoftRebootInstance(RebootInstance):
@@ -113,7 +111,7 @@ class SoftRebootInstance(RebootInstance):
     action_past = _("Soft Rebooted")
 
     def action(self, request, obj_id):
-        api.nova.server_reboot(request, obj_id, REBOOT_SOFT)
+        api.nova.server_reboot(request, obj_id, soft_reboot=True)
 
 
 class TogglePause(tables.BatchAction):
@@ -125,6 +123,9 @@ class TogglePause(tables.BatchAction):
     classes = ("btn-pause",)
 
     def allowed(self, request, instance=None):
+        if not api.nova.extension_supported('AdminActions',
+                                            request):
+            return False
         self.paused = False
         if not instance:
             return self.paused
@@ -154,6 +155,9 @@ class ToggleSuspend(tables.BatchAction):
     classes = ("btn-suspend",)
 
     def allowed(self, request, instance=None):
+        if not api.nova.extension_supported('AdminActions',
+                                            request):
+            return False
         self.suspended = False
         if not instance:
             self.suspended
@@ -200,7 +204,7 @@ class LaunchLink(tables.LinkAction):
                 self.verbose_name = _("Launch Instance")
                 classes = [c for c in self.classes if c != "disabled"]
                 self.classes = classes
-        except:
+        except Exception:
             LOG.exception("Failed to retrieve quota information")
             # If we can't get the quota information, leave it to the
             # API to check when launching
@@ -261,7 +265,8 @@ class ConsoleLink(tables.LinkAction):
 
     def get_link_url(self, datum):
         base_url = super(ConsoleLink, self).get_link_url(datum)
-        tab_query_string = ConsoleTab(InstanceDetailTabs).get_query_string()
+        tab_query_string = tabs.ConsoleTab(
+            tabs.InstanceDetailTabs).get_query_string()
         return "?".join([base_url, tab_query_string])
 
 
@@ -276,7 +281,8 @@ class LogLink(tables.LinkAction):
 
     def get_link_url(self, datum):
         base_url = super(LogLink, self).get_link_url(datum)
-        tab_query_string = LogTab(InstanceDetailTabs).get_query_string()
+        tab_query_string = tabs.LogTab(
+            tabs.InstanceDetailTabs).get_query_string()
         return "?".join([base_url, tab_query_string])
 
 
@@ -324,6 +330,22 @@ class RevertResize(tables.Action):
         api.nova.server_revert_resize(request, instance)
 
 
+class RebuildInstance(tables.LinkAction):
+    name = "rebuild"
+    verbose_name = _("Rebuild Instance")
+    classes = ("btn-rebuild", "ajax-modal")
+    url = "horizon:project:instances:rebuild"
+
+    def allowed(self, request, instance):
+        return ((instance.status in ACTIVE_STATES
+                 or instance.status == 'SHUTOFF')
+                and not is_deleting(instance))
+
+    def get_link_url(self, datum):
+        instance_id = self.table.get_object_id(datum)
+        return urlresolvers.reverse(self.url, args=[instance_id])
+
+
 class AssociateIP(tables.LinkAction):
     name = "associate"
     verbose_name = _("Associate Floating IP")
@@ -340,7 +362,7 @@ class AssociateIP(tables.LinkAction):
         base_url = urlresolvers.reverse(self.url)
         next = urlresolvers.reverse("horizon:project:instances:index")
         params = {"instance_id": self.table.get_object_id(datum),
-                  IPAssociationWorkflow.redirect_param_name: next}
+                  workflows.IPAssociationWorkflow.redirect_param_name: next}
         params = urlencode(params)
         return "?".join([base_url, params])
 
@@ -368,7 +390,7 @@ class SimpleAssociateIP(tables.Action):
             messages.success(request,
                              _("Successfully associated floating IP: %s")
                              % fip.ip)
-        except:
+        except Exception:
             exceptions.handle(request,
                               _("Unable to associate floating IP."))
         return shortcuts.redirect("horizon:project:instances:index")
@@ -380,7 +402,7 @@ class SimpleDisassociateIP(tables.Action):
     classes = ("btn-danger", "btn-disassociate",)
 
     def allowed(self, request, instance):
-        if not HORIZON_CONFIG["simple_ip_management"]:
+        if not conf.HORIZON_CONFIG["simple_ip_management"]:
             return False
         return not is_deleting(instance)
 
@@ -405,7 +427,7 @@ class SimpleDisassociateIP(tables.Action):
                                    "floating IP: %s") % fip.ip)
             else:
                 messages.info(request, _("No floating IPs to disassociate."))
-        except:
+        except Exception:
             exceptions.handle(request,
                               _("Unable to disassociate floating IP."))
         return shortcuts.redirect("horizon:project:instances:index")
@@ -534,20 +556,23 @@ class InstancesTable(tables.DataTable):
                          attrs={'data-type': 'size'})
     keypair = tables.Column(get_keyname, verbose_name=_("Keypair"))
     status = tables.Column("status",
-                           filters=(title, replace_underscores),
+                           filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),
                            status=True,
                            status_choices=STATUS_CHOICES,
                            display_choices=STATUS_DISPLAY_CHOICES)
     task = tables.Column("OS-EXT-STS:task_state",
                          verbose_name=_("Task"),
-                         filters=(title, replace_underscores),
+                         filters=(title, filters.replace_underscores),
                          status=True,
                          status_choices=TASK_STATUS_CHOICES,
                          display_choices=TASK_DISPLAY_CHOICES)
     state = tables.Column(get_power_state,
-                          filters=(title, replace_underscores),
+                          filters=(title, filters.replace_underscores),
                           verbose_name=_("Power State"))
+    created = tables.Column("created",
+                            verbose_name=_("Uptime"),
+                            filters=(filters.parse_isotime, timesince))
 
     class Meta:
         name = "instances"
@@ -561,4 +586,4 @@ class InstancesTable(tables.DataTable):
                        EditInstanceSecurityGroups, ConsoleLink, LogLink,
                        TogglePause, ToggleSuspend, ResizeLink,
                        SoftRebootInstance, RebootInstance, StopInstance,
-                       TerminateInstance)
+                       RebuildInstance, TerminateInstance)

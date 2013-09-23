@@ -14,15 +14,15 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from contextlib import closing
+from contextlib import closing  # noqa
 import logging
 import tempfile
 import zipfile
 
 from django import http
 from django import shortcuts
-from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.template.loader import render_to_string  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import messages
@@ -52,7 +52,7 @@ def download_ec2_bundle(request):
             keys = api.keystone.create_ec2_credentials(request,
                                                        request.user.id,
                                                        tenant_id)
-    except:
+    except Exception:
         exceptions.handle(request,
                           _('Unable to fetch EC2 credentials.'),
                           redirect=request.build_absolute_uri())
@@ -88,7 +88,7 @@ def download_ec2_bundle(request):
             archive.writestr('cert.pem', credentials.data)
             archive.writestr('cacert.pem', cacert.data)
             archive.writestr('ec2rc.sh', render_to_string(template, context))
-    except:
+    except Exception:
         exceptions.handle(request,
                           _('Error writing zipfile: %(exc)s'),
                           redirect=request.build_absolute_uri())
@@ -97,7 +97,7 @@ def download_ec2_bundle(request):
     response = http.HttpResponse(mimetype='application/zip')
     response.write(temp_zip.read())
     response['Content-Disposition'] = ('attachment; '
-                                       'filename=%s-x509.zip'
+                                       'filename="%s-x509.zip"'
                                        % tenant_name)
     response['Content-Length'] = temp_zip.tell()
     return response
@@ -124,7 +124,7 @@ def download_rc_file(request):
                                     context,
                                     content_type="text/plain")
         response['Content-Disposition'] = ('attachment; '
-                                           'filename=%s-openrc.sh'
+                                           'filename="%s-openrc.sh"'
                                            % tenant_name)
         response['Content-Length'] = str(len(response.content))
         return response

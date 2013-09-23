@@ -14,9 +14,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse_lazy  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -24,27 +24,28 @@ from horizon import tables
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.admin.roles.forms import CreateRoleForm
-from openstack_dashboard.dashboards.admin.roles.forms import UpdateRoleForm
-from openstack_dashboard.dashboards.admin.roles.tables import RolesTable
+from openstack_dashboard.dashboards.admin.roles \
+    import forms as project_forms
+from openstack_dashboard.dashboards.admin.roles \
+    import tables as project_tables
 
 
 class IndexView(tables.DataTableView):
-    table_class = RolesTable
+    table_class = project_tables.RolesTable
     template_name = 'admin/roles/index.html'
 
     def get_data(self):
         roles = []
         try:
             roles = api.keystone.role_list(self.request)
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve roles list.'))
         return roles
 
 
 class UpdateView(forms.ModalFormView):
-    form_class = UpdateRoleForm
+    form_class = project_forms.UpdateRoleForm
     template_name = 'admin/roles/update.html'
     success_url = reverse_lazy('horizon:admin:roles:index')
 
@@ -53,7 +54,7 @@ class UpdateView(forms.ModalFormView):
             try:
                 self._object = api.keystone.role_get(self.request,
                                                      self.kwargs['role_id'])
-            except:
+            except Exception:
                 redirect = reverse("horizon:admin:roles:index")
                 exceptions.handle(self.request,
                                   _('Unable to update role.'),
@@ -72,6 +73,6 @@ class UpdateView(forms.ModalFormView):
 
 
 class CreateView(forms.ModalFormView):
-    form_class = CreateRoleForm
+    form_class = project_forms.CreateRoleForm
     template_name = 'admin/roles/create.html'
     success_url = reverse_lazy('horizon:admin:roles:index')

@@ -17,55 +17,21 @@
 
 import logging
 
-from django.template.defaultfilters import title
-from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import timesince  # noqa
+from django.template.defaultfilters import title  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import tables
-from horizon.utils.filters import replace_underscores
+from horizon.utils import filters
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.instances.tables import \
-        ACTIVE_STATES
-from openstack_dashboard.dashboards.project.instances.tables import \
-        ConfirmResize
-from openstack_dashboard.dashboards.project.instances.tables import \
-        ConsoleLink
-from openstack_dashboard.dashboards.project.instances.tables import \
-        CreateSnapshot
-from openstack_dashboard.dashboards.project.instances.tables import \
-        EditInstance
-from openstack_dashboard.dashboards.project.instances.tables import \
-        get_ips
-from openstack_dashboard.dashboards.project.instances.tables import \
-        get_power_state
-from openstack_dashboard.dashboards.project.instances.tables import \
-        get_size
-from openstack_dashboard.dashboards.project.instances.tables import \
-        is_deleting
-from openstack_dashboard.dashboards.project.instances.tables import \
-        LogLink
-from openstack_dashboard.dashboards.project.instances.tables import \
-        RebootInstance
-from openstack_dashboard.dashboards.project.instances.tables import \
-        RevertResize
-from openstack_dashboard.dashboards.project.instances.tables import \
-        SoftRebootInstance
-from openstack_dashboard.dashboards.project.instances.tables import \
-        STATUS_DISPLAY_CHOICES
-from openstack_dashboard.dashboards.project.instances.tables import \
-        TASK_DISPLAY_CHOICES
-from openstack_dashboard.dashboards.project.instances.tables import \
-        TerminateInstance
-from openstack_dashboard.dashboards.project.instances.tables import \
-        TogglePause
-from openstack_dashboard.dashboards.project.instances.tables import \
-        ToggleSuspend
-from openstack_dashboard.dashboards.project.instances.tables import \
-        UpdateRow
+from openstack_dashboard.dashboards.project.instances \
+    import tables as project_tables
+
 LOG = logging.getLogger(__name__)
 
 
-class AdminEditInstance(EditInstance):
+class AdminEditInstance(project_tables.EditInstance):
     url = "horizon:admin:instances:update"
 
 
@@ -78,15 +44,15 @@ class MigrateInstance(tables.BatchAction):
     classes = ("btn-migrate", "btn-danger")
 
     def allowed(self, request, instance):
-        return ((instance.status in ACTIVE_STATES
+        return ((instance.status in project_tables.ACTIVE_STATES
                  or instance.status == 'SHUTOFF')
-                and not is_deleting(instance))
+                and not project_tables.is_deleting(instance))
 
     def action(self, request, obj_id):
         api.nova.server_migrate(request, obj_id)
 
 
-class AdminUpdateRow(UpdateRow):
+class AdminUpdateRow(project_tables.UpdateRow):
     def get_data(self, request, instance_id):
         instance = super(AdminUpdateRow, self).get_data(request, instance_id)
         tenant = api.keystone.tenant_get(request,
@@ -130,36 +96,49 @@ class AdminInstancesTable(tables.DataTable):
                          verbose_name=_("Name"))
     image_name = tables.Column("image_name",
                                verbose_name=_("Image Name"))
-    ip = tables.Column(get_ips,
+    ip = tables.Column(project_tables.get_ips,
                        verbose_name=_("IP Address"),
                        attrs={'data-type': "ip"})
-    size = tables.Column(get_size,
+    size = tables.Column(project_tables.get_size,
                          verbose_name=_("Size"),
                          classes=('nowrap-col',),
                          attrs={'data-type': 'size'})
     status = tables.Column("status",
-                           filters=(title, replace_underscores),
+                           filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),
                            status=True,
                            status_choices=STATUS_CHOICES,
-                           display_choices=STATUS_DISPLAY_CHOICES)
+                           display_choices=
+                               project_tables.STATUS_DISPLAY_CHOICES)
     task = tables.Column("OS-EXT-STS:task_state",
                          verbose_name=_("Task"),
-                         filters=(title, replace_underscores),
+                         filters=(title, filters.replace_underscores),
                          status=True,
                          status_choices=TASK_STATUS_CHOICES,
-                         display_choices=TASK_DISPLAY_CHOICES)
-    state = tables.Column(get_power_state,
-                          filters=(title, replace_underscores),
+                         display_choices=project_tables.TASK_DISPLAY_CHOICES)
+    state = tables.Column(project_tables.get_power_state,
+                          filters=(title, filters.replace_underscores),
                           verbose_name=_("Power State"))
+    created = tables.Column("created",
+                            verbose_name=_("Uptime"),
+                            filters=(filters.parse_isotime, timesince))
 
     class Meta:
         name = "instances"
         verbose_name = _("Instances")
         status_columns = ["status", "task"]
-        table_actions = (TerminateInstance, AdminInstanceFilterAction)
+        table_actions = (project_tables.TerminateInstance,
+                         AdminInstanceFilterAction)
         row_class = AdminUpdateRow
-        row_actions = (ConfirmResize, RevertResize, AdminEditInstance,
-                       ConsoleLink, LogLink, CreateSnapshot, TogglePause,
-                       ToggleSuspend, MigrateInstance, SoftRebootInstance,
-                       RebootInstance, TerminateInstance)
+        row_actions = (project_tables.ConfirmResize,
+                       project_tables.RevertResize,
+                       AdminEditInstance,
+                       project_tables.ConsoleLink,
+                       project_tables.LogLink,
+                       project_tables.CreateSnapshot,
+                       project_tables.TogglePause,
+                       project_tables.ToggleSuspend,
+                       MigrateInstance,
+                       project_tables.SoftRebootInstance,
+                       project_tables.RebootInstance,
+                       project_tables.TerminateInstance)

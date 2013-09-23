@@ -21,50 +21,43 @@
 
 import logging
 
-from django.utils.datastructures import SortedDict
-from django.utils.translation import ugettext_lazy as _
+from django.utils.datastructures import SortedDict  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tables
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.admin.instances.tables import \
-        AdminInstancesTable
-from openstack_dashboard.dashboards.project.instances.views import \
-        console as p_console
-from openstack_dashboard.dashboards.project.instances.views import \
-        spice as p_spice
-from openstack_dashboard.dashboards.project.instances.views import \
-        UpdateView
-from openstack_dashboard.dashboards.project.instances.views import \
-        vnc as p_vnc
-from openstack_dashboard.dashboards.project.instances.workflows.\
-        update_instance import AdminUpdateInstance
+from openstack_dashboard.dashboards.admin.instances \
+    import tables as project_tables
+from openstack_dashboard.dashboards.project.instances import views
+from openstack_dashboard.dashboards.project.instances.workflows \
+    import update_instance
 
 LOG = logging.getLogger(__name__)
 
 
 # re-use console from project.instances.views to make reflection work
 def console(args, **kvargs):
-    return p_console(args, **kvargs)
+    return views.console(args, **kvargs)
 
 
 # re-use vnc from project.instances.views to make reflection work
 def vnc(args, **kvargs):
-    return p_vnc(args, **kvargs)
+    return views.vnc(args, **kvargs)
 
 
 # re-use spice from project.instances.views to make reflection work
 def spice(args, **kvargs):
-    return p_spice(args, **kvargs)
+    return views.spice(args, **kvargs)
 
 
-class AdminUpdateView(UpdateView):
-    workflow_class = AdminUpdateInstance
+class AdminUpdateView(views.UpdateView):
+    workflow_class = update_instance.AdminUpdateInstance
 
 
 class AdminIndexView(tables.DataTableView):
-    table_class = AdminInstancesTable
+    table_class = project_tables.AdminInstancesTable
     template_name = 'admin/instances/index.html'
 
     def has_more_data(self, table):
@@ -73,14 +66,14 @@ class AdminIndexView(tables.DataTableView):
     def get_data(self):
         instances = []
         marker = self.request.GET.get(
-                        AdminInstancesTable._meta.pagination_param, None)
+            project_tables.AdminInstancesTable._meta.pagination_param, None)
         try:
             instances, self._more = api.nova.server_list(
                                         self.request,
                                         search_opts={'marker': marker,
                                                      'paginate': True},
                                         all_tenants=True)
-        except:
+        except Exception:
             self._more = False
             exceptions.handle(self.request,
                               _('Unable to retrieve instance list.'))
@@ -88,14 +81,14 @@ class AdminIndexView(tables.DataTableView):
             # Gather our flavors to correlate against IDs
             try:
                 flavors = api.nova.flavor_list(self.request)
-            except:
+            except Exception:
                 # If fails to retrieve flavor list, creates an empty list.
                 flavors = []
 
             # Gather our tenants to correlate against IDs
             try:
                 tenants, has_more = api.keystone.tenant_list(self.request)
-            except:
+            except Exception:
                 tenants = []
                 msg = _('Unable to retrieve instance project information.')
                 exceptions.handle(self.request, msg)
@@ -113,7 +106,7 @@ class AdminIndexView(tables.DataTableView):
                         # gets it via nova api.
                         inst.full_flavor = api.nova.flavor_get(
                                             self.request, flavor_id)
-                except:
+                except Exception:
                     msg = _('Unable to retrieve instance size information.')
                     exceptions.handle(self.request, msg)
                 tenant = tenant_dict.get(inst.tenant_id, None)

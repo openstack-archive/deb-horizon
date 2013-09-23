@@ -16,7 +16,7 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -24,19 +24,17 @@ from horizon import tabs
 
 from openstack_dashboard import api
 
-from openstack_dashboard.dashboards.project.routers.ports.forms \
-    import AddInterface
-from openstack_dashboard.dashboards.project.routers.ports.forms \
-    import SetGatewayForm
-from openstack_dashboard.dashboards.project.routers.ports.tabs \
-    import PortDetailTabs
+from openstack_dashboard.dashboards.project.routers.ports \
+    import forms as project_forms
+from openstack_dashboard.dashboards.project.routers.ports \
+    import tabs as project_tabs
 
 
 LOG = logging.getLogger(__name__)
 
 
 class AddInterfaceView(forms.ModalFormView):
-    form_class = AddInterface
+    form_class = project_forms.AddInterface
     template_name = 'project/routers/ports/create.html'
     success_url = 'horizon:project:routers:detail'
     failure_url = 'horizon:project:routers:detail'
@@ -51,7 +49,7 @@ class AddInterfaceView(forms.ModalFormView):
                 router_id = self.kwargs["router_id"]
                 self._object = api.neutron.router_get(self.request,
                                                       router_id)
-            except:
+            except Exception:
                 redirect = reverse(self.failure_url, args=[router_id])
                 msg = _("Unable to retrieve router.")
                 exceptions.handle(self.request, msg, redirect=redirect)
@@ -69,7 +67,7 @@ class AddInterfaceView(forms.ModalFormView):
 
 
 class SetGatewayView(forms.ModalFormView):
-    form_class = SetGatewayForm
+    form_class = project_forms.SetGatewayForm
     template_name = 'project/routers/ports/setgateway.html'
     success_url = 'horizon:project:routers:index'
     failure_url = 'horizon:project:routers:index'
@@ -83,7 +81,7 @@ class SetGatewayView(forms.ModalFormView):
                 router_id = self.kwargs["router_id"]
                 self._object = api.neutron.router_get(self.request,
                                                       router_id)
-            except:
+            except Exception:
                 redirect = reverse(self.failure_url)
                 msg = _("Unable to set gateway.")
                 exceptions.handle(self.request, msg, redirect=redirect)
@@ -101,5 +99,5 @@ class SetGatewayView(forms.ModalFormView):
 
 
 class DetailView(tabs.TabView):
-    tab_group_class = PortDetailTabs
+    tab_group_class = project_tabs.PortDetailTabs
     template_name = 'project/networks/ports/detail.html'

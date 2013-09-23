@@ -20,21 +20,21 @@
 
 import tempfile
 
-from django.conf import settings
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.urlresolvers import reverse
-from django.forms.widgets import HiddenInput
+from django.conf import settings  # noqa
+from django.core.files.uploadedfile import InMemoryUploadedFile  # noqa
+from django.core.urlresolvers import reverse  # noqa
+from django.forms.widgets import HiddenInput  # noqa
 from django import http
-from django.test.utils import override_settings
+from django.test.utils import override_settings  # noqa
 
-from mox import IsA
+from mox import IsA  # noqa
 
 from horizon import tables as horizon_tables
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 
-from openstack_dashboard.dashboards.project.images_and_snapshots.images.forms \
-    import CreateImageForm
+from openstack_dashboard.dashboards.project.images_and_snapshots.images \
+    import forms
 from openstack_dashboard.dashboards.project.images_and_snapshots.images \
     import tables
 
@@ -50,13 +50,14 @@ class CreateImageFormTests(test.TestCase):
         """
         post = {
             'name': u'Ubuntu 11.10',
+            'source_type': u'file',
             'description': u'Login with admin/admin',
             'disk_format': u'qcow2',
             'minimum_disk': 15,
             'minimum_ram': 512,
             'is_public': 1}
         files = {}
-        form = CreateImageForm(post, files)
+        form = forms.CreateImageForm(post, files)
         self.assertEqual(form.is_valid(), False)
 
     @override_settings(HORIZON_IMAGES_ALLOW_UPLOAD=False)
@@ -65,7 +66,7 @@ class CreateImageFormTests(test.TestCase):
         If HORIZON_IMAGES_ALLOW_UPLOAD is false, the image_file field widget
         will be a HiddenInput widget instead of a FileInput widget.
         """
-        form = CreateImageForm({})
+        form = forms.CreateImageForm({})
         self.assertEqual(
             isinstance(form.fields['image_file'].widget, HiddenInput), True)
 
@@ -82,6 +83,7 @@ class ImageViewTests(test.TestCase):
         data = {
             'name': u'Ubuntu 11.10',
             'description': u'Login with admin/admin',
+            'source_type': u'url',
             'copy_from': u'http://cloud-images.ubuntu.com/releases/'
                         u'oneiric/release/ubuntu-11.10-server-cloudimg'
                         u'-amd64-disk1.img',
@@ -121,6 +123,7 @@ class ImageViewTests(test.TestCase):
         data = {
             'name': u'Test Image',
             'description': u'Login with admin/admin',
+            'source_type': u'file',
             'image_file': temp_file,
             'disk_format': u'qcow2',
             'minimum_disk': 15,

@@ -25,34 +25,36 @@ Views for managing Images and Snapshots.
 
 import logging
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tables
 from horizon import tabs
 
 from openstack_dashboard import api
-from openstack_dashboard.api.base import is_service_enabled
+from openstack_dashboard.api import base
 
+from openstack_dashboard.dashboards.project.images_and_snapshots.images \
+    import tables as images_tables
 from openstack_dashboard.dashboards.project.images_and_snapshots.\
-    images.tables import ImagesTable
+    volume_snapshots import tables as vol_snsh_tables
 from openstack_dashboard.dashboards.project.images_and_snapshots.\
-    volume_snapshots.tables import VolumeSnapshotsTable
-from openstack_dashboard.dashboards.project.images_and_snapshots.\
-    volume_snapshots.tabs import SnapshotDetailTabs
+    volume_snapshots import tabs as vol_snsh_tabs
 
 LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.MultiTableView):
-    table_classes = (ImagesTable, VolumeSnapshotsTable)
+    table_classes = (images_tables.ImagesTable,
+                     vol_snsh_tables.VolumeSnapshotsTable)
     template_name = 'project/images_and_snapshots/index.html'
 
     def has_more_data(self, table):
         return getattr(self, "_more_%s" % table.name, False)
 
     def get_images_data(self):
-        marker = self.request.GET.get(ImagesTable._meta.pagination_param, None)
+        marker = self.request.GET.get(
+            images_tables.ImagesTable._meta.pagination_param, None)
         try:
             # FIXME(gabriel): The paging is going to be strange here due to
             # our filtering after the fact.
@@ -61,16 +63,16 @@ class IndexView(tables.MultiTableView):
                                                                  marker=marker)
             images = [im for im in all_images
                       if im.container_format not in ['aki', 'ari']]
-        except:
+        except Exception:
             images = []
             exceptions.handle(self.request, _("Unable to retrieve images."))
         return images
 
     def get_volume_snapshots_data(self):
-        if is_service_enabled(self.request, 'volume'):
+        if base.is_service_enabled(self.request, 'volume'):
             try:
                 snapshots = api.cinder.volume_snapshot_list(self.request)
-            except:
+            except Exception:
                 snapshots = []
                 exceptions.handle(self.request, _("Unable to retrieve "
                                                   "volume snapshots."))
@@ -80,5 +82,5 @@ class IndexView(tables.MultiTableView):
 
 
 class DetailView(tabs.TabView):
-    tab_group_class = SnapshotDetailTabs
+    tab_group_class = vol_snsh_tabs.SnapshotDetailTabs
     template_name = 'project/images_and_snapshots/snapshots/detail.html'

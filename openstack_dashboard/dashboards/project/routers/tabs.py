@@ -14,8 +14,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tabs
@@ -32,7 +32,7 @@ class OverviewTab(tabs.Tab):
         router_id = self.tab_group.kwargs['router_id']
         try:
             router = api.neutron.router_get(request, router_id)
-        except:
+        except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve router details.'),
                               redirect=reverse(self.redirect_url))

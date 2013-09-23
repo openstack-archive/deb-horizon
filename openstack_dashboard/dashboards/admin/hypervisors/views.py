@@ -16,27 +16,37 @@
 
 import logging
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tables
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.admin.hypervisors.tables import \
-        AdminHypervisorsTable
+from openstack_dashboard.dashboards.admin.hypervisors \
+    import tables as project_tables
 
 LOG = logging.getLogger(__name__)
 
 
 class AdminIndexView(tables.DataTableView):
-    table_class = AdminHypervisorsTable
+    table_class = project_tables.AdminHypervisorsTable
     template_name = 'admin/hypervisors/index.html'
 
     def get_data(self):
         hypervisors = []
         try:
             hypervisors = api.nova.hypervisor_list(self.request)
-        except:
+        except Exception:
             exceptions.handle(self.request,
-                _('Unable to retrieve hypervisor list.'))
+                _('Unable to retrieve hypervisor information.'))
 
         return hypervisors
+
+    def get_context_data(self, **kwargs):
+        context = super(AdminIndexView, self).get_context_data(**kwargs)
+        try:
+            context["stats"] = api.nova.hypervisor_stats(self.request)
+        except Exception:
+            exceptions.handle(self.request,
+                _('Unable to retrieve hypervisor statistics.'))
+
+        return context

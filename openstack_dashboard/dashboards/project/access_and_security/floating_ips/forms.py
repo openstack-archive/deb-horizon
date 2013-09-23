@@ -19,13 +19,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
 
 from openstack_dashboard import api
+from openstack_dashboard.usage import quotas
 
 
 class FloatingIpAllocate(forms.SelfHandlingForm):
@@ -38,11 +39,19 @@ class FloatingIpAllocate(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
+            # Prevent allocating more IP than the quota allows
+            usages = quotas.tenant_quota_usages(request)
+            if usages['floating_ips']['available'] <= 0:
+                error_message = _('You are already using all of your available'
+                                  ' floating IPs.')
+                self.api_error(error_message)
+                return False
+
             fip = api.network.tenant_floating_ip_allocate(request,
                                                        pool=data['pool'])
             messages.success(request,
                              _('Allocated Floating IP %(ip)s.')
                              % {"ip": fip.ip})
             return fip
-        except:
+        except Exception:
             exceptions.handle(request, _('Unable to allocate Floating IP.'))

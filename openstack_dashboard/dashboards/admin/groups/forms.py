@@ -16,7 +16,7 @@
 
 import logging
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -39,7 +39,7 @@ class CreateGroupForm(forms.SelfHandlingForm):
         try:
             LOG.info('Creating group with name "%s"' % data['name'])
             domain_context = request.session.get('domain_context', None)
-            new_group = api.keystone.group_create(
+            api.keystone.group_create(
                 request,
                 domain_id=domain_context,
                 name=data['name'],
@@ -47,7 +47,7 @@ class CreateGroupForm(forms.SelfHandlingForm):
             messages.success(request,
                              _('Group "%s" was successfully created.')
                              % data['name'])
-        except:
+        except Exception:
             exceptions.handle(request, _('Unable to create group.'))
             return False
         return True
@@ -71,7 +71,7 @@ class UpdateGroupForm(forms.SelfHandlingForm):
                                       description=data['description'])
             messages.success(request,
                              _('Group has been updated successfully.'))
-        except:
+        except Exception:
             exceptions.handle(request, _('Unable to update the group.'))
             return False
         return True

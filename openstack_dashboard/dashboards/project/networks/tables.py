@@ -15,10 +15,10 @@
 #    under the License.
 import logging
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django import template
 from django.template import defaultfilters as filters
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tables
@@ -55,7 +55,7 @@ class DeleteNetwork(CheckNetworkEditable, tables.DeleteAction):
 
             api.neutron.network_delete(request, network_id)
             LOG.debug('Deleted network %s successfully' % network_id)
-        except:
+        except Exception:
             msg = _('Failed to delete network %s') % network_id
             LOG.info(msg)
             redirect = reverse("horizon:project:networks:index")

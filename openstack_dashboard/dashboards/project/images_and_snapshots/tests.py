@@ -19,10 +19,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse  # noqa
 from django import http
 
-from mox import IsA
+from mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
@@ -36,7 +36,6 @@ class ImagesAndSnapshotsTests(test.TestCase):
                         api.cinder: ('volume_snapshot_list', 'volume_get')})
     def test_index(self):
         images = self.images.list()
-        snapshots = self.snapshots.list()
         volumes = self.volumes.list()
 
         for volume in volumes:

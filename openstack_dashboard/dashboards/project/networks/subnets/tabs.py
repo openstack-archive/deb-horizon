@@ -16,8 +16,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import tabs
@@ -37,7 +37,7 @@ class OverviewTab(tabs.Tab):
         subnet_id = self.tab_group.kwargs['subnet_id']
         try:
             subnet = api.neutron.subnet_get(self.request, subnet_id)
-        except:
+        except Exception:
             redirect = reverse('horizon:project:networks:index')
             msg = _('Unable to retrieve subnet details.')
             exceptions.handle(request, msg, redirect=redirect)

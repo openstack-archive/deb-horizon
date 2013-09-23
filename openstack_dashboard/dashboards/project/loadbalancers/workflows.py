@@ -16,12 +16,12 @@
 
 import logging
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import fields
-from horizon.utils.validators import validate_port_range
+from horizon.utils import validators
 from horizon import workflows
 
 from openstack_dashboard import api
@@ -49,7 +49,7 @@ class AddPoolAction(workflows.Action):
         subnet_id_choices = [('', _("Select a Subnet"))]
         try:
             networks = api.neutron.network_list_for_tenant(request, tenant_id)
-        except:
+        except Exception:
             exceptions.handle(request,
                               _('Unable to retrieve networks list.'))
             networks = []
@@ -72,7 +72,7 @@ class AddPoolAction(workflows.Action):
     class Meta:
         name = _("Add New Pool")
         permissions = ('openstack.services.network',)
-        help_text = _("Create Pool for current tenant.\n\n"
+        help_text = _("Create Pool for current project.\n\n"
                       "Assign a name and description for the pool. "
                       "Choose one subnet where all members of this "
                       "pool must be on. "
@@ -107,9 +107,9 @@ class AddPool(workflows.Workflow):
 
     def handle(self, request, context):
         try:
-            pool = api.lbaas.pool_create(request, **context)
+            api.lbaas.pool_create(request, **context)
             return True
-        except:
+        except Exception:
             return False
 
 
@@ -129,7 +129,7 @@ class AddVipAction(workflows.Action):
     protocol_port = forms.IntegerField(label=_("Protocol Port"), min_value=1,
                               help_text=_("Enter an integer value "
                                           "between 1 and 65535."),
-                              validators=[validate_port_range])
+                              validators=[validators.validate_port_range])
     protocol = forms.ChoiceField(label=_("Protocol"))
     session_persistence = forms.ChoiceField(
         required=False, initial={}, label=_("Session Persistence"))
@@ -225,7 +225,7 @@ class AddVip(workflows.Workflow):
         try:
             pool = api.lbaas.pool_get(request, context['pool_id'])
             context['subnet_id'] = pool['subnet_id']
-        except:
+        except Exception:
             context['subnet_id'] = None
             self.failure_message = _('Unable to retrieve the specified pool. '
                                      'Unable to add VIP "%s".')
@@ -245,7 +245,7 @@ class AddVip(workflows.Workflow):
         try:
             api.lbaas.vip_create(request, **context)
             return True
-        except:
+        except Exception:
             return False
 
 
@@ -265,7 +265,7 @@ class AddMemberAction(workflows.Action):
     protocol_port = forms.IntegerField(label=_("Protocol Port"), min_value=1,
                               help_text=_("Enter an integer value "
                                           "between 1 and 65535."),
-                              validators=[validate_port_range])
+                              validators=[validators.validate_port_range])
     admin_state_up = forms.BooleanField(label=_("Admin State"),
                                         initial=True, required=False)
 
@@ -275,7 +275,7 @@ class AddMemberAction(workflows.Action):
         pool_id_choices = [('', _("Select a Pool"))]
         try:
             pools = api.lbaas.pools_get(request)
-        except:
+        except Exception:
             pools = []
             exceptions.handle(request,
                               _('Unable to retrieve pools list.'))
@@ -288,7 +288,7 @@ class AddMemberAction(workflows.Action):
         members_choices = []
         try:
             servers, has_more = api.nova.server_list(request)
-        except:
+        except Exception:
             servers = []
             exceptions.handle(request,
                               _('Unable to retrieve instances list.'))
@@ -345,14 +345,14 @@ class AddMember(workflows.Workflow):
             params = {'device_id': m}
             try:
                 plist = api.neutron.port_list(request, **params)
-            except:
+            except Exception:
                 return False
             if plist:
                 context['address'] = plist[0].fixed_ips[0]['ip_address']
             try:
                 context['member_id'] = api.lbaas.member_create(
                     request, **context).id
-            except:
+            except Exception:
                 return False
         return True
 
@@ -486,7 +486,7 @@ class AddMonitor(workflows.Workflow):
             context['monitor_id'] = api.lbaas.pool_health_monitor_create(
                 request, **context).get('id')
             return True
-        except:
+        except Exception:
             exceptions.handle(request, _("Unable to add monitor."))
         return False
 
@@ -507,7 +507,7 @@ class AddPMAssociationAction(workflows.Action):
             for m in monitors:
                 if m.id not in context['pool_monitors']:
                     monitor_id_choices.append((m.id, m.id))
-        except:
+        except Exception:
             exceptions.handle(request,
                               _('Unable to retrieve monitors list.'))
         self.fields['monitor_id'].choices = monitor_id_choices
@@ -545,7 +545,7 @@ class AddPMAssociation(workflows.Workflow):
             context['monitor_id'] = api.lbaas.pool_monitor_association_create(
                 request, **context)
             return True
-        except:
+        except Exception:
             exceptions.handle(request, _("Unable to add association."))
         return False
 
@@ -558,14 +558,14 @@ class DeletePMAssociationAction(workflows.Action):
                                                 request, *args, **kwargs)
 
     def populate_monitor_id_choices(self, request, context):
-        self.fields['monitor_id'].label = _("Select a health monitor of %s" %
-                                               context['pool_name'])
+        self.fields['monitor_id'].label = (_("Select a health monitor of %s") %
+                                           context['pool_name'])
 
         monitor_id_choices = [('', _("Select a Monitor"))]
         try:
             for m_id in context['pool_monitors']:
                 monitor_id_choices.append((m_id, m_id))
-        except:
+        except Exception:
             exceptions.handle(request,
                               _('Unable to retrieve monitors list.'))
         self.fields['monitor_id'].choices = monitor_id_choices
@@ -604,6 +604,6 @@ class DeletePMAssociation(workflows.Workflow):
             context['monitor_id'] = api.lbaas.pool_monitor_association_delete(
                 request, **context)
             return True
-        except:
+        except Exception:
             exceptions.handle(request, _("Unable to delete association."))
         return False

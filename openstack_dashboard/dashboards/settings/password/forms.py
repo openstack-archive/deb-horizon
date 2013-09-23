@@ -14,13 +14,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.forms import ValidationError
-from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.debug import sensitive_variables
+from django.conf import settings  # noqa
+from django.forms import ValidationError  # noqa
+from django import http
+from django.utils.translation import ugettext_lazy as _  # noqa
+from django.views.decorators.debug import sensitive_variables  # noqa
 
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
+from horizon.utils import functions as utils
 from horizon.utils import validators
 
 from openstack_dashboard import api
@@ -53,11 +56,14 @@ class PasswordForm(forms.SelfHandlingForm):
 
         if user_is_editable:
             try:
-                passwd = api.keystone.user_update_own_password(request,
+                api.keystone.user_update_own_password(request,
                                                     data['current_password'],
                                                     data['new_password'])
-                messages.success(request, _('Password changed.'))
-            except:
+                response = http.HttpResponseRedirect(settings.LOGOUT_URL)
+                msg = _("Password changed. Please log in again to continue.")
+                utils.add_logout_reason(request, response, msg)
+                return response
+            except Exception:
                 exceptions.handle(request,
                                   _('Unable to change password.'))
                 return False

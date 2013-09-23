@@ -1,16 +1,13 @@
 import logging
 
-from django.core.urlresolvers import reverse
-from django.utils.http import urlencode
-from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse  # noqa
+from django.utils.http import urlencode  # noqa
+from django.utils.translation import ugettext_lazy as _  # noqa
 
-from horizon import exceptions
 from horizon import tables
 
 from openstack_dashboard import api
-
-from openstack_dashboard.dashboards.admin.users.tables import UsersTable
-
+from openstack_dashboard.api import keystone
 
 LOG = logging.getLogger(__name__)
 
@@ -20,9 +17,27 @@ class ViewMembersLink(tables.LinkAction):
     verbose_name = _("Modify Users")
     url = "horizon:admin:projects:update"
     classes = ("ajax-modal", "btn-edit")
+    policy_rules = (("identity", "identity:list_users"),
+                    ("identity", "identity:list_roles"))
 
     def get_link_url(self, project):
         step = 'update_members'
+        base_url = reverse(self.url, args=[project.id])
+        param = urlencode({"step": step})
+        return "?".join([base_url, param])
+
+
+class ViewGroupsLink(tables.LinkAction):
+    name = "groups"
+    verbose_name = _("Modify Groups")
+    url = "horizon:admin:projects:update"
+    classes = ("ajax-modal", "btn-edit")
+
+    def allowed(self, request, project):
+        return keystone.VERSIONS.active >= 3
+
+    def get_link_url(self, project):
+        step = 'update_group_members'
         base_url = reverse(self.url, args=[project.id])
         param = urlencode({"step": step})
         return "?".join([base_url, param])
@@ -33,6 +48,7 @@ class UsageLink(tables.LinkAction):
     verbose_name = _("View Usage")
     url = "horizon:admin:projects:usage"
     classes = ("btn-stats",)
+    policy_rules = (("compute", "compute_extension:simple_tenant_usage:show"),)
 
 
 class CreateProject(tables.LinkAction):
@@ -40,6 +56,7 @@ class CreateProject(tables.LinkAction):
     verbose_name = _("Create Project")
     url = "horizon:admin:projects:create"
     classes = ("btn-launch", "ajax-modal",)
+    policy_rules = (('identity', 'identity:create_project'),)
 
     def allowed(self, request, project):
         return api.keystone.keystone_can_edit_project()
@@ -50,6 +67,7 @@ class UpdateProject(tables.LinkAction):
     verbose_name = _("Edit Project")
     url = "horizon:admin:projects:update"
     classes = ("ajax-modal", "btn-edit")
+    policy_rules = (('identity', 'identity:update_project'),)
 
     def allowed(self, request, project):
         return api.keystone.keystone_can_edit_project()
@@ -60,6 +78,7 @@ class ModifyQuotas(tables.LinkAction):
     verbose_name = "Modify Quotas"
     url = "horizon:admin:projects:update"
     classes = ("ajax-modal", "btn-edit")
+    policy_rules = (('compute', "compute_extension:quotas:update"),)
 
     def get_link_url(self, project):
         step = 'update_quotas'
@@ -71,6 +90,7 @@ class ModifyQuotas(tables.LinkAction):
 class DeleteTenantsAction(tables.DeleteAction):
     data_type_singular = _("Project")
     data_type_plural = _("Projects")
+    policy_rules = (("identity", "identity:delete_project"),)
 
     def allowed(self, request, project):
         return api.keystone.keystone_can_edit_project()
@@ -103,66 +123,8 @@ class TenantsTable(tables.DataTable):
     class Meta:
         name = "tenants"
         verbose_name = _("Projects")
-        row_actions = (ViewMembersLink, UpdateProject, UsageLink,
-                       ModifyQuotas, DeleteTenantsAction)
+        row_actions = (ViewMembersLink, ViewGroupsLink, UpdateProject,
+                       UsageLink, ModifyQuotas, DeleteTenantsAction)
         table_actions = (TenantFilterAction, CreateProject,
                          DeleteTenantsAction)
         pagination_param = "tenant_marker"
-
-
-class RemoveUserAction(tables.BatchAction):
-    name = "remove_user"
-    action_present = _("Remove")
-    action_past = _("Removed")
-    data_type_singular = _("User")
-    data_type_plural = _("Users")
-    classes = ('btn-danger',)
-
-    def action(self, request, user_id):
-        tenant_id = self.table.kwargs['tenant_id']
-        api.keystone.remove_tenant_user(request, tenant_id, user_id)
-
-
-class ProjectUserRolesColumn(tables.Column):
-    def get_raw_data(self, user):
-        request = self.table.request
-        try:
-            roles = api.keystone.roles_for_user(request,
-                                                user.id,
-                                                self.table.kwargs["tenant_id"])
-        except:
-            roles = []
-            exceptions.handle(request,
-                              _("Unable to retrieve role information."))
-        return ", ".join([role.name for role in roles])
-
-
-class TenantUsersTable(UsersTable):
-    roles = ProjectUserRolesColumn("roles", verbose_name=_("Roles"))
-
-    class Meta:
-        name = "tenant_users"
-        verbose_name = _("Users For Project")
-        table_actions = (RemoveUserAction,)
-        row_actions = (RemoveUserAction,)
-        columns = ("name", "email", "id", "roles", "enabled")
-
-
-class AddUserAction(tables.LinkAction):
-    name = "add_user"
-    verbose_name = _("Add To Project")
-    url = "horizon:admin:projects:add_user"
-    classes = ('ajax-modal',)
-
-    def get_link_url(self, user):
-        tenant_id = self.table.kwargs['tenant_id']
-        return reverse(self.url, args=(tenant_id, user.id))
-
-
-class AddUsersTable(UsersTable):
-    class Meta:
-        name = "add_users"
-        verbose_name = _("Add New Users")
-        table_actions = ()
-        row_actions = (AddUserAction,)
-        columns = ("name", "email", "id", "enabled")
