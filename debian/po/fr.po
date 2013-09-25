@@ -1,0 +1,53 @@
+# Translation of horizon debconf templates to French. 
+# Copyright (C) 2013, French l10n team <debian-l10n-french@lists.debian.org>
+# This file is distributed under the same license as the HORIZON package.
+# Julien Patriarca <leatherface@debian.org>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: horizon\n"
+"Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
+"POT-Creation-Date: 2012-11-28 14:00+0000\n"
+"PO-Revision-Date: 2013-08-28 12:37+0100\n"
+"Last-Translator: Julien Patriarca <leatherface@debian.org>\n"
+"Language-Team: FRENCH <debian-l10n-french@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid "Activate Dashboard and disable default VirtualHost?"
+msgstr "Activer Dashboard et désactiver l'hôte virtuel par défaut ?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"In Debian, Apache comes with a default website and a default page, "
+"configured in /etc/apache2/sites-available/default. Select if this "
+"configuration should be disabled and replaced by the Openstack Dashboard "
+"configuration."
+msgstr ""
+"Dans Debian, Apache est fourni avec un site web par défaut ainsi qu'une page par "
+"défaut, configurés dans /etc/apache2/sites-available/default. Veuillez "
+"choisir si cette configuration doit être désactivée et remplacée par la "
+"configuration d'OpenStack Dashboard."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid "Should the Dashboard be installed on HTTPS?"
+msgstr "Est-ce que Dashboard doit être installé sur HTTPS ?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid ""
+"Please choose if you would like Horizon to be installed on HTTPS only, with "
+"a redirection to HTTPS if HTTP is in use."
+msgstr ""
+"Veuillez choisir si vous souhaitez qu'Horizon soit installé sur HTTPS "
+"uniquement, avec une redirection vers HTTPS si HTTP est utilisé."
