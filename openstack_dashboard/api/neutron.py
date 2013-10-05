@@ -27,6 +27,8 @@ from django.conf import settings  # noqa
 from django.utils.datastructures import SortedDict  # noqa
 from django.utils.translation import ugettext_lazy as _  # noqa
 
+from horizon.utils.memoized import memoized  # noqa
+
 from openstack_dashboard.api import base
 from openstack_dashboard.api import network_base
 from openstack_dashboard.api import nova
@@ -52,6 +54,11 @@ class NeutronAPIDictWrapper(base.APIDictWrapper):
 
     def items(self):
         return self._apidict.items()
+
+    @property
+    def name_or_id(self):
+        return (self._apidict.get('name') or
+                '(%s)' % self._apidict['id'][:13])
 
 
 class Agent(NeutronAPIDictWrapper):
@@ -276,12 +283,13 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
         sg_ids = []
         for p in ports:
             sg_ids += p.security_groups
-        return self._list(id=set(sg_ids))
+        return self._list(id=set(sg_ids)) if sg_ids else []
 
-    def update_instance_security_group(self, instance_id, new_sgs):
+    def update_instance_security_group(self, instance_id,
+                                       new_security_group_ids):
         ports = port_list(self.request, device_id=instance_id)
         for p in ports:
-            params = {'security_groups': new_sgs}
+            params = {'security_groups': new_security_group_ids}
             port_modify(self.request, p.id, **params)
 
 
@@ -314,10 +322,15 @@ class FloatingIpManager(network_base.FloatingIpManager):
                 in self.client.list_networks(**search_opts).get('networks')]
 
     def list(self):
-        fips = self.client.list_floatingips().get('floatingips')
+        tenant_id = self.request.user.tenant_id
+        # In Neutron, list_floatingips returns Floating IPs from all tenants
+        # when the API is called with admin role, so we need to filter them
+        # with tenant_id.
+        fips = self.client.list_floatingips(tenant_id=tenant_id)
+        fips = fips.get('floatingips')
         # Get port list to add instance_id to floating IP list
         # instance_id is stored in device_id attribute
-        ports = port_list(self.request)
+        ports = port_list(self.request, tenant_id=tenant_id)
         device_id_dict = SortedDict([(p['id'], p['device_id']) for p in ports])
         for fip in fips:
             if fip['port_id']:
@@ -359,7 +372,8 @@ class FloatingIpManager(network_base.FloatingIpManager):
                                       {'floatingip': update_dict})
 
     def list_targets(self):
-        ports = port_list(self.request)
+        tenant_id = self.request.user.tenant_id
+        ports = port_list(self.request, tenant_id=tenant_id)
         servers, has_more = nova.server_list(self.request)
         server_dict = SortedDict([(s.id, s.name) for s in servers])
         targets = []
@@ -585,8 +599,8 @@ def port_modify(request, port_id, **kwargs):
 
 
 def profile_list(request, type_p, **params):
-    LOG.debug(_("profile_list(): "
-                "profile_type=%(profile_type)s, params=%(params)s"),
+    LOG.debug("profile_list(): "
+              "profile_type=%(profile_type)s, params=%(params)s",
               {'profile_type': type_p, 'params': params})
     if type_p == 'network':
         profiles = neutronclient(request).list_network_profiles(
@@ -598,8 +612,8 @@ def profile_list(request, type_p, **params):
 
 
 def profile_get(request, profile_id, **params):
-    LOG.debug(_("profile_get(): "
-                "profileid=%(profileid)s, params=%(params)s"),
+    LOG.debug("profile_get(): "
+              "profileid=%(profileid)s, params=%(params)s",
               {'profileid': profile_id, 'params': params})
     profile = neutronclient(request).show_network_profile(
         profile_id, **params).get('network_profile')
@@ -607,7 +621,7 @@ def profile_get(request, profile_id, **params):
 
 
 def profile_create(request, **kwargs):
-    LOG.debug(_("profile_create(): kwargs=%s") % kwargs)
+    LOG.debug("profile_create(): kwargs=%s", kwargs)
     body = {'network_profile': {}}
     body['network_profile'].update(kwargs)
     profile = neutronclient(request).create_network_profile(
@@ -616,13 +630,13 @@ def profile_create(request, **kwargs):
 
 
 def profile_delete(request, profile_id):
-    LOG.debug(_("profile_delete(): profile_id=%s") % profile_id)
+    LOG.debug("profile_delete(): profile_id=%s", profile_id)
     neutronclient(request).delete_network_profile(profile_id)
 
 
 def profile_modify(request, profile_id, **kwargs):
-    LOG.debug(_("profile_modify(): "
-                "profileid=%(profileid)s, kwargs=%(kwargs)s"),
+    LOG.debug("profile_modify(): "
+              "profileid=%(profileid)s, kwargs=%(kwargs)s",
               {'profileid': profile_id, 'kwargs': kwargs})
     body = {'network_profile': kwargs}
     profile = neutronclient(request).update_network_profile(
@@ -631,8 +645,8 @@ def profile_modify(request, profile_id, **kwargs):
 
 
 def profile_bindings_list(request, type_p, **params):
-    LOG.debug(_("profile_bindings_list(): "
-                "profile_type=%(profile_type)s params=%(params)s"),
+    LOG.debug("profile_bindings_list(): "
+              "profile_type=%(profile_type)s params=%(params)s",
               {'profile_type': type_p, 'params': params})
     if type_p == 'network':
         bindings = neutronclient(request).list_network_profile_bindings(
@@ -703,6 +717,17 @@ def tenant_quota_update(request, tenant_id, **kwargs):
     return neutronclient(request).update_quota(tenant_id, quotas)
 
 
+def agent_list(request):
+    agents = neutronclient(request).list_agents()
+    return [Agent(a) for a in agents['agents']]
+
+
+def provider_list(request):
+    providers = neutronclient(request).list_service_providers()
+    return providers['service_providers']
+
+
+@memoized
 def list_extensions(request):
     extensions_list = neutronclient(request).list_extensions()
     if 'extensions' in extensions_list:
@@ -711,11 +736,7 @@ def list_extensions(request):
         return {}
 
 
-def agent_list(request):
-    agents = neutronclient(request).list_agents()
-    return [Agent(a) for a in agents['agents']]
-
-
+@memoized
 def is_extension_supported(request, extension_alias):
     extensions = list_extensions(request)
 
@@ -726,13 +747,18 @@ def is_extension_supported(request, extension_alias):
         return False
 
 
+@memoized
 def is_quotas_extension_supported(request):
     network_config = getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {})
-    if network_config.get('enable_quotas', False) and \
-            is_extension_supported(request, 'quotas'):
+    if (network_config.get('enable_quotas', False) and
+            is_extension_supported(request, 'quotas')):
         return True
     else:
         return False
+
+
+def is_security_group_extension_supported(request):
+    return is_extension_supported(request, 'security-group')
 
 
 # Using this mechanism till a better plugin/sub-plugin detection

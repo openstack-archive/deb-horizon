@@ -23,10 +23,12 @@ import os
 import sys
 import warnings
 
+from django.utils.translation import ugettext_lazy as _  # noqa
+
 from openstack_dashboard import exceptions
 
 warnings.formatwarning = lambda message, category, *args, **kwargs: \
-                                '%s: %s' % (category.__name__, message)
+    '%s: %s' % (category.__name__, message)
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 BIN_DIR = os.path.abspath(os.path.join(ROOT_PATH, '..', 'bin'))
@@ -36,14 +38,6 @@ if ROOT_PATH not in sys.path:
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-
-# Ensure that we always have a SECRET_KEY set, even when no local_settings.py
-# file is present. See local_settings.py.example for full documentation on the
-# horizon.utils.secret_key module and its use.
-from horizon.utils import secret_key
-LOCAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'local')
-SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
-                                                   '.secret_key_store'))
 
 SITE_BRANDING = 'OpenStack Dashboard'
 
@@ -81,6 +75,24 @@ HORIZON_CONFIG = {
 # When enabled, a file form field will appear on the create image form.
 # See documentation for deployment considerations.
 HORIZON_IMAGES_ALLOW_UPLOAD = True
+
+# The OPENSTACK_IMAGE_BACKEND settings can be used to customize features
+# in the OpenStack Dashboard related to the Image service, such as the list
+# of supported image formats.
+OPENSTACK_IMAGE_BACKEND = {
+    'image_formats': [
+        ('', ''),
+        ('aki', _('AKI - Amazon Kernel Image')),
+        ('ami', _('AMI - Amazon Machine Image')),
+        ('ari', _('ARI - Amazon Ramdisk Image')),
+        ('iso', _('ISO - Optical Disk Image')),
+        ('qcow2', _('QCOW2 - QEMU Emulator')),
+        ('raw', _('Raw')),
+        ('vdi', _('VDI')),
+        ('vhd', _('VHD')),
+        ('vmdk', _('VMDK'))
+    ]
+}
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -162,22 +174,20 @@ SESSION_TIMEOUT = 1800
 
 gettext_noop = lambda s: s
 LANGUAGES = (
-    ('bg', gettext_noop('Bulgarian (Bulgaria)')),
-    ('cs', gettext_noop('Czech')),
     ('en', gettext_noop('English')),
+    ('en-au', gettext_noop('Australian English')),
+    ('en-gb', gettext_noop('British English')),
     ('es', gettext_noop('Spanish')),
     ('fr', gettext_noop('French')),
-    ('it', gettext_noop('Italiano')),
     ('ja', gettext_noop('Japanese')),
     ('ko', gettext_noop('Korean (Korea)')),
     ('nl', gettext_noop('Dutch (Netherlands)')),
     ('pl', gettext_noop('Polish')),
-    ('pt', gettext_noop('Portuguese')),
     ('pt-br', gettext_noop('Portuguese (Brazil)')),
     ('zh-cn', gettext_noop('Simplified Chinese')),
-    ('zh-tw', gettext_noop('Traditional Chinese')),
 )
 LANGUAGE_CODE = 'en'
+LANGUAGE_COOKIE_NAME = 'horizon_language'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -193,10 +203,22 @@ POLICY_FILES = {
     'compute': 'nova_policy.json'
 }
 
+SECRET_KEY = None
+
 try:
     from local.local_settings import *  # noqa
 except ImportError:
     logging.warning("No local_settings file found.")
+
+# Ensure that we always have a SECRET_KEY set, even when no local_settings.py
+# file is present. See local_settings.py.example for full documentation on the
+# horizon.utils.secret_key module and its use.
+if not SECRET_KEY:
+    from horizon.utils import secret_key
+    LOCAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              'local')
+    SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
+                                                       '.secret_key_store'))
 
 from openstack_dashboard import policy
 POLICY_CHECK_FUNCTION = policy.check

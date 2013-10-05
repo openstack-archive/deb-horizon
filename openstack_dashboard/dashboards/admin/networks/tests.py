@@ -154,7 +154,7 @@ class NetworkTests(test.BaseAdminViewTests):
     def test_network_create_get(self):
         tenants = self.tenants.list()
         api.keystone.tenant_list(IsA(
-                http.HttpRequest)).AndReturn([tenants, False])
+            http.HttpRequest)).AndReturn([tenants, False])
         # TODO(absubram): Remove if clause and create separate
         # test stubs for when profile_support is being used.
         # Additionally ensure those are always run even in default setting
@@ -546,9 +546,10 @@ class NetworkSubnetTests(test.BaseAdminViewTests):
         subnet = self.subnets.first()
         api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
             .AndReturn(subnet)
+        api.neutron.subnet_get(IsA(http.HttpRequest), subnet.id)\
+            .AndReturn(subnet)
         api.neutron.subnet_modify(IsA(http.HttpRequest), subnet.id,
                                   name=subnet.name,
-                                  gateway_ip=subnet.gateway_ip,
                                   enable_dhcp=subnet.enable_dhcp,
                                   dns_nameservers=[],
                                   host_routes=[])\

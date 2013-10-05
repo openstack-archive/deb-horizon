@@ -1,5 +1,5 @@
 ..
-      Copyright 2012 OpenStack, LLC
+      Copyright 2012 OpenStack Foundation
       All Rights Reserved.
 
       Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -72,6 +72,7 @@ the following topic guides.
 .. toctree::
    :maxdepth: 1
 
+   topics/workflows
    topics/tables
    topics/policy
    topics/testing
@@ -95,7 +96,6 @@ In-depth documentation for Horizon and its APIs.
    ref/decorators
    ref/exceptions
    ref/test
-   ref/policy
 
 Source Code Reference
 ---------------------

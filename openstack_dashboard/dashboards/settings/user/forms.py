@@ -19,11 +19,18 @@ import pytz
 
 from django.conf import settings  # noqa
 from django import shortcuts
+from django.utils import encoding
 from django.utils import translation
 from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import forms
 from horizon import messages
+
+
+def _one_year():
+    now = datetime.utcnow()
+    return datetime(now.year + 1, now.month, now.day, now.hour,
+                    now.minute, now.second, now.microsecond, now.tzinfo)
 
 
 class UserSettingsForm(forms.SelfHandlingForm):
@@ -41,9 +48,16 @@ class UserSettingsForm(forms.SelfHandlingForm):
         super(UserSettingsForm, self).__init__(*args, **kwargs)
 
         # Languages
-        languages = [(k, "%s (%s)"
-                      % (translation.get_language_info(k)['name_local'], k))
-                      for k, v in settings.LANGUAGES]
+        def get_language_display_name(code, desc):
+            try:
+                desc = translation.get_language_info(code)['name_local']
+            except KeyError:
+                # If a language is not defined in django.conf.locale.LANG_INFO
+                # get_language_info raises KeyError
+                pass
+            return "%s (%s)" % (desc, code)
+        languages = [(k, get_language_display_name(k, v))
+                     for k, v in settings.LANGUAGES]
         self.fields['language'].choices = languages
 
         # Timezones
@@ -71,15 +85,21 @@ class UserSettingsForm(forms.SelfHandlingForm):
         if lang_code and translation.check_for_language(lang_code):
             if hasattr(request, 'session'):
                 request.session['django_language'] = lang_code
-            else:
-                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang_code)
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang_code,
+                                expires=_one_year())
 
         # Timezone
         request.session['django_timezone'] = pytz.timezone(
             data['timezone']).zone
+        response.set_cookie('django_timezone', data['timezone'],
+                            expires=_one_year())
 
         request.session['horizon_pagesize'] = data['pagesize']
+        response.set_cookie('horizon_pagesize', data['pagesize'],
+                            expires=_one_year())
 
-        messages.success(request, _("Settings saved."))
+        with translation.override(lang_code):
+            messages.success(request,
+                             encoding.force_unicode(_("Settings saved.")))
 
         return response

@@ -1,5 +1,3 @@
-import logging
-
 from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy as _  # noqa
 
@@ -8,7 +6,6 @@ from horizon import tables
 
 from openstack_dashboard import api
 
-LOG = logging.getLogger(__name__)
 
 ENABLE = 0
 DISABLE = 1
@@ -96,7 +93,7 @@ class DeleteUsersAction(tables.DeleteAction):
 
     def allowed(self, request, datum):
         if not api.keystone.keystone_can_edit_user() or \
-               (datum and datum.id == request.user.id):
+                (datum and datum.id == request.user.id):
             return False
         return True
 

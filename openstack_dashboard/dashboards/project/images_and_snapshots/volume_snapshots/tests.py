@@ -32,12 +32,15 @@ INDEX_URL = reverse('horizon:project:images_and_snapshots:index')
 
 
 class VolumeSnapshotsViewTests(test.TestCase):
-    @test.create_stubs({quotas: ('tenant_quota_usages',)})
+    @test.create_stubs({quotas: ('tenant_limit_usages',)})
     def test_create_snapshot_get(self):
         volume = self.volumes.first()
-        usage = {'gigabytes': {'available': 250},
-                 'snapshots': {'available': 6}}
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)).AndReturn(usage)
+        usage_limit = {'maxTotalVolumeGigabytes': 250,
+                       'gigabytesUsed': 20,
+                       'volumesUsed': len(self.volumes.list()),
+                       'maxTotalVolumes': 6}
+        quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
+                                AndReturn(usage_limit)
         self.mox.ReplayAll()
 
         url = reverse('horizon:project:volumes:create_snapshot',
@@ -70,20 +73,27 @@ class VolumeSnapshotsViewTests(test.TestCase):
 
     @test.create_stubs({api.glance: ('image_list_detailed',),
                         api.cinder: ('volume_snapshot_list',
+                                     'volume_list',
                                      'volume_snapshot_delete')})
     def test_delete_volume_snapshot(self):
         vol_snapshots = self.volume_snapshots.list()
+        volumes = self.volumes.list()
         snapshot = self.volume_snapshots.first()
 
         api.glance.image_list_detailed(IsA(http.HttpRequest),
                                        marker=None).AndReturn(([], False))
         api.cinder.volume_snapshot_list(IsA(http.HttpRequest)). \
             AndReturn(vol_snapshots)
+        api.cinder.volume_list(IsA(http.HttpRequest)) \
+            .AndReturn(volumes)
+
         api.cinder.volume_snapshot_delete(IsA(http.HttpRequest), snapshot.id)
         api.glance.image_list_detailed(IsA(http.HttpRequest),
                                        marker=None).AndReturn(([], False))
         api.cinder.volume_snapshot_list(IsA(http.HttpRequest)). \
             AndReturn([])
+        api.cinder.volume_list(IsA(http.HttpRequest)) \
+            .AndReturn(volumes)
         self.mox.ReplayAll()
 
         formData = {'action':

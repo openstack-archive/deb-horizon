@@ -4,7 +4,7 @@
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
 #
-# Copyright 2012 Openstack, LLC
+# Copyright 2012 OpenStack Foundation
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -23,7 +23,6 @@ from django.conf import settings  # noqa
 from django.contrib.auth.models import User  # noqa
 from django.core import urlresolvers
 from django.utils.importlib import import_module  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
 
 import horizon
 from horizon import base
@@ -37,19 +36,19 @@ from horizon.test.test_dashboards.dogs.puppies.panel import Puppies  # noqa
 
 
 class MyDash(horizon.Dashboard):
-    name = _("My Dashboard")
+    name = "My Dashboard"
     slug = "mydash"
     default_panel = "myslug"
 
 
 class MyPanel(horizon.Panel):
-    name = _("My Panel")
+    name = "My Panel"
     slug = "myslug"
     urls = 'horizon.test.test_dashboards.cats.kittens.urls'
 
 
 class AdminPanel(horizon.Panel):
-    name = _("Admin Panel")
+    name = "Admin Panel"
     slug = "admin_panel"
     permissions = ("horizon.test",)
     urls = 'horizon.test.test_dashboards.cats.kittens.urls'
@@ -237,9 +236,9 @@ class HorizonTests(BaseHorizonTests):
         # Simulate ajax call
         resp = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         # Response should be HTTP 401 with redirect header
-        self.assertEquals(resp.status_code, 401)
-        self.assertEquals(resp["X-Horizon-Location"],
-                          redirect_url)
+        self.assertEqual(resp.status_code, 401)
+        self.assertEqual(resp["X-Horizon-Location"],
+                         redirect_url)
 
     def test_required_permissions(self):
         dash = horizon.get_dashboard("cats")
@@ -314,7 +313,7 @@ class CustomPanelTests(BaseHorizonTests):
     def tearDown(self):
         # Restore dash
         cats = horizon.get_dashboard("cats")
-        cats.name = _("Cats")
+        cats.name = "Cats"
         horizon.register(Dogs)
         self._discovered_dashboards.append(Dogs)
         Dogs.register(Puppies)

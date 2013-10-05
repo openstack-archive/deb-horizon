@@ -27,8 +27,6 @@ from horizon import forms
 from horizon import tables
 from horizon import tabs
 
-import logging
-
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
 from openstack_dashboard.usage import quotas
@@ -40,9 +38,6 @@ from openstack_dashboard.dashboards.project.volumes \
     import tables as project_tables
 from openstack_dashboard.dashboards.project.volumes \
     import tabs as project_tabs
-
-
-LOG = logging.getLogger(__name__)
 
 
 class VolumeTableMixIn(object):
@@ -105,13 +100,7 @@ class CreateView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         try:
-            context['usages'] = cinder.tenant_absolute_limits(self.request)
-            volumes = cinder.volume_list(self.request)
-            total_size = sum([getattr(volume, 'size', 0) for volume
-                              in volumes])
-            context['usages']['gigabytesUsed'] = total_size
-            context['usages']['volumesUsed'] = len(volumes)
-
+            context['usages'] = quotas.tenant_limit_usages(self.request)
         except Exception:
             exceptions.handle(self.request)
         return context
@@ -126,7 +115,7 @@ class CreateSnapshotView(forms.ModalFormView):
         context = super(CreateSnapshotView, self).get_context_data(**kwargs)
         context['volume_id'] = self.kwargs['volume_id']
         try:
-            context['usages'] = quotas.tenant_quota_usages(self.request)
+            context['usages'] = quotas.tenant_limit_usages(self.request)
         except Exception:
             exceptions.handle(self.request)
         return context

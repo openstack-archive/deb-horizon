@@ -16,8 +16,12 @@
 
 from django.conf import settings  # noqa
 
-from troveclient import auth
-from troveclient import client
+try:
+    from troveclient import auth
+    from troveclient import client
+    with_trove = True
+except ImportError:
+    with_trove = False
 
 
 class TokenAuth(object):
@@ -29,6 +33,7 @@ class TokenAuth(object):
         self.username = username
         self.service_type = service_type
         self.service_name = service_name
+        self.region = region
 
     def authenticate(self):
         catalog = {
@@ -39,15 +44,21 @@ class TokenAuth(object):
                 }
             }
         }
+        if not with_trove:
+            return None
         return auth.ServiceCatalog(catalog,
                                    service_type=self.service_type,
-                                   service_name=self.service_name)
+                                   service_name=self.service_name,
+                                   region=self.region)
 
 
 def troveclient(request):
+    if not with_trove:
+        return None
     return client.Dbaas(username=request.user,
                         api_key=None,
-                        auth_strategy=TokenAuth)
+                        auth_strategy=TokenAuth,
+                        region_name=request.user.services_region)
 
 
 def instance_list(request, marker=None):
@@ -66,10 +77,16 @@ def instance_delete(request, instance_id):
 
 def instance_create(request, name, volume, flavor, databases=None,
                     users=None, restore_point=None):
+    #TODO(dklyle): adding conditional to support trove without volume
+    # support for now until API supports checking for volume support
+    if volume > 0:
+        volume_params = {'size': volume}
+    else:
+        volume_params = None
     return troveclient(request).instances.create(
         name,
         flavor,
-        {'size': volume},
+        volume=volume_params,
         databases=databases,
         users=users,
         restorePoint=restore_point)

@@ -18,8 +18,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
 from django.core.urlresolvers import reverse_lazy  # noqa
 from django.utils.translation import ugettext_lazy as _  # noqa
 
@@ -28,14 +26,11 @@ from horizon import tables
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project \
-        .images_and_snapshots.images import views
+    .images_and_snapshots.images import views
 
 from openstack_dashboard.dashboards.admin.images import forms
 from openstack_dashboard.dashboards.admin.images \
     import tables as project_tables
-
-
-LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.DataTableView):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-28 14:34+0800\n"
+"POT-Creation-Date: 2013-09-15 18:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: static/horizon/js/horizon.forms.js:79
-msgid "Additional information here..."
+#: static/horizon/js/horizon.d3linechart.js:201
+#: static/horizon/js/horizon.modals.js:178
+msgid "An error occurred. Please try again later."
 msgstr ""
 
-#: static/horizon/js/horizon.forms.js:85
-msgid "Filter"
-msgstr ""
-
+#: static/horizon/js/horizon.firewalls.js:30
 #: static/horizon/js/horizon.instances.js:30
 msgid "There was a problem communicating with the server, please try again."
 msgstr ""
 
+#: static/horizon/js/horizon.forms.js:91
+msgid "Additional information here..."
+msgstr ""
+
+#: static/horizon/js/horizon.forms.js:97
+msgid "Filter"
+msgstr ""
+
 #: static/horizon/js/horizon.membership.js:185
 msgid "No roles"
+msgstr ""
+
+#: static/horizon/js/horizon.modals.js:33
+msgid "Cancel"
 msgstr ""
 
 #: static/horizon/js/horizon.modals.js:125
@@ -41,20 +51,18 @@ msgstr ""
 msgid "Loading"
 msgstr ""
 
-#: static/horizon/js/horizon.modals.js:178
-msgid "An error occurred. Please try again later."
-msgstr ""
-
 #: static/horizon/js/horizon.tables.js:47
 msgid "An error occurred while updating."
 msgstr ""
 
-#: static/horizon/js/horizon.tables.js:143
-msgid "You have selected "
+#: static/horizon/js/horizon.tables.js:154
+#, c-format
+msgid "You have selected %s. "
 msgstr ""
 
 #: static/horizon/js/horizon.tables.js:156
-msgid "Confirm "
+#, c-format
+msgid "Confirm %s"
 msgstr ""
 
 #: static/horizon/js/horizon.tables.js:157

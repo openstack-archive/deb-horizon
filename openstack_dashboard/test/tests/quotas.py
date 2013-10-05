@@ -87,7 +87,7 @@ class QuotaTests(test.APITestCase):
         expected_output = self.get_usages()
 
         # Compare internal structure of usages to expected.
-        self.assertEquals(quota_usages.usages, expected_output)
+        self.assertEqual(quota_usages.usages, expected_output)
 
     @test.create_stubs({api.nova: ('server_list',
                                    'flavor_list',
@@ -117,7 +117,7 @@ class QuotaTests(test.APITestCase):
         expected_output = self.get_usages(with_volume=False)
 
         # Compare internal structure of usages to expected.
-        self.assertEquals(quota_usages.usages, expected_output)
+        self.assertEqual(quota_usages.usages, expected_output)
 
     @test.create_stubs({api.nova: ('server_list',
                                    'flavor_list',
@@ -143,13 +143,13 @@ class QuotaTests(test.APITestCase):
         expected_output = self.get_usages(with_volume=False)
 
         expected_output.update({
-                'ram': {'available': 10000, 'used': 0, 'quota': 10000},
-                'floating_ips': {'available': 1, 'used': 0, 'quota': 1},
-                'instances': {'available': 10, 'used': 0, 'quota': 10},
-                'cores': {'available': 10, 'used': 0, 'quota': 10}})
+            'ram': {'available': 10000, 'used': 0, 'quota': 10000},
+            'floating_ips': {'available': 1, 'used': 0, 'quota': 1},
+            'instances': {'available': 10, 'used': 0, 'quota': 10},
+            'cores': {'available': 10, 'used': 0, 'quota': 10}})
 
         # Compare internal structure of usages to expected.
-        self.assertEquals(quota_usages.usages, expected_output)
+        self.assertEqual(quota_usages.usages, expected_output)
 
     @test.create_stubs({api.nova: ('server_list',
                                    'flavor_list',
@@ -192,4 +192,4 @@ class QuotaTests(test.APITestCase):
                                         'quota': float("inf")}})
 
         # Compare internal structure of usages to expected.
-        self.assertEquals(quota_usages.usages, expected_output)
+        self.assertEqual(quota_usages.usages, expected_output)

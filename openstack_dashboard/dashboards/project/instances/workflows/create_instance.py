@@ -142,22 +142,9 @@ class SetInstanceDetailsAction(workflows.Action):
                               "_launch_details_help.html")
 
     def __init__(self, request, context, *args, **kwargs):
-        super(SetInstanceDetailsAction, self).__init__(request,
-                                                       context,
-                                                       *args,
-                                                       **kwargs)
-        choices = [("", _("Select Image"))]
-        try:
-            images = utils.get_available_images(request,
-                                                context.get('project_id'))
-            for image in images:
-                image.bytes = image.size
-                image.volume_size = functions.bytes_to_gigabytes(image.bytes)
-                choices.append((image.id, image))
-            self.fields['image_id'].choices = choices
-        except Exception:
-            exceptions.handle(self.request,
-                              _('Unable to retrieve list of images .'))
+        self._init_images_cache()
+        super(SetInstanceDetailsAction, self).__init__(
+            request, context, *args, **kwargs)
 
     def clean(self):
         cleaned_data = super(SetInstanceDetailsAction, self).clean()
@@ -185,27 +172,18 @@ class SetInstanceDetailsAction(workflows.Action):
 
         if source_type == 'image_id':
             if not cleaned_data.get('image_id'):
-                raise forms.ValidationError(_("There are no image sources "
-                                              "available; you must first "
-                                              "create an image before "
-                                              "attemtping to launch an "
-                                              "instance."))
+                msg = _("You must select an image.")
+                self._errors['image_id'] = self.error_class([msg])
 
         elif source_type == 'instance_snapshot_id':
             if not cleaned_data['instance_snapshot_id']:
-                raise forms.ValidationError(_("There are no snapshot sources "
-                                              "available; you must first "
-                                              "create an snapshot before "
-                                              "attemtping to launch an "
-                                              "instance."))
+                msg = _("You must select a snapshot.")
+                self._errors['instance_snapshot_id'] = self.error_class([msg])
 
         elif source_type == 'volume_id':
             if not cleaned_data.get('volume_id'):
-                raise forms.ValidationError(_("You can't select an instance "
-                                              "source when booting from a "
-                                              "Volume. The Volume is your "
-                                              "source and should contain "
-                                              "the operating system."))
+                msg = _("You must select a volume.")
+                self._errors['volume_id'] = self.error_class([msg])
             # Prevent launching multiple instances with the same volume.
             # TODO(gabriel): is it safe to launch multiple instances with
             # a snapshot since it should be cloned to new volumes?
@@ -216,19 +194,22 @@ class SetInstanceDetailsAction(workflows.Action):
 
         elif source_type == 'volume_image_id':
             if not cleaned_data['image_id']:
-                self._errors[_('volume_image_id')] = [
-                    u"You must select an image."]
+                msg = _("You must select an image.")
+                self._errors['image_id'] = self.error_class([msg])
             if not self.data.get('volume_size', None):
-                self._errors['volume_size'] = [_(u"You must set volume size")]
+                msg = _("You must set volume size")
+                self._errors['volume_size'] = self.error_class([msg])
             if not cleaned_data.get('device_name'):
-                self._errors['device_name'] = [_(u"You must set device name")]
+                msg = _("You must set device name")
+                self._errors['device_name'] = self.error_class([msg])
 
         elif source_type == 'volume_snapshot_id':
             if not cleaned_data.get('volume_snapshot_id'):
-                self._errors['volume_snapshot_id'] = [
-                    _(u"You must select a snapshot.")]
+                msg = _("You must select a snapshot.")
+                self._errors['volume_snapshot_id'] = self.error_class([msg])
             if not cleaned_data.get('device_name'):
-                self._errors['device_name'] = [_(u"You must set device name")]
+                msg = _("You must set device name")
+                self._errors['device_name'] = self.error_class([msg])
 
         return cleaned_data
 
@@ -262,10 +243,10 @@ class SetInstanceDetailsAction(workflows.Action):
         zone_list = [(zone.zoneName, zone.zoneName)
                       for zone in zones if zone.zoneState['available']]
         zone_list.sort()
-        if zone_list:
-            zone_list.insert(0, ("", _("Any Availability Zone")))
-        else:
+        if not zone_list:
             zone_list.insert(0, ("", _("No availability zones found.")))
+        elif len(zone_list) > 1:
+            zone_list.insert(0, ("", _("Any Availability Zone")))
         return zone_list
 
     def get_help_text(self):
@@ -298,8 +279,22 @@ class SetInstanceDetailsAction(workflows.Action):
                   'size': volume.size,
                   'label': visible_label}))
 
+    def populate_image_id_choices(self, request, context):
+        choices = []
+        images = utils.get_available_images(request,
+                                            context.get('project_id'),
+                                            self._images_cache)
+        for image in images:
+            image.bytes = image.size
+            image.volume_size = functions.bytes_to_gigabytes(image.bytes)
+            choices.append((image.id, image))
+        if choices:
+            choices.insert(0, ("", _("Select Image")))
+        else:
+            choices.insert(0, ("", _("No images available")))
+        return choices
+
     def populate_instance_snapshot_id_choices(self, request, context):
-        self._init_images_cache()
         images = utils.get_available_images(request,
                                             context.get('project_id'),
                                             self._images_cache)
@@ -313,30 +308,35 @@ class SetInstanceDetailsAction(workflows.Action):
         return choices
 
     def populate_volume_id_choices(self, request, context):
-        volume_options = [("", _("Select Volume"))]
         try:
-            volumes = [v for v in cinder.volume_list(self.request)
+            volumes = [self._get_volume_display_name(v)
+                       for v in cinder.volume_list(self.request)
                        if v.status == api.cinder.VOLUME_STATE_AVAILABLE]
-            volume_options.extend([self._get_volume_display_name(vol)
-                                   for vol in volumes])
         except Exception:
+            volumes = []
             exceptions.handle(self.request,
                               _('Unable to retrieve list of volumes.'))
-        return volume_options
+        if volumes:
+            volumes.insert(0, ("", _("Select Volume")))
+        else:
+            volumes.insert(0, ("", _("No volumes available.")))
+        return volumes
 
     def populate_volume_snapshot_id_choices(self, request, context):
-        volume_options = [("", _("Select Volume Snapshot"))]
         try:
             snapshots = cinder.volume_snapshot_list(self.request)
-            snapshots = [s for s in snapshots
+            snapshots = [self._get_volume_display_name(s) for s in snapshots
                          if s.status == api.cinder.VOLUME_STATE_AVAILABLE]
-            volume_options.extend([self._get_volume_display_name(snap)
-                                   for snap in snapshots])
         except Exception:
+            snapshots = []
             exceptions.handle(self.request,
                               _('Unable to retrieve list of volume '
                                 'snapshots.'))
-        return volume_options
+        if snapshots:
+            snapshots.insert(0, ("", _("Select Volume Snapshot")))
+        else:
+            snapshots.insert(0, ("", _("No volume snapshots available.")))
+        return snapshots
 
 
 class SetInstanceDetails(workflows.Step):
@@ -382,15 +382,15 @@ class SetAccessControlsAction(workflows.Action):
                                                    "authentication."),
                                        add_item_link=KEYPAIR_IMPORT_URL)
     admin_pass = forms.RegexField(
-            label=_("Admin Pass"),
-            required=False,
-            widget=forms.PasswordInput(render_value=False),
-            regex=validators.password_validator(),
-            error_messages={'invalid': validators.password_validator_msg()})
+        label=_("Admin Pass"),
+        required=False,
+        widget=forms.PasswordInput(render_value=False),
+        regex=validators.password_validator(),
+        error_messages={'invalid': validators.password_validator_msg()})
     confirm_admin_pass = forms.CharField(
-            label=_("Confirm Admin Pass"),
-            required=False,
-            widget=forms.PasswordInput(render_value=False))
+        label=_("Confirm Admin Pass"),
+        required=False,
+        widget=forms.PasswordInput(render_value=False))
     groups = forms.MultipleChoiceField(label=_("Security Groups"),
                                        required=True,
                                        initial=["default"],
@@ -613,7 +613,7 @@ class LaunchInstance(workflows.Workflow):
         ## HACK for now use first network
         if api.neutron.is_port_profiles_supported():
             net_id = context['network_id'][0]
-            LOG.debug(_("Horizon->Create Port with %(netid)s %(profile_id)s"),
+            LOG.debug("Horizon->Create Port with %(netid)s %(profile_id)s",
                       {'netid': net_id, 'profile_id': context['profile_id']})
             try:
                 port = api.neutron.port_create(request, net_id,

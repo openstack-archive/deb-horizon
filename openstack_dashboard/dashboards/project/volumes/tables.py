@@ -14,8 +14,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
 from django.core.urlresolvers import NoReverseMatch  # noqa
 from django.core.urlresolvers import reverse  # noqa
 from django.template.defaultfilters import title  # noqa
@@ -32,8 +30,6 @@ from openstack_dashboard import api
 from openstack_dashboard.api import cinder
 from openstack_dashboard.usage import quotas
 
-
-LOG = logging.getLogger(__name__)
 
 DELETABLE_STATES = ("available", "error")
 
@@ -244,7 +240,8 @@ class AttachedInstanceColumn(tables.Column):
 class AttachmentsTable(tables.DataTable):
     instance = AttachedInstanceColumn(get_attachment_name,
                                       verbose_name=_("Instance"))
-    device = tables.Column("device")
+    device = tables.Column("device",
+                           verbose_name=_("Device"))
 
     def get_object_id(self, obj):
         return obj['id']
@@ -263,5 +260,6 @@ class AttachmentsTable(tables.DataTable):
 
     class Meta:
         name = "attachments"
+        verbose_name = _("Attachments")
         table_actions = (DetachVolume,)
         row_actions = (DetachVolume,)

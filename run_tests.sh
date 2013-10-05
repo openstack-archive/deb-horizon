@@ -137,7 +137,7 @@ function run_pylint {
 
 function run_pep8 {
   echo "Running flake8 ..."
-  DJANGO_SETTINGS_MODULE=openstack_dashboard.test.settings ${command_wrapper} flake8 $included_dirs
+  DJANGO_SETTINGS_MODULE=openstack_dashboard.test.settings ${command_wrapper} flake8
 }
 
 function run_sphinx {
@@ -330,13 +330,16 @@ function run_tests_all {
 }
 
 function run_makemessages {
+  echo -n "horizon: "
   cd horizon
-  ${command_wrapper} $root/manage.py makemessages --all --no-obsolete
+  ${command_wrapper} $root/manage.py makemessages -l en --no-obsolete
   HORIZON_PY_RESULT=$?
-  ${command_wrapper} $root/manage.py makemessages -d djangojs --all --no-obsolete
+  echo -n "horizon javascript: "
+  ${command_wrapper} $root/manage.py makemessages -d djangojs -l en --no-obsolete
   HORIZON_JS_RESULT=$?
+  echo -n "openstack_dashboard: "
   cd ../openstack_dashboard
-  ${command_wrapper} $root/manage.py makemessages --all --ignore=openstack/common/* --no-obsolete
+  ${command_wrapper} $root/manage.py makemessages -l en --ignore=openstack/common/* --no-obsolete
   DASHBOARD_RESULT=$?
   cd ..
   exit $(($HORIZON_PY_RESULT || $HORIZON_JS_RESULT || $DASHBOARD_RESULT))

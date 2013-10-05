@@ -37,12 +37,8 @@ class NetworkClient(object):
         else:
             self.floating_ips = nova.FloatingIpManager(request)
 
-        # Not all qunantum plugins support security group,
-        # so we have enable_security_group configuration parameter.
-        neutron_sg_enabled = getattr(settings,
-                                     'OPENSTACK_NEUTRON_NETWORK',
-                                     {}).get('enable_security_group', True)
-        if neutron_enabled and neutron_sg_enabled:
+        if (neutron_enabled and
+                neutron.is_security_group_extension_supported(request)):
             self.secgroups = neutron.SecurityGroupManager(request)
         else:
             self.secgroups = nova.SecurityGroupManager(request)
@@ -87,6 +83,10 @@ def floating_ip_target_get_by_instance(request, instance_id):
         instance_id)
 
 
+def floating_ip_simple_associate_supported(request):
+    return NetworkClient(request).floating_ips.is_simple_associate_supported()
+
+
 def security_group_list(request):
     return NetworkClient(request).secgroups.list()
 
@@ -124,9 +124,10 @@ def server_security_groups(request, instance_id):
     return NetworkClient(request).secgroups.list_by_instance(instance_id)
 
 
-def server_update_security_groups(request, instance_id, new_sgs):
+def server_update_security_groups(request, instance_id,
+                                  new_security_group_ids):
     return NetworkClient(request).secgroups.update_instance_security_group(
-        instance_id, new_sgs)
+        instance_id, new_security_group_ids)
 
 
 def security_group_backend(request):

@@ -14,8 +14,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
 from django.core.urlresolvers import reverse  # noqa
 from django.utils.http import urlencode  # noqa
 from django.utils import safestring
@@ -28,9 +26,6 @@ from openstack_dashboard.api import cinder
 
 from openstack_dashboard.dashboards.project.volumes \
     import tables as volume_tables
-
-
-LOG = logging.getLogger(__name__)
 
 
 class DeleteVolumeSnapshot(tables.DeleteAction):
@@ -62,20 +57,24 @@ class UpdateRow(tables.Row):
 
     def get_data(self, request, snapshot_id):
         snapshot = cinder.volume_snapshot_get(request, snapshot_id)
+        snapshot._volume = cinder.volume_get(request, snapshot.volume_id)
         return snapshot
 
 
 class SnapshotVolumeNameColumn(tables.Column):
     def get_raw_data(self, snapshot):
-        request = self.table.request
-        volume_name = api.cinder.volume_get(request,
-                                            snapshot.volume_id).display_name
+        volume = snapshot._volume
+        if volume:
+            volume_name = volume.display_name or volume.id
+        else:
+            volume_name = _("Unknown")
         return safestring.mark_safe(volume_name)
 
     def get_link_url(self, snapshot):
-        volume_id = api.cinder.volume_get(self.table.request,
-                                          snapshot.volume_id).id
-        return reverse(self.link, args=(volume_id,))
+        volume = snapshot._volume
+        if volume:
+            volume_id = volume.id
+            return reverse(self.link, args=(volume_id,))
 
 
 class VolumeSnapshotsTable(volume_tables.VolumesTableBase):

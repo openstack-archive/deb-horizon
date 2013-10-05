@@ -18,8 +18,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
 import netaddr
 
 from django.conf import settings  # noqa
@@ -38,15 +36,12 @@ from openstack_dashboard import api
 from openstack_dashboard.utils import filters
 
 
-LOG = logging.getLogger(__name__)
-
-
 class CreateGroup(forms.SelfHandlingForm):
     name = forms.CharField(label=_("Name"),
                            error_messages={
-                            'required': _('This field is required.'),
-                            'invalid': _("The string may only contain"
-                                         " ASCII characters and numbers.")},
+                               'required': _('This field is required.'),
+                               'invalid': _("The string may only contain"
+                                            " ASCII characters and numbers.")},
                            validators=[validators.validate_slug])
     description = forms.CharField(label=_("Description"))
 
@@ -70,9 +65,9 @@ class UpdateGroup(forms.SelfHandlingForm):
     id = forms.CharField(widget=forms.HiddenInput())
     name = forms.CharField(label=_("Name"),
                            error_messages={
-                            'required': _('This field is required.'),
-                            'invalid': _("The string may only contain"
-                                         " ASCII characters and numbers.")},
+                               'required': _('This field is required.'),
+                               'invalid': _("The string may only contain"
+                                            " ASCII characters and numbers.")},
                            validators=[validators.validate_slug])
     description = forms.CharField(label=_("Description"))
 
@@ -97,8 +92,8 @@ class AddRule(forms.SelfHandlingForm):
     id = forms.CharField(widget=forms.HiddenInput())
     rule_menu = forms.ChoiceField(label=_('Rule'),
                                   widget=forms.Select(attrs={
-                                          'class': 'switchable',
-                                          'data-slug': 'rule_menu'}))
+                                      'class': 'switchable',
+                                      'data-slug': 'rule_menu'}))
 
     # "direction" field is enabled only when custom mode.
     # It is because most common rules in local_settings.py is meaningful
@@ -133,20 +128,20 @@ class AddRule(forms.SelfHandlingForm):
         choices=[('port', _('Port')),
                  ('range', _('Port Range'))],
         widget=forms.Select(attrs={
-              'class': 'switchable switched',
-              'data-slug': 'range',
-              'data-switch-on': 'rule_menu',
-              'data-rule_menu-tcp': _('Open Port'),
-              'data-rule_menu-udp': _('Open Port')}))
+            'class': 'switchable switched',
+            'data-slug': 'range',
+            'data-switch-on': 'rule_menu',
+            'data-rule_menu-tcp': _('Open Port'),
+            'data-rule_menu-udp': _('Open Port')}))
 
     port = forms.IntegerField(label=_("Port"),
                               required=False,
                               help_text=_("Enter an integer value "
                                           "between 1 and 65535."),
                               widget=forms.TextInput(attrs={
-                                   'class': 'switched',
-                                   'data-switch-on': 'range',
-                                   'data-range-port': _('Port')}),
+                                  'class': 'switched',
+                                  'data-switch-on': 'range',
+                                  'data-range-port': _('Port')}),
                               validators=[
                                   utils_validators.validate_port_range])
 
@@ -155,9 +150,9 @@ class AddRule(forms.SelfHandlingForm):
                                    help_text=_("Enter an integer value "
                                                "between 1 and 65535."),
                                    widget=forms.TextInput(attrs={
-                                        'class': 'switched',
-                                        'data-switch-on': 'range',
-                                        'data-range-range': _('From Port')}),
+                                       'class': 'switched',
+                                       'data-switch-on': 'range',
+                                       'data-range-range': _('From Port')}),
                                    validators=[
                                        utils_validators.validate_port_range])
 
@@ -166,9 +161,9 @@ class AddRule(forms.SelfHandlingForm):
                                  help_text=_("Enter an integer value "
                                              "between 1 and 65535."),
                                  widget=forms.TextInput(attrs={
-                                        'class': 'switched',
-                                        'data-switch-on': 'range',
-                                        'data-range-range': _('To Port')}),
+                                     'class': 'switched',
+                                     'data-switch-on': 'range',
+                                     'data-range-range': _('To Port')}),
                                  validators=[
                                      utils_validators.validate_port_range])
 
@@ -177,9 +172,9 @@ class AddRule(forms.SelfHandlingForm):
                                    help_text=_("Enter a value for ICMP type "
                                                "in the range (-1: 255)"),
                                    widget=forms.TextInput(attrs={
-                                        'class': 'switched',
-                                        'data-switch-on': 'rule_menu',
-                                        'data-rule_menu-icmp': _('Type')}),
+                                       'class': 'switched',
+                                       'data-switch-on': 'rule_menu',
+                                       'data-rule_menu-icmp': _('Type')}),
                                    validators=[
                                        utils_validators.validate_port_range])
 
@@ -188,9 +183,9 @@ class AddRule(forms.SelfHandlingForm):
                                    help_text=_("Enter a value for ICMP code "
                                                "in the range (-1: 255)"),
                                    widget=forms.TextInput(attrs={
-                                          'class': 'switched',
-                                          'data-switch-on': 'rule_menu',
-                                          'data-rule_menu-icmp': _('Code')}),
+                                       'class': 'switched',
+                                       'data-switch-on': 'rule_menu',
+                                       'data-rule_menu-icmp': _('Code')}),
                                    validators=[
                                        utils_validators.validate_port_range])
 
@@ -204,8 +199,8 @@ class AddRule(forms.SelfHandlingForm):
                                            'group select "Security '
                                            'Group".'),
                                widget=forms.Select(attrs={
-                                      'class': 'switchable',
-                                      'data-slug': 'remote'}))
+                                   'class': 'switchable',
+                                   'data-slug': 'remote'}))
 
     cidr = fields.IPField(label=_("CIDR"),
                           required=False,
@@ -215,17 +210,17 @@ class AddRule(forms.SelfHandlingForm):
                           version=fields.IPv4 | fields.IPv6,
                           mask=True,
                           widget=forms.TextInput(
-                                attrs={'class': 'switched',
-                                       'data-switch-on': 'remote',
-                                       'data-remote-cidr': _('CIDR')}))
+                              attrs={'class': 'switched',
+                                     'data-switch-on': 'remote',
+                                     'data-remote-cidr': _('CIDR')}))
 
     security_group = forms.ChoiceField(label=_('Security Group'),
                                        required=False,
                                        widget=forms.Select(attrs={
-                                          'class': 'switched',
-                                          'data-switch-on': 'remote',
-                                          'data-remote-sg': _('Security '
-                                                              'Group')}))
+                                           'class': 'switched',
+                                           'data-switch-on': 'remote',
+                                           'data-remote-sg': _('Security '
+                                                               'Group')}))
     # When cidr is used ethertype is determined from IP version of cidr.
     # When source group, ethertype needs to be specified explicitly.
     ethertype = forms.ChoiceField(label=_('Ether Type'),
@@ -365,15 +360,15 @@ class AddRule(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             rule = api.network.security_group_rule_create(
-                        request,
-                        filters.get_int_or_uuid(data['id']),
-                        data['direction'],
-                        data['ethertype'],
-                        data['ip_protocol'],
-                        data['from_port'],
-                        data['to_port'],
-                        data['cidr'],
-                        data['security_group'])
+                request,
+                filters.get_int_or_uuid(data['id']),
+                data['direction'],
+                data['ethertype'],
+                data['ip_protocol'],
+                data['from_port'],
+                data['to_port'],
+                data['cidr'],
+                data['security_group'])
             messages.success(request,
                              _('Successfully added rule: %s') % unicode(rule))
             return rule

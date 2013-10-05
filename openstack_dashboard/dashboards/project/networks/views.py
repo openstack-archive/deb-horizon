@@ -17,8 +17,6 @@
 """
 Views for managing Neutron Networks.
 """
-import logging
-
 from django.core.urlresolvers import reverse_lazy  # noqa
 from django.utils.translation import ugettext_lazy as _  # noqa
 
@@ -39,9 +37,6 @@ from openstack_dashboard.dashboards.project.networks \
     import tables as project_tables
 from openstack_dashboard.dashboards.project.networks \
     import workflows as project_workflows
-
-
-LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.DataTableView):
@@ -138,7 +133,7 @@ class DetailView(tables.MultiTableView):
                 network.set_id_as_name_if_empty(length=0)
             except Exception:
                 msg = _('Unable to retrieve details for network "%s".') \
-                      % (network_id)
+                    % (network_id)
                 exceptions.handle(self.request, msg, redirect=self.failure_url)
             self._network = network
         return self._network

@@ -1,5 +1,3 @@
-import logging
-
 from django.core.urlresolvers import reverse  # noqa
 from django.utils.http import urlencode  # noqa
 from django.utils.translation import ugettext_lazy as _  # noqa
@@ -8,8 +6,6 @@ from horizon import tables
 
 from openstack_dashboard import api
 from openstack_dashboard.api import keystone
-
-LOG = logging.getLogger(__name__)
 
 
 class ViewMembersLink(tables.LinkAction):
@@ -75,7 +71,7 @@ class UpdateProject(tables.LinkAction):
 
 class ModifyQuotas(tables.LinkAction):
     name = "quotas"
-    verbose_name = "Modify Quotas"
+    verbose_name = _("Modify Quotas")
     url = "horizon:admin:projects:update"
     classes = ("ajax-modal", "btn-edit")
     policy_rules = (('compute', "compute_extension:quotas:update"),)

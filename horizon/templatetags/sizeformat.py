@@ -35,7 +35,7 @@ def int_format(value):
 
 
 def float_format(value):
-    return formats.number_format(round(value, 1), 0)
+    return formats.number_format(round(value, 1), 1)
 
 
 def filesizeformat(bytes, filesize_number_format):
@@ -50,16 +50,16 @@ def filesizeformat(bytes, filesize_number_format):
                 "%(size)d", bytes) % {'size': bytes}
     if bytes < 1024 * 1024:
         return translation.ugettext_lazy("%s KB") % \
-                filesize_number_format(bytes / 1024)
+            filesize_number_format(bytes / 1024)
     if bytes < 1024 * 1024 * 1024:
         return translation.ugettext_lazy("%s MB") % \
-                filesize_number_format(bytes / (1024 * 1024))
+            filesize_number_format(bytes / (1024 * 1024))
     if bytes < 1024 * 1024 * 1024 * 1024:
         return translation.ugettext_lazy("%s GB") % \
-                filesize_number_format(bytes / (1024 * 1024 * 1024))
+            filesize_number_format(bytes / (1024 * 1024 * 1024))
     if bytes < 1024 * 1024 * 1024 * 1024 * 1024:
         return translation.ugettext_lazy("%s TB") % \
-                filesize_number_format(bytes / (1024 * 1024 * 1024 * 1024))
+            filesize_number_format(bytes / (1024 * 1024 * 1024 * 1024))
     return translation.ugettext_lazy("%s PB") % \
             filesize_number_format(bytes / (1024 * 1024 * 1024 * 1024 * 1024))
 
@@ -69,6 +69,15 @@ def mbformat(mb):
     if not mb:
         return 0
     return filesizeformat(mb * 1024 * 1024, int_format).replace(' ', '')
+
+
+@register.filter(name='mb_float_format')
+def mb_float_format(mb):
+    """ Takes a size value in mb, and prints returns the data in a
+    saner unit. """
+    if not mb:
+        return 0
+    return filesizeformat(mb * 1024 * 1024, float_format)
 
 
 @register.filter(name='diskgbformat')

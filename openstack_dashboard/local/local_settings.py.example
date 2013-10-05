@@ -155,11 +155,12 @@ OPENSTACK_HYPERVISOR_FEATURES = {
 
 # The OPENSTACK_NEUTRON_NETWORK settings can be used to enable optional
 # services provided by neutron. Options currenly available are load
-# balancer service, security groups, quotas.
+# balancer service, security groups, quotas, VPN service.
 OPENSTACK_NEUTRON_NETWORK = {
     'enable_lb': False,
+    'enable_firewall': False,
     'enable_quotas': True,
-    'enable_security_group': True,
+    'enable_vpn': False,
     # The profile_support option is used to detect if an external router can be
     # configured via the dashboard. When using specific plugins the
     # profile_support can be turned on if needed.
@@ -170,20 +171,20 @@ OPENSTACK_NEUTRON_NETWORK = {
 # The OPENSTACK_IMAGE_BACKEND settings can be used to customize features
 # in the OpenStack Dashboard related to the Image service, such as the list
 # of supported image formats.
-OPENSTACK_IMAGE_BACKEND = {
-    'image_formats': [
-        ('', ''),
-        ('aki', _('AKI - Amazon Kernel Image')),
-        ('ami', _('AMI - Amazon Machine Image')),
-        ('ari', _('ARI - Amazon Ramdisk Image')),
-        ('iso', _('ISO - Optical Disk Image')),
-        ('qcow2', _('QCOW2 - QEMU Emulator')),
-        ('raw', _('Raw')),
-        ('vdi', _('VDI')),
-        ('vhd', _('VHD')),
-        ('vmdk', _('VMDK'))
-    ]
-}
+# OPENSTACK_IMAGE_BACKEND = {
+#     'image_formats': [
+#         ('', ''),
+#         ('aki', _('AKI - Amazon Kernel Image')),
+#         ('ami', _('AMI - Amazon Machine Image')),
+#         ('ari', _('ARI - Amazon Ramdisk Image')),
+#         ('iso', _('ISO - Optical Disk Image')),
+#         ('qcow2', _('QCOW2 - QEMU Emulator')),
+#         ('raw', _('Raw')),
+#         ('vdi', _('VDI')),
+#         ('vhd', _('VHD')),
+#         ('vmdk', _('VMDK'))
+#     ]
+# }
 
 # OPENSTACK_ENDPOINT_TYPE specifies the endpoint type to use for the endpoints
 # in the Keystone service catalog. Use this setting when Horizon is running

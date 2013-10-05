@@ -184,7 +184,7 @@ class UpdateProjectMembersAction(workflows.MembershipAction):
                               redirect=reverse(INDEX_URL))
         for role in role_list:
             field_name = self.get_member_field_name(role.id)
-            label = _(role.name)
+            label = role.name
             self.fields[field_name] = forms.MultipleChoiceField(required=False,
                                                                 label=label)
             self.fields[field_name].choices = users_list
@@ -192,7 +192,13 @@ class UpdateProjectMembersAction(workflows.MembershipAction):
 
         # Figure out users & roles
         if project_id:
-            for user in all_users:
+            try:
+                project_members = api.keystone.user_list(request,
+                    project=project_id)
+            except Exception:
+                exceptions.handle(request, err_msg)
+
+            for user in project_members:
                 try:
                     roles = api.keystone.roles_for_user(self.request,
                                                         user.id,
@@ -281,7 +287,7 @@ class UpdateProjectGroupsAction(workflows.MembershipAction):
                               redirect=reverse(INDEX_URL))
         for role in role_list:
             field_name = self.get_member_field_name(role.id)
-            label = _(role.name)
+            label = role.name
             self.fields[field_name] = forms.MultipleChoiceField(required=False,
                                                                 label=label)
             self.fields[field_name].choices = groups_list
@@ -516,11 +522,11 @@ class UpdateProject(workflows.Workflow):
         # update project info
         try:
             project = api.keystone.tenant_update(
-                                            request,
-                                            project_id,
-                                            name=data['name'],
-                                            description=data['description'],
-                                            enabled=data['enabled'])
+                request,
+                project_id,
+                name=data['name'],
+                description=data['description'],
+                enabled=data['enabled'])
             # Use the domain_id from the project if available
             domain_id = getattr(project, "domain_id", None)
         except Exception:

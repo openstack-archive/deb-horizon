@@ -104,16 +104,16 @@ class UpdateSubnetInfoAction(CreateSubnetInfoAction):
                                    label=_("IP Version"))
 
     gateway_ip = fields.IPField(
-                    label=_("Gateway IP (optional)"),
-                    required=False,
-                    initial="",
-                    help_text=_("IP address of Gateway (e.g. 192.168.0.254). "
-                                "You need to specify an explicit address "
-                                "to set the gateway. "
-                                "If you want to use no gateway, "
-                                "check 'Disable Gateway' below."),
-                    version=fields.IPv4 | fields.IPv6,
-                    mask=False)
+        label=_("Gateway IP (optional)"),
+        required=False,
+        initial="",
+        help_text=_("IP address of Gateway (e.g. 192.168.0.254). "
+                    "You need to specify an explicit address "
+                    "to set the gateway. "
+                    "If you want to use no gateway, "
+                    "check 'Disable Gateway' below."),
+        version=fields.IPv4 | fields.IPv6,
+        mask=False)
     no_gateway = forms.BooleanField(label=_("Disable Gateway"),
                                     initial=False, required=False)
 
@@ -176,6 +176,14 @@ class UpdateSubnet(network_workflows.CreateNetwork):
                 params['gateway_ip'] = None
             elif data['gateway_ip']:
                 params['gateway_ip'] = data['gateway_ip']
+
+            #We should send gateway_ip only when it is changed,
+            #because updating gateway_ip is prohibited
+            #when the ip is used.
+            #see bug 1227268
+            subnet = api.neutron.subnet_get(request, subnet_id)
+            if params['gateway_ip'] == subnet.gateway_ip:
+                del params['gateway_ip']
 
             self._setup_subnet_parameters(params, data, is_create=False)
 

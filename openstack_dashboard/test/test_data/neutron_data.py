@@ -16,8 +16,10 @@ import copy
 import uuid
 
 from openstack_dashboard.api import base
+from openstack_dashboard.api import fwaas
 from openstack_dashboard.api import lbaas
 from openstack_dashboard.api import neutron
+from openstack_dashboard.api import vpn
 
 from openstack_dashboard.test.test_data import utils
 
@@ -32,6 +34,7 @@ def data(TEST):
     TEST.q_floating_ips = utils.TestDataContainer()
     TEST.q_secgroups = utils.TestDataContainer()
     TEST.q_secgroup_rules = utils.TestDataContainer()
+    TEST.providers = utils.TestDataContainer()
     TEST.pools = utils.TestDataContainer()
     TEST.vips = utils.TestDataContainer()
     TEST.members = utils.TestDataContainer()
@@ -41,6 +44,13 @@ def data(TEST):
     TEST.policy_profiles = utils.TestDataContainer()
     TEST.network_profile_binding = utils.TestDataContainer()
     TEST.policy_profile_binding = utils.TestDataContainer()
+    TEST.vpnservices = utils.TestDataContainer()
+    TEST.ikepolicies = utils.TestDataContainer()
+    TEST.ipsecpolicies = utils.TestDataContainer()
+    TEST.ipsecsiteconnections = utils.TestDataContainer()
+    TEST.firewalls = utils.TestDataContainer()
+    TEST.fw_policies = utils.TestDataContainer()
+    TEST.fw_rules = utils.TestDataContainer()
 
     # data return by neutronclient
     TEST.api_agents = utils.TestDataContainer()
@@ -60,6 +70,13 @@ def data(TEST):
     TEST.api_policy_profiles = utils.TestDataContainer()
     TEST.api_network_profile_binding = utils.TestDataContainer()
     TEST.api_policy_profile_binding = utils.TestDataContainer()
+    TEST.api_vpnservices = utils.TestDataContainer()
+    TEST.api_ikepolicies = utils.TestDataContainer()
+    TEST.api_ipsecpolicies = utils.TestDataContainer()
+    TEST.api_ipsecsiteconnections = utils.TestDataContainer()
+    TEST.api_firewalls = utils.TestDataContainer()
+    TEST.api_fw_policies = utils.TestDataContainer()
+    TEST.api_fw_rules = utils.TestDataContainer()
 
     #------------------------------------------------------------
     # 1st network
@@ -120,7 +137,7 @@ def data(TEST):
 
     TEST.api_network_profile_binding.add(network_profile_binding_dict)
     TEST.network_profile_binding.add(neutron.Profile(
-            network_profile_binding_dict))
+        network_profile_binding_dict))
 
     # policy profile binding
     policy_profile_binding_dict = {'profile_id':
@@ -129,7 +146,7 @@ def data(TEST):
 
     TEST.api_policy_profile_binding.add(policy_profile_binding_dict)
     TEST.policy_profile_binding.add(neutron.Profile(
-            policy_profile_binding_dict))
+        policy_profile_binding_dict))
 
     # ports on 1st network
     port_dict = {'admin_state_up': True,
@@ -395,7 +412,8 @@ def data(TEST):
                  'protocol': 'HTTP',
                  'lb_method': 'ROUND_ROBIN',
                  'health_monitors': ['d4a0500f-db2b-4cc4-afcf-ec026febff96'],
-                 'admin_state_up': True}
+                 'admin_state_up': True,
+                 'provider': 'haproxy'}
     TEST.api_pools.add(pool_dict)
     TEST.pools.add(lbaas.Pool(pool_dict))
 
@@ -501,13 +519,14 @@ def data(TEST):
 
     #------------------------------------------------------------
     # Quotas
-    quota_data = dict(floatingip='50',
-                      network='10',
-                      port='50',
-                      router='10',
-                      security_groups='10',
-                      security_group_rules='100',
-                      subnet='10')
+    quota_data = {'network': '10',
+                  'subnet': '10',
+                  'port': '50',
+                  'router': '10',
+                  'floatingip': '50',
+                  'security_group': '20',
+                  'security_group_rule': '100',
+                  }
     TEST.neutron_quotas.add(base.QuotaSet(quota_data))
 
     #------------------------------------------------------------
@@ -518,9 +537,8 @@ def data(TEST):
     extension_2 = {"name": "Quota management support",
                    "alias": "quotas",
                    "description": "Expose functions for quotas management"}
-    extensions = {}
-    extensions['extensions'] = [extension_1, extension_2]
-    TEST.api_extensions.add(extensions)
+    TEST.api_extensions.add(extension_1)
+    TEST.api_extensions.add(extension_2)
 
     #------------------------------------------------------------
     # 1st agent
@@ -560,3 +578,274 @@ def data(TEST):
                       "ports": 1}}
     TEST.api_agents.add(agent_dict)
     TEST.agents.add(neutron.Agent(agent_dict))
+
+    #------------------------------------------------------------
+    # Service providers
+    provider_1 = {"service_type": "LOADBALANCER",
+                  "name": "haproxy",
+                  "default": True}
+    TEST.providers.add(provider_1)
+
+    #------------------------------------------------------------
+    # VPNaaS
+
+    # 1st VPNService
+    vpnservice_dict = {'id': '09a26949-6231-4f72-942a-0c8c0ddd4d61',
+                       'tenant_id': '1',
+                       'name': 'cloud_vpn1',
+                       'description': 'vpn description',
+                       'subnet_id': TEST.subnets.first().id,
+                       'router_id': TEST.routers.first().id,
+                       'vpn_type': 'ipsec',
+                       'ipsecsiteconnections': [],
+                       'admin_state_up': True,
+                       'status': 'Active'}
+    TEST.api_vpnservices.add(vpnservice_dict)
+    TEST.vpnservices.add(vpn.VPNService(vpnservice_dict))
+
+    # 2nd VPNService
+    vpnservice_dict = {'id': '09a26949-6231-4f72-942a-0c8c0ddd4d62',
+                       'tenant_id': '1',
+                       'name': 'cloud_vpn2',
+                       'description': 'vpn description',
+                       'subnet_id': TEST.subnets.first().id,
+                       'router_id': TEST.routers.first().id,
+                       'vpn_type': 'ipsec',
+                       'ipsecsiteconnections': [],
+                       'admin_state_up': True,
+                       'status': 'Active'}
+    TEST.api_vpnservices.add(vpnservice_dict)
+    TEST.vpnservices.add(vpn.VPNService(vpnservice_dict))
+
+    # 1st IKEPolicy
+    ikepolicy_dict = {'id': 'a1f009b7-0ffa-43a7-ba19-dcabb0b4c981',
+                      'tenant_id': '1',
+                      'name': 'ikepolicy_1',
+                      'description': 'ikepolicy description',
+                      'auth_algorithm': 'sha1',
+                      'encryption_algorithm': 'aes-256',
+                      'ike_version': 'v1',
+                      'lifetime': {'units': 'seconds', 'value': 3600},
+                      'phase1_negotiation_mode': 'main',
+                      'pfs': 'group5'}
+    TEST.api_ikepolicies.add(ikepolicy_dict)
+    TEST.ikepolicies.add(vpn.IKEPolicy(ikepolicy_dict))
+
+    # 2nd IKEPolicy
+    ikepolicy_dict = {'id': 'a1f009b7-0ffa-43a7-ba19-dcabb0b4c982',
+                      'tenant_id': '1',
+                      'name': 'ikepolicy_2',
+                      'description': 'ikepolicy description',
+                      'auth_algorithm': 'sha1',
+                      'encryption_algorithm': 'aes-256',
+                      'ike_version': 'v1',
+                      'lifetime': {'units': 'seconds', 'value': 3600},
+                      'phase1_negotiation_mode': 'main',
+                      'pfs': 'group5'}
+    TEST.api_ikepolicies.add(ikepolicy_dict)
+    TEST.ikepolicies.add(vpn.IKEPolicy(ikepolicy_dict))
+
+    # 1st IPSecPolicy
+    ipsecpolicy_dict = {'id': '8376e1dd-2b1c-4346-b23c-6989e75ecdb8',
+                      'tenant_id': '1',
+                      'name': 'ipsecpolicy_1',
+                      'description': 'ipsecpolicy description',
+                      'auth_algorithm': 'sha1',
+                      'encapsulation_mode': 'tunnel',
+                      'encryption_algorithm': '3des',
+                      'lifetime': {'units': 'seconds', 'value': 3600},
+                      'pfs': 'group5',
+                      'transform_protocol': 'esp'}
+    TEST.api_ipsecpolicies.add(ipsecpolicy_dict)
+    TEST.ipsecpolicies.add(vpn.IPSecPolicy(ipsecpolicy_dict))
+
+    # 2nd IPSecPolicy
+    ipsecpolicy_dict = {'id': '8376e1dd-2b1c-4346-b23c-6989e75ecdb9',
+                      'tenant_id': '1',
+                      'name': 'ipsecpolicy_2',
+                      'description': 'ipsecpolicy description',
+                      'auth_algorithm': 'sha1',
+                      'encapsulation_mode': 'tunnel',
+                      'encryption_algorithm': '3des',
+                      'lifetime': {'units': 'seconds', 'value': 3600},
+                      'pfs': 'group5',
+                      'transform_protocol': 'esp'}
+    TEST.api_ipsecpolicies.add(ipsecpolicy_dict)
+    TEST.ipsecpolicies.add(vpn.IPSecPolicy(ipsecpolicy_dict))
+
+    # 1st IPSecSiteConnection
+    ipsecsiteconnection_dict = {'id': 'dd1dd3a0-f349-49be-b013-245e147763d6',
+                          'tenant_id': '1',
+                          'name': 'ipsec_connection_1',
+                          'description': 'vpn connection description',
+                          'dpd': {'action': 'hold',
+                                  'interval': 30,
+                                  'timeout': 120},
+                          'ikepolicy_id': ikepolicy_dict['id'],
+                          'initiator': 'bi-directional',
+                          'ipsecpolicy_id': ipsecpolicy_dict['id'],
+                          'mtu': '1500',
+                          'peer_address':
+                              '2607:f0d0:4545:3:200:f8ff:fe21:67cf',
+                          'peer_cidrs': '20.1.0.0/24',
+                          'peer_id': '2607:f0d0:4545:3:200:f8ff:fe21:67cf',
+                          'psk': 'secret',
+                          'vpnservice_id': vpnservice_dict['id'],
+                          'admin_state_up': True,
+                          'status': 'Active'}
+    TEST.api_ipsecsiteconnections.add(ipsecsiteconnection_dict)
+    TEST.ipsecsiteconnections.add(
+        vpn.IPSecSiteConnection(ipsecsiteconnection_dict))
+
+    # 2nd IPSecSiteConnection
+    ipsecsiteconnection_dict = {'id': 'dd1dd3a0-f349-49be-b013-245e147763d7',
+                          'tenant_id': '1',
+                          'name': 'ipsec_connection_2',
+                          'description': 'vpn connection description',
+                          'dpd': {'action': 'hold',
+                                  'interval': 30,
+                                  'timeout': 120},
+                          'ikepolicy_id': ikepolicy_dict['id'],
+                          'initiator': 'bi-directional',
+                          'ipsecpolicy_id': ipsecpolicy_dict['id'],
+                          'mtu': '1500',
+                          'peer_address': '172.0.0.2',
+                          'peer_cidrs': '20.1.0.0/24',
+                          'peer_id': '172.0.0.2',
+                          'psk': 'secret',
+                          'vpnservice_id': vpnservice_dict['id'],
+                          'admin_state_up': True,
+                          'status': 'Active'}
+    TEST.api_ipsecsiteconnections.add(ipsecsiteconnection_dict)
+    TEST.ipsecsiteconnections.add(
+        vpn.IPSecSiteConnection(ipsecsiteconnection_dict))
+
+    # FWaaS
+
+    # 1st rule (used by 1st policy)
+    rule1_dict = {'id': 'f0881d38-c3eb-4fee-9763-12de3338041d',
+                  'tenant_id': '1',
+                  'name': 'rule1',
+                  'description': 'rule1 description',
+                  'protocol': 'tcp',
+                  'action': 'allow',
+                  'source_ip_address': '1.2.3.0/24',
+                  'source_port': '80',
+                  'destination_ip_address': '4.5.6.7/32',
+                  'destination_port': '1:65535',
+                  'firewall_policy_id': 'abcdef-c3eb-4fee-9763-12de3338041e',
+                  'position': 1,
+                  'shared': True,
+                  'enabled': True}
+    TEST.api_fw_rules.add(rule1_dict)
+
+    rule1 = fwaas.Rule(copy.deepcopy(rule1_dict))
+    # NOTE: rule1['policy'] is set below
+    TEST.fw_rules.add(rule1)
+
+    # 2nd rule (used by 2nd policy; no name)
+    rule2_dict = {'id': 'c6298a93-850f-4f64-b78a-959fd4f1e5df',
+                  'tenant_id': '1',
+                  'name': '',
+                  'description': '',
+                  'protocol': 'udp',
+                  'action': 'deny',
+                  'source_ip_address': '1.2.3.0/24',
+                  'source_port': '80',
+                  'destination_ip_address': '4.5.6.7/32',
+                  'destination_port': '1:65535',
+                  'firewall_policy_id': 'abcdef-c3eb-4fee-9763-12de3338041e',
+                  'position': 2,
+                  'shared': True,
+                  'enabled': True}
+    TEST.api_fw_rules.add(rule2_dict)
+
+    rule2 = fwaas.Rule(copy.deepcopy(rule2_dict))
+    # NOTE: rule2['policy'] is set below
+    TEST.fw_rules.add(rule2)
+
+    # 3rd rule (not used by any policy)
+    rule3_dict = {'id': 'h0881d38-c3eb-4fee-9763-12de3338041d',
+                  'tenant_id': '1',
+                  'name': 'rule3',
+                  'description': 'rule3 description',
+                  'protocol': 'icmp',
+                  'action': 'allow',
+                  'source_ip_address': '1.2.3.0/24',
+                  'source_port': '80',
+                  'destination_ip_address': '4.5.6.7/32',
+                  'destination_port': '1:65535',
+                  'firewall_policy_id': None,
+                  'position': None,
+                  'shared': True,
+                  'enabled': True}
+    TEST.api_fw_rules.add(rule3_dict)
+
+    rule3 = fwaas.Rule(copy.deepcopy(rule3_dict))
+    # rule3 is not associated with any rules
+    rule3._apidict['policy'] = None
+    TEST.fw_rules.add(rule3)
+
+    # 1st policy (associated with 2 rules)
+    policy1_dict = {'id': 'abcdef-c3eb-4fee-9763-12de3338041e',
+                    'tenant_id': '1',
+                    'name': 'policy1',
+                    'description': 'policy with two rules',
+                    'firewall_rules': [rule1_dict['id'], rule2_dict['id']],
+                    'audited': True,
+                    'shared': True}
+    TEST.api_fw_policies.add(policy1_dict)
+
+    policy1 = fwaas.Policy(copy.deepcopy(policy1_dict))
+    policy1._apidict['rules'] = [rule1, rule2]
+    TEST.fw_policies.add(policy1)
+
+    # Reverse relations (rule -> policy)
+    rule1._apidict['policy'] = policy1
+    rule2._apidict['policy'] = policy1
+
+    # 2nd policy (associated with no rules; no name)
+    policy2_dict = {'id': 'cf50b331-787a-4623-825e-da794c918d6a',
+                    'tenant_id': '1',
+                    'name': '',
+                    'description': '',
+                    'firewall_rules': [],
+                    'audited': False,
+                    'shared': False}
+    TEST.api_fw_policies.add(policy2_dict)
+
+    policy2 = fwaas.Policy(copy.deepcopy(policy2_dict))
+    policy2._apidict['rules'] = []
+    TEST.fw_policies.add(policy2)
+
+    # 1st firewall
+    fw1_dict = {'id': '8913dde8-4915-4b90-8d3e-b95eeedb0d49',
+                'tenant_id': '1',
+                'firewall_policy_id':
+                    'abcdef-c3eb-4fee-9763-12de3338041e',
+                'name': 'firewall1',
+                'description': 'firewall description',
+                'status': 'PENDING_CREATE',
+                'shared': True,
+                'admin_state_up': True}
+    TEST.api_firewalls.add(fw1_dict)
+
+    fw1 = fwaas.Firewall(copy.deepcopy(fw1_dict))
+    fw1._apidict['policy'] = policy1
+    TEST.firewalls.add(fw1)
+
+    # 2nd firewall (no name)
+    fw2_dict = {'id': '1aa75150-415f-458e-bae5-5a362a4fb1f7',
+                'tenant_id': '1',
+                'firewall_policy_id':
+                    'abcdef-c3eb-4fee-9763-12de3338041e',
+                'name': '',
+                'description': '',
+                'status': 'PENDING_CREATE',
+                'shared': True,
+                'admin_state_up': True}
+    TEST.api_firewalls.add(fw1_dict)
+
+    fw2 = fwaas.Firewall(copy.deepcopy(fw2_dict))
+    fw2._apidict['policy'] = policy1
+    TEST.firewalls.add(fw1)

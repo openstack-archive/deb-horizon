@@ -45,6 +45,8 @@ LOG = logging.getLogger(__name__)
 class HorizonMiddleware(object):
     """ The main Horizon middleware class. Required for use of Horizon. """
 
+    logout_reason = None
+
     def process_request(self, request):
         """ Adds data necessary for Horizon to function to the request. """
         # Activate timezone handling
@@ -53,25 +55,24 @@ class HorizonMiddleware(object):
             timezone.activate(tz)
 
         # Check for session timeout
-        timeout = 1800
         try:
             timeout = settings.SESSION_TIMEOUT
         except AttributeError:
-            pass
+            timeout = 1800
 
         last_activity = request.session.get('last_activity', None)
         timestamp = datetime.datetime.now()
-        if last_activity and (timestamp - last_activity).seconds > timeout:
-            request.session.pop('last_activity')
-            response = HttpResponseRedirect(settings.LOGOUT_URL)
-            reason = _("Session timed out.")
-            utils.add_logout_reason(request, response, reason)
-            return response
-        request.session['last_activity'] = timestamp
-
         request.horizon = {'dashboard': None,
                            'panel': None,
                            'async_messages': []}
+        if last_activity and (timestamp - last_activity).seconds > timeout:
+            request.session.pop('last_activity')
+            response = HttpResponseRedirect(
+                '%s?next=%s' % (settings.LOGOUT_URL, request.path))
+            self.logout_reason = _("Session timed out.")
+            utils.add_logout_reason(request, response, self.logout_reason)
+            return response
+        request.session['last_activity'] = timestamp
 
     def process_exception(self, request, exception):
         """
@@ -94,8 +95,6 @@ class HorizonMiddleware(object):
                 response_401 = http.HttpResponse(status=401)
                 response_401['X-Horizon-Location'] = response['location']
                 return response_401
-            else:
-                utils.add_logout_reason(request, response, _("Unauthorized."))
 
             return response
 
@@ -121,7 +120,13 @@ class HorizonMiddleware(object):
                 # use django's messages methods here.
                 for tag, message, extra_tags in queued_msgs:
                     getattr(django_messages, tag)(request, message, extra_tags)
-                redirect_response = http.HttpResponse()
+                if response['location'].startswith(settings.LOGOUT_URL):
+                    redirect_response = http.HttpResponse(status=401)
+                    if self.logout_reason is not None:
+                        utils.add_logout_reason(
+                            request, redirect_response, self.logout_reason)
+                else:
+                    redirect_response = http.HttpResponse()
                 redirect_response['X-Horizon-Location'] = response['location']
                 return redirect_response
             if queued_msgs:

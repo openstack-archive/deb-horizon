@@ -5,7 +5,7 @@
 # All Rights Reserved.
 #
 # Copyright 2012 Nebula, Inc.
-# Copyright 2012 OpenStack LLC
+# Copyright 2012 OpenStack Foundation
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -22,9 +22,6 @@
 """
 Views for managing Images and Snapshots.
 """
-
-import logging
-
 from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
@@ -40,8 +37,6 @@ from openstack_dashboard.dashboards.project.images_and_snapshots.\
     volume_snapshots import tables as vol_snsh_tables
 from openstack_dashboard.dashboards.project.images_and_snapshots.\
     volume_snapshots import tabs as vol_snsh_tabs
-
-LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.MultiTableView):
@@ -72,10 +67,18 @@ class IndexView(tables.MultiTableView):
         if base.is_service_enabled(self.request, 'volume'):
             try:
                 snapshots = api.cinder.volume_snapshot_list(self.request)
+                volumes = api.cinder.volume_list(self.request)
+                volumes = dict((v.id, v) for v in volumes)
             except Exception:
                 snapshots = []
+                volumes = {}
                 exceptions.handle(self.request, _("Unable to retrieve "
                                                   "volume snapshots."))
+
+            for snapshot in snapshots:
+                volume = volumes.get(snapshot.volume_id)
+                setattr(snapshot, '_volume', volume)
+
         else:
             snapshots = []
         return snapshots

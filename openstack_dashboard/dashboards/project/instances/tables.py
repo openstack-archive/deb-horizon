@@ -353,8 +353,7 @@ class AssociateIP(tables.LinkAction):
     classes = ("ajax-modal", "btn-associate")
 
     def allowed(self, request, instance):
-        fip = api.network.NetworkClient(request).floating_ips
-        if fip.is_simple_associate_supported():
+        if api.network.floating_ip_simple_associate_supported(request):
             return False
         return not is_deleting(instance)
 
@@ -373,8 +372,7 @@ class SimpleAssociateIP(tables.Action):
     classes = ("btn-associate-simple",)
 
     def allowed(self, request, instance):
-        fip = api.network.NetworkClient(request).floating_ips
-        if not fip.is_simple_associate_supported():
+        if not api.network.floating_ip_simple_associate_supported(request):
             return False
         return not is_deleting(instance)
 
@@ -579,7 +577,8 @@ class InstancesTable(tables.DataTable):
         verbose_name = _("Instances")
         status_columns = ["status", "task"]
         row_class = UpdateRow
-        table_actions = (LaunchLink, TerminateInstance, InstancesFilterAction)
+        table_actions = (LaunchLink, SoftRebootInstance, TerminateInstance,
+                         InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,
                        CreateSnapshot, SimpleAssociateIP, AssociateIP,
                        SimpleDisassociateIP, EditInstance,

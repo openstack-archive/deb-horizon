@@ -15,7 +15,6 @@
 #    under the License.
 
 from collections import defaultdict  # noqa
-import logging
 
 from django.conf import settings  # noqa
 from django.core.urlresolvers import reverse  # noqa
@@ -27,9 +26,6 @@ from horizon import tables
 from horizon.utils.memoized import memoized  # noqa
 
 from openstack_dashboard import api
-
-
-LOG = logging.getLogger(__name__)
 
 
 class LaunchImage(tables.LinkAction):
@@ -158,6 +154,10 @@ def get_image_categories(im, user_tenant_id):
     return categories
 
 
+def get_image_name(image):
+    return getattr(image, "name", None) or image.id
+
+
 def get_image_type(image):
     return getattr(image, "properties", {}).get("image_type", "image")
 
@@ -196,7 +196,7 @@ class ImagesTable(tables.DataTable):
         ("killed", False),
         ("deleted", False),
     )
-    name = tables.Column("name",
+    name = tables.Column(get_image_name,
                          link=("horizon:project:images_and_snapshots:"
                                "images:detail"),
                          verbose_name=_("Image Name"))

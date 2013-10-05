@@ -16,7 +16,6 @@
 
 
 import json
-import logging
 
 from django.utils.translation import ugettext_lazy as _  # noqa
 from django.views.decorators.debug import sensitive_variables  # noqa
@@ -28,15 +27,12 @@ from horizon import workflows
 from openstack_dashboard import api
 
 
-LOG = logging.getLogger(__name__)
-
-
 class SetFlavorChoiceAction(workflows.Action):
     old_flavor_id = forms.CharField(required=False, widget=forms.HiddenInput())
     old_flavor_name = forms.CharField(label=_("Old Flavor"),
                                  required=False,
                                  widget=forms.TextInput(
-                                    attrs={'readonly': 'readonly'}
+                                     attrs={'readonly': 'readonly'}
                                  ))
     flavor = forms.ChoiceField(label=_("New Flavor"),
                                required=True,

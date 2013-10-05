@@ -22,8 +22,9 @@ from mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
-from troveclient import common
 
+if api.trove.with_trove:
+    from troveclient import common
 
 INDEX_URL = reverse('horizon:project:databases:index')
 LAUNCH_URL = reverse('horizon:project:databases:launch')
@@ -31,6 +32,10 @@ DETAILS_URL = reverse('horizon:project:databases:detail', args=['id'])
 
 
 class DatabaseTests(test.TestCase):
+    def setUp(self):
+        if not api.trove.with_trove:
+            self.skipTest('Skip trove related tests.')
+        super(DatabaseTests, self).setUp()
 
     @test.create_stubs(
         {api.trove: ('instance_list', 'flavor_list')})
@@ -79,7 +84,8 @@ class DatabaseTests(test.TestCase):
         {api.trove: ('instance_list', 'flavor_list')})
     def test_index_pagination(self):
         # Mock database instances
-        databases = common.Paginated(self.databases.list(), next_marker="foo")
+        databases = common.Paginated(self.databases.list(),
+            next_marker="foo")
         api.trove.instance_list(IsA(http.HttpRequest), marker=None)\
             .AndReturn(databases)
         # Mock flavors
@@ -111,13 +117,10 @@ class DatabaseTests(test.TestCase):
         self.assertMessageCount(res, error=1)
 
     @test.create_stubs({
-        api.nova: ('flavor_list', 'tenant_absolute_limits'),
-        api.trove: ('backup_list',)})
+        api.trove: ('flavor_list', 'backup_list',)})
     def test_launch_instance(self):
-        api.nova.flavor_list(IsA(http.HttpRequest))\
+        api.trove.flavor_list(IsA(http.HttpRequest))\
             .AndReturn(self.flavors.list())
-        api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
-            .AndReturn([])
         api.trove.backup_list(IsA(http.HttpRequest))\
             .AndReturn(self.database_backups.list())
 
@@ -126,10 +129,9 @@ class DatabaseTests(test.TestCase):
         self.assertTemplateUsed(res, 'project/databases/launch.html')
 
     @test.create_stubs({
-        api.nova: ('flavor_list',),
-        api.trove: ('backup_list', 'instance_create',)})
+        api.trove: ('flavor_list', 'backup_list', 'instance_create',)})
     def test_create_simple_instance(self):
-        api.nova.flavor_list(IsA(http.HttpRequest))\
+        api.trove.flavor_list(IsA(http.HttpRequest))\
             .AndReturn(self.flavors.list())
         api.trove.backup_list(IsA(http.HttpRequest))\
             .AndReturn(self.database_backups.list())
@@ -155,11 +157,10 @@ class DatabaseTests(test.TestCase):
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
     @test.create_stubs({
-        api.nova: ('flavor_list',),
-        api.trove: ('backup_list', 'instance_create',)})
+        api.trove: ('flavor_list', 'backup_list', 'instance_create',)})
     def test_create_simple_instance_exception(self):
         trove_exception = self.exceptions.nova
-        api.nova.flavor_list(IsA(http.HttpRequest))\
+        api.trove.flavor_list(IsA(http.HttpRequest))\
             .AndReturn(self.flavors.list())
         api.trove.backup_list(IsA(http.HttpRequest))\
             .AndReturn(self.database_backups.list())

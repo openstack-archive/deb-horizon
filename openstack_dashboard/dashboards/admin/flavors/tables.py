@@ -18,8 +18,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
 from django.core.urlresolvers import reverse  # noqa
 from django.template import defaultfilters as filters
 from django.utils.http import urlencode  # noqa
@@ -28,9 +26,6 @@ from django.utils.translation import ugettext_lazy as _  # noqa
 from horizon import tables
 
 from openstack_dashboard import api
-
-
-LOG = logging.getLogger(__name__)
 
 
 class DeleteFlavor(tables.DeleteAction):
@@ -64,7 +59,7 @@ class ViewFlavorExtras(tables.LinkAction):
 
 class ModifyAccess(tables.LinkAction):
     name = "projects"
-    verbose_name = "Modify Access"
+    verbose_name = _("Modify Access")
     url = "horizon:admin:flavors:update"
     classes = ("ajax-modal", "btn-edit")
 
@@ -106,7 +101,7 @@ class FlavorsTable(tables.DataTable):
     swap = tables.Column(get_swap_size,
                          verbose_name=_('Swap Disk'),
                          attrs={'data-type': 'size'})
-    flavor_id = tables.Column('id', verbose_name=('ID'))
+    flavor_id = tables.Column('id', verbose_name=_('ID'))
     public = tables.Column("is_public",
                            verbose_name=_("Public"),
                            empty_value=False,

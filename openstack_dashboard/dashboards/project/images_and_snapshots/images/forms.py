@@ -21,9 +21,6 @@
 """
 Views for managing images.
 """
-
-import logging
-
 from django.conf import settings  # noqa
 from django.forms import ValidationError  # noqa
 from django.forms.widgets import HiddenInput  # noqa
@@ -40,9 +37,6 @@ IMAGE_BACKEND_SETTINGS = getattr(settings, 'OPENSTACK_IMAGE_BACKEND', {})
 IMAGE_FORMAT_CHOICES = IMAGE_BACKEND_SETTINGS.get('image_formats', [])
 
 
-LOG = logging.getLogger(__name__)
-
-
 class CreateImageForm(forms.SelfHandlingForm):
     name = forms.CharField(max_length="255", label=_("Name"), required=True)
     description = forms.CharField(widget=forms.widgets.Textarea(),
@@ -54,24 +48,24 @@ class CreateImageForm(forms.SelfHandlingForm):
         choices=[('url', _('Image Location')),
                  ('file', _('Image File'))],
         widget=forms.Select(attrs={
-              'class': 'switchable',
-              'data-slug': 'source'}))
+            'class': 'switchable',
+            'data-slug': 'source'}))
 
     copy_from = forms.CharField(max_length="255",
                                 label=_("Image Location"),
                                 help_text=_("An external (HTTP) URL to load "
                                             "the image from."),
                                 widget=forms.TextInput(attrs={
-                                      'class': 'switched',
-                                      'data-switch-on': 'source',
-                                      'data-source-url': _('Image Location')}),
+                                    'class': 'switched',
+                                    'data-switch-on': 'source',
+                                    'data-source-url': _('Image Location')}),
                                 required=False)
     image_file = forms.FileField(label=_("Image File"),
                                  help_text=_("A local image to upload."),
                                  widget=forms.FileInput(attrs={
-                                      'class': 'switched',
-                                      'data-switch-on': 'source',
-                                      'data-source-file': _('Image File')}),
+                                     'class': 'switched',
+                                     'data-switch-on': 'source',
+                                     'data-source-file': _('Image File')}),
                                  required=False)
     disk_format = forms.ChoiceField(label=_('Format'),
                                     required=True,
@@ -103,10 +97,15 @@ class CreateImageForm(forms.SelfHandlingForm):
 
     def clean(self):
         data = super(CreateImageForm, self).clean()
-        if not data['copy_from'] and not data['image_file']:
+
+        # The image_file key can be missing based on particular upload
+        # conditions. Code defensively for it here...
+        image_file = data.get('image_file', None)
+
+        if not data['copy_from'] and not image_file:
             raise ValidationError(
                 _("A image or external image location must be specified."))
-        elif data['copy_from'] and data['image_file']:
+        elif data['copy_from'] and image_file:
             raise ValidationError(
                 _("Can not specify both image and external image location."))
         else:
@@ -134,7 +133,8 @@ class CreateImageForm(forms.SelfHandlingForm):
 
         if data['description']:
             meta['properties']['description'] = data['description']
-        if settings.HORIZON_IMAGES_ALLOW_UPLOAD and data['image_file']:
+        if (settings.HORIZON_IMAGES_ALLOW_UPLOAD and
+                data.get('image_file', None)):
             meta['data'] = self.files['image_file']
         else:
             meta['copy_from'] = data['copy_from']
@@ -143,7 +143,7 @@ class CreateImageForm(forms.SelfHandlingForm):
             image = api.glance.image_create(request, **meta)
             messages.success(request,
                 _('Your image %s has been queued for creation.') %
-                    data['name'])
+                data['name'])
             return image
         except Exception:
             exceptions.handle(request, _('Unable to create new image.'))
@@ -158,20 +158,20 @@ class UpdateImageForm(forms.SelfHandlingForm):
     kernel = forms.CharField(max_length="36", label=_("Kernel ID"),
                              required=False,
                              widget=forms.TextInput(
-                                attrs={'readonly': 'readonly'}
+                                 attrs={'readonly': 'readonly'}
                              ))
     ramdisk = forms.CharField(max_length="36", label=_("Ramdisk ID"),
                               required=False,
                               widget=forms.TextInput(
-                                attrs={'readonly': 'readonly'}
+                                  attrs={'readonly': 'readonly'}
                               ))
     architecture = forms.CharField(label=_("Architecture"), required=False,
                                    widget=forms.TextInput(
-                                    attrs={'readonly': 'readonly'}
+                                       attrs={'readonly': 'readonly'}
                                    ))
     disk_format = forms.CharField(label=_("Format"),
                                   widget=forms.TextInput(
-                                    attrs={'readonly': 'readonly'}
+                                      attrs={'readonly': 'readonly'}
                                   ))
     public = forms.BooleanField(label=_("Public"), required=False)
     protected = forms.BooleanField(label=_("Protected"), required=False)

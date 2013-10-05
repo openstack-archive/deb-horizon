@@ -36,6 +36,7 @@ Keystone/Nova/Glance/Swift et. al.
 from openstack_dashboard.api import base
 from openstack_dashboard.api import ceilometer
 from openstack_dashboard.api import cinder
+from openstack_dashboard.api import fwaas
 from openstack_dashboard.api import glance
 from openstack_dashboard.api import heat
 from openstack_dashboard.api import keystone
@@ -45,16 +46,19 @@ from openstack_dashboard.api import neutron
 from openstack_dashboard.api import nova
 from openstack_dashboard.api import swift
 from openstack_dashboard.api import trove
+from openstack_dashboard.api import vpn
 
 assert base
 assert cinder
-assert heat
+assert fwaas
 assert glance
+assert heat
 assert keystone
-assert network
-assert nova
-assert neutron
 assert lbaas
+assert network
+assert neutron
+assert nova
 assert swift
 assert ceilometer
 assert trove
+assert vpn
