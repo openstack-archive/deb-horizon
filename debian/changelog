@@ -1,10 +1,43 @@
 horizon (2013.2~rc1-1) experimental; urgency=low
 
   * New upstream release.
-  * Removed python-selenium from build-depends (it's non-free), and replaced
-    python-quantumclient by python-neutronclient.
+  * Lots of dependencies adjustments.
 
- -- Thomas Goirand <zigo@debian.org>  Sat, 29 Jun 2013 22:17:52 +0800
+ -- Thomas Goirand <zigo@debian.org>  Tue, 08 Oct 2013 09:22:10 +0000
+
+horizon (2013.1.3-2) unstable; urgency=low
+
+  * Added new French debconf translation (Closes: #722421).
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 25 Sep 2013 17:30:14 +0800
+
+horizon (2013.1.3-1) unstable; urgency=low
+
+  * New upstream point release.
+  * Added a few Debconf translations:
+    - japaneese, thanks to victory (Closes: #719723).
+    - Danish, thanks to Joe Dalton (Closes: #720012).
+    - Italian, thanks to Beatrice Torracca (Closes: #720644).
+    - Czech, thanks to Michal Šimůnek (Closes: #721223).
+    - Russian, thanks to Yuri Kozlov (Closes: #721306).
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 30 Aug 2013 16:52:24 +0800
+
+horizon (2013.1.2-4) unstable; urgency=low
+
+  * Fixes prerm so that it uninstalls the correct .conf files for apache, since
+    old apache vhost has been rename because of apache 2.4. Also remove the old
+    ones as a transition, but using || true to avoid failure (Closes: #669836).
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 19 Jul 2013 01:06:46 +0800
+
+horizon (2013.1.2-3) unstable; urgency=low
+
+  * Now works with Sid apache 2.4 (Closes: #669836).
+  * Debconf and long description rewrite from the debian-l10n-english team: a
+    big thanks to them (Closes: #709000).
+
+ -- Thomas Goirand <zigo@debian.org>  Sun, 14 Jul 2013 06:13:46 +0000
 
 horizon (2013.1.2-2) unstable; urgency=low
 
