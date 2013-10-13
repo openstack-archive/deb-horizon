@@ -1,4 +1,4 @@
-horizon (2013.1.3-3) UNRELEASED; urgency=low
+horizon (2013.1.3-3) unstable; urgency=low
 
   * Debconf translations updates:
     - Czech, thanks to Michal Šimůnek (Closes: #726124).
