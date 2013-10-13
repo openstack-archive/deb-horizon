@@ -4,18 +4,18 @@
 # Yuri Kozlov <yuray@komyakino.ru>, 2013.
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 2013.1.2-4\n"
+"Project-Id-Version: horizon 2013.1.3-2\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
-"POT-Creation-Date: 2012-11-28 14:00+0000\n"
-"PO-Revision-Date: 2013-08-30 09:15+0400\n"
+"POT-Creation-Date: 2013-10-08 19:12+0200\n"
+"PO-Revision-Date: 2013-10-09 19:26+0400\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
-"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.4\n"
 
 #. Type: boolean
@@ -27,29 +27,43 @@ msgstr "Активировать Dashboard и отключить VirtualHost п�
 #. Type: boolean
 #. Description
 #: ../openstack-dashboard-apache.templates:2001
+#| msgid ""
+#| "In Debian, Apache comes with a default website and a default page, "
+#| "configured in /etc/apache2/sites-available/default. Select if this "
+#| "configuration should be disabled and replaced by the Openstack Dashboard "
+#| "configuration."
 msgid ""
-"In Debian, Apache comes with a default website and a default page, "
-"configured in /etc/apache2/sites-available/default. Select if this "
-"configuration should be disabled and replaced by the Openstack Dashboard "
-"configuration."
+"The Apache package sets up a default web site and a default page, configured "
+"in /etc/apache2/sites-available/default."
 msgstr ""
-"В Debian Apache уже настроен веб-сайт и страница по умолчанию "
-"согласно /etc/apache2/sites-available/default. Выберите, нужно ли "
-"отключить эту настройку и заменить её на настройки Openstack Dashboard."
+"В пакете Apache уже настроен веб-сайт и страница по умолчанию согласно /etc/"
+"apache2/sites-available/default."
 
 #. Type: boolean
 #. Description
-#: ../openstack-dashboard-apache.templates:3001
-msgid "Should the Dashboard be installed on HTTPS?"
-msgstr "Установить доступ к Dashboard по HTTPS?"
-
-#. Type: boolean
-#. Description
-#: ../openstack-dashboard-apache.templates:3001
+#: ../openstack-dashboard-apache.templates:2001
 msgid ""
-"Please choose if you would like Horizon to be installed on HTTPS only, with "
-"a redirection to HTTPS if HTTP is in use."
+"Choose this option to replace that default with the OpenStack Dashboard "
+"configuration."
+msgstr "Выберите, нужно ли заменить её на настройку из Openstack Dashboard."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+#| msgid "Should the Dashboard be installed on HTTPS?"
+msgid "Should the Dashboard use HTTPS?"
+msgstr "Использовать HTTPS в Dashboard?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+#| msgid ""
+#| "Please choose if you would like Horizon to be installed on HTTPS only, "
+#| "with a redirection to HTTPS if HTTP is in use."
+msgid ""
+"Select this option if you would like Horizon to be served over HTTPS only, "
+"with a redirection to HTTPS if HTTP is in use."
 msgstr ""
 "Выберите, нужно ли включить доступ к Horizon только по HTTPS, с "
-"перенаправлением на HTTPS, если задействован HTTP."
+"перенаправлением на HTTPS, если использован HTTP."
 
