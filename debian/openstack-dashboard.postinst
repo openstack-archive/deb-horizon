@@ -8,11 +8,13 @@ if [ "$1" = "configure" ] ; then
 		--disabled-password \
 		--group horizon
 
-        mkdir -p /var/lib/openstack-dashboard/static/js
-        mkdir -p /var/lib/openstack-dashboard/static/css
-        chown www-data:www-data /var/lib/openstack-dashboard/static
-        chown www-data:www-data /var/lib/openstack-dashboard/static/css
-        chown www-data:www-data /var/lib/openstack-dashboard/static/js
+	mkdir -p /var/lib/openstack-dashboard/static/js
+	mkdir -p /var/lib/openstack-dashboard/static/css
+	mkdir -p /var/lib/openstack-dashboard/secret-key
+	chown www-data:www-data /var/lib/openstack-dashboard/static
+	chown www-data:www-data /var/lib/openstack-dashboard/static/css
+	chown www-data:www-data /var/lib/openstack-dashboard/static/js
+	chown www-data:www-data /var/lib/openstack-dashboard/secret-key
 fi
 
 #DEBHELPER#

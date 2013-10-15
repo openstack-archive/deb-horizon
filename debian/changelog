@@ -1,5 +1,8 @@
-horizon (2013.2~rc1-2) UNRELEASED; urgency=low
+horizon (2013.2~rc1-2) experimental; urgency=low
 
+  * Now creates /var/lib/openstack-dashboard/secret-key in the postinst, and
+    sets this path as default in /etc/openstack-dashbaord/local_settings.py,
+    instead of the path in /usr/share (Closes: #726373).
   * Debconf translations updates:
     - Czech, thanks to Michal Šimůnek (Closes: #726124).
     - Danish, thanks to Joe Dalton (Closes: #725988).
