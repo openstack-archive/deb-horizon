@@ -1,3 +1,9 @@
+horizon (2013.2~rc2-1) experimental; urgency=low
+
+  * New upstream remote.
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 16 Oct 2013 23:17:44 +0800
+
 horizon (2013.2~rc1-2) experimental; urgency=low
 
   * Now creates /var/lib/openstack-dashboard/secret-key in the postinst, and
