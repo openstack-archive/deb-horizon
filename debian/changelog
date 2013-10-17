@@ -1,6 +1,7 @@
 horizon (2013.2~rc3-1) experimental; urgency=low
 
   * New upstream pre-release.
+  * Now running the upstream unit tests.
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 17 Oct 2013 11:27:06 +0800
 
