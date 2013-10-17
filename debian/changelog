@@ -1,6 +1,12 @@
+horizon (2013.2~rc3-1) experimental; urgency=low
+
+  * New upstream pre-release.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 17 Oct 2013 11:27:06 +0800
+
 horizon (2013.2~rc2-1) experimental; urgency=low
 
-  * New upstream remote.
+  * New upstream pre-release.
 
  -- Thomas Goirand <zigo@debian.org>  Wed, 16 Oct 2013 23:17:44 +0800
 
