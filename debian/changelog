@@ -1,7 +1,8 @@
 horizon (2013.2~rc3-1) experimental; urgency=low
 
   * New upstream pre-release.
-  * Now running the upstream unit tests.
+  * Now running the upstream unit tests, and added a debian/source/options file
+    with extend-diff-ignore = "[.]*.secret_key_store"
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 17 Oct 2013 11:27:06 +0800
 
