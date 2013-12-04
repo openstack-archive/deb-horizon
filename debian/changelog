@@ -1,7 +1,12 @@
-horizon (2013.2-2) unstable; urgency=low
+horizon (2013.2-2) unstable; urgency=high
 
   * CVE-2013-6858: persistent XSS vulnerability. Applies upstream patch: Fix
     bug by escaping strings from Nova before displaying them (Closes: #730752).
+  * Adds debconf translations updates, with warm thanks to:
+    - French, Julien Patriarca <leatherface@debian.org> (Closes: #726711).
+    - Italian, Beatrice Torracca <beatricet@libero.it> (Closes: #726829).
+  * New debconf translations, with warm thanks to:
+    - Portuguese, Américo Monteiro <a_monteiro@gmx.com> (Closes: #729911).
 
  -- Thomas Goirand <zigo@debian.org>  Wed, 04 Dec 2013 20:43:44 +0800
 
