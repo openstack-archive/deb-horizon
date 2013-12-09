@@ -1,6 +1,8 @@
 horizon (2014.1~b1-1) experimental; urgency=low
 
   * New upstream release (Icehouse beta 1).
+  * Removes CVE-2013-6858 patch applied upstream.
+  * Refreshed patch.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 09 Dec 2013 22:14:27 +0800
 

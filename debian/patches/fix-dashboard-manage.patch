@@ -4,9 +4,9 @@ Forwarded: not-needed
 
 Index: horizon/manage.py
 ===================================================================
---- horizon.orig/manage.py	2013-09-23 14:11:14.000000000 +0800
-+++ horizon/manage.py	2013-09-23 14:13:36.000000000 +0800
-@@ -5,6 +5,8 @@
+--- horizon.orig/manage.py	2013-12-09 22:14:14.000000000 +0800
++++ horizon/manage.py	2013-12-10 00:30:58.000000000 +0800
+@@ -17,6 +17,8 @@
  
  from django.core.management import execute_from_command_line  # noqa
  
