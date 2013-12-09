@@ -1,3 +1,9 @@
+horizon (2014.1~b1-1) experimental; urgency=low
+
+  * New upstream release (Icehouse beta 1).
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 09 Dec 2013 22:14:27 +0800
+
 horizon (2013.2-2) unstable; urgency=high
 
   * CVE-2013-6858: persistent XSS vulnerability. Applies upstream patch: Fix
