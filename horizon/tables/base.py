@@ -16,11 +16,13 @@
 
 import collections
 import copy
+import json
 import logging
 from operator import attrgetter  # noqa
 import sys
 
 from django.conf import settings  # noqa
+from django.core import exceptions as core_exceptions
 from django.core import urlresolvers
 from django import forms
 from django.http import HttpResponse  # noqa
@@ -49,7 +51,7 @@ STRING_SEPARATOR = "__"
 
 
 class Column(html.HTMLElement):
-    """ A class which represents a single column in a :class:`.DataTable`.
+    """A class which represents a single column in a :class:`.DataTable`.
 
     .. attribute:: transform
 
@@ -63,7 +65,8 @@ class Column(html.HTMLElement):
 
         The name for this column which should be used for display purposes.
         Defaults to the value of ``transform`` with the first letter
-        of each word capitalized.
+        of each word capitalized if the ``transform`` is not callable,
+        otherwise it defaults to an empty string (``""``).
 
     .. attribute:: sortable
 
@@ -176,6 +179,28 @@ class Column(html.HTMLElement):
         Boolean value indicating whether the contents of this cell should be
         wrapped in a ``<ul></ul>`` tag. Useful in conjunction with Django's
         ``unordered_list`` template filter. Defaults to ``False``.
+
+    .. attribute:: form_field
+
+        A form field used for inline editing of the column. A django
+        forms.Field can be used or django form.Widget can be used.
+
+        Example: ``form_field=forms.CharField(required=True)``.
+        Defaults to ``None``.
+
+    .. attribute:: form_field_attributes
+
+        The additional html attributes that will be rendered to form_field.
+        Example: ``form_field_attributes={'class': 'bold_input_field'}``.
+        Defaults to ``None``.
+
+    .. attribute:: update_action
+
+        The class that inherits from tables.actions.UpdateAction, update_cell
+        method takes care of saving inline edited data. The tables.base.Row
+        get_data method needs to be connected to table for obtaining the data.
+        Example: ``update_action=UpdateCell``.
+        Defaults to ``None``.
     """
     summation_methods = {
         "sum": sum,
@@ -209,27 +234,32 @@ class Column(html.HTMLElement):
                  link=None, allowed_data_types=[], hidden=False, attrs=None,
                  status=False, status_choices=None, display_choices=None,
                  empty_value=None, filters=None, classes=None, summation=None,
-                 auto=None, truncate=None, link_classes=None, wrap_list=False):
+                 auto=None, truncate=None, link_classes=None, wrap_list=False,
+                 form_field=None, form_field_attributes=None,
+                 update_action=None):
+
         self.classes = list(classes or getattr(self, "classes", []))
         super(Column, self).__init__()
         self.attrs.update(attrs or {})
 
         if callable(transform):
             self.transform = transform
-            self.name = transform.__name__
+            self.name = "<%s callable>" % transform.__name__
         else:
             self.transform = unicode(transform)
             self.name = self.transform
 
         # Empty string is a valid value for verbose_name
         if verbose_name is None:
-            verbose_name = self.transform.title()
+            if callable(transform):
+                self.verbose_name = ''
+            else:
+                self.verbose_name = self.transform.title()
         else:
-            verbose_name = verbose_name
+            self.verbose_name = verbose_name
 
         self.auto = auto
         self.sortable = sortable
-        self.verbose_name = verbose_name
         self.link = link
         self.allowed_data_types = allowed_data_types
         self.hidden = hidden
@@ -239,6 +269,9 @@ class Column(html.HTMLElement):
         self.truncate = truncate
         self.link_classes = link_classes or []
         self.wrap_list = wrap_list
+        self.form_field = form_field
+        self.form_field_attributes = form_field_attributes or {}
+        self.update_action = update_action
 
         if status_choices:
             self.status_choices = status_choices
@@ -267,10 +300,9 @@ class Column(html.HTMLElement):
         return '<%s: %s>' % (self.__class__.__name__, self.name)
 
     def get_raw_data(self, datum):
-        """
-        Returns the raw data for this column, before any filters or formatting
-        are applied to it. This is useful when doing calculations on data in
-        the table.
+        """Returns the raw data for this column, before any filters or
+        formatting are applied to it. This is useful when doing calculations
+        on data in the table.
         """
         # Callable transformations
         if callable(self.transform):
@@ -292,8 +324,8 @@ class Column(html.HTMLElement):
         return data
 
     def get_data(self, datum):
-        """
-        Returns the final display data for this column from the given inputs.
+        """Returns the final display data for this column from the given
+        inputs.
 
         The return value will be either the attribute specified for this column
         or the return value of the attr:`~horizon.tables.Column.transform`
@@ -326,7 +358,7 @@ class Column(html.HTMLElement):
         return self.table._data_cache[self][datum_id]
 
     def get_link_url(self, datum):
-        """ Returns the final value for the column's ``link`` property.
+        """Returns the final value for the column's ``link`` property.
 
         If ``allowed_data_types`` of this column  is not empty and the datum
         has an assigned type, check if the datum's type is in the
@@ -352,8 +384,7 @@ class Column(html.HTMLElement):
             return self.link
 
     def get_summation(self):
-        """
-        Returns the summary value for the data in this column if a
+        """Returns the summary value for the data in this column if a
         valid summation method is specified for it. Otherwise returns ``None``.
         """
         if self.summation not in self.summation_methods:
@@ -373,7 +404,7 @@ class Column(html.HTMLElement):
 
 
 class Row(html.HTMLElement):
-    """ Represents a row in the table.
+    """Represents a row in the table.
 
     When iterated, the ``Row`` instance will yield each of its cells.
 
@@ -425,9 +456,17 @@ class Row(html.HTMLElement):
         String that is used for the query parameter key to request AJAX
         updates. Generally you won't need to change this value.
         Default: ``"row_update"``.
+
+    .. attribute:: ajax_cell_action_name
+
+        String that is used for the query parameter key to request AJAX
+        updates of cell. Generally you won't need to change this value.
+        It is also used for inline edit of the cell.
+        Default: ``"cell_update"``.
     """
     ajax = False
     ajax_action_name = "row_update"
+    ajax_cell_action_name = "cell_update"
 
     def __init__(self, table, datum=None):
         super(Row, self).__init__()
@@ -441,8 +480,7 @@ class Row(html.HTMLElement):
             self.cells = []
 
     def load_cells(self, datum=None):
-        """
-        Load the row's data (either provided at initialization or as an
+        """Load the row's data (either provided at initialization or as an
         argument to this function), initiailize all the cells contained
         by this row, and set the appropriate row properties which require
         the row's data to be determined.
@@ -466,14 +504,40 @@ class Row(html.HTMLElement):
                 widget = forms.CheckboxInput(check_test=lambda value: False)
                 # Convert value to string to avoid accidental type conversion
                 data = widget.render('object_ids',
-                                     unicode(table.get_object_id(datum)))
+                                     unicode(table.get_object_id(datum)),
+                                     {'class': 'table-row-multi-select'})
+                table._data_cache[column][table.get_object_id(datum)] = data
+            elif column.auto == "form_field":
+                widget = column.form_field
+                if issubclass(widget.__class__, forms.Field):
+                    widget = widget.widget
+
+                widget_name = "%s__%s" % \
+                    (column.name,
+                     unicode(table.get_object_id(datum)))
+
+                # Create local copy of attributes, so it don't change column
+                # class form_field_attributes
+                form_field_attributes = {}
+                form_field_attributes.update(column.form_field_attributes)
+                # Adding id of the input so it pairs with label correctly
+                form_field_attributes['id'] = widget_name
+
+                data = widget.render(widget_name,
+                                     column.get_data(datum),
+                                     form_field_attributes)
                 table._data_cache[column][table.get_object_id(datum)] = data
             elif column.auto == "actions":
                 data = table.render_row_actions(datum)
                 table._data_cache[column][table.get_object_id(datum)] = data
             else:
                 data = column.get_data(datum)
+
             cell = Cell(datum, data, column, self)
+            if cell.inline_edit_available:
+                cell.attrs['data-cell-name'] = column.name
+                cell.attrs['data-update-url'] = cell.get_ajax_update_url()
+
             cells.append((column.name or column.auto, cell))
         self.cells = SortedDict(cells)
 
@@ -482,6 +546,8 @@ class Row(html.HTMLElement):
             self.attrs['data-update-interval'] = interval
             self.attrs['data-update-url'] = self.get_ajax_update_url()
             self.classes.append("ajax-update")
+
+        self.attrs['data-object-id'] = table.get_object_id(datum)
 
         # Add the row's status class and id to the attributes to be rendered.
         self.classes.append(self.status_class)
@@ -523,7 +589,7 @@ class Row(html.HTMLElement):
                                 {"row": self})
 
     def get_cells(self):
-        """ Returns the bound cells for this row in order. """
+        """Returns the bound cells for this row in order."""
         return self.cells.values()
 
     def get_ajax_update_url(self):
@@ -534,8 +600,7 @@ class Row(html.HTMLElement):
         return "%s?%s" % (table_url, params)
 
     def get_data(self, request, obj_id):
-        """
-        Fetches the updated data for the row based on the object id
+        """Fetches the updated data for the row based on the object id
         passed in. Must be implemented by a subclass to allow AJAX updating.
         """
         raise NotImplementedError("You must define a get_data method on %s"
@@ -543,7 +608,7 @@ class Row(html.HTMLElement):
 
 
 class Cell(html.HTMLElement):
-    """ Represents a single cell in the table. """
+    """Represents a single cell in the table."""
     def __init__(self, datum, data, column, row, attrs=None, classes=None):
         self.classes = classes or getattr(self, "classes", [])
         super(Cell, self).__init__()
@@ -554,6 +619,11 @@ class Cell(html.HTMLElement):
         self.column = column
         self.row = row
         self.wrap_list = column.wrap_list
+        self.inline_edit_available = self.column.update_action is not None
+        # initialize the update action if available
+        if self.inline_edit_available:
+            self.update_action = self.column.update_action()
+        self.inline_edit_mod = False
 
     def __repr__(self):
         return '<%s: %s, %s>' % (self.__class__.__name__,
@@ -561,9 +631,13 @@ class Cell(html.HTMLElement):
                                  self.row.id)
 
     @property
+    def id(self):
+        return ("%s__%s" % (self.column.name,
+                unicode(self.row.table.get_object_id(self.datum))))
+
+    @property
     def value(self):
-        """
-        Returns a formatted version of the data for final output.
+        """Returns a formatted version of the data for final output.
 
         This takes into consideration the
         :attr:`~horizon.tables.Column.link`` and
@@ -585,7 +659,7 @@ class Cell(html.HTMLElement):
             link_classes = ' '.join(self.column.link_classes)
             # Escape the data inside while allowing our HTML to render
             data = mark_safe('<a href="%s" class="%s">%s</a>' %
-                             (self.url, link_classes, escape(data)))
+                             (self.url, link_classes, escape(unicode(data))))
         return data
 
     @property
@@ -599,7 +673,7 @@ class Cell(html.HTMLElement):
 
     @property
     def status(self):
-        """ Gets the status for the column based on the cell's data. """
+        """Gets the status for the column based on the cell's data."""
         # Deal with status column mechanics based in this cell's data
         if hasattr(self, '_status'):
             return self._status
@@ -616,7 +690,7 @@ class Cell(html.HTMLElement):
         return self._status
 
     def get_status_class(self, status):
-        """ Returns a css class name determined by the status value. """
+        """Returns a css class name determined by the status value."""
         if status is True:
             return "status_up"
         elif status is False:
@@ -625,7 +699,7 @@ class Cell(html.HTMLElement):
             return "status_unknown"
 
     def get_default_classes(self):
-        """ Returns a flattened string of the cell's CSS classes. """
+        """Returns a flattened string of the cell's CSS classes."""
         if not self.url:
             self.column.classes = [cls for cls in self.column.classes
                                     if cls != "anchor"]
@@ -633,11 +707,38 @@ class Cell(html.HTMLElement):
         classes = set(column_class_string.split(" "))
         if self.column.status:
             classes.add(self.get_status_class(self.status))
+
+        if self.inline_edit_available:
+            classes.add("inline_edit_available")
+
         return list(classes)
+
+    def get_ajax_update_url(self):
+        column = self.column
+        table_url = column.table.get_absolute_url()
+        params = urlencode({"table": column.table.name,
+                            "action": self.row.ajax_cell_action_name,
+                            "obj_id": column.table.get_object_id(self.datum),
+                            "cell_name": column.name})
+        return "%s?%s" % (table_url, params)
+
+    @property
+    def update_allowed(self):
+        """Determines whether update of given cell is allowed.
+
+        Calls allowed action of defined UpdateAction of the Column.
+        """
+        return self.update_action.allowed(self.column.table.request,
+                                          self.datum,
+                                          self)
+
+    def render(self):
+        return render_to_string("horizon/common/_data_table_cell.html",
+                                {"cell": self})
 
 
 class DataTableOptions(object):
-    """ Contains options for :class:`.DataTable` objects.
+    """Contains options for :class:`.DataTable` objects.
 
     .. attribute:: name
 
@@ -778,7 +879,9 @@ class DataTableOptions(object):
         else:
             self._filter_action = None
 
-        self.template = 'horizon/common/_data_table.html'
+        self.template = getattr(options,
+                                'template',
+                                'horizon/common/_data_table.html')
         self.row_actions_template = \
                         'horizon/common/_data_table_row_actions.html'
         self.table_actions_template = \
@@ -818,7 +921,7 @@ class DataTableOptions(object):
 
 
 class DataTableMetaclass(type):
-    """ Metaclass to add options to DataTable class and collect columns. """
+    """Metaclass to add options to DataTable class and collect columns."""
     def __new__(mcs, name, bases, attrs):
         # Process options from Meta
         class_name = name
@@ -843,8 +946,8 @@ class DataTableMetaclass(type):
 
         # If the table is in a ResourceBrowser, the column number must meet
         # these limits because of the width of the browser.
-        if opts.browser_table == "navigation" and len(columns) > 1:
-            raise ValueError("You can only assign one column to %s."
+        if opts.browser_table == "navigation" and len(columns) > 3:
+            raise ValueError("You can only assign three column to %s."
                              % class_name)
         if opts.browser_table == "content" and len(columns) > 2:
             raise ValueError("You can only assign two columns to %s."
@@ -891,7 +994,7 @@ class DataTableMetaclass(type):
 
 
 class DataTable(object):
-    """ A class which defines a table with all data and associated actions.
+    """A class which defines a table with all data and associated actions.
 
     .. attribute:: name
 
@@ -1012,14 +1115,14 @@ class DataTable(object):
         return False
 
     def render(self):
-        """ Renders the table using the template from the table options. """
+        """Renders the table using the template from the table options."""
         table_template = template.loader.get_template(self._meta.template)
         extra_context = {self._meta.context_var_name: self}
         context = template.RequestContext(self.request, extra_context)
         return table_template.render(context)
 
     def get_absolute_url(self):
-        """ Returns the canonical URL for this table.
+        """Returns the canonical URL for this table.
 
         This is used for the POST action attribute on the form element
         wrapping the table. In many cases it is also useful for redirecting
@@ -1032,12 +1135,11 @@ class DataTable(object):
         return self.request.get_full_path().partition('?')[0]
 
     def get_empty_message(self):
-        """ Returns the message to be displayed when there is no data. """
+        """Returns the message to be displayed when there is no data."""
         return self._no_data_message
 
     def get_object_by_id(self, lookup):
-        """
-        Returns the data object from the table's dataset which matches
+        """Returns the data object from the table's dataset which matches
         the ``lookup`` parameter specified. An error will be raised if
         the match is not a single data object.
 
@@ -1066,8 +1168,7 @@ class DataTable(object):
 
     @property
     def has_actions(self):
-        """
-        Boolean. Indicates whether there are any available actions on this
+        """Boolean. Indicates whether there are any available actions on this
         table.
         """
         if not self.base_actions:
@@ -1076,8 +1177,7 @@ class DataTable(object):
 
     @property
     def needs_form_wrapper(self):
-        """
-        Boolean. Indicates whather this table should be rendered wrapped in
+        """Boolean. Indicates whather this table should be rendered wrapped in
         a ``<form>`` tag or not.
         """
         # If needs_form_wrapper is explicitly set, defer to that.
@@ -1087,14 +1187,14 @@ class DataTable(object):
         return self.has_actions
 
     def get_table_actions(self):
-        """ Returns a list of the action instances for this table. """
+        """Returns a list of the action instances for this table."""
         bound_actions = [self.base_actions[action.name] for
                          action in self._meta.table_actions]
         return [action for action in bound_actions if
                 self._filter_action(action, self.request)]
 
     def get_row_actions(self, datum):
-        """ Returns a list of the action instances for a specific row. """
+        """Returns a list of the action instances for a specific row."""
         bound_actions = []
         for action in self._meta.row_actions:
             # Copy to allow modifying properties per row
@@ -1115,7 +1215,7 @@ class DataTable(object):
         return bound_actions
 
     def render_table_actions(self):
-        """ Renders the actions specified in ``Meta.table_actions``. """
+        """Renders the actions specified in ``Meta.table_actions``."""
         template_path = self._meta.table_actions_template
         table_actions_template = template.loader.get_template(template_path)
         bound_actions = self.get_table_actions()
@@ -1127,9 +1227,9 @@ class DataTable(object):
         return table_actions_template.render(context)
 
     def render_row_actions(self, datum):
+        """Renders the actions specified in ``Meta.row_actions`` using the
+        current row data.
         """
-        Renders the actions specified in ``Meta.row_actions`` using the
-        current row data. """
         template_path = self._meta.row_actions_template
         row_actions_template = template.loader.get_template(template_path)
         bound_actions = self.get_row_actions(datum)
@@ -1140,8 +1240,7 @@ class DataTable(object):
 
     @staticmethod
     def parse_action(action_string):
-        """
-        Parses the ``action`` parameter (a string) sent back with the
+        """Parses the ``action`` parameter (a string) sent back with the
         POST data. By default this parses a string formatted as
         ``{{ table_name }}__{{ action_name }}__{{ row_id }}`` and returns
         each of the pieces. The ``row_id`` is optional.
@@ -1158,8 +1257,7 @@ class DataTable(object):
             return table, action, object_id
 
     def take_action(self, action_name, obj_id=None, obj_ids=None):
-        """
-        Locates the appropriate action and routes the object
+        """Locates the appropriate action and routes the object
         data to it. The action should return an HTTP redirect
         if successful, or a value which evaluates to ``False``
         if unsuccessful.
@@ -1195,7 +1293,7 @@ class DataTable(object):
 
     @classmethod
     def check_handler(cls, request):
-        """ Determine whether the request should be handled by this table. """
+        """Determine whether the request should be handled by this table."""
         if request.method == "POST" and "action" in request.POST:
             table, action, obj_id = cls.parse_action(request.POST["action"])
         elif "table" in request.GET and "action" in request.GET:
@@ -1207,9 +1305,8 @@ class DataTable(object):
         return table, action, obj_id
 
     def maybe_preempt(self):
-        """
-        Determine whether the request should be handled by a preemptive action
-        on this table or by an AJAX row update before loading any data.
+        """Determine whether the request should be handled by a preemptive
+        action on this table or by an AJAX row update before loading any data.
         """
         request = self.request
         table_name, action_name, obj_id = self.check_handler(request)
@@ -1230,6 +1327,11 @@ class DataTable(object):
                         return HttpResponse(new_row.render())
                     else:
                         return HttpResponse(status=error.status_code)
+            elif new_row.ajax_cell_action_name == action_name:
+                # inline edit of the cell actions
+                return self.inline_edit_handle(request, table_name,
+                                               action_name, obj_id,
+                                               new_row)
 
             preemptive_actions = [action for action in
                                   self.base_actions.values() if action.preempt]
@@ -1241,10 +1343,93 @@ class DataTable(object):
                             return handled
         return None
 
-    def maybe_handle(self):
+    def inline_edit_handle(self, request, table_name, action_name, obj_id,
+                           new_row):
+        """Inline edit handler.
+
+        Showing form or handling update by POST of the cell.
         """
-        Determine whether the request should be handled by any action on this
-        table after data has been loaded.
+        try:
+            cell_name = request.GET['cell_name']
+            datum = new_row.get_data(request, obj_id)
+            # TODO(lsmola) extract load cell logic to Cell and load
+            # only 1 cell. This is kind of ugly.
+            if request.GET.get('inline_edit_mod') == "true":
+                new_row.table.columns[cell_name].auto = "form_field"
+                inline_edit_mod = True
+            else:
+                inline_edit_mod = False
+
+            # Load the cell and set the inline_edit_mod.
+            new_row.load_cells(datum)
+            cell = new_row.cells[cell_name]
+            cell.inline_edit_mod = inline_edit_mod
+
+            # If not allowed, neither edit mod or updating is allowed.
+            if not cell.update_allowed:
+                datum_display = (self.get_object_display(datum) or
+                                 _("N/A"))
+                LOG.info('Permission denied to %s: "%s"' %
+                         ("Update Action", datum_display))
+                return HttpResponse(status=401)
+            # If it is post request, we are updating the cell.
+            if request.method == "POST":
+                return self.inline_update_action(request,
+                                                 datum,
+                                                 cell,
+                                                 obj_id,
+                                                 cell_name)
+
+            error = False
+        except Exception:
+            datum = None
+            error = exceptions.handle(request, ignore=True)
+        if request.is_ajax():
+            if not error:
+                return HttpResponse(cell.render())
+            else:
+                return HttpResponse(status=error.status_code)
+
+    def inline_update_action(self, request, datum, cell, obj_id, cell_name):
+        """Handling update by POST of the cell.
+        """
+        new_cell_value = request.POST.get(
+            cell_name + '__' + obj_id, None)
+        if issubclass(cell.column.form_field.__class__,
+                      forms.Field):
+            try:
+                # using Django Form Field to parse the
+                # right value from POST and to validate it
+                new_cell_value = (
+                    cell.column.form_field.clean(
+                        new_cell_value))
+                cell.update_action.action(
+                    self.request, datum, obj_id, cell_name, new_cell_value)
+                response = {
+                    'status': 'updated',
+                    'message': ''
+                }
+                return HttpResponse(
+                    json.dumps(response),
+                    status=200,
+                    content_type="application/json")
+
+            except core_exceptions.ValidationError:
+                # if there is a validation error, I will
+                # return the message to the client
+                exc_type, exc_value, exc_traceback = (
+                    sys.exc_info())
+                response = {
+                    'status': 'validation_error',
+                    'message': ' '.join(exc_value.messages)}
+                return HttpResponse(
+                    json.dumps(response),
+                    status=400,
+                    content_type="application/json")
+
+    def maybe_handle(self):
+        """Determine whether the request should be handled by any action on
+        this table after data has been loaded.
         """
         request = self.request
         table_name, action_name, obj_id = self.check_handler(request)
@@ -1257,13 +1442,13 @@ class DataTable(object):
         return None
 
     def sanitize_id(self, obj_id):
-        """ Override to modify an incoming obj_id to match existing
+        """Override to modify an incoming obj_id to match existing
         API data types or modify the format.
         """
         return obj_id
 
     def get_object_id(self, datum):
-        """ Returns the identifier for the object this row will represent.
+        """Returns the identifier for the object this row will represent.
 
         By default this returns an ``id`` attribute on the given object,
         but this can be overridden to return other values.
@@ -1276,7 +1461,7 @@ class DataTable(object):
         return datum.id
 
     def get_object_display(self, datum):
-        """ Returns a display name that identifies this object.
+        """Returns a display name that identifies this object.
 
         By default, this returns a ``name`` attribute from the given object,
         but this can be overriden to return other values.
@@ -1286,8 +1471,7 @@ class DataTable(object):
         return None
 
     def has_more_data(self):
-        """
-        Returns a boolean value indicating whether there is more data
+        """Returns a boolean value indicating whether there is more data
         available to this table from the source (generally an API).
 
         The method is largely meant for internal use, but if you want to
@@ -1296,19 +1480,17 @@ class DataTable(object):
         return self._meta.has_more_data
 
     def get_marker(self):
-        """
-        Returns the identifier for the last object in the current data set
+        """Returns the identifier for the last object in the current data set
         for APIs that use marker/limit-based paging.
         """
         return http.urlquote_plus(self.get_object_id(self.data[-1]))
 
     def get_pagination_string(self):
-        """ Returns the query parameter string to paginate this table. """
+        """Returns the query parameter string to paginate this table."""
         return "=".join([self._meta.pagination_param, self.get_marker()])
 
     def calculate_row_status(self, statuses):
-        """
-        Returns a boolean value determining the overall row status
+        """Returns a boolean value determining the overall row status
         based on the dictionary of column name to status mappings passed in.
 
         By default, it uses the following logic:
@@ -1334,8 +1516,7 @@ class DataTable(object):
             return True
 
     def get_row_status_class(self, status):
-        """
-        Returns a css class name determined by the status value. This class
+        """Returns a css class name determined by the status value. This class
         name is used to indicate the status of the rows in the table if
         any ``status_columns`` have been specified.
         """
@@ -1347,11 +1528,11 @@ class DataTable(object):
             return "status_unknown"
 
     def get_columns(self):
-        """ Returns this table's columns including auto-generated ones."""
+        """Returns this table's columns including auto-generated ones."""
         return self.columns.values()
 
     def get_rows(self):
-        """ Return the row data for this table broken out by columns. """
+        """Return the row data for this table broken out by columns."""
         rows = []
         try:
             for datum in self.filtered_data:

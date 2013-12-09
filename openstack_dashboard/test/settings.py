@@ -1,3 +1,15 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 import os
 
 from horizon.test.settings import *  # noqa
@@ -104,6 +116,7 @@ OPENSTACK_NEUTRON_NETWORK = {
 
 OPENSTACK_HYPERVISOR_FEATURES = {
     'can_set_mount_point': True,
+    'can_set_password': True,
 }
 
 OPENSTACK_IMAGE_BACKEND = {
@@ -121,10 +134,34 @@ OPENSTACK_IMAGE_BACKEND = {
     ]
 }
 
-LOGGING['loggers']['openstack_dashboard'] = {
-    'handlers': ['test'],
-    'propagate': False,
-}
+LOGGING['loggers'].update(
+    {
+        'openstack_dashboard': {
+            'handlers': ['test'],
+            'propagate': False,
+        },
+        'novaclient': {
+            'handlers': ['test'],
+            'propagate': False,
+        },
+        'keystoneclient': {
+            'handlers': ['test'],
+            'propagate': False,
+        },
+        'glanceclient': {
+            'handlers': ['test'],
+            'propagate': False,
+        },
+        'neutronclient': {
+            'handlers': ['test'],
+            'propagate': False,
+        },
+        'iso8601': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+    }
+)
 
 SECURITY_GROUP_RULES = {
     'all_tcp': {

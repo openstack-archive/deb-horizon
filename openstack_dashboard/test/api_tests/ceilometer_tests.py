@@ -77,6 +77,85 @@ class CeilometerApiTests(test.APITestCase):
         for s in ret_list:
             self.assertIsInstance(s, api.ceilometer.Statistic)
 
+    @test.create_stubs({api.nova: ('flavor_list',),
+                        })
+    def test_meters_list_all(self):
+        meters = self.meters.list()
+
+        request = self.mox.CreateMock(http.HttpRequest)
+        api.nova.flavor_list(request, None).AndReturn([])
+
+        ceilometerclient = self.stub_ceilometerclient()
+        ceilometerclient.meters = self.mox.CreateMockAnything()
+        ceilometerclient.meters.list(None).AndReturn(meters)
+
+        self.mox.ReplayAll()
+
+        meters_object = api.ceilometer.Meters(self.request)
+
+        ret_list = meters_object.list_all()
+
+        for m in ret_list:
+            self.assertIsInstance(m, api.ceilometer.Meter)
+
+        self.assertEqual(len(ret_list), 3)
+
+        self.assertEqual(ret_list[0].name, "disk.read.bytes")
+        self.assertEqual(ret_list[1].name, "disk.write.bytes")
+        self.assertEqual(ret_list[2].name, "instance")
+
+    @test.create_stubs({api.nova: ('flavor_list',),
+                        })
+    def test_meters_list_all_only(self):
+        meters = self.meters.list()
+
+        ceilometerclient = self.stub_ceilometerclient()
+        ceilometerclient.meters = self.mox.CreateMockAnything()
+        ceilometerclient.meters.list(None).AndReturn(meters)
+
+        request = self.mox.CreateMock(http.HttpRequest)
+        api.nova.flavor_list(request, None).AndReturn([])
+        self.mox.ReplayAll()
+
+        meters_object = api.ceilometer.Meters(self.request)
+        ret_list = meters_object.list_all(only_meters=["disk.read.bytes"])
+
+        self.assertEqual(len(ret_list), 1)
+        self.assertEqual(ret_list[0].name, "disk.read.bytes")
+
+        ret_list = meters_object.list_all(only_meters=["disk.read.bytes",
+                                                       "instance"])
+
+        self.assertEqual(len(ret_list), 2)
+        self.assertEqual(ret_list[0].name, "disk.read.bytes")
+        self.assertEqual(ret_list[1].name, "instance")
+
+    @test.create_stubs({api.nova: ('flavor_list',),
+                        })
+    def test_meters_list_all_except(self):
+        meters = self.meters.list()
+
+        ceilometerclient = self.stub_ceilometerclient()
+        ceilometerclient.meters = self.mox.CreateMockAnything()
+        ceilometerclient.meters.list(None).AndReturn(meters)
+
+        request = self.mox.CreateMock(http.HttpRequest)
+        api.nova.flavor_list(request, None).AndReturn([])
+        self.mox.ReplayAll()
+
+        meters_object = api.ceilometer.Meters(self.request)
+        ret_list = meters_object.list_all(except_meters=["disk.write.bytes",
+                                                         "instance"])
+
+        self.assertEqual(len(ret_list), 1)
+        self.assertEqual(ret_list[0].name, "disk.read.bytes")
+
+        ret_list = meters_object.list_all(except_meters=["disk.write.bytes"])
+
+        self.assertEqual(len(ret_list), 2)
+        self.assertEqual(ret_list[0].name, "disk.read.bytes")
+        self.assertEqual(ret_list[1].name, "instance")
+
     #TODO(lsmola)
     #test resource aggregates
 
@@ -235,196 +314,3 @@ class CeilometerApiTests(test.APITestCase):
         self.assertEqual(vars(first.fake_meter_2[0]), vars(statistic_obj))
 
         self.assertEqual(len(data), len(resources))
-
-    @test.create_stubs({api.ceilometer.CeilometerUsage: ("get_user",
-                                                         "get_tenant")})
-    def test_global_disk_usage(self):
-        resources = self.resources.list()
-
-        statistics = self.statistics.list()
-        user = self.ceilometer_users.list()[0]
-        tenant = self.ceilometer_tenants.list()[0]
-
-        ceilometerclient = self.stub_ceilometerclient()
-        ceilometerclient.resources = self.mox.CreateMockAnything()
-        ceilometerclient.resources.list(q=IsA(list)).AndReturn(resources)
-
-        ceilometerclient.statistics = self.mox.CreateMockAnything()
-        ceilometerclient.statistics.list(meter_name=IsA(str),
-                                         period=None, q=IsA(list)).\
-            MultipleTimes().\
-            AndReturn(statistics)
-
-        api.ceilometer.CeilometerUsage\
-                .get_user(IsA(str)).MultipleTimes().AndReturn(user)
-        api.ceilometer.CeilometerUsage\
-                .get_tenant(IsA(str)).MultipleTimes().AndReturn(tenant)
-
-        self.mox.ReplayAll()
-
-        # getting all resources and with statistics
-        ceilometer_usage = api.ceilometer.CeilometerUsage(http.HttpRequest)
-        data = ceilometer_usage.global_disk_usage(query=["fake_query"],
-                                                  with_statistics=True)
-
-        first = data[0]
-        self.assertEqual(first.id, 'fake_project_id__fake_user_id__'
-                                   'fake_resource_id')
-        self.assertEqual(first.user.name, 'user')
-        self.assertEqual(first.tenant.name, 'test_tenant')
-        self.assertEqual(first.resource, 'fake_resource_id')
-        self.assertEqual(first.disk_read_bytes, 4.55)
-        self.assertEqual(first.disk_write_bytes, 4.55)
-        self.assertEqual(first.disk_read_requests, 4.55)
-        self.assertEqual(first.disk_write_requests, 4.55)
-
-        self.assertEqual(len(data), len(resources))
-
-    @test.create_stubs({api.ceilometer.CeilometerUsage: ("get_user",
-                                                         "get_tenant")})
-    def test_global_network_traffic_usage(self):
-        resources = self.resources.list()
-
-        statistics = self.statistics.list()
-        user = self.ceilometer_users.list()[0]
-        tenant = self.ceilometer_tenants.list()[0]
-
-        ceilometerclient = self.stub_ceilometerclient()
-        ceilometerclient.resources = self.mox.CreateMockAnything()
-        ceilometerclient.resources.list(q=IsA(list)).AndReturn(resources)
-
-        ceilometerclient.statistics = self.mox.CreateMockAnything()
-        ceilometerclient.statistics.list(meter_name=IsA(str),
-                                         period=None, q=IsA(list)).\
-            MultipleTimes().\
-            AndReturn(statistics)
-
-        api.ceilometer.CeilometerUsage\
-                .get_user(IsA(str)).MultipleTimes().AndReturn(user)
-        api.ceilometer.CeilometerUsage\
-                .get_tenant(IsA(str)).MultipleTimes().AndReturn(tenant)
-
-        self.mox.ReplayAll()
-
-        # getting all resources and with statistics
-        ceilometer_usage = api.ceilometer.CeilometerUsage(http.HttpRequest)
-        data = ceilometer_usage.global_network_traffic_usage(
-            query=["fake_query"],
-            with_statistics=True)
-
-        first = data[0]
-        self.assertEqual(first.id, 'fake_project_id__fake_user_id__'
-                                   'fake_resource_id')
-        self.assertEqual(first.user.name, 'user')
-        self.assertEqual(first.tenant.name, 'test_tenant')
-        self.assertEqual(first.resource, 'fake_resource_id')
-        self.assertEqual(first.network_incoming_bytes, 4.55)
-        self.assertEqual(first.network_incoming_packets, 4.55)
-        self.assertEqual(first.network_outgoing_bytes, 4.55)
-        self.assertEqual(first.network_outgoing_packets, 4.55)
-
-        self.assertEqual(len(data), len(resources))
-
-        self.assertIsInstance(first, api.ceilometer.GlobalNetworkTrafficUsage)
-
-    @test.create_stubs({api.ceilometer.CeilometerUsage: ("get_user",
-                                                         "get_tenant")})
-    def test_global_network_usage(self):
-        resources = self.resources.list()
-
-        statistics = self.statistics.list()
-        user = self.ceilometer_users.list()[0]
-        tenant = self.ceilometer_tenants.list()[0]
-
-        ceilometerclient = self.stub_ceilometerclient()
-        ceilometerclient.resources = self.mox.CreateMockAnything()
-        ceilometerclient.resources.list(q=IsA(list)).AndReturn(resources)
-
-        ceilometerclient.statistics = self.mox.CreateMockAnything()
-        ceilometerclient.statistics.list(meter_name=IsA(str),
-                                         period=None, q=IsA(list)).\
-            MultipleTimes().\
-            AndReturn(statistics)
-
-        api.ceilometer.CeilometerUsage\
-                .get_user(IsA(str)).MultipleTimes().AndReturn(user)
-        api.ceilometer.CeilometerUsage\
-                .get_tenant(IsA(str)).MultipleTimes().AndReturn(tenant)
-
-        self.mox.ReplayAll()
-
-        # getting all resources and with statistics
-        ceilometer_usage = api.ceilometer.CeilometerUsage(http.HttpRequest)
-        data = ceilometer_usage.global_network_usage(
-            query=["fake_query"],
-            with_statistics=True)
-
-        first = data[0]
-        self.assertEqual(first.id, 'fake_project_id__fake_user_id__'
-                                   'fake_resource_id')
-        self.assertEqual(first.user.name, 'user')
-        self.assertEqual(first.tenant.name, 'test_tenant')
-        self.assertEqual(first.resource, 'fake_resource_id')
-
-        self.assertEqual(first.network, 9)
-        self.assertEqual(first.network_create, 9)
-        self.assertEqual(first.subnet, 9)
-        self.assertEqual(first.subnet_create, 9)
-        self.assertEqual(first.port, 9)
-        self.assertEqual(first.port_create, 9)
-        self.assertEqual(first.router, 9)
-        self.assertEqual(first.router_create, 9)
-        self.assertEqual(first.ip_floating, 9)
-        self.assertEqual(first.ip_floating_create, 9)
-
-        self.assertEqual(len(data), len(resources))
-
-        self.assertIsInstance(first, api.ceilometer.GlobalNetworkUsage)
-
-    @test.create_stubs({api.ceilometer.CeilometerUsage: ("get_user",
-                                                         "get_tenant")})
-    def test_global_object_store_usage(self):
-        resources = self.resources.list()
-
-        statistics = self.statistics.list()
-        user = self.ceilometer_users.list()[0]
-        tenant = self.ceilometer_tenants.list()[0]
-
-        ceilometerclient = self.stub_ceilometerclient()
-        ceilometerclient.resources = self.mox.CreateMockAnything()
-        ceilometerclient.resources.list(q=IsA(list)).AndReturn(resources)
-
-        ceilometerclient.statistics = self.mox.CreateMockAnything()
-        ceilometerclient.statistics.list(meter_name=IsA(str),
-                                         period=None, q=IsA(list)).\
-            MultipleTimes().\
-            AndReturn(statistics)
-
-        api.ceilometer.CeilometerUsage\
-                .get_user(IsA(str)).MultipleTimes().AndReturn(user)
-        api.ceilometer.CeilometerUsage\
-                .get_tenant(IsA(str)).MultipleTimes().AndReturn(tenant)
-
-        self.mox.ReplayAll()
-
-        # getting all resources and with statistics
-        ceilometer_usage = api.ceilometer.CeilometerUsage(http.HttpRequest)
-        data = ceilometer_usage.global_object_store_usage(
-            query=["fake_query"],
-            with_statistics=True)
-
-        first = data[0]
-        self.assertEqual(first.id, 'fake_project_id__fake_user_id__'
-                                   'fake_resource_id')
-        self.assertEqual(first.user.name, 'user')
-        self.assertEqual(first.tenant.name, 'test_tenant')
-        self.assertEqual(first.resource, 'fake_resource_id')
-
-        self.assertEqual(first.storage_objects, 4.55)
-        self.assertEqual(first.storage_objects_size, 4.55)
-        self.assertEqual(first.storage_objects_incoming_bytes, 4.55)
-        self.assertEqual(first.storage_objects_outgoing_bytes, 4.55)
-
-        self.assertEqual(len(data), len(resources))
-
-        self.assertIsInstance(first, api.ceilometer.GlobalObjectStoreUsage)

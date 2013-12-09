@@ -118,9 +118,10 @@ HORIZON_CONFIG = {
     'help_url': "http://example.com"
 }
 
-COMPRESS_ENABLED = False
+COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
 COMPRESS_ROOT = "/tmp/"
+COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -147,22 +148,6 @@ LOGGING = {
             'propagate': False,
         },
         'horizon': {
-            'handlers': ['test'],
-            'propagate': False,
-        },
-        'novaclient': {
-            'handlers': ['test'],
-            'propagate': False,
-        },
-        'keystoneclient': {
-            'handlers': ['test'],
-            'propagate': False,
-        },
-        'glanceclient': {
-            'handlers': ['test'],
-            'propagate': False,
-        },
-        'neutronclient': {
             'handlers': ['test'],
             'propagate': False,
         },

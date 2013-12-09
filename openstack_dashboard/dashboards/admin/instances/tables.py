@@ -15,8 +15,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.core.urlresolvers import reverse  # noqa
 from django.template.defaultfilters import timesince  # noqa
 from django.template.defaultfilters import title  # noqa
+from django.utils.http import urlencode  # noqa
 from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import tables
@@ -48,6 +50,17 @@ class MigrateInstance(tables.BatchAction):
         api.nova.server_migrate(request, obj_id)
 
 
+class LiveMigrateInstance(tables.LinkAction):
+    name = "live_migrate"
+    verbose_name = _("Live Migrate Instance")
+    url = "horizon:admin:instances:live_migrate"
+    classes = ("ajax-modal", "btn-migrate", "btn-danger")
+
+    def allowed(self, request, instance):
+        return ((instance.status in project_tables.ACTIVE_STATES)
+                and not project_tables.is_deleting(instance))
+
+
 class AdminUpdateRow(project_tables.UpdateRow):
     def get_data(self, request, instance_id):
         instance = super(AdminUpdateRow, self).get_data(request, instance_id)
@@ -60,7 +73,7 @@ class AdminUpdateRow(project_tables.UpdateRow):
 
 class AdminInstanceFilterAction(tables.FilterAction):
     def filter(self, table, instances, filter_string):
-        """ Naive case-insensitive search. """
+        """Naive case-insensitive search."""
         q = filter_string.lower()
         return [instance for instance in instances
                 if q in instance.name.lower()]
@@ -117,7 +130,9 @@ class AdminInstancesTable(tables.DataTable):
                           verbose_name=_("Power State"))
     created = tables.Column("created",
                             verbose_name=_("Uptime"),
-                            filters=(filters.parse_isotime, timesince))
+                            filters=(filters.parse_isotime,
+                                     filters.timesince_sortable),
+                            attrs={'data-type': 'timesince'})
 
     class Meta:
         name = "instances"
@@ -135,6 +150,7 @@ class AdminInstancesTable(tables.DataTable):
                        project_tables.TogglePause,
                        project_tables.ToggleSuspend,
                        MigrateInstance,
+                       LiveMigrateInstance,
                        project_tables.SoftRebootInstance,
                        project_tables.RebootInstance,
                        project_tables.TerminateInstance)

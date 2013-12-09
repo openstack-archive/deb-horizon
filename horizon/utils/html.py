@@ -1,31 +1,40 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 import copy
 
 from django.forms.util import flatatt  # noqa
 
 
 class HTMLElement(object):
-    """ A generic base class that gracefully handles html-style attributes. """
+    """A generic base class that gracefully handles html-style attributes."""
     def __init__(self):
         self.attrs = getattr(self, "attrs", {})
         self.classes = getattr(self, "classes", [])
 
     def get_default_classes(self):
-        """
-        Returns an iterable of default classes which should be combined with
+        """Returns an iterable of default classes which should be combined with
         any other declared classes.
         """
         return []
 
     def get_default_attrs(self):
-        """
-        Returns a dict of default attributes which should be combined with
+        """Returns a dict of default attributes which should be combined with
         other declared attributes.
         """
         return {}
 
     def get_final_attrs(self):
-        """
-        Returns a dict containing the final attributes of this element
+        """Returns a dict containing the final attributes of this element
         which will be rendered.
         """
         final_attrs = copy.copy(self.get_default_attrs())
@@ -41,16 +50,13 @@ class HTMLElement(object):
 
     @property
     def attr_string(self):
-        """
-        Returns a flattened string of HTML attributes based on the
+        """Returns a flattened string of HTML attributes based on the
         ``attrs`` dict provided to the class.
         """
         return flatatt(self.get_final_attrs())
 
     @property
     def class_string(self):
-        """
-        Returns a list of class name of HTML Element in string
-        """
+        """Returns a list of class name of HTML Element in string."""
         classes_str = " ".join(self.classes)
         return classes_str

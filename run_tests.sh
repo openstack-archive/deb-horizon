@@ -6,7 +6,7 @@ set -o errexit
 # Increment me any time the environment should be rebuilt.
 # This includes dependncy changes, directory renames, etc.
 # Simple integer secuence: 1, 2, 3...
-environment_version=40
+environment_version=41
 #--------------------------------------------------------#
 
 function usage {
@@ -25,6 +25,7 @@ function usage {
   echo "  --makemessages           Update all translation files."
   echo "  --compilemessages        Compile all translation files."
   echo "  -p, --pep8               Just run pep8"
+  echo "  -P, --no-pep8            Don't run pep8 by default"
   echo "  -t, --tabs               Check for tab characters in files."
   echo "  -y, --pylint             Just run pylint"
   echo "  -q, --quiet              Run non-interactively. (Relatively) quiet."
@@ -60,6 +61,7 @@ command_wrapper=""
 destroy=0
 force=0
 just_pep8=0
+no_pep8=0
 just_pylint=0
 just_docs=0
 just_tabs=0
@@ -91,6 +93,7 @@ function process_option {
     -V|--virtual-env) always_venv=1; never_venv=0;;
     -N|--no-virtual-env) always_venv=0; never_venv=1;;
     -p|--pep8) just_pep8=1;;
+    -P|--no-pep8) no_pep8=1;;
     -y|--pylint) just_pylint=1;;
     -f|--force) force=1;;
     -t|--tabs) just_tabs=1;;
@@ -137,6 +140,15 @@ function run_pylint {
 
 function run_pep8 {
   echo "Running flake8 ..."
+  set +o errexit
+  ${command_wrapper} python -c "import hacking" 2>/dev/null
+  no_hacking=$?
+  set -o errexit
+  if [ $never_venv -eq 1 -a $no_hacking -eq 1 ]; then
+      echo "**WARNING**:" >&2
+      echo "OpenStack hacking is not installed on your host. Its detection will be missed." >&2
+      echo "Please install or use virtual env if you need OpenStack hacking detection." >&2
+  fi
   DJANGO_SETTINGS_MODULE=openstack_dashboard.test.settings ${command_wrapper} flake8
 }
 
@@ -321,25 +333,34 @@ function run_tests_all {
   # Remove the leftover coverage files from the -p flag earlier.
   rm -f .coverage.*
 
-  if [ $(($HORIZON_RESULT || $DASHBOARD_RESULT)) -eq 0 ]; then
+  PEP8_RESULT=0
+  if [ $no_pep8 -eq 0 ] && [ $only_selenium -eq 0 ]; then
+      run_pep8
+      PEP8_RESULT=$?
+  fi
+
+  TEST_RESULT=$(($HORIZON_RESULT || $DASHBOARD_RESULT || $PEP8_RESULT))
+  if [ $TEST_RESULT -eq 0 ]; then
     echo "Tests completed successfully."
   else
     echo "Tests failed."
   fi
-  exit $(($HORIZON_RESULT || $DASHBOARD_RESULT))
+  exit $TEST_RESULT
 }
 
 function run_makemessages {
+  OPTS="-l en --no-obsolete"
+  DASHBOARD_OPTS="--extension=html,txt,csv --ignore=openstack/common/*"
   echo -n "horizon: "
   cd horizon
-  ${command_wrapper} $root/manage.py makemessages -l en --no-obsolete
+  ${command_wrapper} $root/manage.py makemessages $OPTS
   HORIZON_PY_RESULT=$?
   echo -n "horizon javascript: "
-  ${command_wrapper} $root/manage.py makemessages -d djangojs -l en --no-obsolete
+  ${command_wrapper} $root/manage.py makemessages -d djangojs $OPTS
   HORIZON_JS_RESULT=$?
   echo -n "openstack_dashboard: "
   cd ../openstack_dashboard
-  ${command_wrapper} $root/manage.py makemessages -l en --ignore=openstack/common/* --no-obsolete
+  ${command_wrapper} $root/manage.py makemessages $DASHBOARD_OPTS $OPTS
   DASHBOARD_RESULT=$?
   cd ..
   exit $(($HORIZON_PY_RESULT || $HORIZON_JS_RESULT || $DASHBOARD_RESULT))

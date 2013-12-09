@@ -40,7 +40,7 @@ try:
     from selenium.webdriver.firefox.webdriver import WebDriver  # noqa
     from selenium.webdriver.support import ui as selenium_ui
 except ImportError as e:
-    # NOTE(saschpe): Several distribution can't ship selenium due to it's
+    # NOTE(saschpe): Several distribution can't ship selenium due to its
     # non-free license. So they have to patch it out of test-requirements.txt
     # Avoid import failure and force not running selenium tests.
     LOG.warning("{0}, force WITH_SELENIUM=False".format(str(e)))
@@ -75,8 +75,7 @@ class RequestFactoryWithMessages(RequestFactory):
 @unittest.skipIf(os.environ.get('SKIP_UNITTESTS', False),
                      "The SKIP_UNITTESTS env variable is set.")
 class TestCase(django_test.TestCase):
-    """
-    Specialized base test case class for Horizon which gives access to
+    """Specialized base test case class for Horizon which gives access to
     numerous additional features:
 
       * The ``mox`` mocking framework via ``self.mox``.
@@ -115,15 +114,13 @@ class TestCase(django_test.TestCase):
             del self.user._perm_cache
 
     def assertNoMessages(self, response=None):
-        """
-        Asserts that no messages have been attached by the ``contrib.messages``
-        framework.
+        """Asserts that no messages have been attached by the
+        ``contrib.messages`` framework.
         """
         self.assertMessageCount(response, success=0, warn=0, info=0, error=0)
 
     def assertMessageCount(self, response=None, **kwargs):
-        """
-        Asserts that the specified number of messages have been attached
+        """Asserts that the specified number of messages have been attached
         for various message types. Usage would look like
         ``self.assertMessageCount(success=1)``.
         """

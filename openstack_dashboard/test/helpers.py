@@ -38,11 +38,8 @@ from keystoneclient.v2_0 import client as keystone_client
 from neutronclient.v2_0 import client as neutron_client
 from novaclient.v1_1 import client as nova_client
 from swiftclient import client as swift_client
-try:
-    from troveclient import client as trove_client
-    with_trove = True
-except ImportError:
-    with_trove = False
+from troveclient import client as trove_client
+
 
 import httplib2
 import mox
@@ -69,7 +66,7 @@ def create_stubs(stubs_to_create={}):
 
     def inner_stub_out(fn):
         @wraps(fn)
-        def instance_stub_out(self):
+        def instance_stub_out(self, *args, **kwargs):
             for key in stubs_to_create:
                 if not (isinstance(stubs_to_create[key], tuple) or
                         isinstance(stubs_to_create[key], list)):
@@ -80,7 +77,7 @@ def create_stubs(stubs_to_create={}):
 
                 for value in stubs_to_create[key]:
                     self.mox.StubOutWithMock(key, value)
-            return fn(self)
+            return fn(self, *args, **kwargs)
         return instance_stub_out
     return inner_stub_out
 
@@ -104,8 +101,7 @@ class RequestFactoryWithMessages(RequestFactory):
 @unittest.skipIf(os.environ.get('SKIP_UNITTESTS', False),
                      "The SKIP_UNITTESTS env variable is set.")
 class TestCase(horizon_helpers.TestCase):
-    """
-    Specialized base test case class for Horizon which gives access to
+    """Specialized base test case class for Horizon which gives access to
     numerous additional features:
 
       * A full suite of test data through various attached objects and
@@ -176,8 +172,7 @@ class TestCase(horizon_helpers.TestCase):
         utils.get_user = get_user
 
     def assertRedirectsNoFollow(self, response, expected_url):
-        """
-        Asserts that the given response issued a 302 redirect without
+        """Asserts that the given response issued a 302 redirect without
         processing the view which is redirected to.
         """
         assert (response.status_code / 100 == 3), \
@@ -187,8 +182,7 @@ class TestCase(horizon_helpers.TestCase):
         self.assertEqual(response.status_code, 302)
 
     def assertNoFormErrors(self, response, context_name="form"):
-        """
-        Asserts that the response either does not contain a form in it's
+        """Asserts that the response either does not contain a form in its
         context, or that if it does, that form has no errors.
         """
         context = getattr(response, "context", {})
@@ -200,8 +194,7 @@ class TestCase(horizon_helpers.TestCase):
 
     def assertFormErrors(self, response, count=0, message=None,
                          context_name="form"):
-        """
-        Asserts that the response does contain a form in it's
+        """Asserts that the response does contain a form in its
         context, and that form has errors, if count were given,
         it must match the exact numbers of errors
         """
@@ -222,8 +215,7 @@ class TestCase(horizon_helpers.TestCase):
 
 
 class BaseAdminViewTests(TestCase):
-    """
-    A ``TestCase`` subclass which sets an active user with the "admin" role
+    """A ``TestCase`` subclass which sets an active user with the "admin" role
     for testing admin-only views and functionality.
     """
     def setActiveUser(self, *args, **kwargs):
@@ -244,8 +236,7 @@ class BaseAdminViewTests(TestCase):
 
 
 class APITestCase(TestCase):
-    """
-    The ``APITestCase`` class is for use with tests which deal with the
+    """The ``APITestCase`` class is for use with tests which deal with the
     underlying clients rather than stubbing out the
     openstack_dashboard.api.* methods.
     """
@@ -254,8 +245,7 @@ class APITestCase(TestCase):
         utils.patch_middleware_get_user()
 
         def fake_keystoneclient(request, admin=False):
-            """
-            Wrapper function which returns the stub keystoneclient. Only
+            """Wrapper function which returns the stub keystoneclient. Only
             necessary because the function takes too many arguments to
             conveniently be a lambda.
             """
@@ -269,8 +259,7 @@ class APITestCase(TestCase):
         self._original_cinderclient = api.cinder.cinderclient
         self._original_heatclient = api.heat.heatclient
         self._original_ceilometerclient = api.ceilometer.ceilometerclient
-        if with_trove:
-            self._original_troveclient = api.trove.troveclient
+        self._original_troveclient = api.trove.troveclient
 
         # Replace the clients with our stubs.
         api.glance.glanceclient = lambda request: self.stub_glanceclient()
@@ -281,8 +270,7 @@ class APITestCase(TestCase):
         api.heat.heatclient = lambda request: self.stub_heatclient()
         api.ceilometer.ceilometerclient = lambda request: \
             self.stub_ceilometerclient()
-        if with_trove:
-            api.trove.troveclient = lambda request: self.stub_troveclient()
+        api.trove.troveclient = lambda request: self.stub_troveclient()
 
     def tearDown(self):
         super(APITestCase, self).tearDown()
@@ -293,8 +281,7 @@ class APITestCase(TestCase):
         api.cinder.cinderclient = self._original_cinderclient
         api.heat.heatclient = self._original_heatclient
         api.ceilometer.ceilometerclient = self._original_ceilometerclient
-        if with_trove:
-            api.trove.troveclient = self._original_troveclient
+        api.trove.troveclient = self._original_troveclient
 
     def stub_novaclient(self):
         if not hasattr(self, "novaclient"):
@@ -360,12 +347,11 @@ class APITestCase(TestCase):
                 CreateMock(ceilometer_client.Client)
         return self.ceilometerclient
 
-    if with_trove:
-        def stub_troveclient(self):
-            if not hasattr(self, "troveclient"):
-                self.mox.StubOutWithMock(trove_client, 'Client')
-                self.troveclient = self.mox.CreateMock(trove_client.Client)
-            return self.troveclient
+    def stub_troveclient(self):
+        if not hasattr(self, "troveclient"):
+            self.mox.StubOutWithMock(trove_client, 'Client')
+            self.troveclient = self.mox.CreateMock(trove_client.Client)
+        return self.troveclient
 
 
 @unittest.skipUnless(os.environ.get('WITH_SELENIUM', False),
@@ -410,8 +396,7 @@ class SeleniumTestCase(horizon_helpers.SeleniumTestCase):
 
 
 class SeleniumAdminTestCase(SeleniumTestCase):
-    """
-    A ``TestCase`` subclass which sets an active user with the "admin" role
+    """A ``TestCase`` subclass which sets an active user with the "admin" role
     for testing admin-only views and functionality.
     """
     def setActiveUser(self, *args, **kwargs):

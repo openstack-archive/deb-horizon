@@ -18,8 +18,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls.defaults import patterns  # noqa
-from django.conf.urls.defaults import url  # noqa
+from django.conf.urls import patterns  # noqa
+from django.conf.urls import url  # noqa
 
 from openstack_dashboard.dashboards.admin.instances import views
 from openstack_dashboard.dashboards.project.instances \
@@ -37,4 +37,6 @@ urlpatterns = patterns('openstack_dashboard.dashboards.admin.instances.views',
     url(INSTANCES % 'console', 'console', name='console'),
     url(INSTANCES % 'vnc', 'vnc', name='vnc'),
     url(INSTANCES % 'spice', 'spice', name='spice'),
+    url(INSTANCES % 'live_migrate', views.LiveMigrateView.as_view(),
+        name='live_migrate'),
 )

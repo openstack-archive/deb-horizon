@@ -73,17 +73,6 @@ class SelectProjectUser(workflows.Step):
 
 
 class SetInstanceDetailsAction(workflows.Action):
-    SOURCE_TYPE_CHOICES = (
-        ('', _("--- Select source ---")),
-        ("image_id", _("Boot from image.")),
-        ("instance_snapshot_id", _("Boot from snapshot.")),
-        ("volume_id", _("Boot from volume.")),
-        ("volume_image_id", _("Boot from image "
-                                  "(creates a new volume).")),
-        ("volume_snapshot_id", _("Boot from volume snapshot "
-                                 "(creates a new volume).")),
-    )
-
     availability_zone = forms.ChoiceField(label=_("Availability Zone"),
                                           required=False)
 
@@ -99,7 +88,6 @@ class SetInstanceDetailsAction(workflows.Action):
 
     source_type = forms.ChoiceField(label=_("Instance Boot Source"),
                                     required=True,
-                                    choices=SOURCE_TYPE_CHOICES,
                                     help_text=_("Choose Your Boot Source "
                                                 "Type."))
 
@@ -145,6 +133,19 @@ class SetInstanceDetailsAction(workflows.Action):
         self._init_images_cache()
         super(SetInstanceDetailsAction, self).__init__(
             request, context, *args, **kwargs)
+        source_type_choices = [
+            ('', _("--- Select source ---")),
+            ("image_id", _("Boot from image.")),
+            ("instance_snapshot_id", _("Boot from snapshot.")),
+            ("volume_id", _("Boot from volume.")),
+        ]
+        if api.nova.extension_supported("BlockDeviceMappingV2Boot",
+                                        request):
+            source_type_choices.append(("volume_image_id",
+                    _("Boot from image (creates a new volume).")))
+        source_type_choices.append(("volume_snapshot_id",
+                _("Boot from volume snapshot (creates a new volume).")))
+        self.fields['source_type'].choices = source_type_choices
 
     def clean(self):
         cleaned_data = super(SetInstanceDetailsAction, self).clean()
@@ -217,7 +218,8 @@ class SetInstanceDetailsAction(workflows.Action):
         """By default, returns the available flavors, sorted by RAM
         usage (ascending).
         Override these behaviours with a CREATE_INSTANCE_FLAVOR_SORT dict
-        in local_settings.py."""
+        in local_settings.py.
+        """
         try:
             flavors = api.nova.flavor_list(request)
             flavor_sort = getattr(settings, 'CREATE_INSTANCE_FLAVOR_SORT', {})
@@ -257,6 +259,16 @@ class SetInstanceDetailsAction(workflows.Action):
             flavors = json.dumps([f._info for f in
                                   api.nova.flavor_list(self.request)])
             extra['flavors'] = flavors
+            images = utils.get_available_images(self.request,
+                                          self.initial['project_id'],
+                                          self._images_cache)
+            if images is not None:
+                attrs = [{'id': i.id,
+                          'min_disk': getattr(i, 'min_disk', 0),
+                          'min_ram': getattr(i, 'min_ram', 0)}
+                          for i in images]
+                extra['images'] = json.dumps(attrs)
+
         except Exception:
             exceptions.handle(self.request,
                               _("Unable to retrieve quota information."))
@@ -402,6 +414,12 @@ class SetAccessControlsAction(workflows.Action):
         name = _("Access & Security")
         help_text = _("Control access to your instance via keypairs, "
                       "security groups, and other mechanisms.")
+
+    def __init__(self, request, *args, **kwargs):
+        super(SetAccessControlsAction, self).__init__(request, *args, **kwargs)
+        if not api.nova.can_set_server_password():
+            del self.fields['admin_pass']
+            del self.fields['confirm_admin_pass']
 
     def populate_keypair_choices(self, request, context):
         try:

@@ -29,9 +29,7 @@ LOG = logging.getLogger(__name__)
 
 
 def exception_to_validation_msg(e):
-    '''
-    Extracts a validation message to display to the user.
-    '''
+    """Extracts a validation message to display to the user."""
     try:
         error = json.loads(str(e))
         # NOTE(jianingy): if no message exists, we just return 'None'
@@ -174,10 +172,14 @@ class StackCreateForm(forms.SelfHandlingForm):
     parameters = forms.CharField(
         widget=forms.widgets.HiddenInput,
         required=True)
-    stack_name = forms.CharField(
+    stack_name = forms.RegexField(
         max_length='255',
         label=_('Stack Name'),
         help_text=_('Name of the stack to create.'),
+        regex=r"^[a-zA-Z][a-zA-Z0-9_.-]*$",
+        error_messages={'invalid': _('Name must start with a letter and may '
+                            'only contain letters, numbers, underscores, '
+                            'periods and hyphens.')},
         required=True)
     timeout_mins = forms.IntegerField(
         initial=60,

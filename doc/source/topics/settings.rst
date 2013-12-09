@@ -132,6 +132,13 @@ The "advanced" floating IP management allows users to select the floating IP
 pool from which the IP should be allocated and to select a specific IP address
 when associating one with an instance.
 
+.. note::
+
+    Currently "simple" floating IP address management is not compatible with
+    Neutron. There are two reasons for this. First, Neutron does not support
+    the default floating IP pool at the moment. Second, a Neutron floating IP
+    can be associated with each VIF and we need to check whether there is only
+    one VIF for an instance to enable simple association support.
 
 OpenStack Settings (Partial)
 ============================
@@ -189,6 +196,18 @@ Default: ``False``
 Disable SSL certificate checks in the OpenStack clients (useful for self-signed
 certificates).
 
+``OPENSTACK_SSL_CACERT``
+------------------------
+
+Default: ``None``
+
+When unset or set to ``None`` the default CA certificate on the system is used
+for SSL verification.
+
+When set with the path to a custom CA certificate file, this overrides use of
+the default system CA certificate. This custom certificate is used to verify all
+connections to openstack services when making API calls.
+
 ``OPENSTACK_KEYSTONE_BACKEND``
 ------------------------------
 
@@ -204,18 +223,18 @@ If Keystone has been configured to use LDAP as the auth backend then set
 ``OPENSTACK_HYPERVISOR_FEATURES``
 ---------------------------------
 
-Default: ``{'can_set_mount_point': True, 'can_encrypt_volumes': False}``
+Default: ``{'can_set_mount_point': False, 'can_set_password': True}``
 
 A dictionary containing settings which can be used to identify the
 capabilities of the hypervisor for Nova.
 
-Some hypervisors have the ability to set the mount point for volumes attached
-to instances (KVM does not). Setting ``can_set_mount_point`` to ``False`` will
-remove the option to set the mount point from the UI.
+The Xen Hypervisor has the ability to set the mount point for volumes attached
+to instances (other Hypervisors currently do not). Setting
+``can_set_mount_point`` to ``True`` will add the option to set the mount point
+from the UI.
 
-In the Havana release, there will be a feature for encrypted volumes
-which will be controlled by the ``can_encrypt_volumes``. Setting it to ``True``
-in the Grizzly release will have no effect.
+Setting ``can_set_password`` to ``False`` will remove the option to set
+an administrator password when launching or rebuilding an instance.
 
 ``OPENSTACK_NEUTRON_NETWORK``
 -----------------------------
@@ -228,11 +247,10 @@ by neutron.  Currently only the load balancer service is available.
 ``OPENSTACK_ENDPOINT_TYPE``
 ---------------------------
 
-Default: ``"internalURL"``
+Default: ``"publicURL"``
 
 A string which specifies the endpoint type to use for the endpoints in the
-Keystone service catalog. If Horizon is running external to the OpenStack
-environment you may wish to use ``"publicURL"`` instead.
+Keystone service catalog. The default value for all services except for identity is ``"publicURL"`` . The default value for the identity service is ``"internalURL"``.
 
 ``API_RESULT_LIMIT``
 --------------------

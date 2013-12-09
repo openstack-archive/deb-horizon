@@ -24,6 +24,8 @@ Views for managing Swift containers.
 
 from django.core.urlresolvers import reverse  # noqa
 from django import http
+from django.utils.functional import cached_property  # noqa
+from django.utils import http as utils_http
 from django.utils.translation import ugettext_lazy as _  # noqa
 from django.views import generic
 
@@ -42,6 +44,16 @@ from openstack_dashboard.dashboards.project.containers import tables
 import os
 
 
+def for_url(container_name):
+    """Build a URL friendly container name.
+
+    Add Swift delimiter if necessary.
+    The name can contain '%' (bug 1231904).
+    """
+    container_name = tables.wrap_delimiter(container_name)
+    return utils_http.urlquote(container_name)
+
+
 class ContainerView(browsers.ResourceBrowserView):
     browser_class = project_browsers.ContainerBrowser
     template_name = "project/containers/index.html"
@@ -58,49 +70,52 @@ class ContainerView(browsers.ResourceBrowserView):
             exceptions.handle(self.request, msg)
         return containers
 
-    @property
+    @cached_property
     def objects(self):
-        """ Returns a list of objects given the subfolder's path.
+        """Returns a list of objects given the subfolder's path.
 
         The path is from the kwargs of the request.
         """
-        if not hasattr(self, "_objects"):
-            objects = []
-            self._more = None
-            marker = self.request.GET.get('marker', None)
-            container_name = self.kwargs['container_name']
-            subfolder = self.kwargs['subfolder_path']
-            prefix = None
-            if container_name:
-                self.navigation_selection = True
-                if subfolder:
-                    prefix = subfolder
-                try:
-                    objects, self._more = api.swift.swift_get_objects(
-                        self.request,
-                        container_name,
-                        marker=marker,
-                        prefix=prefix)
-                except Exception:
-                    self._more = None
-                    objects = []
-                    msg = _('Unable to retrieve object list.')
-                    exceptions.handle(self.request, msg)
-            self._objects = objects
-        return self._objects
+        objects = []
+        self._more = None
+        marker = self.request.GET.get('marker', None)
+        container_name = self.kwargs['container_name']
+        subfolder = self.kwargs['subfolder_path']
+        prefix = None
+        if container_name:
+            self.navigation_selection = True
+            if subfolder:
+                prefix = subfolder
+            try:
+                objects, self._more = api.swift.swift_get_objects(
+                    self.request,
+                    container_name,
+                    marker=marker,
+                    prefix=prefix)
+            except Exception:
+                self._more = None
+                objects = []
+                msg = _('Unable to retrieve object list.')
+                exceptions.handle(self.request, msg)
+        return objects
 
     def is_subdir(self, item):
         content_type = "application/pseudo-folder"
         return getattr(item, "content_type", None) == content_type
 
+    def is_placeholder(self, item):
+        object_name = getattr(item, "name", "")
+        return object_name.endswith(api.swift.FOLDER_DELIMITER)
+
     def get_objects_data(self):
-        """ Returns a list of objects within the current folder. """
+        """Returns a list of objects within the current folder."""
         filtered_objects = [item for item in self.objects
-                            if not self.is_subdir(item)]
+                            if (not self.is_subdir(item) and
+                                not self.is_placeholder(item))]
         return filtered_objects
 
     def get_subfolders_data(self):
-        """ Returns a list of subfolders within the current folder. """
+        """Returns a list of subfolders within the current folder."""
         filtered_objects = [item for item in self.objects
                             if self.is_subdir(item)]
         return filtered_objects
@@ -129,13 +144,11 @@ class CreateView(forms.ModalFormView):
         if parent:
             container, slash, remainder = parent.partition(
                 swift.FOLDER_DELIMITER)
-            container += swift.FOLDER_DELIMITER
-            if remainder and not remainder.endswith(swift.FOLDER_DELIMITER):
-                remainder = "".join([remainder, swift.FOLDER_DELIMITER])
-            return reverse(self.success_url, args=(container, remainder))
+            args = (for_url(container), for_url(remainder))
+            return reverse(self.success_url, args=args)
         else:
-            return reverse(self.success_url, args=[self.request.POST['name'] +
-                                                   swift.FOLDER_DELIMITER])
+            container = for_url(self.request.POST['name'])
+            return reverse(self.success_url, args=[container])
 
     def get_initial(self):
         initial = super(CreateView, self).get_initial()
@@ -143,9 +156,9 @@ class CreateView(forms.ModalFormView):
         return initial
 
 
-class UploadView(forms.ModalFormView):
-    form_class = project_forms.UploadObject
-    template_name = 'project/containers/upload.html'
+class CreatePseudoFolderView(forms.ModalFormView):
+    form_class = project_forms.CreatePseudoFolder
+    template_name = 'project/containers/create_pseudo_folder.html'
     success_url = "horizon:project:containers:index"
 
     def get_success_url(self):
@@ -159,8 +172,31 @@ class UploadView(forms.ModalFormView):
                 "path": self.kwargs['subfolder_path']}
 
     def get_context_data(self, **kwargs):
-        context = super(UploadView, self).get_context_data(**kwargs)
+        context = super(CreatePseudoFolderView, self). \
+            get_context_data(**kwargs)
         context['container_name'] = self.kwargs["container_name"]
+        return context
+
+
+class UploadView(forms.ModalFormView):
+    form_class = project_forms.UploadObject
+    template_name = 'project/containers/upload.html'
+    success_url = "horizon:project:containers:index"
+
+    def get_success_url(self):
+        container_name = for_url(self.request.POST['container_name'])
+        path = for_url(self.request.POST.get('path', ''))
+        args = (container_name, path)
+        return reverse(self.success_url, args=args)
+
+    def get_initial(self):
+        return {"container_name": self.kwargs["container_name"],
+                "path": self.kwargs['subfolder_path']}
+
+    def get_context_data(self, **kwargs):
+        context = super(UploadView, self).get_context_data(**kwargs)
+        container_name = utils_http.urlquote(self.kwargs["container_name"])
+        context['container_name'] = container_name
         return context
 
 
@@ -192,11 +228,10 @@ class CopyView(forms.ModalFormView):
     success_url = "horizon:project:containers:index"
 
     def get_success_url(self):
-        new_container_name = self.request.POST['new_container_name']
-        return reverse(self.success_url,
-                       args=(tables.wrap_delimiter(new_container_name),
-                             tables.wrap_delimiter(
-                                 self.request.POST.get('path', ''))))
+        new_container_name = for_url(self.request.POST['new_container_name'])
+        path = for_url(self.request.POST.get('path', ''))
+        args = (new_container_name, path)
+        return reverse(self.success_url, args=args)
 
     def get_form_kwargs(self):
         kwargs = super(CopyView, self).get_form_kwargs()
@@ -221,7 +256,8 @@ class CopyView(forms.ModalFormView):
 
     def get_context_data(self, **kwargs):
         context = super(CopyView, self).get_context_data(**kwargs)
-        context['container_name'] = self.kwargs["container_name"]
+        container_name = utils_http.urlquote(self.kwargs["container_name"])
+        context['container_name'] = container_name
         context['object_name'] = self.kwargs["object_name"]
         return context
 
@@ -234,7 +270,8 @@ class ContainerDetailView(forms.ModalFormMixin, generic.TemplateView):
             try:
                 self._object = api.swift.swift_get_container(
                     self.request,
-                    self.kwargs["container_name"])
+                    self.kwargs["container_name"],
+                    with_data=False)
             except Exception:
                 redirect = reverse("horizon:project:containers:index")
                 exceptions.handle(self.request,
@@ -257,7 +294,8 @@ class ObjectDetailView(forms.ModalFormMixin, generic.TemplateView):
                 self._object = api.swift.swift_get_object(
                     self.request,
                     self.kwargs["container_name"],
-                    self.kwargs["object_path"])
+                    self.kwargs["object_path"],
+                    with_data=False)
             except Exception:
                 redirect = reverse("horizon:project:containers:index")
                 exceptions.handle(self.request,

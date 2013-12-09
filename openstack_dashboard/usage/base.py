@@ -1,3 +1,15 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 from __future__ import division
 
 from csv import DictWriter  # noqa
@@ -168,19 +180,34 @@ class BaseUsage(object):
             self._set_neutron_limit(self.limits, neutron_quotas,
                                     'security_group')
 
+    def get_cinder_limits(self):
+        """Get volume limits if cinder is enabled."""
+        if not api.base.is_service_enabled(self.request, 'volume'):
+            return
+        try:
+            self.limits.update(api.cinder.tenant_absolute_limits(self.request))
+        except Exception:
+            msg = _("Unable to retrieve volume limit information.")
+            exceptions.handle(self.request, msg)
+
+        return
+
     def get_limits(self):
         try:
             self.limits = api.nova.tenant_absolute_limits(self.request)
         except Exception:
             exceptions.handle(self.request,
                               _("Unable to retrieve limit information."))
-
         self.get_neutron_limits()
+        self.get_cinder_limits()
 
     def get_usage_list(self, start, end):
         raise NotImplementedError("You must define a get_usage_list method.")
 
     def summarize(self, start, end):
+        if not api.nova.extension_supported('SimpleTenantUsage', self.request):
+            return
+
         if start <= end and start <= self.today:
             # The API can't handle timezone aware datetime, so convert back
             # to naive UTC just for this last step.
@@ -260,8 +287,7 @@ class ProjectUsage(BaseUsage):
 
 class CsvDataMixin(object):
 
-    """
-    CSV data Mixin - provides handling for CSV data
+    """CSV data Mixin - provides handling for CSV data.
 
     .. attribute:: columns
 
@@ -303,10 +329,7 @@ class CsvDataMixin(object):
 
 class BaseCsvResponse(CsvDataMixin, HttpResponse):
 
-    """
-    Base CSV response class. Provides handling of CSV data.
-
-    """
+    """Base CSV response class. Provides handling of CSV data."""
 
     def __init__(self, request, template, context, content_type, **kwargs):
         super(BaseCsvResponse, self).__init__()
@@ -343,8 +366,7 @@ if VERSION >= (1, 5, 0):
 
     class BaseCsvStreamingResponse(CsvDataMixin, StreamingHttpResponse):
 
-        """
-        Base CSV Streaming class. Provides streaming response for CSV data.
+        """Base CSV Streaming class. Provides streaming response for CSV data.
         """
 
         def __init__(self, request, template, context, content_type, **kwargs):

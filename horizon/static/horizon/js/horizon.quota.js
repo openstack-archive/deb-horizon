@@ -67,12 +67,138 @@ horizon.Quota = {
     }));
 
     // Draw the initial progress bars
-    this._initialCreation(this.user_value_progress_bars)
-    this._initialCreation(this.auto_value_progress_bars)
-    this._initialCreation(this.flavor_progress_bars)
+    this._initialCreation(this.user_value_progress_bars);
+    this._initialCreation(this.auto_value_progress_bars);
+    this._initialCreation(this.flavor_progress_bars);
 
     this._initialAnimations();
     this._attachInputHandlers();
+  },
+
+  /*
+    Confirm that the specified attribute 'actual' meets
+    or exceeds the specified value 'minimum'.
+  */
+  belowMinimum: function(minimum, actual) {
+      return parseInt(minimum, 10) > parseInt(actual, 10);
+  },
+
+  /*
+    Determines if the selected image meets the requirements of
+    the selected flavor.
+  */
+  imageFitsFlavor: function(image, flavor) {
+    if (image === undefined) {
+        /*
+          If we don't actually have an image, we don't need to
+          limit our flavors, so we return true in this case.
+        */
+        return true;
+    } else {
+        overDisk = horizon.Quota.belowMinimum(image.min_disk, flavor.disk);
+        overRAM = horizon.Quota.belowMinimum(image.min_ram, flavor.ram);
+        return !(overDisk || overRAM);
+    }
+  },
+
+  /*
+    Note to the user that some flavors have been disabled.
+  */
+  noteDisabledFlavors: function(allDisabled) {
+    if ($('#some_flavors_disabled').length === 0) {
+      message = allDisabled ? horizon.Quota.allFlavorsDisabledMessage :
+          horizon.Quota.disabledFlavorMessage;
+      $('#id_flavor').parent().append("<span id='some_flavors_disabled'>" +
+          message + '</span>');
+    }
+  },
+
+  /*
+    Re-enables all flavors that may have been disabled, and
+    clear the message displayed about them being disabled.
+  */
+  resetFlavors: function() {
+    if ($('#some_flavors_disabled')) {
+        $('#some_flavors_disabled').remove();
+        $('#id_flavor option').each(function() {
+            $(this).attr('disabled', false);
+        });
+    }
+  },
+
+  /*
+    A convenience method to find an image object by its id.
+  */
+  findImageById: function(id) {
+    _image = undefined;
+    $.each(horizon.Quota.images, function(i, image){
+        if(image.id == id) {
+            _image = image;
+        }
+    });
+    return _image;
+  },
+
+  /*
+    Return an image Object based on which image ID is selected
+  */
+  getSelectedImage: function() {
+    selected = $('#id_image_id option:selected').val();
+    return horizon.Quota.findImageById(selected);
+  },
+
+  /*
+    Disable any flavors for a given image that do not meet
+    its minimum RAM or disk requirements.
+  */
+  disableFlavorsForImage: function(image) {
+    image = horizon.Quota.getSelectedImage();
+    to_disable = []; // an array of flavor names to disable
+
+    horizon.Quota.resetFlavors(); // clear any previous messages
+
+    $.each(horizon.Quota.flavors, function(i, flavor) {
+        if (!horizon.Quota.imageFitsFlavor(image, flavor)) {
+            to_disable.push(flavor.name);
+        }
+    });
+
+    flavors = $('#id_flavor option');
+    // Now, disable anything from above:
+    $.each(to_disable, function(i, flavor_name) {
+        flavors.each(function(){
+            if ($(this).text() == flavor_name) {
+                $(this).attr('disabled', 'disabled');
+            }
+        });
+    });
+
+    // And then, finally, clean up:
+    if (to_disable.length > 0) {
+        selected = ($('#id_flavor option').filter(':selected'))[0];
+        if (to_disable.length < flavors.length && selected.disabled) {
+            // we need to find a new flavor to select
+            flavors.each(function(index, element) {
+                if (!element.disabled) {
+                    $('#id_flavor').val(element.value);
+                    $('#id_flavor').change(); // force elements to update
+                    return false; // break
+                }
+            });
+        }
+        horizon.Quota.noteDisabledFlavors(to_disable.length == flavors.length);
+    }
+  },
+
+  /*
+    Store an array of image objects
+  */
+  initWithImages: function(images, disabledMessage, allDisabledMessage) {
+    this.images = images;
+    this.disabledFlavorMessage = disabledMessage;
+    this.allFlavorsDisabledMessage = allDisabledMessage;
+    // Check if the image is pre-selected
+    horizon.Quota.disableFlavorsForImage();
   },
 
   /*
@@ -189,7 +315,7 @@ horizon.Quota = {
         .attr("width", w)
         .attr("height", h)
         .style("background-color", "white")
-        .append("g")
+        .append("g");
 
     // background - unused resources
     bar.append("rect")
@@ -200,7 +326,7 @@ horizon.Quota = {
       .attr("ry", lvl_curve)
       .style("fill", bkgrnd)
       .style("stroke", "#CCCCCC")
-      .style("stroke-width", 1)
+      .style("stroke-width", 1);
 
     // new resources
     bar.append("rect")
@@ -210,7 +336,7 @@ horizon.Quota = {
       .attr("height", h)
       .attr("rx", lvl_curve)
       .attr("ry", lvl_curve)
-      .style("fill", function () { return addition; })
+      .style("fill", function () { return addition; });
 
     // used resources
     var used_bar = bar.insert("rect")
@@ -221,7 +347,7 @@ horizon.Quota = {
       .attr("height", h)
       .attr("rx", lvl_curve)
       .attr("ry", lvl_curve)
-      .style("fill", function () { return frgrnd })
+      .style("fill", function () { return frgrnd; })
       .attr("d", used)
       .transition()
         .duration(500)
@@ -230,24 +356,30 @@ horizon.Quota = {
           if (used >= 100) { return full; }
           else if (used >= 80) { return nearlyfull; }
           else { return frgrnd; }
-        })
+        });
   },
 
   // Update the progress Bar
   update: function(element, value) {
     var full = "#D0342B";
     var addition = "#00D300";
-    var already_used = parseInt(d3.select("#"+element).select(".usedbar").attr("d"))
+    var already_used = parseInt(d3.select("#"+element).select(".usedbar").attr("d"));
     d3.select("#"+element).select(".newbar")
       .transition()
         .duration(500)
         .attr("width", function () {
-          if ((value + already_used) >= 100) { return "100%"; }
-          else { return (value + already_used)+ "%"; }
+          if ((value + already_used) >= 100) {
+            return "100%";
+          } else {
+            return (value + already_used)+ "%";
+          }
         })
         .style("fill", function() {
-          if (value > (100 - already_used)) { return full }
-          else {return addition }
+          if (value > (100 - already_used)) {
+            return full;
+          } else {
+            return addition;
+          }
         });
 
   },
@@ -265,8 +397,13 @@ horizon.Quota = {
         scope.updateFlavorUsage();
       };
 
+      var imageChangeCallback = function(event) {
+        scope.disableFlavorsForImage();
+      };
+
       $('#id_flavor').on('change', eventCallback);
       $('#id_count').on('keyup', eventCallback);
+      $('#id_image_id').on('change', imageChangeCallback);
     }
 
     $(this.user_value_form_inputs).each(function(index, element) {
@@ -320,11 +457,11 @@ horizon.Quota = {
 
       var quota_limit = parseInt(progress_element.attr('data-quota-limit'), 10);
       var quota_used = parseInt(progress_element.attr('data-quota-used'), 10);
+      var percentage_used = 0;
 
       if (!isNaN(quota_limit) && !isNaN(quota_used)) {
-        var percentage_used = ((quota_used / quota_limit) * 100);
-      } else { // If NaN percentage_used is 0
-        var percentage_used = 0;
+        // If NaN percentage_used is 0
+        percentage_used = (quota_used / quota_limit) * 100;
       }
 
       scope.drawUsed($(element).attr('id'), percentage_used);

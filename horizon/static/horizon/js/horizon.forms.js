@@ -28,8 +28,13 @@ horizon.forms = {
       var $volSize = $form.find('input#id_size');
       var volSize = parseInt($volSize.val(), 10) || -1;
       var dataSize = parseInt($option.data("size"), 10) || -1;
-      if (volSize < dataSize) {
-        $volSize.val(dataSize);
+      var minDiskSize = parseInt($option.data("min_disk"), 10) || -1;
+      var defaultVolSize = dataSize;
+      if (minDiskSize > defaultVolSize) {
+        defaultVolSize = minDiskSize;
+      }
+      if (volSize < defaultVolSize) {
+        $volSize.val(defaultVolSize);
       }
     });
   },
@@ -38,7 +43,7 @@ horizon.forms = {
        var startDate = $('input#id_start').datepicker()
           .on('changeDate', function(ev) {
           if (ev.date.valueOf() > endDate.date.valueOf()) {
-              var newDate = new Date(ev.date)
+              var newDate = new Date(ev.date);
               newDate.setDate(newDate.getDate() + 1);
               endDate.setValue(newDate);
               $('input#id_end')[0].focus();
@@ -87,8 +92,6 @@ horizon.forms.init_examples = function (el) {
   var $el = $(el);
 
   // FIXME(gabriel): These should be moved into the forms themselves as help text, etc.
-  // Generic examples.
-  $el.find("#id_description").attr("placeholder", gettext("Additional information here..."));
 
   // Update/create image form.
   $el.find("#create_image_form input#id_copy_from").attr("placeholder", "http://example.com/image.iso");

@@ -182,7 +182,9 @@ horizon.membership = {
         roles_to_display.push(horizon.membership.roles[step_slug][role_ids[i]]);
     }
     text = roles_to_display.join(', ');
-    if (text.length == 0) text = gettext('No roles');
+    if (text.length === 0) {
+      text = gettext('No roles');
+    }
     $roles_display.text(text);
   },
 
@@ -196,8 +198,8 @@ horizon.membership = {
     var roles = [];
     for (var r in horizon.membership.roles[step_slug]) {
       var role = {};
-      role['role_id'] = r;
-      role['role_name'] = horizon.membership.roles[step_slug][r];
+      role.role_id = r;
+      role.role_name = horizon.membership.roles[step_slug][r];
       roles.push(role);
     }
 
@@ -435,7 +437,7 @@ horizon.membership = {
         var $form = $(this);
 
         // Do nothing if this isn't a membership modal
-        if ($form.find('div.' + step_slug + '_membership').length == 0) {
+        if ($form.find('div.' + step_slug + '_membership').length === 0) {
            return; // continue
         }
 
@@ -456,7 +458,7 @@ horizon.membership = {
         }
 
         // unfocus filter fields
-        if (step_id.indexOf('update') ==0) {
+        if (step_id.indexOf('update') === 0) {
             $form.find("#" + step_id + " input").blur();
         }
 

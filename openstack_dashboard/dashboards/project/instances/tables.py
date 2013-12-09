@@ -419,7 +419,6 @@ class SimpleDisassociateIP(tables.Action):
                 fip = fips.pop()
                 api.network.floating_ip_disassociate(request,
                                                      fip.id, target_id)
-                api.network.tenant_floating_ip_release(request, fip.id)
                 messages.success(request,
                                  _("Successfully disassociated "
                                    "floating IP: %s") % fip.ip)
@@ -431,6 +430,29 @@ class SimpleDisassociateIP(tables.Action):
         return shortcuts.redirect("horizon:project:instances:index")
 
 
+def instance_fault_to_friendly_message(instance):
+    fault = getattr(instance, 'fault', {})
+    message = fault.get('message', _("Unknown"))
+    default_message = _("Please try again later [Error: %s].") % message
+    fault_map = {
+        'NoValidHost': _("There is not enough capacity for this "
+                         "flavor in the selected availability zone. "
+                         "Try again later or select a different availability "
+                         "zone.")
+    }
+    return fault_map.get(message, default_message)
+
+
+def get_instance_error(instance):
+    if instance.status.lower() != 'error':
+        return None
+    message = instance_fault_to_friendly_message(instance)
+    preamble = _('Failed to launch instance "%s"'
+                 ) % instance.name or instance.id
+    message = string_concat(preamble, ': ', message)
+    return message
+
+
 class UpdateRow(tables.Row):
     ajax = True
 
@@ -438,6 +460,9 @@ class UpdateRow(tables.Row):
         instance = api.nova.server_get(request, instance_id)
         instance.full_flavor = api.nova.flavor_get(request,
                                                    instance.flavor["id"])
+        error = get_instance_error(instance)
+        if error:
+            messages.error(request, error)
         return instance
 
 
@@ -502,28 +527,28 @@ def get_power_state(instance):
 
 
 STATUS_DISPLAY_CHOICES = (
-    ("resize", "Resize/Migrate"),
-    ("verify_resize", "Confirm or Revert Resize/Migrate"),
-    ("revert_resize", "Revert Resize/Migrate"),
+    ("resize", _("Resize/Migrate")),
+    ("verify_resize", _("Confirm or Revert Resize/Migrate")),
+    ("revert_resize", _("Revert Resize/Migrate")),
 )
 
 
 TASK_DISPLAY_CHOICES = (
-    ("image_snapshot", "Snapshotting"),
-    ("resize_prep", "Preparing Resize or Migrate"),
-    ("resize_migrating", "Resizing or Migrating"),
-    ("resize_migrated", "Resized or Migrated"),
-    ("resize_finish", "Finishing Resize or Migrate"),
-    ("resize_confirming", "Confirming Resize or Nigrate"),
-    ("resize_reverting", "Reverting Resize or Migrate"),
-    ("unpausing", "Resuming"),
+    ("image_snapshot", _("Snapshotting")),
+    ("resize_prep", _("Preparing Resize or Migrate")),
+    ("resize_migrating", _("Resizing or Migrating")),
+    ("resize_migrated", _("Resized or Migrated")),
+    ("resize_finish", _("Finishing Resize or Migrate")),
+    ("resize_confirming", _("Confirming Resize or Migrate")),
+    ("resize_reverting", _("Reverting Resize or Migrate")),
+    ("unpausing", _("Resuming")),
 )
 
 
 class InstancesFilterAction(tables.FilterAction):
 
     def filter(self, table, instances, filter_string):
-        """ Naive case-insensitive search. """
+        """Naive case-insensitive search."""
         q = filter_string.lower()
         return [instance for instance in instances
                 if q in instance.name.lower()]
@@ -559,6 +584,8 @@ class InstancesTable(tables.DataTable):
                            status=True,
                            status_choices=STATUS_CHOICES,
                            display_choices=STATUS_DISPLAY_CHOICES)
+    az = tables.Column("availability_zone",
+                       verbose_name=_("Availability Zone"))
     task = tables.Column("OS-EXT-STS:task_state",
                          verbose_name=_("Task"),
                          filters=(title, filters.replace_underscores),
@@ -570,7 +597,9 @@ class InstancesTable(tables.DataTable):
                           verbose_name=_("Power State"))
     created = tables.Column("created",
                             verbose_name=_("Uptime"),
-                            filters=(filters.parse_isotime, timesince))
+                            filters=(filters.parse_isotime,
+                                     filters.timesince_sortable),
+                            attrs={'data-type': 'timesince'})
 
     class Meta:
         name = "instances"

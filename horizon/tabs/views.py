@@ -1,3 +1,15 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 from django import http
 from django.views import generic
 
@@ -7,8 +19,8 @@ from horizon.tabs.base import TableTab  # noqa
 
 
 class TabView(generic.TemplateView):
-    """
-    A generic class-based view for displaying a :class:`horizon.tabs.TabGroup`.
+    """A generic class-based view for displaying a
+    :class:`horizon.tabs.TabGroup`.
 
     This view handles selecting specific tabs and deals with AJAX requests
     gracefully.
@@ -27,13 +39,13 @@ class TabView(generic.TemplateView):
                                  "on %s." % self.__class__.__name__)
 
     def get_tabs(self, request, **kwargs):
-        """ Returns the initialized tab group for this view. """
+        """Returns the initialized tab group for this view."""
         if self._tab_group is None:
             self._tab_group = self.tab_group_class(request, **kwargs)
         return self._tab_group
 
     def get_context_data(self, **kwargs):
-        """ Adds the ``tab_group`` variable to the context data. """
+        """Adds the ``tab_group`` variable to the context data."""
         context = super(TabView, self).get_context_data(**kwargs)
         try:
             tab_group = self.get_tabs(self.request, **kwargs)
@@ -45,8 +57,7 @@ class TabView(generic.TemplateView):
         return context
 
     def handle_tabbed_response(self, tab_group, context):
-        """
-        Sends back an AJAX-appropriate response for the tab group if
+        """Sends back an AJAX-appropriate response for the tab group if
         required, otherwise renders the response as normal.
         """
         if self.request.is_ajax():
@@ -78,8 +89,7 @@ class TabbedTableView(tables.MultiTableMixin, TabView):
         self._table_dict = {}
 
     def load_tabs(self):
-        """
-        Loads the tab group, and compiles the table instances for each
+        """Loads the tab group, and compiles the table instances for each
         table attached to any :class:`horizon.tabs.TableTab` instances on
         the tab group. This step is necessary before processing any
         tab or table actions.
@@ -93,14 +103,13 @@ class TabbedTableView(tables.MultiTableMixin, TabView):
                                                       'tab': tab}
 
     def get_tables(self):
-        """ A no-op on this class. Tables are handled at the tab level. """
+        """A no-op on this class. Tables are handled at the tab level."""
         # Override the base class implementation so that the MultiTableMixin
         # doesn't freak out. We do the processing at the TableTab level.
         return {}
 
     def handle_table(self, table_dict):
-        """
-        For the given dict containing a ``DataTable`` and a ``TableTab``
+        """For the given dict containing a ``DataTable`` and a ``TableTab``
         instance, it loads the table data for that tab and calls the
         table's :meth:`~horizon.tables.DataTable.maybe_handle` method. The
         return value will be the result of ``maybe_handle``.
@@ -137,5 +146,17 @@ class TabbedTableView(tables.MultiTableMixin, TabView):
         return self.handle_tabbed_response(context["tab_group"], context)
 
     def post(self, request, *args, **kwargs):
+        # Direct POST to its appropriate tab
+        # Note some table actions like filter do not have an 'action'
+        if 'action' in request.POST:
+            targetslug = request.POST['action'].split('__')[0]
+            tabs = self.get_tabs(self.request, **self.kwargs).get_tabs()
+            matches = [tab for tab in tabs if tab.slug == targetslug]
+            if matches:
+                # Call POST on first match only. There shouldn't be a case
+                # where multiple tabs have the same slug and processing the
+                # request twice could lead to unpredictable behavior.
+                matches[0].post(request, *args, **kwargs)
+
         # GET and POST handling are the same
         return self.get(request, *args, **kwargs)

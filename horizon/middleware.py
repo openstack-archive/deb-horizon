@@ -43,12 +43,12 @@ LOG = logging.getLogger(__name__)
 
 
 class HorizonMiddleware(object):
-    """ The main Horizon middleware class. Required for use of Horizon. """
+    """The main Horizon middleware class. Required for use of Horizon."""
 
     logout_reason = None
 
     def process_request(self, request):
-        """ Adds data necessary for Horizon to function to the request. """
+        """Adds data necessary for Horizon to function to the request."""
         # Activate timezone handling
         tz = request.session.get('django_timezone')
         if tz:
@@ -75,8 +75,7 @@ class HorizonMiddleware(object):
         request.session['last_activity'] = timestamp
 
     def process_exception(self, request, exception):
-        """
-        Catches internal Horizon exception classes such as NotAuthorized,
+        """Catches internal Horizon exception classes such as NotAuthorized,
         NotFound and Http302 and handles them gracefully.
         """
         if isinstance(exception, (exceptions.NotAuthorized,
@@ -108,11 +107,10 @@ class HorizonMiddleware(object):
             return shortcuts.redirect(exception.location)
 
     def process_response(self, request, response):
-        """
-        Convert HttpResponseRedirect to HttpResponse if request is via ajax
+        """Convert HttpResponseRedirect to HttpResponse if request is via ajax
         to allow ajax request to redirect url
         """
-        if request.is_ajax():
+        if request.is_ajax() and hasattr(request, 'horizon'):
             queued_msgs = request.horizon['async_messages']
             if type(response) == http.HttpResponseRedirect:
                 # Drop our messages back into the session as per usual so they
@@ -122,11 +120,22 @@ class HorizonMiddleware(object):
                     getattr(django_messages, tag)(request, message, extra_tags)
                 if response['location'].startswith(settings.LOGOUT_URL):
                     redirect_response = http.HttpResponse(status=401)
+                    # This header is used for handling the logout in JS
+                    redirect_response['logout'] = True
                     if self.logout_reason is not None:
                         utils.add_logout_reason(
                             request, redirect_response, self.logout_reason)
                 else:
                     redirect_response = http.HttpResponse()
+                # Copy cookies from HttpResponseRedirect towards HttpResponse
+                for cookie_name, cookie in response.cookies.iteritems():
+                    cookie_kwargs = dict((
+                        (key, value) for key, value in cookie.iteritems()
+                        if key in ('max_age', 'expires', 'path', 'domain',
+                            'secure', 'httponly') and value
+                    ))
+                    redirect_response.set_cookie(
+                        cookie_name, cookie.value, **cookie_kwargs)
                 redirect_response['X-Horizon-Location'] = response['location']
                 return redirect_response
             if queued_msgs:

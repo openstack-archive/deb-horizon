@@ -42,25 +42,70 @@ class SwiftApiTests(test.APITestCase):
         self.assertEqual(len(conts), len(containers))
         self.assertFalse(more)
 
-    def test_swift_create_duplicate_container(self):
+    def test_swift_get_container_with_data(self):
         container = self.containers.first()
+        objects = self.objects.list()
+        swift_api = self.stub_swiftclient()
+        swift_api.get_object(container.name, "") \
+            .AndReturn((container, objects))
+        self.mox.ReplayAll()
+
+        cont = api.swift.swift_get_container(self.request, container.name)
+        self.assertEqual(cont.name, container.name)
+        self.assertEqual(len(cont.data), len(objects))
+
+    def test_swift_get_container_without_data(self):
+        container = self.containers.first()
+        swift_api = self.stub_swiftclient()
+        swift_api.head_container(container.name).AndReturn(container)
+        self.mox.ReplayAll()
+
+        cont = api.swift.swift_get_container(self.request,
+                                             container.name,
+                                             with_data=False)
+        self.assertEqual(cont.name, container.name)
+        self.assertIsNone(cont.data)
+
+    def test_swift_create_duplicate_container(self):
+        metadata = {'is_public': False}
+        container = self.containers.first()
+        headers = api.swift._metadata_to_header(metadata=(metadata))
         swift_api = self.stub_swiftclient(expected_calls=2)
         # Check for existence, then create
         exc = self.exceptions.swift
         swift_api.head_container(container.name).AndRaise(exc)
-        swift_api.put_container(container.name).AndReturn(container)
+        swift_api.put_container(container.name, headers=headers) \
+            .AndReturn(container)
         self.mox.ReplayAll()
         # Verification handled by mox, no assertions needed.
-        api.swift.swift_create_container(self.request, container.name)
+        api.swift.swift_create_container(self.request,
+                                         container.name,
+                                         metadata=(metadata))
 
     def test_swift_create_container(self):
+        metadata = {'is_public': True}
         container = self.containers.first()
         swift_api = self.stub_swiftclient()
         swift_api.head_container(container.name).AndReturn(container)
         self.mox.ReplayAll()
         # Verification handled by mox, no assertions needed.
         with self.assertRaises(exceptions.AlreadyExists):
-            api.swift.swift_create_container(self.request, container.name)
+            api.swift.swift_create_container(self.request,
+                                             container.name,
+                                             metadata=(metadata))
+
+    def test_swift_update_container(self):
+        metadata = {'is_public': True}
+        container = self.containers.first()
+        swift_api = self.stub_swiftclient()
+        headers = api.swift._metadata_to_header(metadata=(metadata))
+        swift_api.post_container(container.name, headers=headers)\
+            .AndReturn(container)
+        self.mox.ReplayAll()
+        # Verification handled by mox, no assertions needed.
+        api.swift.swift_update_container(self.request,
+                                         container.name,
+                                         metadata=(metadata))
 
     def test_swift_get_objects(self):
         container = self.containers.first()
@@ -79,6 +124,38 @@ class SwiftApiTests(test.APITestCase):
                                                    container.name)
         self.assertEqual(len(objs), len(objects))
         self.assertFalse(more)
+
+    def test_swift_get_object_with_data(self):
+        container = self.containers.first()
+        object = self.objects.first()
+
+        swift_api = self.stub_swiftclient()
+        swift_api.get_object(container.name, object.name) \
+            .AndReturn([object, object.data])
+
+        self.mox.ReplayAll()
+
+        obj = api.swift.swift_get_object(self.request,
+                                         container.name,
+                                         object.name)
+        self.assertEqual(obj.name, object.name)
+
+    def test_swift_get_object_without_data(self):
+        container = self.containers.first()
+        object = self.objects.first()
+
+        swift_api = self.stub_swiftclient()
+        swift_api.head_object(container.name, object.name) \
+            .AndReturn(object)
+
+        self.mox.ReplayAll()
+
+        obj = api.swift.swift_get_object(self.request,
+                                         container.name,
+                                         object.name,
+                                         with_data=False)
+        self.assertEqual(obj.name, object.name)
+        self.assertIsNone(obj.data)
 
     def test_swift_upload_object(self):
         container = self.containers.first()

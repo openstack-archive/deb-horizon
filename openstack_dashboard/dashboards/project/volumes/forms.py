@@ -3,6 +3,18 @@
 # Copyright 2012 Nebula, Inc.
 # All rights reserved.
 
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 """
 Views for managing volumes.
 """
@@ -48,9 +60,11 @@ class CreateForm(forms.SelfHandlingForm):
         label=_("Use image as a source"),
         widget=fields.SelectWidget(
             attrs={'class': 'image-selector'},
-            data_attrs=('size', 'name'),
+            data_attrs=('size', 'name', 'min_disk'),
             transform=lambda x: "%s (%s)" % (x.name, filesizeformat(x.bytes))),
         required=False)
+    availability_zone = forms.ChoiceField(label=_("Availability Zone"),
+                                          required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
@@ -58,6 +72,8 @@ class CreateForm(forms.SelfHandlingForm):
         self.fields['type'].choices = [("", "")] + \
                                       [(type.name, type.name)
                                        for type in volume_types]
+        self.fields['availability_zone'].choices = \
+            self.availability_zones(request)
 
         if ("snapshot_id" in request.GET):
             try:
@@ -75,8 +91,8 @@ class CreateForm(forms.SelfHandlingForm):
                 except Exception:
                     pass
                 self.fields['size'].help_text = _('Volume size must be equal '
-                                'to or greater than the snapshot size (%sGB)'
-                                % snapshot.size)
+                            'to or greater than the snapshot size (%sGB)') \
+                            % snapshot.size
                 del self.fields['image_source']
                 del self.fields['volume_source_type']
             except Exception:
@@ -88,12 +104,21 @@ class CreateForm(forms.SelfHandlingForm):
                                        request.GET["image_id"])
                 image.bytes = image.size
                 self.fields['name'].initial = image.name
-                self.fields['size'].initial = functions.bytes_to_gigabytes(
+                min_vol_size = functions.bytes_to_gigabytes(
                     image.size)
+                size_help_text = _('Volume size must be equal to or greater '
+                                   'than the image size (%s)') \
+                                 % filesizeformat(image.size)
+                min_disk_size = getattr(image, 'min_disk', 0)
+                if (min_disk_size > min_vol_size):
+                    min_vol_size = min_disk_size
+                    size_help_text = _('Volume size must be equal to or '
+                                       'greater than the image minimum '
+                                       'disk size (%sGB)') \
+                                     % min_disk_size
+                self.fields['size'].initial = min_vol_size
+                self.fields['size'].help_text = size_help_text
                 self.fields['image_source'].choices = ((image.id, image),)
-                self.fields['size'].help_text = _('Volume size must be equal '
-                                'to or greater than the image size (%s)'
-                                % filesizeformat(image.size))
                 del self.fields['snapshot_source']
                 del self.fields['volume_source_type']
             except Exception:
@@ -103,7 +128,9 @@ class CreateForm(forms.SelfHandlingForm):
             source_type_choices = []
 
             try:
-                snapshots = cinder.volume_snapshot_list(request)
+                snapshot_list = cinder.volume_snapshot_list(request)
+                snapshots = [s for s in snapshot_list
+                              if s.status == 'available']
                 if snapshots:
                     source_type_choices.append(("snapshot_source",
                                                 _("Snapshot")))
@@ -137,6 +164,34 @@ class CreateForm(forms.SelfHandlingForm):
             else:
                 del self.fields['volume_source_type']
 
+    # Determine whether the extension for Cinder AZs is enabled
+    def cinder_az_supported(self, request):
+        try:
+            return cinder.extension_supported(request, 'AvailabilityZones')
+        except Exception:
+            exceptions.handle(request, _('Unable to determine if '
+                                         'availability zones extension '
+                                         'is supported.'))
+            return False
+
+    def availability_zones(self, request):
+        zone_list = []
+        if self.cinder_az_supported(request):
+            try:
+                zones = api.cinder.availability_zone_list(request)
+                zone_list = [(zone.zoneName, zone.zoneName)
+                              for zone in zones if zone.zoneState['available']]
+                zone_list.sort()
+            except Exception:
+                exceptions.handle(request, _('Unable to retrieve availability '
+                                             'zones.'))
+        if not zone_list:
+            zone_list.insert(0, ("", _("No availability zones found.")))
+        elif len(zone_list) > 0:
+            zone_list.insert(0, ("", _("Any Availability Zone")))
+
+        return zone_list
+
     def handle(self, request, data):
         try:
             usages = quotas.tenant_limit_usages(self.request)
@@ -155,8 +210,7 @@ class CreateForm(forms.SelfHandlingForm):
                 snapshot_id = snapshot.id
                 if (data['size'] < snapshot.size):
                     error_message = _('The volume size cannot be less than '
-                                      'the snapshot size (%sGB)' %
-                                      snapshot.size)
+                        'the snapshot size (%sGB)') % snapshot.size
                     raise ValidationError(error_message)
             elif (data.get("image_source", None) and
                   source_type in [None, 'image_source']):
@@ -167,8 +221,12 @@ class CreateForm(forms.SelfHandlingForm):
                 image_size = functions.bytes_to_gigabytes(image.size)
                 if (data['size'] < image_size):
                     error_message = _('The volume size cannot be less than '
-                                      'the image size (%s)' %
-                                      filesizeformat(image.size))
+                        'the image size (%s)') % filesizeformat(image.size)
+                    raise ValidationError(error_message)
+                min_disk_size = getattr(image, 'min_disk', 0)
+                if (min_disk_size > 0 and data['size'] < image.min_disk):
+                    error_message = _('The volume size cannot be less than '
+                        'the image minimum disk size (%sGB)') % min_disk_size
                     raise ValidationError(error_message)
             else:
                 if type(data['size']) is str:
@@ -188,6 +246,8 @@ class CreateForm(forms.SelfHandlingForm):
 
             metadata = {}
 
+            az = data['availability_zone'] or None
+
             volume = cinder.volume_create(request,
                                           data['size'],
                                           data['name'],
@@ -195,7 +255,8 @@ class CreateForm(forms.SelfHandlingForm):
                                           data['type'],
                                           snapshot_id=snapshot_id,
                                           image_id=image_id,
-                                          metadata=metadata)
+                                          metadata=metadata,
+                                          availability_zone=az)
             message = _('Creating volume "%s"') % data['name']
             messages.info(request, message)
             return volume

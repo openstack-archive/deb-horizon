@@ -4,9 +4,13 @@
 {% comment %} Django's JavaScript i18n Implementation {% endcomment %}
 <script type="text/javascript" src="{% url 'horizon:jsi18n' 'horizon' %}"></script>
 
-{% comment %} Compress jQuery, Plugins, Bootstrap, Hogan.js and Horizon-specific JS. {% endcomment %}
+{% comment %} Compress jQuery, Angular, Plugins, Bootstrap, Hogan.js and Horizon-specific JS. {% endcomment %}
 {% compress js %}
 <script src='{{ STATIC_URL }}horizon/lib/jquery/jquery.min.js' type='text/javascript' charset="utf-8"></script>
+
+<script src="{{ STATIC_URL }}horizon/lib/angular.js" type="text/javascript" charset="utf-8"></script>
+<script src='{{ STATIC_URL }}horizon/js/angular/horizon.js' type='text/javascript' charset='utf-8'></script>
+
 <script src='{{ STATIC_URL }}horizon/lib/jquery/jquery.cookie.js' type='text/javascript' charset="utf-8"></script>
 <script src='{{ STATIC_URL }}horizon/lib/jquery/jquery.quicksearch.js' type='text/javascript' charset="utf-8"></script>
 <script src="{{ STATIC_URL }}horizon/lib/jquery/jquery.table-sorter.js" type="text/javascript" charset="utf-8"></script>
@@ -21,6 +25,7 @@
 <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 <script src='{{ STATIC_URL }}bootstrap/js/bootstrap-datepicker.js' type='text/javascript' charset='utf-8'></script>
 
+
 <script src="{{ STATIC_URL }}horizon/lib/hogan-2.0.0.js" type="text/javascript" charset='utf-8'></script>
 
 <script src='{{ STATIC_URL }}horizon/js/horizon.communication.js' type='text/javascript' charset='utf-8'></script>
@@ -31,6 +36,7 @@
 <script src='{{ STATIC_URL }}horizon/js/horizon.modals.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.quota.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.tables.js' type='text/javascript' charset='utf-8'></script>
+<script src='{{ STATIC_URL }}horizon/js/horizon.tables_inline_edit.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.tabs.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.templates.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.users.js' type='text/javascript' charset='utf-8'></script>
@@ -41,7 +47,9 @@
 <script src='{{ STATIC_URL }}horizon/js/horizon.heattop.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/lib/rickshaw.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.d3linechart.js' type='text/javascript' charset='utf-8'></script>
+<script src='{{ STATIC_URL }}horizon/js/horizon.d3barchart.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.firewalls.js' type='text/javascript' charset='utf-8'></script>
+
 {% block custom_js_files %}{% endblock %}
 {% endcompress %}
 

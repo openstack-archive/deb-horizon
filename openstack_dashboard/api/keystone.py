@@ -23,7 +23,6 @@ import logging
 import urlparse
 
 from django.conf import settings  # noqa
-from django.contrib.auth import logout  # noqa
 from django.utils.translation import ugettext_lazy as _  # noqa
 
 from keystoneclient import exceptions as keystone_exceptions
@@ -32,6 +31,7 @@ from openstack_auth import backend
 
 from horizon import exceptions
 from horizon import messages
+from horizon.utils import functions as utils
 
 from openstack_dashboard.api import base
 
@@ -74,7 +74,7 @@ except ImportError:
 
 
 class Service(base.APIDictWrapper):
-    """ Wrapper for a dict based on the service data from keystone. """
+    """Wrapper for a dict based on the service data from keystone."""
     _attrs = ['id', 'type', 'name']
 
     def __init__(self, service, region, *args, **kwargs):
@@ -205,19 +205,19 @@ def domain_update(request, domain_id, name=None, description=None,
     return manager.update(domain_id, name, description, enabled)
 
 
-def tenant_create(request, name, description=None, enabled=None, domain=None):
+def tenant_create(request, name, description=None, enabled=None,
+                  domain=None, **kwargs):
     manager = VERSIONS.get_project_manager(request, admin=True)
     if VERSIONS.active < 3:
-        return manager.create(name, description, enabled)
+        return manager.create(name, description, enabled, **kwargs)
     else:
         return manager.create(name, domain,
                               description=description,
-                              enabled=enabled)
+                              enabled=enabled, **kwargs)
 
 
 def get_default_domain(request):
-    """
-    Gets the default domain object to use when creating Identity object.
+    """Gets the default domain object to use when creating Identity object.
     Returns the domain context if is set, otherwise return the domain
     of the logon user.
     """
@@ -272,13 +272,13 @@ def tenant_list(request, paginate=False, marker=None, domain=None, user=None):
 
 
 def tenant_update(request, project, name=None, description=None,
-                  enabled=None, domain=None):
+                  enabled=None, domain=None, **kwargs):
     manager = VERSIONS.get_project_manager(request, admin=True)
     if VERSIONS.active < 3:
-        return manager.update(project, name, description, enabled)
+        return manager.update(project, name, description, enabled, **kwargs)
     else:
         return manager.update(project, name=name, description=description,
-                              enabled=enabled, domain=domain)
+                              enabled=enabled, domain=domain, **kwargs)
 
 
 def user_list(request, project=None, domain=None, group=None):
@@ -354,8 +354,11 @@ def user_update(request, user, **data):
         if password:
             try:
                 user_update_password(request, user, password)
-                if user == request.user.id:
-                    logout(request)
+                if user.id == request.user.id:
+                    return utils.logout_with_message(
+                        request,
+                        _("Password changed. Please log in again to continue.")
+                    )
             except Exception:
                 error = exceptions.handle(request, ignore=True)
 
@@ -367,8 +370,11 @@ def user_update(request, user, **data):
         if not data['password']:
             data.pop('password')
         user = manager.update(user, **data)
-
-    return VERSIONS.upgrade_v2_user(user)
+        if data.get('password') and user.id == request.user.id:
+            return utils.logout_with_message(
+                request,
+                _("Password changed. Please log in again to continue.")
+            )
 
 
 def user_update_enabled(request, user, enabled):
@@ -482,7 +488,7 @@ def role_delete(request, role_id):
 
 
 def role_list(request):
-    """ Returns a global list of available roles. """
+    """Returns a global list of available roles."""
     return keystoneclient(request, admin=True).roles.list()
 
 
@@ -496,7 +502,7 @@ def roles_for_user(request, user, project):
 
 def add_tenant_user_role(request, project=None, user=None, role=None,
                          group=None, domain=None):
-    """ Adds a role for a user on a tenant. """
+    """Adds a role for a user on a tenant."""
     manager = keystoneclient(request, admin=True).roles
     if VERSIONS.active < 3:
         return manager.add_user_role(user, role, project)
@@ -507,7 +513,7 @@ def add_tenant_user_role(request, project=None, user=None, role=None,
 
 def remove_tenant_user_role(request, project=None, user=None, role=None,
                             group=None, domain=None):
-    """ Removes a given single role for a user from a tenant. """
+    """Removes a given single role for a user from a tenant."""
     manager = keystoneclient(request, admin=True).roles
     if VERSIONS.active < 3:
         return manager.remove_user_role(user, role, project)
@@ -517,7 +523,7 @@ def remove_tenant_user_role(request, project=None, user=None, role=None,
 
 
 def remove_tenant_user(request, project=None, user=None, domain=None):
-    """ Removes all roles from a user on a tenant, removing them from it. """
+    """Removes all roles from a user on a tenant, removing them from it."""
     client = keystoneclient(request, admin=True)
     roles = client.roles.roles_for_user(user, project)
     for role in roles:
@@ -531,22 +537,22 @@ def roles_for_group(request, group, domain=None, project=None):
 
 
 def add_group_role(request, role, group, domain=None, project=None):
-    """ Adds a role for a group on a domain or project ."""
+    """Adds a role for a group on a domain or project."""
     manager = keystoneclient(request, admin=True).roles
     return manager.grant(role=role, group=group, domain=domain,
                          project=project)
 
 
 def remove_group_role(request, role, group, domain=None, project=None):
-    """ Removes a given single role for a group from a domain or project. """
+    """Removes a given single role for a group from a domain or project."""
     manager = keystoneclient(request, admin=True).roles
     return manager.revoke(role=role, group=group, project=project,
                           domain=domain)
 
 
 def remove_group_roles(request, group, domain=None, project=None):
-    """ Removes all roles from a group on a domain or project,
-        removing them from it.
+    """Removes all roles from a group on a domain or project,
+    removing them from it.
     """
     client = keystoneclient(request, admin=True)
     roles = client.roles.list(group=group, domain=domain, project=project)
@@ -556,8 +562,7 @@ def remove_group_roles(request, group, domain=None, project=None):
 
 
 def get_default_role(request):
-    """
-    Gets the default role object from Keystone and saves it as a global
+    """Gets the default role object from Keystone and saves it as a global
     since this is configured in settings and should not change from request
     to request. Supports lookup by name or id.
     """

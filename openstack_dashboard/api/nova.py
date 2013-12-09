@@ -25,6 +25,7 @@ from __future__ import absolute_import
 import logging
 
 from django.conf import settings  # noqa
+from django.utils.functional import cached_property  # noqa
 from django.utils.translation import ugettext_lazy as _  # noqa
 
 from novaclient.v1_1 import client as nova_client
@@ -71,10 +72,10 @@ class Server(base.APIResourceWrapper):
     """
     _attrs = ['addresses', 'attrs', 'id', 'image', 'links',
              'metadata', 'name', 'private_ip', 'public_ip', 'status', 'uuid',
-             'image_name', 'VirtualInterfaces', 'flavor', 'key_name',
-             'tenant_id', 'user_id', 'OS-EXT-STS:power_state',
+             'image_name', 'VirtualInterfaces', 'flavor', 'key_name', 'fault',
+             'tenant_id', 'user_id', 'created', 'OS-EXT-STS:power_state',
              'OS-EXT-STS:task_state', 'OS-EXT-SRV-ATTR:instance_name',
-             'OS-EXT-SRV-ATTR:host', 'created']
+             'OS-EXT-SRV-ATTR:host', 'OS-EXT-AZ:availability_zone']
 
     def __init__(self, apiresource, request):
         super(Server, self).__init__(apiresource)
@@ -101,6 +102,10 @@ class Server(base.APIResourceWrapper):
     @property
     def internal_name(self):
         return getattr(self, 'OS-EXT-SRV-ATTR:instance_name', "")
+
+    @property
+    def availability_zone(self):
+        return getattr(self, 'OS-EXT-AZ:availability_zone', "")
 
 
 class NovaUsage(base.APIResourceWrapper):
@@ -151,19 +156,17 @@ class SecurityGroup(base.APIResourceWrapper):
     """
     _attrs = ['id', 'name', 'description', 'tenant_id']
 
-    @property
+    @cached_property
     def rules(self):
         """Wraps transmitted rule info in the novaclient rule class."""
-        if "_rules" not in self.__dict__:
-            manager = nova_rules.SecurityGroupRuleManager(None)
-            rule_objs = [nova_rules.SecurityGroupRule(manager, rule)
-                         for rule in self._apiresource.rules]
-            self._rules = [SecurityGroupRule(rule) for rule in rule_objs]
-        return self.__dict__['_rules']
+        manager = nova_rules.SecurityGroupRuleManager(None)
+        rule_objs = [nova_rules.SecurityGroupRule(manager, rule)
+                     for rule in self._apiresource.rules]
+        return [SecurityGroupRule(rule) for rule in rule_objs]
 
 
 class SecurityGroupRule(base.APIResourceWrapper):
-    """ Wrapper for individual rules in a SecurityGroup. """
+    """Wrapper for individual rules in a SecurityGroup."""
     _attrs = ['id', 'ip_protocol', 'from_port', 'to_port', 'ip_range', 'group']
 
     def __unicode__(self):
@@ -560,6 +563,13 @@ def server_migrate(request, instance_id):
     novaclient(request).servers.migrate(instance_id)
 
 
+def server_live_migrate(request, instance_id, host, block_migration=False,
+                        disk_over_commit=False):
+    novaclient(request).servers.live_migrate(instance_id, host,
+                                             block_migration,
+                                             disk_over_commit)
+
+
 def server_resize(request, instance_id, flavor, **kwargs):
     novaclient(request).servers.resize(instance_id, flavor, **kwargs)
 
@@ -683,8 +693,7 @@ def list_extensions(request):
 
 @memoized
 def extension_supported(extension_name, request):
-    """
-    this method will determine if nova supports a given extension name.
+    """this method will determine if nova supports a given extension name.
     example values for the extension_name include AdminActions, ConsoleOutput,
     etc.
     """
@@ -693,3 +702,8 @@ def extension_supported(extension_name, request):
         if extension.name == extension_name:
             return True
     return False
+
+
+def can_set_server_password():
+    features = getattr(settings, 'OPENSTACK_HYPERVISOR_FEATURES', {})
+    return features.get('can_set_password', True)

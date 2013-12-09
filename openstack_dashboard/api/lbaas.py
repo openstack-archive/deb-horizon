@@ -22,14 +22,14 @@ neutronclient = neutron.neutronclient
 
 
 class Vip(neutron.NeutronAPIDictWrapper):
-    """Wrapper for neutron load balancer vip"""
+    """Wrapper for neutron load balancer vip."""
 
     def __init__(self, apiresource):
         super(Vip, self).__init__(apiresource)
 
 
 class Pool(neutron.NeutronAPIDictWrapper):
-    """Wrapper for neutron load balancer pool"""
+    """Wrapper for neutron load balancer pool."""
 
     def __init__(self, apiresource):
         if 'provider' not in apiresource:
@@ -47,6 +47,7 @@ class Pool(neutron.NeutronAPIDictWrapper):
         pFormatted = {'id': self.id,
                       'name': self.name,
                       'description': self.description,
+                      'status': self.status,
                       'protocol': self.protocol,
                       'health_monitors': self.health_monitors,
                       'provider': self.provider}
@@ -74,7 +75,7 @@ class Pool(neutron.NeutronAPIDictWrapper):
 
 
 class Member(neutron.NeutronAPIDictWrapper):
-    """Wrapper for neutron load balancer member"""
+    """Wrapper for neutron load balancer member."""
 
     def __init__(self, apiresource):
         super(Member, self).__init__(apiresource)
@@ -88,6 +89,7 @@ class Member(neutron.NeutronAPIDictWrapper):
 
     def readable(self, request):
         mFormatted = {'id': self.id,
+                      'status': self.status,
                       'address': self.address,
                       'protocol_port': self.protocol_port}
         try:
@@ -102,14 +104,14 @@ class Member(neutron.NeutronAPIDictWrapper):
 
 
 class PoolStats(neutron.NeutronAPIDictWrapper):
-    """Wrapper for neutron load balancer pool stats"""
+    """Wrapper for neutron load balancer pool stats."""
 
     def __init__(self, apiresource):
         super(PoolStats, self).__init__(apiresource)
 
 
 class PoolMonitor(neutron.NeutronAPIDictWrapper):
-    """Wrapper for neutron load balancer pool health monitor"""
+    """Wrapper for neutron load balancer pool health monitor."""
 
     def __init__(self, apiresource):
         super(PoolMonitor, self).__init__(apiresource)
@@ -126,23 +128,27 @@ def vip_create(request, **kwargs):
     :param protocol_port: transport layer port number for vip
     :returns: Vip object
     """
-    body = {'vip': {'address': kwargs['address'],
-                    'name': kwargs['name'],
+    body = {'vip': {'name': kwargs['name'],
                     'description': kwargs['description'],
                     'subnet_id': kwargs['subnet_id'],
                     'protocol_port': kwargs['protocol_port'],
                     'protocol': kwargs['protocol'],
                     'pool_id': kwargs['pool_id'],
                     'session_persistence': kwargs['session_persistence'],
-                    'connection_limit': kwargs['connection_limit'],
                     'admin_state_up': kwargs['admin_state_up']
                     }}
+    if kwargs.get('connection_limit'):
+        body['vip']['connection_limit'] = kwargs['connection_limit']
+
+    if kwargs.get('address'):
+        body['vip']['address'] = kwargs['address']
+
     vip = neutronclient(request).create_vip(body).get('vip')
     return Vip(vip)
 
 
 def vips_get(request, **kwargs):
-    vips = neutronclient(request).list_vips().get('vips')
+    vips = neutronclient(request).list_vips(**kwargs).get('vips')
     return [Vip(v) for v in vips]
 
 
@@ -184,7 +190,7 @@ def pool_create(request, **kwargs):
 
 
 def pools_get(request, **kwargs):
-    pools = neutronclient(request).list_pools().get('pools')
+    pools = neutronclient(request).list_pools(**kwargs).get('pools')
     return [Pool(p) for p in pools]
 
 
@@ -239,8 +245,8 @@ def pool_health_monitor_create(request, **kwargs):
 
 
 def pool_health_monitors_get(request, **kwargs):
-    monitors = neutronclient(request
-                             ).list_health_monitors().get('health_monitors')
+    monitors = neutronclient(request).list_health_monitors(
+        **kwargs).get('health_monitors')
     return [PoolMonitor(m) for m in monitors]
 
 
@@ -273,15 +279,16 @@ def member_create(request, **kwargs):
     body = {'member': {'pool_id': kwargs['pool_id'],
                        'address': kwargs['address'],
                        'protocol_port': kwargs['protocol_port'],
-                       'weight': kwargs['weight'],
                        'admin_state_up': kwargs['admin_state_up']
                        }}
+    if kwargs.get('weight'):
+        body['member']['weight'] = kwargs['weight']
     member = neutronclient(request).create_member(body).get('member')
     return Member(member)
 
 
 def members_get(request, **kwargs):
-    members = neutronclient(request).list_members().get('members')
+    members = neutronclient(request).list_members(**kwargs).get('members')
     return [Member(m) for m in members]
 
 

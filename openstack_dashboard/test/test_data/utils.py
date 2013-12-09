@@ -11,12 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-try:
-    import troveclient
-    with_trove = True
-    assert troveclient
-except ImportError:
-    with_trove = False
 
 
 def load_test_data(load_onto=None):
@@ -29,21 +23,21 @@ def load_test_data(load_onto=None):
     from openstack_dashboard.test.test_data import neutron_data
     from openstack_dashboard.test.test_data import nova_data
     from openstack_dashboard.test.test_data import swift_data
-    if with_trove:
-        from openstack_dashboard.test.test_data import trove_data
+    from openstack_dashboard.test.test_data import trove_data
 
     # The order of these loaders matters, some depend on others.
-    loaders = (exceptions.data,
-               keystone_data.data,
-               glance_data.data,
-               nova_data.data,
-               cinder_data.data,
-               neutron_data.data,
-               swift_data.data,
-               heat_data.data,
-               ceilometer_data.data,)
-    if with_trove:
-        loaders += (trove_data.data,)
+    loaders = (
+        exceptions.data,
+        keystone_data.data,
+        glance_data.data,
+        nova_data.data,
+        cinder_data.data,
+        neutron_data.data,
+        swift_data.data,
+        heat_data.data,
+        ceilometer_data.data,
+        trove_data.data,
+    )
     if load_onto:
         for data_func in loaders:
             data_func(load_onto)
@@ -53,8 +47,7 @@ def load_test_data(load_onto=None):
 
 
 class TestData(object):
-    """
-    Holder object for test data. Any functions passed to the init method
+    """Holder object for test data. Any functions passed to the init method
     will be called with the ``TestData`` object as their only argument. They
     can then load data onto the object as desired.
 
@@ -79,7 +72,7 @@ class TestData(object):
 
 
 class TestDataContainer(object):
-    """ A container for test data objects.
+    """A container for test data objects.
 
     The behavior of this class is meant to mimic a "manager" class, which
     has convenient shortcuts for common actions like "list", "filter", "get",
@@ -89,7 +82,7 @@ class TestDataContainer(object):
         self._objects = []
 
     def add(self, *args):
-        """ Add a new object to this container.
+        """Add a new object to this container.
 
         Generally this method should only be used during data loading, since
         adding data during a test can affect the results of other tests.
@@ -99,12 +92,11 @@ class TestDataContainer(object):
                 self._objects.append(obj)
 
     def list(self):
-        """ Returns a list of all objects in this container. """
+        """Returns a list of all objects in this container."""
         return self._objects
 
     def filter(self, filtered=None, **kwargs):
-        """
-        Returns objects in this container whose attributes match the given
+        """Returns objects in this container whose attributes match the given
         keyword arguments.
         """
         if filtered is None:
@@ -121,8 +113,7 @@ class TestDataContainer(object):
         return self.filter(filtered=filter(get_match, filtered), **kwargs)
 
     def get(self, **kwargs):
-        """
-        Returns the single object in this container whose attributes match
+        """Returns the single object in this container whose attributes match
         the given keyword arguments. An error will be raised if the arguments
         provided don't return exactly one match.
         """
@@ -135,7 +126,7 @@ class TestDataContainer(object):
             return matches.pop()
 
     def first(self):
-        """ Returns the first object from this container. """
+        """Returns the first object from this container."""
         return self._objects[0]
 
     def count(self):

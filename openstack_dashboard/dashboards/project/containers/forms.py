@@ -37,18 +37,30 @@ no_slash_validator = validators.RegexValidator(r'^(?u)[^/]+$',
 
 
 class CreateContainer(forms.SelfHandlingForm):
+    ACCESS_CHOICES = (
+        ("private", _("Private")),
+        ("public", _("Public")),
+    )
+
     parent = forms.CharField(max_length=255,
                              required=False,
                              widget=forms.HiddenInput)
     name = forms.CharField(max_length=255,
                            label=_("Container Name"),
                            validators=[no_slash_validator])
+    access = forms.ChoiceField(label=_("Container Access"),
+                               required=True,
+                               choices=ACCESS_CHOICES)
 
     def handle(self, request, data):
         try:
             if not data['parent']:
+                is_public = data["access"] == "public"
+                metadata = ({'is_public': is_public})
                 # Create a container
-                api.swift.swift_create_container(request, data["name"])
+                api.swift.swift_create_container(request,
+                                                 data["name"],
+                                                 metadata=metadata)
                 messages.success(request, _("Container created successfully."))
             else:
                 # Create a pseudo-folder
@@ -78,12 +90,16 @@ class UploadObject(forms.SelfHandlingForm):
     object_file = forms.FileField(label=_("File"), allow_empty_file=True)
     container_name = forms.CharField(widget=forms.HiddenInput())
 
-    def handle(self, request, data):
-        object_file = self.files['object_file']
+    def _set_object_path(self, data):
         if data['path']:
             object_path = "/".join([data['path'].rstrip("/"), data['name']])
         else:
             object_path = data['name']
+        return object_path
+
+    def handle(self, request, data):
+        object_file = self.files['object_file']
+        object_path = self._set_object_path(data)
         try:
             obj = api.swift.swift_upload_object(request,
                                                 data['container_name'],
@@ -93,6 +109,36 @@ class UploadObject(forms.SelfHandlingForm):
             return obj
         except Exception:
             exceptions.handle(request, _("Unable to upload object."))
+
+
+class CreatePseudoFolder(forms.SelfHandlingForm):
+    path = forms.CharField(max_length=255,
+                           required=False,
+                           widget=forms.HiddenInput)
+    name = forms.CharField(max_length=255,
+                           label=_("Pseudo-folder Name"))
+    container_name = forms.CharField(widget=forms.HiddenInput())
+
+    def _set_pseudo_folder_path(self, data):
+        if data['path']:
+            pseudo_folder_path = "/".join([data['path'].rstrip("/"),
+                                           data['name']]) + "/"
+        else:
+            pseudo_folder_path = data['name'] + "/"
+        return pseudo_folder_path
+
+    def handle(self, request, data):
+        pseudo_folder_path = self._set_pseudo_folder_path(data)
+        try:
+            obj = api.swift.swift_create_pseudo_folder(request,
+                                                       data['container_name'],
+                                                       pseudo_folder_path)
+            messages.success(request,
+                             _("Pseudo-folder was successfully created."))
+            return obj
+
+        except Exception:
+            exceptions.handle(request, _("Unable to create pseudo-folder."))
 
 
 class CopyObject(forms.SelfHandlingForm):

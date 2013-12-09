@@ -31,6 +31,7 @@ def data(TEST):
     TEST.subnets = utils.TestDataContainer()
     TEST.ports = utils.TestDataContainer()
     TEST.routers = utils.TestDataContainer()
+    TEST.routers_with_rules = utils.TestDataContainer()
     TEST.q_floating_ips = utils.TestDataContainer()
     TEST.q_secgroups = utils.TestDataContainer()
     TEST.q_secgroup_rules = utils.TestDataContainer()
@@ -291,6 +292,23 @@ def data(TEST):
                    'tenant_id': '1'}
     TEST.api_routers.add(router_dict)
     TEST.routers.add(neutron.Router(router_dict))
+    router_dict = {'id': '71fb25e9-cd9f-4a44-a780-85ec3bd8bdd7',
+                   'name': 'rulerouter',
+                   'external_gateway_info':
+                       {'network_id': ext_net['id']},
+                   'tenant_id': '1',
+                   'router_rules': [{'id': '101',
+                                     'action': 'deny',
+                                     'source': 'any',
+                                     'destination': 'any',
+                                     'nexthops': []},
+                                    {'id': '102',
+                                     'action': 'permit',
+                                     'source': 'any',
+                                     'destination': '8.8.8.8/32',
+                                     'nexthops': ['1.0.0.2', '1.0.0.1']}]}
+    TEST.api_routers.add(router_dict)
+    TEST.routers_with_rules.add(neutron.Router(router_dict))
 
     #------------------------------------------------------------
     # floating IP
@@ -413,6 +431,7 @@ def data(TEST):
                  'lb_method': 'ROUND_ROBIN',
                  'health_monitors': ['d4a0500f-db2b-4cc4-afcf-ec026febff96'],
                  'admin_state_up': True,
+                 'status': 'ACTIVE',
                  'provider': 'haproxy'}
     TEST.api_pools.add(pool_dict)
     TEST.pools.add(lbaas.Pool(pool_dict))
@@ -462,6 +481,7 @@ def data(TEST):
                    'address': '10.0.0.11',
                    'protocol_port': 80,
                    'weight': 10,
+                   'status': 'ACTIVE',
                    'admin_state_up': True}
     TEST.api_members.add(member_dict)
     TEST.members.add(lbaas.Member(member_dict))
@@ -473,6 +493,7 @@ def data(TEST):
                   'address': '10.0.0.12',
                   'protocol_port': 80,
                   'weight': 10,
+                  'status': 'ACTIVE',
                   'admin_state_up': True}
     TEST.api_members.add(member_dict)
     TEST.members.add(lbaas.Member(member_dict))
@@ -487,6 +508,7 @@ def data(TEST):
                  'protocol': 'HTTPS',
                  'lb_method': 'ROUND_ROBIN',
                  'health_monitors': ['d4a0500f-db2b-4cc4-afcf-ec026febff97'],
+                 'status': 'PENDING_CREATE',
                  'admin_state_up': True}
     TEST.api_pools.add(pool_dict)
     TEST.pools.add(lbaas.Pool(pool_dict))

@@ -44,8 +44,7 @@ IMAGES_INDEX_URL = reverse('horizon:project:images_and_snapshots:index')
 
 class CreateImageFormTests(test.TestCase):
     def test_no_location_or_file(self):
-        """
-        The form will not be valid if both copy_from and image_file are not
+        """The form will not be valid if both copy_from and image_file are not
         provided.
         """
         post = {
@@ -62,13 +61,14 @@ class CreateImageFormTests(test.TestCase):
 
     @override_settings(HORIZON_IMAGES_ALLOW_UPLOAD=False)
     def test_image_upload_disabled(self):
-        """
-        If HORIZON_IMAGES_ALLOW_UPLOAD is false, the image_file field widget
+        """If HORIZON_IMAGES_ALLOW_UPLOAD is false, the image_file field widget
         will be a HiddenInput widget instead of a FileInput widget.
         """
         form = forms.CreateImageForm({})
         self.assertEqual(
             isinstance(form.fields['image_file'].widget, HiddenInput), True)
+        source_type_dict = dict(form.fields['source_type'].choices)
+        self.assertNotIn('file', source_type_dict)
 
 
 class ImageViewTests(test.TestCase):
@@ -163,10 +163,13 @@ class ImageViewTests(test.TestCase):
         res = self.client.get(
             reverse('horizon:project:images_and_snapshots:images:detail',
             args=[image.id]))
+
         self.assertTemplateUsed(res,
                             'project/images_and_snapshots/images/detail.html')
         self.assertEqual(res.context['image'].name, image.name)
         self.assertEqual(res.context['image'].protected, image.protected)
+        self.assertContains(res, "<h2>Image Details: %s</h2>" % image.name,
+                            1, 200)
 
     @test.create_stubs({api.glance: ('image_get',)})
     def test_protected_image_detail_get(self):

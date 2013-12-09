@@ -30,8 +30,7 @@ register = template.Library()
 
 @register.filter
 def has_permissions(user, component):
-    """
-    Checks if the given user meets the permissions requirements for
+    """Checks if the given user meets the permissions requirements for
     the component.
     """
     return user.has_perms(getattr(component, 'permissions', set()))
@@ -45,7 +44,7 @@ def has_permissions_on_list(components, user):
 
 @register.inclusion_tag('horizon/_nav_list.html', takes_context=True)
 def horizon_main_nav(context):
-    """ Generates top-level dashboard navigation entries. """
+    """Generates top-level dashboard navigation entries."""
     if 'request' not in context:
         return {}
     current_dashboard = context['request'].horizon.get('dashboard', None)
@@ -63,7 +62,7 @@ def horizon_main_nav(context):
 
 @register.inclusion_tag('horizon/_subnav_list.html', takes_context=True)
 def horizon_dashboard_nav(context):
-    """ Generates sub-navigation entries for the current dashboard. """
+    """Generates sub-navigation entries for the current dashboard."""
     if 'request' not in context:
         return {}
     dashboard = context['request'].horizon['dashboard']
@@ -96,8 +95,18 @@ def quota(val, units=None):
         return "%s %s" % (val, force_unicode(_("Available")))
 
 
+@register.filter
+def quotainf(val, units=None):
+    if val == float("inf"):
+        return _("No Limit")
+    elif units is not None:
+        return "%s %s" % (val, units)
+    else:
+        return val
+
+
 class JSTemplateNode(template.Node):
-    """ Helper node for the ``jstemplate`` template tag. """
+    """Helper node for the ``jstemplate`` template tag."""
     def __init__(self, nodelist):
         self.nodelist = nodelist
 
@@ -111,8 +120,7 @@ class JSTemplateNode(template.Node):
 
 @register.tag
 def jstemplate(parser, token):
-    """
-    Replaces ``[[[`` and ``]]]`` with ``{{{`` and ``}}}``,
+    """Replaces ``[[[`` and ``]]]`` with ``{{{`` and ``}}}``,
     ``[[`` and ``]]`` with ``{{`` and ``}}``  and
     ``[%`` and ``%]`` with ``{%`` and ``%}`` to avoid conflicts
     with Django's template engine when using any of the Mustache-based

@@ -1,3 +1,15 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 from django.core.exceptions import ValidationError  # noqa
 from django.forms import forms
 from django.forms import widgets
@@ -15,8 +27,7 @@ IPv6 = 2
 
 
 class IPField(forms.Field):
-    """
-    Form field for entering IP/range values, with validation.
+    """Form field for entering IP/range values, with validation.
     Supports IPv4/IPv6 in the format:
     .. xxx.xxx.xxx.xxx
     .. xxx.xxx.xxx.xxx/zz
@@ -89,9 +100,25 @@ class IPField(forms.Field):
         return str(getattr(self, "ip", ""))
 
 
+class MultiIPField(IPField):
+    """Extends IPField to allow comma-separated lists of addresses."""
+    def validate(self, value):
+        self.addresses = []
+        if value:
+            addresses = value.split(',')
+            for ip in addresses:
+                super(MultiIPField, self).validate(ip)
+                self.addresses.append(ip)
+        else:
+            super(MultiIPField, self).validate(value)
+
+    def clean(self, value):
+        super(MultiIPField, self).clean(value)
+        return str(','.join(getattr(self, "addresses", [])))
+
+
 class SelectWidget(widgets.Select):
-    """
-    Customizable select widget, that allows to render
+    """Customizable select widget, that allows to render
     data-xxx attributes from choices.
 
     .. attribute:: data_attrs

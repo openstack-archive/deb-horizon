@@ -19,6 +19,7 @@
 #    under the License.
 
 import logging
+import urllib
 
 import swiftclient
 
@@ -26,7 +27,6 @@ from django.conf import settings  # noqa
 from django.utils.translation import ugettext_lazy as _  # noqa
 
 from horizon import exceptions
-from horizon import messages
 
 from openstack_dashboard.api import base
 from openstack_dashboard.openstack.common import timeutils
@@ -34,6 +34,9 @@ from openstack_dashboard.openstack.common import timeutils
 
 LOG = logging.getLogger(__name__)
 FOLDER_DELIMITER = "/"
+# Swift ACL
+GLOBAL_READ_ACL = ".r:*"
+LIST_CONTENTS_ACL = ".rlistings"
 
 
 class Container(base.APIDictWrapper):
@@ -75,7 +78,7 @@ class PseudoFolder(base.APIDictWrapper):
 
 
 def _objectify(items, container_name):
-    """ Splits a listing of objects into their appropriate wrapper classes. """
+    """Splits a listing of objects into their appropriate wrapper classes."""
     objects = []
 
     # Deal with objects and object pseudo-folders first, save subdirs for later
@@ -88,6 +91,19 @@ def _objectify(items, container_name):
         objects.append(object_cls(item, container_name))
 
     return objects
+
+
+def _metadata_to_header(metadata):
+    headers = {}
+    public = metadata.get('is_public')
+
+    if public is True:
+        public_container_acls = [GLOBAL_READ_ACL, LIST_CONTENTS_ACL]
+        headers['x-container-read'] = ",".join(public_container_acls)
+    elif public is False:
+        headers['x-container-read'] = ""
+
+    return headers
 
 
 def swift_api(request):
@@ -132,10 +148,22 @@ def swift_get_containers(request, marker=None):
         return (container_objs, False)
 
 
-def swift_get_container(request, container_name):
-    headers, data = swift_api(request).get_object(container_name, "")
+def swift_get_container(request, container_name, with_data=True):
+    if with_data:
+        headers, data = swift_api(request).get_object(container_name, "")
+    else:
+        data = None
+        headers = swift_api(request).head_container(container_name)
     timestamp = None
+    is_public = False
+    public_url = None
     try:
+        is_public = GLOBAL_READ_ACL in headers.get('x-container-read', '')
+        if is_public:
+            swift_endpoint = base.url_for(request,
+                                          'object-store',
+                                          endpoint_type='publicURL')
+            public_url = swift_endpoint + '/' + urllib.quote(container_name)
         ts_float = float(headers.get('x-timestamp'))
         timestamp = timeutils.iso8601_from_timestamp(ts_float)
     except Exception:
@@ -145,14 +173,24 @@ def swift_get_container(request, container_name):
         'container_object_count': headers.get('x-container-object-count'),
         'container_bytes_used': headers.get('x-container-bytes-used'),
         'timestamp': timestamp,
+        'data': data,
+        'is_public': is_public,
+        'public_url': public_url,
     }
     return Container(container_info)
 
 
-def swift_create_container(request, name):
+def swift_create_container(request, name, metadata=({})):
     if swift_container_exists(request, name):
         raise exceptions.AlreadyExists(name, 'container')
-    swift_api(request).put_container(name)
+    headers = _metadata_to_header(metadata)
+    swift_api(request).put_container(name, headers=headers)
+    return Container({'name': name})
+
+
+def swift_update_container(request, name, metadata=({})):
+    headers = _metadata_to_header(metadata)
+    swift_api(request).post_container(name, headers=headers)
     return Container({'name': name})
 
 
@@ -161,9 +199,11 @@ def swift_delete_container(request, name):
     # be done in swiftclient instead of Horizon.
     objects, more = swift_get_objects(request, name)
     if objects:
-        messages.warning(request,
-            _("The container cannot be deleted since it's not empty."))
-        return False
+        error_msg = unicode(_("The container cannot be deleted "
+                              "since it's not empty."))
+        exc = exceptions.Conflict(error_msg)
+        exc._safe_message = error_msg
+        raise exc
     swift_api(request).delete_container(name)
     return True
 
@@ -245,13 +285,33 @@ def swift_upload_object(request, container_name, object_name, object_file):
     return StorageObject(obj_info, container_name)
 
 
+def swift_create_pseudo_folder(request, container_name, pseudo_folder_name):
+    headers = {}
+    etag = swift_api(request).put_object(container_name,
+                                         pseudo_folder_name,
+                                         None,
+                                         headers=headers)
+    obj_info = {
+        'name': pseudo_folder_name,
+        'etag': etag
+    }
+
+    return PseudoFolder(obj_info, container_name)
+
+
 def swift_delete_object(request, container_name, object_name):
     swift_api(request).delete_object(container_name, object_name)
     return True
 
 
-def swift_get_object(request, container_name, object_name):
-    headers, data = swift_api(request).get_object(container_name, object_name)
+def swift_get_object(request, container_name, object_name, with_data=True):
+    if with_data:
+        headers, data = swift_api(request).get_object(container_name,
+                                                      object_name)
+    else:
+        data = None
+        headers = swift_api(request).head_object(container_name,
+                                                 object_name)
     orig_name = headers.get("x-object-meta-orig-filename")
     timestamp = None
     try:
@@ -261,7 +321,7 @@ def swift_get_object(request, container_name, object_name):
         pass
     obj_info = {
         'name': object_name,
-        'bytes': len(data),
+        'bytes': headers.get('content-length'),
         'content_type': headers.get('content-type'),
         'etag': headers.get('etag'),
         'timestamp': timestamp,

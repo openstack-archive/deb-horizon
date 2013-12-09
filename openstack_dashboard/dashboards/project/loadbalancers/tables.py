@@ -83,6 +83,11 @@ class DeletePoolLink(tables.DeleteAction):
     data_type_singular = _("Pool")
     data_type_plural = _("Pools")
 
+    def allowed(self, request, datum=None):
+        if datum and datum.vip_id:
+            return False
+        return True
+
 
 class DeleteMonitorLink(tables.DeleteAction):
     name = "deletemonitor"
@@ -103,7 +108,7 @@ class DeleteMemberLink(tables.DeleteAction):
 class UpdatePoolLink(tables.LinkAction):
     name = "updatepool"
     verbose_name = _("Edit Pool")
-    classes = ("btn-update",)
+    classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:updatepool",
@@ -114,6 +119,7 @@ class UpdatePoolLink(tables.LinkAction):
 class UpdateVipLink(tables.LinkAction):
     name = "updatevip"
     verbose_name = _("Edit VIP")
+    classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:updatevip",
@@ -129,6 +135,7 @@ class UpdateVipLink(tables.LinkAction):
 class UpdateMemberLink(tables.LinkAction):
     name = "updatemember"
     verbose_name = _("Edit Member")
+    classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, member):
         base_url = reverse("horizon:project:loadbalancers:updatemember",
@@ -139,6 +146,7 @@ class UpdateMemberLink(tables.LinkAction):
 class UpdateMonitorLink(tables.LinkAction):
     name = "updatemonitor"
     verbose_name = _("Edit Monitor")
+    classes = ("ajax-modal", "btn-update",)
 
     def get_link_url(self, monitor):
         base_url = reverse("horizon:project:loadbalancers:updatemonitor",
@@ -156,7 +164,7 @@ def get_vip_link(pool):
 
 class AddPMAssociationLink(tables.LinkAction):
     name = "addassociation"
-    verbose_name = _("Add Health Monitor")
+    verbose_name = _("Associate Monitor")
     url = "horizon:project:loadbalancers:addassociation"
     classes = ("ajax-modal", "btn-create",)
 
@@ -174,7 +182,7 @@ class AddPMAssociationLink(tables.LinkAction):
 
 class DeletePMAssociationLink(tables.LinkAction):
     name = "deleteassociation"
-    verbose_name = _("Delete Health Monitor")
+    verbose_name = _("Disassociate Monitor")
     url = "horizon:project:loadbalancers:deleteassociation"
     classes = ("ajax-modal", "btn-delete", "btn-danger")
 
@@ -193,6 +201,7 @@ class PoolsTable(tables.DataTable):
                              filters=(lambda v: filters.default(v, _('N/A')),))
     subnet_name = tables.Column('subnet_name', verbose_name=_("Subnet"))
     protocol = tables.Column('protocol', verbose_name=_("Protocol"))
+    status = tables.Column('status', verbose_name=_("Status"))
     vip_name = tables.Column('vip_name', verbose_name=_("VIP"),
                              link=get_vip_link)
 
@@ -224,6 +233,7 @@ class MembersTable(tables.DataTable):
                                   verbose_name=_("Protocol Port"))
     pool_name = tables.Column("pool_name",
                             verbose_name=_("Pool"), link=get_pool_link)
+    status = tables.Column('status', verbose_name=_("Status"))
 
     class Meta:
         name = "memberstable"

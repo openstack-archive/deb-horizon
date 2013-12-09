@@ -1,5 +1,17 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 from mox import IsA  # noqa
 
 from django.core.urlresolvers import reverse  # noqa
@@ -277,9 +289,15 @@ class LoadBalancerTests(test.TestCase):
         else:
             self.assertContains(res, default_provider)
 
+    def test_add_vip_post(self):
+        self._test_add_vip_post()
+
+    def test_add_vip_post_no_connection_limit(self):
+        self._test_add_vip_post(with_conn_limit=False)
+
     @test.create_stubs({api.lbaas: ('pool_get', 'vip_create'),
                         api.neutron: ('subnet_get', )})
-    def test_add_vip_post(self):
+    def _test_add_vip_post(self, with_conn_limit=True):
         vip = self.vips.first()
 
         subnet = self.subnets.first()
@@ -291,39 +309,43 @@ class LoadBalancerTests(test.TestCase):
         api.neutron.subnet_get(
             IsA(http.HttpRequest), subnet.id).AndReturn(subnet)
 
+        params = {'name': vip.name,
+                  'description': vip.description,
+                  'pool_id': vip.pool_id,
+                  'address': vip.address,
+                  'floatip_address': vip.floatip_address,
+                  'other_address': vip.other_address,
+                  'subnet': vip.subnet,
+                  'subnet_id': vip.subnet_id,
+                  'protocol_port': vip.protocol_port,
+                  'protocol': vip.protocol,
+                  'session_persistence': vip.session_persistence['type'],
+                  'cookie_name': vip.session_persistence['cookie_name'],
+                  'admin_state_up': vip.admin_state_up,
+                  }
+        if with_conn_limit:
+            params['connection_limit'] = vip.connection_limit
         api.lbaas.vip_create(
-            IsA(http.HttpRequest),
-            name=vip.name,
-            description=vip.description,
-            pool_id=vip.pool_id,
-            address=vip.address,
-            floatip_address=vip.floatip_address,
-            other_address=vip.other_address,
-            subnet=vip.subnet,
-            subnet_id=vip.subnet_id,
-            protocol_port=vip.protocol_port,
-            protocol=vip.protocol,
-            session_persistence=vip.session_persistence['type'],
-            cookie_name=vip.session_persistence['cookie_name'],
-            connection_limit=vip.connection_limit,
-            admin_state_up=vip.admin_state_up).AndReturn(vip)
+            IsA(http.HttpRequest), **params).AndReturn(vip)
 
         self.mox.ReplayAll()
 
-        form_data = {'name': vip.name,
-                     'description': vip.description,
-                     'pool_id': vip.pool_id,
-                     'address': vip.address,
-                     'floatip_address': vip.floatip_address,
-                     'other_address': vip.other_address,
-                     'subnet_id': vip.subnet_id,
-                     'subnet': vip.subnet,
-                     'protocol_port': vip.protocol_port,
-                     'protocol': vip.protocol,
-                     'session_persistence': vip.session_persistence['type'],
-                     'cookie_name': vip.session_persistence['cookie_name'],
-                     'connection_limit': vip.connection_limit,
-                     'admin_state_up': vip.admin_state_up}
+        form_data = {
+            'name': vip.name,
+            'description': vip.description,
+            'pool_id': vip.pool_id,
+            'address': vip.address,
+            'floatip_address': vip.floatip_address,
+            'other_address': vip.other_address,
+            'subnet_id': vip.subnet_id,
+            'subnet': vip.subnet,
+            'protocol_port': vip.protocol_port,
+            'protocol': vip.protocol,
+            'session_persistence': vip.session_persistence['type'].lower(),
+            'cookie_name': vip.session_persistence['cookie_name'],
+            'admin_state_up': vip.admin_state_up}
+        if with_conn_limit:
+            form_data['connection_limit'] = vip.connection_limit
 
         res = self.client.post(
             reverse(self.ADDVIP_PATH, args=(pool.id,)), form_data)
@@ -345,17 +367,18 @@ class LoadBalancerTests(test.TestCase):
 
         self.mox.ReplayAll()
 
-        form_data = {'name': vip.name,
-                     'description': vip.description,
-                     'pool_id': vip.pool_id,
-                     'address': vip.address,
-                     'subnet_id': vip.subnet_id,
-                     'protocol_port': 65536,
-                     'protocol': vip.protocol,
-                     'session_persistence': vip.session_persistence['type'],
-                     'cookie_name': vip.session_persistence['cookie_name'],
-                     'connection_limit': -2,
-                     'admin_state_up': vip.admin_state_up}
+        form_data = {
+            'name': vip.name,
+            'description': vip.description,
+            'pool_id': vip.pool_id,
+            'address': vip.address,
+            'subnet_id': vip.subnet_id,
+            'protocol_port': 65536,
+            'protocol': vip.protocol,
+            'session_persistence': vip.session_persistence['type'].lower(),
+            'cookie_name': vip.session_persistence['cookie_name'],
+            'connection_limit': -2,
+            'admin_state_up': vip.admin_state_up}
 
         res = self.client.post(
             reverse(self.ADDVIP_PATH, args=(pool.id,)), form_data)
@@ -457,10 +480,16 @@ class LoadBalancerTests(test.TestCase):
         expected_objs = ['<AddMonitorStep: addmonitoraction>', ]
         self.assertQuerysetEqual(workflow.steps, expected_objs)
 
+    def test_add_member_post(self):
+        self._test_add_member_post()
+
+    def test_add_member_post_without_weight(self):
+        self._test_add_member_post(with_weight=False)
+
     @test.create_stubs({api.lbaas: ('pools_get', 'member_create'),
                         api.neutron: ('port_list',),
                         api.nova: ('server_list',)})
-    def test_add_member_post(self):
+    def _test_add_member_post(self, with_weight=True):
         member = self.members.first()
 
         server1 = self.AttributeDict({'id':
@@ -481,24 +510,26 @@ class LoadBalancerTests(test.TestCase):
         api.neutron.port_list(IsA(http.HttpRequest),
                               device_id=server1.id).AndReturn([port1, ])
 
-        api.lbaas.member_create(
-            IsA(http.HttpRequest),
-            pool_id=member.pool_id,
-            address=member.address,
-            protocol_port=member.protocol_port,
-            weight=member.weight,
-            members=[server1.id],
-            admin_state_up=member.admin_state_up).AndReturn(
-                lbaas.Member(member))
+        params = {'pool_id': member.pool_id,
+                  'address': member.address,
+                  'protocol_port': member.protocol_port,
+                  'members': [server1.id],
+                  'admin_state_up': member.admin_state_up,
+                  }
+        if with_weight:
+            params['weight'] = member.weight
+        api.lbaas.member_create(IsA(http.HttpRequest),
+                                **params).AndReturn(lbaas.Member(member))
 
         self.mox.ReplayAll()
 
         form_data = {'pool_id': member.pool_id,
                      'address': member.address,
                      'protocol_port': member.protocol_port,
-                     'weight': member.weight,
                      'members': [server1.id],
                      'admin_state_up': member.admin_state_up}
+        if with_weight:
+            form_data['weight'] = member.weight
 
         res = self.client.post(reverse(self.ADDMEMBER_PATH), form_data)
 
@@ -777,12 +808,16 @@ class LoadBalancerTests(test.TestCase):
         self.assertQuerysetEqual(workflow.steps, expected_objs)
 
     @test.create_stubs({api.lbaas: ('pool_get',
+                                    'pool_health_monitors_get',
                                     'pool_monitor_association_delete')})
     def test_delete_pool_monitor_association_post(self):
         pool = self.pools.first()
-        monitor = self.monitors.first()
+        monitors = self.monitors.list()
+        monitor = monitors[0]
 
         api.lbaas.pool_get(IsA(http.HttpRequest), pool.id).AndReturn(pool)
+        api.lbaas.pool_health_monitors_get(
+            IsA(http.HttpRequest)).AndReturn(monitors)
 
         api.lbaas.pool_monitor_association_delete(
             IsA(http.HttpRequest),
@@ -804,11 +839,15 @@ class LoadBalancerTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, str(self.INDEX_URL))
 
-    @test.create_stubs({api.lbaas: ('pool_get',)})
+    @test.create_stubs({api.lbaas: ('pool_get',
+                                    'pool_health_monitors_get')})
     def test_delete_pool_monitor_association_get(self):
         pool = self.pools.first()
+        monitors = self.monitors.list()
 
         api.lbaas.pool_get(IsA(http.HttpRequest), pool.id).AndReturn(pool)
+        api.lbaas.pool_health_monitors_get(
+            IsA(http.HttpRequest)).AndReturn(monitors)
 
         self.mox.ReplayAll()
 

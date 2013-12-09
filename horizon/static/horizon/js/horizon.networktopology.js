@@ -114,9 +114,6 @@ horizon.network_topology = {
       });
 
     self.load_network_info();
-    setInterval(function(){
-      self.load_network_info();
-    }, self.reload_duration);
   },
   load_network_info:function(){
     var self = this;
@@ -127,6 +124,9 @@ horizon.network_topology = {
       function(data) {
         self.model = data;
         self.data_convert();
+        setTimeout(function(){
+          self.load_network_info();
+        }, self.reload_duration);
       }
     );
   },
@@ -227,15 +227,16 @@ horizon.network_topology = {
         this.appendChild(d3.select(self.network_tmpl[self.draw_mode]).node().cloneNode(true));
         var $this = d3.select(this).select('.network-rect');
         if (d.url) {
-          var $this = d3.select(this).select('.network-rect');
           $this
           .on('mouseover',function(){
-            $this.transition().style('fill',
-              function() { return d3.rgb(self.network_color(d.id)).brighter(0.5)});
+            $this.transition().style('fill', function() {
+              return d3.rgb(self.get_network_color(d.id)).brighter(0.5);
+            });
           })
           .on('mouseout',function(){
-            $this.transition().style('fill',
-              function() { return self.network_color(d.id)});
+            $this.transition().style('fill', function() {
+              return self.get_network_color(d.id);
+            });
           })
           .on('click',function(){
             window.location.href = d.url;
@@ -248,17 +249,20 @@ horizon.network_topology = {
     network
       .attr('id',function(d) { return 'id_' + d.id; })
       .attr('transform',function(d,i){ 
-        return 'translate(' + element_properties.network_width * i + ',' + 0 + ')'})
+        return 'translate(' + element_properties.network_width * i + ',' + 0 + ')';
+      })
       .select('.network-rect')
-      .attr('height', function(d) { return self.network_height})
-      .style('fill', function(d) { return self.network_color(d.id)});
+      .attr('height', function(d) { return self.network_height; })
+      .style('fill', function(d) { return self.get_network_color(d.id); });
     network
       .select('.network-name')
-      .attr('x', function(d) { return self.network_height/2 })
+      .attr('x', function(d) { return self.network_height/2; })
       .text(function(d) { return d.name; });
     network
       .select('.network-cidr')
-      .attr('x', function(d) { return self.network_height - self.element_properties.cidr_margin })
+      .attr('x', function(d) {
+        return self.network_height - self.element_properties.cidr_margin;
+      })
       .text(function(d) {
         var cidr = $.map(d.subnets,function(n, i){
           return n.cidr;
@@ -362,8 +366,8 @@ horizon.network_topology = {
     });
 
     port.each(function(d,i){
-      var index_diff = self.network_index(this.parentNode._portdata.parent_network) -
-        self.network_index(d.network_id);
+      var index_diff = self.get_network_index(this.parentNode._portdata.parent_network) -
+        self.get_network_index(d.network_id);
       this._index_diff = index_diff = (index_diff >= 0)? ++index_diff : index_diff;
       this._direction = (this._index_diff < 0)? 'right' : 'left';
       this._index  = this.parentNode._portdata[this._direction] ++;
@@ -384,7 +388,9 @@ horizon.network_topology = {
       .attr('stroke-width',function(d,i) {
         return this.parentNode.parentNode._portdata.port_height;
       })
-      .attr('stroke',function(d,i) {return self.network_color(d.network_id)})
+      .attr('stroke', function(d, i) {
+        return self.get_network_color(d.network_id);
+      })
       .attr('x1',0).attr('y1',0).attr('y2',0)
       .attr('x2',function(d,i) {
         var parent = this.parentNode;
@@ -405,7 +411,9 @@ horizon.network_topology = {
             return element_properties.port_text_margin.x;
           }
         })
-        .attr('y',function(d) { return element_properties.port_text_margin.y })
+        .attr('y',function(d) {
+          return element_properties.port_text_margin.y;
+        })
         .text(function(d) {
           var ip_label = [];
           $.each(d.fixed_ips, function() {
@@ -416,10 +424,10 @@ horizon.network_topology = {
 
     port.exit().remove();
   },
-  network_color: function(network_id) {
-    return this.color(this.network_index(network_id));
+  get_network_color: function(network_id) {
+    return this.color(this.get_network_index(network_id));
   },
-  network_index: function(network_id) {
+  get_network_index: function(network_id) {
     return this.network_index[network_id];
   },
   select_port: function(device_id){
@@ -446,9 +454,9 @@ horizon.network_topology = {
   sum_port_length: function(network_id, ports){
     var self = this;
     var sum_port_length = 0;
-    var base_index = self.network_index(network_id);
+    var base_index = self.get_network_index(network_id);
     $.each(ports, function(index, port){
-      sum_port_length += base_index - self.network_index(port.network_id);
+      sum_port_length += base_index - self.get_network_index(port.network_id);
     });
     return sum_port_length;
   },
@@ -518,8 +526,9 @@ horizon.network_topology = {
       url:d.url,
       name:d.name,
       type:d.type,
-      type_capital:d.type.replace(/^\w/, function($0) {return $0.toUpperCase()}),
-      id:d.id,
+      type_capital:d.type.replace(/^\w/, function($0) {
+        return $0.toUpperCase();
+      }),
       status:d.status,
       status_class:(d.status == "ACTIVE")? 'active' : 'down'
     };
@@ -557,9 +566,8 @@ horizon.network_topology = {
           'left': 0 + 'px'
         })
         .css({
-          'left': device_position.position().left
-            - $balloon.outerWidth()
-            - element_properties.balloon_margin.x + 'px'
+          'left': (device_position.position().left - $balloon.outerWidth() -
+                   element_properties.balloon_margin.x + 'px')
         })
         .addClass('leftPosition');
     }
@@ -578,7 +586,7 @@ horizon.network_topology = {
   delete_balloon:function() {
     var self = this;
     if(self.balloon_id) {
-      $('#' + self.balloon_id).remove()
+      $('#' + self.balloon_id).remove();
       self.balloon_id = null;
     }
   },

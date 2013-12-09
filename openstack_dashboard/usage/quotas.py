@@ -1,3 +1,15 @@
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
 from collections import defaultdict  # noqa
 import itertools
 import logging
@@ -48,7 +60,7 @@ QUOTA_FIELDS = NOVA_QUOTA_FIELDS + CINDER_QUOTA_FIELDS + NEUTRON_QUOTA_FIELDS
 
 
 class QuotaUsage(dict):
-    """ Tracks quota limit, used, and available for a given set of quotas."""
+    """Tracks quota limit, used, and available for a given set of quotas."""
 
     def __init__(self):
         self.usages = defaultdict(dict)
@@ -65,7 +77,7 @@ class QuotaUsage(dict):
         return repr(dict(self.usages))
 
     def add_quota(self, quota):
-        """ Adds an internal tracking reference for the given quota. """
+        """Adds an internal tracking reference for the given quota."""
         if quota.limit is None or quota.limit == -1:
             # Handle "unlimited" quotas.
             self.usages[quota.name]['quota'] = float("inf")
@@ -74,7 +86,7 @@ class QuotaUsage(dict):
             self.usages[quota.name]['quota'] = int(quota.limit)
 
     def tally(self, name, value):
-        """ Adds to the "used" metric for the given quota. """
+        """Adds to the "used" metric for the given quota."""
         value = value or 0  # Protection against None.
         # Start at 0 if this is the first value.
         if 'used' not in self.usages[name]:
@@ -84,7 +96,7 @@ class QuotaUsage(dict):
         self.update_available(name)
 
     def update_available(self, name):
-        """ Updates the "available" metric for the given quota. """
+        """Updates the "available" metric for the given quota."""
         available = self.usages[name]['quota'] - self.usages[name]['used']
         if available < 0:
             available = 0
@@ -220,6 +232,8 @@ def tenant_quota_usages(request):
 
 
 def tenant_limit_usages(request):
+    #TODO(licostan): This method shall be removed from Quota module.
+    #ProjectUsage/BaseUsage maybe used instead on volume/image dashboards.
     limits = {}
 
     try:

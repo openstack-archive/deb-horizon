@@ -13,12 +13,31 @@
     <dd>{{ instance.id }}</dd>
     <dt>{% trans "Status" %}</dt>
     <dd>{{ instance.status|title }}</dd>
+    <dt>{% trans "Availability Zone" %}</dt>
+    <dd>{{ instance.availability_zone|default:"-" }}</dd>
     <dt>{% trans "Created" %}</dt>
     <dd>{{ instance.created|parse_isotime }}</dd>
     <dt>{% trans "Uptime" %}</dt>
     <dd>{{ instance.created|parse_isotime|timesince }}</dd>
   </dl>
 </div>
+
+{% if instance.fault %}
+<div class="status row-fluid detail">
+  <h4>{% trans "Fault" %}</h4>
+  <hr class="header_rule">
+  <dl>
+    <dt>{% trans "Message" %}</dt>
+    <dd>{{ instance.fault.message }}</dd>
+    <dt>{% trans "Code" %}</dt>
+    <dd>{{ instance.fault.code }}</dd>
+    <dt>{% trans "Details" %}</dt>
+    <dd>{{ instance.fault.details }}</dd>
+    <dt>{% trans "Created" %}</dt>
+    <dd>{{ instance.fault.created|parse_isotime }}</dd>
+  </dl>
+</div>
+{% endif %}
 
 <div class="specs row-fluid detail">
   <h4>{% trans "Specs" %}</h4>

@@ -36,6 +36,20 @@ INDEX_URL = reverse('horizon:project:overview:index')
 
 
 class UsageViewTests(test.TestCase):
+
+    def _stub_nova_api_calls(self, nova_stu_enabled=True):
+        self.mox.StubOutWithMock(api.nova, 'usage_get')
+        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
+        self.mox.StubOutWithMock(api.nova, 'extension_supported')
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(nova_stu_enabled)
+
+    def _stub_cinder_api_calls(self):
+        self.mox.StubOutWithMock(api.cinder, 'tenant_absolute_limits')
+        api.cinder.tenant_absolute_limits(IsA(http.HttpRequest)) \
+                        .AndReturn(self.cinder_limits['absolute'])
+
     def _stub_neutron_api_calls(self, neutron_sg_enabled=True):
         self.mox.StubOutWithMock(api.neutron, 'is_extension_supported')
         self.mox.StubOutWithMock(api.network, 'tenant_floating_ip_list')
@@ -51,62 +65,98 @@ class UsageViewTests(test.TestCase):
                 .AndReturn(self.q_secgroups.list())
 
     def test_usage(self):
+        self._test_usage(nova_stu_enabled=True)
+
+    def test_usage_disabled(self):
+        self._test_usage(nova_stu_enabled=False)
+
+    def _test_usage(self, nova_stu_enabled):
         now = timezone.now()
         usage_obj = api.nova.NovaUsage(self.usages.first())
-        self.mox.StubOutWithMock(api.nova, 'usage_get')
-        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
-        api.nova.usage_get(IsA(http.HttpRequest), self.tenant.id,
-                           datetime.datetime(now.year,
-                                             now.month,
-                                             now.day, 0, 0, 0, 0),
-                           datetime.datetime(now.year,
-                                             now.month,
-                                             now.day, 23, 59, 59, 0)) \
-                           .AndReturn(usage_obj)
+        self._stub_nova_api_calls(nova_stu_enabled)
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(nova_stu_enabled)
+
+        if nova_stu_enabled:
+            api.nova.usage_get(IsA(http.HttpRequest), self.tenant.id,
+                               datetime.datetime(now.year,
+                                                 now.month,
+                                                 now.day, 0, 0, 0, 0),
+                               datetime.datetime(now.year,
+                                                 now.month,
+                                                 now.day, 23, 59, 59, 0)) \
+                    .AndReturn(usage_obj)
+
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest)) \
-                           .AndReturn(self.limits['absolute'])
+                .AndReturn(self.limits['absolute'])
         self._stub_neutron_api_calls()
+        self._stub_cinder_api_calls()
         self.mox.ReplayAll()
 
         res = self.client.get(reverse('horizon:project:overview:index'))
         usages = res.context['usage']
         self.assertTemplateUsed(res, 'project/overview/usage.html')
         self.assertTrue(isinstance(usages, usage.ProjectUsage))
-        self.assertContains(res, 'form-horizontal')
+        self.assertEqual(nova_stu_enabled,
+                         res.context['simple_tenant_usage_enabled'])
+        if nova_stu_enabled:
+            self.assertContains(res, 'form-horizontal')
+        else:
+            self.assertNotContains(res, 'form-horizontal')
         self.assertEqual(usages.limits['maxTotalFloatingIps'], float("inf"))
 
     def test_usage_nova_network(self):
+        self._test_usage_nova_network(nova_stu_enabled=True)
+
+    def test_usage_nova_network_disabled(self):
+        self._test_usage_nova_network(nova_stu_enabled=False)
+
+    def _test_usage_nova_network(self, nova_stu_enabled):
         now = timezone.now()
         usage_obj = api.nova.NovaUsage(self.usages.first())
-        self.mox.StubOutWithMock(api.nova, 'usage_get')
-        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
         self.mox.StubOutWithMock(api.base, 'is_service_enabled')
-        api.nova.usage_get(IsA(http.HttpRequest), self.tenant.id,
-                           datetime.datetime(now.year,
-                                             now.month,
-                                             now.day, 0, 0, 0, 0),
-                           datetime.datetime(now.year,
-                                             now.month,
-                                             now.day, 23, 59, 59, 0)) \
-                           .AndReturn(usage_obj)
+        self._stub_nova_api_calls(nova_stu_enabled)
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(nova_stu_enabled)
+        if nova_stu_enabled:
+            api.nova.usage_get(IsA(http.HttpRequest), self.tenant.id,
+                               datetime.datetime(now.year,
+                                                 now.month,
+                                                 now.day, 0, 0, 0, 0),
+                               datetime.datetime(now.year,
+                                                 now.month,
+                                                 now.day, 23, 59, 59, 0)) \
+                .AndReturn(usage_obj)
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest)) \
                            .AndReturn(self.limits['absolute'])
         api.base.is_service_enabled(IsA(http.HttpRequest), 'network') \
-                           .AndReturn(False)
+                           .MultipleTimes().AndReturn(False)
+        api.base.is_service_enabled(IsA(http.HttpRequest), 'volume') \
+                           .MultipleTimes().AndReturn(False)
+
         self.mox.ReplayAll()
 
         res = self.client.get(reverse('horizon:project:overview:index'))
         usages = res.context['usage']
         self.assertTemplateUsed(res, 'project/overview/usage.html')
         self.assertTrue(isinstance(usages, usage.ProjectUsage))
-        self.assertContains(res, 'form-horizontal')
+        self.assertEqual(nova_stu_enabled,
+                         res.context['simple_tenant_usage_enabled'])
+        if nova_stu_enabled:
+            self.assertContains(res, 'form-horizontal')
+        else:
+            self.assertNotContains(res, 'form-horizontal')
         self.assertEqual(usages.limits['maxTotalFloatingIps'], 10)
 
     def test_unauthorized(self):
         exc = self.exceptions.nova_unauthorized
         now = timezone.now()
-        self.mox.StubOutWithMock(api.nova, 'usage_get')
-        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
+        self._stub_nova_api_calls()
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(True)
         api.nova.usage_get(IsA(http.HttpRequest), self.tenant.id,
                            datetime.datetime(now.year,
                                              now.month,
@@ -118,6 +168,7 @@ class UsageViewTests(test.TestCase):
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
                            .AndReturn(self.limits['absolute'])
         self._stub_neutron_api_calls()
+        self._stub_cinder_api_calls()
         self.mox.ReplayAll()
 
         url = reverse('horizon:project:overview:index')
@@ -127,18 +178,29 @@ class UsageViewTests(test.TestCase):
         self.assertContains(res, 'Unauthorized:')
 
     def test_usage_csv(self):
+        self._test_usage_csv(nova_stu_enabled=True)
+
+    def test_usage_csv_disabled(self):
+        self._test_usage_csv(nova_stu_enabled=False)
+
+    def _test_usage_csv(self, nova_stu_enabled=True):
         now = timezone.now()
         usage_obj = api.nova.NovaUsage(self.usages.first())
-        self.mox.StubOutWithMock(api.nova, 'usage_get')
-        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
+        self._stub_nova_api_calls(nova_stu_enabled)
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(nova_stu_enabled)
         start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
-        api.nova.usage_get(IsA(http.HttpRequest),
-                           self.tenant.id,
-                           start, end).AndReturn(usage_obj)
+
+        if nova_stu_enabled:
+            api.nova.usage_get(IsA(http.HttpRequest),
+                               self.tenant.id,
+                               start, end).AndReturn(usage_obj)
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
             .AndReturn(self.limits['absolute'])
         self._stub_neutron_api_calls()
+        self._stub_cinder_api_calls()
         self.mox.ReplayAll()
         res = self.client.get(reverse('horizon:project:overview:index') +
                               "?format=csv")
@@ -147,16 +209,19 @@ class UsageViewTests(test.TestCase):
 
     def test_usage_exception_usage(self):
         now = timezone.now()
-        self.mox.StubOutWithMock(api.nova, 'usage_get')
-        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
         start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
+        self._stub_nova_api_calls()
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(True)
         api.nova.usage_get(IsA(http.HttpRequest),
                            self.tenant.id,
                            start, end).AndRaise(self.exceptions.nova)
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
             .AndReturn(self.limits['absolute'])
         self._stub_neutron_api_calls()
+        self._stub_cinder_api_calls()
         self.mox.ReplayAll()
 
         res = self.client.get(reverse('horizon:project:overview:index'))
@@ -166,8 +231,10 @@ class UsageViewTests(test.TestCase):
     def test_usage_exception_quota(self):
         now = timezone.now()
         usage_obj = api.nova.NovaUsage(self.usages.first())
-        self.mox.StubOutWithMock(api.nova, 'usage_get')
-        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
+        self._stub_nova_api_calls()
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(True)
         start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
         api.nova.usage_get(IsA(http.HttpRequest),
@@ -176,6 +243,7 @@ class UsageViewTests(test.TestCase):
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
                            .AndRaise(self.exceptions.nova)
         self._stub_neutron_api_calls()
+        self._stub_cinder_api_calls()
         self.mox.ReplayAll()
 
         res = self.client.get(reverse('horizon:project:overview:index'))
@@ -185,8 +253,10 @@ class UsageViewTests(test.TestCase):
     def test_usage_default_tenant(self):
         now = timezone.now()
         usage_obj = api.nova.NovaUsage(self.usages.first())
-        self.mox.StubOutWithMock(api.nova, 'usage_get')
-        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
+        self._stub_nova_api_calls()
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(True)
         start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
         api.nova.usage_get(IsA(http.HttpRequest),
@@ -195,6 +265,7 @@ class UsageViewTests(test.TestCase):
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
             .AndReturn(self.limits['absolute'])
         self._stub_neutron_api_calls()
+        self._stub_cinder_api_calls()
         self.mox.ReplayAll()
 
         res = self.client.get(reverse('horizon:project:overview:index'))
@@ -212,8 +283,10 @@ class UsageViewTests(test.TestCase):
     def _test_usage_with_neutron(self, neutron_sg_enabled=True):
         now = timezone.now()
         usage_obj = api.nova.NovaUsage(self.usages.first())
-        self.mox.StubOutWithMock(api.nova, 'usage_get')
-        self.mox.StubOutWithMock(api.nova, 'tenant_absolute_limits')
+        self._stub_nova_api_calls()
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(True)
         self.mox.StubOutWithMock(api.neutron, 'tenant_quota_get')
         start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
@@ -229,6 +302,7 @@ class UsageViewTests(test.TestCase):
                            .AndReturn(True)
         api.neutron.tenant_quota_get(IsA(http.HttpRequest), self.tenant.id) \
                            .AndReturn(self.neutron_quotas.first())
+        self._stub_cinder_api_calls()
         self.mox.ReplayAll()
 
         res = self.client.get(reverse('horizon:project:overview:index'))
@@ -243,3 +317,47 @@ class UsageViewTests(test.TestCase):
             # Make sure the security group limit comes from Neutron (20 vs. 10)
             max_security_groups = res_limits['maxSecurityGroups']
             self.assertEqual(max_security_groups, 20)
+
+    def test_usage_with_cinder(self):
+        self._test_usage_cinder(cinder_enabled=True)
+
+    def test_usage_without_cinder(self):
+        self._test_usage_cinder(cinder_enabled=False)
+
+    def _test_usage_cinder(self, cinder_enabled):
+        now = timezone.now()
+        usage_obj = api.nova.NovaUsage(self.usages.first())
+        self.mox.StubOutWithMock(api.base, 'is_service_enabled')
+        self._stub_nova_api_calls(True)
+        api.nova.extension_supported(
+            'SimpleTenantUsage', IsA(http.HttpRequest)) \
+            .AndReturn(True)
+
+        start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
+        end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
+        api.nova.usage_get(IsA(http.HttpRequest),
+                           self.tenant.id,
+                           start, end).AndReturn(usage_obj)
+        api.nova.tenant_absolute_limits(IsA(http.HttpRequest)) \
+                           .AndReturn(self.limits['absolute'])
+
+        if cinder_enabled:
+            self._stub_cinder_api_calls()
+
+        api.base.is_service_enabled(IsA(http.HttpRequest), 'network') \
+                           .MultipleTimes().AndReturn(False)
+        api.base.is_service_enabled(IsA(http.HttpRequest), 'volume') \
+                           .MultipleTimes().AndReturn(cinder_enabled)
+        self.mox.ReplayAll()
+
+        res = self.client.get(reverse('horizon:project:overview:index'))
+        usages = res.context['usage']
+        self.assertTemplateUsed(res, 'project/overview/usage.html')
+        self.assertTrue(isinstance(usages, usage.ProjectUsage))
+        if cinder_enabled:
+            self.assertEqual(usages.limits['totalVolumesUsed'], 1)
+            self.assertEqual(usages.limits['maxTotalVolumes'], 10)
+            self.assertEqual(usages.limits['totalGigabytesUsed'], 5)
+            self.assertEqual(usages.limits['maxTotalVolumeGigabytes'], 1000)
+        else:
+            self.assertNotIn('totalVolumesUsed', usages.limits)
