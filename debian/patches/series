@@ -1,4 +1,3 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
-CVE-2013-6858_Fix_bug_by_escaping_strings_from_Nova_before_displaying_them.patch
