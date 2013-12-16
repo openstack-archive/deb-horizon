@@ -12,8 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from datetime import datetime  # noqa
-from datetime import timedelta  # noqa
 
 from django.utils.translation import ugettext_lazy as _  # noqa
 
@@ -22,136 +20,6 @@ from horizon import tabs
 from openstack_dashboard import api
 from openstack_dashboard.api import ceilometer
 
-from openstack_dashboard.dashboards.admin.metering import tables
-
-
-def make_tenant_queries(request, days_before=30):
-    try:
-        tenants, more = api.keystone.tenant_list(
-            request,
-            domain=None,
-            paginate=True,
-            marker="tenant_marker")
-    except Exception:
-        tenants = []
-        exceptions.handle(request,
-                          _('Unable to retrieve tenant list.'))
-    queries = {}
-    for tenant in tenants:
-        tenant_query = [{
-            "field": "project_id",
-            "op": "eq",
-            "value": tenant.id}]
-
-        queries[tenant.name] = tenant_query
-
-    # TODO(lsmola) Just show last 30 days, should be switchable somewhere
-    # above the table.
-    date_from = datetime.now() - timedelta(days_before)
-    date_to = datetime.now()
-    additional_query = [{'field': 'timestamp',
-                         'op': 'ge',
-                         'value': date_from},
-                        {'field': 'timestamp',
-                         'op': 'le',
-                         'value': date_to}]
-
-    return queries, additional_query
-
-
-def list_of_resource_aggregates(request, meters, stats_attr="avg"):
-    queries, additional_query = make_tenant_queries(request)
-
-    ceilometer_usage = ceilometer.CeilometerUsage(request)
-    try:
-        resource_aggregates = ceilometer_usage.\
-            resource_aggregates_with_statistics(
-                queries, meters, stats_attr="avg",
-                additional_query=additional_query)
-    except Exception:
-        resource_aggregates = []
-        exceptions.handle(request,
-                          _('Unable to retrieve statistics.'))
-
-    return resource_aggregates
-
-
-class GlobalDiskUsageTab(tabs.TableTab):
-    table_classes = (tables.GlobalDiskUsageTable,)
-    name = _("Global Disk Usage")
-    slug = "global_disk_usage"
-    template_name = ("horizon/common/_detail_table.html")
-    preload = False
-
-    def get_global_disk_usage_data(self):
-        """ Disk usage table data aggregated by project """
-        request = self.tab_group.request
-        return list_of_resource_aggregates(request,
-            ceilometer.GlobalDiskUsage.meters)
-
-
-class GlobalNetworkTrafficUsageTab(tabs.TableTab):
-    table_classes = (tables.GlobalNetworkTrafficUsageTable,)
-    name = _("Global Network Traffic Usage")
-    slug = "global_network_traffic_usage"
-    template_name = ("horizon/common/_detail_table.html")
-    preload = False
-
-    def get_global_network_traffic_usage_data(self):
-        request = self.tab_group.request
-        return list_of_resource_aggregates(request,
-            ceilometer.GlobalNetworkTrafficUsage.meters)
-
-
-class GlobalNetworkUsageTab(tabs.TableTab):
-    table_classes = (tables.GlobalNetworkUsageTable,)
-    name = _("Global Network Usage")
-    slug = "global_network_usage"
-    template_name = ("horizon/common/_detail_table.html")
-    preload = False
-
-    def get_global_network_usage_data(self):
-        request = self.tab_group.request
-        return list_of_resource_aggregates(request,
-            ceilometer.GlobalNetworkUsage.meters)
-
-    def allowed(self, request):
-        permissions = ("openstack.services.network",)
-        return request.user.has_perms(permissions)
-
-
-class GlobalObjectStoreUsageTab(tabs.TableTab):
-    table_classes = (tables.GlobalObjectStoreUsageTable,)
-    name = _("Global Object Store Usage")
-    slug = "global_object_store_usage"
-    template_name = ("horizon/common/_detail_table.html")
-    preload = False
-
-    def get_global_object_store_usage_data(self):
-        request = self.tab_group.request
-        ceilometer_usage = ceilometer.CeilometerUsage(request)
-
-        date_from = datetime.now() - timedelta(30)
-        date_to = datetime.now()
-        additional_query = [{'field': 'timestamp',
-                             'op': 'ge',
-                             'value': date_from},
-                            {'field': 'timestamp',
-                             'op': 'le',
-                             'value': date_to}]
-        try:
-            result = ceilometer_usage.global_object_store_usage(
-                with_statistics=True, additional_query=additional_query)
-        except Exception:
-            result = []
-            exceptions.handle(request,
-                              _('Unable to retrieve statistics.'))
-        return result
-
-    def allowed(self, request):
-        permissions = ("openstack.services.object-store",)
-        return request.user.has_perms(permissions)
-
 
 class GlobalStatsTab(tabs.Tab):
     name = _("Stats")
@@ -159,29 +27,34 @@ class GlobalStatsTab(tabs.Tab):
     template_name = ("admin/metering/stats.html")
     preload = False
 
+    @staticmethod
+    def _get_flavor_names(request):
+        try:
+            flavors = api.nova.flavor_list(request, None)
+            return [f.name for f in flavors]
+        except Exception:
+            return ['m1.tiny', 'm1.small', 'm1.medium',
+                    'm1.large', 'm1.xlarge']
+
     def get_context_data(self, request):
         query = [{"field": "metadata.OS-EXT-AZ:availability_zone",
                   "op": "eq",
                   "value": "nova"}]
         try:
-            resources = ceilometer.resource_list(request, query,
+            instances = ceilometer.resource_list(request, query,
                 ceilometer_usage_object=None)
+            meters = ceilometer.meter_list(request)
         except Exception:
-            resources = []
+            instances = []
+            meters = []
             exceptions.handle(request,
                               _('Unable to retrieve Nova Ceilometer '
-                                'resources.'))
-        try:
-            resource = resources[0]
-            meters = [link['rel'] for link in resource.links
-                if link['rel'] != "self"]
-        except IndexError:
-            resource = None
-            meters = []
+                                'metering information.'))
+        instance_ids = set([i.resource_id for i in instances])
+        instance_meters = set([m.name for m in meters
+                               if m.resource_id in instance_ids])
 
         meter_titles = {"instance": _("Duration of instance"),
-                        "instance:<type>": _("Duration of instance <type>"
-                            " (openstack types)"),
                         "memory": _("Volume of RAM in MB"),
                         "cpu": _("CPU time used"),
                         "cpu_util": _("Average CPU utilisation"),
@@ -202,15 +75,20 @@ class GlobalStatsTab(tabs.Tab):
                         "network.outgoing.packets": _("Number of outgoing "
                             "packets for a VM interface")}
 
+        for flavor in self._get_flavor_names(request):
+            name = 'instance:%s' % flavor
+            hint = (_('Duration of instance type %s (openstack flavor)') %
+                    flavor)
+            meter_titles[name] = hint
+
         class MetersWrap(object):
             """ A quick wrapper for meter and associated titles. """
             def __init__(self, meter, meter_titles):
                 self.name = meter
                 self.title = meter_titles.get(meter, "")
 
-        meters_objs = []
-        for meter in meters:
-            meters_objs.append(MetersWrap(meter, meter_titles))
+        meters_objs = [MetersWrap(meter, meter_titles)
+                       for meter in sorted(instance_meters)]
 
         context = {'meters': meters_objs}
         return context
@@ -218,6 +96,5 @@ class GlobalStatsTab(tabs.Tab):
 
 class CeilometerOverviewTabs(tabs.TabGroup):
     slug = "ceilometer_overview"
-    tabs = (GlobalDiskUsageTab, GlobalNetworkTrafficUsageTab,
-            GlobalObjectStoreUsageTab, GlobalNetworkUsageTab, GlobalStatsTab,)
+    tabs = (GlobalStatsTab,)
     sticky = True

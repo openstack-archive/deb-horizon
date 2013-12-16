@@ -25,6 +25,10 @@ from horizon import workflows
 from openstack_dashboard import api
 
 
+AVAILABLE_PROTOCOLS = ('HTTP', 'HTTPS', 'TCP')
+AVAILABLE_METHODS = ('ROUND_ROBIN', 'LEAST_CONNECTIONS', 'SOURCE_IP')
+
+
 class AddPoolAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
     description = forms.CharField(
@@ -57,14 +61,11 @@ class AddPoolAction(workflows.Action):
         self.fields['subnet_id'].choices = subnet_id_choices
 
         protocol_choices = [('', _("Select a Protocol"))]
-        protocol_choices.append(('HTTP', 'HTTP'))
-        protocol_choices.append(('HTTPS', 'HTTPS'))
+        [protocol_choices.append((p, p)) for p in AVAILABLE_PROTOCOLS]
         self.fields['protocol'].choices = protocol_choices
 
         lb_method_choices = [('', _("Select a Method"))]
-        lb_method_choices.append(('ROUND_ROBIN', 'ROUND_ROBIN'))
-        lb_method_choices.append(('LEAST_CONNECTIONS', 'LEAST_CONNECTIONS'))
-        lb_method_choices.append(('SOURCE_IP', 'SOURCE_IP'))
+        [lb_method_choices.append((m, m)) for m in AVAILABLE_METHODS]
         self.fields['lb_method'].choices = lb_method_choices
 
         # provider choice
@@ -171,7 +172,7 @@ class AddVipAction(workflows.Action):
         help_text=_("Required for APP_COOKIE persistence;"
                     " Ignored otherwise."))
     connection_limit = forms.IntegerField(
-        min_value=-1, label=_("Connection Limit"),
+        required=False, min_value=-1, label=_("Connection Limit"),
         help_text=_("Maximum number of connections allowed "
                     "for the VIP or '-1' if the limit is not set"))
     admin_state_up = forms.BooleanField(
@@ -185,8 +186,7 @@ class AddVipAction(workflows.Action):
                                                args[0]['subnet'])
 
         protocol_choices = [('', _("Select a Protocol"))]
-        protocol_choices.append(('HTTP', 'HTTP'))
-        protocol_choices.append(('HTTPS', 'HTTPS'))
+        [protocol_choices.append((p, p)) for p in AVAILABLE_PROTOCOLS]
         self.fields['protocol'].choices = protocol_choices
 
         session_persistence_choices = [('', _("No Session Persistence"))]
@@ -292,6 +292,7 @@ class AddMemberAction(workflows.Action):
                             _('At least one member must be specified')},
         help_text=_("Select members for this pool "))
     weight = forms.IntegerField(max_value=256, min_value=0, label=_("Weight"),
+                                required=False,
                                 help_text=_("Relative part of requests this "
                                 "pool member serves compared to others"))
     protocol_port = forms.IntegerField(label=_("Protocol Port"), min_value=1,
@@ -332,7 +333,6 @@ class AddMemberAction(workflows.Action):
             self.fields['members'].help_text = _("Select members "
                                                  "for this pool ")
             self.fields['pool_id'].required = False
-            self.fields['weight'].required = False
             self.fields['protocol_port'].required = False
             return
 

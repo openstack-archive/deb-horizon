@@ -95,7 +95,7 @@ horizon.addInitFunction(function() {
       data: $form.serialize(),
       beforeSend: function () {
         $("#modal_wrapper .modal").last().modal("hide");
-        horizon.modals.modal_spinner("Working");
+        horizon.modals.modal_spinner(gettext("Working"));
       },
       complete: function () {
         horizon.modals.spinner.modal('hide');
@@ -121,8 +121,12 @@ horizon.addInitFunction(function() {
         }
       },
       error: function (jqXHR, status, errorThrown) {
-        $form.closest(".modal").modal("hide");
-        horizon.alert("error", gettext("There was an error submitting the form. Please try again."));
+        if (jqXHR.getResponseHeader('logout')) {
+          location.href = jqXHR.getResponseHeader("X-Horizon-Location");
+        } else {
+          $form.closest(".modal").modal("hide");
+          horizon.alert("error", gettext("There was an error submitting the form. Please try again."));
+        }
       }
     });
   });
