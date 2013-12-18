@@ -1,0 +1,38 @@
+Description: Remove asserts for optional imports
+ Horizon's __init__.py has some code that explicitly allows it to be imported
+ by setup.py before Django is set up, by making import failures just throw a
+ warning instead of an exception. But that code is defeated by a bunch of
+ asserts that were added later, that just make the error even more confusing.
+ .
+ I'm removing the asserts and replacing them with __all__.
+Origin: upstream, https://review.openstack.org/#/c/56547/
+Bug-Ubuntu: https://launchpad.net/bugs/1210253
+X-Git-Url: https://review.openstack.org/gitweb?p=openstack%2Fhorizon.git;a=commitdiff_plain;h=b6eb9a2480a82cf93f7a62e9c7373feddc8296fe
+Author: Radomir Dopieralski <openstack@sheep.art.pl>
+Date: Fri, 15 Nov 2013 09:04:31 +0000 (+0100)
+
+diff --git a/horizon/__init__.py b/horizon/__init__.py
+index 67a358e..865e51b 100644
+--- a/horizon/__init__.py
++++ b/horizon/__init__.py
+@@ -52,6 +52,17 @@ if Horizon:
+     urls = Horizon._lazy_urls
+ 
+ # silence flake8 about unused imports here:
+-assert Dashboard
+-assert Panel
+-assert PanelGroup
++__all__ = [
++    "Dashboard",
++    "Horizon",
++    "Panel",
++    "PanelGroup",
++    "register",
++    "unregister",
++    "get_absolute_url",
++    "get_user_home",
++    "get_dashboard",
++    "get_default_dashboard",
++    "get_dashboards",
++    "urls",
++]

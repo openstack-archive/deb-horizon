@@ -3,3 +3,4 @@ fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 fix-call-of-coverage-command.patch
 python-m-coverage-take2.patch
+removes-asserts-for-optional-imports.patch
