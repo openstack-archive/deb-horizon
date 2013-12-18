@@ -47,5 +47,5 @@ override_dh_auto_clean:
 ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
 override_dh_auto_test:
 	cp openstack_dashboard/local/local_settings.py.example openstack_dashboard/local/local_settings.py
-	./run_tests.sh -N -P || true
+	./run_tests.sh -N || true
 endif
