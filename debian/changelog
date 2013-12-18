@@ -5,6 +5,8 @@ horizon (2013.2.1-1) unstable; urgency=medium
   * (build-)depends needs python-iso8601 >= 0.1.8.
   * Added a patch to use python -m coverage instead of just coverage.
   * Adds removes-asserts-for-optional-imports.patch to fix unit tests.
+  * Copies openstack_dashboard/local/local_settings.py.sample into
+    openstack_dashboard/local/local_settings.py before running tests.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 16 Dec 2013 16:29:36 +0800
 

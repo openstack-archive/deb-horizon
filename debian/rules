@@ -41,10 +41,11 @@ override_dh_auto_clean:
 	rm -rf $(CURDIR)/openstack_dashboard/openstack_dashboard.egg-info
 	rm -rf doc/source/sourcecode
 	rm -rf $(CURDIR)/doc/build
-	rm -f horizon/openstack_dashboard/test/.secret_key_store
+	rm -f horizon/openstack_dashboard/test/.secret_key_store openstack_dashboard/local/local_settings.py
 	find $(CURDIR)/openstack_dashboard -iname '*.pyc' -delete
 
 ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
 override_dh_auto_test:
+	cp openstack_dashboard/local/local_settings.py.example openstack_dashboard/local/local_settings.py
 	./run_tests.sh -N -P || true
 endif
