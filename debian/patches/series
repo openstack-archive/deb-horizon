@@ -4,3 +4,4 @@ fixed-horizon-MANIFEST.in.patch
 fix-call-of-coverage-command.patch
 python-m-coverage-take2.patch
 removes-asserts-for-optional-imports.patch
+add-support-for-Django-1.6.patch
