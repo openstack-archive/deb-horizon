@@ -1,0 +1,748 @@
+Description: Fixes Django 1.6 unsupported import method
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2013-12-24
+
+--- horizon-2013.2.1.orig/doc/source/topics/tutorial.rst
++++ horizon-2013.2.1/doc/source/topics/tutorial.rst
+@@ -221,7 +221,7 @@ find a ``urls.py`` file in your panel di
+ ``index`` that handles the default view for that panel. This is what your
+ ``urls.py`` file might look like::
+ 
+-    from django.conf.urls.defaults import patterns, url
++    from django.conf.urls import patterns, url
+     from .views import IndexView
+ 
+     urlpatterns = patterns('',
+--- horizon-2013.2.1.orig/horizon/base.py
++++ horizon-2013.2.1/horizon/base.py
+@@ -29,9 +29,9 @@ import logging
+ import os
+ 
+ from django.conf import settings  # noqa
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ from django.core.exceptions import ImproperlyConfigured  # noqa
+ from django.core.urlresolvers import reverse  # noqa
+ from django.utils.datastructures import SortedDict  # noqa
+@@ -238,7 +238,7 @@ class Panel(HorizonComponent):
+         _decorate_urlconf(urlpatterns, require_perms, permissions)
+         _decorate_urlconf(urlpatterns, _current_component, panel=self)
+ 
+-        # Return the three arguments to django.conf.urls.defaults.include
++        # Return the three arguments to django.conf.urls.include
+         return urlpatterns, self.slug, self.slug
+ 
+ 
+@@ -474,7 +474,7 @@ class Dashboard(Registry, HorizonCompone
+         _decorate_urlconf(urlpatterns, require_perms, permissions)
+         _decorate_urlconf(urlpatterns, _current_component, dashboard=self)
+ 
+-        # Return the three arguments to django.conf.urls.defaults.include
++        # Return the three arguments to django.conf.urls.include
+         return urlpatterns, self.slug, self.slug
+ 
+     def _autodiscover(self):
+@@ -760,7 +760,7 @@ class Site(Registry, HorizonComponent):
+             urlpatterns += patterns('',
+                     url(r'^%s/' % dash.slug, include(dash._decorated_urls)))
+ 
+-        # Return the three arguments to django.conf.urls.defaults.include
++        # Return the three arguments to django.conf.urls.include
+         return urlpatterns, self.namespace, self.slug
+ 
+     def _autodiscover(self):
+--- horizon-2013.2.1.orig/horizon/conf/panel_template/urls.py
++++ horizon-2013.2.1/horizon/conf/panel_template/urls.py
+@@ -1,5 +1,5 @@
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from .views import IndexView
+ 
+--- horizon-2013.2.1.orig/horizon/site_urls.py
++++ horizon-2013.2.1/horizon/site_urls.py
+@@ -19,9 +19,9 @@
+ #    under the License.
+ 
+ from django.conf import settings  # noqa
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ from django.views.generic import TemplateView  # noqa
+ 
+ 
+--- horizon-2013.2.1.orig/horizon/test/test_dashboards/cats/kittens/urls.py
++++ horizon-2013.2.1/horizon/test/test_dashboards/cats/kittens/urls.py
+@@ -1,5 +1,5 @@
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from horizon.test.test_dashboards.cats.kittens.views import IndexView  # noqa
+ 
+--- horizon-2013.2.1.orig/horizon/test/test_dashboards/cats/tigers/urls.py
++++ horizon-2013.2.1/horizon/test/test_dashboards/cats/tigers/urls.py
+@@ -1,5 +1,5 @@
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from horizon.test.test_dashboards.cats.tigers.views import IndexView  # noqa
+ 
+--- horizon-2013.2.1.orig/horizon/test/test_dashboards/dogs/puppies/urls.py
++++ horizon-2013.2.1/horizon/test/test_dashboards/dogs/puppies/urls.py
+@@ -1,5 +1,5 @@
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from horizon.test.test_dashboards.dogs.puppies.views import IndexView  # noqa
+ 
+--- horizon-2013.2.1.orig/horizon/test/urls.py
++++ horizon-2013.2.1/horizon/test/urls.py
+@@ -22,9 +22,9 @@
+ URL patterns for testing Horizon views.
+ """
+ 
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ from django.contrib.staticfiles.urls import staticfiles_urlpatterns  # noqa
+ from django.views.generic import TemplateView  # noqa
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/defaults/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/defaults/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.defaults import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/domains/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/domains/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.domains import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/flavors/extras/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/flavors/extras/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.flavors.extras import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/flavors/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/flavors/urls.py
+@@ -18,9 +18,9 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.flavors.extras \
+     import urls as extras_urls
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/groups/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/groups/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.groups import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/hypervisors/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/hypervisors/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.hypervisors import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/images/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/images/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.images import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/info/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/info/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.info import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/instances/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/instances/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.instances import views
+ from openstack_dashboard.dashboards.project.instances \
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/networks/ports/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/networks/ports/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.networks.ports import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/networks/subnets/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/networks/subnets/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.networks.subnets import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/networks/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/networks/urls.py
+@@ -14,9 +14,9 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.networks import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/overview/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/overview/urls.py
+@@ -19,8 +19,8 @@
+ #    under the License.
+ 
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.overview import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/projects/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/projects/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.projects import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/roles/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/roles/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.roles import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/routers/ports/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/routers/ports/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.routers.ports import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/routers/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/routers/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.routers import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/users/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/users/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.users import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/admin/volumes/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/admin/volumes/urls.py
+@@ -1,5 +1,5 @@
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.admin.volumes import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/access_and_security/api_access/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/access_and_security/api_access/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.access_and_security.\
+     api_access import views
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/access_and_security/floating_ips/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/access_and_security/floating_ips/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.access_and_security.\
+     floating_ips import views
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/access_and_security/keypairs/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/access_and_security/keypairs/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.access_and_security.keypairs \
+     import views
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/access_and_security/security_groups/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/access_and_security/security_groups/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.access_and_security.\
+     security_groups import views
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/access_and_security/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/access_and_security/urls.py
+@@ -18,9 +18,9 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.access_and_security.\
+     api_access import urls as api_access_urls
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/containers/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/containers/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.containers import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/database_backups/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/database_backups/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.database_backups import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/databases/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/databases/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.databases import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/firewalls/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/firewalls/urls.py
+@@ -15,8 +15,8 @@
+ #
+ # @author: KC Wang, Big Switch Networks
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.firewalls import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/images_and_snapshots/images/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/images_and_snapshots/images/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.images_and_snapshots.images \
+     import views
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/images_and_snapshots/snapshots/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/images_and_snapshots/snapshots/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.images_and_snapshots.snapshots \
+     import views
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/images_and_snapshots/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/images_and_snapshots/urls.py
+@@ -18,9 +18,9 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.images_and_snapshots.images \
+     import urls as image_urls
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/instances/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/instances/urls.py
+@@ -18,8 +18,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.instances import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/loadbalancers/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/loadbalancers/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.loadbalancers import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/network_topology/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/network_topology/urls.py
+@@ -19,8 +19,8 @@
+ #    under the License.
+ 
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.network_topology import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/networks/ports/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/networks/ports/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.networks.ports import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/networks/subnets/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/networks/subnets/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.networks.subnets import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/networks/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/networks/urls.py
+@@ -14,9 +14,9 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.networks.ports \
+     import urls as port_urls
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/overview/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/overview/urls.py
+@@ -19,8 +19,8 @@
+ #    under the License.
+ 
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.overview import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/routers/ports/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/routers/ports/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.routers.ports import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/routers/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/routers/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.routers.ports \
+     import views as port_views
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/stacks/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/stacks/urls.py
+@@ -12,8 +12,8 @@
+ # License for the specific language governing permissions and limitations
+ # under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.stacks import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/volumes/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/volumes/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.volumes import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/project/vpn/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/project/vpn/urls.py
+@@ -16,8 +16,8 @@
+ #
+ # @author: Tatiana Mazur
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.project.vpn import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/router/nexus1000v/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/router/nexus1000v/urls.py
+@@ -15,8 +15,8 @@
+ # @author: Abishek Subramanian, Cisco Systems, Inc.
+ # @author: Sergey Sudakovich,   Cisco Systems, Inc.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.router.nexus1000v import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/settings/password/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/settings/password/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.settings.password import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/dashboards/settings/user/urls.py
++++ horizon-2013.2.1/openstack_dashboard/dashboards/settings/user/urls.py
+@@ -14,8 +14,8 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ 
+ from openstack_dashboard.dashboards.settings.user import views
+ 
+--- horizon-2013.2.1.orig/openstack_dashboard/urls.py
++++ horizon-2013.2.1/openstack_dashboard/urls.py
+@@ -23,9 +23,9 @@ URL patterns for the OpenStack Dashboard
+ """
+ 
+ from django.conf import settings  # noqa
+-from django.conf.urls.defaults import include  # noqa
+-from django.conf.urls.defaults import patterns  # noqa
+-from django.conf.urls.defaults import url  # noqa
++from django.conf.urls import include  # noqa
++from django.conf.urls import patterns  # noqa
++from django.conf.urls import url  # noqa
+ from django.conf.urls.static import static  # noqa
+ from django.contrib.staticfiles.urls import staticfiles_urlpatterns  # noqa
+ 
