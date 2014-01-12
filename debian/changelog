@@ -9,6 +9,9 @@ horizon (2013.2.1-1) unstable; urgency=medium
     openstack_dashboard/local/local_settings.py before running tests.
   * Drops node and node-less build-depends.
   * Adds a patch to support Django 1.6.
+  * Added/updated debconf template translations, with thanks to:
+    - Spanish: Matias A. Bellone (Closes: #732537)
+    - German: Martin Schauer (Closes: #734737)
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 16 Dec 2013 16:29:36 +0800
 
