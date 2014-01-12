@@ -1,0 +1,55 @@
+# German translation of horizon debconf templates
+# This file is distributed under the same license as the horizon package.
+#
+# Martin Eberhard Schauer <Martin.E.Schauer@gmx.de>, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: horizon\n"
+"Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
+"POT-Creation-Date: 2012-11-28 14:00+0000\n"
+"PO-Revision-Date: 2014-01-09 14:29+0100\n"
+"Last-Translator: Martin Eberhard Schauer <Martin.E.Schauer@gmx.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid "Activate Dashboard and disable default VirtualHost?"
+msgstr "Dashboard aktivieren und die Vorgabe für VirtualHost deaktivieren?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"In Debian, Apache comes with a default website and a default page, "
+"configured in /etc/apache2/sites-available/default. Select if this "
+"configuration should be disabled and replaced by the Openstack Dashboard "
+"configuration."
+msgstr ""
+"Debian verteilt Apache mit einer Standard-Website und einer Standardseite, "
+"die in /etc/apache2/sites-available/default konfiguriert sind. Wählen Sie, "
+"ob diese Konfiguration deaktiviert und durch die "
+"Openstack-Dashboard-Konfiguration ersetzt werden soll."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid "Should the Dashboard be installed on HTTPS?"
+msgstr "Soll das Dashboard mit HTTPS installiert werden?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid ""
+"Please choose if you would like Horizon to be installed on HTTPS only, with "
+"a redirection to HTTPS if HTTP is in use."
+msgstr ""
+"Wählen Sie bitte, ob Horizon nur mit HTTPS installiert werden soll und bei "
+"der Nutzung von HTTP auf HTTPS umgeleitet werden soll."
+
