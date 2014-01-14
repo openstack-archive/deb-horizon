@@ -1,0 +1,120 @@
+From: Steve Leon <steve.leon@hp.com>
+Date: Mon, 11 Nov 2013 22:29:55 +0000 (-0800)
+Subject: Importing from trove-client compat
+X-Git-Tag: 2014.1.b1~77^2
+X-Git-Url: https://review.openstack.org/gitweb?p=openstack%2Fhorizon.git;a=commitdiff_plain;h=2fc1a45a8455f93645bc0ae8ff298eb3c62cf5d8
+
+Importing from trove-client compat
+
+Fixes bug #1250237
+
+Change-Id: I7a67fa7e2ab34c960fed908090edb05059ae74e4
+---
+
+diff --git a/openstack_dashboard/api/trove.py b/openstack_dashboard/api/trove.py
+index 388b82c..54b5017 100644
+--- a/openstack_dashboard/api/trove.py
++++ b/openstack_dashboard/api/trove.py
+@@ -21,7 +21,12 @@ try:
+     from troveclient import client
+     with_trove = True
+ except ImportError:
+-    with_trove = False
++    try:
++        from troveclient.compat import auth
++        from troveclient.compat import client
++        with_trove = True
++    except ImportError:
++        with_trove = False
+ 
+ 
+ class TokenAuth(object):
+diff --git a/openstack_dashboard/dashboards/project/databases/tests.py b/openstack_dashboard/dashboards/project/databases/tests.py
+index 9b714a1..3c6a393 100644
+--- a/openstack_dashboard/dashboards/project/databases/tests.py
++++ b/openstack_dashboard/dashboards/project/databases/tests.py
+@@ -24,7 +24,14 @@ from openstack_dashboard import api
+ from openstack_dashboard.test import helpers as test
+ 
+ if api.trove.with_trove:
+-    from troveclient import common
++    try:
++        from troveclient import common
++    except ImportError:
++        try:
++            from troveclient.compat import common
++        except ImportError:
++            pass
++
+ 
+ INDEX_URL = reverse('horizon:project:databases:index')
+ LAUNCH_URL = reverse('horizon:project:databases:launch')
+diff --git a/openstack_dashboard/exceptions.py b/openstack_dashboard/exceptions.py
+index 4ef7642..d44a9f8 100644
+--- a/openstack_dashboard/exceptions.py
++++ b/openstack_dashboard/exceptions.py
+@@ -29,7 +29,11 @@ try:
+     from troveclient import exceptions as troveclient
+     with_trove = True
+ except ImportError:
+-    with_trove = False
++    try:
++        from troveclient.compat import exceptions as troveclient
++        with_trove = True
++    except ImportError:
++        with_trove = False
+ 
+ 
+ UNAUTHORIZED = (keystoneclient.Unauthorized,
+diff --git a/openstack_dashboard/test/helpers.py b/openstack_dashboard/test/helpers.py
+index c008002..5cfcbae 100644
+--- a/openstack_dashboard/test/helpers.py
++++ b/openstack_dashboard/test/helpers.py
+@@ -42,7 +42,11 @@ try:
+     from troveclient import client as trove_client
+     with_trove = True
+ except ImportError:
+-    with_trove = False
++    try:
++        from troveclient.compat import client as trove_client
++        with_trove = True
++    except ImportError:
++        with_trove = False
+ 
+ import httplib2
+ import mox
+diff --git a/openstack_dashboard/test/test_data/exceptions.py b/openstack_dashboard/test/test_data/exceptions.py
+index d2cc207..40c57d2 100644
+--- a/openstack_dashboard/test/test_data/exceptions.py
++++ b/openstack_dashboard/test/test_data/exceptions.py
+@@ -23,7 +23,11 @@ try:
+     from troveclient import exceptions as trove_exceptions
+     with_trove = True
+ except ImportError:
+-    with_trove = False
++    try:
++        from troveclient.compat import exceptions as trove_exceptions
++        with_trove = True
++    except ImportError:
++        with_trove = False
+ 
+ from openstack_dashboard.test.test_data import utils
+ 
+diff --git a/openstack_dashboard/test/test_data/trove_data.py b/openstack_dashboard/test/test_data/trove_data.py
+index ee41f76..d6461aa 100644
+--- a/openstack_dashboard/test/test_data/trove_data.py
++++ b/openstack_dashboard/test/test_data/trove_data.py
+@@ -19,7 +19,12 @@ try:
+     from troveclient import instances
+     with_trove = True
+ except ImportError:
+-    with_trove = False
++    try:
++        from troveclient.v1 import backups
++        from troveclient.v1 import instances
++        with_trove = True
++    except ImportError:
++        with_trove = False
+ 
+ from openstack_dashboard.test.test_data import utils
+ 

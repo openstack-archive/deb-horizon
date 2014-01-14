@@ -6,3 +6,4 @@ python-m-coverage-take2.patch
 removes-asserts-for-optional-imports.patch
 add-support-for-Django-1.6.patch
 fix-django-1.6-import-django.conf.urls.defaults.patch
+fix-trove-unit-tests.patch
