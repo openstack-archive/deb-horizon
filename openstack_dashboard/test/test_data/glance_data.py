@@ -90,7 +90,7 @@ def data(TEST):
     protected_image = images.Image(images.ImageManager(None), image_dict)
 
     image_dict = {'id': '278905a6-4b52-4d1e-98f9-8c57bb25ba32',
-                  'name': 'public_image 2',
+                  'name': None,
                   'status': "active",
                   'size': 5 * 1024 ** 3,
                   'min_disk': 0,
@@ -148,6 +148,33 @@ def data(TEST):
                   'protected': False}
     official_image1 = images.Image(images.ImageManager(None), image_dict)
 
+    image_dict = {'id': 'a67e7d45-fe1e-4c5c-bf08-44b4a4964822',
+                  'name': 'multi_prop_image',
+                  'status': "active",
+                  'size': 20 * 1024 ** 3,
+                  'min_disk': 0,
+                  'owner': TEST.tenant.id,
+                  'container_format': 'novaImage',
+                  'properties': {'description': u'a multi prop image',
+                                 'foo': u'foo val',
+                                 'bar': u'bar val'},
+                  'is_public': True,
+                  'protected': False}
+    multi_prop_image = images.Image(images.ImageManager(None), image_dict)
+
+    # An image wihout name being returned based on current api
+    image_dict = {'id': 'c8756975-7a3b-4e43-b7f7-433576112849',
+                  'status': "active",
+                  'size': 8 * 1024 ** 3,
+                  'min_disk': 0,
+                  'owner': 'someothertenant',
+                  'container_format': 'aki',
+                  'is_public': False,
+                  'protected': False}
+    no_name_image = images.Image(images.ImageManager(None), image_dict)
+
     TEST.images.add(public_image, private_image, protected_image,
                     public_image2, private_image2, private_image3,
-                    shared_image1, official_image1)
+                    shared_image1, official_image1, multi_prop_image)
+
+    TEST.empty_name_image = no_name_image

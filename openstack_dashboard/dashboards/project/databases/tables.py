@@ -16,7 +16,7 @@
 
 from django.core import urlresolvers
 from django.template.defaultfilters import title  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tables
@@ -34,7 +34,7 @@ ACTIVE_STATES = ("ACTIVE",)
 class TerminateInstance(tables.BatchAction):
     name = "terminate"
     action_present = _("Terminate")
-    action_past = _("Scheduled termination of")
+    action_past = _("Scheduled termination of %(data_type)s")
     data_type_singular = _("Instance")
     data_type_plural = _("Instances")
     classes = ('btn-danger', 'btn-terminate')
@@ -105,7 +105,8 @@ class CreateBackup(tables.LinkAction):
     classes = ("ajax-modal", "btn-camera")
 
     def allowed(self, request, instance=None):
-        return request.user.has_perm('openstack.services.object-store')
+        return (instance.status in ACTIVE_STATES and
+                request.user.has_perm('openstack.services.object-store'))
 
     def get_link_url(self, datam):
         url = urlresolvers.reverse(self.url)

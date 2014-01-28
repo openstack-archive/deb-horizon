@@ -23,12 +23,13 @@
 Views for managing Images and Snapshots.
 """
 
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tables
 from horizon import tabs
+from horizon.utils import memoized
 
 from openstack_dashboard import api
 from openstack_dashboard.api import base
@@ -53,13 +54,9 @@ class IndexView(tables.MultiTableView):
         marker = self.request.GET.get(
             images_tables.ImagesTable._meta.pagination_param, None)
         try:
-            # FIXME(gabriel): The paging is going to be strange here due to
-            # our filtering after the fact.
-            (all_images,
+            (images,
              self._more_images) = api.glance.image_list_detailed(self.request,
                                                                  marker=marker)
-            images = [im for im in all_images
-                      if im.container_format not in ['aki', 'ari']]
         except Exception:
             images = []
             exceptions.handle(self.request, _("Unable to retrieve images."))
@@ -95,19 +92,16 @@ class DetailView(tabs.TabView):
         context["snapshot"] = self.get_data()
         return context
 
+    @memoized.memoized_method
     def get_data(self):
-        if not hasattr(self, "_snapshot"):
-            try:
-                snapshot_id = self.kwargs['snapshot_id']
-                self._snapshot = api.cinder.volume_snapshot_get(self.request,
-                                                          snapshot_id)
-            except Exception:
-                url = reverse('horizon:project:images_and_snapshots:index')
-                exceptions.handle(self.request,
-                                  _('Unable to retrieve snapshot details.'),
-                                  redirect=url)
-
-        return self._snapshot
+        try:
+            snapshot_id = self.kwargs['snapshot_id']
+            return api.cinder.volume_snapshot_get(self.request, snapshot_id)
+        except Exception:
+            url = reverse('horizon:project:images_and_snapshots:index')
+            exceptions.handle(self.request,
+                              _('Unable to retrieve snapshot details.'),
+                              redirect=url)
 
     def get_tabs(self, request, *args, **kwargs):
         snapshot = self.get_data()

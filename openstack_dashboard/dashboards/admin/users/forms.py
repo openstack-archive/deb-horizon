@@ -22,7 +22,7 @@ import logging
 
 from django.forms import ValidationError  # noqa
 from django import http
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_variables  # noqa
 
 from horizon import exceptions
@@ -90,7 +90,6 @@ class CreateUserForm(BaseUserForm):
         error_messages={'invalid': validators.password_validator_msg()})
     confirm_password = forms.CharField(
         label=_("Confirm Password"),
-        required=False,
         widget=forms.PasswordInput(render_value=False))
     project = forms.DynamicChoiceField(label=_("Primary Project"),
                                        add_item_link=ADD_PROJECT_URL)

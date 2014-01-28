@@ -18,8 +18,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings  # noqa
-from django.core.urlresolvers import reverse  # noqa
+from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.forms import widgets
 from django import http
 
@@ -161,9 +161,7 @@ class VolumeViewTests(test.TestCase):
     @test.create_stubs({cinder: ('volume_create',
                                  'volume_snapshot_get',
                                  'volume_get',
-                                 'volume_type_list',
-                                 'availability_zone_list',
-                                 'extension_supported'),
+                                 'volume_type_list'),
                         quotas: ('tenant_limit_usages',)})
     def test_create_volume_from_snapshot(self):
         volume = self.volumes.first()
@@ -187,11 +185,6 @@ class VolumeViewTests(test.TestCase):
                                    str(snapshot.id)).AndReturn(snapshot)
         cinder.volume_get(IsA(http.HttpRequest), snapshot.volume_id).\
                           AndReturn(self.volumes.first())
-
-        cinder.extension_supported(IsA(http.HttpRequest), 'AvailabilityZones')\
-            .AndReturn(True)
-        cinder.availability_zone_list(IsA(http.HttpRequest)).AndReturn(
-            self.cinder_availability_zones.list())
 
         cinder.volume_create(IsA(http.HttpRequest),
                              formData['size'],
@@ -280,9 +273,7 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_snapshot_get',
                                  'volume_type_list',
-                                 'volume_get',
-                                 'availability_zone_list',
-                                 'extension_supported'),
+                                 'volume_get'),
                         api.glance: ('image_list_detailed',),
                         quotas: ('tenant_limit_usages',)})
     def test_create_volume_from_snapshot_invalid_size(self):
@@ -304,11 +295,6 @@ class VolumeViewTests(test.TestCase):
                                    str(snapshot.id)).AndReturn(snapshot)
         cinder.volume_get(IsA(http.HttpRequest), snapshot.volume_id).\
                           AndReturn(self.volumes.first())
-
-        cinder.extension_supported(IsA(http.HttpRequest), 'AvailabilityZones')\
-            .AndReturn(True)
-        cinder.availability_zone_list(IsA(http.HttpRequest)).AndReturn(
-            self.cinder_availability_zones.list())
 
         quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
                                 AndReturn(usage_limit)
@@ -679,6 +665,9 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_get',), api.nova: ('server_list',)})
     def test_edit_attachments(self):
+        PREV = settings.OPENSTACK_HYPERVISOR_FEATURES['can_set_mount_point']
+        settings.OPENSTACK_HYPERVISOR_FEATURES['can_set_mount_point'] = True
+
         volume = self.volumes.first()
         servers = [s for s in self.servers.list()
                    if s.tenant_id == self.request.user.tenant_id]
@@ -697,11 +686,10 @@ class VolumeViewTests(test.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTrue(isinstance(form.fields['device'].widget,
                                    widgets.TextInput))
+        settings.OPENSTACK_HYPERVISOR_FEATURES['can_set_mount_point'] = PREV
 
     @test.create_stubs({cinder: ('volume_get',), api.nova: ('server_list',)})
     def test_edit_attachments_cannot_set_mount_point(self):
-        PREV = settings.OPENSTACK_HYPERVISOR_FEATURES['can_set_mount_point']
-        settings.OPENSTACK_HYPERVISOR_FEATURES['can_set_mount_point'] = False
 
         volume = self.volumes.first()
         servers = [s for s in self.servers.list()
@@ -717,7 +705,6 @@ class VolumeViewTests(test.TestCase):
         form = res.context['form']
         self.assertTrue(isinstance(form.fields['device'].widget,
                                    widgets.HiddenInput))
-        settings.OPENSTACK_HYPERVISOR_FEATURES['can_set_mount_point'] = PREV
 
     @test.create_stubs({cinder: ('volume_get',),
                         api.nova: ('server_get', 'server_list',),
@@ -849,4 +836,26 @@ class VolumeViewTests(test.TestCase):
                       args=[volume.id])
         res = self.client.get(url)
 
+        self.assertRedirectsNoFollow(res, VOLUME_INDEX_URL)
+
+    @test.create_stubs({cinder: ('volume_update',
+                                 'volume_get',)})
+    def test_update_volume(self):
+        volume = self.volumes.get(name="my_volume")
+
+        cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
+        cinder.volume_update(IsA(http.HttpRequest),
+                             volume.id,
+                             volume.display_name,
+                             volume.display_description)
+
+        self.mox.ReplayAll()
+
+        formData = {'method': 'UpdateForm',
+                    'name': volume.display_name,
+                    'description': volume.display_description}
+
+        url = reverse('horizon:project:volumes:update',
+                      args=[volume.id])
+        res = self.client.post(url, formData)
         self.assertRedirectsNoFollow(res, VOLUME_INDEX_URL)

@@ -20,11 +20,11 @@
 
 import netaddr
 
-from django.conf import settings  # noqa
-from django.core.urlresolvers import reverse  # noqa
+from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.core import validators
 from django.forms import ValidationError  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -296,10 +296,10 @@ class AddRule(forms.SelfHandlingForm):
             if icmp_code is None:
                 msg = _('The ICMP code is invalid.')
                 raise ValidationError(msg)
-            if icmp_type not in xrange(-1, 256):
+            if icmp_type not in range(-1, 256):
                 msg = _('The ICMP type not in range (-1, 255)')
                 raise ValidationError(msg)
-            if icmp_code not in xrange(-1, 256):
+            if icmp_code not in range(-1, 256):
                 msg = _('The ICMP code not in range (-1, 255)')
                 raise ValidationError(msg)
             update_cleaned_data('from_port', icmp_type)
@@ -333,13 +333,15 @@ class AddRule(forms.SelfHandlingForm):
             cleaned_data['ip_protocol'] = self.rules[rule_menu]['ip_protocol']
             cleaned_data['from_port'] = int(self.rules[rule_menu]['from_port'])
             cleaned_data['to_port'] = int(self.rules[rule_menu]['to_port'])
-            cleaned_data['direction'] = self.rules[rule_menu].get('direction')
+            if rule_menu not in ['all_tcp', 'all_udp', 'all_icmp']:
+                direction = self.rules[rule_menu].get('direction')
+                cleaned_data['direction'] = direction
 
         # NOTE(amotoki): There are two cases where cleaned_data['direction']
         # is empty: (1) Nova Security Group is used. Since "direction" is
         # HiddenInput, direction field exists but its value is ''.
-        # (2) Template is used. In this case, the default value is None.
-        # To make sure 'direction' field has 'ingress' or 'egress',
+        # (2) Template except all_* is used. In this case, the default value
+        # is None. To make sure 'direction' field has 'ingress' or 'egress',
         # fill this field here if it is not specified.
         if not cleaned_data['direction']:
             cleaned_data['direction'] = 'ingress'

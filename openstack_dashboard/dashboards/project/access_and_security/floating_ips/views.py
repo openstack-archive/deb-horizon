@@ -23,8 +23,8 @@
 Views for managing floating IPs.
 """
 
-from django.core.urlresolvers import reverse_lazy  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -68,5 +68,5 @@ class AllocateView(forms.ModalFormView):
                               _("Unable to retrieve floating IP pools."))
         pool_list = [(pool.id, pool.name) for pool in pools]
         if not pool_list:
-            pool_list = [(None, _("No floating IP pools available."))]
+            pool_list = [(None, _("No floating IP pools available"))]
         return {'pool_list': pool_list}

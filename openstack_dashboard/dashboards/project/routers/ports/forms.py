@@ -16,8 +16,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -72,7 +72,7 @@ class AddInterface(forms.SelfHandlingForm):
         if choices:
             choices.insert(0, ("", _("Select Subnet")))
         else:
-            choices.insert(0, ("", _("No subnets available.")))
+            choices.insert(0, ("", _("No subnets available")))
         return choices
 
     def handle(self, request, data):
@@ -172,7 +172,7 @@ class SetGatewayForm(forms.SelfHandlingForm):
         if choices:
             choices.insert(0, ("", _("Select network")))
         else:
-            choices.insert(0, ("", _("No networks available.")))
+            choices.insert(0, ("", _("No networks available")))
         return choices
 
     def handle(self, request, data):

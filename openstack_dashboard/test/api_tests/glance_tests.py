@@ -18,7 +18,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.test.utils import override_settings  # noqa
 
 from openstack_dashboard import api
@@ -104,3 +104,11 @@ class GlanceApiTests(test.APITestCase):
         self.assertTrue(has_more)
         self.assertEqual(len(list(images_iter)),
                          len(api_images) - len(expected_images) - 1)
+
+    def test_get_image_empty_name(self):
+        glanceclient = self.stub_glanceclient()
+        glanceclient.images = self.mox.CreateMockAnything()
+        glanceclient.images.get('empty').AndReturn(self.empty_name_image)
+        self.mox.ReplayAll()
+        image = api.glance.image_get(self.request, 'empty')
+        self.assertIsNone(image.name)

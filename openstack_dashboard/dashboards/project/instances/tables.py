@@ -20,11 +20,10 @@ import logging
 from django.core import urlresolvers
 from django import shortcuts
 from django import template
-from django.template.defaultfilters import timesince  # noqa
 from django.template.defaultfilters import title  # noqa
-from django.utils.http import urlencode  # noqa
+from django.utils.http import urlencode
 from django.utils.translation import string_concat  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import conf
 from horizon import exceptions
@@ -42,7 +41,8 @@ from openstack_dashboard.dashboards.project.instances import tabs
 LOG = logging.getLogger(__name__)
 
 ACTIVE_STATES = ("ACTIVE",)
-SNAPSHOT_READY_STATES = ("ACTIVE", "SHUTOFF")
+VOLUME_ATTACH_READY_STATES = ("ACTIVE", "SHUTOFF")
+SNAPSHOT_READY_STATES = ("ACTIVE", "SHUTOFF", "PAUSED", "SUSPENDED")
 
 POWER_STATES = {
     0: "NO STATE",
@@ -73,7 +73,7 @@ def is_deleting(instance):
 class TerminateInstance(tables.BatchAction):
     name = "terminate"
     action_present = _("Terminate")
-    action_past = _("Scheduled termination of")
+    action_past = _("Scheduled termination of %(data_type)s")
     data_type_singular = _("Instance")
     data_type_plural = _("Instances")
     classes = ('btn-danger', 'btn-terminate')
@@ -577,7 +577,7 @@ class InstancesTable(tables.DataTable):
     size = tables.Column(get_size,
                          verbose_name=_("Size"),
                          attrs={'data-type': 'size'})
-    keypair = tables.Column(get_keyname, verbose_name=_("Keypair"))
+    keypair = tables.Column(get_keyname, verbose_name=_("Key Pair"))
     status = tables.Column("status",
                            filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),

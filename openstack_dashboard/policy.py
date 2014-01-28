@@ -20,7 +20,7 @@
 import logging
 import os.path
 
-from django.conf import settings  # noqa
+from django.conf import settings
 
 from oslo.config import cfg
 
@@ -65,22 +65,28 @@ def check(actions, request, target={}):
     Check if the user has permission to the action according
     to policy setting.
 
-    :param actions: list of scope and action to do policy checks on, the
-                    composition of which is (scope, action)
+    :param actions: list of scope and action to do policy checks on,
+        the composition of which is (scope, action)
 
-        scope: service type managing the policy for action
-        action: string representing the action to be checked
+        * scope: service type managing the policy for action
+
+        * action: string representing the action to be checked
 
             this should be colon separated for clarity.
-            i.e. compute:create_instance
-                 compute:attach_volume
-                 volume:attach_volume
+            i.e.
 
-       for a policy action that requires a single action:
-           actions should look like "(("compute", "compute:create_instance"),)"
-       for a multiple action check:
-           actions should look like "(("identity", "identity:list_users"),
-                                      ("identity", "identity:list_roles"))"
+                | compute:create_instance
+                | compute:attach_volume
+                | volume:attach_volume
+
+        for a policy action that requires a single action, actions
+        should look like
+
+            | "(("compute", "compute:create_instance"),)"
+
+        for a multiple action check, actions should look like
+            | "(("identity", "identity:list_users"),
+            |   ("identity", "identity:list_roles"))"
 
     :param request: django http request object. If not specified, credentials
                     must be passed.
@@ -91,6 +97,23 @@ def check(actions, request, target={}):
     :returns: boolean if the user has permission or not for the actions.
     """
     user = auth_utils.get_user(request)
+
+    # Several service policy engines default to a project id check for
+    # ownership. Since the user is already scoped to a project, if a
+    # different project id has not been specified use the currently scoped
+    # project's id.
+    #
+    # The reason is the operator can edit the local copies of the service
+    # policy file. If a rule is removed, then the default rule is used. We
+    # don't want to block all actions because the operator did not fully
+    # understand the implication of editing the policy file. Additionally,
+    # the service APIs will correct us if we are too permissive.
+    if 'project_id' not in target:
+        target['project_id'] = user.project_id
+    # same for user_id
+    if 'user_id' not in target:
+        target['user_id'] = user.id
+
     credentials = _user_to_credentials(request, user)
 
     enforcer = _get_enforcer()
@@ -100,7 +123,17 @@ def check(actions, request, target={}):
         if scope in enforcer:
             # if any check fails return failure
             if not enforcer[scope].enforce(action, target, credentials):
-                return False
+                # to match service implementations, if a rule is not found,
+                # use the default rule for that service policy
+                #
+                # waiting to make the check because the first call to
+                # enforce loads the rules
+                if action not in enforcer[scope].rules:
+                    if not enforcer[scope].enforce('default',
+                                                   target, credentials):
+                        return False
+                else:
+                    return False
         # if no policy for scope, allow action, underlying API will
         # ultimately block the action if not permitted, treat as though
         # allowed

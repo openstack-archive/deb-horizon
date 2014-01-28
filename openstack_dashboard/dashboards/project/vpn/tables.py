@@ -18,7 +18,7 @@
 
 
 from django.template.defaultfilters import title  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 from horizon.utils import filters
@@ -55,31 +55,46 @@ class AddIPSecSiteConnectionLink(tables.LinkAction):
 class DeleteVPNServiceLink(tables.DeleteAction):
     name = "deletevpnservice"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("VPN Service")
     data_type_plural = _("VPN Services")
+
+    def allowed(self, request, datum=None):
+        if datum and datum.ipsecsiteconns:
+            return False
+        return True
 
 
 class DeleteIKEPolicyLink(tables.DeleteAction):
     name = "deleteikepolicy"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("IKE Policy")
     data_type_plural = _("IKE Policies")
+
+    def allowed(self, request, datum=None):
+        if datum and datum.ipsecsiteconns:
+            return False
+        return True
 
 
 class DeleteIPSecPolicyLink(tables.DeleteAction):
     name = "deleteipsecpolicy"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("IPSec Policy")
     data_type_plural = _("IPSec Policies")
+
+    def allowed(self, request, datum=None):
+        if datum and datum.ipsecsiteconns:
+            return False
+        return True
 
 
 class DeleteIPSecSiteConnectionLink(tables.DeleteAction):
     name = "deleteipsecsiteconnection"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("IPSec Site Connection")
     data_type_plural = _("IPSec Site Connections")
 

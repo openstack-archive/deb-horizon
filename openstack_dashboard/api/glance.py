@@ -25,9 +25,11 @@ import logging
 import thread
 import urlparse
 
-from django.conf import settings  # noqa
+from django.conf import settings
 
 import glanceclient as glance_client
+
+from horizon.utils import functions as utils
 
 from openstack_dashboard.api import base
 
@@ -54,14 +56,15 @@ def image_get(request, image_id):
     """Returns an Image object populated with metadata for image
     with supplied identifier.
     """
-    return glanceclient(request).images.get(image_id)
+    image = glanceclient(request).images.get(image_id)
+    if not hasattr(image, 'name'):
+        image.name = None
+    return image
 
 
 def image_list_detailed(request, marker=None, filters=None, paginate=False):
     limit = getattr(settings, 'API_RESULT_LIMIT', 1000)
-    page_size = request.session.get('horizon_pagesize',
-                                    getattr(settings, 'API_RESULT_PAGE_SIZE',
-                                            20))
+    page_size = utils.get_page_size(request)
 
     if paginate:
         request_size = page_size + 1

@@ -24,8 +24,8 @@ from __future__ import absolute_import
 
 import logging
 
-from django.conf import settings  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 from cinderclient.v1 import client as cinder_client
 from cinderclient.v1.contrib import list_extensions as cinder_list_extensions
@@ -105,6 +105,13 @@ def volume_delete(request, volume_id):
     return cinderclient(request).volumes.delete(volume_id)
 
 
+def volume_update(request, volume_id, name, description):
+    vol_data = {'display_name': name,
+                'display_description': description}
+    return cinderclient(request).volumes.update(volume_id,
+                                                **vol_data)
+
+
 def volume_snapshot_get(request, snapshot_id):
     return cinderclient(request).volume_snapshots.get(snapshot_id)
 
@@ -116,9 +123,11 @@ def volume_snapshot_list(request):
     return c_client.volume_snapshots.list()
 
 
-def volume_snapshot_create(request, volume_id, name, description):
+def volume_snapshot_create(request, volume_id, name,
+                           description=None, force=False):
     return cinderclient(request).volume_snapshots.create(
-        volume_id, display_name=name, display_description=description)
+        volume_id, force=force, display_name=name,
+        display_description=description)
 
 
 def volume_snapshot_delete(request, snapshot_id):

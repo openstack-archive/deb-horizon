@@ -24,9 +24,9 @@ from __future__ import absolute_import
 
 import logging
 
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.utils.functional import cached_property  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from novaclient.v1_1 import client as nova_client
 from novaclient.v1_1.contrib import list_extensions as nova_list_extensions
@@ -35,6 +35,7 @@ from novaclient.v1_1 import security_groups as nova_security_groups
 from novaclient.v1_1 import servers as nova_servers
 
 from horizon import conf
+from horizon.utils import functions as utils
 from horizon.utils.memoized import memoized  # noqa
 
 from openstack_dashboard.api import base
@@ -493,9 +494,8 @@ def server_get(request, instance_id):
 
 
 def server_list(request, search_opts=None, all_tenants=False):
-    page_size = request.session.get('horizon_pagesize',
-                                    getattr(settings, 'API_RESULT_PAGE_SIZE',
-                                            20))
+    page_size = utils.get_page_size(request)
+
     paginate = False
     if search_opts is None:
         search_opts = {}
@@ -656,6 +656,10 @@ def hypervisor_list(request):
 
 def hypervisor_stats(request):
     return novaclient(request).hypervisors.statistics()
+
+
+def hypervisor_search(request, query, servers=True):
+    return novaclient(request).hypervisors.search(query, servers)
 
 
 def tenant_absolute_limits(request, reserved=False):

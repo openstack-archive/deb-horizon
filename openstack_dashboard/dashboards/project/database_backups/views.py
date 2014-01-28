@@ -17,8 +17,8 @@
 """
 Views for displaying database backups.
 """
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tables as horizon_tables
@@ -38,6 +38,8 @@ class IndexView(horizon_tables.DataTableView):
     def _get_extra_data(self, backup):
         """Apply extra info to the backup."""
         instance_id = backup.instance_id
+        # TODO(rdopieralski) It's not clear where this attribute is supposed
+        # to come from. At first glance it looks like it will always be {}.
         if not hasattr(self, '_instances'):
             self._instances = {}
         instance = self._instances.get(instance_id)

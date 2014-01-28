@@ -15,9 +15,9 @@
 #
 # @author: KC Wang, Big Switch Networks
 
-from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 
@@ -46,7 +46,7 @@ class AddFirewallLink(tables.LinkAction):
 class DeleteRuleLink(tables.DeleteAction):
     name = "deleterule"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Rule")
     data_type_plural = _("Rules")
 
@@ -54,7 +54,7 @@ class DeleteRuleLink(tables.DeleteAction):
 class DeletePolicyLink(tables.DeleteAction):
     name = "deletepolicy"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Policy")
     data_type_plural = _("Policies")
 
@@ -62,7 +62,7 @@ class DeletePolicyLink(tables.DeleteAction):
 class DeleteFirewallLink(tables.DeleteAction):
     name = "deletefirewall"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Firewall")
     data_type_plural = _("Firewalls")
 
@@ -114,7 +114,7 @@ class InsertRuleToPolicyLink(tables.LinkAction):
 class RemoveRuleFromPolicyLink(tables.LinkAction):
     name = "removerule"
     verbose_name = _("Remove Rule")
-    classes = ("ajax-modal", "btn-update",)
+    classes = ("ajax-modal", "btn-danger",)
 
     def get_link_url(self, policy):
         base_url = reverse("horizon:project:firewalls:removerule",

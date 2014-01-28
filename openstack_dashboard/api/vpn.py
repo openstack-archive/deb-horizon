@@ -18,6 +18,8 @@
 
 from __future__ import absolute_import
 
+from horizon.utils.memoized import memoized  # noqa
+
 from openstack_dashboard.api import neutron
 
 neutronclient = neutron.neutronclient
@@ -30,6 +32,30 @@ class IKEPolicy(neutron.NeutronAPIDictWrapper):
     def __init__(self, apiresource):
         super(IKEPolicy, self).__init__(apiresource)
 
+    class AttributeDict(dict):
+        def __getattr__(self, attr):
+            return self[attr]
+
+        def __setattr__(self, attr, value):
+            self[attr] = value
+
+    def readable(self, request):
+        pFormatted = {'id': self.id,
+                      'name': self.name,
+                      'description': self.description,
+                      'auth_algorithm': self.auth_algorithm,
+                      'encryption_algorithm': self.encryption_algorithm,
+                      'pfs': self.pfs,
+                      }
+        try:
+            conns = ipsecsiteconnection_list(request)
+            pFormatted['ipsecsiteconns'] = [c.id for c in conns
+                                            if c.ikepolicy_id == self.id]
+        except Exception:
+            pFormatted['ipsecsiteconns'] = None
+
+        return self.AttributeDict(pFormatted)
+
 
 class IPSecPolicy(neutron.NeutronAPIDictWrapper):
 
@@ -37,6 +63,30 @@ class IPSecPolicy(neutron.NeutronAPIDictWrapper):
 
     def __init__(self, apiresource):
         super(IPSecPolicy, self).__init__(apiresource)
+
+    class AttributeDict(dict):
+        def __getattr__(self, attr):
+            return self[attr]
+
+        def __setattr__(self, attr, value):
+            self[attr] = value
+
+    def readable(self, request):
+        pFormatted = {'id': self.id,
+                      'name': self.name,
+                      'description': self.description,
+                      'auth_algorithm': self.auth_algorithm,
+                      'encryption_algorithm': self.encryption_algorithm,
+                      'pfs': self.pfs,
+                      }
+        try:
+            conns = ipsecsiteconnection_list(request)
+            pFormatted['ipsecsiteconns'] = [c.id for c in conns
+                                            if c.ipsecpolicy_id == self.id]
+        except Exception:
+            pFormatted['ipsecsiteconns'] = None
+
+        return self.AttributeDict(pFormatted)
 
 
 class IPSecSiteConnection(neutron.NeutronAPIDictWrapper):
@@ -123,6 +173,13 @@ class VPNService(neutron.NeutronAPIDictWrapper):
             sFormatted['router_id'] = self.router_id
             sFormatted['router_name'] = self.router_id
 
+        try:
+            conns = ipsecsiteconnection_list(request)
+            sFormatted['ipsecsiteconns'] = [c.id for c in conns
+                                            if c.vpnservice_id == self.id]
+        except Exception:
+            sFormatted['ipsecsiteconns'] = None
+
         return self.AttributeDict(sFormatted)
 
 
@@ -148,7 +205,7 @@ def vpnservice_create(request, **kwargs):
     return VPNService(vpnservice)
 
 
-def vpnservices_get(request, **kwargs):
+def vpnservice_list(request, **kwargs):
     vpnservices = neutronclient(request).list_vpnservices(
         **kwargs).get('vpnservices')
     return [VPNService(v) for v in vpnservices]
@@ -198,7 +255,7 @@ def ikepolicy_create(request, **kwargs):
     return IKEPolicy(ikepolicy)
 
 
-def ikepolicies_get(request, **kwargs):
+def ikepolicy_list(request, **kwargs):
     ikepolicies = neutronclient(request).list_ikepolicies(
         **kwargs).get('ikepolicies')
     return [IKEPolicy(v) for v in ikepolicies]
@@ -248,7 +305,7 @@ def ipsecpolicy_create(request, **kwargs):
     return IPSecPolicy(ipsecpolicy)
 
 
-def ipsecpolicies_get(request, **kwargs):
+def ipsecpolicy_list(request, **kwargs):
     ipsecpolicies = neutronclient(request).list_ipsecpolicies(
         **kwargs).get('ipsecpolicies')
     return [IPSecPolicy(v) for v in ipsecpolicies]
@@ -308,7 +365,8 @@ def ipsecsiteconnection_create(request, **kwargs):
     return IPSecSiteConnection(ipsecsiteconnection)
 
 
-def ipsecsiteconnections_get(request, **kwargs):
+@memoized
+def ipsecsiteconnection_list(request, **kwargs):
     ipsecsiteconnections = neutronclient(request).list_ipsec_site_connections(
         **kwargs).get('ipsec_site_connections')
     return [IPSecSiteConnection(v) for v in ipsecsiteconnections]

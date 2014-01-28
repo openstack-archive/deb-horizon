@@ -21,11 +21,11 @@
 import json
 import logging
 
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.template.defaultfilters import filesizeformat  # noqa
 from django.utils.text import normalize_newlines  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
-from django.utils.translation import ungettext_lazy  # noqa
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 from django.views.decorators.debug import sensitive_variables  # noqa
 
 from horizon import exceptions
@@ -135,16 +135,22 @@ class SetInstanceDetailsAction(workflows.Action):
             request, context, *args, **kwargs)
         source_type_choices = [
             ('', _("--- Select source ---")),
-            ("image_id", _("Boot from image.")),
-            ("instance_snapshot_id", _("Boot from snapshot.")),
-            ("volume_id", _("Boot from volume.")),
+            ("image_id", _("Boot from image")),
+            ("instance_snapshot_id", _("Boot from snapshot")),
+            ("volume_id", _("Boot from volume")),
         ]
-        if api.nova.extension_supported("BlockDeviceMappingV2Boot",
-                                        request):
-            source_type_choices.append(("volume_image_id",
-                    _("Boot from image (creates a new volume).")))
+
+        try:
+            if api.nova.extension_supported("BlockDeviceMappingV2Boot",
+                                            request):
+                source_type_choices.append(("volume_image_id",
+                        _("Boot from image (creates a new volume)")))
+        except Exception:
+            exceptions.handle(request, _('Unable to retrieve extensions '
+                                         'information.'))
+
         source_type_choices.append(("volume_snapshot_id",
-                _("Boot from volume snapshot (creates a new volume).")))
+                _("Boot from volume snapshot (creates a new volume)")))
         self.fields['source_type'].choices = source_type_choices
 
     def clean(self):
@@ -220,11 +226,24 @@ class SetInstanceDetailsAction(workflows.Action):
         Override these behaviours with a CREATE_INSTANCE_FLAVOR_SORT dict
         in local_settings.py.
         """
+        def get_key(flavor, sort_key):
+            try:
+                return getattr(flavor, sort_key)
+            except AttributeError:
+                LOG.warning('Could not find sort key "%s". Using the default '
+                            '"ram" instead.', sort_key)
+                return getattr(flavor, 'ram')
+
         try:
             flavors = api.nova.flavor_list(request)
             flavor_sort = getattr(settings, 'CREATE_INSTANCE_FLAVOR_SORT', {})
             rev = flavor_sort.get('reverse', False)
-            key = flavor_sort.get('key', lambda flavor: flavor.ram)
+            sort_key = flavor_sort.get('key', 'ram')
+
+            if not callable(sort_key):
+                key = lambda flavor: get_key(flavor, sort_key)
+            else:
+                key = sort_key
 
             flavor_list = [(flavor.id, "%s" % flavor.name)
                            for flavor in sorted(flavors, key=key, reverse=rev)]
@@ -246,7 +265,7 @@ class SetInstanceDetailsAction(workflows.Action):
                       for zone in zones if zone.zoneState['available']]
         zone_list.sort()
         if not zone_list:
-            zone_list.insert(0, ("", _("No availability zones found.")))
+            zone_list.insert(0, ("", _("No availability zones found")))
         elif len(zone_list) > 1:
             zone_list.insert(0, ("", _("Any Availability Zone")))
         return zone_list
@@ -301,6 +320,7 @@ class SetInstanceDetailsAction(workflows.Action):
             image.volume_size = functions.bytes_to_gigabytes(image.bytes)
             choices.append((image.id, image))
         if choices:
+            choices.sort(key=lambda c: c[1].name)
             choices.insert(0, ("", _("Select Image")))
         else:
             choices.insert(0, ("", _("No images available")))
@@ -316,7 +336,7 @@ class SetInstanceDetailsAction(workflows.Action):
         if choices:
             choices.insert(0, ("", _("Select Instance Snapshot")))
         else:
-            choices.insert(0, ("", _("No snapshots available.")))
+            choices.insert(0, ("", _("No snapshots available")))
         return choices
 
     def populate_volume_id_choices(self, request, context):
@@ -331,7 +351,7 @@ class SetInstanceDetailsAction(workflows.Action):
         if volumes:
             volumes.insert(0, ("", _("Select Volume")))
         else:
-            volumes.insert(0, ("", _("No volumes available.")))
+            volumes.insert(0, ("", _("No volumes available")))
         return volumes
 
     def populate_volume_snapshot_id_choices(self, request, context):
@@ -347,7 +367,7 @@ class SetInstanceDetailsAction(workflows.Action):
         if snapshots:
             snapshots.insert(0, ("", _("Select Volume Snapshot")))
         else:
-            snapshots.insert(0, ("", _("No volume snapshots available.")))
+            snapshots.insert(0, ("", _("No volume snapshots available")))
         return snapshots
 
 
@@ -388,9 +408,9 @@ KEYPAIR_IMPORT_URL = "horizon:project:access_and_security:keypairs:import"
 
 
 class SetAccessControlsAction(workflows.Action):
-    keypair = forms.DynamicChoiceField(label=_("Keypair"),
+    keypair = forms.DynamicChoiceField(label=_("Key Pair"),
                                        required=False,
-                                       help_text=_("Which keypair to use for "
+                                       help_text=_("Which key pair to use for "
                                                    "authentication."),
                                        add_item_link=KEYPAIR_IMPORT_URL)
     admin_pass = forms.RegexField(
@@ -412,7 +432,7 @@ class SetAccessControlsAction(workflows.Action):
 
     class Meta:
         name = _("Access & Security")
-        help_text = _("Control access to your instance via keypairs, "
+        help_text = _("Control access to your instance via key pairs, "
                       "security groups, and other mechanisms.")
 
     def __init__(self, request, *args, **kwargs):
@@ -428,13 +448,13 @@ class SetAccessControlsAction(workflows.Action):
         except Exception:
             keypair_list = []
             exceptions.handle(request,
-                              _('Unable to retrieve keypairs.'))
+                              _('Unable to retrieve key pairs.'))
         if keypair_list:
             if len(keypair_list) == 1:
                 self.fields['keypair'].initial = keypair_list[0][0]
-            keypair_list.insert(0, ("", _("Select a keypair")))
+            keypair_list.insert(0, ("", _("Select a key pair")))
         else:
-            keypair_list = (("", _("No keypairs available.")),)
+            keypair_list = (("", _("No key pairs available")),)
         return keypair_list
 
     def populate_groups_choices(self, request, context):
@@ -633,6 +653,7 @@ class LaunchInstance(workflows.Workflow):
             net_id = context['network_id'][0]
             LOG.debug("Horizon->Create Port with %(netid)s %(profile_id)s",
                       {'netid': net_id, 'profile_id': context['profile_id']})
+            port = None
             try:
                 port = api.neutron.port_create(request, net_id,
                                                policy_profile_id=

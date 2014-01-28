@@ -17,8 +17,8 @@
 # @author: Tatiana Mazur
 
 
-from django.core.urlresolvers import reverse_lazy  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
@@ -40,7 +40,7 @@ def get_resource_or_fake(request, base_obj, resource, api_module):
     """
     obj_id = getattr(base_obj, '%s_id' % resource)
     try:
-        obj_getter = getattr(api_module, '%s_get' % resource)
+        obj_getter = getattr(api_module, '%_list' % resource)
         obj = obj_getter(request, obj_id)
         setattr(base_obj, resource, obj)
     except Exception:
@@ -57,10 +57,11 @@ class IPSecSiteConnectionsTab(tabs.TableTab):
 
     def get_ipsecsiteconnectionstable_data(self):
         try:
-            ipsecsiteconnections = api.vpn.ipsecsiteconnections_get(
-                self.tab_group.request)
+            tenant_id = self.request.user.tenant_id
+            ipsecsiteconnections = api.vpn.ipsecsiteconnection_list(
+                self.tab_group.request, tenant_id=tenant_id)
             ipsecsiteconnectionsFormatted = [s.readable(self.tab_group.request)
-                for s in ipsecsiteconnections]
+                                             for s in ipsecsiteconnections]
         except Exception:
             ipsecsiteconnectionsFormatted = []
             exceptions.handle(self.tab_group.request,
@@ -76,10 +77,11 @@ class VPNServicesTab(tabs.TableTab):
 
     def get_vpnservicestable_data(self):
         try:
-            vpnservices = api.vpn.vpnservices_get(
-                self.tab_group.request)
-            vpnservicesFormatted = [s.readable(self.tab_group.request) for
-                              s in vpnservices]
+            tenant_id = self.request.user.tenant_id
+            vpnservices = api.vpn.vpnservice_list(
+                self.tab_group.request, tenant_id=tenant_id)
+            vpnservicesFormatted = [s.readable(self.tab_group.request)
+                                    for s in vpnservices]
         except Exception:
             vpnservicesFormatted = []
             exceptions.handle(self.tab_group.request,
@@ -95,13 +97,16 @@ class IKEPoliciesTab(tabs.TableTab):
 
     def get_ikepoliciestable_data(self):
         try:
-            ikepolicies = api.vpn.ikepolicies_get(
-                self.tab_group.request)
+            tenant_id = self.request.user.tenant_id
+            ikepolicies = api.vpn.ikepolicy_list(
+                self.tab_group.request, tenant_id=tenant_id)
+            ikepoliciesFormatted = [s.readable(self.tab_group.request)
+                                    for s in ikepolicies]
         except Exception:
-            ikepolicies = []
+            ikepoliciesFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve IKE Policies list.'))
-        return ikepolicies
+        return ikepoliciesFormatted
 
 
 class IPSecPoliciesTab(tabs.TableTab):
@@ -112,13 +117,16 @@ class IPSecPoliciesTab(tabs.TableTab):
 
     def get_ipsecpoliciestable_data(self):
         try:
-            ipsecpolicies = api.vpn.ipsecpolicies_get(
-                self.tab_group.request)
+            tenant_id = self.request.user.tenant_id
+            ipsecpolicies = api.vpn.ipsecpolicy_list(
+                self.tab_group.request, tenant_id=tenant_id)
+            ipsecpoliciesFormatted = [s.readable(self.tab_group.request)
+                                      for s in ipsecpolicies]
         except Exception:
-            ipsecpolicies = []
+            ipsecpoliciesFormatted = []
             exceptions.handle(self.tab_group.request,
                               _('Unable to retrieve IPSec Policies list.'))
-        return ipsecpolicies
+        return ipsecpoliciesFormatted
 
 
 class VPNTabs(tabs.TabGroup):
@@ -184,7 +192,7 @@ class VPNServiceDetailsTab(tabs.Tab):
             msg = _('Unable to retrieve VPN Service details.')
             exceptions.handle(request, msg, redirect=self.failure_url)
         try:
-            connections = api.vpn.ipsecsiteconnections_get(
+            connections = api.vpn.ipsecsiteconnection_list(
                 request, vpnservice_id=sid)
             vpnservice.vpnconnections = connections
         except Exception:

@@ -21,7 +21,7 @@
 from functools import wraps  # noqa
 import os
 
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.contrib.auth.middleware import AuthenticationMiddleware  # noqa
 from django.contrib.messages.storage import default_storage  # noqa
 from django.core.handlers import wsgi
@@ -303,6 +303,7 @@ class APITestCase(TestCase):
             keystone_client.Client.service_catalog = None
             keystone_client.Client.tenant_id = '1'
             keystone_client.Client.tenant_name = 'tenant_1'
+            keystone_client.Client.management_url = ""
             self.keystoneclient = self.mox.CreateMock(keystone_client.Client)
         return self.keystoneclient
 
@@ -403,3 +404,12 @@ class SeleniumAdminTestCase(SeleniumTestCase):
         if "roles" not in kwargs:
             kwargs['roles'] = [self.roles.admin._info]
         super(SeleniumAdminTestCase, self).setActiveUser(*args, **kwargs)
+
+
+def my_custom_sort(flavor):
+    sort_order = {
+        'm1.secret': 0,
+        'm1.tiny': 1,
+        'm1.massive': 2,
+    }
+    return sort_order[flavor.name]

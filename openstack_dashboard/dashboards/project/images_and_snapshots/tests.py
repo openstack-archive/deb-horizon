@@ -19,7 +19,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse
 from django import http
 
 from mox import IsA  # noqa
@@ -56,9 +56,6 @@ class ImagesAndSnapshotsTests(test.TestCase):
         self.assertIn('images_table', res.context)
         images_table = res.context['images_table']
         images = images_table.data
-        filter_func = lambda im: im.container_format not in ['aki', 'ari']
-        filtered_images = filter(filter_func, images)
-        self.assertItemsEqual(images, filtered_images)
 
         self.assertTrue(len(images), 3)
         row_actions = images_table.get_row_actions(images[0])

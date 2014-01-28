@@ -19,11 +19,11 @@
 Views for managing volumes.
 """
 
-from django.conf import settings  # noqa
-from django.core.urlresolvers import reverse  # noqa
+from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.forms import ValidationError  # noqa
 from django.template.defaultfilters import filesizeformat  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -48,7 +48,10 @@ class CreateForm(forms.SelfHandlingForm):
                              required=False)
     size = forms.IntegerField(min_value=1, label=_("Size (GB)"))
     volume_source_type = forms.ChoiceField(label=_("Volume Source"),
-                                           required=False)
+                                           required=False,
+                                           widget=forms.Select(attrs={
+                                               'class': 'switchable',
+                                               'data-slug': 'source'}))
     snapshot_source = forms.ChoiceField(
         label=_("Use snapshot as a source"),
         widget=fields.SelectWidget(
@@ -63,8 +66,14 @@ class CreateForm(forms.SelfHandlingForm):
             data_attrs=('size', 'name', 'min_disk'),
             transform=lambda x: "%s (%s)" % (x.name, filesizeformat(x.bytes))),
         required=False)
-    availability_zone = forms.ChoiceField(label=_("Availability Zone"),
-                                          required=False)
+    availability_zone = forms.ChoiceField(
+        label=_("Availability Zone"),
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'switched',
+                   'data-switch-on': 'source',
+                   'data-source-no_source_type': _('Availability Zone'),
+                   'data-source-image_source': _('Availability Zone')}))
 
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
@@ -72,8 +81,6 @@ class CreateForm(forms.SelfHandlingForm):
         self.fields['type'].choices = [("", "")] + \
                                       [(type.name, type.name)
                                        for type in volume_types]
-        self.fields['availability_zone'].choices = \
-            self.availability_zones(request)
 
         if ("snapshot_id" in request.GET):
             try:
@@ -95,10 +102,13 @@ class CreateForm(forms.SelfHandlingForm):
                             % snapshot.size
                 del self.fields['image_source']
                 del self.fields['volume_source_type']
+                del self.fields['availability_zone']
             except Exception:
                 exceptions.handle(request,
                                   _('Unable to load the specified snapshot.'))
         elif ('image_id' in request.GET):
+            self.fields['availability_zone'].choices = \
+                self.availability_zones(request)
             try:
                 image = self.get_image(request,
                                        request.GET["image_id"])
@@ -126,6 +136,8 @@ class CreateForm(forms.SelfHandlingForm):
                 exceptions.handle(request, msg % request.GET['image_id'])
         else:
             source_type_choices = []
+            self.fields['availability_zone'].choices = \
+                self.availability_zones(request)
 
             try:
                 snapshot_list = cinder.volume_snapshot_list(request)
@@ -158,7 +170,7 @@ class CreateForm(forms.SelfHandlingForm):
 
             if source_type_choices:
                 choices = ([('no_source_type',
-                             _("No source, empty volume."))] +
+                             _("No source, empty volume"))] +
                             source_type_choices)
                 self.fields['volume_source_type'].choices = choices
             else:
@@ -186,7 +198,7 @@ class CreateForm(forms.SelfHandlingForm):
                 exceptions.handle(request, _('Unable to retrieve availability '
                                              'zones.'))
         if not zone_list:
-            zone_list.insert(0, ("", _("No availability zones found.")))
+            zone_list.insert(0, ("", _("No availability zones found")))
         elif len(zone_list) > 0:
             zone_list.insert(0, ("", _("Any Availability Zone")))
 
@@ -202,6 +214,7 @@ class CreateForm(forms.SelfHandlingForm):
             snapshot_id = None
             image_id = None
             source_type = data.get('volume_source_type', None)
+            az = data.get('availability_zone', None) or None
             if (data.get("snapshot_source", None) and
                   source_type in [None, 'snapshot_source']):
                 # Create from Snapshot
@@ -212,6 +225,7 @@ class CreateForm(forms.SelfHandlingForm):
                     error_message = _('The volume size cannot be less than '
                         'the snapshot size (%sGB)') % snapshot.size
                     raise ValidationError(error_message)
+                az = None
             elif (data.get("image_source", None) and
                   source_type in [None, 'image_source']):
                 # Create from Snapshot
@@ -246,8 +260,6 @@ class CreateForm(forms.SelfHandlingForm):
 
             metadata = {}
 
-            az = data['availability_zone'] or None
-
             volume = cinder.volume_create(request,
                                           data['size'],
                                           data['name'],
@@ -281,7 +293,9 @@ class AttachForm(forms.SelfHandlingForm):
     instance = forms.ChoiceField(label=_("Attach to Instance"),
                                  help_text=_("Select an instance to "
                                              "attach to."))
-    device = forms.CharField(label=_("Device Name"))
+    device = forms.CharField(label=_("Device Name"),
+                             help_text=_("Actual device name may differ due "
+                                         "to hypervisor settings."))
 
     def __init__(self, *args, **kwargs):
         super(AttachForm, self).__init__(*args, **kwargs)
@@ -291,7 +305,7 @@ class AttachForm(forms.SelfHandlingForm):
                                       "OPENSTACK_HYPERVISOR_FEATURES",
                                       {})
         can_set_mount_point = hypervisor_features.get("can_set_mount_point",
-                                                      True)
+                                                      False)
         if not can_set_mount_point:
             self.fields['device'].widget = forms.widgets.HiddenInput()
             self.fields['device'].required = False
@@ -309,7 +323,7 @@ class AttachForm(forms.SelfHandlingForm):
         instance_list = kwargs.get('initial', {}).get('instances', [])
         instances = []
         for instance in instance_list:
-            if instance.status in tables.ACTIVE_STATES and \
+            if instance.status in tables.VOLUME_ATTACH_READY_STATES and \
                     not any(instance.id == att["server_id"]
                             for att in volume.attachments):
                 instances.append((instance.id, '%s (%s)' % (instance.name,
@@ -365,16 +379,45 @@ class CreateSnapshotForm(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
+            volume = cinder.volume_get(request,
+                                       data['volume_id'])
+            force = False
+            message = _('Creating volume snapshot "%s".') % data['name']
+            if volume.status == 'in-use':
+                force = True
+                message = _('Forcing to create snapshot "%s" '
+                            'from attached volume.') % data['name']
             snapshot = cinder.volume_snapshot_create(request,
                                                      data['volume_id'],
                                                      data['name'],
-                                                     data['description'])
+                                                     data['description'],
+                                                     force=force)
 
-            message = _('Creating volume snapshot "%s"') % data['name']
             messages.info(request, message)
             return snapshot
         except Exception:
             redirect = reverse("horizon:project:images_and_snapshots:index")
             exceptions.handle(request,
                               _('Unable to create volume snapshot.'),
+                              redirect=redirect)
+
+
+class UpdateForm(forms.SelfHandlingForm):
+    name = forms.CharField(max_length="255", label=_("Volume Name"))
+    description = forms.CharField(widget=forms.Textarea,
+            label=_("Description"), required=False)
+
+    def handle(self, request, data):
+        volume_id = self.initial['volume_id']
+        try:
+            cinder.volume_update(request, volume_id, data['name'],
+                                 data['description'])
+
+            message = _('Updating volume "%s"') % data['name']
+            messages.info(request, message)
+            return True
+        except Exception:
+            redirect = reverse("horizon:project:volumes:index")
+            exceptions.handle(request,
+                              _('Unable to update volume.'),
                               redirect=redirect)

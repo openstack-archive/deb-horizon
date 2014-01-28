@@ -14,18 +14,20 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from collections import defaultdict  # noqa
+from collections import defaultdict
 
-from django.conf import settings  # noqa
-from django.core.urlresolvers import reverse  # noqa
+from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
-from django.utils.http import urlencode  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.http import urlencode
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 from horizon.utils.memoized import memoized  # noqa
 
 from openstack_dashboard import api
+
+NOT_LAUNCHABLE_FORMATS = ['aki', 'ari']
 
 
 class LaunchImage(tables.LinkAction):
@@ -47,7 +49,7 @@ class LaunchImage(tables.LinkAction):
         return "?".join([base_url, params])
 
     def allowed(self, request, image=None):
-        if image:
+        if image and image.container_format not in NOT_LAUNCHABLE_FORMATS:
             return image.status in ("active",)
         return False
 
@@ -103,7 +105,7 @@ class CreateVolumeFromImage(tables.LinkAction):
         return "?".join([base_url, params])
 
     def allowed(self, request, image=None):
-        if image:
+        if image and image.container_format not in NOT_LAUNCHABLE_FORMATS:
             return image.status == "active"
         return False
 

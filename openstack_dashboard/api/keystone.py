@@ -22,12 +22,13 @@
 import logging
 import urlparse
 
-from django.conf import settings  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 from keystoneclient import exceptions as keystone_exceptions
 
 from openstack_auth import backend
+from openstack_auth import utils as auth_utils
 
 from horizon import exceptions
 from horizon import messages
@@ -56,7 +57,8 @@ class IdentityAPIVersionManager(base.APIVersionManager):
         return manager
 
 
-VERSIONS = IdentityAPIVersionManager("identity", preferred_version=3)
+VERSIONS = IdentityAPIVersionManager(
+    "identity", preferred_version=auth_utils.get_keystone_version())
 
 
 # Import from oldest to newest so that "preferred" takes correct precedence.
@@ -253,9 +255,8 @@ def tenant_delete(request, project):
 
 def tenant_list(request, paginate=False, marker=None, domain=None, user=None):
     manager = VERSIONS.get_project_manager(request, admin=True)
-    page_size = request.session.get('horizon_pagesize',
-                                    getattr(settings, 'API_RESULT_PAGE_SIZE',
-                                            20))
+    page_size = utils.get_page_size(request)
+
     limit = None
     if paginate:
         limit = page_size + 1

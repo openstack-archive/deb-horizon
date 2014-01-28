@@ -15,7 +15,7 @@
 from django.http import Http404  # noqa
 from django.template.defaultfilters import timesince  # noqa
 from django.template.defaultfilters import title  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import messages
 from horizon import tables
@@ -37,7 +37,7 @@ class LaunchStack(tables.LinkAction):
 class DeleteStack(tables.BatchAction):
     name = "delete"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Stack")
     data_type_plural = _("Stacks")
     classes = ('btn-danger', 'btn-terminate')

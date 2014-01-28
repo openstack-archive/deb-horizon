@@ -21,8 +21,8 @@ and a few notes on the Django-related settings.
 
     Prior to the Essex release of Horizon there were settings which controlled
     whether features such as Object Storage/Swift or Networking/Neutron would be
-    enabled in the OpenStack Dashboard. This code has beenlong-since removed and
-    those pre-Essex settings have no impact now.
+    enabled in the OpenStack Dashboard. This code has long since been removed
+    and those pre-Essex settings have no impact now.
 
     In Essex and later, the Service Catalog returned by the Identity Service
     after a user has successfully authenticated determines the dashboards and
@@ -83,7 +83,7 @@ expressed in milliseconds.
 ``help_url``
 ------------
 
-Default: None
+Default: ``None``
 
 If provided, a "Help" link will be displayed in the site header which links
 to the value of this settings (ideally a URL containing help information).
@@ -99,7 +99,7 @@ exception handling should be aware of.
 ``password_validator``
 ----------------------
 
-Default: {'regex': '.*', 'help_text': _("Password is not accepted")}
+Default: ``{'regex': '.*', 'help_text': _("Password is not accepted")}``
 
 A dictionary containing a regular expression which will be used for password
 validation and help text which will be displayed if the password does not
@@ -147,110 +147,9 @@ The following settings inform the OpenStack Dashboard of information about the
 other OpenStack projects which are part of this cloud and control the behavior
 of specific dashboards, panels, API calls, etc.
 
-``OPENSTACK_HOST``
-------------------
-
-Default: ``"127.0.0.1"``
-
-The hostname of the Keystone server used for authentication if you only have
-one region. This is often the *only* settings that needs to be set for a
-basic deployment.
-
-
-``OPENSTACK_KEYSTONE_URL``
---------------------------
-
-Default: ``"http://%s:5000/v2.0" % OPENSTACK_HOST``
-
-The full URL for the Keystone endpoint used for authentication. Unless you
-are using HTTPS, running your Keystone server on a nonstandard port, or using
-a nonstandard URL scheme you shouldn't need to touch this setting.
-
-``AVAILABLE_REGIONS``
----------------------
-
-Default: ``None``
-
-A tuple of tuples which define multiple regions. The tuple format is
-``('http://{{keystone_host}}:5000/v2.0', '{{region_name}}')``. If any regions
-are specified the login form will have a dropdown selector for authenticating
-to the appropriate region, and there will be a region switcher dropdown in
-the site header when logged in.
-
-If you do not have multiple regions you should use the ``OPENSTACK_HOST`` and
-``OPENSTACK_KEYSTONE_URL`` settings above instead.
-
-``OPENSTACK_KEYSTONE_DEFAULT_ROLE``
------------------------------------
-
-Default: "Member"
-
-The name of the role which will be assigned to a user when added to a project.
-This name must correspond to a role name in Keystone.
-
-``OPENSTACK_SSL_NO_VERIFY``
----------------------------
-
-Default: ``False``
-
-Disable SSL certificate checks in the OpenStack clients (useful for self-signed
-certificates).
-
-``OPENSTACK_SSL_CACERT``
-------------------------
-
-Default: ``None``
-
-When unset or set to ``None`` the default CA certificate on the system is used
-for SSL verification.
-
-When set with the path to a custom CA certificate file, this overrides use of
-the default system CA certificate. This custom certificate is used to verify all
-connections to openstack services when making API calls.
-
-``OPENSTACK_KEYSTONE_BACKEND``
-------------------------------
-
-Default: ``{'name': 'native', 'can_edit_user': True, 'can_edit_project': True}``
-
-A dictionary containing settings which can be used to identify the
-capabilities of the auth backend for Keystone.
-
-If Keystone has been configured to use LDAP as the auth backend then set
-``can_edit_user`` and ``can_edit_project`` to ``False`` and name to ``"ldap"``.
-
-
-``OPENSTACK_HYPERVISOR_FEATURES``
----------------------------------
-
-Default: ``{'can_set_mount_point': False, 'can_set_password': True}``
-
-A dictionary containing settings which can be used to identify the
-capabilities of the hypervisor for Nova.
-
-The Xen Hypervisor has the ability to set the mount point for volumes attached
-to instances (other Hypervisors currently do not). Setting
-``can_set_mount_point`` to ``True`` will add the option to set the mount point
-from the UI.
-
-Setting ``can_set_password`` to ``False`` will remove the option to set
-an administrator password when launching or rebuilding an instance.
-
-``OPENSTACK_NEUTRON_NETWORK``
------------------------------
-
-Default: ``{'enable_lb': False}``
-
-A dictionary of settings which can be used to enable optional services provided
-by neutron.  Currently only the load balancer service is available.
-
-``OPENSTACK_ENDPOINT_TYPE``
----------------------------
-
-Default: ``"publicURL"``
-
-A string which specifies the endpoint type to use for the endpoints in the
-Keystone service catalog. The default value for all services except for identity is ``"publicURL"`` . The default value for the identity service is ``"internalURL"``.
+Most of the following settings are defined in
+ ``openstack_dashboard/local/local_settings.py``, which should be copied from
+ ``openstack_dashboard/local/local_settings.py.example``.
 
 ``API_RESULT_LIMIT``
 --------------------
@@ -269,6 +168,159 @@ Default: ``20``
 Similar to ``API_RESULT_LIMIT``. This setting currently only controls the
 Glance image list page size. It will be removed in a future version.
 
+
+``AVAILABLE_REGIONS``
+---------------------
+
+Default: ``None``
+
+A tuple of tuples which define multiple regions. The tuple format is
+``('http://{{keystone_host}}:5000/v2.0', '{{region_name}}')``. If any regions
+are specified the login form will have a dropdown selector for authenticating
+to the appropriate region, and there will be a region switcher dropdown in
+the site header when logged in.
+
+If you do not have multiple regions you should use the ``OPENSTACK_HOST`` and
+``OPENSTACK_KEYSTONE_URL`` settings instead.
+
+
+``OPENSTACK_ENDPOINT_TYPE``
+---------------------------
+
+Default: ``"publicURL"``
+
+A string which specifies the endpoint type to use for the endpoints in the
+Keystone service catalog. The default value for all services except for identity is ``"publicURL"`` . The default value for the identity service is ``"internalURL"``.
+
+
+``OPENSTACK_HOST``
+------------------
+
+Default: ``"127.0.0.1"``
+
+The hostname of the Keystone server used for authentication if you only have
+one region. This is often the *only* setting that needs to be set for a
+basic deployment.
+
+
+``OPENSTACK_HYPERVISOR_FEATURES``
+---------------------------------
+
+Default::
+
+    {
+        'can_set_mount_point': False,
+        'can_set_password': True
+    }
+
+A dictionary containing settings which can be used to identify the
+capabilities of the hypervisor for Nova.
+
+The Xen Hypervisor has the ability to set the mount point for volumes attached
+to instances (other Hypervisors currently do not). Setting
+``can_set_mount_point`` to ``True`` will add the option to set the mount point
+from the UI.
+
+Setting ``can_set_password`` to ``False`` will remove the option to set
+an administrator password when launching or rebuilding an instance.
+
+
+``OPENSTACK_IMAGE_BACKEND``
+---------------------------
+
+Default::
+
+    {
+        'image_formats': [
+            ('', ''),
+            ('aki', _('AKI - Amazon Kernel Image')),
+            ('ami', _('AMI - Amazon Machine Image')),
+            ('ari', _('ARI - Amazon Ramdisk Image')),
+            ('iso', _('ISO - Optical Disk Image')),
+            ('qcow2', _('QCOW2 - QEMU Emulator')),
+            ('raw', _('Raw')),
+            ('vdi', _('VDI')),
+            ('vhd', _('VHD')),
+            ('vmdk', _('VMDK'))
+        ]
+    }
+
+Used to customize features related to the image service, such as the list of
+supported image formats.
+
+
+``OPENSTACK_KEYSTONE_BACKEND``
+------------------------------
+
+Default: ``{'name': 'native', 'can_edit_user': True, 'can_edit_project': True}``
+
+A dictionary containing settings which can be used to identify the
+capabilities of the auth backend for Keystone.
+
+If Keystone has been configured to use LDAP as the auth backend then set
+``can_edit_user`` and ``can_edit_project`` to ``False`` and name to ``"ldap"``.
+
+
+``OPENSTACK_KEYSTONE_DEFAULT_ROLE``
+-----------------------------------
+
+Default: ``"Member"``
+
+The name of the role which will be assigned to a user when added to a project.
+This name must correspond to a role name in Keystone.
+
+
+``OPENSTACK_KEYSTONE_URL``
+--------------------------
+
+Default: ``"http://%s:5000/v2.0" % OPENSTACK_HOST``
+
+The full URL for the Keystone endpoint used for authentication. Unless you
+are using HTTPS, running your Keystone server on a nonstandard port, or using
+a nonstandard URL scheme you shouldn't need to touch this setting.
+
+
+``OPENSTACK_NEUTRON_NETWORK``
+-----------------------------
+
+Default: ``{'enable_lb': False}``
+
+A dictionary of settings which can be used to enable optional services provided
+by neutron.  Currently only the load balancer service is available.
+
+
+``OPENSTACK_SSL_CACERT``
+------------------------
+
+Default: ``None``
+
+When unset or set to ``None`` the default CA certificate on the system is used
+for SSL verification.
+
+When set with the path to a custom CA certificate file, this overrides use of
+the default system CA certificate. This custom certificate is used to verify all
+connections to openstack services when making API calls.
+
+
+``OPENSTACK_SSL_NO_VERIFY``
+---------------------------
+
+Default: ``False``
+
+Disable SSL certificate checks in the OpenStack clients (useful for self-signed
+certificates).
+
+
+``POLICY_FILES``
+----------------
+
+Default: ``{'identity': 'keystone_policy.json', 'compute': 'nova_policy.json'}``
+
+This should essentially be the mapping of the contents of ``POLICY_FILES_PATH``
+to service types.  When policy.json files are added to ``POLICY_FILES_PATH``,
+they should be included here too.
+
+
 ``POLICY_FILES_PATH``
 ---------------------
 
@@ -277,25 +329,13 @@ Default:  ``os.path.join(ROOT_PATH, "conf")``
 Specifies where service based policy files are located.  These are used to
 define the policy rules actions are verified against.
 
-``POLICY_FILES``
-----------------
+``SESSION_TIMEOUT``
+-------------------
 
-Default: ``{ 'identity': 'keystone_policy.json', 'compute': 'nova_policy.json'}``
+Default: ``"1800"``
 
-This should essentially be the mapping of the contents of ``POLICY_FILES_PATH``
-to service types.  When policy.json files are added to ``POLICY_FILES_PATH``,
-they should be included here too.
-
-``OPENSTACK_IMAGE_BACKEND``
----------------------------
-
-Default: ``{ 'image_formats': [('', ''), ('aki', _('AKI - Amazon Kernel Image')),
-('ami', _('AMI - Amazon Machine Image')), ('ari', _('ARI - Amazon Ramdisk Image')),
-('iso', _('ISO - Optical Disk Image')), ('qcow2', _('QCOW2 - QEMU Emulator')),
-('raw', _('Raw')), ('vdi', _('VDI')), ('vhd', _('VHD')), ('vmdk', _('VMDK'))] }``
-
-Used to customize features related to the image service, such as the list of
-supported image formats.
+Specifies the timespan in seconds inactivity, until a user is considered as
+ logged out.
 
 Django Settings (Partial)
 =========================
@@ -309,6 +349,18 @@ Django Settings (Partial)
 There are a few key settings you should be aware of for development and the
 most basic of deployments. Further recommendations can be found in the
 Deploying Horizon section of this documentation.
+
+``ALLOWED_HOSTS``
+-----------------
+
+Default: ``['localhost']``
+
+This list should contain names (or IP addresses) of the host
+running the dashboard; if it's being accessed via name, the
+DNS name (and probably short-name) should be added, if it's accessed via
+IP address, that should be added. The setting may contain more than one entry.
+
+
 
 ``DEBUG`` and ``TEMPLATE_DEBUG``
 --------------------------------
@@ -338,3 +390,75 @@ generate a secret key for a single installation.
 These three settings should be configured if you are deploying Horizon with
 SSL. The values indicated in the default ``local_settings.py.example`` file
 are generally safe to use.
+
+
+Pluggable Settings for Dashboards
+=================================
+
+Many dashboards may require their own modifications to the settings, and their
+installation would therefore require modifying the settings file. This is not
+optimal, so the dashboards can provide the settings that they require in a
+separate file. Those files are read at startup and used to modify the default
+settings.
+
+The default location for the dashboard configuration files is
+``openstack_dashboard/enabled``, with another directory,
+``openstack_dashboarrd/local/enabled`` for local overrides. Both sets of files
+will be loaded, but the settings in ``openstack_dashboard/local/enabled`` will
+overwrite the default ones. The settings are applied in alphabetical order of
+the filenames. If the same dashboard has configuration files in ``enabled`` and
+``local/enabled``, the local name will be used. Note, that since names of
+python modules can't start with a digit, the files are usually named with a
+leading underscore and a number, so that you can control their order easily.
+
+The files contain following keys:
+
+``DASHBOARD``
+-------------
+
+The name of the dashboard to be added to ``HORIZON['dashboards']``. Required.
+
+``DEFAULT``
+-----------
+
+If set to ``True``, this dashboard will be set as the default dashboard.
+
+``ADD_EXCEPTIONS``
+------------------
+
+A dictionary of exception classes to be added to ``HORIZON['exceptions']``.
+
+``ADD_INSTALLED_APPS``
+----------------------
+
+A list of applications to be added to ``INSTALLED_APPS``.
+
+``DISABLED``
+------------
+
+If set to ``True``, this dashboard will not be added to the settings.
+
+Examples
+--------
+
+To disable the Router dashboard locally, create a file
+``openstack_dashboard/local/enabled/_40_router.py`` with the following
+content::
+
+    DASHBOARD = 'router'
+    DISABLED = True
+
+To add a Tuskar-UI (Infrastructure) dashboard, you have to install it, and then
+create a file ``openstack_dashboard/local/enabled/_50_tuskar.py`` with::
+
+    from tuskar_ui import exceptions
+
+    DASHBOARD = 'infrastructure'
+    ADD_INSTALLED_APPS = [
+        'tuskar_ui.infrastructure',
+    ]
+    ADD_EXCEPTIONS = {
+        'recoverable': exceptions.RECOVERABLE,
+        'not_found': exceptions.NOT_FOUND,
+        'unauthorized': exceptions.UNAUTHORIZED,
+    }

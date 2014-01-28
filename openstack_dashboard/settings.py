@@ -23,7 +23,7 @@ import os
 import sys
 import warnings
 
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from openstack_dashboard import exceptions
 
@@ -145,7 +145,7 @@ COMPRESS_OUTPUT_DIR = 'dashboard'
 COMPRESS_CSS_HASHING_METHOD = 'hash'
 COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'openstack_dashboard',
     'django.contrib.contenttypes',
     'django.contrib.auth',
@@ -160,7 +160,7 @@ INSTALLED_APPS = (
     'openstack_dashboard.dashboards.settings',
     'openstack_auth',
     'openstack_dashboard.dashboards.router',
-)
+]
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
@@ -171,6 +171,14 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_SECURE = False
 SESSION_TIMEOUT = 1800
+
+# When using cookie-based sessions, log error when the session cookie exceeds
+# the following size (common browsers drop cookies above a certain size):
+SESSION_COOKIE_MAX_SIZE = 4093
+
+# when doing upgrades, it may be wise to stick to PickleSerializer
+# TODO(mrunge): remove after Icehouse
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 gettext_noop = lambda s: s
 LANGUAGES = (
@@ -200,23 +208,38 @@ POLICY_FILES_PATH = os.path.join(ROOT_PATH, "conf")
 # Map of local copy of service policy files
 POLICY_FILES = {
     'identity': 'keystone_policy.json',
-    'compute': 'nova_policy.json'
+    'compute': 'nova_policy.json',
+    'volume': 'cinder_policy.json'
 }
 
 SECRET_KEY = None
+LOCAL_PATH = None
 
 try:
     from local.local_settings import *  # noqa
 except ImportError:
     logging.warning("No local_settings file found.")
 
+# Load the pluggable dashboard settings
+import openstack_dashboard.enabled
+import openstack_dashboard.local.enabled
+from openstack_dashboard.utils import settings
+
+INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
+settings.update_dashboards([
+    openstack_dashboard.enabled,
+    openstack_dashboard.local.enabled,
+], HORIZON_CONFIG, INSTALLED_APPS)
+
 # Ensure that we always have a SECRET_KEY set, even when no local_settings.py
 # file is present. See local_settings.py.example for full documentation on the
 # horizon.utils.secret_key module and its use.
 if not SECRET_KEY:
+    if not LOCAL_PATH:
+        LOCAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  'local')
+
     from horizon.utils import secret_key
-    LOCAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                              'local')
     SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
                                                        '.secret_key_store'))
 

@@ -92,6 +92,10 @@ AVAILABLE_REGIONS = [
     ('http://remote:5000/v2.0', 'remote'),
 ]
 
+OPENSTACK_API_VERSIONS = {
+    "identity": 3
+}
+
 OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v2.0"
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "Member"
 
@@ -115,7 +119,7 @@ OPENSTACK_NEUTRON_NETWORK = {
 }
 
 OPENSTACK_HYPERVISOR_FEATURES = {
-    'can_set_mount_point': True,
+    'can_set_mount_point': False,
     'can_set_password': True,
 }
 

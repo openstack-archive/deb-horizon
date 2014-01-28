@@ -28,17 +28,17 @@ import inspect
 import logging
 import os
 
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.conf.urls import include  # noqa
 from django.conf.urls import patterns  # noqa
 from django.conf.urls import url  # noqa
 from django.core.exceptions import ImproperlyConfigured  # noqa
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.datastructures import SortedDict  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.datastructures import SortedDict
 from django.utils.functional import SimpleLazyObject  # noqa
 from django.utils.importlib import import_module  # noqa
 from django.utils.module_loading import module_has_submodule  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import conf
 from horizon.decorators import _current_component  # noqa
@@ -238,7 +238,7 @@ class Panel(HorizonComponent):
         _decorate_urlconf(urlpatterns, require_perms, permissions)
         _decorate_urlconf(urlpatterns, _current_component, panel=self)
 
-        # Return the three arguments to django.conf.urls.defaults.include
+        # Return the three arguments to django.conf.urls.include
         return urlpatterns, self.slug, self.slug
 
 
@@ -371,6 +371,7 @@ class Dashboard(Registry, HorizonComponent):
 
         Boolean value to determine whether this dashboard can be viewed
         without being logged in. Defaults to ``False``.
+
     """
     _registerable_class = Panel
     name = ''
@@ -455,8 +456,9 @@ class Dashboard(Registry, HorizonComponent):
             if panel.slug == self.default_panel:
                 default_panel = panel
                 continue
+            url_slug = panel.slug.replace('.', '/')
             urlpatterns += patterns('',
-                    url(r'^%s/' % panel.slug, include(panel._decorated_urls)))
+                    url(r'^%s/' % url_slug, include(panel._decorated_urls)))
         # Now the default view, which should come last
         if not default_panel:
             raise NotRegistered('The default panel "%s" is not registered.'

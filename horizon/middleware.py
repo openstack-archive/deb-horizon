@@ -21,11 +21,11 @@
 Middleware provided and used by Horizon.
 """
 
-import datetime
 import json
 import logging
+import time
 
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME  # noqa
 from django.contrib.auth.views import redirect_to_login  # noqa
 from django.contrib import messages as django_messages
@@ -34,7 +34,7 @@ from django.http import HttpResponseRedirect  # noqa
 from django import shortcuts
 from django.utils.encoding import iri_to_uri  # noqa
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon.utils import functions as utils
@@ -61,11 +61,45 @@ class HorizonMiddleware(object):
             timeout = 1800
 
         last_activity = request.session.get('last_activity', None)
-        timestamp = datetime.datetime.now()
+        timestamp = int(time.time())
         request.horizon = {'dashboard': None,
                            'panel': None,
                            'async_messages': []}
-        if last_activity and (timestamp - last_activity).seconds > timeout:
+
+        # If we use cookie-based sessions, check that the cookie size does not
+        # reach the max size accepted by common web browsers.
+        if (
+            settings.SESSION_ENGINE ==
+            'django.contrib.sessions.backends.signed_cookies'
+        ):
+            max_cookie_size = getattr(
+                settings, 'SESSION_COOKIE_MAX_SIZE', None)
+            session_cookie_name = getattr(
+                settings, 'SESSION_COOKIE_NAME', None)
+            session_key = request.COOKIES.get(session_cookie_name)
+            if max_cookie_size is not None and session_key is not None:
+                cookie_size = sum((
+                    len(key) + len(value)
+                    for key, value in request.COOKIES.iteritems()
+                ))
+                if cookie_size >= max_cookie_size:
+                    LOG.error(
+                        'Total Cookie size for user_id: %(user_id)s is '
+                        '%(cookie_size)sB >= %(max_cookie_size)sB. '
+                        'You need to configure file-based or database-backed '
+                        'sessions instead of cookie-based sessions: '
+                        'http://docs.openstack.org/developer/horizon/topics/'
+                        'deployment.html#session-storage'
+                        % {
+                            'user_id': request.session.get(
+                                'user_id', 'Unknown'),
+                            'cookie_size': cookie_size,
+                            'max_cookie_size': max_cookie_size,
+                        }
+                    )
+
+        if (isinstance(last_activity, int)
+                and (timestamp - last_activity) > timeout):
             request.session.pop('last_activity')
             response = HttpResponseRedirect(
                 '%s?next=%s' % (settings.LOGOUT_URL, request.path))

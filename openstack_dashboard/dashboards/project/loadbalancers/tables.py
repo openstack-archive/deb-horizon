@@ -15,10 +15,10 @@
 #    under the License.
 
 
-from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
 from django.utils import http
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tables
@@ -66,7 +66,7 @@ class AddMonitorLink(tables.LinkAction):
 class DeleteVipLink(tables.DeleteAction):
     name = "deletevip"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("VIP")
     data_type_plural = _("VIPs")
 
@@ -79,7 +79,7 @@ class DeleteVipLink(tables.DeleteAction):
 class DeletePoolLink(tables.DeleteAction):
     name = "deletepool"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Pool")
     data_type_plural = _("Pools")
 
@@ -92,7 +92,7 @@ class DeletePoolLink(tables.DeleteAction):
 class DeleteMonitorLink(tables.DeleteAction):
     name = "deletemonitor"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Monitor")
     data_type_plural = _("Monitors")
 
@@ -100,7 +100,7 @@ class DeleteMonitorLink(tables.DeleteAction):
 class DeleteMemberLink(tables.DeleteAction):
     name = "deletemember"
     action_present = _("Delete")
-    action_past = _("Scheduled deletion of")
+    action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Member")
     data_type_plural = _("Members")
 
@@ -170,7 +170,9 @@ class AddPMAssociationLink(tables.LinkAction):
 
     def allowed(self, request, datum=None):
         try:
-            monitors = api.lbaas.pool_health_monitors_get(request)
+            tenant_id = request.user.tenant_id
+            monitors = api.lbaas.pool_health_monitor_list(request,
+                                                          tenant_id=tenant_id)
             for m in monitors:
                 if m.id not in datum['health_monitors']:
                     return True

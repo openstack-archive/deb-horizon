@@ -18,24 +18,23 @@ import collections
 import copy
 import json
 import logging
-from operator import attrgetter  # noqa
+from operator import attrgetter
 import sys
 
-from django.conf import settings  # noqa
 from django.core import exceptions as core_exceptions
 from django.core import urlresolvers
 from django import forms
 from django.http import HttpResponse  # noqa
 from django import template
 from django.template.defaultfilters import truncatechars  # noqa
-from django.template.loader import render_to_string  # noqa
-from django.utils.datastructures import SortedDict  # noqa
-from django.utils.html import escape  # noqa
+from django.template.loader import render_to_string
+from django.utils.datastructures import SortedDict
+from django.utils.html import escape
 from django.utils import http
-from django.utils.http import urlencode  # noqa
-from django.utils.safestring import mark_safe  # noqa
+from django.utils.http import urlencode
+from django.utils.safestring import mark_safe
 from django.utils import termcolors
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import conf
 from horizon import exceptions
@@ -307,20 +306,20 @@ class Column(html.HTMLElement):
         # Callable transformations
         if callable(self.transform):
             data = self.transform(datum)
-        # Basic object lookups
-        elif hasattr(datum, self.transform):
-            data = getattr(datum, self.transform, None)
         # Dict lookups
         elif isinstance(datum, collections.Iterable) and \
                 self.transform in datum:
             data = datum.get(self.transform)
         else:
-            if settings.DEBUG:
+        # Basic object lookups
+            try:
+                data = getattr(datum, self.transform)
+            except AttributeError:
                 msg = _("The attribute %(attr)s doesn't exist on "
                         "%(obj)s.") % {'attr': self.transform, 'obj': datum}
                 msg = termcolors.colorize(msg, **PALETTE['ERROR'])
                 LOG.warning(msg)
-            data = None
+                data = None
         return data
 
     def get_data(self, datum):
@@ -500,44 +499,7 @@ class Row(html.HTMLElement):
             datum = self.datum
         cells = []
         for column in table.columns.values():
-            if column.auto == "multi_select":
-                widget = forms.CheckboxInput(check_test=lambda value: False)
-                # Convert value to string to avoid accidental type conversion
-                data = widget.render('object_ids',
-                                     unicode(table.get_object_id(datum)),
-                                     {'class': 'table-row-multi-select'})
-                table._data_cache[column][table.get_object_id(datum)] = data
-            elif column.auto == "form_field":
-                widget = column.form_field
-                if issubclass(widget.__class__, forms.Field):
-                    widget = widget.widget
-
-                widget_name = "%s__%s" % \
-                    (column.name,
-                     unicode(table.get_object_id(datum)))
-
-                # Create local copy of attributes, so it don't change column
-                # class form_field_attributes
-                form_field_attributes = {}
-                form_field_attributes.update(column.form_field_attributes)
-                # Adding id of the input so it pairs with label correctly
-                form_field_attributes['id'] = widget_name
-
-                data = widget.render(widget_name,
-                                     column.get_data(datum),
-                                     form_field_attributes)
-                table._data_cache[column][table.get_object_id(datum)] = data
-            elif column.auto == "actions":
-                data = table.render_row_actions(datum)
-                table._data_cache[column][table.get_object_id(datum)] = data
-            else:
-                data = column.get_data(datum)
-
-            cell = Cell(datum, data, column, self)
-            if cell.inline_edit_available:
-                cell.attrs['data-cell-name'] = column.name
-                cell.attrs['data-update-url'] = cell.get_ajax_update_url()
-
+            cell = table._meta.cell_class(datum, column, self)
             cells.append((column.name or column.auto, cell))
         self.cells = SortedDict(cells)
 
@@ -609,13 +571,13 @@ class Row(html.HTMLElement):
 
 class Cell(html.HTMLElement):
     """Represents a single cell in the table."""
-    def __init__(self, datum, data, column, row, attrs=None, classes=None):
+
+    def __init__(self, datum, column, row, attrs=None, classes=None):
         self.classes = classes or getattr(self, "classes", [])
         super(Cell, self).__init__()
         self.attrs.update(attrs or {})
 
         self.datum = datum
-        self.data = data
         self.column = column
         self.row = row
         self.wrap_list = column.wrap_list
@@ -623,7 +585,47 @@ class Cell(html.HTMLElement):
         # initialize the update action if available
         if self.inline_edit_available:
             self.update_action = self.column.update_action()
+            self.attrs['data-cell-name'] = column.name
+            self.attrs['data-update-url'] = self.get_ajax_update_url()
         self.inline_edit_mod = False
+        self.data = self.get_data(datum, column, row)
+
+    def get_data(self, datum, column, row):
+        """Fetches the data to be displayed in this cell."""
+        table = row.table
+        if column.auto == "multi_select":
+            widget = forms.CheckboxInput(check_test=lambda value: False)
+            # Convert value to string to avoid accidental type conversion
+            data = widget.render('object_ids',
+                                 unicode(table.get_object_id(datum)),
+                                 {'class': 'table-row-multi-select'})
+            table._data_cache[column][table.get_object_id(datum)] = data
+        elif column.auto == "form_field":
+            widget = column.form_field
+            if issubclass(widget.__class__, forms.Field):
+                widget = widget.widget
+
+            widget_name = "%s__%s" % \
+                (column.name,
+                 unicode(table.get_object_id(datum)))
+
+            # Create local copy of attributes, so it don't change column
+            # class form_field_attributes
+            form_field_attributes = {}
+            form_field_attributes.update(column.form_field_attributes)
+            # Adding id of the input so it pairs with label correctly
+            form_field_attributes['id'] = widget_name
+
+            data = widget.render(widget_name,
+                                 column.get_data(datum),
+                                 form_field_attributes)
+            table._data_cache[column][table.get_object_id(datum)] = data
+        elif column.auto == "actions":
+            data = table.render_row_actions(datum)
+            table._data_cache[column][table.get_object_id(datum)] = data
+        else:
+            data = column.get_data(datum)
+        return data
 
     def __repr__(self):
         return '<%s: %s, %s>' % (self.__class__.__name__,
@@ -812,6 +814,11 @@ class DataTableOptions(object):
         The row status is used by other Horizon components to trigger tasks
         such as dynamic AJAX updating.
 
+    .. attribute:: cell_class
+
+        The class which should be used for rendering the cells of this table.
+        Optional. Default: :class:`~horizon.tables.Cell`.
+
     .. attribute:: row_class
 
         The class which should be used for rendering the rows of this table.
@@ -830,8 +837,8 @@ class DataTableOptions(object):
     .. attribute:: data_types
 
         A list of data types that this table would accept. Default to be an
-        empty list, but if the attibute ``mixed_data_type`` is set to ``True``,
-        then this list must have at least one element.
+        empty list, but if the attribute ``mixed_data_type`` is set to
+        ``True``, then this list must have at least one element.
 
     .. attribute:: data_type_name
 
@@ -857,6 +864,7 @@ class DataTableOptions(object):
         self.status_columns = getattr(options, 'status_columns', [])
         self.table_actions = getattr(options, 'table_actions', [])
         self.row_actions = getattr(options, 'row_actions', [])
+        self.cell_class = getattr(options, 'cell_class', Cell)
         self.row_class = getattr(options, 'row_class', Row)
         self.column_class = getattr(options, 'column_class', Column)
         self.pagination_param = getattr(options, 'pagination_param', 'marker')
@@ -909,7 +917,7 @@ class DataTableOptions(object):
             self.mixed_data_type = True
 
         # However, if the mixed_data_type is set to True manually and the
-        # the data_types is empty, raise an errror.
+        # the data_types is empty, raise an error.
         if self.mixed_data_type and len(self.data_types) <= 1:
             raise ValueError("If mixed_data_type is set to True in class %s, "
                              "data_types should has more than one types" %
@@ -1065,6 +1073,10 @@ class DataTable(object):
 
     @property
     def filtered_data(self):
+        # This function should be using django.utils.functional.cached_property
+        # decorator, but unfortunately due to bug in Django
+        # https://code.djangoproject.com/ticket/19872 it would make it fail
+        # when being mocked by mox in tests.
         if not hasattr(self, '_filtered_data'):
             self._filtered_data = self.data
             if self._meta.filter and self._meta._filter_action:
@@ -1177,7 +1189,7 @@ class DataTable(object):
 
     @property
     def needs_form_wrapper(self):
-        """Boolean. Indicates whather this table should be rendered wrapped in
+        """Boolean. Indicates whether this table should be rendered wrapped in
         a ``<form>`` tag or not.
         """
         # If needs_form_wrapper is explicitly set, defer to that.
@@ -1269,7 +1281,7 @@ class DataTable(object):
             # We either didn't get an action or we're being hacked. Goodbye.
             return None
 
-        # Meanhile, back in Gotham...
+        # Meanwhile, back in Gotham...
         if not action.requires_input or obj_id or obj_ids:
             if obj_id:
                 obj_id = self.sanitize_id(obj_id)
@@ -1464,7 +1476,7 @@ class DataTable(object):
         """Returns a display name that identifies this object.
 
         By default, this returns a ``name`` attribute from the given object,
-        but this can be overriden to return other values.
+        but this can be overridden to return other values.
         """
         if hasattr(datum, 'name'):
             return datum.name

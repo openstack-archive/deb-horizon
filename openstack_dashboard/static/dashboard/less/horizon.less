@@ -890,6 +890,29 @@ div.table_cell_wrapper {
 }
 #external_links li { margin: 0 0 0 15px; }
 
+
+/* Formset data tables. */
+
+.datatable {
+  th.narrow {
+    width: 1em;
+  }
+
+  input {
+    padding: 2px 5px;
+    margin: 0;
+  }
+
+  th span.required:after {
+    content: "*";
+    font-weight: bold;
+    line-height: 0;
+    padding-left: 4px;
+    color: #3290c0;
+  }
+}
+
+
 /* Forms */
 
 form label {
@@ -989,27 +1012,6 @@ form.horizontal fieldset {
 .right {
     float: left;
     width: 308px;
-}
-
-.workflow ul.nav-tabs {
-  padding: 0 10px;
-}
-
-.workflow td.actions {
-  vertical-align: top;
-  width: 308px;
-  padding-right: 10px;
-}
-
-.workflow td.help_text {
-  vertical-align: top;
-  width: 340px;
-  padding-left: 10px;
-  border-left: 1px solid #DDD;
-}
-
-.workflow fieldset > table {
-  margin-bottom: 0;
 }
 
 .clear {
@@ -2135,7 +2137,7 @@ label.log-length {
       }
     }
   }
-  table.detaiInfoTable {
+  table.detailInfoTable {
     margin-bottom: 5px;
     caption {
       text-align: left;
@@ -2235,6 +2237,12 @@ label.log-length {
   top: -100px;
 }
 
+.quota-heading {
+  font-family: anivers;
+  font-weight: normal;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
 
 /**** Resource Topology CSS ****/
 .link {stroke: #999;stroke-width: 1.5px;}

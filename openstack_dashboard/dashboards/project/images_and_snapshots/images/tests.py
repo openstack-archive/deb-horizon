@@ -20,9 +20,9 @@
 
 import tempfile
 
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile  # noqa
-from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse
 from django.forms.widgets import HiddenInput  # noqa
 from django import http
 from django.test.utils import override_settings  # noqa
@@ -52,6 +52,7 @@ class CreateImageFormTests(test.TestCase):
             'source_type': u'file',
             'description': u'Login with admin/admin',
             'disk_format': u'qcow2',
+            'architecture': u'x86-64',
             'minimum_disk': 15,
             'minimum_ram': 512,
             'is_public': 1}
@@ -88,6 +89,7 @@ class ImageViewTests(test.TestCase):
                          u'oneiric/release/ubuntu-11.10-server-cloudimg'
                          u'-amd64-disk1.img',
             'disk_format': u'qcow2',
+            'architecture': u'x86-64',
             'minimum_disk': 15,
             'minimum_ram': 512,
             'is_public': True,
@@ -103,7 +105,8 @@ class ImageViewTests(test.TestCase):
                                 min_disk=data['minimum_disk'],
                                 min_ram=data['minimum_ram'],
                                 properties={
-                                    'description': data['description']},
+                                    'description': data['description'],
+                                    'architecture': data['architecture']},
                                 name=data['name']). \
                         AndReturn(self.images.first())
         self.mox.ReplayAll()
@@ -126,6 +129,7 @@ class ImageViewTests(test.TestCase):
             'source_type': u'file',
             'image_file': temp_file,
             'disk_format': u'qcow2',
+            'architecture': u'x86-64',
             'minimum_disk': 15,
             'minimum_ram': 512,
             'is_public': True,
@@ -140,7 +144,8 @@ class ImageViewTests(test.TestCase):
                                 min_disk=data['minimum_disk'],
                                 min_ram=data['minimum_ram'],
                                 properties={
-                                    'description': data['description']},
+                                    'description': data['description'],
+                                    'architecture': data['architecture']},
                                 name=data['name'],
                                 data=IsA(InMemoryUploadedFile)). \
                         AndReturn(self.images.first())
@@ -170,6 +175,34 @@ class ImageViewTests(test.TestCase):
         self.assertEqual(res.context['image'].protected, image.protected)
         self.assertContains(res, "<h2>Image Details: %s</h2>" % image.name,
                             1, 200)
+
+    @test.create_stubs({api.glance: ('image_get',)})
+    def test_image_detail_custom_props_get(self):
+        image = self.images.list()[8]
+
+        api.glance.image_get(IsA(http.HttpRequest), str(image.id)) \
+                                 .AndReturn(image)
+        self.mox.ReplayAll()
+
+        res = self.client.get(
+            reverse('horizon:project:images_and_snapshots:images:detail',
+            args=[image.id]))
+
+        image_props = res.context['image_props']
+
+        # Test description property not displayed
+        image_keys = [prop[0] for prop in image_props]
+        self.assertNotIn(('description'), image_keys)
+
+        # Test custom properties are sorted
+        self.assertEqual(image_props[0], ('bar', 'bar', 'bar val'))
+        self.assertEqual(image_props[1], ('foo', 'foo', 'foo val'))
+
+        # Test all custom properties appear in template
+        self.assertContains(res, '<dt title="bar">bar</dt>')
+        self.assertContains(res, '<dd>bar val</dd>')
+        self.assertContains(res, '<dt title="foo">foo</dt>')
+        self.assertContains(res, '<dd>foo val</dd>')
 
     @test.create_stubs({api.glance: ('image_get',)})
     def test_protected_image_detail_get(self):

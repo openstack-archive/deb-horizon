@@ -8,69 +8,71 @@
 
     Example:
     <div style="width: 100px; min-width: 100px; height: 20px; min-height: 20px">
-        <div class="chart"
-          data-chart-type="bar_chart"
-          data-tooltip-used='Used'
-          data-tooltip-free='Free'
-          data-tooltip-average='Average'
-          data-settings='{"orientation": "horizontal", "color_scale_range": ["#000060", "#99FFFF"]}'
-          data-used="20"
-          data-average="30">
-        </div>
+      <div class="chart"
+        data-chart-type="bar_chart"
+        data-tooltip-used='Used'
+        data-tooltip-free='Free'
+        data-tooltip-average='Average'
+        data-settings='{"orientation": "horizontal", "color_scale_range": ["#000060", "#99FFFF"]}'
+        data-used="20"
+        data-average="30">
+      </div>
     </div>
 
     The available data- attributes are:
       data-tooltip-free, data-tooltip-used, data-tooltip-average OPTIONAL
-          Html content of tooltips that will be displayed over this areas.
+        Html content of tooltips that will be displayed over this areas.
 
 
       data-used="integer" REQUIRED
-          1. Integer
-            Integer representing the percent used.
-          2. Array
-            Array of following structure:
-            [{"tooltip_used": "Popup html 1", "used_instances": "5"},
-             {"tooltip_used": "Popup html 2", "used_instances": "15"},....]
+        1. Integer
+          Integer representing the percent used.
+        2. Array
+          Array of following structure:
+            [
+              {"tooltip_used": "Popup html 1", "used_instances": "5"},
+              {"tooltip_used": "Popup html 2", "used_instances": "15"},....
+            ]
 
-            used_instances: Integer representing the percent used.
-            tooltip_used: Html that will be displayed in tooltip window over
-              this area.
+          used_instances: Integer representing the percent used.
+          tooltip_used: Html that will be displayed in tooltip window over
+            this area.
 
       data-settings="JSON"
-          Json with variety of settings described below.
+        Json with variety of settings described below.
 
-          used-label-placement='string' OPTIONAL
-              String determinign where the floating label stating number of percent
-              will be placed. So far only left is supported.
+        used-label-placement='string' OPTIONAL
+          String determinign where the floating label stating number of percent
+          will be placed. So far only left is supported.
 
           width="integer" OPTIONAL
-              Integer in pixels. Determines the total width of the bar. Handy when
-              we use a used_label, so the bar is not a 100% of the container.
+            Integer in pixels. Determines the total width of the bar. Handy when
+            we use a used_label, so the bar is not a 100% of the container.
 
           average="integer" OPTIONAL
-              Integer representing the average usage in percent of given
-              single-bar.
+            Integer representing the average usage in percent of given
+            single-bar.
 
           auto-scale-selector OPTIONAL
-              Jquery selector of bar elements that have Integer
-              used attribute. It then takes maximum of these
-              values as 100% of the linear scale of the colors.
-              So the array representing linear scale interval is set
-              automatically.This then maps to color-scale-range.
-              (arrays must have the same structure)
+            Jquery selector of bar elements that have Integer
+            used attribute. It then takes maximum of these
+            values as 100% of the linear scale of the colors.
+            So the array representing linear scale interval is set
+            automatically.This then maps to color-scale-range.
+            (arrays must have the same structure)
 
           color-scale-range OPTIONAL
-              Array representing linear scale interval that is set manually.
-              E.g "[0,10]". This then maps to color-scale-range.
-              (arrays must have the same structure)
+            Array representing linear scale interval that is set manually.
+            E.g "[0,10]". This then maps to color-scale-range.
+            (arrays must have the same structure)
 
           color-scale-range OPTIONAL
-              Array representing linear scale of colors.
-              E.g '["#000060", "#99FFFF"]'
+            Array representing linear scale of colors.
+            E.g '["#000060", "#99FFFF"]'
 
           orientation OPTIONAL
-              String representing orientation of the bar.Can be "horizontal"
-              or "vertical". Default is horizontal.
+            String representing orientation of the bar.Can be "horizontal"
+            or "vertical". Default is horizontal.
 
 */
 
@@ -328,8 +330,8 @@ horizon.d3_bar_chart = {
        start at 0.
     */
     self.chart_start_x = 0;
-    if (self.data.settings.orientation=='vertical'){
-      if (self.used_label_placement == 'left'){
+    if (self.data.settings.orientation === 'vertical'){
+      if (self.used_label_placement === 'left'){
         self.chart_start_x = 44;
       }
       self.chart_wrapper_w = self.w + self.chart_start_x;
@@ -390,7 +392,7 @@ horizon.d3_bar_chart = {
 
     // Return true if it chart is oriented horizontally
     self.horizontal_orientation = function (){
-      return (self.data.settings.orientation == 'horizontal');
+      return (self.data.settings.orientation === 'horizontal');
     };
   },
   /**
@@ -442,15 +444,21 @@ horizon.d3_bar_chart = {
           if ($(this).attr('tooltip-used')){
             tooltip.html($(this).attr('tooltip-used'));
           }
-          tooltip.style('visibility', 'visible');})
-        .on('mousemove', function(d){tooltip.style('top',
-          (event.pageY - 10) + 'px').style('left',(event.pageX + 10) + 'px');})
-        .on('mouseout', function(d){tooltip.style('visibility', 'hidden');})
+          tooltip.style('visibility', 'visible');
+        })
+        .on('mousemove', function(d){
+          tooltip
+            .style('top', (event.pageY - 10) + 'px')
+            .style('left',(event.pageX + 10) + 'px');
+        })
+        .on('mouseout', function(d){
+          tooltip.style('visibility', 'hidden');
+        })
         .transition()
           .duration(500)
           .attr(self.trasition_attr, self.trasition_value);
 
-      if (self.wrapper.used_label_placement == 'left') {
+      if (self.wrapper.used_label_placement === 'left') {
         // Now it works only for vertical bar chart placed left form the chart
         var label_placement_y = self.wrapper.h - self.wrapper.used_value_in_pixels;
 
@@ -493,12 +501,16 @@ horizon.d3_bar_chart = {
                ];
 
         self.wrapper.bar.selectAll('polygon')
-            .data([poly])
-          .enter().append('polygon')
-            .attr('points',function(d) {
-                return d.map(function(d) { return [d.x,d.y].join(','); }).join(' ');})
-            .attr('stroke','black')
-            .attr('stroke-width', 2);
+          .data([poly])
+          .enter()
+          .append('polygon')
+          .attr('points',function(d) {
+            return d.map(function(d) {
+              return [d.x,d.y].join(',');
+            }).join(' ');
+          })
+          .attr('stroke','black')
+          .attr('stroke-width', 2);
       }
     };
   },
@@ -545,8 +557,11 @@ horizon.d3_bar_chart = {
           .style('stroke-width', 3)
           .style('stroke-dasharray', ('6, 2'))
           .on('mouseover', function(){tooltip.style('visibility', 'visible');})
-          .on('mousemove', function(){tooltip.style('top',
-            (event.pageY-10)+'px').style('left',(event.pageX+10)+'px');})
+          .on('mousemove', function(){
+            tooltip
+              .style('top',(event.pageY-10)+'px')
+              .style('left',(event.pageX+10)+'px');
+          })
           .on('mouseout', function(){tooltip.style('visibility', 'hidden');});
 
         // A normal line, so it shows popup even in spaces, it's also bigger so
@@ -561,8 +576,11 @@ horizon.d3_bar_chart = {
           .style('stroke', 'transparent')
           .style('stroke-width', 5)
           .on('mouseover', function(){tooltip.style('visibility', 'visible');})
-          .on('mousemove', function(){tooltip.style('top',
-            (event.pageY-10)+'px').style('left',(event.pageX+10)+'px');})
+          .on('mousemove', function(){
+            tooltip
+              .style('top',(event.pageY-10)+'px')
+              .style('left',(event.pageX+10)+'px');
+          })
           .on('mouseout', function(){tooltip.style('visibility', 'hidden');});
       }
     };
@@ -588,9 +606,14 @@ horizon.d3_bar_chart = {
         .attr('ry', self.wrapper.lvl_curve)
         .style('fill', self.wrapper.bkgrnd)
 
-        .on('mouseover', function(d){tooltip_free.style('visibility', 'visible');})
-        .on('mousemove', function(d){tooltip_free.style('top',
-          (event.pageY-10)+'px').style('left',(event.pageX+10)+'px');})
+        .on('mouseover', function(d){
+          tooltip_free.style('visibility', 'visible');
+        })
+        .on('mousemove', function(d){
+          tooltip_free
+            .style('top',(event.pageY-10)+'px')
+            .style('left',(event.pageX+10)+'px');
+        })
         .on('mouseout', function(d){tooltip_free.style('visibility', 'hidden');});
 
       self.wrapper.bar.append('rect')

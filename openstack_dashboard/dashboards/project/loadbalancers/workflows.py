@@ -14,7 +14,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -95,9 +95,9 @@ class AddPoolAction(workflows.Action):
                         _("%s (default)") % default_provider))
         else:
             if providers is None:
-                msg = _("Provider for Load Balancer is not supported.")
+                msg = _("Provider for Load Balancer is not supported")
             else:
-                msg = _("No provider is available.")
+                msg = _("No provider is available")
             provider_choices = [('', msg)]
             self.fields['provider'].widget.attrs['readonly'] = True
         self.fields['provider'].choices = provider_choices
@@ -319,7 +319,8 @@ class AddMemberAction(workflows.Action):
 
         pool_id_choices = [('', _("Select a Pool"))]
         try:
-            pools = api.lbaas.pools_get(request)
+            tenant_id = self.request.user.tenant_id
+            pools = api.lbaas.pool_list(request, tenant_id=tenant_id)
         except Exception:
             pools = []
             exceptions.handle(request,
@@ -339,13 +340,15 @@ class AddMemberAction(workflows.Action):
                               _('Unable to retrieve instances list.'))
 
         if len(servers) == 0:
-            self.fields['members'].label = _("No servers available. "
-                                             "Click Add to cancel.")
-            self.fields['members'].required = False
+            self.fields['members'].label = _(
+                "No servers available. To add a member, you"
+                "need at least one running instance.")
+            self.fields['members'].required = True
             self.fields['members'].help_text = _("Select members "
                                                  "for this pool ")
             self.fields['pool_id'].required = False
             self.fields['protocol_port'].required = False
+
             return
 
         for m in servers:
@@ -565,7 +568,9 @@ class AddPMAssociationAction(workflows.Action, MonitorMixin):
 
         monitor_id_choices = [('', _("Select a Monitor"))]
         try:
-            monitors = api.lbaas.pool_health_monitors_get(request)
+            tenant_id = self.request.user.tenant_id
+            monitors = api.lbaas.pool_health_monitor_list(request,
+                                                          tenant_id=tenant_id)
             for m in monitors:
                 if m.id not in context['pool_monitors']:
                     display_name = self._get_monitor_display_name(m)
@@ -626,7 +631,7 @@ class DeletePMAssociationAction(workflows.Action, MonitorMixin):
 
         monitor_id_choices = [('', _("Select a Monitor"))]
         try:
-            monitors = api.lbaas.pool_health_monitors_get(request)
+            monitors = api.lbaas.pool_health_monitor_list(request)
             for m in monitors:
                 if m.id in context['pool_monitors']:
                     display_name = self._get_monitor_display_name(m)

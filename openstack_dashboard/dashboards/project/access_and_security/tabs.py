@@ -19,7 +19,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import messages
@@ -57,7 +57,7 @@ class SecurityGroupsTab(tabs.TableTab):
 
 class KeypairsTab(tabs.TableTab):
     table_classes = (KeypairsTable,)
-    name = _("Keypairs")
+    name = _("Key Pairs")
     slug = "keypairs_tab"
     template_name = "horizon/common/_detail_table.html"
 
@@ -67,7 +67,7 @@ class KeypairsTab(tabs.TableTab):
         except Exception:
             keypairs = []
             exceptions.handle(self.request,
-                              _('Unable to retrieve keypair list.'))
+                              _('Unable to retrieve key pair list.'))
         return keypairs
 
 
@@ -100,11 +100,10 @@ class FloatingIPsTab(tabs.TableTab):
             exceptions.handle(self.request,
                         _('Unable to retrieve instance list.'))
 
-        instances_dict = dict([(obj.id, obj) for obj in instances])
+        instances_dict = dict([(obj.id, obj.name) for obj in instances])
 
         for ip in floating_ips:
-            ip.instance_name = instances_dict[ip.instance_id].name \
-                if ip.instance_id in instances_dict else None
+            ip.instance_name = instances_dict.get(ip.instance_id)
             ip.pool_name = pool_dict.get(ip.pool, ip.pool)
 
         return floating_ips

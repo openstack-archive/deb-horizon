@@ -23,8 +23,8 @@ from horizon import messages
 
 from openstack_dashboard import api
 
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 
 LOG = logging.getLogger(__name__)
@@ -138,7 +138,7 @@ class UpdateNetworkProfile(forms.SelfHandlingForm):
         try:
             LOG.debug('request = %(req)s, params = %(params)s',
                       {'req': request, 'params': data})
-            profile = api.neutron.profile_modify(request,
+            profile = api.neutron.profile_update(request,
                                                  data['profile_id'],
                                                  name=data['name'],
                                                  segment_type=

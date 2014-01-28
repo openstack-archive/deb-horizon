@@ -15,13 +15,13 @@
 #    under the License.
 import logging
 
-from django.core.urlresolvers import reverse  # noqa
+from django.core.urlresolvers import reverse
 from django import shortcuts
 from django import template
 from django.template import defaultfilters as filters
 from django.utils import http
 from django.utils import safestring
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import messages
@@ -215,7 +215,9 @@ class ContainerAjaxUpdateRow(tables.Row):
     ajax = True
 
     def get_data(self, request, container_name):
-        container = api.swift.swift_get_container(request, container_name)
+        container = api.swift.swift_get_container(request,
+                                                  container_name,
+                                                  with_data=False)
         return container
 
 
@@ -364,8 +366,9 @@ def sanitize_name(name):
 
 
 def get_size(obj):
-    if obj.bytes:
-        return filters.filesizeformat(obj.bytes)
+    if obj.bytes is None:
+        return _("pseudo-folder")
+    return filters.filesizeformat(obj.bytes)
 
 
 def get_link_subfolder(subfolder):

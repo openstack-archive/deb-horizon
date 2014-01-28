@@ -14,11 +14,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
+from horizon.utils import memoized
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.networks.ports \
@@ -38,18 +39,16 @@ class CreateView(forms.ModalFormView):
         return reverse(self.success_url,
                        args=(self.kwargs['network_id'],))
 
+    @memoized.memoized_method
     def get_object(self):
-        if not hasattr(self, "_object"):
-            try:
-                network_id = self.kwargs["network_id"]
-                self._object = api.neutron.network_get(self.request,
-                                                       network_id)
-            except Exception:
-                redirect = reverse(self.failure_url,
-                                   args=(self.kwargs['network_id'],))
-                msg = _("Unable to retrieve network.")
-                exceptions.handle(self.request, msg, redirect=redirect)
-        return self._object
+        try:
+            network_id = self.kwargs["network_id"]
+            return api.neutron.network_get(self.request, network_id)
+        except Exception:
+            redirect = reverse(self.failure_url,
+                               args=(self.kwargs['network_id'],))
+            msg = _("Unable to retrieve network.")
+            exceptions.handle(self.request, msg, redirect=redirect)
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)

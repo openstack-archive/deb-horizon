@@ -18,9 +18,9 @@
 Admin views for managing volumes.
 """
 
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.datastructures import SortedDict  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -45,7 +45,7 @@ class IndexView(tables.MultiTableView, views.VolumeTableMixIn):
     def get_volumes_data(self):
         volumes = self._get_volumes(search_opts={'all_tenants': True})
         instances = self._get_instances(search_opts={'all_tenants': True})
-        self._set_id_if_nameless(volumes, instances)
+        self._set_id_if_nameless(volumes)
         self._set_attachments_string(volumes, instances)
 
         # Gather our tenants to correlate against IDs

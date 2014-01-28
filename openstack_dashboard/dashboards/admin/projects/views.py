@@ -18,11 +18,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tables
+from horizon.utils import memoized
 from horizon import workflows
 
 from openstack_dashboard import api
@@ -34,7 +35,8 @@ from openstack_dashboard.dashboards.admin.projects \
     import tables as project_tables
 from openstack_dashboard.dashboards.admin.projects \
     import workflows as project_workflows
-
+from openstack_dashboard.dashboards.project.overview \
+    import views as project_views
 
 PROJECT_INFO_FIELDS = ("domain_id",
                        "domain_name",
@@ -46,18 +48,15 @@ INDEX_URL = "horizon:admin:projects:index"
 
 
 class TenantContextMixin(object):
+    @memoized.memoized_method
     def get_object(self):
-        if not hasattr(self, "_object"):
-            tenant_id = self.kwargs['tenant_id']
-            try:
-                self._object = api.keystone.tenant_get(self.request,
-                                                       tenant_id,
-                                                       admin=True)
-            except Exception:
-                exceptions.handle(self.request,
-                                  _('Unable to retrieve project information.'),
-                                  redirect=reverse(INDEX_URL))
-        return self._object
+        tenant_id = self.kwargs['tenant_id']
+        try:
+            return api.keystone.tenant_get(self.request, tenant_id, admin=True)
+        except Exception:
+            exceptions.handle(self.request,
+                              _('Unable to retrieve project information.'),
+                              redirect=reverse(INDEX_URL))
 
     def get_context_data(self, **kwargs):
         context = super(TenantContextMixin, self).get_context_data(**kwargs)
@@ -94,6 +93,8 @@ class ProjectUsageView(usage.UsageView):
     table_class = usage.ProjectUsageTable
     usage_class = usage.ProjectUsage
     template_name = 'admin/projects/usage.html'
+    csv_response_class = project_views.ProjectUsageCsvRenderer
+    csv_template_name = 'project/overview/usage.csv'
 
     def get_data(self):
         super(ProjectUsageView, self).get_data()

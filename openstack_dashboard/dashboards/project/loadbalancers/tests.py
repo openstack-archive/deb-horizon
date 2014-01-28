@@ -14,8 +14,8 @@
 
 from mox import IsA  # noqa
 
-from django.core.urlresolvers import reverse  # noqa
-from django.core.urlresolvers import reverse_lazy  # noqa
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django import http
 
 from horizon.workflows import views
@@ -58,22 +58,21 @@ class LoadBalancerTests(test.TestCase):
 
     def set_up_expect(self):
         # retrieve pools
-        vip1 = self.vips.first()
+        vip1, vip2 = self.vips.list()[:2]
 
-        vip2 = self.vips.list()[1]
-
-        api.lbaas.pools_get(
-            IsA(http.HttpRequest)).AndReturn(self.pools.list())
+        api.lbaas.pool_list(
+            IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.pools.list())
 
         api.lbaas.vip_get(IsA(http.HttpRequest), vip1.id).AndReturn(vip1)
         api.lbaas.vip_get(IsA(http.HttpRequest), vip2.id).AndReturn(vip2)
 
         # retrieves members
-        api.lbaas.members_get(
-            IsA(http.HttpRequest)).AndReturn(self.members.list())
+        api.lbaas.member_list(
+            IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.members.list())
 
-        pool1 = self.pools.first()
-        pool2 = self.pools.list()[1]
+        pool1, pool2 = self.pools.list()[:2]
 
         api.lbaas.pool_get(IsA(http.HttpRequest),
                            self.members.list()[0].pool_id).AndReturn(pool1)
@@ -81,22 +80,24 @@ class LoadBalancerTests(test.TestCase):
                            self.members.list()[1].pool_id).AndReturn(pool2)
 
         # retrieves monitors
-        api.lbaas.pool_health_monitors_get(
-            IsA(http.HttpRequest)).MultipleTimes() \
+        api.lbaas.pool_health_monitor_list(
+            IsA(http.HttpRequest), tenant_id=self.tenant.id).MultipleTimes() \
                 .AndReturn(self.monitors.list())
 
     def set_up_expect_with_exception(self):
-        api.lbaas.pools_get(
-            IsA(http.HttpRequest)).AndRaise(self.exceptions.neutron)
-        api.lbaas.members_get(
-            IsA(http.HttpRequest)).AndRaise(self.exceptions.neutron)
-        api.lbaas.pool_health_monitors_get(
-            IsA(http.HttpRequest)).AndRaise(self.exceptions.neutron)
+        api.lbaas.pool_list(
+            IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndRaise(self.exceptions.neutron)
+        api.lbaas.member_list(
+            IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndRaise(self.exceptions.neutron)
+        api.lbaas.pool_health_monitor_list(
+            IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndRaise(self.exceptions.neutron)
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'vip_get',
-                                    'members_get', 'pool_get',
-                                    'pool_health_monitors_get'),
-                        api.neutron: ('subnet_get',)})
+    @test.create_stubs({api.lbaas: ('pool_list', 'vip_get',
+                                    'member_list', 'pool_get',
+                                    'pool_health_monitor_list')})
     def test_index_pools(self):
         self.set_up_expect()
 
@@ -110,10 +111,9 @@ class LoadBalancerTests(test.TestCase):
         self.assertEqual(len(res.context['table'].data),
                          len(self.pools.list()))
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'vip_get',
-                                    'members_get', 'pool_get',
-                                    'pool_health_monitors_get'),
-                        api.neutron: ('subnet_get',)})
+    @test.create_stubs({api.lbaas: ('pool_list', 'vip_get',
+                                    'member_list', 'pool_get',
+                                    'pool_health_monitor_list')})
     def test_index_members(self):
         self.set_up_expect()
 
@@ -127,10 +127,9 @@ class LoadBalancerTests(test.TestCase):
         self.assertEqual(len(res.context['memberstable_table'].data),
                               len(self.members.list()))
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'vip_get',
-                                    'pool_health_monitors_get',
-                                    'members_get', 'pool_get'),
-                        api.neutron: ('subnet_get',)})
+    @test.create_stubs({api.lbaas: ('pool_list', 'vip_get',
+                                    'pool_health_monitor_list',
+                                    'member_list', 'pool_get')})
     def test_index_monitors(self):
         self.set_up_expect()
 
@@ -144,8 +143,8 @@ class LoadBalancerTests(test.TestCase):
         self.assertEqual(len(res.context['monitorstable_table'].data),
                               len(self.monitors.list()))
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'members_get',
-                                    'pool_health_monitors_get')})
+    @test.create_stubs({api.lbaas: ('pool_list', 'member_list',
+                                    'pool_health_monitor_list')})
     def test_index_exception_pools(self):
         self.set_up_expect_with_exception()
 
@@ -160,8 +159,8 @@ class LoadBalancerTests(test.TestCase):
                                 'horizon/common/_detail_table.html')
         self.assertEqual(len(res.context['table'].data), 0)
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'members_get',
-                                    'pool_health_monitors_get')})
+    @test.create_stubs({api.lbaas: ('pool_list', 'member_list',
+                                    'pool_health_monitor_list')})
     def test_index_exception_members(self):
         self.set_up_expect_with_exception()
 
@@ -176,8 +175,8 @@ class LoadBalancerTests(test.TestCase):
                                 'horizon/common/_detail_table.html')
         self.assertEqual(len(res.context['memberstable_table'].data), 0)
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'members_get',
-                                    'pool_health_monitors_get')})
+    @test.create_stubs({api.lbaas: ('pool_list', 'member_list',
+                                    'pool_health_monitor_list')})
     def test_index_exception_monitors(self):
         self.set_up_expect_with_exception()
 
@@ -205,7 +204,7 @@ class LoadBalancerTests(test.TestCase):
         api.neutron.is_extension_supported(
             IsA(http.HttpRequest), 'service-type').AndReturn(True)
         api.neutron.network_list_for_tenant(
-            IsA(http.HttpRequest), subnet.tenant_id).AndReturn(networks)
+            IsA(http.HttpRequest), self.tenant.id).AndReturn(networks)
         api.neutron.provider_list(IsA(http.HttpRequest)) \
             .AndReturn(self.providers.list())
 
@@ -260,7 +259,7 @@ class LoadBalancerTests(test.TestCase):
         api.neutron.is_extension_supported(
             IsA(http.HttpRequest), 'service-type').AndReturn(with_service_type)
         api.neutron.network_list_for_tenant(
-            IsA(http.HttpRequest), subnet.tenant_id).AndReturn(networks)
+            IsA(http.HttpRequest), self.tenant.id).AndReturn(networks)
         if with_service_type:
             prov_list = api.neutron.provider_list(IsA(http.HttpRequest))
             if with_provider_exception:
@@ -282,10 +281,10 @@ class LoadBalancerTests(test.TestCase):
         if not with_service_type:
             self.assertNotContains(res, default_provider)
             self.assertContains(res, ('Provider for Load Balancer '
-                                      'is not supported.'))
+                                      'is not supported'))
         elif with_provider_exception:
             self.assertNotContains(res, default_provider)
-            self.assertContains(res, 'No provider is available.')
+            self.assertContains(res, 'No provider is available')
         else:
             self.assertContains(res, default_provider)
 
@@ -486,7 +485,7 @@ class LoadBalancerTests(test.TestCase):
     def test_add_member_post_without_weight(self):
         self._test_add_member_post(with_weight=False)
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'member_create'),
+    @test.create_stubs({api.lbaas: ('pool_list', 'member_create'),
                         api.neutron: ('port_list',),
                         api.nova: ('server_list',)})
     def _test_add_member_post(self, with_weight=True):
@@ -502,7 +501,8 @@ class LoadBalancerTests(test.TestCase):
         port1 = self.AttributeDict(
             {'fixed_ips': [{'ip_address': member.address}]})
 
-        api.lbaas.pools_get(IsA(http.HttpRequest)).AndReturn(self.pools.list())
+        api.lbaas.pool_list(IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.pools.list())
 
         api.nova.server_list(IsA(http.HttpRequest)).AndReturn(
             [[server1, server2], False])
@@ -536,7 +536,7 @@ class LoadBalancerTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, str(self.INDEX_URL))
 
-    @test.create_stubs({api.lbaas: ('pools_get',),
+    @test.create_stubs({api.lbaas: ('pool_list',),
                         api.nova: ('server_list',)})
     def test_add_member_post_with_error(self):
         member = self.members.first()
@@ -548,7 +548,8 @@ class LoadBalancerTests(test.TestCase):
                                       '12381d38-c3eb-4fee-9763-12de3338043e',
                                       'name': 'vm2'})
 
-        api.lbaas.pools_get(IsA(http.HttpRequest)).AndReturn(self.pools.list())
+        api.lbaas.pool_list(IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.pools.list())
 
         api.nova.server_list(IsA(http.HttpRequest)).AndReturn([[server1,
                                                                 server2],
@@ -568,7 +569,7 @@ class LoadBalancerTests(test.TestCase):
 
         self.assertFormErrors(res, 2)
 
-    @test.create_stubs({api.lbaas: ('pools_get',),
+    @test.create_stubs({api.lbaas: ('pool_list',),
                         api.nova: ('server_list',)})
     def test_add_member_get(self):
         server1 = self.AttributeDict({'id':
@@ -578,7 +579,8 @@ class LoadBalancerTests(test.TestCase):
                                       '12381d38-c3eb-4fee-9763-12de3338043e',
                                       'name': 'vm2'})
 
-        api.lbaas.pools_get(IsA(http.HttpRequest)).AndReturn(self.pools.list())
+        api.lbaas.pool_list(IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.pools.list())
         api.nova.server_list(
             IsA(http.HttpRequest)).AndReturn([[server1, server2], False])
 
@@ -630,12 +632,13 @@ class LoadBalancerTests(test.TestCase):
 
         self.assertTemplateUsed(res, 'project/loadbalancers/updatepool.html')
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'vip_get',
+    @test.create_stubs({api.lbaas: ('pool_list', 'vip_get',
                                     'vip_update')})
     def test_update_vip_post(self):
         vip = self.vips.first()
 
-        api.lbaas.pools_get(IsA(http.HttpRequest)).AndReturn(self.pools.list())
+        api.lbaas.pool_list(IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.pools.list())
         api.lbaas.vip_get(IsA(http.HttpRequest), vip.id).AndReturn(vip)
 
         data = {'name': vip.name,
@@ -659,11 +662,12 @@ class LoadBalancerTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, str(self.INDEX_URL))
 
-    @test.create_stubs({api.lbaas: ('vip_get', 'pools_get')})
+    @test.create_stubs({api.lbaas: ('vip_get', 'pool_list')})
     def test_update_vip_get(self):
         vip = self.vips.first()
 
-        api.lbaas.pools_get(IsA(http.HttpRequest)).AndReturn(self.pools.list())
+        api.lbaas.pool_list(IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.pools.list())
         api.lbaas.vip_get(IsA(http.HttpRequest), vip.id).AndReturn(vip)
 
         self.mox.ReplayAll()
@@ -672,12 +676,13 @@ class LoadBalancerTests(test.TestCase):
 
         self.assertTemplateUsed(res, 'project/loadbalancers/updatevip.html')
 
-    @test.create_stubs({api.lbaas: ('pools_get', 'member_get',
+    @test.create_stubs({api.lbaas: ('pool_list', 'member_get',
                                     'member_update')})
     def test_update_member_post(self):
         member = self.members.first()
 
-        api.lbaas.pools_get(IsA(http.HttpRequest)).AndReturn(self.pools.list())
+        api.lbaas.pool_list(IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.pools.list())
         api.lbaas.member_get(IsA(http.HttpRequest), member.id)\
             .AndReturn(member)
 
@@ -699,11 +704,12 @@ class LoadBalancerTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, str(self.INDEX_URL))
 
-    @test.create_stubs({api.lbaas: ('member_get', 'pools_get')})
+    @test.create_stubs({api.lbaas: ('member_get', 'pool_list')})
     def test_update_member_get(self):
         member = self.members.first()
 
-        api.lbaas.pools_get(IsA(http.HttpRequest)).AndReturn(self.pools.list())
+        api.lbaas.pool_list(IsA(http.HttpRequest), tenant_id=self.tenant.id) \
+            .AndReturn(self.pools.list())
         api.lbaas.member_get(IsA(http.HttpRequest), member.id)\
             .AndReturn(member)
 
@@ -756,7 +762,7 @@ class LoadBalancerTests(test.TestCase):
         self.assertTemplateUsed(
             res, 'project/loadbalancers/updatemonitor.html')
 
-    @test.create_stubs({api.lbaas: ('pool_get', 'pool_health_monitors_get',
+    @test.create_stubs({api.lbaas: ('pool_get', 'pool_health_monitor_list',
                                     'pool_monitor_association_create')})
     def test_add_pool_monitor_association_post(self):
         pool = self.pools.first()
@@ -764,8 +770,9 @@ class LoadBalancerTests(test.TestCase):
         monitor = self.monitors.list()[1]
 
         api.lbaas.pool_get(IsA(http.HttpRequest), pool.id).AndReturn(pool)
-        api.lbaas.pool_health_monitors_get(
-            IsA(http.HttpRequest)).AndReturn(monitors)
+        api.lbaas.pool_health_monitor_list(
+            IsA(http.HttpRequest),
+            tenant_id=self.tenant.id).AndReturn(monitors)
 
         api.lbaas.pool_monitor_association_create(
             IsA(http.HttpRequest),
@@ -787,14 +794,15 @@ class LoadBalancerTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, str(self.INDEX_URL))
 
-    @test.create_stubs({api.lbaas: ('pool_get', 'pool_health_monitors_get')})
+    @test.create_stubs({api.lbaas: ('pool_get', 'pool_health_monitor_list')})
     def test_add_pool_monitor_association_get(self):
         pool = self.pools.first()
         monitors = self.monitors.list()
 
         api.lbaas.pool_get(IsA(http.HttpRequest), pool.id).AndReturn(pool)
-        api.lbaas.pool_health_monitors_get(
-            IsA(http.HttpRequest)).AndReturn(monitors)
+        api.lbaas.pool_health_monitor_list(
+            IsA(http.HttpRequest),
+            tenant_id=self.tenant.id).AndReturn(monitors)
 
         self.mox.ReplayAll()
 
@@ -808,7 +816,7 @@ class LoadBalancerTests(test.TestCase):
         self.assertQuerysetEqual(workflow.steps, expected_objs)
 
     @test.create_stubs({api.lbaas: ('pool_get',
-                                    'pool_health_monitors_get',
+                                    'pool_health_monitor_list',
                                     'pool_monitor_association_delete')})
     def test_delete_pool_monitor_association_post(self):
         pool = self.pools.first()
@@ -816,7 +824,7 @@ class LoadBalancerTests(test.TestCase):
         monitor = monitors[0]
 
         api.lbaas.pool_get(IsA(http.HttpRequest), pool.id).AndReturn(pool)
-        api.lbaas.pool_health_monitors_get(
+        api.lbaas.pool_health_monitor_list(
             IsA(http.HttpRequest)).AndReturn(monitors)
 
         api.lbaas.pool_monitor_association_delete(
@@ -840,13 +848,13 @@ class LoadBalancerTests(test.TestCase):
         self.assertRedirectsNoFollow(res, str(self.INDEX_URL))
 
     @test.create_stubs({api.lbaas: ('pool_get',
-                                    'pool_health_monitors_get')})
+                                    'pool_health_monitor_list')})
     def test_delete_pool_monitor_association_get(self):
         pool = self.pools.first()
         monitors = self.monitors.list()
 
         api.lbaas.pool_get(IsA(http.HttpRequest), pool.id).AndReturn(pool)
-        api.lbaas.pool_health_monitors_get(
+        api.lbaas.pool_health_monitor_list(
             IsA(http.HttpRequest)).AndReturn(monitors)
 
         self.mox.ReplayAll()
@@ -861,3 +869,64 @@ class LoadBalancerTests(test.TestCase):
         expected_objs = [
             '<DeletePMAssociationStep: deletepmassociationaction>', ]
         self.assertQuerysetEqual(workflow.steps, expected_objs)
+
+    @test.create_stubs({api.lbaas: ('pool_list', 'vip_get',
+                                    'member_list', 'pool_get',
+                                    'pool_health_monitor_list',
+                                    'pool_delete')})
+    def test_delete_pool(self):
+        self.set_up_expect()
+        pool = self.pools.first()
+        api.lbaas.pool_delete(IsA(http.HttpRequest), pool.id)
+        self.mox.ReplayAll()
+
+        form_data = {"action": "poolstable__deletepool__%s" % pool.id}
+        res = self.client.post(self.INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+
+    @test.create_stubs({api.lbaas: ('pool_list', 'vip_get',
+                                    'member_list', 'pool_get',
+                                    'pool_health_monitor_list',
+                                    'vip_delete')})
+    def test_delete_vip(self):
+        self.set_up_expect()
+        pool = self.pools.first()
+        vip = self.vips.first()
+        api.lbaas.vip_delete(IsA(http.HttpRequest), vip.id)
+        self.mox.ReplayAll()
+
+        form_data = {"action": "poolstable__deletevip__%s" % pool.id}
+        res = self.client.post(self.INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+
+    @test.create_stubs({api.lbaas: ('pool_list', 'vip_get',
+                                    'member_list', 'pool_get',
+                                    'pool_health_monitor_list',
+                                    'member_delete')})
+    def test_delete_member(self):
+        self.set_up_expect()
+        member = self.members.first()
+        api.lbaas.member_delete(IsA(http.HttpRequest), member.id)
+        self.mox.ReplayAll()
+
+        form_data = {"action": "memberstable__deletemember__%s" % member.id}
+        res = self.client.post(self.INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+
+    @test.create_stubs({api.lbaas: ('pool_list', 'vip_get',
+                                    'member_list', 'pool_get',
+                                    'pool_health_monitor_list',
+                                    'pool_health_monitor_delete')})
+    def test_delete_monitor(self):
+        self.set_up_expect()
+        monitor = self.monitors.first()
+        api.lbaas.pool_health_monitor_delete(IsA(http.HttpRequest), monitor.id)
+        self.mox.ReplayAll()
+
+        form_data = {"action": "monitorstable__deletemonitor__%s" % monitor.id}
+        res = self.client.post(self.INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)

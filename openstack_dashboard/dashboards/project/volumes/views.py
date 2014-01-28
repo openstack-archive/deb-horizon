@@ -18,15 +18,16 @@
 Views for managing volumes.
 """
 
-from django.core.urlresolvers import reverse  # noqa
-from django.core.urlresolvers import reverse_lazy  # noqa
-from django.utils.datastructures import SortedDict  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
+from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from horizon import tabs
+from horizon.utils import memoized
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
@@ -61,7 +62,7 @@ class VolumeTableMixIn(object):
                                 "attachment information"))
             return []
 
-    def _set_id_if_nameless(self, volumes, instances):
+    def _set_id_if_nameless(self, volumes):
         for volume in volumes:
             # It is possible to create a volume with no name through the
             # EC2 API, use the ID in those cases.
@@ -83,7 +84,7 @@ class IndexView(tables.DataTableView, VolumeTableMixIn):
     def get_data(self):
         volumes = self._get_volumes()
         instances = self._get_instances()
-        self._set_id_if_nameless(volumes, instances)
+        self._set_id_if_nameless(volumes)
         self._set_attachments_string(volumes, instances)
         return volumes
 
@@ -97,21 +98,20 @@ class DetailView(tabs.TabView):
         context["volume"] = self.get_data()
         return context
 
+    @memoized.memoized_method
     def get_data(self):
-        if not hasattr(self, "_volume"):
-            try:
-                volume_id = self.kwargs['volume_id']
-                self._volume = cinder.volume_get(self.request, volume_id)
-                for att in self._volume.attachments:
-                    att['instance'] = api.nova.server_get(self.request,
-                                                          att['server_id'])
-            except Exception:
-                redirect = reverse('horizon:project:volumes:index')
-                exceptions.handle(self.request,
-                                  _('Unable to retrieve volume details.'),
-                                  redirect=redirect)
-
-        return self._volume
+        try:
+            volume_id = self.kwargs['volume_id']
+            volume = cinder.volume_get(self.request, volume_id)
+            for att in volume.attachments:
+                att['instance'] = api.nova.server_get(self.request,
+                                                      att['server_id'])
+        except Exception:
+            redirect = reverse('horizon:project:volumes:index')
+            exceptions.handle(self.request,
+                              _('Unable to retrieve volume details.'),
+                              redirect=redirect)
+        return volume
 
     def get_tabs(self, request, *args, **kwargs):
         volume = self.get_data()
@@ -141,13 +141,51 @@ class CreateSnapshotView(forms.ModalFormView):
         context = super(CreateSnapshotView, self).get_context_data(**kwargs)
         context['volume_id'] = self.kwargs['volume_id']
         try:
+            volume = cinder.volume_get(self.request, context['volume_id'])
+            if (volume.status == 'in-use'):
+                context['attached'] = True
+                context['form'].set_warning(_("This volume is currently "
+                                              "attached to an instance. "
+                                              "In some cases, creating a "
+                                              "snapshot from an attached "
+                                              "volume can result in a "
+                                              "corrupted snapshot."))
             context['usages'] = quotas.tenant_limit_usages(self.request)
         except Exception:
-            exceptions.handle(self.request)
+            exceptions.handle(self.request,
+                              _('Unable to retrieve volume information.'))
         return context
 
     def get_initial(self):
         return {'volume_id': self.kwargs["volume_id"]}
+
+
+class UpdateView(forms.ModalFormView):
+    form_class = project_forms.UpdateForm
+    template_name = 'project/volumes/update.html'
+    success_url = reverse_lazy("horizon:project:volumes:index")
+
+    def get_object(self):
+        if not hasattr(self, "_object"):
+            vol_id = self.kwargs['volume_id']
+            try:
+                self._object = cinder.volume_get(self.request, vol_id)
+            except Exception:
+                msg = _('Unable to retrieve volume.')
+                url = reverse('horizon:project:volumes:index')
+                exceptions.handle(self.request, msg, redirect=url)
+        return self._object
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateView, self).get_context_data(**kwargs)
+        context['volume'] = self.get_object()
+        return context
+
+    def get_initial(self):
+        volume = self.get_object()
+        return {'volume_id': self.kwargs["volume_id"],
+                'name': volume.display_name,
+                'description': volume.display_description}
 
 
 class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
@@ -156,16 +194,15 @@ class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
     template_name = 'project/volumes/attach.html'
     success_url = reverse_lazy("horizon:project:volumes:index")
 
+    @memoized.memoized_method
     def get_object(self):
-        if not hasattr(self, "_object"):
-            volume_id = self.kwargs['volume_id']
-            try:
-                self._object = cinder.volume_get(self.request, volume_id)
-            except Exception:
-                self._object = None
-                exceptions.handle(self.request,
-                                  _('Unable to retrieve volume information.'))
-        return self._object
+        volume_id = self.kwargs['volume_id']
+        try:
+            return cinder.volume_get(self.request, volume_id)
+        except Exception:
+            self._object = None
+            exceptions.handle(self.request,
+                              _('Unable to retrieve volume information.'))
 
     def get_data(self):
         try:
@@ -187,11 +224,10 @@ class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
         return {'volume': self.get_object(),
                 'instances': instances}
 
+    @memoized.memoized_method
     def get_form(self):
-        if not hasattr(self, "_form"):
-            form_class = self.get_form_class()
-            self._form = super(EditAttachmentsView, self).get_form(form_class)
-        return self._form
+        form_class = self.get_form_class()
+        return super(EditAttachmentsView, self).get_form(form_class)
 
     def get_context_data(self, **kwargs):
         context = super(EditAttachmentsView, self).get_context_data(**kwargs)

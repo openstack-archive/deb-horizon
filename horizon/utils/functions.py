@@ -12,10 +12,10 @@
 
 import math
 
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.contrib.auth import logout  # noqa
 from django import http
-from django.utils.encoding import force_unicode  # noqa
+from django.utils.encoding import force_unicode
 from django.utils.functional import lazy  # noqa
 from django.utils import translation
 
@@ -45,10 +45,20 @@ def logout_with_message(request, msg):
     """Send HttpResponseRedirect to LOGOUT_URL.
 
     `msg` is a message displayed on the login page after the logout, to explain
-    the logout reson.
+    the logout reason.
     """
     logout(request)
     response = http.HttpResponseRedirect(
         '%s?next=%s' % (settings.LOGOUT_URL, request.path))
     add_logout_reason(request, response, msg)
     return response
+
+
+def get_page_size(request, default=20):
+    session = request.session
+    cookies = request.COOKIES
+    return int(session.get('horizon_pagesize',
+                           cookies.get('horizon_pagesize',
+                                       getattr(settings,
+                                               'API_RESULT_PAGE_SIZE',
+                                               default))))

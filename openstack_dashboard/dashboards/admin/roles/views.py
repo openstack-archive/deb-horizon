@@ -14,13 +14,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse  # noqa
-from django.core.urlresolvers import reverse_lazy  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
+from horizon.utils import memoized
 
 from openstack_dashboard import api
 
@@ -49,17 +50,15 @@ class UpdateView(forms.ModalFormView):
     template_name = 'admin/roles/update.html'
     success_url = reverse_lazy('horizon:admin:roles:index')
 
+    @memoized.memoized_method
     def get_object(self):
-        if not hasattr(self, "_object"):
-            try:
-                self._object = api.keystone.role_get(self.request,
-                                                     self.kwargs['role_id'])
-            except Exception:
-                redirect = reverse("horizon:admin:roles:index")
-                exceptions.handle(self.request,
-                                  _('Unable to update role.'),
-                                  redirect=redirect)
-        return self._object
+        try:
+            return api.keystone.role_get(self.request, self.kwargs['role_id'])
+        except Exception:
+            redirect = reverse("horizon:admin:roles:index")
+            exceptions.handle(self.request,
+                              _('Unable to update role.'),
+                              redirect=redirect)
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)

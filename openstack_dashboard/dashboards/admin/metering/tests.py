@@ -14,8 +14,8 @@
 import json
 import uuid
 
-from django.core.urlresolvers import reverse  # noqa
-from django import http  # noqa
+from django.core.urlresolvers import reverse
+from django import http
 from mox import IsA  # noqa
 
 from openstack_dashboard import api
@@ -62,8 +62,7 @@ class MeteringViewTests(test.APITestCase, test.BaseAdminViewTests):
 
         api.keystone.tenant_list(IsA(http.HttpRequest),
                                  domain=None,
-                                 marker='tenant_marker',
-                                 paginate=True) \
+                                 paginate=False) \
             .AndReturn([self.tenants.list(), False])
 
         ceilometerclient = self.stub_ceilometerclient()
@@ -94,8 +93,7 @@ class MeteringViewTests(test.APITestCase, test.BaseAdminViewTests):
 
         api.keystone.tenant_list(IsA(http.HttpRequest),
                                  domain=None,
-                                 marker='tenant_marker',
-                                 paginate=True) \
+                                 paginate=False) \
             .AndReturn([self.tenants.list(), False])
 
         ceilometerclient = self.stub_ceilometerclient()

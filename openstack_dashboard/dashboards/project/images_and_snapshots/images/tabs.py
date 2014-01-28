@@ -14,8 +14,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django import conf
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import tabs
 
@@ -26,7 +26,19 @@ class OverviewTab(tabs.Tab):
     template_name = "project/images_and_snapshots/images/_detail_overview.html"
 
     def get_context_data(self, request):
-        return {"image": self.tab_group.kwargs['image']}
+        image = self.tab_group.kwargs['image']
+        custom_titles = getattr(conf.settings,
+                                'IMAGE_CUSTOM_PROPERTY_TITLES', {})
+        image_props = []
+        for prop, val in image.properties.items():
+            if prop == 'description':
+                # Description property is already listed in Info section
+                continue
+            title = custom_titles.get(prop, prop)
+            image_props.append((prop, title, val))
+
+        return {"image": image,
+                "image_props": sorted(image_props, key=lambda prop: prop[1])}
 
 
 class ImageDetailTabs(tabs.TabGroup):

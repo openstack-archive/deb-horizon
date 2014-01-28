@@ -21,10 +21,10 @@
 """
 Views for managing images.
 """
-from django.conf import settings  # noqa
+from django.conf import settings
 from django.forms import ValidationError  # noqa
 from django.forms.widgets import HiddenInput  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -72,6 +72,8 @@ class CreateImageForm(forms.SelfHandlingForm):
                                     choices=[],
                                     widget=forms.Select(attrs={'class':
                                                                'switchable'}))
+    architecture = forms.CharField(max_length="255", label=_("Architecture"),
+                                   required=False)
     minimum_disk = forms.IntegerField(label=_("Minimum Disk (GB)"),
                                     help_text=_('The minimum disk size'
                                             ' required to boot the'
@@ -141,6 +143,8 @@ class CreateImageForm(forms.SelfHandlingForm):
 
         if data['description']:
             meta['properties']['description'] = data['description']
+        if data['architecture']:
+            meta['properties']['architecture'] = data['architecture']
         if (settings.HORIZON_IMAGES_ALLOW_UPLOAD and
                 data.get('image_file', None)):
             meta['data'] = self.files['image_file']
@@ -198,9 +202,7 @@ class UpdateImageForm(forms.SelfHandlingForm):
                 'disk_format': data['disk_format'],
                 'container_format': container_format,
                 'name': data['name'],
-                'properties': {}}
-        if data['description']:
-            meta['properties']['description'] = data['description']
+                'properties': {'description': data['description']}}
         if data['kernel']:
             meta['properties']['kernel_id'] = data['kernel']
         if data['ramdisk']:

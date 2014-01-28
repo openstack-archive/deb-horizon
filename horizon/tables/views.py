@@ -194,6 +194,8 @@ class DataTableView(MultiTableView):
         return self._tables
 
     def get_table(self):
+        # Note: this method cannot be easily memoized, because get_context_data
+        # uses its cached value directly.
         if not self.table_class:
             raise AttributeError('You must specify a DataTable class for the '
                                  '"table_class" attribute on %s.'
@@ -254,7 +256,7 @@ class MixedDataTableView(DataTableView):
         self.table = super(MixedDataTableView, self).get_table()
         if not self.table._meta.mixed_data_type:
             raise AttributeError('You must have at least two elements in '
-                                 'the data_types attibute '
+                                 'the data_types attribute '
                                  'in table %s to use MixedDataTableView.'
                                  % self.table._meta.name)
         return self.table

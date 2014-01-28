@@ -25,9 +25,9 @@ from django import template
 from django.template.defaultfilters import linebreaks  # noqa
 from django.template.defaultfilters import safe  # noqa
 from django.template.defaultfilters import slugify  # noqa
-from django.utils.encoding import force_unicode  # noqa
+from django.utils.encoding import force_unicode
 from django.utils.importlib import import_module  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import base
 from horizon import exceptions
@@ -438,11 +438,7 @@ class Step(object):
 
     def has_required_fields(self):
         """Returns True if action contains any required fields."""
-        for key in self.contributes:
-            field = self.action.fields.get(key, None)
-            if (field and field.required):
-                return True
-        return False
+        return any(field.required for field in self.action.fields.values())
 
 
 class WorkflowMetaclass(type):
@@ -580,6 +576,10 @@ class Workflow(html.HTMLElement):
         the case of a workflow which updates a resource it would be the
         resource being updated after it has been retrieved.
 
+    .. attribute:: wizard
+
+        Whether to present the workflow as a wizard, with "prev" and "next"
+        buttons and validation after every step.
     """
     __metaclass__ = WorkflowMetaclass
     slug = None
@@ -590,6 +590,7 @@ class Workflow(html.HTMLElement):
     failure_message = _("%s did not complete.")
     redirect_param_name = "next"
     multipart = False
+    wizard = False
     _registerable_class = Step
 
     def __unicode__(self):
@@ -847,7 +848,7 @@ class Workflow(html.HTMLElement):
 
     def add_error_to_step(self, message, slug):
         """Adds an error to the workflow's Step with the
-        specifed slug based on API issues. This is useful
+        specified slug based on API issues. This is useful
         when you wish for API errors to appear as errors on
         the form rather than using the messages framework.
         """

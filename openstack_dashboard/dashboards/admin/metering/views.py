@@ -18,7 +18,7 @@ from datetime import timedelta  # noqa
 import json
 
 from django.http import HttpResponse   # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView  # noqa
 
 from horizon import exceptions
@@ -145,8 +145,7 @@ class SamplesView(TemplateView):
                 tenants, more = api.keystone.tenant_list(
                     request,
                     domain=None,
-                    paginate=True,
-                    marker="tenant_marker")
+                    paginate=False)
             except Exception:
                 tenants = []
                 exceptions.handle(request,

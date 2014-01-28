@@ -18,8 +18,8 @@
 
 import logging
 
-from django.core.urlresolvers import reverse  # noqa
-from django.utils.translation import ugettext_lazy as _  # noqa
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
@@ -100,7 +100,8 @@ class UpdateVip(forms.SelfHandlingForm):
 
         pool_id_choices = []
         try:
-            pools = api.lbaas.pools_get(request)
+            tenant_id = request.user.tenant_id
+            pools = api.lbaas.pool_list(request, tenant_id=tenant_id)
         except Exception:
             pools = []
             exceptions.handle(request,
@@ -179,7 +180,8 @@ class UpdateMember(forms.SelfHandlingForm):
 
         pool_id_choices = []
         try:
-            pools = api.lbaas.pools_get(request)
+            tenant_id = request.user.tenant_id
+            pools = api.lbaas.pool_list(request, tenant_id=tenant_id)
         except Exception:
             pools = []
             exceptions.handle(request,
