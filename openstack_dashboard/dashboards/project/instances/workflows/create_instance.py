@@ -36,6 +36,7 @@ from horizon.utils import validators
 from horizon import workflows
 
 from openstack_dashboard import api
+from openstack_dashboard.api import base
 from openstack_dashboard.api import cinder
 from openstack_dashboard.usage import quotas
 
@@ -73,17 +74,6 @@ class SelectProjectUser(workflows.Step):
 
 
 class SetInstanceDetailsAction(workflows.Action):
-    SOURCE_TYPE_CHOICES = (
-        ('', _("--- Select source ---")),
-        ("image_id", _("Boot from image.")),
-        ("instance_snapshot_id", _("Boot from snapshot.")),
-        ("volume_id", _("Boot from volume.")),
-        ("volume_image_id", _("Boot from image "
-                                  "(creates a new volume).")),
-        ("volume_snapshot_id", _("Boot from volume snapshot "
-                                 "(creates a new volume).")),
-    )
-
     availability_zone = forms.ChoiceField(label=_("Availability Zone"),
                                           required=False)
 
@@ -99,7 +89,6 @@ class SetInstanceDetailsAction(workflows.Action):
 
     source_type = forms.ChoiceField(label=_("Instance Boot Source"),
                                     required=True,
-                                    choices=SOURCE_TYPE_CHOICES,
                                     help_text=_("Choose Your Boot Source "
                                                 "Type."))
 
@@ -145,6 +134,26 @@ class SetInstanceDetailsAction(workflows.Action):
         self._init_images_cache()
         super(SetInstanceDetailsAction, self).__init__(
             request, context, *args, **kwargs)
+        source_type_choices = [
+            ('', _("--- Select source ---")),
+            ("image_id", _("Boot from image")),
+            ("instance_snapshot_id", _("Boot from snapshot")),
+        ]
+        if base.is_service_enabled(request, 'volume'):
+            source_type_choices.append(("volume_id", _("Boot from volume")))
+
+            try:
+                if api.nova.extension_supported("BlockDeviceMappingV2Boot",
+                                                request):
+                    source_type_choices.append(("volume_image_id",
+                            _("Boot from image (creates a new volume).")))
+            except Exception:
+                exceptions.handle(request, _('Unable to retrieve extensions '
+                                            'information.'))
+
+            source_type_choices.append(("volume_snapshot_id",
+                    _("Boot from volume snapshot (creates a new volume).")))
+        self.fields['source_type'].choices = source_type_choices
 
     def clean(self):
         cleaned_data = super(SetInstanceDetailsAction, self).clean()
