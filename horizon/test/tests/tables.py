@@ -335,8 +335,8 @@ class DataTableTests(test.TestCase):
 
         self.table = TempTable(self.request, TEST_DATA_2)
         name_column = self.table.columns['name']
-        self.assertEqual(name_column.update_action, None)
-        self.assertEqual(name_column.form_field, None)
+        self.assertIsNone(name_column.update_action)
+        self.assertIsNone(name_column.form_field)
         self.assertEqual(name_column.form_field_attributes, {})
 
     def test_table_natural_no_actions_column(self):
@@ -451,7 +451,7 @@ class DataTableTests(test.TestCase):
         self.assertEqual(row.cells['id'].get_status_class(cell_status),
                          'status_down')
         cell_status = row3.cells['id'].status
-        self.assertEqual(cell_status, None)
+        self.assertIsNone(cell_status)
         self.assertEqual(row.cells['id'].get_status_class(cell_status),
                          'status_unknown')
 
@@ -762,7 +762,7 @@ class DataTableTests(test.TestCase):
         self.assertEqual(self.table.parse_action(action_string),
                          ('my_table', 'delete', None))
         handled = self.table.maybe_handle()
-        self.assertEqual(handled, None)
+        self.assertIsNone(handled)
         self.assertEqual(list(req._messages)[0].message,
                          "Please select a row before taking that action.")
 
@@ -800,7 +800,7 @@ class DataTableTests(test.TestCase):
         req = self.factory.post('/my_url/', {action_string: '2'})
         self.table = MyTable(req, TEST_DATA)
         handled = self.table.maybe_handle()
-        self.assertEqual(handled, None)
+        self.assertIsNone(handled)
         self.assertQuerysetEqual(self.table.filtered_data,
                                  ['<FakeObject: object_2>'])
 
@@ -808,7 +808,7 @@ class DataTableTests(test.TestCase):
         req = self.factory.get('/my_url/', {action_string: '2'})
         self.table = MyTable(req, TEST_DATA)
         handled = self.table.maybe_handle()
-        self.assertEqual(handled, None)
+        self.assertIsNone(handled)
         self.assertQuerysetEqual(self.table.filtered_data,
                                  ['<FakeObject: object_1>',
                                   '<FakeObject: object_2>',
@@ -832,9 +832,9 @@ class DataTableTests(test.TestCase):
         req = self.factory.get('/my_url/', params)
         self.table = MyTable(req)
         resp = self.table.maybe_preempt()
-        self.assertEqual(resp, None)
+        self.assertIsNone(resp)
         resp = self.table.maybe_handle()
-        self.assertEqual(resp, None)
+        self.assertIsNone(resp)
 
         # Verbose names
         table_actions = self.table.get_table_actions()
@@ -853,7 +853,7 @@ class DataTableTests(test.TestCase):
         self.table = MyTable(req, TEST_DATA_2)
         handled = self.table.maybe_preempt()
         # Checking the response header.
-        self.assertEqual(handled, None)
+        self.assertIsNone(handled)
 
     def test_inline_edit_update_action_get(self):
         # Get request should return td field with data.
