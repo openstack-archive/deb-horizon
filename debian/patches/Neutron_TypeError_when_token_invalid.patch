@@ -1,0 +1,24 @@
+Description: Neutron TypeError when token invalid
+ When a neutron api-call is made, if the user's token is invalid, the neutron
+ client will return a type-error because no auth_url has been provided.
+ .
+ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+ .
+ This TypeError should really be a neutronclient.common.exceptions.Unauthorized
+ instead, which will get percolated up via a password-base authentication
+ failure.
+Author: Matthew D. Wood <matt.wood@hp.com>
+Origin: upstream, https://review.openstack.org/#/c/73420/
+Bug-Ubuntu: https://launchpad.net/bugs/1279979
+Last-Update: 2014-02-24
+
+--- horizon-2013.2.2.orig/openstack_dashboard/api/neutron.py
++++ horizon-2013.2.2/openstack_dashboard/api/neutron.py
+@@ -424,6 +424,7 @@ def neutronclient(request):
+     LOG.debug('user_id=%(user)s, tenant_id=%(tenant)s' %
+               {'user': request.user.id, 'tenant': request.user.tenant_id})
+     c = neutron_client.Client(token=request.user.token.id,
++                              auth_url=base.url_for(request, 'identity'),
+                               endpoint_url=base.url_for(request, 'network'),
+                               insecure=insecure, ca_cert=cacert)
+     return c

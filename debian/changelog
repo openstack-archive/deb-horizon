@@ -1,3 +1,9 @@
+horizon (2013.2.2-2) UNRELEASED; urgency=low
+
+  * Added upstream patch: Neutron TypeError when token invalid.
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 24 Feb 2014 17:57:26 +0800
+
 horizon (2013.2.2-1) unstable; urgency=medium
 
   * New upstream point release.

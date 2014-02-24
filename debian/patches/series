@@ -6,3 +6,4 @@ python-m-coverage-take2.patch
 removes-asserts-for-optional-imports.patch
 fix-trove-unit-tests.patch
 fix-django-1.6-import-django.conf.urls.defaults.patch
+Neutron_TypeError_when_token_invalid.patch
