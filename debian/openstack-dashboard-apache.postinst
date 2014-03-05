@@ -23,7 +23,7 @@ HORIZON_USE_SSL=yes" >/etc/default/openstack-dashboard-apache
 	db_get horizon/activate_vhost
 	if [ "${RET}" = "true" ] && [ -x /etc/init.d/apache2 ] ; then
 		sed -i 's#[ \t]*HORIZON_ACTIVATE_VHOSTS=.*#HORIZON_ACTIVATE_VHOSTS=yes#' /etc/default/openstack-dashboard-apache
-		a2dissite default
+		a2dissite default || true
 		db_get horizon/use_ssl
 		if [ "${RET}" = "true" ] ; then
 			sed -i 's#[ \t]*HORIZON_USE_SSL=.*#HORIZON_USE_SSL=yes#' /etc/default/openstack-dashboard-apache
