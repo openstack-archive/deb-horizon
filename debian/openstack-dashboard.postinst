@@ -17,7 +17,8 @@ if [ "$1" = "configure" ] ; then
 	chown www-data:www-data /var/lib/openstack-dashboard/secret-key
 
     # Compress the JS and CSS with python-compressor and python-lesscpy
-	su www-data -s /bin/sh -c "/usr/share/openstack-dashboard/manage.py compress --force"
+	/usr/share/openstack-dashboard/manage.py compress --force
+	chown -R www-data /var/lib/openstack-dashboard/secret-key
 fi
 
 #DEBHELPER#
