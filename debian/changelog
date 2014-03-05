@@ -8,13 +8,15 @@ horizon (2014.1~b2-1) experimental; urgency=low
     CSS and the JS
   * Add call "manage.py compress" with the --force parameter to avoid
     a warning an harmless warning for the user.
+  * avoid openstack-dashboard-apache.postinst failure if the default vhost
+    has been removed.
 
   [ Thomas Goirand ]
   * New upstream release (Icehouse beta 1).
   * Removes CVE-2013-6858 patch applied upstream.
   * Refreshed patch.
 
- -- Thomas Goirand <zigo@debian.org>  Mon, 09 Dec 2013 22:14:27 +0800
+ -- Gonéri Le Bouder <goneri@debian.org>  Wed, 05 Mar 2014 20:55:14 +0100
 
 horizon (2013.2-2) unstable; urgency=high
 
