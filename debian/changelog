@@ -2,6 +2,7 @@ horizon (2013.2.2-2) unstable; urgency=low
 
   [ Gonéri Le Bouder ]
   * Compress the CSS and JS during the postinst (Closes: #739698)
+  * Add mysql in Uploaders
 
   [ Thomas Goirand ]
   * Added upstream patch: Neutron TypeError when token invalid.
