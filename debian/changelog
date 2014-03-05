@@ -1,3 +1,12 @@
+horizon (2013.2.2-3) unstable; urgency=medium
+
+  * Turns COMPRESS_OFFLINE to True since we now pre-compress the
+    CSS and the JS
+  * Add call "manage.py compress" with the --force parameter to avoid
+    a warning an harmless warning for the user.
+
+ -- Gonéri Le Bouder <goneri@debian.org>  Wed, 05 Mar 2014 20:55:14 +0100
+
 horizon (2013.2.2-2) unstable; urgency=low
 
   [ Gonéri Le Bouder ]
