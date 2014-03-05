@@ -2,6 +2,7 @@ horizon (2014.1~b2-1) experimental; urgency=low
 
   [ Gonéri Le Bouder ]
   * Compress the CSS and JS during the postinst (Closes: #739698)
+  * Add mysql in Uploaders
 
   [ Thomas Goirand ]
   * New upstream release (Icehouse beta 1).
