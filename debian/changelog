@@ -4,6 +4,10 @@ horizon (2014.1~b2-1) experimental; urgency=low
   * Compress the CSS and JS during the postinst (Closes: #739698)
   * Add mysql in Uploaders
   * Bump standard version, no change needed
+  * Turns COMPRESS_OFFLINE to True since we now pre-compress the
+    CSS and the JS
+  * Add call "manage.py compress" with the --force parameter to avoid
+    a warning an harmless warning for the user.
 
   [ Thomas Goirand ]
   * New upstream release (Icehouse beta 1).
