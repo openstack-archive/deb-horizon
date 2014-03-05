@@ -10,7 +10,8 @@ horizon (2014.1~b2-1) experimental; urgency=low
     a warning an harmless warning for the user.
   * avoid openstack-dashboard-apache.postinst failure if the default vhost
     has been removed.
-  * adjust the secret-key group to www-data
+  * adjust the secret-key group to horizon
+  * run horizon with the horizon user/group
 
   [ Thomas Goirand ]
   * New upstream release (Icehouse beta 1).
