@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
-"Report-Msgid-Bugs-To: openstack-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2013-07-19 14:32+0000\n"
+"Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
+"POT-Creation-Date: 2014-03-07 10:34+0100\n"
 "PO-Revision-Date: 2013-07-19 23:32+0900\n"
 "Last-Translator: victory <victory.deb@gmail.com>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
@@ -39,8 +39,8 @@ msgid ""
 "Choose this option to replace that default with the OpenStack Dashboard "
 "configuration."
 msgstr ""
-"そのデフォルトを OpenStack の Dashboard 設定で置き換える場合はこのオプションを"
-"選択してください。"
+"そのデフォルトを OpenStack の Dashboard 設定で置き換える場合はこのオプション"
+"を選択してください。"
 
 #. Type: boolean
 #. Description
