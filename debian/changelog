@@ -10,7 +10,7 @@ horizon (2014.1~b2-1) experimental; urgency=low
   * Add myself in Uploaders
   * run horizon with the horizon user/group
   * Bump standard version, no change needed
-  * Turns COMPRESS_OFFLINE to True since we now pre-compress the
+  * Call debconf-updatepo to refresh the i18n template
 
   [ Thomas Goirand ]
   * New upstream release (Icehouse beta 1).

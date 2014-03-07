@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
-"POT-Creation-Date: 2012-11-28 14:00+0000\n"
+"POT-Creation-Date: 2014-03-07 10:34+0100\n"
 "PO-Revision-Date: 2014-01-09 14:29+0100\n"
 "Last-Translator: Martin Eberhard Schauer <Martin.E.Schauer@gmx.de>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -26,30 +26,47 @@ msgstr "Dashboard aktivieren und die Vorgabe für VirtualHost deaktivieren?"
 #. Type: boolean
 #. Description
 #: ../openstack-dashboard-apache.templates:2001
+#, fuzzy
+#| msgid ""
+#| "In Debian, Apache comes with a default website and a default page, "
+#| "configured in /etc/apache2/sites-available/default. Select if this "
+#| "configuration should be disabled and replaced by the Openstack Dashboard "
+#| "configuration."
 msgid ""
-"In Debian, Apache comes with a default website and a default page, "
-"configured in /etc/apache2/sites-available/default. Select if this "
-"configuration should be disabled and replaced by the Openstack Dashboard "
-"configuration."
+"The Apache package sets up a default web site and a default page, configured "
+"in /etc/apache2/sites-available/default."
 msgstr ""
 "Debian verteilt Apache mit einer Standard-Website und einer Standardseite, "
 "die in /etc/apache2/sites-available/default konfiguriert sind. Wählen Sie, "
-"ob diese Konfiguration deaktiviert und durch die "
-"Openstack-Dashboard-Konfiguration ersetzt werden soll."
+"ob diese Konfiguration deaktiviert und durch die Openstack-Dashboard-"
+"Konfiguration ersetzt werden soll."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"Choose this option to replace that default with the OpenStack Dashboard "
+"configuration."
+msgstr ""
 
 #. Type: boolean
 #. Description
 #: ../openstack-dashboard-apache.templates:3001
-msgid "Should the Dashboard be installed on HTTPS?"
+#, fuzzy
+#| msgid "Should the Dashboard be installed on HTTPS?"
+msgid "Should the Dashboard use HTTPS?"
 msgstr "Soll das Dashboard mit HTTPS installiert werden?"
 
 #. Type: boolean
 #. Description
 #: ../openstack-dashboard-apache.templates:3001
+#, fuzzy
+#| msgid ""
+#| "Please choose if you would like Horizon to be installed on HTTPS only, "
+#| "with a redirection to HTTPS if HTTP is in use."
 msgid ""
-"Please choose if you would like Horizon to be installed on HTTPS only, with "
-"a redirection to HTTPS if HTTP is in use."
+"Select this option if you would like Horizon to be served over HTTPS only, "
+"with a redirection to HTTPS if HTTP is in use."
 msgstr ""
 "Wählen Sie bitte, ob Horizon nur mit HTTPS installiert werden soll und bei "
 "der Nutzung von HTTP auf HTTPS umgeleitet werden soll."
-
