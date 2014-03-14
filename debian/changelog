@@ -17,7 +17,7 @@ horizon (2014.1~b3-1) experimental; urgency=low
   * Removes CVE-2013-6858 patch applied upstream.
   * Refreshed patch.
 
- -- Gonéri Le Bouder <goneri@debian.org>  Wed, 05 Mar 2014 20:55:14 +0100
+ -- Thomas Goirand <zigo@debian.org>  Fri, 14 Mar 2014 11:34:49 +0000
 
 horizon (2013.2-2) unstable; urgency=high
 
