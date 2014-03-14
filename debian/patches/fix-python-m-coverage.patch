@@ -2,29 +2,22 @@ Description: Use "python -m covergate" instead of just "coverage"
  In Debian, there's no "coverage" command, so we need to apply this.
 Author: Thomas Goirand <zigo@debian.org>
 Forwarded: no
-Last-Update: 2014-01-29
+Last-Update: 2014-03-14
 
---- horizon-2014.1~b2.orig/run_tests.sh
-+++ horizon-2014.1~b2/run_tests.sh
-@@ -310,8 +310,8 @@ function run_tests_all {
-   if [ "$NOSE_WITH_HTML_OUTPUT" = '1' ]; then
+--- horizon-2014.1~b3.orig/run_tests.sh
++++ horizon-2014.1~b3/run_tests.sh
+@@ -315,8 +315,8 @@ function run_tests_all {
      export NOSE_HTML_OUT_FILE='horizon_nose_results.html'
    fi
--  ${command_wrapper} coverage erase
--  ${command_wrapper} coverage run -p $root/manage.py test horizon --settings=horizon.test.settings $testopts
-+  ${command_wrapper} python -m coverage erase
-+  ${command_wrapper} python -m coverage run -p $root/manage.py test horizon --settings=horizon.test.settings $testopts
-   # get results of the Horizon tests
-   HORIZON_RESULT=$?
- 
-@@ -320,15 +320,15 @@ function run_tests_all {
-   if [ "$NOSE_WITH_HTML_OUTPUT" = '1' ]; then
-     export NOSE_HTML_OUT_FILE='dashboard_nose_results.html'
+   if [ $with_coverage -eq 1 ]; then
+-    ${command_wrapper} coverage erase
+-    coverage_run="coverage run -p"
++    ${command_wrapper} python -m coverage erase
++    coverage_run="python -m coverage run -p"
    fi
--  ${command_wrapper} coverage run -p $root/manage.py test openstack_dashboard --settings=openstack_dashboard.test.settings $testopts
-+  ${command_wrapper} python -m coverage run -p $root/manage.py test openstack_dashboard --settings=openstack_dashboard.test.settings $testopts
-   # get results of the openstack_dashboard tests
-   DASHBOARD_RESULT=$?
+   ${command_wrapper} ${coverage_run} $root/manage.py test horizon --settings=horizon.test.settings $testopts
+   # get results of the Horizon tests
+@@ -333,9 +333,9 @@ function run_tests_all {
  
    if [ $with_coverage -eq 1 ]; then
      echo "Generating coverage reports"
