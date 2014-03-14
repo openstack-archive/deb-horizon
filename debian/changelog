@@ -1,4 +1,4 @@
-horizon (2014.1~b2-1) experimental; urgency=low
+horizon (2014.1~b3-1) experimental; urgency=low
 
   [ Gonéri Le Bouder ]
   * Compress the CSS and JS during the postinst (Closes: #739698)
@@ -13,7 +13,7 @@ horizon (2014.1~b2-1) experimental; urgency=low
   * Call debconf-updatepo to refresh the i18n template
 
   [ Thomas Goirand ]
-  * New upstream release (Icehouse beta 1).
+  * New upstream release (Icehouse beta 3).
   * Removes CVE-2013-6858 patch applied upstream.
   * Refreshed patch.
 
