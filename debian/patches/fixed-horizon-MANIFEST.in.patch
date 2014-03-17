@@ -1,14 +1,16 @@
 Description: Fixes MANIFEST.in
 Author: Thomas Goirand <zigo@debian.org>
 Forwarded: no
-Last-Update: 2013-09-23
+Last-Update: 2013-03-18
 
---- horizon-2013.2~b3.orig/MANIFEST.in
-+++ horizon-2013.2~b3/MANIFEST.in
-@@ -1,5 +1,5 @@
+--- horizon-2014.1~b3.orig/MANIFEST.in
++++ horizon-2014.1~b3/MANIFEST.in
+@@ -1,6 +1,6 @@
  recursive-include doc *.py *.rst *.css *.js *.html *.conf *.jpg *.gif *.png *.css_t
 -recursive-include horizon *.html *.css *.js *.csv *.template *.tmpl *.mo *.po
+-recursive-include openstack_dashboard *.html *.js *.less *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template
 +recursive-include horizon *.html *.css *.js *.csv *.template *.tmpl *.mo *.po *.py
- recursive-include openstack_dashboard *.html *.js *.less *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template
++recursive-include openstack_dashboard *.html *.js *.less *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template *.py
  recursive-include tools *.py *.sh
  
+ include AUTHORS

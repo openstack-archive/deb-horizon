@@ -1,3 +1,9 @@
+horizon (2014.1~b3-2) experimental; urgency=low
+
+  * Fixed MANIFEST.in which was missing the openstack_dashboard *.py.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 18 Mar 2014 00:44:21 +0800
+
 horizon (2014.1~b3-1) experimental; urgency=low
 
   [ Gonéri Le Bouder ]
