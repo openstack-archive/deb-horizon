@@ -12,8 +12,6 @@
 
 import os
 
-from django.utils.translation import ugettext_lazy as _
-
 from horizon.test.settings import *  # noqa
 from horizon.utils import secret_key
 

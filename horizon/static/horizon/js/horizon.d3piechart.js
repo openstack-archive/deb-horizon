@@ -123,40 +123,6 @@ horizon.d3_pie_chart_usage = {
     };
 
     animate(self.data);
-
-    // Add a legend
-    var legend = d3.select(self.chart[0][i])
-      .append("svg")
-      .attr("class", "legend")
-      .attr("width", WIDTH * 2)
-      .attr("height", self.data.length * 18 + 20)
-      .selectAll("g")
-      .data(self.keys)
-      .enter()
-      .append("g")
-      .attr("transform", function(d, i) {
-        return "translate(0," + i * 20 + ")";
-      });
-
-    legend.append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", self.colors);
-
-    legend.append("text")
-      .attr("x", 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .text(function(d) {
-        var value = 0;
-        for (var j = 0; j < self.data.length; j++) {
-          if (self.data[j]["key"] == d) {
-            value = self.data[j]["value"];
-            break;
-          }
-        }
-        return d + " " + Math.round(value/total * 100) + "%";
-      });
   }
 };
 

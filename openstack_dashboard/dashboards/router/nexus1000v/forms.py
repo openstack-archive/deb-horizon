@@ -149,21 +149,6 @@ class CreateNetworkProfile(forms.SelfHandlingForm):
 
         return cleaned_data
 
-    def clean(self):
-        # If sub_type is 'other' then assign this new value for sub_type
-        cleaned_data = super(CreateNetworkProfile, self).clean()
-
-        segment_type = cleaned_data.get('segment_type')
-        if segment_type == 'overlay':
-            sub_type = cleaned_data.get('sub_type')
-            if sub_type == 'other':
-                other_subtype = cleaned_data.get('other_subtype')
-                cleaned_data['sub_type'] = other_subtype
-                LOG.debug('subtype is now %(params)s',
-                          {'params': other_subtype})
-
-        return cleaned_data
-
     def handle(self, request, data):
         try:
             LOG.debug('request = %(req)s, params = %(params)s',
