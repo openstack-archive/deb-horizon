@@ -4,9 +4,11 @@ Author: Thomas Goirand <zigo@debian.org>
 Forwarded: no
 Last-Update: 2014-03-14
 
---- horizon-2014.1~b3.orig/run_tests.sh
-+++ horizon-2014.1~b3/run_tests.sh
-@@ -315,8 +315,8 @@ function run_tests_all {
+Index: horizon/run_tests.sh
+===================================================================
+--- horizon.orig/run_tests.sh	2014-04-02 18:21:26.000000000 +0800
++++ horizon/run_tests.sh	2014-04-02 18:29:17.000000000 +0800
+@@ -319,8 +319,8 @@
      export NOSE_HTML_OUT_FILE='horizon_nose_results.html'
    fi
    if [ $with_coverage -eq 1 ]; then
@@ -17,7 +19,7 @@ Last-Update: 2014-03-14
    fi
    ${command_wrapper} ${coverage_run} $root/manage.py test horizon --settings=horizon.test.settings $testopts
    # get results of the Horizon tests
-@@ -333,9 +333,9 @@ function run_tests_all {
+@@ -337,9 +337,9 @@
  
    if [ $with_coverage -eq 1 ]; then
      echo "Generating coverage reports"
