@@ -247,7 +247,6 @@ class ContainersTable(tables.DataTable):
                              verbose_name=_("Container Details"),
                              classes=('nowrap-col', ),)
     metadata_loaded = tables.Column(get_metadata_loaded,
-                                    verbose_name=_("Metadata Loaded"),
                                     status=True,
                                     status_choices=METADATA_LOADED_CHOICES,
                                     hidden=True)
@@ -268,6 +267,17 @@ class ContainersTable(tables.DataTable):
 
     def get_absolute_url(self):
         url = super(ContainersTable, self).get_absolute_url()
+        return http.urlquote(url)
+
+    def get_full_url(self):
+        """Returns the encoded absolute URL path with its query string.
+
+        This is used for the POST action attribute on the form element
+        wrapping the table. We use this method to persist the
+        pagination marker.
+
+        """
+        url = super(ContainersTable, self).get_full_url()
         return http.urlquote(url)
 
 
@@ -416,4 +426,15 @@ class ObjectsTable(tables.DataTable):
 
     def get_absolute_url(self):
         url = super(ObjectsTable, self).get_absolute_url()
+        return http.urlquote(url)
+
+    def get_full_url(self):
+        """Returns the encoded absolute URL path with its query string.
+
+        This is used for the POST action attribute on the form element
+        wrapping the table. We use this method to persist the
+        pagination marker.
+
+        """
+        url = super(ObjectsTable, self).get_full_url()
         return http.urlquote(url)

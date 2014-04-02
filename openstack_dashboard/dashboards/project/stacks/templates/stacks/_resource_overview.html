@@ -11,7 +11,11 @@
   </dl>
   <dl>
     <dt>{% trans "Resource ID" %}</dt>
-    <dd>{{ resource.physical_resource_id }}</dd>
+    <dd>
+      <a href="{{ resource_url }}">
+          {{ resource.physical_resource_id }}
+      </a>
+    </dd>
   </dl>
   <dl>
     <dt>{% trans "Stack Resource Type" %}</dt>
@@ -28,7 +32,7 @@
   <hr class="header_rule">
   <dl>
     <dt>{% trans "Last Updated" %}</dt>
-    <dd>{{ resource.updated_time|parse_isotime|timesince }}</dd>
+    <dd>{{ resource.updated_time|parse_isotime|timesince_or_never }}</dd>
     <dt>{% trans "Status" %}</dt>
     <dd>{{ resource.resource_status|title|replace_underscores }}: {{ resource.resource_status_reason }}</dd>
   </dl>

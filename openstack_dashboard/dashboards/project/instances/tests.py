@@ -21,6 +21,7 @@
 import json
 import uuid
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django import http
 from django.test import utils as test_utils
@@ -40,7 +41,6 @@ from openstack_dashboard.usage import quotas
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.dashboards.project.instances import tabs
 from openstack_dashboard.dashboards.project.instances import workflows
-
 
 INDEX_URL = reverse('horizon:project:instances:index')
 SEC_GROUP_ROLE_PREFIX = \
@@ -701,7 +701,8 @@ class InstanceTests(test.TestCase):
                             1)
         self.assertContains(res, "<dd>&lt;!--</dd>", 1)
         self.assertContains(res, "<dt>empty</dt>", 1)
-        self.assertContains(res, "<dd><em>N/A</em></dd>", 1)
+        #TODO(david-lyle): uncomment when fixed with Django 1.6
+        #self.assertContains(res, "<dd><em>N/A</em></dd>", 1)
 
     @test.create_stubs({api.nova: ("server_get",
                                    "instance_volumes_list",
@@ -746,6 +747,20 @@ class InstanceTests(test.TestCase):
         api.nova.server_get(IsA(http.HttpRequest), server.id) \
                         .AndRaise(self.exceptions.nova)
 
+        self.mox.ReplayAll()
+
+        url = reverse('horizon:project:instances:detail',
+                      args=[server.id])
+        res = self.client.get(url)
+
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @test.create_stubs({api.nova: ("server_get",)})
+    def test_instance_details_unauthorized(self):
+        server = self.servers.first()
+
+        api.nova.server_get(IsA(http.HttpRequest), server.id)\
+            .AndRaise(self.exceptions.nova_unauthorized)
         self.mox.ReplayAll()
 
         url = reverse('horizon:project:instances:detail',
@@ -929,6 +944,32 @@ class InstanceTests(test.TestCase):
         res = self.client.post(url, formData)
         self.assertRedirects(res, redir_url)
 
+    @test.create_stubs({api.nova: ('get_password',)})
+    def test_decrypt_instance_password(self):
+        server = self.servers.first()
+        enc_password = "azerty"
+        api.nova.get_password(IsA(http.HttpRequest), server.id)\
+            .AndReturn(enc_password)
+        self.mox.ReplayAll()
+        url = reverse('horizon:project:instances:decryptpassword',
+                      args=[server.id,
+                            server.key_name])
+        res = self.client.get(url)
+        self.assertTemplateUsed(res, 'project/instances/decryptpassword.html')
+
+    @test.create_stubs({api.nova: ('get_password',)})
+    def test_decrypt_instance_get_exception(self):
+        server = self.servers.first()
+        keypair = self.keypairs.first()
+        api.nova.get_password(IsA(http.HttpRequest), server.id)\
+            .AndRaise(self.exceptions.nova)
+        self.mox.ReplayAll()
+        url = reverse('horizon:project:instances:decryptpassword',
+                      args=[server.id,
+                            keypair])
+        res = self.client.get(url)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
     instance_update_get_stubs = {
         api.nova: ('server_get',),
         api.network: ('security_group_list',
@@ -1065,7 +1106,8 @@ class InstanceTests(test.TestCase):
     def test_launch_instance_get(self,
                                  expect_password_fields=True,
                                  block_device_mapping_v2=True,
-                                 custom_flavor_sort=None):
+                                 custom_flavor_sort=None,
+                                 only_one_network=False):
         image = self.images.first()
 
         api.nova.extension_supported('BlockDeviceMappingV2Boot',
@@ -1087,8 +1129,12 @@ class InstanceTests(test.TestCase):
                                  tenant_id=self.tenant.id,
                                  shared=False) \
                 .AndReturn(self.networks.list()[:1])
-        api.neutron.network_list(IsA(http.HttpRequest),
-                                 shared=True) \
+        if only_one_network:
+            api.neutron.network_list(IsA(http.HttpRequest),
+                                     shared=True).AndReturn([])
+        else:
+            api.neutron.network_list(IsA(http.HttpRequest),
+                                     shared=True) \
                 .AndReturn(self.networks.list()[1:])
         # TODO(absubram): Remove if clause and create separate
         # test stubs for when profile_support is being used.
@@ -1175,6 +1221,12 @@ class InstanceTests(test.TestCase):
         else:
             self.assertNotContains(res, boot_from_image_field_label)
 
+        checked_label = '<label for="id_network_0"><input checked="checked"'
+        if only_one_network:
+            self.assertContains(res, checked_label)
+        else:
+            self.assertNotContains(res, checked_label)
+
     @test_utils.override_settings(
         OPENSTACK_HYPERVISOR_FEATURES={'can_set_password': False})
     def test_launch_instance_get_without_password(self):
@@ -1214,6 +1266,9 @@ class InstanceTests(test.TestCase):
         })
     def test_launch_instance_get_custom_flavor_sort_by_missing_column(self):
         self.test_launch_instance_get(custom_flavor_sort='no_such_column')
+
+    def test_launch_instance_get_with_only_one_network(self):
+        self.test_launch_instance_get(only_one_network=True)
 
     @test.create_stubs({api.glance: ('image_list_detailed',),
                         api.neutron: ('network_list',
@@ -2605,6 +2660,101 @@ class InstanceTests(test.TestCase):
                                           confirm_password=password,
                                           disk_config='AUTO')
         self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @test_utils.override_settings(API_RESULT_PAGE_SIZE=2)
+    @test.create_stubs({api.nova: ('flavor_list',
+                                   'server_list',
+                                   'tenant_absolute_limits',
+                                   'extension_supported',),
+                        api.glance: ('image_list_detailed',),
+                        api.network:
+                            ('floating_ip_simple_associate_supported',
+                             'servers_update_addresses',),
+                        })
+    def test_index_form_action_with_pagination(self):
+        """The form action on the next page should have marker
+           object from the previous page last element.
+        """
+        page_size = getattr(settings, 'API_RESULT_PAGE_SIZE', 2)
+        servers = self.servers.list()[:3]
+
+        api.nova.extension_supported('AdminActions',
+                                     IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.flavor_list(IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(self.flavors.list())
+        api.glance.image_list_detailed(IgnoreArg()) \
+            .MultipleTimes().AndReturn((self.images.list(), False))
+
+        search_opts = {'marker': None, 'paginate': True}
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts) \
+            .AndReturn([servers[:page_size], True])
+        api.network.servers_update_addresses(
+            IsA(http.HttpRequest), servers[:page_size])
+        api.nova.server_list(IsA(http.HttpRequest), search_opts={
+            'marker': servers[page_size - 1].id, 'paginate': True}) \
+            .AndReturn([servers[page_size:], False])
+        api.network.servers_update_addresses(
+            IsA(http.HttpRequest), servers[page_size:])
+
+        api.nova.tenant_absolute_limits(IsA(http.HttpRequest), reserved=True) \
+           .MultipleTimes().AndReturn(self.limits['absolute'])
+        api.network.floating_ip_simple_associate_supported(
+            IsA(http.HttpRequest)).MultipleTimes().AndReturn(True)
+
+        self.mox.ReplayAll()
+
+        res = self.client.get(INDEX_URL)
+        self.assertTemplateUsed(res, 'project/instances/index.html')
+        # get first page with 2 items
+        self.assertEqual(len(res.context['instances_table'].data), page_size)
+
+        # update INDEX_URL with marker object
+        next_page_url = "?".join([reverse('horizon:project:instances:index'),
+                    "=".join([tables.InstancesTable._meta.pagination_param,
+                              servers[page_size - 1].id])])
+        form_action = 'action="%s"' % next_page_url
+
+        res = self.client.get(next_page_url)
+        # get next page with remaining items (item 3)
+        self.assertEqual(len(res.context['instances_table'].data), 1)
+        # ensure that marker object exists in form action
+        self.assertContains(res, form_action, count=1)
+
+    @test_utils.override_settings(API_RESULT_PAGE_SIZE=2)
+    @test.create_stubs({api.nova: ('server_list',
+                                   'flavor_list',
+                                   'server_delete',),
+                        api.glance: ('image_list_detailed',),
+                        api.network: ('servers_update_addresses',)})
+    def test_terminate_instance_with_pagination(self):
+        """Instance should be deleted from
+           the next page.
+        """
+        page_size = getattr(settings, 'API_RESULT_PAGE_SIZE', 2)
+        servers = self.servers.list()[:3]
+        server = servers[-1]
+
+        search_opts = {'marker': servers[page_size - 1].id, 'paginate': True}
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts) \
+            .AndReturn([servers[page_size:], False])
+        api.network.servers_update_addresses(IsA(http.HttpRequest),
+                                             servers[page_size:])
+        api.nova.flavor_list(IgnoreArg()).AndReturn(self.flavors.list())
+        api.glance.image_list_detailed(IgnoreArg()) \
+            .AndReturn((self.images.list(), False))
+        api.nova.server_delete(IsA(http.HttpRequest), server.id)
+        self.mox.ReplayAll()
+
+        # update INDEX_URL with marker object
+        next_page_url = "?".join([reverse('horizon:project:instances:index'),
+                    "=".join([tables.InstancesTable._meta.pagination_param,
+                              servers[page_size - 1].id])])
+        formData = {'action': 'instances__terminate__%s' % server.id}
+        res = self.client.post(next_page_url, formData)
+
+        self.assertRedirectsNoFollow(res, next_page_url)
+        self.assertMessageCount(success=1)
 
 
 class InstanceAjaxTests(test.TestCase):

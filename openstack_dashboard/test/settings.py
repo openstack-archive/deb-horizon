@@ -70,7 +70,6 @@ HORIZON_CONFIG = {
     # using run_tests will require the registration of the "router" dashboard.
     # TODO (absubram): Need to make this permanent when a better solution
     # for run_tests is implemented to use with and without the n1k sub-plugin.
-    #'openstack_dashboard.dashboards.router',
     #'dashboards': ('project', 'admin', 'settings', 'router',),
     'default_dashboard': 'project',
     "password_validator": {
@@ -206,11 +205,14 @@ POLICY_FILES = {
 
 FLAVOR_EXTRA_KEYS = {
     'flavor_keys': [
-        ('quota:read_bytes_sec', _('Quota: Read bytes')),
-        ('quota:write_bytes_sec', _('Quota: Write bytes')),
-        ('quota:cpu_quota', _('Quota: CPU')),
-        ('quota:cpu_period', _('Quota: CPU period')),
-        ('quota:inbound_average', _('Quota: Inbound average')),
-        ('quota:outbound_average', _('Quota: Outbound average')),
+        ('quota:read_bytes_sec', 'Quota: Read bytes'),
+        ('quota:write_bytes_sec', 'Quota: Write bytes'),
+        ('quota:cpu_quota', 'Quota: CPU'),
+        ('quota:cpu_period', 'Quota: CPU period'),
+        ('quota:inbound_average', 'Quota: Inbound average'),
+        ('quota:outbound_average', 'Quota: Outbound average'),
     ]
 }
+
+# The openstack_auth.user.Token object isn't JSON-serializable ATM
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'

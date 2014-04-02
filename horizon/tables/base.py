@@ -347,7 +347,14 @@ class Column(html.HTMLElement):
             data = display_value[0]
         else:
             for filter_func in self.filters:
-                data = filter_func(data)
+                try:
+                    data = filter_func(data)
+                except Exception:
+                    msg = ("Filter '%(filter)s' failed with data "
+                           "'%(data)s' on column '%(col_name)s'")
+                    LOG.warning(msg, {'filter': filter_func.func_name,
+                                      'data': data,
+                                      'col_name': unicode(self.verbose_name)})
 
         if data and self.truncate:
             data = truncatechars(data, self.truncate)
@@ -1153,6 +1160,16 @@ class DataTable(object):
         e.g. the path at which the table was requested.
         """
         return self.request.get_full_path().partition('?')[0]
+
+    def get_full_url(self):
+        """Returns the full URL path for this table.
+
+        This is used for the POST action attribute on the form element
+        wrapping the table. We use this method to persist the
+        pagination marker.
+
+        """
+        return self.request.get_full_path()
 
     def get_empty_message(self):
         """Returns the message to be displayed when there is no data."""

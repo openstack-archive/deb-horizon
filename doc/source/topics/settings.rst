@@ -42,8 +42,22 @@ behavior of your Horizon installation. All of them are contained in the
 
 Default: ``None``
 
-A list containing the slugs of any dashboards which should be active in this
-Horizon installation. The dashboards listed must be in a Python module which
+Horizon Dashboards are automatically discovered in the following way:
+
+* By traversing Django's list of
+  `INSTALLED_APPS <https://docs.djangoproject.com/en/1.4/ref/settings/#std:setting-INSTALLED_APPS>`_
+  and importing any files that have the name ``"dashboard.py"`` and include
+  code to register themselves as a Horizon dashboard.
+* By adding a configuration file to the ``openstack_dashboard/local/enabled``
+  directory (for more information see :ref:`pluggable-settings-label`).
+
+By default, these dashboards are ordered alphabetically.
+However, if a list of dashboard slugs is provided in this setting, the supplied
+ordering is applied to the list of discovered dashboards. If the list of
+dashboard slugs is shorter than the number of discovered dashboards, the
+remaining dashboards are appended in alphabetical order.
+
+The dashboards listed must be in a Python module which
 is included in the ``INSTALLED_APPS`` list and on the Python path.
 
 ``default_dashboard``
@@ -216,6 +230,15 @@ icon names are based on the default icon theme provided by Bootstrap.
 
 Example: ``[{'text': 'Official', 'tenant': '27d0058849da47c896d205e2fc25a5e8', 'icon': 'icon-ok'}]``
 
+``OPENSTACK_ENABLE_PASSWORD_RETRIEVE``
+---------------------------
+
+Default: ``"False"``
+
+When set, enables the instance action "Retrieve password" allowing password retrieval
+from metadata service.
+
+
 ``OPENSTACK_ENDPOINT_TYPE``
 ---------------------------
 
@@ -242,7 +265,7 @@ Default::
 
     {
         'can_set_mount_point': False,
-        'can_set_password': True
+        'can_set_password': False
     }
 
 A dictionary containing settings which can be used to identify the
@@ -253,7 +276,7 @@ to instances (other Hypervisors currently do not). Setting
 ``can_set_mount_point`` to ``True`` will add the option to set the mount point
 from the UI.
 
-Setting ``can_set_password`` to ``False`` will remove the option to set
+Setting ``can_set_password`` to ``True`` will enable the option to set
 an administrator password when launching or rebuilding an instance.
 
 
@@ -442,6 +465,8 @@ These three settings should be configured if you are deploying Horizon with
 SSL. The values indicated in the default ``local_settings.py.example`` file
 are generally safe to use.
 
+.. _pluggable-settings-label:
+
 Pluggable Settings for Dashboards
 =================================
 
@@ -481,7 +506,7 @@ A dictionary of exception classes to be added to ``HORIZON['exceptions']``.
 ``ADD_INSTALLED_APPS``
 ----------------------
 
-A list of applications to be added to ``INSTALLED_APPS``.
+A list of applications to be prepended to ``INSTALLED_APPS``.
 
 ``DISABLED``
 ------------
@@ -514,7 +539,7 @@ create a file ``openstack_dashboard/local/enabled/_50_tuskar.py`` with::
     }
 
 Pluggable Settings for Panels
-=================================
+=============================
 
 Panels customization can be made by providing a custom python module that
 contains python code to add or remove panel to/from the dashboard. This
@@ -575,7 +600,7 @@ Examples
 --------
 
 To add a new panel to the Admin panel group in Admin dashboard, create a file
-``openstack_dashboard/local/enabled/_60_admin_add_panel.py`` with the follwing
+``openstack_dashboard/local/enabled/_60_admin_add_panel.py`` with the following
 content::
 
     PANEL = 'plugin_panel'
@@ -592,11 +617,67 @@ the following content::
     PANEL_GROUP = 'admin'
     REMOVE_PANEL = True
 
-To change the default panel of Admin dashboard to Defaults panel, create a file
+To change the default panel of Admin dashboard to Instances panel, create a file
 ``openstack_dashboard/local/enabled/_80_admin_default_panel.py`` with the
 following content::
 
-    PANEL = 'defaults'
+    PANEL = 'instances'
     PANEL_DASHBOARD = 'admin'
     PANEL_GROUP = 'admin'
-    DEFAULT_PANEL = 'defaults'
+    DEFAULT_PANEL = 'instances'
+
+Pluggable Settings for Panel Groups
+===================================
+
+To organize the panels created from the pluggable settings, there is also
+a way to create panel group though configuration file. This creates an empty
+panel group to act as placeholder for the panels that can be created later.
+
+The default location for the panel group configuration files is
+``openstack_dashboard/enabled``, with another directory,
+``openstack_dashboard/local/enabled`` for local overrides. Both sets of files
+will be loaded, but the settings in ``openstack_dashboard/local/enabled`` will
+overwrite the default ones. The settings are applied in alphabetical order of
+the filenames. If the same panel has configuration files in ``enabled`` and
+``local/enabled``, the local name will be used. Note, that since names of
+python modules can't start with a digit, the files are usually named with a
+leading underscore and a number, so that you can control their order easily.
+
+When writing configuration files to create panels and panels group, make sure
+that the panel group configuration file is loaded first because the panel
+configuration might be referencing it. This can be achieved by providing a file
+name that will go before the panel configuration file when the files are sorted
+alphabetically.
+
+The files contain following keys:
+
+``PANEL_GROUP``
+-------------
+
+The name of the panel group to be added to ``HORIZON_CONFIG``. Required.
+
+``PANEL_GROUP_NAME``
+-------------
+
+The display name of the PANEL_GROUP. Required.
+
+``PANEL_GROUP_DASHBOARD``
+-------------
+
+The name of the dashboard the ``PANEL_GROUP`` associated with. Required.
+
+``DISABLED``
+------------
+
+If set to ``True``, this panel configuration will be skipped.
+
+Examples
+--------
+
+To add a new panel group to the Admin dashboard, create a file
+``openstack_dashboard/local/enabled/_90_admin_add_panel_group.py`` with the
+following content::
+
+    PANEL_GROUP = 'plugin_panel_group'
+    PANEL_GROUP_NAME = 'Plugin Panel Group'
+    PANEL_GROUP_DASHBOARD = 'admin'

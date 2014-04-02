@@ -176,19 +176,18 @@ SESSION_COOKIE_MAX_SIZE = 4093
 # TODO(mrunge): remove after Icehouse
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-gettext_noop = lambda s: s
 LANGUAGES = (
-    ('en', gettext_noop('English')),
-    ('en-au', gettext_noop('Australian English')),
-    ('en-gb', gettext_noop('British English')),
-    ('es', gettext_noop('Spanish')),
-    ('fr', gettext_noop('French')),
-    ('ja', gettext_noop('Japanese')),
-    ('ko', gettext_noop('Korean (Korea)')),
-    ('nl', gettext_noop('Dutch (Netherlands)')),
-    ('pl', gettext_noop('Polish')),
-    ('pt-br', gettext_noop('Portuguese (Brazil)')),
-    ('zh-cn', gettext_noop('Simplified Chinese')),
+    ('en', 'English'),
+    ('en-au', 'Australian English'),
+    ('en-gb', 'British English'),
+    ('es', 'Spanish'),
+    ('fr', 'French'),
+    ('ja', 'Japanese'),
+    ('ko', 'Korean (Korea)'),
+    ('nl', 'Dutch (Netherlands)'),
+    ('pl', 'Polish'),
+    ('pt-br', 'Portuguese (Brazil)'),
+    ('zh-cn', 'Simplified Chinese'),
 )
 LANGUAGE_CODE = 'en'
 LANGUAGE_COOKIE_NAME = 'horizon_language'
@@ -196,7 +195,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-OPENSTACK_KEYSTONE_DEFAULT_ROLE = 'Member'
+OPENSTACK_KEYSTONE_DEFAULT_ROLE = '_member_'
 
 DEFAULT_EXCEPTION_REPORTER_FILTER = 'horizon.exceptions.HorizonReporterFilter'
 
@@ -251,3 +250,10 @@ COMPRESS_OFFLINE_CONTEXT = {
 
 if DEBUG:
     logging.basicConfig(level=logging.DEBUG)
+
+# during django reloads and an active user is logged in, the monkey
+# patch below will not otherwise be applied in time - resulting in developers
+# appearing to be logged out.  In typical production deployments this section
+# below may be ommited, though it should not be harmful
+from openstack_auth import utils as auth_utils
+auth_utils.patch_middleware_get_user()

@@ -622,10 +622,6 @@ def default_quota_get(request, tenant_id):
     return base.QuotaSet(novaclient(request).quotas.defaults(tenant_id))
 
 
-def default_quota_update(request, **kwargs):
-    novaclient(request).quota_classes.update(DEFAULT_QUOTA_NAME, **kwargs)
-
-
 def usage_get(request, tenant_id, start, end):
     return NovaUsage(novaclient(request).usage.get(tenant_id, start, end))
 
@@ -645,6 +641,10 @@ def get_x509_credentials(request):
 
 def get_x509_root_certificate(request):
     return novaclient(request).certs.get()
+
+
+def get_password(request, instance_id, private_key=None):
+    return novaclient(request).servers.get_password(instance_id, private_key)
 
 
 def instance_volume_attach(request, volume_id, instance_id, device):
@@ -758,4 +758,4 @@ def extension_supported(extension_name, request):
 
 def can_set_server_password():
     features = getattr(settings, 'OPENSTACK_HYPERVISOR_FEATURES', {})
-    return features.get('can_set_password', True)
+    return features.get('can_set_password', False)

@@ -305,6 +305,18 @@ VALIDATE = """
 }
 """
 
+ENVIRONMENT = """
+parameters:
+  InstanceType: m1.xsmall
+  db_password: verybadpass
+  KeyName: heat_key
+"""
+
+
+class Environment(object):
+    def __init__(self, data):
+        self.data = data
+
 
 class Template(object):
     def __init__(self, data, validate):
@@ -315,6 +327,7 @@ class Template(object):
 def data(TEST):
     TEST.stacks = utils.TestDataContainer()
     TEST.stack_templates = utils.TestDataContainer()
+    TEST.stack_environments = utils.TestDataContainer()
 
     # Stacks
     stack1 = {
@@ -340,7 +353,7 @@ def data(TEST):
         "stack_status_reason": "Stack successfully created",
         "stack_name": "stack-test",
         "creation_time": "2013-04-22T00:11:39Z",
-        "updated_time": "2013-04-22T00:11:39Z",
+        "updated_time": "null",
         "stack_status": "CREATE_COMPLETE",
         "id": "05b4f39f-ea96-4d91-910c-e758c078a089"
     }
@@ -348,3 +361,4 @@ def data(TEST):
     TEST.stacks.add(stack)
 
     TEST.stack_templates.add(Template(TEMPLATE, VALIDATE))
+    TEST.stack_environments.add(Environment(ENVIRONMENT))

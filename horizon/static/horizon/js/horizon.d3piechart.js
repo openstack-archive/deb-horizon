@@ -82,11 +82,7 @@ horizon.d3_pie_chart_usage = {
       .attr("d", arc)
       .style("fill", BKGRND)
       .style("stroke", STROKE)
-      .style("stroke-width", 1)
-      .each(function(d) {
-        self.current = d;
-        return d;
-      });
+      .style("stroke-width", 1);
 
     // Animate filling the pie chart
     var animate = function(data) {
@@ -113,10 +109,6 @@ horizon.d3_pie_chart_usage = {
             return 1;
           }
         })
-        .each(function(d) {
-          self.current = d;
-          return d;
-        })
         .transition()
         .duration(500)
         .attrTween("d", function(start) {
@@ -131,6 +123,40 @@ horizon.d3_pie_chart_usage = {
     };
 
     animate(self.data);
+
+    // Add a legend
+    var legend = d3.select(self.chart[0][i])
+      .append("svg")
+      .attr("class", "legend")
+      .attr("width", WIDTH * 2)
+      .attr("height", self.data.length * 18 + 20)
+      .selectAll("g")
+      .data(self.keys)
+      .enter()
+      .append("g")
+      .attr("transform", function(d, i) {
+        return "translate(0," + i * 20 + ")";
+      });
+
+    legend.append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", self.colors);
+
+    legend.append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(function(d) {
+        var value = 0;
+        for (var j = 0; j < self.data.length; j++) {
+          if (self.data[j]["key"] == d) {
+            value = self.data[j]["value"];
+            break;
+          }
+        }
+        return d + " " + Math.round(value/total * 100) + "%";
+      });
   }
 };
 
@@ -170,13 +196,19 @@ horizon.d3_pie_chart_distribution = {
       total = total + parseInt(self.data[j]["value"]);
     }
 
+    var initial_data = [];
+    if (total === 0) {
+      initial_data = [{"value": 1}];
+    }
+
     // Draw an empty pie chart
     vis.selectAll(".arc")
-      .data(pie([]))
+      .data(pie(initial_data))
       .enter()
       .append("path")
       .attr("class","arc")
       .attr("d", arc)
+      .style("fill", BKGRND)
       .style("stroke", STROKE)
       .style("stroke-width", 1);
 
@@ -202,7 +234,9 @@ horizon.d3_pie_chart_distribution = {
         });
     };
 
-    animate(self.data);
+    if (total !== 0) {
+      animate(self.data);
+    }
 
     // Add a legend
     var legend = d3.select(self.chart[0][i])
@@ -228,6 +262,9 @@ horizon.d3_pie_chart_distribution = {
       .attr("y", 9)
       .attr("dy", ".35em")
       .text(function(d) {
+        if (total === 0) {
+          return d + " 0%";
+        }
         var value = 0;
         for (var j = 0; j < self.data.length; j++) {
           if (self.data[j]["key"] == d) {

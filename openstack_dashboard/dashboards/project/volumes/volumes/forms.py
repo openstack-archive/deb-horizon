@@ -42,8 +42,9 @@ from openstack_dashboard.usage import quotas
 
 class CreateForm(forms.SelfHandlingForm):
     name = forms.CharField(max_length="255", label=_("Volume Name"))
-    description = forms.CharField(widget=forms.Textarea,
-            label=_("Description"), required=False)
+    description = forms.CharField(widget=forms.Textarea(
+        attrs={'class': 'modal-body-fixed-width'}),
+        label=_("Description"), required=False)
     type = forms.ChoiceField(label=_("Type"),
                              required=False)
     size = forms.IntegerField(min_value=1, label=_("Size (GB)"))
@@ -109,6 +110,7 @@ class CreateForm(forms.SelfHandlingForm):
                             'to or greater than the snapshot size (%sGB)') \
                             % snapshot.size
                 del self.fields['image_source']
+                del self.fields['volume_source']
                 del self.fields['volume_source_type']
                 del self.fields['availability_zone']
             except Exception:
@@ -138,6 +140,7 @@ class CreateForm(forms.SelfHandlingForm):
                 self.fields['size'].help_text = size_help_text
                 self.fields['image_source'].choices = ((image.id, image),)
                 del self.fields['snapshot_source']
+                del self.fields['volume_source']
                 del self.fields['volume_source_type']
             except Exception:
                 msg = _('Unable to load the specified image. %s')
@@ -305,7 +308,7 @@ class CreateForm(forms.SelfHandlingForm):
 
                 if data['size'] < volume.size:
                     error_message = _('The volume size cannot be less than '
-                        'the volume size (%sGB)') % volume.size
+                        'the source volume size (%sGB)') % volume.size
                     raise ValidationError(error_message)
             else:
                 if type(data['size']) is str:

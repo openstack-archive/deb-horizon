@@ -46,7 +46,7 @@ def get_enabled(service, reverse=False):
 
 
 class ServicesTable(tables.DataTable):
-    id = tables.Column('id', verbose_name=_('Id'), hidden=True)
+    id = tables.Column('id', hidden=True)
     name = tables.Column("name", verbose_name=_('Name'))
     service_type = tables.Column('__unicode__', verbose_name=_('Service'))
     host = tables.Column('host', verbose_name=_('Host'))
@@ -143,4 +143,56 @@ class NetworkAgentsTable(tables.DataTable):
         name = "network_agents"
         verbose_name = _("Network Agents")
         table_actions = (NetworkAgentsFilterAction,)
+        multi_select = False
+
+
+class QuotaFilterAction(tables.FilterAction):
+    def filter(self, table, tenants, filter_string):
+        q = filter_string.lower()
+
+        def comp(tenant):
+            if q in tenant.name.lower():
+                return True
+            return False
+
+        return filter(comp, tenants)
+
+
+def get_quota_name(quota):
+    QUOTA_NAMES = {
+        'injected_file_content_bytes': _('Injected File Content Bytes'),
+        'injected_file_path_bytes': _('Injected File Path Bytes'),
+        'metadata_items': _('Metadata Items'),
+        'cores': _('VCPUs'),
+        'instances': _('Instances'),
+        'injected_files': _('Injected Files'),
+        'volumes': _('Volumes'),
+        'snapshots': _('Volume Snapshots'),
+        'gigabytes': _('Total Size of Volumes and Snapshots (GB)'),
+        'ram': _('RAM (MB)'),
+        'floating_ips': _('Floating IPs'),
+        'security_groups': _('Security Groups'),
+        'security_group_rules': _('Security Group Rules'),
+        'key_pairs': _('Key Pairs'),
+        'fixed_ips': _('Fixed IPs'),
+        'volumes_volume_luks': _('LUKS Volumes'),
+        'snapshots_volume_luks': _('LUKS Volume Snapshots'),
+        'gigabytes_volume_luks':
+        _('Total Size of LUKS Volumes and Snapshots (GB)'),
+        'dm-crypt': _('dm-crypt'),
+    }
+    return QUOTA_NAMES.get(quota.name, quota.name.replace("_", " ").title())
+
+
+class QuotasTable(tables.DataTable):
+    name = tables.Column(get_quota_name, verbose_name=_('Quota Name'))
+    limit = tables.Column("limit", verbose_name=_('Limit'))
+
+    def get_object_id(self, obj):
+        return obj.name
+
+    class Meta:
+        name = "quotas"
+        verbose_name = _("Quotas")
+        table_actions = (QuotaFilterAction,)
         multi_select = False

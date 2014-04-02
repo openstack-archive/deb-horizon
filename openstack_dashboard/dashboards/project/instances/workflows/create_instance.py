@@ -79,7 +79,8 @@ class SetInstanceDetailsAction(workflows.Action):
     availability_zone = forms.ChoiceField(label=_("Availability Zone"),
                                           required=False)
 
-    name = forms.CharField(max_length=80, label=_("Instance Name"))
+    name = forms.CharField(label=_("Instance Name"),
+                           max_length=255)
 
     flavor = forms.ChoiceField(label=_("Flavor"),
                                help_text=_("Size of image to launch."))
@@ -569,6 +570,12 @@ class SetNetworkAction(workflows.Action):
                                     required=False,
                                     help_text=_("Launch instance with "
                                                 "this policy profile"))
+
+    def __init__(self, request, *args, **kwargs):
+        super(SetNetworkAction, self).__init__(request, *args, **kwargs)
+        network_list = self.fields["network"].choices
+        if len(network_list) == 1:
+            self.fields['network'].initial = [network_list[0][0]]
 
     class Meta:
         name = _("Networking")
