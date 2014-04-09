@@ -1,3 +1,10 @@
+horizon (2013.2.2-3) unstable; urgency=high
+
+  * CVE-2014-0157: XSS in Horizon orchestration dashboard. Applying upstream
+    patch: Introduces_escaping_in_Horizon-Orchestration. (Closes: #744019)
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 09 Apr 2014 17:14:08 +0800
+
 horizon (2013.2.2-2) unstable; urgency=medium
 
   [ Gonéri Le Bouder ]
