@@ -1,5 +1,6 @@
-horizon (2013.2.2-3) unstable; urgency=high
+horizon (2013.2.3-1) unstable; urgency=high
 
+  * New upstream point release.
   * CVE-2014-0157: XSS in Horizon orchestration dashboard. Applying upstream
     patch: Introduces_escaping_in_Horizon-Orchestration. (Closes: #744019)
 
