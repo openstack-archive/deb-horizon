@@ -1,6 +1,7 @@
-horizon (2014.1~rc2-1) experimental; urgency=low
+horizon (2014.1-1) unstable; urgency=medium
 
   * New upstream release.
+  * Uploading to unstable.
 
  -- Thomas Goirand <zigo@debian.org>  Wed, 09 Apr 2014 17:32:13 +0800
 
