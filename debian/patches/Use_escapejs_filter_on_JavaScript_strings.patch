@@ -1,20 +1,16 @@
+Description: Use escapejs filter on JavaScript strings
+ The escapejs filter will correctly escape single quotes from JavaScript
+ strings which may otherwise trigger syntax errors. In this case, the issue
+ was visible using the French translation.
+ .
+ Also removed a trailing paranthesis coming out of nowhere.
 From: Adrien Cunin <adrien.cunin@osones.com>
 Date: Tue, 22 Apr 2014 10:54:33 +0000 (+0200)
 Subject: Use escapejs filter on JavaScript strings
 X-Git-Url: https://review.openstack.org/gitweb?p=openstack%2Fhorizon.git;a=commitdiff_plain;h=232b71286f3b1426412a3ffbed5d7065c2e24275
-
-Use escapejs filter on JavaScript strings
-
-The escapejs filter will correctly escape single quotes from JavaScript
-strings which may otherwise trigger syntax errors. In this case, the
-issue was visible using the French translation.
-
-Also removed a trailing paranthesis coming out of nowhere.
-
+Origin: upstream, https://review.openstack.org/#/c/92006/
 Change-Id: I25001815e17be5afa8eb28cc28c5423e3dcd973c
-Closes-Bug: #1311047
-(cherry picked from commit bc6f40b51d53682054cc4ba28b55b5045d6c8605)
----
+Bug-Ubuntu: https://launchpad.net/bugs/1311047
 
 diff --git a/openstack_dashboard/dashboards/project/instances/templates/instances/_flavors_and_quotas.html b/openstack_dashboard/dashboards/project/instances/templates/instances/_flavors_and_quotas.html
 index 9abfc82..5cb2c55 100644
