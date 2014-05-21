@@ -1,3 +1,9 @@
+horizon (2014.1-2) unstable; urgency=medium
+
+  * Added Use_escapejs_filter_on_JavaScript_strings.patch.
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 21 May 2014 08:42:42 +0800
+
 horizon (2014.1-1) unstable; urgency=medium
 
   * New upstream release.
