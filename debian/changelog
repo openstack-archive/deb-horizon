@@ -2,6 +2,7 @@ horizon (2014.1.1-1) unstable; urgency=medium
 
   * New upstream release.
   * Removed Use_escapejs_filter_on_JavaScript_strings.patch applied upstream.
+  * Now needs python-six >= 1.6.0.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 09 Jun 2014 23:16:43 +0800
 
