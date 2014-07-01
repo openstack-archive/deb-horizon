@@ -264,9 +264,10 @@ msgstr "Zużycie energii"
 msgid "Unknown instance"
 msgstr "Nieznana instancja"
 
-#: api/ceilometer.py:945
-msgid "Number of incoming bytes on the network for a VM interface"
-msgstr "Ilość przychodzących bajtów na interfejsie sieciowym VM"
+#: api/keystone.py:94
+#, python-format
+msgid "%(type)s (%(backend)s backend)"
+msgstr "%(type)s (silnik %(backend)s)"
 
 #: api/keystone.py:320
 msgid "Identity service does not allow editing user data."
@@ -1149,7 +1150,7 @@ msgstr "Nazwa może zawierać wyłącznie litery, cyfry, kropki, myślniki i zna
 msgid "RAM MB"
 msgstr "RAM MB"
 
-#: dashboards/admin/flavors/workflows.py:52
+#: dashboards/admin/flavors/workflows.py:50
 msgid "Root Disk GB"
 msgstr "Dysk główny GB"
 
@@ -2349,18 +2350,6 @@ msgstr "Wstecz"
 msgid "No data available"
 msgstr ""
 
-#: dashboards/admin/metering/templates/metering/report.html:4
-msgid "Usage Report"
-msgstr "Raport wykorzystania"
-
-#: dashboards/admin/metering/templates/metering/report.html:7
-msgid "Daily Usage Report Per Project"
-msgstr "Dzienny raport wykorzystania per projekt"
-
-#: dashboards/admin/metering/templates/metering/report.html:11
-msgid "Back"
-msgstr "Wstecz"
-
 #: dashboards/admin/metering/templates/metering/stats.html:10
 msgid "Metric"
 msgstr "Metryka"
@@ -3423,11 +3412,11 @@ msgstr "Typ wolumenu"
 msgid "Volume Types"
 msgstr "Typy wolumenu"
 
-#: dashboards/admin/volumes/views.py:58
+#: dashboards/admin/volumes/views.py:56
 msgid "Unable to retrieve volume project information."
 msgstr "Nie można pobrać informacji o wolumenach w projekcie."
 
-#: dashboards/admin/volumes/views.py:75
+#: dashboards/admin/volumes/views.py:73
 msgid "Unable to retrieve volume types"
 msgstr "Nie można pobrać typów wolumenów."
 
@@ -5199,27 +5188,27 @@ msgstr "Port docelowy"
 msgid "In Policy"
 msgstr "W zasadzie"
 
-#: dashboards/project/firewalls/tabs.py:34
+#: dashboards/project/firewalls/tabs.py:33
 msgid "Firewall Rules"
 msgstr "Reguły zapory ogniowej"
 
-#: dashboards/project/firewalls/tabs.py:46
+#: dashboards/project/firewalls/tabs.py:45
 msgid "Unable to retrieve rules list."
 msgstr "Nie można pobrać listy reguł."
 
-#: dashboards/project/firewalls/tabs.py:55
+#: dashboards/project/firewalls/tabs.py:54
 msgid "Firewall Policies"
 msgstr "Zasady zapory ogniowej"
 
-#: dashboards/project/firewalls/tabs.py:67
+#: dashboards/project/firewalls/tabs.py:66
 msgid "Unable to retrieve policies list."
 msgstr "Nie można pobrać listy zasad."
 
-#: dashboards/project/firewalls/tabs.py:88
+#: dashboards/project/firewalls/tabs.py:87
 msgid "Unable to retrieve firewall list."
 msgstr "Nie można pobrać listy zapór ogniowych."
 
-#: dashboards/project/firewalls/tabs.py:97
+#: dashboards/project/firewalls/tabs.py:96
 msgid "Firewall Rule Details"
 msgstr "Szczegóły reguły zapory ogniowej"
 
@@ -7832,7 +7821,7 @@ msgstr "Dołączono"
 msgid "Detached"
 msgstr "Odłączono"
 
-#: dashboards/project/networks/ports/tables.py:55
+#: dashboards/project/networks/ports/tables.py:60
 #: dashboards/project/networks/templates/networks/ports/_detail_overview.html:36
 msgid "Attached Device"
 msgstr "Dołączono urządzenie"
@@ -8531,7 +8520,7 @@ msgstr "Data aktualizacji"
 msgid "Stack Resources"
 msgstr "Zasoby stosu"
 
-#: dashboards/project/stacks/tabs.py:34
+#: dashboards/project/stacks/tabs.py:33
 msgid "Topology"
 msgstr "Topologia"
 
@@ -9488,7 +9477,7 @@ msgstr "Usunięto usługę VPN %s"
 msgid "Unable to delete VPN Service: %s"
 msgstr "Nie można usunąć usługi VPN: %s"
 
-#: dashboards/project/vpn/views.py:66
+#: dashboards/project/vpn/views.py:64
 #, python-format
 msgid "Deleted IKE Policy %s"
 msgstr "Usunięto zasadę IKE %s"
@@ -9498,7 +9487,7 @@ msgstr "Usunięto zasadę IKE %s"
 msgid "Unable to delete IKE Policy: %s"
 msgstr "Nie można usunąć zasady IKE: %s"
 
-#: dashboards/project/vpn/views.py:75
+#: dashboards/project/vpn/views.py:73
 #, python-format
 msgid "Deleted IPSec Policy %s"
 msgstr "Usunięto zasadę IPSec %s"
@@ -9795,17 +9784,6 @@ msgstr "1-4093 dla VLAN; 5000-10000 dla Overlay"
 #: dashboards/router/nexus1000v/forms.py:92
 #: dashboards/router/nexus1000v/forms.py:99
 #: dashboards/router/nexus1000v/tables.py:68
-#: dashboards/router/nexus1000v/templates/nexus1000v/_create_network_profile.html:22
-msgid "Segment Range"
-msgstr "Rozmiar segmentu"
-
-#: dashboards/router/nexus1000v/forms.py:91
-msgid "1-4093 for VLAN; 5000-10000 for Overlay"
-msgstr "1-4093 dla VLAN; 5000-10000 dla Overlay"
-
-#: dashboards/router/nexus1000v/forms.py:94
-#: dashboards/router/nexus1000v/forms.py:101
-#: dashboards/router/nexus1000v/tables.py:70
 msgid "Multicast IP Range"
 msgstr "Przedział adresów IP Multicast"
 

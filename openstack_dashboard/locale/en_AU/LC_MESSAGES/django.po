@@ -264,9 +264,10 @@ msgstr "Power consumption"
 msgid "Unknown instance"
 msgstr "Unknown instance"
 
-#: api/ceilometer.py:945
-msgid "Number of incoming bytes on the network for a VM interface"
-msgstr "Number of incoming bytes on the network for a VM interface"
+#: api/keystone.py:94
+#, python-format
+msgid "%(type)s (%(backend)s backend)"
+msgstr "%(type)s (%(backend)s backend)"
 
 #: api/keystone.py:320
 msgid "Identity service does not allow editing user data."
@@ -1149,7 +1150,7 @@ msgstr "Name may only contain letters, numbers, underscores, full stops and hyph
 msgid "RAM MB"
 msgstr "RAM MB"
 
-#: dashboards/admin/flavors/workflows.py:52
+#: dashboards/admin/flavors/workflows.py:50
 msgid "Root Disk GB"
 msgstr "Root Disk GB"
 
@@ -3411,11 +3412,11 @@ msgstr "Volume Type"
 msgid "Volume Types"
 msgstr "Volume Types"
 
-#: dashboards/admin/volumes/views.py:58
+#: dashboards/admin/volumes/views.py:56
 msgid "Unable to retrieve volume project information."
 msgstr "Unable to retrieve volume project information."
 
-#: dashboards/admin/volumes/views.py:75
+#: dashboards/admin/volumes/views.py:73
 msgid "Unable to retrieve volume types"
 msgstr "Unable to retrieve volume types"
 
@@ -4016,36 +4017,6 @@ msgstr "Key pairs are ssh credentials which are injected into images when they a
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_create.html:19
 msgid "Protect and use the key as you would any normal ssh private key."
 msgstr "Protect and use the key as you would any normal ssh private key."
-
-#: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:18
-msgid "Key Pairs are how you login to your instance after it is launched."
-msgstr "Key Pairs are how you login to your instance after it is launched."
-
-#: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:19
-msgid ""
-"Choose a key pair name you will recognise and paste your SSH public key into"
-" the space provided."
-msgstr "Choose a key pair name you will recognise and paste your SSH public key into the space provided."
-
-#: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:20
-msgid "SSH key pairs can be generated with the ssh-keygen command:"
-msgstr "SSH key pairs can be generated with the ssh-keygen command:"
-
-#: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:22
-msgid ""
-"This generates a pair of keys: a key you keep private (cloud.key) and a "
-"public key (cloud.key.pub). Paste the contents of the public key file here."
-msgstr "This generates a pair of keys: a key you keep private (cloud.key) and a public key (cloud.key.pub). Paste the contents of the public key file here."
-
-#: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:23
-msgid ""
-"After launching an instance, you login using the private key (the username "
-"might be different depending on the image you launched):"
-msgstr "After launching an instance, you login using the private key (the username might be different depending on the image you launched):"
-
-#: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:25
-msgid "or:"
-msgstr "or:"
 
 #: dashboards/project/access_and_security/templates/access_and_security/keypairs/_import.html:18
 msgid "Key Pairs are how you login to your instance after it is launched."
@@ -5217,27 +5188,27 @@ msgstr "Destination Port"
 msgid "In Policy"
 msgstr "In Policy"
 
-#: dashboards/project/firewalls/tabs.py:34
+#: dashboards/project/firewalls/tabs.py:33
 msgid "Firewall Rules"
 msgstr "Firewall Rules"
 
-#: dashboards/project/firewalls/tabs.py:46
+#: dashboards/project/firewalls/tabs.py:45
 msgid "Unable to retrieve rules list."
 msgstr "Unable to retrieve rules list."
 
-#: dashboards/project/firewalls/tabs.py:55
+#: dashboards/project/firewalls/tabs.py:54
 msgid "Firewall Policies"
 msgstr "Firewall Policies"
 
-#: dashboards/project/firewalls/tabs.py:67
+#: dashboards/project/firewalls/tabs.py:66
 msgid "Unable to retrieve policies list."
 msgstr "Unable to retrieve policies list."
 
-#: dashboards/project/firewalls/tabs.py:88
+#: dashboards/project/firewalls/tabs.py:87
 msgid "Unable to retrieve firewall list."
 msgstr "Unable to retrieve firewall list."
 
-#: dashboards/project/firewalls/tabs.py:97
+#: dashboards/project/firewalls/tabs.py:96
 msgid "Firewall Rule Details"
 msgstr "Firewall Rule Details"
 
@@ -6507,7 +6478,7 @@ msgstr "Instance Details"
 msgid "Instance Details: "
 msgstr "Instance Details: "
 
-#: dashboards/project/instances/workflows/create_instance.py:67
+#: dashboards/project/instances/workflows/create_instance.py:64
 msgid "Project & User"
 msgstr "Project & User"
 
@@ -7849,7 +7820,7 @@ msgstr "Attached"
 msgid "Detached"
 msgstr "Detached"
 
-#: dashboards/project/networks/ports/tables.py:55
+#: dashboards/project/networks/ports/tables.py:60
 #: dashboards/project/networks/templates/networks/ports/_detail_overview.html:36
 msgid "Attached Device"
 msgstr "Attached Device"
@@ -8548,7 +8519,7 @@ msgstr "Date Updated"
 msgid "Stack Resources"
 msgstr "Stack Resources"
 
-#: dashboards/project/stacks/tabs.py:34
+#: dashboards/project/stacks/tabs.py:33
 msgid "Topology"
 msgstr "Topology"
 
@@ -9505,7 +9476,7 @@ msgstr "Deleted VPN Service %s"
 msgid "Unable to delete VPN Service: %s"
 msgstr "Unable to delete VPN Service: %s"
 
-#: dashboards/project/vpn/views.py:66
+#: dashboards/project/vpn/views.py:64
 #, python-format
 msgid "Deleted IKE Policy %s"
 msgstr "Deleted IKE Policy %s"
@@ -9515,7 +9486,7 @@ msgstr "Deleted IKE Policy %s"
 msgid "Unable to delete IKE Policy: %s"
 msgstr "Unable to delete IKE Policy: %s"
 
-#: dashboards/project/vpn/views.py:75
+#: dashboards/project/vpn/views.py:73
 #, python-format
 msgid "Deleted IPSec Policy %s"
 msgstr "Deleted IPSec Policy %s"
@@ -9812,17 +9783,6 @@ msgstr "1-4093 for VLAN; 5000-10000 for Overlay"
 #: dashboards/router/nexus1000v/forms.py:92
 #: dashboards/router/nexus1000v/forms.py:99
 #: dashboards/router/nexus1000v/tables.py:68
-#: dashboards/router/nexus1000v/templates/nexus1000v/_create_network_profile.html:22
-msgid "Segment Range"
-msgstr "Segment Range"
-
-#: dashboards/router/nexus1000v/forms.py:91
-msgid "1-4093 for VLAN; 5000-10000 for Overlay"
-msgstr "1-4093 for VLAN; 5000-10000 for Overlay"
-
-#: dashboards/router/nexus1000v/forms.py:94
-#: dashboards/router/nexus1000v/forms.py:101
-#: dashboards/router/nexus1000v/tables.py:70
 msgid "Multicast IP Range"
 msgstr "Multicast IP Range"
 

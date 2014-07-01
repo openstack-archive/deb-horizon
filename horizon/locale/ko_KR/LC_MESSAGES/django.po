@@ -18,7 +18,7 @@ msgstr ""
 "Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: base.py:431
+#: base.py:429
 msgid "Other"
 msgstr "다른"
 
@@ -263,7 +263,7 @@ msgstr "볼륨 스토리지"
 #, python-format
 msgid "Displaying %(nav_items)s item"
 msgid_plural "Displaying %(nav_items)s items"
-msgstr[0] "%(nav_items)s 아이템 보여주기"
+msgstr[0] "%(nav_items)s 항목을 보여줍니다."
 
 #: templates/horizon/common/_resource_browser.html:11
 #, python-format

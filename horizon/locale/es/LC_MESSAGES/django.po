@@ -17,7 +17,7 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base.py:431
+#: base.py:429
 msgid "Other"
 msgstr "Otro"
 
@@ -41,7 +41,7 @@ msgstr "No autorizado. Inicie sesión de nuevo."
 
 #: middleware.py:115
 msgid "Session timed out."
-msgstr "La sesión ha expirado."
+msgstr "Tiempo de sesión expirado "
 
 #: browsers/base.py:88
 msgid "Navigation Item"
@@ -109,11 +109,11 @@ msgstr "%(action)s: %(objs)s"
 
 #: tables/actions.py:720
 msgid "Delete"
-msgstr "Eliminar"
+msgstr "Borrar"
 
 #: tables/actions.py:721
 msgid "Deleted"
-msgstr "Eliminado"
+msgstr "Borrado"
 
 #: tables/actions.py:738
 msgid "Update"
@@ -237,7 +237,7 @@ msgstr "<span> %(used)s </span> usado de <span> %(available)s </span>"
 
 #: templates/horizon/common/_limit_summary.html:14
 msgid "VCPUs"
-msgstr "VCPU"
+msgstr "VCPUs"
 
 #: templates/horizon/common/_limit_summary.html:21
 msgid "RAM"
@@ -245,7 +245,7 @@ msgstr "RAM"
 
 #: templates/horizon/common/_limit_summary.html:28
 msgid "Floating IPs"
-msgstr "IP flotantes"
+msgstr "IPs flotantes"
 
 #: templates/horizon/common/_limit_summary.html:35
 msgid "Security Groups"

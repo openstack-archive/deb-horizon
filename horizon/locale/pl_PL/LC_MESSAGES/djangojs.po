@@ -156,11 +156,6 @@ msgstr[2] ""
 msgid "Not authorized to do this operation."
 msgstr "Nie upoważniono do przeprowadzenie tej czynności."
 
-#: static/horizon/js/horizon.tables_inline_edit.js:88
-#: static/horizon/js/horizon.tables_inline_edit.js:169
-msgid "Not authorized to do this operation."
-msgstr "Nie upoważniono do przeprowadzenie tej czynności."
-
 #: static/horizon/js/horizon.users.js:18
 msgid "Passwords do not match."
 msgstr "Hasła nie pasują"

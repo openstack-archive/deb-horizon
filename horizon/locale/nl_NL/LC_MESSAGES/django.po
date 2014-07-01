@@ -17,7 +17,7 @@ msgstr ""
 "Language: nl_NL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base.py:431
+#: base.py:429
 msgid "Other"
 msgstr "Overig"
 
@@ -109,7 +109,7 @@ msgstr "%(action)s: %(objs)s"
 
 #: tables/actions.py:720
 msgid "Delete"
-msgstr "Verwijderen"
+msgstr "Verwijder"
 
 #: tables/actions.py:721
 msgid "Deleted"
@@ -218,7 +218,7 @@ msgstr "Rij toevoegen"
 
 #: templates/horizon/common/_limit_summary.html:4
 msgid "Limit Summary"
-msgstr "Beperk samenvatting"
+msgstr "Limiteer Samenvatting"
 
 #: templates/horizon/common/_limit_summary.html:7
 msgid "Instances"
@@ -296,7 +296,7 @@ msgstr "De datum dient in het JJJJ-mm-dd formaat te zijn."
 
 #: templates/horizon/common/_usage_summary.html:16
 msgid "Active Instances"
-msgstr "Actieve exemplaren"
+msgstr "Actieve Exemplaren"
 
 #: templates/horizon/common/_usage_summary.html:17
 msgid "Active RAM"
@@ -328,7 +328,7 @@ msgstr "Horizon"
 
 #: templatetags/horizon.py:119 templatetags/horizon.py:129
 msgid "No Limit"
-msgstr "Geen limiet"
+msgstr "Geen Limiet"
 
 #: templatetags/horizon.py:121 templatetags/horizon.py:123
 msgid "Available"
@@ -372,15 +372,15 @@ msgstr "Nooit"
 
 #: utils/validators.py:23 utils/validators.py:47
 msgid "Not a valid port number"
-msgstr "Ongeldig poortnummer"
+msgstr "Geen valide poort nummer"
 
 #: utils/validators.py:28
 msgid "Not a valid IP protocol number"
-msgstr "Ongeldig IP protocol nummer"
+msgstr "Geen valide IP protocol nummer"
 
 #: utils/validators.py:42
 msgid "One colon allowed in port range"
-msgstr "Één dubbele punt toegestaan in poortbereik"
+msgstr "Een dubbele punt toegestaan in poortbereik"
 
 #: utils/validators.py:49
 msgid "Port number must be integer"

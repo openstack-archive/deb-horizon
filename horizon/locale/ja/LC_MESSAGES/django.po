@@ -18,7 +18,7 @@ msgstr ""
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: base.py:431
+#: base.py:429
 msgid "Other"
 msgstr "その他"
 

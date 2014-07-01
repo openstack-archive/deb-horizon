@@ -155,11 +155,6 @@ msgstr[0] "%s件表示"
 msgid "Not authorized to do this operation."
 msgstr "この操作を行う権限がありません。"
 
-#: static/horizon/js/horizon.tables_inline_edit.js:88
-#: static/horizon/js/horizon.tables_inline_edit.js:169
-msgid "Not authorized to do this operation."
-msgstr "この操作を行う権限がありません。"
-
 #: static/horizon/js/horizon.users.js:18
 msgid "Passwords do not match."
 msgstr "パスワードが一致しません。"

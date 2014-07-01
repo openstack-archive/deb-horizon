@@ -1150,7 +1150,7 @@ msgstr "이름은 문자, 숫자, 밑줄, 마침표와 하이픈만 사용할 �
 msgid "RAM MB"
 msgstr "RAM MB"
 
-#: dashboards/admin/flavors/workflows.py:52
+#: dashboards/admin/flavors/workflows.py:50
 msgid "Root Disk GB"
 msgstr "Root 디스크 GB"
 
@@ -2350,18 +2350,6 @@ msgstr "뒤로"
 msgid "No data available"
 msgstr "데이터 없음"
 
-#: dashboards/admin/metering/templates/metering/report.html:4
-msgid "Usage Report"
-msgstr "사용량 보고서"
-
-#: dashboards/admin/metering/templates/metering/report.html:7
-msgid "Daily Usage Report Per Project"
-msgstr "프로젝트당 일일 사용량 보고서"
-
-#: dashboards/admin/metering/templates/metering/report.html:11
-msgid "Back"
-msgstr "뒤로"
-
 #: dashboards/admin/metering/templates/metering/stats.html:10
 msgid "Metric"
 msgstr "계량"
@@ -3424,11 +3412,11 @@ msgstr "볼륨 유형"
 msgid "Volume Types"
 msgstr "볼륨 유형"
 
-#: dashboards/admin/volumes/views.py:58
+#: dashboards/admin/volumes/views.py:56
 msgid "Unable to retrieve volume project information."
 msgstr "볼륨 프로젝트 정보를 찾을 수 없습니다."
 
-#: dashboards/admin/volumes/views.py:75
+#: dashboards/admin/volumes/views.py:73
 msgid "Unable to retrieve volume types"
 msgstr "볼륨 유형을 찾을 수 없습니다."
 
@@ -5200,27 +5188,27 @@ msgstr "대상 포트"
 msgid "In Policy"
 msgstr "정책에서"
 
-#: dashboards/project/firewalls/tabs.py:34
+#: dashboards/project/firewalls/tabs.py:33
 msgid "Firewall Rules"
 msgstr "방화벽 룰"
 
-#: dashboards/project/firewalls/tabs.py:46
+#: dashboards/project/firewalls/tabs.py:45
 msgid "Unable to retrieve rules list."
 msgstr "룰 목록을 찾을 수 없습니다."
 
-#: dashboards/project/firewalls/tabs.py:55
+#: dashboards/project/firewalls/tabs.py:54
 msgid "Firewall Policies"
 msgstr "방화벽 정책"
 
-#: dashboards/project/firewalls/tabs.py:67
+#: dashboards/project/firewalls/tabs.py:66
 msgid "Unable to retrieve policies list."
 msgstr "정책 목록을 찾을 수 없습니다."
 
-#: dashboards/project/firewalls/tabs.py:88
+#: dashboards/project/firewalls/tabs.py:87
 msgid "Unable to retrieve firewall list."
 msgstr "방화벽 목록을 찾을 수 없습니다."
 
-#: dashboards/project/firewalls/tabs.py:97
+#: dashboards/project/firewalls/tabs.py:96
 msgid "Firewall Rule Details"
 msgstr "방화벽 룰 세부 정보"
 
@@ -6490,11 +6478,7 @@ msgstr "인스턴스 세부 정보"
 msgid "Instance Details: "
 msgstr "인스턴스 세부 정보:"
 
-#: dashboards/project/instances/templates/instances/detail.html:6
-msgid "Instance Details: "
-msgstr "인스턴스 세부 정보:"
-
-#: dashboards/project/instances/workflows/create_instance.py:67
+#: dashboards/project/instances/workflows/create_instance.py:64
 msgid "Project & User"
 msgstr "프로젝트 & 사용자"
 
@@ -7835,7 +7819,7 @@ msgstr "열결됨"
 msgid "Detached"
 msgstr "연결 해제됨"
 
-#: dashboards/project/networks/ports/tables.py:55
+#: dashboards/project/networks/ports/tables.py:60
 #: dashboards/project/networks/templates/networks/ports/_detail_overview.html:36
 msgid "Attached Device"
 msgstr "장치 연결됨"
@@ -8534,7 +8518,7 @@ msgstr "업데이트한 날짜"
 msgid "Stack Resources"
 msgstr "스택 리소스"
 
-#: dashboards/project/stacks/tabs.py:34
+#: dashboards/project/stacks/tabs.py:33
 msgid "Topology"
 msgstr "토폴로지"
 
@@ -9491,7 +9475,7 @@ msgstr "VPN 서비스 %s를 삭제하였습니다."
 msgid "Unable to delete VPN Service: %s"
 msgstr "VPN 서비스를 삭제할 수 없습니다: %s"
 
-#: dashboards/project/vpn/views.py:66
+#: dashboards/project/vpn/views.py:64
 #, python-format
 msgid "Deleted IKE Policy %s"
 msgstr "IKE 정책 %s를 삭제하였습니다."
@@ -9501,7 +9485,7 @@ msgstr "IKE 정책 %s를 삭제하였습니다."
 msgid "Unable to delete IKE Policy: %s"
 msgstr "IKE 정책을 삭제할 수 없습니다: %s"
 
-#: dashboards/project/vpn/views.py:75
+#: dashboards/project/vpn/views.py:73
 #, python-format
 msgid "Deleted IPSec Policy %s"
 msgstr "IPSec 정책 %s를 삭제하였습니다."
@@ -9798,17 +9782,6 @@ msgstr "VLAN은 1-4093, 오버레이는 5000-10000"
 #: dashboards/router/nexus1000v/forms.py:92
 #: dashboards/router/nexus1000v/forms.py:99
 #: dashboards/router/nexus1000v/tables.py:68
-#: dashboards/router/nexus1000v/templates/nexus1000v/_create_network_profile.html:22
-msgid "Segment Range"
-msgstr "구분 범위"
-
-#: dashboards/router/nexus1000v/forms.py:91
-msgid "1-4093 for VLAN; 5000-10000 for Overlay"
-msgstr "VLAN은 1-4093, 오버레이는 5000-10000"
-
-#: dashboards/router/nexus1000v/forms.py:94
-#: dashboards/router/nexus1000v/forms.py:101
-#: dashboards/router/nexus1000v/tables.py:70
 msgid "Multicast IP Range"
 msgstr "멀티 캐스트 IP 범위"
 

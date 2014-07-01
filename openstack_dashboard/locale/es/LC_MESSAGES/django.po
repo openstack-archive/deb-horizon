@@ -266,9 +266,10 @@ msgstr "Consumo de energía"
 msgid "Unknown instance"
 msgstr "Instancia desconocida"
 
-#: api/ceilometer.py:945
-msgid "Number of incoming bytes on the network for a VM interface"
-msgstr "Número de bytes entrantes en la red para una interfaz de la MV"
+#: api/keystone.py:94
+#, python-format
+msgid "%(type)s (%(backend)s backend)"
+msgstr "%(type)s (backend %(backend)s)"
 
 #: api/keystone.py:320
 msgid "Identity service does not allow editing user data."
@@ -1151,7 +1152,7 @@ msgstr "El nombre sólo puede incluir letras, números, guiones, guiones bajos y
 msgid "RAM MB"
 msgstr "RAM MB"
 
-#: dashboards/admin/flavors/workflows.py:52
+#: dashboards/admin/flavors/workflows.py:50
 msgid "Root Disk GB"
 msgstr "Disco raíz GB"
 
@@ -3413,11 +3414,11 @@ msgstr "Tipo de volumen"
 msgid "Volume Types"
 msgstr "Tipos de volúmenes"
 
-#: dashboards/admin/volumes/views.py:58
+#: dashboards/admin/volumes/views.py:56
 msgid "Unable to retrieve volume project information."
 msgstr "No ha sido posible obtener la información del proyecto de volúmenes."
 
-#: dashboards/admin/volumes/views.py:75
+#: dashboards/admin/volumes/views.py:73
 msgid "Unable to retrieve volume types"
 msgstr "No ha sido posible obtener los tipos de volúmenes."
 
@@ -5189,27 +5190,27 @@ msgstr "Puerto destino"
 msgid "In Policy"
 msgstr "Dentro de la política"
 
-#: dashboards/project/firewalls/tabs.py:34
+#: dashboards/project/firewalls/tabs.py:33
 msgid "Firewall Rules"
 msgstr "Reglas de cortafuegos"
 
-#: dashboards/project/firewalls/tabs.py:46
+#: dashboards/project/firewalls/tabs.py:45
 msgid "Unable to retrieve rules list."
 msgstr "No ha sido posible obtener la lista de reglas."
 
-#: dashboards/project/firewalls/tabs.py:55
+#: dashboards/project/firewalls/tabs.py:54
 msgid "Firewall Policies"
 msgstr "Políticas de cortafuegos"
 
-#: dashboards/project/firewalls/tabs.py:67
+#: dashboards/project/firewalls/tabs.py:66
 msgid "Unable to retrieve policies list."
 msgstr "No ha sido posible obtener la lista de políticas."
 
-#: dashboards/project/firewalls/tabs.py:88
+#: dashboards/project/firewalls/tabs.py:87
 msgid "Unable to retrieve firewall list."
 msgstr "No ha sido posible obtener la lista de cortafuegos."
 
-#: dashboards/project/firewalls/tabs.py:97
+#: dashboards/project/firewalls/tabs.py:96
 msgid "Firewall Rule Details"
 msgstr "Detalles de la regla de cortafuegos"
 
@@ -7821,7 +7822,7 @@ msgstr "Asociado"
 msgid "Detached"
 msgstr "Desasociado"
 
-#: dashboards/project/networks/ports/tables.py:55
+#: dashboards/project/networks/ports/tables.py:60
 #: dashboards/project/networks/templates/networks/ports/_detail_overview.html:36
 msgid "Attached Device"
 msgstr "Dispositivo asociado"
@@ -8520,7 +8521,7 @@ msgstr "Fecha actualizada"
 msgid "Stack Resources"
 msgstr "Recursos de pila"
 
-#: dashboards/project/stacks/tabs.py:34
+#: dashboards/project/stacks/tabs.py:33
 msgid "Topology"
 msgstr "Topología"
 
@@ -9477,7 +9478,7 @@ msgstr "Servicio VPN %s eliminado"
 msgid "Unable to delete VPN Service: %s"
 msgstr "No ha sido posible borrar el servicio VPN: %s"
 
-#: dashboards/project/vpn/views.py:66
+#: dashboards/project/vpn/views.py:64
 #, python-format
 msgid "Deleted IKE Policy %s"
 msgstr "Política IKE %s eliminada"
@@ -9487,7 +9488,7 @@ msgstr "Política IKE %s eliminada"
 msgid "Unable to delete IKE Policy: %s"
 msgstr "No ha sido posible borrar la política IKE: %s"
 
-#: dashboards/project/vpn/views.py:75
+#: dashboards/project/vpn/views.py:73
 #, python-format
 msgid "Deleted IPSec Policy %s"
 msgstr "Política IPSec %s eliminada"
