@@ -1,4 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
 # Copyright 2013, Big Switch Networks, Inc
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -23,7 +22,6 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from horizon.utils import fields
 from horizon.utils import validators
 
 from openstack_dashboard import api
@@ -44,14 +42,14 @@ class UpdateRule(forms.SelfHandlingForm):
     action = forms.ChoiceField(
         label=_("Action"), required=False,
         help_text=_('Action for the firewall rule'))
-    source_ip_address = fields.IPField(
+    source_ip_address = forms.IPField(
         label=_("Source IP Address/Subnet"),
-        version=fields.IPv4 | fields.IPv6,
+        version=forms.IPv4 | forms.IPv6,
         required=False, mask=True,
         help_text=_('Source IP address or subnet'))
-    destination_ip_address = fields.IPField(
+    destination_ip_address = forms.IPField(
         label=_('Destination IP Address/Subnet'),
-        version=fields.IPv4 | fields.IPv6,
+        version=forms.IPv4 | forms.IPv6,
         required=False, mask=True,
         help_text=_('Destination IP address or subnet'))
     source_port = forms.CharField(
@@ -130,8 +128,8 @@ class UpdatePolicy(forms.SelfHandlingForm):
             messages.success(request, msg)
             return policy
         except Exception as e:
-            msg = _('Failed to update policy %(name)s: %(reason)s' %
-                    {'name': name_or_id, 'reason': e})
+            msg = _('Failed to update policy %(name)s: %(reason)s') % {
+                'name': name_or_id, 'reason': e}
             LOG.error(msg)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)
@@ -185,8 +183,8 @@ class UpdateFirewall(forms.SelfHandlingForm):
             messages.success(request, msg)
             return firewall
         except Exception as e:
-            msg = _('Failed to update firewall %(name)s: %(reason)s' %
-                    {'name': name_or_id, 'reason': e})
+            msg = _('Failed to update firewall %(name)s: %(reason)s') % {
+                'name': name_or_id, 'reason': e}
             LOG.error(msg)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)
@@ -243,15 +241,15 @@ class InsertRuleToPolicy(forms.SelfHandlingForm):
                     'insert_after': context['insert_after']}
             policy = api.fwaas.policy_insert_rule(request, policy_id, **body)
             msg = _('Rule %(rule)s was successfully inserted to policy '
-                    '%(policy)s.' %
-                    {'rule': insert_rule.name or insert_rule.id,
-                     'policy': policy_name_or_id})
+                    '%(policy)s.') % {
+                        'rule': insert_rule.name or insert_rule.id,
+                        'policy': policy_name_or_id}
             LOG.debug(msg)
             messages.success(request, msg)
             return policy
         except Exception as e:
-            msg = _('Failed to insert rule to policy %(name)s: %(reason)s' %
-                    {'name': policy_id, 'reason': e})
+            msg = _('Failed to insert rule to policy %(name)s: %(reason)s') % {
+                'name': policy_id, 'reason': e}
             LOG.error(msg)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)
@@ -279,8 +277,7 @@ class RemoveRuleFromPolicy(forms.SelfHandlingForm):
             current_choices = [(r.id, r.name) for r in current_rules]
         except Exception as e:
             msg = _('Failed to retrieve current rules in policy %(name)s: '
-                    '%(reason)s' %
-                    {'name': self.initial['name'], 'reason': e})
+                    '%(reason)s') % {'name': self.initial['name'], 'reason': e}
             LOG.error(msg)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)
@@ -296,15 +293,16 @@ class RemoveRuleFromPolicy(forms.SelfHandlingForm):
             body = {'firewall_rule_id': remove_rule_id}
             policy = api.fwaas.policy_remove_rule(request, policy_id, **body)
             msg = _('Rule %(rule)s was successfully removed from policy '
-                    '%(policy)s.' %
-                    {'rule': remove_rule.name or remove_rule.id,
-                     'policy': policy_name_or_id})
+                    '%(policy)s.') % {
+                        'rule': remove_rule.name or remove_rule.id,
+                        'policy': policy_name_or_id}
             LOG.debug(msg)
             messages.success(request, msg)
             return policy
         except Exception as e:
-            msg = _('Failed to remove rule from policy %(name)s: %(reason)s' %
-                    {'name': self.initial['name'], 'reason': e})
+            msg = _('Failed to remove rule from policy %(name)s: '
+                    '%(reason)s') % {'name': self.initial['name'],
+                                     'reason': e}
             LOG.error(msg)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)

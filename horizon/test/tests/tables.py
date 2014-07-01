@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -69,6 +67,11 @@ TEST_DATA_5 = (
 TEST_DATA_6 = (
     FakeObject('1', 'object_1', 'DELETED', 'down'),
     FakeObject('2', 'object_2', 'CREATED', 'up'),
+)
+
+TEST_DATA_7 = (
+    FakeObject('1', 'wrapped name', 'wrapped value', 'status',
+               'not wrapped optional'),
 )
 
 
@@ -146,6 +149,11 @@ class MyToggleAction(tables.BatchAction):
         if self.down:
             #up it
             self.current_past_action = 1
+
+
+class MyDisabledAction(MyToggleAction):
+    def allowed(self, request, obj=None):
+        return False
 
 
 class MyFilterAction(tables.FilterAction):
@@ -234,6 +242,19 @@ class MyTableNotAllowedInlineEdit(MyTable):
         row_class = MyRow
 
 
+class MyTableWrapList(MyTable):
+    name = tables.Column('name',
+                         form_field=forms.CharField(required=True),
+                         form_field_attributes={'class': 'test'},
+                         update_action=MyUpdateActionNotAllowed,
+                         wrap_list=True)
+    value = tables.Column('value',
+
+                          wrap_list=True)
+    optional = tables.Column('optional',
+                             wrap_list=False)
+
+
 class NoActionsTable(tables.DataTable):
     id = tables.Column('id')
 
@@ -242,6 +263,17 @@ class NoActionsTable(tables.DataTable):
         verbose_name = "No Actions Table"
         table_actions = ()
         row_actions = ()
+
+
+class DisabledActionsTable(tables.DataTable):
+    id = tables.Column('id')
+
+    class Meta:
+        name = "disabled_actions_table"
+        verbose_name = "Disabled Actions Table"
+        table_actions = (MyDisabledAction,)
+        row_actions = ()
+        multi_select = True
 
 
 class DataTableTests(test.TestCase):
@@ -521,6 +553,26 @@ class DataTableTests(test.TestCase):
         table_actions = self.table.render_table_actions()
         resp = http.HttpResponse(table_actions)
         self.assertContains(resp, "table_search", 0)
+
+    def test_wrap_list_rendering(self):
+        self.table = MyTableWrapList(self.request, TEST_DATA_7)
+        row = self.table.get_rows()[0]
+        name_cell = row.cells['name']
+        value_cell = row.cells['value']
+        optional_cell = row.cells['optional']
+
+        # Check if is cell is rendered correctly.
+        name_cell_rendered = name_cell.render()
+        value_cell_rendered = value_cell.render()
+        optional_cell_rendered = optional_cell.render()
+        resp_name = http.HttpResponse(name_cell_rendered)
+        resp_value = http.HttpResponse(value_cell_rendered)
+        resp_optional = http.HttpResponse(optional_cell_rendered)
+        self.assertContains(resp_name, '<ul>wrapped name</ul>', 1)
+        self.assertContains(resp_value, '<ul>wrapped value</ul>', 1)
+        self.assertContains(resp_optional, 'not wrapped optional', 1)
+        self.assertNotContains(resp_optional, '<ul>')
+        self.assertNotContains(resp_optional, '</ul>')
 
     def test_inline_edit_available_cell_rendering(self):
         self.table = MyTable(self.request, TEST_DATA_2)
@@ -1017,6 +1069,13 @@ class DataTableTests(test.TestCase):
         self.assertFalse(table.needs_form_wrapper)
         res = http.HttpResponse(table.render())
         self.assertNotContains(res, "<form")
+
+    def test_table_actions_not_allowed_hide_multiselect(self):
+        table = DisabledActionsTable(self.request, TEST_DATA)
+        self.assertFalse(table.has_actions)
+        self.assertFalse(table.needs_form_wrapper)
+        res = http.HttpResponse(table.render())
+        self.assertContains(res, "multi_select_column hidden")
 
     def test_table_action_object_display_is_none(self):
         action_string = "my_table__toggle__1"

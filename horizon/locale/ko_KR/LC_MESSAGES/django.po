@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# ujuc Gang <potopro@gmail.com>, 2014
+# Sungjin Kang <potopro@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-04 11:03-0500\n"
-"PO-Revision-Date: 2014-04-01 15:50+0000\n"
-"Last-Translator: ujuc Gang <potopro@gmail.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/openstack/language/ko_KR/)\n"
+"POT-Creation-Date: 2014-06-09 23:31-0500\n"
+"PO-Revision-Date: 2014-04-30 04:40+0000\n"
+"Last-Translator: Sungjin Kang <potopro@gmail.com>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/horizon/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,33 +22,33 @@ msgstr ""
 msgid "Other"
 msgstr "다른"
 
-#: decorators.py:55
+#: decorators.py:53
 msgid "Please log in to continue."
 msgstr "계속 진행하려면 로그인하십시오."
 
-#: decorators.py:87
+#: decorators.py:85
 #, python-format
 msgid "You are not authorized to access %s"
 msgstr "%s에 접근 권한이 없습니다. "
 
-#: exceptions.py:277
+#: exceptions.py:280
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "권한 없음: %s"
 
-#: exceptions.py:280
+#: exceptions.py:283
 msgid "Unauthorized. Please try logging in again."
 msgstr "권한이 없습니다. 다시 로그인 해주십시오."
 
-#: middleware.py:111
+#: middleware.py:115
 msgid "Session timed out."
 msgstr "세션 타임 아웃."
 
-#: browsers/base.py:90
+#: browsers/base.py:88
 msgid "Navigation Item"
 msgstr "네비게이션 항목"
 
-#: browsers/views.py:43
+#: browsers/views.py:41
 #, python-format
 msgid "Select a %s to browse."
 msgstr "브라우져에서 %s를 선택하십시오."
@@ -57,7 +57,19 @@ msgstr "브라우져에서 %s를 선택하십시오."
 msgid "Password is not accepted"
 msgstr "허용되지 않는 암호 입니다."
 
-#: tables/actions.py:418
+#: forms/fields.py:63
+msgid "Incorrect format for IP address"
+msgstr "IP 주소 형식이 잘못 되었습니다."
+
+#: forms/fields.py:64
+msgid "Invalid version for IP address"
+msgstr "IP 주소 버전이 잘못되었습니다."
+
+#: forms/fields.py:65
+msgid "Invalid subnet mask"
+msgstr "서브넷 mask가 잘못되었습니다."
+
+#: tables/actions.py:439
 #: templates/horizon/common/_data_table_table_actions.html:13
 #: templates/horizon/common/_data_table_table_actions.html:23
 #: templates/horizon/common/_workflow_step_update_members.html:11
@@ -65,72 +77,72 @@ msgstr "허용되지 않는 암호 입니다."
 msgid "Filter"
 msgstr "필터"
 
-#: tables/actions.py:609
+#: tables/actions.py:630
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(data_type)s %(action)s"
 
-#: tables/actions.py:611
+#: tables/actions.py:632
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(data_type)s %(action)s"
 
-#: tables/actions.py:641 tables/base.py:1408
+#: tables/actions.py:662 tables/base.py:1421
 msgid "N/A"
 msgstr "N/A"
 
-#: tables/actions.py:670
+#: tables/actions.py:691
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "당신은 %(action)s 이(가) 허용되지 않습니다. : %(objs)s"
 
-#: tables/actions.py:677
+#: tables/actions.py:698
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "%(action)s를 할 수 없습니다.: %(objs)s"
 
-#: tables/actions.py:683
+#: tables/actions.py:704
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:699
+#: tables/actions.py:720
 msgid "Delete"
 msgstr "삭제"
 
-#: tables/actions.py:700
+#: tables/actions.py:721
 msgid "Deleted"
 msgstr "삭제됨"
 
-#: tables/actions.py:717
+#: tables/actions.py:738
 msgid "Update"
 msgstr "업데이트"
 
-#: tables/actions.py:718
+#: tables/actions.py:739
 msgid "Updated"
 msgstr "업데이트됨"
 
-#: tables/base.py:318
+#: tables/base.py:316
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "%(obj)s 에 %(attr)s 속성이 없습니다."
 
-#: tables/base.py:890
+#: tables/base.py:889
 msgid "No items to display."
 msgstr "표시할 항목이 없습니다."
 
-#: tables/base.py:996
+#: tables/base.py:995
 msgid "Actions"
 msgstr "실행"
 
-#: tables/base.py:1202
+#: tables/base.py:1201
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "ID \"%s\" 에 일치되는 항목이 없습니다."
 
-#: tables/base.py:1328
+#: tables/base.py:1341
 msgid "Please select a row before taking that action."
 msgstr "해당 작업을 실행하기 전에 열(row)을 선택하십시오."
 
@@ -194,7 +206,7 @@ msgstr "요약"
 #, python-format
 msgid "Displaying %(counter)s item"
 msgid_plural "Displaying %(counter)s items"
-msgstr[0] "%(counter)s 아이템 보여주기"
+msgstr[0] "%(counter)s 항목을 보여줍니다"
 
 #: templates/horizon/common/_data_table_row_actions.html:10
 msgid "More"
@@ -257,7 +269,7 @@ msgstr[0] "%(nav_items)s 아이템 보여주기"
 #, python-format
 msgid "Displaying %(content_items)s item"
 msgid_plural "Displaying %(content_items)s items"
-msgstr[0] "%(content_items)s 아이템 보여주기"
+msgstr[0] "%(content_items)s 항목을 보여줍니다."
 
 #: templates/horizon/common/_usage_summary.html:3
 msgid "Usage Summary"
@@ -308,111 +320,99 @@ msgstr "다음"
 msgid "Cancel"
 msgstr "취소"
 
-#: templatetags/branding.py:36
+#: templatetags/branding.py:34
 msgid "Horizon"
-msgstr "호라이즌"
+msgstr "Horizon"
 
-#: templatetags/horizon.py:121 templatetags/horizon.py:131
+#: templatetags/horizon.py:119 templatetags/horizon.py:129
 msgid "No Limit"
 msgstr "제한 없음"
 
-#: templatetags/horizon.py:123 templatetags/horizon.py:125
+#: templatetags/horizon.py:121 templatetags/horizon.py:123
 msgid "Available"
 msgstr "사용 가능"
 
-#: templatetags/sizeformat.py:45 templatetags/sizeformat.py:50
+#: templatetags/sizeformat.py:43 templatetags/sizeformat.py:48
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
 msgstr[0] "%(size)d 바이트"
 
-#: templatetags/sizeformat.py:53
+#: templatetags/sizeformat.py:51
 #, python-format
 msgid "%s KB"
 msgstr "%s KB"
 
-#: templatetags/sizeformat.py:56
+#: templatetags/sizeformat.py:54
 #, python-format
 msgid "%s MB"
 msgstr "%s MB"
 
-#: templatetags/sizeformat.py:59
+#: templatetags/sizeformat.py:57
 #, python-format
 msgid "%s GB"
 msgstr "%s GB"
 
-#: templatetags/sizeformat.py:62
+#: templatetags/sizeformat.py:60
 #, python-format
 msgid "%s TB"
 msgstr "%s TB"
 
-#: templatetags/sizeformat.py:64
+#: templatetags/sizeformat.py:62
 #, python-format
 msgid "%s PB"
 msgstr "%s PB"
 
-#: utils/fields.py:59
-msgid "Incorrect format for IP address"
-msgstr "IP 주소 형식이 잘못 되었습니다."
-
-#: utils/fields.py:60
-msgid "Invalid version for IP address"
-msgstr "IP 주소 버전이 잘못되었습니다."
-
-#: utils/fields.py:61
-msgid "Invalid subnet mask"
-msgstr "서브넷 mask가 잘못되었습니다."
-
-#: utils/filters.py:51
+#: utils/filters.py:49
 msgid "Never"
 msgstr "없음"
 
-#: utils/validators.py:25 utils/validators.py:49
+#: utils/validators.py:23 utils/validators.py:47
 msgid "Not a valid port number"
 msgstr "유효하지 않는 포트 번호"
 
-#: utils/validators.py:30
+#: utils/validators.py:28
 msgid "Not a valid IP protocol number"
 msgstr "유효하지 않은 IP 프로토콜 번호"
 
-#: utils/validators.py:44
+#: utils/validators.py:42
 msgid "One colon allowed in port range"
 msgstr "포트 범위내에서 허용된 하나의 colon"
 
-#: utils/validators.py:51
+#: utils/validators.py:49
 msgid "Port number must be integer"
 msgstr "포트 번호는 정수이어야 합니다."
 
-#: workflows/base.py:72
+#: workflows/base.py:70
 msgid "Processing..."
 msgstr "작업 중..."
 
-#: workflows/base.py:477
+#: workflows/base.py:475
 msgid "All available"
 msgstr "모두 사용가능"
 
-#: workflows/base.py:478
+#: workflows/base.py:476
 msgid "Members"
 msgstr "멤버"
 
-#: workflows/base.py:479
+#: workflows/base.py:477
 msgid "None available."
 msgstr "사용할 수 있는 것이 없음."
 
-#: workflows/base.py:480
+#: workflows/base.py:478
 msgid "No members."
 msgstr "멤버가 없습니다."
 
-#: workflows/base.py:596
+#: workflows/base.py:594
 msgid "Save"
 msgstr "저장"
 
-#: workflows/base.py:597
+#: workflows/base.py:595
 #, python-format
 msgid "%s completed successfully."
 msgstr "%s가 성공적으로 완료되었습니다."
 
-#: workflows/base.py:598
+#: workflows/base.py:596
 #, python-format
 msgid "%s did not complete."
 msgstr "%s가 완료되지 않았습니다."

@@ -1,6 +1,3 @@
-
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -73,7 +70,7 @@ class AssociateIPAction(workflows.Action):
         if options:
             options.insert(0, ("", _("Select an IP address")))
         else:
-            options = [("", _("No IP addresses available"))]
+            options = [("", _("No floating IP addresses allocated"))]
 
         return options
 

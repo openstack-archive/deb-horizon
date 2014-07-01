@@ -35,7 +35,7 @@ def get_stats(service):
                                             {'service': service})
 
 
-def get_enabled(service, reverse=False):
+def get_status(service, reverse=False):
     options = ["Enabled", "Disabled"]
     if reverse:
         options.reverse()
@@ -50,39 +50,36 @@ class ServicesTable(tables.DataTable):
     name = tables.Column("name", verbose_name=_('Name'))
     service_type = tables.Column('__unicode__', verbose_name=_('Service'))
     host = tables.Column('host', verbose_name=_('Host'))
-    enabled = tables.Column(get_enabled,
-                            verbose_name=_('Enabled'),
-                            status=True)
+    status = tables.Column(get_status,
+                           verbose_name=_('Status'),
+                           status=True)
 
     class Meta:
         name = "services"
         verbose_name = _("Services")
         table_actions = (ServiceFilterAction,)
         multi_select = False
-        status_columns = ["enabled"]
+        status_columns = ["status"]
 
 
 def get_available(zone):
     return zone.zoneState['available']
 
 
-class NovaServiceFilterAction(tables.FilterAction):
-    def filter(self, table, services, filter_string):
-        q = filter_string.lower()
-
-        def comp(service):
-            if q in service.type.lower():
-                return True
-            return False
-
-        return filter(comp, services)
+def get_nova_agent_status(agent):
+    template_name = 'admin/info/_cell_status.html'
+    context = {
+        'status': agent.status,
+        'disabled_reason': agent.disabled_reason
+    }
+    return template.loader.render_to_string(template_name, context)
 
 
 class NovaServicesTable(tables.DataTable):
     binary = tables.Column("binary", verbose_name=_('Name'))
     host = tables.Column('host', verbose_name=_('Host'))
     zone = tables.Column('zone', verbose_name=_('Zone'))
-    status = tables.Column('status', verbose_name=_('Status'))
+    status = tables.Column(get_nova_agent_status, verbose_name=_('Status'))
     state = tables.Column('state', verbose_name=_('State'))
     updated_at = tables.Column('updated_at',
                                verbose_name=_('Updated At'),
@@ -95,7 +92,30 @@ class NovaServicesTable(tables.DataTable):
     class Meta:
         name = "nova_services"
         verbose_name = _("Compute Services")
-        table_actions = (NovaServiceFilterAction,)
+        table_actions = (ServiceFilterAction,)
+        multi_select = False
+
+
+class CinderServicesTable(tables.DataTable):
+    binary = tables.Column("binary", verbose_name=_('Name'))
+    host = tables.Column('host', verbose_name=_('Host'))
+    zone = tables.Column('zone', verbose_name=_('Zone'))
+    status = tables.Column('status', verbose_name=_('Status'),
+                           filters=(filters.title, ))
+    state = tables.Column('state', verbose_name=_('State'),
+                          filters=(filters.title, ))
+    updated_at = tables.Column('updated_at',
+                               verbose_name=_('Updated At'),
+                               filters=(utils_filters.parse_isotime,
+                                        filters.timesince))
+
+    def get_object_id(self, obj):
+        return "%s-%s-%s" % (obj.binary, obj.host, obj.zone)
+
+    class Meta:
+        name = "cinder_services"
+        verbose_name = _("Block Storage Services")
+        table_actions = (ServiceFilterAction,)
         multi_select = False
 
 
@@ -161,7 +181,7 @@ class QuotaFilterAction(tables.FilterAction):
 def get_quota_name(quota):
     QUOTA_NAMES = {
         'injected_file_content_bytes': _('Injected File Content Bytes'),
-        'injected_file_path_bytes': _('Injected File Path Bytes'),
+        'injected_file_path_bytes': _('Length of Injected File Path'),
         'metadata_items': _('Metadata Items'),
         'cores': _('VCPUs'),
         'instances': _('Instances'),

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-07 02:25-0500\n"
+"POT-Creation-Date: 2014-05-28 01:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,18 +18,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: static/horizon/js/horizon.accordion_nav.js:83
-#: static/horizon/js/horizon.modals.js:280
+#: static/horizon/js/horizon.modals.js:281
 #: static/horizon/js/horizon.tabs.js:21
 msgid "Loading"
 msgstr ""
 
-#: static/horizon/js/horizon.d3linechart.js:385
-#: static/horizon/js/horizon.d3linechart.js:395
+#: static/horizon/js/horizon.d3linechart.js:386
+#: static/horizon/js/horizon.d3linechart.js:396
 msgid "No data available."
 msgstr ""
 
-#: static/horizon/js/horizon.d3linechart.js:401
-#: static/horizon/js/horizon.modals.js:299
+#: static/horizon/js/horizon.d3linechart.js:402
+#: static/horizon/js/horizon.modals.js:300
 #: static/horizon/js/horizon.tables_inline_edit.js:94
 #: static/horizon/js/horizon.tables_inline_edit.js:175
 msgid "An error occurred. Please try again later."
@@ -40,7 +40,7 @@ msgstr ""
 msgid "There was a problem communicating with the server, please try again."
 msgstr ""
 
-#: static/horizon/js/horizon.forms.js:117
+#: static/horizon/js/horizon.forms.js:118
 msgid "Filter"
 msgstr ""
 
@@ -85,12 +85,12 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: static/horizon/js/horizon.modals.js:98
-#: static/horizon/js/horizon.tables.js:172
+#: static/horizon/js/horizon.modals.js:208
+#: static/horizon/js/horizon.tables.js:200
 msgid "Working"
 msgstr ""
 
-#: static/horizon/js/horizon.modals.js:128
+#: static/horizon/js/horizon.modals.js:238
 msgid "There was an error submitting the form. Please try again."
 msgstr ""
 
@@ -120,29 +120,30 @@ msgid "view %s details"
 msgstr ""
 
 #: static/horizon/js/horizon.tables.js:39
-#: static/horizon/js/horizon.tables.js:256
+#: static/horizon/js/horizon.tables.js:320
 msgid "No items to display."
 msgstr ""
 
-#: static/horizon/js/horizon.tables.js:50
+#: static/horizon/js/horizon.tables.js:52
+#: static/horizon/js/horizon.tables.js:129
 msgid "An error occurred while updating."
 msgstr ""
 
-#: static/horizon/js/horizon.tables.js:155
+#: static/horizon/js/horizon.tables.js:183
 #, c-format
 msgid "You have selected %s. "
 msgstr ""
 
-#: static/horizon/js/horizon.tables.js:157
+#: static/horizon/js/horizon.tables.js:185
 #, c-format
 msgid "Confirm %s"
 msgstr ""
 
-#: static/horizon/js/horizon.tables.js:158
+#: static/horizon/js/horizon.tables.js:186
 msgid "Please confirm your selection. This action cannot be undone."
 msgstr ""
 
-#: static/horizon/js/horizon.tables.js:243
+#: static/horizon/js/horizon.tables.js:307
 #, c-format
 msgid "Displaying %s item"
 msgid_plural "Displaying %s items"

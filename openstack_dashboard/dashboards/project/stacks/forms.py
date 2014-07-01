@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -14,7 +12,6 @@
 
 import json
 import logging
-import re
 
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_variables  # noqa
@@ -26,31 +23,6 @@ from horizon import messages
 from openstack_dashboard import api
 
 LOG = logging.getLogger(__name__)
-
-
-def exception_to_validation_msg(e):
-    """Extracts a validation message to display to the user."""
-    try:
-        error = json.loads(str(e))
-        # NOTE(jianingy): if no message exists, we just return 'None'
-        # and let the caller to deciede what to show
-        return error['error'].get('message', None)
-    except Exception:
-        # NOTE(jianingy): fallback to legacy message parsing approach
-        # either if error message isn't a json nor the json isn't in
-        # valid format.
-        validation_patterns = [
-            "Remote error: \w* {'Error': '(.*?)'}",
-            'Remote error: \w* (.*?) \[',
-            '400 Bad Request\n\nThe server could not comply with the request '
-            'since it is either malformed or otherwise incorrect.\n\n (.*)',
-            '(ParserError: .*)'
-        ]
-
-        for pattern in validation_patterns:
-            match = re.search(pattern, str(e))
-            if match:
-                return match.group(1)
 
 
 def create_upload_form_attributes(prefix, input_type, name):
@@ -177,11 +149,7 @@ class TemplateForm(forms.SelfHandlingForm):
             validated = api.heat.template_validate(self.request, **kwargs)
             cleaned['template_validate'] = validated
         except Exception as e:
-            msg = exception_to_validation_msg(e)
-            if not msg:
-                msg = _('An unknown problem occurred validating the template.')
-                LOG.exception(msg)
-            raise forms.ValidationError(msg)
+            raise forms.ValidationError(unicode(e))
 
         return cleaned
 
@@ -336,7 +304,7 @@ class CreateStackForm(forms.SelfHandlingForm):
             field_key = self.param_prefix + param_key
             field_args = {
                 'initial': param.get('Default', None),
-                'label': param_key,
+                'label': param.get('Label', param_key),
                 'help_text': param.get('Description', ''),
                 'required': param.get('Default', None) is None
             }
@@ -392,9 +360,8 @@ class CreateStackForm(forms.SelfHandlingForm):
             api.heat.stack_create(self.request, **fields)
             messages.success(request, _("Stack creation started."))
             return True
-        except Exception as e:
-            msg = exception_to_validation_msg(e)
-            exceptions.handle(request, msg or _('Stack creation failed.'))
+        except Exception:
+            exceptions.handle(request)
 
 
 class EditStackForm(CreateStackForm):
@@ -438,6 +405,5 @@ class EditStackForm(CreateStackForm):
             api.heat.stack_update(self.request, stack_id=stack_id, **fields)
             messages.success(request, _("Stack update started."))
             return True
-        except Exception as e:
-            msg = exception_to_validation_msg(e)
-            exceptions.handle(request, msg or _('Stack update failed.'))
+        except Exception:
+            exceptions.handle(request)

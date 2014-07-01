@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -21,7 +19,7 @@ import horizon
 
 class SystemPanels(horizon.PanelGroup):
     slug = "admin"
-    name = _("System Panel")
+    name = _("System")
     panels = ('overview', 'metering', 'hypervisors', 'aggregates',
               'instances', 'volumes', 'flavors', 'images',
               'networks', 'routers', 'info')
@@ -29,7 +27,7 @@ class SystemPanels(horizon.PanelGroup):
 
 class IdentityPanels(horizon.PanelGroup):
     slug = "identity"
-    name = _("Identity Panel")
+    name = _("Identity")
     panels = ('domains', 'projects', 'users', 'groups', 'roles')
 
 

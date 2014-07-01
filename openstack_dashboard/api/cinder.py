@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -81,7 +79,11 @@ class Volume(BaseCinderAPIResourceWrapper):
               'volume_type', 'availability_zone', 'imageRef', 'bootable',
               'snapshot_id', 'source_volid', 'attachments', 'tenant_name',
               'os-vol-host-attr:host', 'os-vol-tenant-attr:tenant_id',
-              'metadata']
+              'metadata', 'volume_image_metadata']
+
+    @property
+    def is_bootable(self):
+        return self.bootable == 'true'
 
 
 class VolumeSnapshot(BaseCinderAPIResourceWrapper):
@@ -222,6 +224,14 @@ def volume_snapshot_delete(request, snapshot_id):
     return cinderclient(request).volume_snapshots.delete(snapshot_id)
 
 
+def volume_snapshot_update(request, snapshot_id, name, description):
+    snapshot_data = {'name': name,
+                     'description': description}
+    snapshot_data = _replace_v2_parameters(snapshot_data)
+    return cinderclient(request).volume_snapshots.update(snapshot_id,
+                                                         **snapshot_data)
+
+
 def tenant_quota_get(request, tenant_id):
     c_client = cinderclient(request)
     if c_client is None:
@@ -259,6 +269,10 @@ def tenant_absolute_limits(request):
         else:
             limits_dict[limit.name] = limit.value
     return limits_dict
+
+
+def service_list(request):
+    return cinderclient(request).services.list()
 
 
 def availability_zone_list(request, detailed=False):

@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013,  Big Switch Networks
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -23,14 +21,13 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from horizon.utils import fields
 from openstack_dashboard.dashboards.project.routers.extensions.routerrules\
     import rulemanager
 
 LOG = logging.getLogger(__name__)
 
 
-class RuleCIDRField(fields.IPField):
+class RuleCIDRField(forms.IPField):
     """Extends IPField to allow ('any','external') keywords and requires CIDR
     """
     def __init__(self, *args, **kwargs):
@@ -49,13 +46,13 @@ class RuleCIDRField(fields.IPField):
 
 class AddRouterRule(forms.SelfHandlingForm):
     source = RuleCIDRField(label=_("Source CIDR"),
-                                  widget=forms.TextInput(), required=True)
+                           widget=forms.TextInput(), required=True)
     destination = RuleCIDRField(label=_("Destination CIDR"),
-                                  widget=forms.TextInput(), required=True)
+                                widget=forms.TextInput(), required=True)
     action = forms.ChoiceField(label=_("Action"), required=True)
-    nexthops = fields.MultiIPField(label=_("Optional: Next Hop "
-                                       "Addresses (comma delimited)"),
-                               widget=forms.TextInput(), required=False)
+    nexthops = forms.MultiIPField(label=_("Optional: Next Hop "
+                                          "Addresses (comma delimited)"),
+                                  widget=forms.TextInput(), required=False)
     router_id = forms.CharField(label=_("Router ID"),
                                 widget=forms.TextInput(attrs={'readonly':
                                                               'readonly'}))
@@ -70,8 +67,8 @@ class AddRouterRule(forms.SelfHandlingForm):
         try:
             if 'rule_to_delete' in request.POST:
                 rulemanager.remove_rules(request,
-                    [request.POST['rule_to_delete']],
-                    router_id=data['router_id'])
+                                         [request.POST['rule_to_delete']],
+                                         router_id=data['router_id'])
         except Exception:
             exceptions.handle(request, _('Unable to delete router rule.'))
         try:
@@ -93,7 +90,7 @@ class AddRouterRule(forms.SelfHandlingForm):
             messages.success(request, msg)
             return True
         except Exception as e:
-            msg = _('Failed to add router rule %s') % e.message
+            msg = _('Failed to add router rule %s') % e
             LOG.info(msg)
             messages.error(request, msg)
             redirect = reverse(self.failure_url, args=[data['router_id']])

@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -313,7 +311,7 @@ class Dashboard(Registry, HorizonComponent):
 
             class SystemPanels(horizon.PanelGroup):
                 slug = "syspanel"
-                name = _("System Panel")
+                name = _("System")
                 panels = ('overview', 'instances', ...)
 
             class Syspanel(horizon.Dashboard):
@@ -727,7 +725,7 @@ class Site(Registry, HorizonComponent):
         """Lazy loading for URL patterns.
 
         This method avoids problems associated with attempting to evaluate
-        the the URLconf before the settings module has been loaded.
+        the URLconf before the settings module has been loaded.
         """
         def url_patterns():
             return self._urls()[0]

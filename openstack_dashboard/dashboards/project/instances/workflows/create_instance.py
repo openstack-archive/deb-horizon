@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -29,7 +27,6 @@ from django.views.decorators.debug import sensitive_variables  # noqa
 
 from horizon import exceptions
 from horizon import forms
-from horizon.utils import fields
 from horizon.utils import functions
 from horizon.utils import validators
 from horizon import workflows
@@ -106,7 +103,7 @@ class SetInstanceDetailsAction(workflows.Action):
     image_id = forms.ChoiceField(
         label=_("Image Name"),
         required=False,
-        widget=fields.SelectWidget(
+        widget=forms.SelectWidget(
             data_attrs=('volume_size',),
             transform=lambda x: ("%s (%s)" % (x.name,
                                               filesizeformat(x.bytes)))))
@@ -140,7 +137,7 @@ class SetInstanceDetailsAction(workflows.Action):
         super(SetInstanceDetailsAction, self).__init__(
             request, context, *args, **kwargs)
         source_type_choices = [
-            ('', _("--- Select source ---")),
+            ('', _("Select source")),
             ("image_id", _("Boot from image")),
             ("instance_snapshot_id", _("Boot from snapshot")),
         ]
@@ -185,6 +182,13 @@ class SetInstanceDetailsAction(workflows.Action):
         source_type = self.data.get('source_type', None)
 
         if source_type in ('image_id', 'volume_image_id'):
+            if source_type == 'volume_image_id':
+                if not self.data.get('volume_size', None):
+                    msg = _("You must set volume size")
+                    self._errors['volume_size'] = self.error_class([msg])
+                if not cleaned_data.get('device_name'):
+                    msg = _("You must set device name")
+                    self._errors['device_name'] = self.error_class([msg])
             if not cleaned_data.get('image_id'):
                 msg = _("You must select an image.")
                 self._errors['image_id'] = self.error_class([msg])
@@ -262,17 +266,6 @@ class SetInstanceDetailsAction(workflows.Action):
                 msg = _('Launching multiple instances is only supported for '
                         'images and instance snapshots.')
                 raise forms.ValidationError(msg)
-
-        elif source_type == 'volume_image_id':
-            if not cleaned_data['image_id']:
-                msg = _("You must select an image.")
-                self._errors['image_id'] = self.error_class([msg])
-            if not self.data.get('volume_size', None):
-                msg = _("You must set volume size")
-                self._errors['volume_size'] = self.error_class([msg])
-            if not cleaned_data.get('device_name'):
-                msg = _("You must set device name")
-                self._errors['device_name'] = self.error_class([msg])
 
         elif source_type == 'volume_snapshot_id':
             if not cleaned_data.get('volume_snapshot_id'):
@@ -384,7 +377,8 @@ class SetInstanceDetailsAction(workflows.Action):
         try:
             volumes = [self._get_volume_display_name(v)
                        for v in cinder.volume_list(self.request)
-                       if v.status == api.cinder.VOLUME_STATE_AVAILABLE]
+                       if v.status == api.cinder.VOLUME_STATE_AVAILABLE
+                        and v.bootable == 'true']
         except Exception:
             volumes = []
             exceptions.handle(self.request,
@@ -636,9 +630,17 @@ class SetAdvancedAction(workflows.Action):
 
     def __init__(self, request, *args, **kwargs):
         super(SetAdvancedAction, self).__init__(request, *args, **kwargs)
-        # Set our disk_config choices
-        config_choices = [("AUTO", _("Automatic")), ("MANUAL", _("Manual"))]
-        self.fields['disk_config'].choices = config_choices
+        try:
+            if not api.nova.extension_supported("DiskConfig", request):
+                del self.fields['disk_config']
+            else:
+                # Set our disk_config choices
+                config_choices = [("AUTO", _("Automatic")),
+                                  ("MANUAL", _("Manual"))]
+                self.fields['disk_config'].choices = config_choices
+        except Exception:
+            exceptions.handle(request, _('Unable to retrieve extensions '
+                                         'information.'))
 
     class Meta:
         name = _("Advanced Options")
@@ -749,7 +751,7 @@ class LaunchInstance(workflows.Workflow):
                                    availability_zone=avail_zone,
                                    instance_count=int(context['count']),
                                    admin_pass=context['admin_pass'],
-                                   disk_config=context['disk_config'])
+                                   disk_config=context.get('disk_config'))
             return True
         except Exception:
             exceptions.handle(request)

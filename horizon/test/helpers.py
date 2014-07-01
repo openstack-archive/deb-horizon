@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -21,6 +19,7 @@
 import logging
 import os
 import socket
+import time
 
 from django.contrib.auth.middleware import AuthenticationMiddleware  # noqa
 from django.contrib.auth.models import Permission  # noqa
@@ -31,13 +30,14 @@ from django.core.handlers import wsgi
 from django import http
 from django import test as django_test
 from django.test.client import RequestFactory  # noqa
+from django.utils.encoding import force_unicode
 from django.utils import unittest
 
 LOG = logging.getLogger(__name__)
 
 
 try:
-    from selenium.webdriver.firefox.webdriver import WebDriver  # noqa
+    from horizon.test.webdriver import WebDriver  # noqa
     from selenium.webdriver.support import ui as selenium_ui
 except ImportError as e:
     # NOTE(saschpe): Several distribution can't ship selenium due to its
@@ -154,7 +154,8 @@ class TestCase(django_test.TestCase):
 
         # Otherwise, make sure we got the expected messages.
         for msg_type, count in kwargs.items():
-            msgs = [m.message for m in messages if msg_type in m.tags]
+            msgs = [force_unicode(m.message)
+                    for m in messages if msg_type in m.tags]
             assert len(msgs) == count, \
                    "%s messages not as expected: %s" % (msg_type.title(),
                                                         ", ".join(msgs))
@@ -165,7 +166,9 @@ class TestCase(django_test.TestCase):
 class SeleniumTestCase(django_test.LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
+        socket.setdefaulttimeout(60)
         if os.environ.get('WITH_SELENIUM', False):
+            time.sleep(1)
             cls.selenium = WebDriver()
         super(SeleniumTestCase, cls).setUpClass()
 
@@ -173,10 +176,11 @@ class SeleniumTestCase(django_test.LiveServerTestCase):
     def tearDownClass(cls):
         if os.environ.get('WITH_SELENIUM', False):
             cls.selenium.quit()
+            time.sleep(1)
         super(SeleniumTestCase, cls).tearDownClass()
 
     def setUp(self):
-        socket.setdefaulttimeout(10)
+        socket.setdefaulttimeout(60)
         self.ui = selenium_ui
         super(SeleniumTestCase, self).setUp()
 
@@ -191,12 +195,12 @@ class JasmineTests(SeleniumTestCase):
 
     .. attribute:: sources
 
-        A list of of JS source files (the {{STATIC_URL}} will be added
+        A list of JS source files (the {{STATIC_URL}} will be added
         automatically, these are the source files tested
 
     .. attribute:: specs
 
-        A list of of Jasmine JS spec files (the {{STATIC_URL}} will be added
+        A list of Jasmine JS spec files (the {{STATIC_URL}} will be added
         automatically
 
     .. attribute:: template_name

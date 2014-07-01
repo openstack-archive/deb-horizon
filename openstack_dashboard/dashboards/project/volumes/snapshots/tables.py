@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -30,6 +28,18 @@ from openstack_dashboard.dashboards.project.volumes \
     .volumes import tables as volume_tables
 
 
+class LaunchSnapshot(volume_tables.LaunchVolume):
+    name = "launch_snapshot"
+
+    def get_link_url(self, datum):
+        base_url = reverse(self.url)
+
+        vol_id = "%s:snap" % self.table.get_object_id(datum)
+        params = urlencode({"source_type": "volume_snapshot_id",
+                            "source_id": vol_id})
+        return "?".join([base_url, params])
+
+
 class DeleteVolumeSnapshot(tables.DeleteAction):
     data_type_singular = _("Volume Snapshot")
     data_type_plural = _("Volume Snapshots")
@@ -46,6 +56,25 @@ class DeleteVolumeSnapshot(tables.DeleteAction):
 
     def delete(self, request, obj_id):
         api.cinder.volume_snapshot_delete(request, obj_id)
+
+
+class EditVolumeSnapshot(tables.LinkAction):
+    name = "edit"
+    verbose_name = _("Edit Snapshot")
+    url = "horizon:project:volumes:snapshots:update"
+    classes = ("ajax-modal", "btn-edit")
+    policy_rules = (("volume", "volume:update_snapshot"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum,
+                                 "os-extended-snapshot-attributes:project_id",
+                                 None)
+        return {"project_id": project_id}
+
+    def allowed(self, request, snapshot=None):
+        return snapshot.status == "available"
 
 
 class CreateVolumeFromSnapshot(tables.LinkAction):
@@ -95,8 +124,9 @@ class SnapshotVolumeNameColumn(tables.Column):
 class VolumeSnapshotsTable(volume_tables.VolumesTableBase):
     name = tables.Column("name",
                          verbose_name=_("Name"),
-                         link="horizon:project:volumes:detail")
-    volume_name = SnapshotVolumeNameColumn("name",
+                         link="horizon:project:volumes:snapshots:detail")
+    volume_name = SnapshotVolumeNameColumn(
+        "name",
         verbose_name=_("Volume Name"),
         link="horizon:project:volumes:volumes:detail")
 
@@ -104,7 +134,8 @@ class VolumeSnapshotsTable(volume_tables.VolumesTableBase):
         name = "volume_snapshots"
         verbose_name = _("Volume Snapshots")
         table_actions = (DeleteVolumeSnapshot,)
-        row_actions = (CreateVolumeFromSnapshot, DeleteVolumeSnapshot)
+        row_actions = (CreateVolumeFromSnapshot, LaunchSnapshot,
+                       EditVolumeSnapshot, DeleteVolumeSnapshot)
         row_class = UpdateRow
         status_columns = ("status",)
         permissions = ['openstack.services.volume']

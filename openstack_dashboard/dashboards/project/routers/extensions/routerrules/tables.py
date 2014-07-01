@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013,  Big Switch Networks, Inc
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -32,6 +30,13 @@ class AddRouterRule(tables.LinkAction):
     verbose_name = _("Add Router Rule")
     url = "horizon:project:routers:addrouterrule"
     classes = ("ajax-modal", "btn-create")
+    policy_rules = (("network", "update_router"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def get_link_url(self, datum=None):
         router_id = self.table.kwargs['router_id']
@@ -42,6 +47,13 @@ class RemoveRouterRule(tables.DeleteAction):
     data_type_singular = _("Router Rule")
     data_type_plural = _("Router Rules")
     failure_url = 'horizon:project:routers:detail'
+    policy_rules = (("network", "update_router"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def delete(self, request, obj_id):
         router_id = self.table.kwargs['router_id']

@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013 Rackspace Hosting
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -123,7 +121,7 @@ class DetailView(horizon_tabs.TabbedTableView):
                 self.request, instance.flavor["id"])
         except Exception:
             LOG.error('Unable to retrieve flavor details'
-                      ' for database instance: %s') % instance_id
+                      ' for database instance: %s' % instance_id)
         return instance
 
     def get_tabs(self, request, *args, **kwargs):

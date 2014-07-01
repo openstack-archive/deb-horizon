@@ -240,6 +240,8 @@ horizon.d3_bar_chart = {
      */
     self.refresh = function(){
       var self = this;
+      // Clear the chart before rendering it
+      self.jquery_element.empty();
       self.render();
     };
 
@@ -497,7 +499,7 @@ horizon.d3_bar_chart = {
         // Append little triangle pointing to text
         var poly = [{'x':self.wrapper.chart_start_x - 8, 'y':label_placement_y},
                 {'x':self.wrapper.chart_start_x - 3,'y':label_placement_y + 2},
-                {'x':self.wrapper.chart_start_x - 3,'y':label_placement_y - 2},
+                {'x':self.wrapper.chart_start_x - 3,'y':label_placement_y - 2}
                ];
 
         self.wrapper.bar.selectAll('polygon')
@@ -710,7 +712,7 @@ horizon.d3_bar_chart = {
     svg.show();
     svg.css('height', height);
     svg.css('width', width);
-  },
+  }
 };
 
 

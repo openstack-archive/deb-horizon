@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -21,9 +19,12 @@ import new
 from django.conf import settings
 from django.core import urlresolvers
 from django import shortcuts
+from django.template.loader import render_to_string  # noqa
 from django.utils.functional import Promise  # noqa
+from django.utils.http import urlencode  # noqa
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
+import six
 
 from horizon import exceptions
 from horizon import messages
@@ -80,9 +81,9 @@ class BaseActionMetaClass(type):
         return klass
 
 
+@six.add_metaclass(BaseActionMetaClass)
 class BaseAction(html.HTMLElement):
     """Common base class for all ``Action`` classes."""
-    __metaclass__ = BaseActionMetaClass
 
     def __init__(self, **kwargs):
         super(BaseAction, self).__init__()
@@ -164,6 +165,9 @@ class BaseAction(html.HTMLElement):
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self.name)
+
+    def associate_with_table(self, table):
+        self.table = table
 
 
 class Action(BaseAction):
@@ -332,6 +336,7 @@ class LinkAction(BaseAction):
     """
     # class attribute name is used for ordering of Actions in table
     name = "link"
+    ajax = False
 
     def __init__(self, attrs=None, **kwargs):
         super(LinkAction, self).__init__(**kwargs)
@@ -347,6 +352,23 @@ class LinkAction(BaseAction):
                                       'verbose_name attribute.')
         if attrs:
             self.attrs.update(attrs)
+        if self.ajax:
+            self.classes = list(self.classes) + ['ajax-update']
+
+    def get_ajax_update_url(self):
+        table_url = self.table.get_absolute_url()
+        params = urlencode({"table": self.table.name,
+                            "action": self.name})
+        return "%s?%s" % (table_url, params)
+
+    def render(self):
+        return render_to_string("horizon/common/_data_table_table_action.html",
+                                {"action": self})
+
+    def associate_with_table(self, table):
+        super(LinkAction, self).associate_with_table(table)
+        if self.ajax:
+            self.attrs['data-update-url'] = self.get_ajax_update_url()
 
     def get_link_url(self, datum=None):
         """Returns the final URL based on the value of ``url``.

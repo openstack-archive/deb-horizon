@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013 OpenStack Foundation
 # All Rights Reserved.
 #
@@ -23,7 +21,6 @@ from django.views.decorators.debug import sensitive_variables  # noqa
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from horizon.utils import fields
 from horizon.utils import validators
 
 from openstack_dashboard import api
@@ -37,8 +34,9 @@ def _image_choice_title(img):
 
 class RebuildInstanceForm(forms.SelfHandlingForm):
     instance_id = forms.CharField(widget=forms.HiddenInput())
+
     image = forms.ChoiceField(label=_("Select Image"),
-            widget=fields.SelectWidget(attrs={'class': 'image-selector'},
+            widget=forms.SelectWidget(attrs={'class': 'image-selector'},
                                        data_attrs=('size', 'display-name'),
                                        transform=_image_choice_title))
     password = forms.RegexField(label=_("Rebuild Password"),
@@ -69,9 +67,17 @@ class RebuildInstanceForm(forms.SelfHandlingForm):
             del self.fields['password']
             del self.fields['confirm_password']
 
-        # Set our disk_config choices
-        config_choices = [("AUTO", _("Automatic")), ("MANUAL", _("Manual"))]
-        self.fields['disk_config'].choices = config_choices
+        try:
+            if not api.nova.extension_supported("DiskConfig", request):
+                del self.fields['disk_config']
+            else:
+                # Set our disk_config choices
+                config_choices = [("AUTO", _("Automatic")),
+                                  ("MANUAL", _("Manual"))]
+                self.fields['disk_config'].choices = config_choices
+        except Exception:
+            exceptions.handle(request, _('Unable to retrieve extensions '
+                                         'information.'))
 
     def clean(self):
         cleaned_data = super(RebuildInstanceForm, self).clean()

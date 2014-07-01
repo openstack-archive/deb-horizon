@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -150,6 +148,12 @@ class TabTests(test.TestCase):
 
         # active tab w/ disabled selected
         self.request.GET['tab'] = "tab_group__tab_disabled"
+        tg = Group(self.request)
+        self.assertEqual(tg.active, tg.get_tabs()[0])
+
+        # active tab w/ non-empty garbage selected
+        # Note: this entry does not contain the '__' SEPARATOR string.
+        self.request.GET['tab'] = "<!--"
         tg = Group(self.request)
         self.assertEqual(tg.active, tg.get_tabs()[0])
 

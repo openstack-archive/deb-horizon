@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -44,10 +42,10 @@ class QuotaTests(test.APITestCase):
                   'instances': {'available': 8, 'used': 2, 'quota': 10},
                   'cores': {'available': 8, 'used': 2, 'quota': 10}}
         if with_volume:
-            usages.update({'volumes': {'available': 0, 'used': 3, 'quota': 1},
+            usages.update({'volumes': {'available': 0, 'used': 4, 'quota': 1},
                            'snapshots': {'available': 0, 'used': 3,
                                          'quota': 1},
-                           'gigabytes': {'available': 920, 'used': 80,
+                           'gigabytes': {'available': 880, 'used': 120,
                                          'quota': 1000}})
         return usages
 

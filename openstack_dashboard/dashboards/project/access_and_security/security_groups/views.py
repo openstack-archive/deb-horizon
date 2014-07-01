@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -55,7 +53,10 @@ class DetailView(tables.DataTableView):
                               redirect=redirect)
 
     def get_data(self):
-        return self._get_data().rules
+        data = self._get_data()
+        if data is None:
+            return []
+        return data.rules
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)

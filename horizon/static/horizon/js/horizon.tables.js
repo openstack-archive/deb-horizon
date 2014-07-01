@@ -45,6 +45,8 @@ horizon.datatables = {
                 }
                 // Reset tablesorter's data cache.
                 $table.trigger("update");
+                // Enable launch action if quota is not exceeded
+                horizon.datatables.update_actions();
                 break;
               default:
                 horizon.utils.log(gettext("An error occurred while updating."));
@@ -88,6 +90,11 @@ horizon.datatables = {
               $table.trigger("update");
               // Reset decay constant.
               $table.removeAttr('decay_constant');
+              // Check that quicksearch is enabled for this table
+              // Reset quicksearch's data cache.
+              if ($table.attr('id') in horizon.datatables.qs) {
+                horizon.datatables.qs[$table.attr('id')].cache();
+              }
             }
           },
           complete: function (jqXHR, textStatus) {
@@ -110,6 +117,27 @@ horizon.datatables = {
         });
       });
     }
+  },
+
+  update_actions: function() {
+    var $actions_to_update = $('.btn-launch.ajax-update');
+    $actions_to_update.each(function(index, action) {
+      var $action = $(this);
+      horizon.ajax.queue({
+        url: $action.attr('data-update-url'),
+        error: function (jqXHR, textStatus, errorThrown) {
+          horizon.utils.log(gettext("An error occurred while updating."));
+        },
+        success: function (data, textStatus, jqXHR) {
+          var $new_action = $(data);
+
+          // Only replace row if the html content has changed
+          if($new_action.html() != $action.html()) {
+            $action.replaceWith($new_action);
+          }
+        }
+      });
+    });
   },
 
   validate_button: function () {
@@ -218,6 +246,42 @@ $.tablesorter.addParser({
   type: 'numeric'
 });
 
+$.tablesorter.addParser({
+  id: "timestampSorter",
+  is: function() {
+    return false;
+  },
+  format: function(s) {
+    s = s.replace(/\-/g, " ").replace(/:/g, " ");
+    s = s.replace("T", " ").replace("Z", " ");
+    s = s.split(" ");
+    return new Date(s[0], s[1], s[2], s[3], s[4], s[5]).getTime();
+  },
+  type: "numeric"
+});
+
+$.tablesorter.addParser({
+  id: 'naturalSort',
+  is: function(s) {
+    return false;
+  },
+  // compare int values, non-integers use the ordinal value of the first byte
+  format: function(s) {
+    result = parseInt(s);
+    if (isNaN(result)) {
+      m = s.match(/\d+/);
+      if (m && m.length) {
+        return parseInt(m[0]);
+      } else {
+        return s.charCodeAt(0);
+      }
+    } else {
+      return result;
+    }
+  },
+  type: 'numeric'
+});
+
 horizon.datatables.disable_buttons = function() {
   $("table .table_actions").on("click", ".btn.disabled", function(event){
     event.preventDefault();
@@ -287,6 +351,10 @@ horizon.datatables.set_table_sorting = function (parent) {
           header_options[i] = {sorter: 'ipAddress'};
         } else if ($th.data('type') === 'timesince'){
           header_options[i] = {sorter: 'timesinceSorter'};
+        } else if ($th.data('type') === 'timestamp'){
+          header_options[i] = {sorter: 'timestampSorter'};
+        } else if ($th.data('type') == 'naturalSort'){
+          header_options[i] = {sorter: 'naturalSort'};
         }
       });
       $table.tablesorter({
@@ -309,11 +377,12 @@ horizon.datatables.add_table_checkboxes = function(parent) {
 };
 
 horizon.datatables.set_table_query_filter = function (parent) {
+  horizon.datatables.qs = {};
   $(parent).find('table').each(function (index, elm) {
     var input = $($(elm).find('div.table_search.client input')),
         table_selector;
     if (input.length > 0) {
-      // Disable server-side searcing if we have client-side searching since
+      // Disable server-side searching if we have client-side searching since
       // (for now) the client-side is actually superior. Server-side filtering
       // remains as a noscript fallback.
       // TODO(gabriel): figure out an overall strategy for making server-side
@@ -329,7 +398,7 @@ horizon.datatables.set_table_query_filter = function (parent) {
 
       // Enable the client-side searching.
       table_selector = 'table#' + $(elm).attr('id');
-      input.quicksearch(table_selector + ' tbody tr', {
+      var qs = input.quicksearch(table_selector + ' tbody tr', {
         'delay': 300,
         'loader': 'span.loading',
         'bind': 'keyup click',
@@ -353,6 +422,7 @@ horizon.datatables.set_table_query_filter = function (parent) {
           return query.test($(_row).find('td:not(.hidden):not(.actions_column)').text());
         }
       });
+      horizon.datatables.qs[$(elm).attr('id')] = qs;
     }
   });
 };

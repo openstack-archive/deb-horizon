@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 #    Copyright 2013, Big Switch Networks, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -31,12 +29,14 @@ class AddPoolLink(tables.LinkAction):
     verbose_name = _("Add Pool")
     url = "horizon:project:loadbalancers:addpool"
     classes = ("ajax-modal", "btn-create",)
+    policy_rules = (("network", "create_pool"),)
 
 
 class AddVipLink(tables.LinkAction):
     name = "addvip"
     verbose_name = _("Add VIP")
     classes = ("ajax-modal", "btn-create",)
+    policy_rules = (("network", "create_vip"),)
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:addvip",
@@ -54,6 +54,7 @@ class AddMemberLink(tables.LinkAction):
     verbose_name = _("Add Member")
     url = "horizon:project:loadbalancers:addmember"
     classes = ("ajax-modal", "btn-create",)
+    policy_rules = (("network", "create_member"),)
 
 
 class AddMonitorLink(tables.LinkAction):
@@ -61,6 +62,7 @@ class AddMonitorLink(tables.LinkAction):
     verbose_name = _("Add Monitor")
     url = "horizon:project:loadbalancers:addmonitor"
     classes = ("ajax-modal", "btn-create",)
+    policy_rules = (("network", "create_health_monitor"),)
 
 
 class DeleteVipLink(tables.DeleteAction):
@@ -69,6 +71,7 @@ class DeleteVipLink(tables.DeleteAction):
     action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("VIP")
     data_type_plural = _("VIPs")
+    policy_rules = (("network", "delete_vip"),)
 
     def allowed(self, request, datum=None):
         if datum and not datum.vip_id:
@@ -82,6 +85,7 @@ class DeletePoolLink(tables.DeleteAction):
     action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Pool")
     data_type_plural = _("Pools")
+    policy_rules = (("network", "delete_pool"),)
 
     def allowed(self, request, datum=None):
         if datum and datum.vip_id:
@@ -95,6 +99,7 @@ class DeleteMonitorLink(tables.DeleteAction):
     action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Monitor")
     data_type_plural = _("Monitors")
+    policy_rules = (("network", "delete_health_monitor"),)
 
 
 class DeleteMemberLink(tables.DeleteAction):
@@ -103,12 +108,14 @@ class DeleteMemberLink(tables.DeleteAction):
     action_past = _("Scheduled deletion of %(data_type)s")
     data_type_singular = _("Member")
     data_type_plural = _("Members")
+    policy_rules = (("network", "delete_member"),)
 
 
 class UpdatePoolLink(tables.LinkAction):
     name = "updatepool"
     verbose_name = _("Edit Pool")
     classes = ("ajax-modal", "btn-update",)
+    policy_rules = (("network", "update_pool"),)
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:updatepool",
@@ -120,6 +127,7 @@ class UpdateVipLink(tables.LinkAction):
     name = "updatevip"
     verbose_name = _("Edit VIP")
     classes = ("ajax-modal", "btn-update",)
+    policy_rules = (("network", "update_vip"),)
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:updatevip",
@@ -136,6 +144,7 @@ class UpdateMemberLink(tables.LinkAction):
     name = "updatemember"
     verbose_name = _("Edit Member")
     classes = ("ajax-modal", "btn-update",)
+    policy_rules = (("network", "update_member"),)
 
     def get_link_url(self, member):
         base_url = reverse("horizon:project:loadbalancers:updatemember",
@@ -147,6 +156,7 @@ class UpdateMonitorLink(tables.LinkAction):
     name = "updatemonitor"
     verbose_name = _("Edit Monitor")
     classes = ("ajax-modal", "btn-update",)
+    policy_rules = (("network", "update_health_monitor"),)
 
     def get_link_url(self, monitor):
         base_url = reverse("horizon:project:loadbalancers:updatemonitor",
@@ -167,6 +177,7 @@ class AddPMAssociationLink(tables.LinkAction):
     verbose_name = _("Associate Monitor")
     url = "horizon:project:loadbalancers:addassociation"
     classes = ("ajax-modal", "btn-create",)
+    policy_rules = (("network", "create_pool_health_monitor"),)
 
     def allowed(self, request, datum=None):
         try:
@@ -187,6 +198,7 @@ class DeletePMAssociationLink(tables.LinkAction):
     verbose_name = _("Disassociate Monitor")
     url = "horizon:project:loadbalancers:deleteassociation"
     classes = ("ajax-modal", "btn-delete", "btn-danger")
+    policy_rules = (("network", "delete_pool_health_monitor"),)
 
     def allowed(self, request, datum=None):
         if datum and not datum['health_monitors']:
@@ -244,11 +256,24 @@ class MembersTable(tables.DataTable):
         row_actions = (UpdateMemberLink, DeleteMemberLink)
 
 
+def get_monitor_details(monitor):
+    if monitor.type in ('HTTP', 'HTTPS'):
+        return ("%(http_method)s %(url_path)s => %(codes)s" %
+                {'http_method': monitor.http_method,
+                 'url_path': monitor.url_path,
+                 'codes': monitor.expected_codes})
+    else:
+        return _("-")
+
+
 class MonitorsTable(tables.DataTable):
-    id = tables.Column("id",
-                       verbose_name=_("ID"),
-                       link="horizon:project:loadbalancers:monitordetails")
-    monitorType = tables.Column('type', verbose_name=_("Monitor Type"))
+    monitor_type = tables.Column(
+        "type", verbose_name=_("Monitor Type"),
+        link="horizon:project:loadbalancers:monitordetails")
+    delay = tables.Column("delay", verbose_name=_("Delay"))
+    timeout = tables.Column("timeout", verbose_name=_("Timeout"))
+    max_retries = tables.Column("max_retries", verbose_name=_("Max Retries"))
+    details = tables.Column(get_monitor_details, verbose_name=_("Details"))
 
     class Meta:
         name = "monitorstable"

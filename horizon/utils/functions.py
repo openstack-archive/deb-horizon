@@ -11,6 +11,7 @@
 # under the License.
 
 import math
+import re
 
 from django.conf import settings
 from django.contrib.auth import logout  # noqa
@@ -57,8 +58,17 @@ def logout_with_message(request, msg):
 def get_page_size(request, default=20):
     session = request.session
     cookies = request.COOKIES
-    return int(session.get('horizon_pagesize',
-                           cookies.get('horizon_pagesize',
-                                       getattr(settings,
-                                               'API_RESULT_PAGE_SIZE',
-                                               default))))
+    try:
+        page_size = int(session.get('horizon_pagesize',
+                                    cookies.get('horizon_pagesize',
+                                                getattr(settings,
+                                                        'API_RESULT_PAGE_SIZE',
+                                                        default))))
+    except ValueError:
+        page_size = session['horizon_pagesize'] = int(default)
+    return page_size
+
+
+def natural_sort(attr):
+    return lambda x: [int(s) if s.isdigit() else s for s in
+                      re.split(r'(\d+)', getattr(x, attr, x))]

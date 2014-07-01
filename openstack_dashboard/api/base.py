@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -121,14 +119,20 @@ class APIDictWrapper(object):
     def __getitem__(self, item):
         try:
             return getattr(self, item)
-        except AttributeError as e:
+        except (AttributeError, TypeError) as e:
             # caller is expecting a KeyError
             raise KeyError(e)
+
+    def __contains__(self, item):
+        try:
+            return hasattr(self, item)
+        except TypeError:
+            return False
 
     def get(self, item, default=None):
         try:
             return getattr(self, item)
-        except AttributeError:
+        except (AttributeError, TypeError):
             return default
 
     def __repr__(self):
@@ -177,7 +181,7 @@ class QuotaSet(Sequence):
 
     def __add__(self, other):
         """Merge another QuotaSet into this one. Existing quotas are
-        not overriden.
+        not overridden.
         """
         if not isinstance(other, QuotaSet):
             msg = "Can only add QuotaSet to QuotaSet, " \

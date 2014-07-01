@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -198,7 +196,10 @@ class TabGroup(html.HTMLElement):
         """
         selected = self.request.GET.get(self.param_name, None)
         if selected:
-            tab_group, tab_name = selected.split(SEPARATOR)
+            try:
+                tab_group, tab_name = selected.split(SEPARATOR)
+            except ValueError:
+                return None
             if tab_group == self.get_id():
                 self._selected = self.get_tab(tab_name)
         return self._selected

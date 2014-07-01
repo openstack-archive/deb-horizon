@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -70,7 +68,13 @@ class HorizonMiddleware(object):
             # proceed no further if the current request is already known
             # not to be authenticated
             return None
-
+        if request.is_ajax():
+            # if the request is Ajax we do not want to proceed, as clients can
+            #  1) create pages with constant polling, which can create race
+            #     conditions when a page navigation occurs
+            #  2) might leave a user seemingly left logged in forever
+            #  3) thrashes db backed session engines with tons of changes
+            return None
         # If we use cookie-based sessions, check that the cookie size does not
         # reach the max size accepted by common web browsers.
         if (
@@ -171,7 +175,7 @@ class HorizonMiddleware(object):
                     cookie_kwargs = dict((
                         (key, value) for key, value in cookie.iteritems()
                         if key in ('max_age', 'expires', 'path', 'domain',
-                            'secure', 'httponly') and value
+                            'secure', 'httponly', 'logout_reason') and value
                     ))
                     redirect_response.set_cookie(
                         cookie_name, cookie.value, **cookie_kwargs)

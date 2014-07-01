@@ -3,52 +3,51 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# zero00072 <zero00072@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-04 11:03-0500\n"
-"PO-Revision-Date: 2014-04-01 11:00+0000\n"
-"Last-Translator: zero00072 <zero00072@gmail.com>\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/openstack/language/zh_TW/)\n"
+"POT-Creation-Date: 2014-05-27 07:33-0500\n"
+"PO-Revision-Date: 2014-04-01 08:41+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/horizon/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: base.py:431
+#: base.py:429
 msgid "Other"
 msgstr "其他"
 
-#: decorators.py:55
+#: decorators.py:53
 msgid "Please log in to continue."
 msgstr "請登入以繼續。"
 
-#: decorators.py:87
+#: decorators.py:85
 #, python-format
 msgid "You are not authorized to access %s"
 msgstr "您沒有足夠的權限存取 %s"
 
-#: exceptions.py:277
+#: exceptions.py:280
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "未授權：%s"
 
-#: exceptions.py:280
+#: exceptions.py:283
 msgid "Unauthorized. Please try logging in again."
 msgstr "未授權。請試著重新登入。"
 
-#: middleware.py:111
+#: middleware.py:115
 msgid "Session timed out."
 msgstr "連線階段過期。"
 
-#: browsers/base.py:90
+#: browsers/base.py:88
 msgid "Navigation Item"
 msgstr "導覽項目"
 
-#: browsers/views.py:43
+#: browsers/views.py:41
 #, python-format
 msgid "Select a %s to browse."
 msgstr "選擇要瀏覽的 %s。"
@@ -57,7 +56,19 @@ msgstr "選擇要瀏覽的 %s。"
 msgid "Password is not accepted"
 msgstr "密碼不被允許"
 
-#: tables/actions.py:418
+#: forms/fields.py:63
+msgid "Incorrect format for IP address"
+msgstr "不正確的 IP 位址格式"
+
+#: forms/fields.py:64
+msgid "Invalid version for IP address"
+msgstr "無效的 IP 位址版本"
+
+#: forms/fields.py:65
+msgid "Invalid subnet mask"
+msgstr "無效的子網路遮罩"
+
+#: tables/actions.py:439
 #: templates/horizon/common/_data_table_table_actions.html:13
 #: templates/horizon/common/_data_table_table_actions.html:23
 #: templates/horizon/common/_workflow_step_update_members.html:11
@@ -65,72 +76,72 @@ msgstr "密碼不被允許"
 msgid "Filter"
 msgstr "篩選"
 
-#: tables/actions.py:609
+#: tables/actions.py:630
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:611
+#: tables/actions.py:632
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:641 tables/base.py:1408
+#: tables/actions.py:662 tables/base.py:1421
 msgid "N/A"
 msgstr "N/A"
 
-#: tables/actions.py:670
+#: tables/actions.py:691
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "不允許您%(action)s：%(objs)s"
 
-#: tables/actions.py:677
+#: tables/actions.py:698
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "無法%(action)s：%(objs)s"
 
-#: tables/actions.py:683
+#: tables/actions.py:704
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s：%(objs)s"
 
-#: tables/actions.py:699
+#: tables/actions.py:720
 msgid "Delete"
 msgstr "刪除"
 
-#: tables/actions.py:700
+#: tables/actions.py:721
 msgid "Deleted"
 msgstr "已刪除"
 
-#: tables/actions.py:717
+#: tables/actions.py:738
 msgid "Update"
 msgstr "更新"
 
-#: tables/actions.py:718
+#: tables/actions.py:739
 msgid "Updated"
 msgstr "已更新"
 
-#: tables/base.py:318
+#: tables/base.py:316
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "%(obj)s 不存在 %(attr)s 屬性。"
 
-#: tables/base.py:890
+#: tables/base.py:889
 msgid "No items to display."
 msgstr "沒有項目可以列出。"
 
-#: tables/base.py:996
+#: tables/base.py:995
 msgid "Actions"
 msgstr "動作"
 
-#: tables/base.py:1202
+#: tables/base.py:1201
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "沒有符合識別號「%s」的結果。"
 
-#: tables/base.py:1328
+#: tables/base.py:1341
 msgid "Please select a row before taking that action."
 msgstr "執行動作前請選擇一個欄位。"
 
@@ -194,7 +205,7 @@ msgstr "摘要"
 #, python-format
 msgid "Displaying %(counter)s item"
 msgid_plural "Displaying %(counter)s items"
-msgstr[0] "正列出 %(counter)s 個項目"
+msgstr[0] ""
 
 #: templates/horizon/common/_data_table_row_actions.html:10
 msgid "More"
@@ -251,13 +262,13 @@ msgstr "儲存空間"
 #, python-format
 msgid "Displaying %(nav_items)s item"
 msgid_plural "Displaying %(nav_items)s items"
-msgstr[0] "正列出 %(nav_items)s 個項目"
+msgstr[0] ""
 
 #: templates/horizon/common/_resource_browser.html:11
 #, python-format
 msgid "Displaying %(content_items)s item"
 msgid_plural "Displaying %(content_items)s items"
-msgstr[0] "正列出 %(content_items)s 個項目"
+msgstr[0] ""
 
 #: templates/horizon/common/_usage_summary.html:3
 msgid "Usage Summary"
@@ -298,7 +309,7 @@ msgstr "此時段的 GB 時數"
 
 #: templates/horizon/common/_workflow.html:38
 msgid "Back"
-msgstr "上一步"
+msgstr "上一頁"
 
 #: templates/horizon/common/_workflow.html:41
 msgid "Next"
@@ -308,111 +319,99 @@ msgstr "下一步"
 msgid "Cancel"
 msgstr "取消"
 
-#: templatetags/branding.py:36
+#: templatetags/branding.py:34
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:121 templatetags/horizon.py:131
+#: templatetags/horizon.py:119 templatetags/horizon.py:129
 msgid "No Limit"
 msgstr "不限制"
 
-#: templatetags/horizon.py:123 templatetags/horizon.py:125
+#: templatetags/horizon.py:121 templatetags/horizon.py:123
 msgid "Available"
 msgstr "可用"
 
-#: templatetags/sizeformat.py:45 templatetags/sizeformat.py:50
+#: templatetags/sizeformat.py:43 templatetags/sizeformat.py:48
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
-msgstr[0] "%(size)d 位元組"
+msgstr[0] ""
 
-#: templatetags/sizeformat.py:53
+#: templatetags/sizeformat.py:51
 #, python-format
 msgid "%s KB"
 msgstr "%s KB"
 
-#: templatetags/sizeformat.py:56
+#: templatetags/sizeformat.py:54
 #, python-format
 msgid "%s MB"
 msgstr "%s MB"
 
-#: templatetags/sizeformat.py:59
+#: templatetags/sizeformat.py:57
 #, python-format
 msgid "%s GB"
 msgstr "%s GB"
 
-#: templatetags/sizeformat.py:62
+#: templatetags/sizeformat.py:60
 #, python-format
 msgid "%s TB"
 msgstr "%s TB"
 
-#: templatetags/sizeformat.py:64
+#: templatetags/sizeformat.py:62
 #, python-format
 msgid "%s PB"
 msgstr "%s PB"
 
-#: utils/fields.py:59
-msgid "Incorrect format for IP address"
-msgstr "不正確的 IP 位址格式"
-
-#: utils/fields.py:60
-msgid "Invalid version for IP address"
-msgstr "無效的 IP 位址版本"
-
-#: utils/fields.py:61
-msgid "Invalid subnet mask"
-msgstr "無效的子網路遮罩"
-
-#: utils/filters.py:51
+#: utils/filters.py:49
 msgid "Never"
 msgstr "永不"
 
-#: utils/validators.py:25 utils/validators.py:49
+#: utils/validators.py:23 utils/validators.py:47
 msgid "Not a valid port number"
 msgstr "不是一個有效的埠口號碼"
 
-#: utils/validators.py:30
+#: utils/validators.py:28
 msgid "Not a valid IP protocol number"
 msgstr "不是一個有效的 IP 協定號碼"
 
-#: utils/validators.py:44
+#: utils/validators.py:42
 msgid "One colon allowed in port range"
 msgstr "允許以冒號隔開埠口範圍"
 
-#: utils/validators.py:51
+#: utils/validators.py:49
 msgid "Port number must be integer"
 msgstr "埠口號碼必須是整數"
 
-#: workflows/base.py:72
+#: workflows/base.py:70
 msgid "Processing..."
 msgstr "處理中…"
 
-#: workflows/base.py:477
+#: workflows/base.py:475
 msgid "All available"
 msgstr "全部可用"
 
-#: workflows/base.py:478
+#: workflows/base.py:476
 msgid "Members"
 msgstr "成員"
 
-#: workflows/base.py:479
+#: workflows/base.py:477
 msgid "None available."
 msgstr "無可用的。"
 
-#: workflows/base.py:480
+#: workflows/base.py:478
 msgid "No members."
 msgstr "無成員。"
 
-#: workflows/base.py:596
+#: workflows/base.py:594
 msgid "Save"
 msgstr "儲存"
 
-#: workflows/base.py:597
+#: workflows/base.py:595
 #, python-format
 msgid "%s completed successfully."
 msgstr "已成功地完成 %s。"
 
-#: workflows/base.py:598
+#: workflows/base.py:596
 #, python-format
 msgid "%s did not complete."
 msgstr "尚未完成 %s。"

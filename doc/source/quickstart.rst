@@ -34,6 +34,10 @@ Next you will need to setup your Django application config by copying ``openstac
 
     > cp openstack_dashboard/local/local_settings.py.example openstack_dashboard/local/local_settings.py
 
+.. note::
+
+    To add new settings or customize existing settings, modify the ``local_settings.py`` file.
+
 Horizon assumes a single end-point for OpenStack services which defaults to
 the local host (127.0.0.1). If this is not the case change the
 ``OPENSTACK_HOST`` setting in the ``openstack_dashboard/local/local_settings.py`` file, to the actual IP address of the OpenStack end-point Horizon should use.
@@ -102,21 +106,17 @@ they should be added to ``requirements.txt``.
 Project
 =======
 
-INSTALLED_APPS
---------------
+Dashboard configuration
+-----------------------
 
-At the project level you add Horizon and any desired dashboards to your
-``settings.INSTALLED_APPS``::
+To add a new dashboard to your project, you need to add a configuration file to
+``openstack_dashboard/local/enabled`` directory. For more information on this,
+see :ref:`pluggable-settings-label`.
 
-    INSTALLED_APPS = (
-        'openstack_dashboard',
-        ...
-        'horizon',
-        'openstack_dashboard.dashboards.project',
-        'openstack_dashboard.dashboards.admin',
-        'openstack_dashboard.dashboards.settings',
-        ...
-    )
+There is also an alternative way to add a new dashboard, by adding it to
+Django's ``INSTALLED_APPS`` setting. For more information about this, see
+:ref:`dashboards`. However, please note that the recommended way is to take
+advantage of the pluggable settings feature.
 
 URLs
 ----
@@ -157,14 +157,14 @@ Application
 Structure
 ---------
 
-An application would have the following structure (we'll use syspanel as
+An application would have the following structure (we'll use project as
 an example)::
 
     project/
     |---__init__.py
     |---dashboard.py <-----Registers the app with Horizon and sets dashboard properties
     |---overview/
-    |---images_and_snapshots/
+    |---images/
         |-- images
         |-- __init__.py
         |---panel.py <-----Registers the panel in the app and defines panel properties

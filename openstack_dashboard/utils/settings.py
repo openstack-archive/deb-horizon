@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
@@ -88,20 +86,31 @@ def update_dashboards(modules, horizon_config, installed_apps):
     dashboards = []
     exceptions = {}
     apps = []
+    angular_modules = []
+    js_files = set()
     panel_customization = []
+    update_horizon_config = {}
     for key, config in import_dashboard_config(modules):
         if config.get('DISABLED', False):
             continue
+        apps.extend(config.get('ADD_INSTALLED_APPS', []))
+        angular_modules.extend(config.get('ADD_ANGULAR_MODULES', []))
+        js_files.update(config.get('ADD_JS_FILES', []))
         if config.get('DASHBOARD'):
             dashboard = key
             dashboards.append(dashboard)
             exceptions.update(config.get('ADD_EXCEPTIONS', {}))
-            apps.extend(config.get('ADD_INSTALLED_APPS', []))
             if config.get('DEFAULT', False):
                 horizon_config['default_dashboard'] = dashboard
+            update_horizon_config.update(
+                config.get('UPDATE_HORIZON_CONFIG', {}))
         elif config.get('PANEL') or config.get('PANEL_GROUP'):
+            config.pop("__builtins__", None)
             panel_customization.append(config)
     horizon_config['panel_customization'] = panel_customization
     horizon_config['dashboards'] = tuple(dashboards)
     horizon_config['exceptions'].update(exceptions)
+    horizon_config.update(update_horizon_config)
+    horizon_config.setdefault('angular_modules', []).extend(angular_modules)
+    horizon_config.setdefault('js_files', []).extend(js_files)
     installed_apps[:] = apps + installed_apps

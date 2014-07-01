@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013 Rackspace Hosting
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -112,7 +110,7 @@ class InitializeDatabase(workflows.Step):
 class RestoreAction(workflows.Action):
     backup = forms.ChoiceField(label=_("Backup"),
                                required=False,
-                               help_text=_('Select a backup to Restore'))
+                               help_text=_('Select a backup to restore'))
 
     class Meta:
         name = _("Restore From Backup")

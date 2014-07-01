@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -16,12 +14,12 @@
 
 from django.core.urlresolvers import NoReverseMatch  # noqa
 from django.core.urlresolvers import reverse
-from django.template.defaultfilters import title  # noqa
+from django.template import defaultfilters as filters
 from django.utils import html
+from django.utils.http import urlencode
 from django.utils import safestring
 from django.utils.translation import string_concat  # noqa
 from django.utils.translation import ugettext_lazy as _
-
 
 from horizon import exceptions
 from horizon import tables
@@ -33,6 +31,27 @@ from openstack_dashboard.usage import quotas
 
 
 DELETABLE_STATES = ("available", "error", "error_extending")
+
+
+class LaunchVolume(tables.LinkAction):
+    name = "launch_volume"
+    verbose_name = _("Launch as Instance")
+    url = "horizon:project:instances:launch"
+    classes = ("btn-launch", "ajax-modal")
+    policy_rules = (("compute", "compute:create"),)
+
+    def get_link_url(self, datum):
+        base_url = reverse(self.url)
+
+        vol_id = "%s:vol" % self.table.get_object_id(datum)
+        params = urlencode({"source_type": "volume_id",
+                            "source_id": vol_id})
+        return "?".join([base_url, params])
+
+    def allowed(self, request, volume=None):
+        if volume:
+            return volume.status == "available"
+        return False
 
 
 class DeleteVolume(tables.DeleteAction):
@@ -234,7 +253,7 @@ class VolumesTableBase(tables.DataTable):
                          verbose_name=_("Size"),
                          attrs={'data-type': 'size'})
     status = tables.Column("status",
-                           filters=(title,),
+                           filters=(filters.title,),
                            verbose_name=_("Status"),
                            status=True,
                            status_choices=STATUS_CHOICES)
@@ -263,6 +282,9 @@ class VolumesTable(VolumesTableBase):
                                 verbose_name=_("Attached To"))
     availability_zone = tables.Column("availability_zone",
                          verbose_name=_("Availability Zone"))
+    bootable = tables.Column('is_bootable',
+                         verbose_name=_("Bootable"),
+                         filters=(filters.yesno, filters.capfirst))
 
     class Meta:
         name = "volumes"
@@ -270,7 +292,7 @@ class VolumesTable(VolumesTableBase):
         status_columns = ["status"]
         row_class = UpdateRow
         table_actions = (CreateVolume, DeleteVolume, VolumesFilterAction)
-        row_actions = (EditVolume, ExtendVolume, EditAttachments,
+        row_actions = (EditVolume, ExtendVolume, LaunchVolume, EditAttachments,
                        CreateSnapshot, DeleteVolume)
 
 
@@ -313,9 +335,9 @@ class AttachmentsTable(tables.DataTable):
 
     def get_object_display(self, attachment):
         instance_name = get_attachment_name(self.request, attachment)
-        vals = {"dev": attachment['device'],
+        vals = {"volume_name": attachment['volume_name'],
                 "instance_name": html.strip_tags(instance_name)}
-        return _("%(dev)s on instance %(instance_name)s") % vals
+        return _("Volume %(volume_name)s on instance %(instance_name)s") % vals
 
     def get_object_by_id(self, obj_id):
         for obj in self.data:

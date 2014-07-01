@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -35,7 +33,7 @@ class CreateFlavorInfoAction(workflows.Action):
                              "Leave this field blank or use 'auto' to set "
                              "a random UUID4.")
     name = forms.RegexField(label=_("Name"),
-                            max_length=25,
+                            max_length=255,
                             regex=r'^[\w\.\- ]+$',
                             error_messages={'invalid': _('Name may only '
                                 'contain letters, numbers, underscores, '
@@ -160,7 +158,7 @@ class UpdateFlavorAccess(workflows.UpdateMembersStep):
                   "projects in the right column, all projects can use the "
                   "flavor.")
     available_list_title = _("All Projects")
-    members_list_title = _("Selected projects")
+    members_list_title = _("Selected Projects")
     no_available_text = _("No projects found.")
     no_members_text = _("No projects selected. "
                         "All projects can use the flavor.")

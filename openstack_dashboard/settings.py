@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -69,6 +67,8 @@ HORIZON_CONFIG = {
     'exceptions': {'recoverable': exceptions.RECOVERABLE,
                    'not_found': exceptions.NOT_FOUND,
                    'unauthorized': exceptions.UNAUTHORIZED},
+    'angular_modules': [],
+    'js_files': [],
 }
 
 # Set to True to allow users to upload images to glance via Horizon server.
@@ -81,7 +81,7 @@ HORIZON_IMAGES_ALLOW_UPLOAD = True
 # of supported image formats.
 OPENSTACK_IMAGE_BACKEND = {
     'image_formats': [
-        ('', ''),
+        ('', _('Select format')),
         ('aki', _('AKI - Amazon Kernel Image')),
         ('ami', _('AMI - Amazon Machine Image')),
         ('ari', _('ARI - Amazon Ramdisk Image')),
@@ -210,6 +210,8 @@ POLICY_FILES = {
     'compute': 'nova_policy.json',
     'volume': 'cinder_policy.json',
     'image': 'glance_policy.json',
+    'orchestration': 'heat_policy.json',
+    'network': 'neutron_policy.json',
 }
 
 SECRET_KEY = None
@@ -258,6 +260,6 @@ if DEBUG:
 # during django reloads and an active user is logged in, the monkey
 # patch below will not otherwise be applied in time - resulting in developers
 # appearing to be logged out.  In typical production deployments this section
-# below may be ommited, though it should not be harmful
+# below may be omitted, though it should not be harmful
 from openstack_auth import utils as auth_utils
 auth_utils.patch_middleware_get_user()

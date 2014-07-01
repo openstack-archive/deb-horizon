@@ -66,6 +66,7 @@ horizon.forms = {
           $('input#id_end')[0].focus();
         }
         startDate.hide();
+        endDate.update();
       }).data('datepicker');
 
     var endDate = $('input#id_end').datepicker({
@@ -75,6 +76,14 @@ horizon.forms = {
     }).on('changeDate', function(ev) {
         endDate.hide();
       }).data('datepicker');
+
+    $("input#id_start").mousedown(function(){
+      endDate.hide();
+    });
+
+    $("input#id_end").mousedown(function(){
+      startDate.hide();
+    });
   }
 };
 

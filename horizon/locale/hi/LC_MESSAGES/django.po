@@ -3,52 +3,51 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# , 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-04 11:03-0500\n"
-"PO-Revision-Date: 2014-04-06 10:40+0000\n"
-"Last-Translator: Chandan kumar <chandankumar.093047@gmail.com>\n"
-"Language-Team: Hindi (http://www.transifex.com/projects/p/openstack/language/hi/)\n"
+"POT-Creation-Date: 2014-05-27 07:33-0500\n"
+"PO-Revision-Date: 2014-04-01 08:41+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Hindi (http://www.transifex.com/projects/p/horizon/language/hi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base.py:431
+#: base.py:429
 msgid "Other"
 msgstr "अन्य"
 
-#: decorators.py:55
+#: decorators.py:53
 msgid "Please log in to continue."
 msgstr "जारी रखने के लिए में लॉग इन करें."
 
-#: decorators.py:87
+#: decorators.py:85
 #, python-format
 msgid "You are not authorized to access %s"
 msgstr "आप %sका उपयोग करने के लिए अधिकृत नहीं हैं"
 
-#: exceptions.py:277
+#: exceptions.py:280
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "अनधिकृत: %s"
 
-#: exceptions.py:280
+#: exceptions.py:283
 msgid "Unauthorized. Please try logging in again."
 msgstr "अनधिकृत. फिर लॉग इन करने का प्रयास करें."
 
-#: middleware.py:111
+#: middleware.py:115
 msgid "Session timed out."
 msgstr "सत्र का समय समाप्त हुआ."
 
-#: browsers/base.py:90
+#: browsers/base.py:88
 msgid "Navigation Item"
 msgstr "नेविगेशन आइटम"
 
-#: browsers/views.py:43
+#: browsers/views.py:41
 #, python-format
 msgid "Select a %s to browse."
 msgstr "एक% s को ब्राउज़ करने के लिए चयन करें."
@@ -57,7 +56,19 @@ msgstr "एक% s को ब्राउज़ करने के लिए च
 msgid "Password is not accepted"
 msgstr "पासवर्ड स्वीकार नहीं किया है"
 
-#: tables/actions.py:418
+#: forms/fields.py:63
+msgid "Incorrect format for IP address"
+msgstr "IP पता के लिए गलत प्रारूप"
+
+#: forms/fields.py:64
+msgid "Invalid version for IP address"
+msgstr "IP पता के लिए अवैध प्रारूप संस्करण"
+
+#: forms/fields.py:65
+msgid "Invalid subnet mask"
+msgstr "अवैध सबनेट मास्क"
+
+#: tables/actions.py:439
 #: templates/horizon/common/_data_table_table_actions.html:13
 #: templates/horizon/common/_data_table_table_actions.html:23
 #: templates/horizon/common/_workflow_step_update_members.html:11
@@ -65,72 +76,72 @@ msgstr "पासवर्ड स्वीकार नहीं किया �
 msgid "Filter"
 msgstr "छानना शुरू..."
 
-#: tables/actions.py:609
+#: tables/actions.py:630
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:611
+#: tables/actions.py:632
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:641 tables/base.py:1408
+#: tables/actions.py:662 tables/base.py:1421
 msgid "N/A"
 msgstr "लागू नहीं"
 
-#: tables/actions.py:670
+#: tables/actions.py:691
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "आपको %(action)s की अनुमति नहीं है.: %(objs)s"
 
-#: tables/actions.py:677
+#: tables/actions.py:698
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "%(action)s की अनुमति नहीं है.: %(objs)s"
 
-#: tables/actions.py:683
+#: tables/actions.py:704
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:699
+#: tables/actions.py:720
 msgid "Delete"
 msgstr "मिटाएँ"
 
-#: tables/actions.py:700
+#: tables/actions.py:721
 msgid "Deleted"
 msgstr "मिटाया"
 
-#: tables/actions.py:717
+#: tables/actions.py:738
 msgid "Update"
 msgstr "अद्यतन"
 
-#: tables/actions.py:718
+#: tables/actions.py:739
 msgid "Updated"
 msgstr "अद्यतित"
 
-#: tables/base.py:318
+#: tables/base.py:316
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "%(obj)s पर %(attr)s  गुण मौज़ूद नहीं हैं."
 
-#: tables/base.py:890
+#: tables/base.py:889
 msgid "No items to display."
 msgstr "दिखाने के लिए कोई सामग्रियों नहीं."
 
-#: tables/base.py:996
+#: tables/base.py:995
 msgid "Actions"
 msgstr "क्रियाएं"
 
-#: tables/base.py:1202
+#: tables/base.py:1201
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "इस आइडी \"%s\" के लिए कोई मेल नहीं मिला."
 
-#: tables/base.py:1328
+#: tables/base.py:1341
 msgid "Please select a row before taking that action."
 msgstr "कृपया इस क्रिया को करने से पहले पंक्ति का चयन करें."
 
@@ -194,7 +205,7 @@ msgstr "सारांश"
 #, python-format
 msgid "Displaying %(counter)s item"
 msgid_plural "Displaying %(counter)s items"
-msgstr[0] " %(counter)s सामाग्री दिखाएँ"
+msgstr[0] ""
 msgstr[1] "%(counter)s सामाग्री दिखाएँ"
 
 #: templates/horizon/common/_data_table_row_actions.html:10
@@ -252,14 +263,14 @@ msgstr "खंड भंडारण"
 #, python-format
 msgid "Displaying %(nav_items)s item"
 msgid_plural "Displaying %(nav_items)s items"
-msgstr[0] "सामाग्री %(nav_items)s दिखाएँ"
+msgstr[0] ""
 msgstr[1] "सामाग्री %(nav_items)s दिखाएँ"
 
 #: templates/horizon/common/_resource_browser.html:11
 #, python-format
 msgid "Displaying %(content_items)s item"
 msgid_plural "Displaying %(content_items)s items"
-msgstr[0] "सामाग्री  %(content_items)s दिखाएँ"
+msgstr[0] ""
 msgstr[1] "सामाग्री  %(content_items)s दिखाएँ"
 
 #: templates/horizon/common/_usage_summary.html:3
@@ -311,112 +322,100 @@ msgstr "अगला"
 msgid "Cancel"
 msgstr "रद्द करें"
 
-#: templatetags/branding.py:36
+#: templatetags/branding.py:34
 msgid "Horizon"
 msgstr "होरिजन"
 
-#: templatetags/horizon.py:121 templatetags/horizon.py:131
+#: templatetags/horizon.py:119 templatetags/horizon.py:129
 msgid "No Limit"
 msgstr "कोई सीमा नहीं"
 
-#: templatetags/horizon.py:123 templatetags/horizon.py:125
+#: templatetags/horizon.py:121 templatetags/horizon.py:123
 msgid "Available"
 msgstr "उपलब्ध"
 
-#: templatetags/sizeformat.py:45 templatetags/sizeformat.py:50
+#: templatetags/sizeformat.py:43 templatetags/sizeformat.py:48
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
-msgstr[0] "%(size)d बाइट"
+msgstr[0] ""
 msgstr[1] "%(size)d बाइट"
 
-#: templatetags/sizeformat.py:53
+#: templatetags/sizeformat.py:51
 #, python-format
 msgid "%s KB"
 msgstr "%s केबी"
 
-#: templatetags/sizeformat.py:56
+#: templatetags/sizeformat.py:54
 #, python-format
 msgid "%s MB"
 msgstr "%s MB"
 
-#: templatetags/sizeformat.py:59
+#: templatetags/sizeformat.py:57
 #, python-format
 msgid "%s GB"
 msgstr "%s GB"
 
-#: templatetags/sizeformat.py:62
+#: templatetags/sizeformat.py:60
 #, python-format
 msgid "%s TB"
 msgstr "%s TB"
 
-#: templatetags/sizeformat.py:64
+#: templatetags/sizeformat.py:62
 #, python-format
 msgid "%s PB"
 msgstr "%s PB"
 
-#: utils/fields.py:59
-msgid "Incorrect format for IP address"
-msgstr "IP पता के लिए गलत प्रारूप"
-
-#: utils/fields.py:60
-msgid "Invalid version for IP address"
-msgstr "IP पता के लिए अवैध प्रारूप संस्करण"
-
-#: utils/fields.py:61
-msgid "Invalid subnet mask"
-msgstr "अवैध सबनेट मास्क"
-
-#: utils/filters.py:51
+#: utils/filters.py:49
 msgid "Never"
 msgstr "कभी नहीं"
 
-#: utils/validators.py:25 utils/validators.py:49
+#: utils/validators.py:23 utils/validators.py:47
 msgid "Not a valid port number"
 msgstr "वैध पोर्ट संख्या नहीं है"
 
-#: utils/validators.py:30
+#: utils/validators.py:28
 msgid "Not a valid IP protocol number"
 msgstr "वैध IP प्रोटोकॉल संख्या नहीं है"
 
-#: utils/validators.py:44
+#: utils/validators.py:42
 msgid "One colon allowed in port range"
 msgstr "पोर्ट श्रेणी में एक कॉलन की अनुमति "
 
-#: utils/validators.py:51
+#: utils/validators.py:49
 msgid "Port number must be integer"
 msgstr "पोर्ट संख्या में एक पूर्णांक होना चाहिये"
 
-#: workflows/base.py:72
+#: workflows/base.py:70
 msgid "Processing..."
 msgstr "प्रोसेसिंग..."
 
-#: workflows/base.py:477
+#: workflows/base.py:475
 msgid "All available"
 msgstr "सभी उपलब्ध"
 
-#: workflows/base.py:478
+#: workflows/base.py:476
 msgid "Members"
 msgstr "सदस्य"
 
-#: workflows/base.py:479
+#: workflows/base.py:477
 msgid "None available."
 msgstr "कोई उपलब्ध नहीं"
 
-#: workflows/base.py:480
+#: workflows/base.py:478
 msgid "No members."
 msgstr "कोई सदस्य नहीं"
 
-#: workflows/base.py:596
+#: workflows/base.py:594
 msgid "Save"
 msgstr "सहेजें"
 
-#: workflows/base.py:597
+#: workflows/base.py:595
 #, python-format
 msgid "%s completed successfully."
 msgstr "%s सफलतापूर्वक पूर्ण."
 
-#: workflows/base.py:598
+#: workflows/base.py:596
 #, python-format
 msgid "%s did not complete."
 msgstr "%s पूर्ण नहीं है"

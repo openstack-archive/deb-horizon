@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -127,15 +125,21 @@ class CreateUserForm(BaseUserForm):
                              _('User "%s" was successfully created.')
                              % data['name'])
             if data['role_id']:
-                try:
-                    api.keystone.add_tenant_user_role(request,
-                                                      data['project'],
-                                                      new_user.id,
-                                                      data['role_id'])
-                except Exception:
-                    exceptions.handle(request,
-                                      _('Unable to add user '
-                                        'to primary project.'))
+                roles = api.keystone.roles_for_user(request,
+                                        new_user.id,
+                                        data['project']) or []
+                assigned = [role for role in roles if role.id == str(
+                    data['role_id'])]
+                if not assigned:
+                    try:
+                        api.keystone.add_tenant_user_role(request,
+                                                        data['project'],
+                                                        new_user.id,
+                                                        data['role_id'])
+                    except Exception:
+                        exceptions.handle(request,
+                                        _('Unable to add user '
+                                            'to primary project.'))
             return new_user
         except Exception:
             exceptions.handle(request, _('Unable to create user.'))

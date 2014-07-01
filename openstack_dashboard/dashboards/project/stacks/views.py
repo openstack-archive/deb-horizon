@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -46,13 +44,25 @@ class IndexView(tables.DataTableView):
     table_class = project_tables.StacksTable
     template_name = 'project/stacks/index.html'
 
+    def __init__(self, *args, **kwargs):
+        super(IndexView, self).__init__(*args, **kwargs)
+        self._more = None
+
+    def has_more_data(self, table):
+        return self._more
+
     def get_data(self):
-        request = self.request
+        stacks = []
+        marker = self.request.GET.get(
+            project_tables.StacksTable._meta.pagination_param)
         try:
-            stacks = api.heat.stacks_list(self.request)
+            stacks, self._more = api.heat.stacks_list(self.request,
+                                                      marker=marker,
+                                                      paginate=True)
         except Exception:
-            exceptions.handle(request, _('Unable to retrieve stack list.'))
-            stacks = []
+            self._more = False
+            msg = _('Unable to retrieve stack list.')
+            exceptions.handle(self.request, msg)
         return stacks
 
 

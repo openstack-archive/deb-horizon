@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013 NEC Corporation
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -23,7 +21,10 @@ methods defined in this module.
 
 import abc
 
+import six
 
+
+@six.add_metaclass(abc.ABCMeta)
 class FloatingIpManager(object):
     """Abstract class to implement Floating IP methods
 
@@ -38,8 +39,6 @@ class FloatingIpManager(object):
                 (instance_id when Nova floating IP is used)
     * instance_id: Instance ID of an associated with the Floating IP
     """
-
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def list_pools(self):
@@ -131,6 +130,7 @@ class FloatingIpManager(object):
         pass
 
 
+@six.add_metaclass(abc.ABCMeta)
 class SecurityGroupManager(object):
     """Abstract class to implement Security Group methods
 
@@ -160,8 +160,6 @@ class SecurityGroupManager(object):
     "{'name': <secgroup_name>}"
 
     """
-
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def list(self):

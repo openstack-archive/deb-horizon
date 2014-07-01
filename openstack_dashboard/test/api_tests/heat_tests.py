@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
@@ -12,6 +10,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
+from django.test.utils import override_settings  # noqa
+
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 
@@ -19,13 +20,15 @@ from openstack_dashboard.test import helpers as test
 class HeatApiTests(test.APITestCase):
     def test_stack_list(self):
         api_stacks = self.stacks.list()
+        limit = getattr(settings, 'API_RESULT_LIMIT', 1000)
 
         heatclient = self.stub_heatclient()
         heatclient.stacks = self.mox.CreateMockAnything()
-        heatclient.stacks.list().AndReturn(iter(api_stacks))
+        heatclient.stacks.list(limit=limit).AndReturn(iter(api_stacks))
         self.mox.ReplayAll()
-        stacks = api.heat.stacks_list(self.request)
+        stacks, has_more = api.heat.stacks_list(self.request)
         self.assertItemsEqual(stacks, api_stacks)
+        self.assertFalse(has_more)
 
     def test_template_get(self):
         api_stacks = self.stacks.list()

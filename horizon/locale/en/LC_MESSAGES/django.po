@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-07 02:25-0500\n"
+"POT-Creation-Date: 2014-05-28 01:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,33 +21,33 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: decorators.py:55
+#: decorators.py:53
 msgid "Please log in to continue."
 msgstr ""
 
-#: decorators.py:87
+#: decorators.py:85
 #, python-format
 msgid "You are not authorized to access %s"
 msgstr ""
 
-#: exceptions.py:277
+#: exceptions.py:280
 #, python-format
 msgid "Unauthorized: %s"
 msgstr ""
 
-#: exceptions.py:280
+#: exceptions.py:283
 msgid "Unauthorized. Please try logging in again."
 msgstr ""
 
-#: middleware.py:111
+#: middleware.py:115
 msgid "Session timed out."
 msgstr ""
 
-#: browsers/base.py:90
+#: browsers/base.py:88
 msgid "Navigation Item"
 msgstr ""
 
-#: browsers/views.py:43
+#: browsers/views.py:41
 #, python-format
 msgid "Select a %s to browse."
 msgstr ""
@@ -56,7 +56,19 @@ msgstr ""
 msgid "Password is not accepted"
 msgstr ""
 
-#: tables/actions.py:418
+#: forms/fields.py:63
+msgid "Incorrect format for IP address"
+msgstr ""
+
+#: forms/fields.py:64
+msgid "Invalid version for IP address"
+msgstr ""
+
+#: forms/fields.py:65
+msgid "Invalid subnet mask"
+msgstr ""
+
+#: tables/actions.py:439
 #: templates/horizon/common/_data_table_table_actions.html:13
 #: templates/horizon/common/_data_table_table_actions.html:23
 #: templates/horizon/common/_workflow_step_update_members.html:11
@@ -64,72 +76,72 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: tables/actions.py:609
+#: tables/actions.py:630
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr ""
 
-#: tables/actions.py:611
+#: tables/actions.py:632
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr ""
 
-#: tables/actions.py:641 tables/base.py:1408
+#: tables/actions.py:662 tables/base.py:1421
 msgid "N/A"
 msgstr ""
 
-#: tables/actions.py:670
+#: tables/actions.py:691
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr ""
 
-#: tables/actions.py:677
+#: tables/actions.py:698
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr ""
 
-#: tables/actions.py:683
+#: tables/actions.py:704
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr ""
 
-#: tables/actions.py:699
+#: tables/actions.py:720
 msgid "Delete"
 msgstr ""
 
-#: tables/actions.py:700
+#: tables/actions.py:721
 msgid "Deleted"
 msgstr ""
 
-#: tables/actions.py:717
+#: tables/actions.py:738
 msgid "Update"
 msgstr ""
 
-#: tables/actions.py:718
+#: tables/actions.py:739
 msgid "Updated"
 msgstr ""
 
-#: tables/base.py:318
+#: tables/base.py:316
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr ""
 
-#: tables/base.py:890
+#: tables/base.py:889
 msgid "No items to display."
 msgstr ""
 
-#: tables/base.py:996
+#: tables/base.py:995
 msgid "Actions"
 msgstr ""
 
-#: tables/base.py:1202
+#: tables/base.py:1201
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr ""
 
-#: tables/base.py:1328
+#: tables/base.py:1341
 msgid "Please select a row before taking that action."
 msgstr ""
 
@@ -309,112 +321,100 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: templatetags/branding.py:36
+#: templatetags/branding.py:34
 msgid "Horizon"
 msgstr ""
 
-#: templatetags/horizon.py:121 templatetags/horizon.py:131
+#: templatetags/horizon.py:119 templatetags/horizon.py:129
 msgid "No Limit"
 msgstr ""
 
-#: templatetags/horizon.py:123 templatetags/horizon.py:125
+#: templatetags/horizon.py:121 templatetags/horizon.py:123
 msgid "Available"
 msgstr ""
 
-#: templatetags/sizeformat.py:45 templatetags/sizeformat.py:50
+#: templatetags/sizeformat.py:43 templatetags/sizeformat.py:48
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templatetags/sizeformat.py:53
+#: templatetags/sizeformat.py:51
 #, python-format
 msgid "%s KB"
 msgstr ""
 
-#: templatetags/sizeformat.py:56
+#: templatetags/sizeformat.py:54
 #, python-format
 msgid "%s MB"
 msgstr ""
 
-#: templatetags/sizeformat.py:59
+#: templatetags/sizeformat.py:57
 #, python-format
 msgid "%s GB"
 msgstr ""
 
-#: templatetags/sizeformat.py:62
+#: templatetags/sizeformat.py:60
 #, python-format
 msgid "%s TB"
 msgstr ""
 
-#: templatetags/sizeformat.py:64
+#: templatetags/sizeformat.py:62
 #, python-format
 msgid "%s PB"
 msgstr ""
 
-#: utils/fields.py:59
-msgid "Incorrect format for IP address"
-msgstr ""
-
-#: utils/fields.py:60
-msgid "Invalid version for IP address"
-msgstr ""
-
-#: utils/fields.py:61
-msgid "Invalid subnet mask"
-msgstr ""
-
-#: utils/filters.py:51
+#: utils/filters.py:49
 msgid "Never"
 msgstr ""
 
-#: utils/validators.py:25 utils/validators.py:49
+#: utils/validators.py:23 utils/validators.py:47
 msgid "Not a valid port number"
 msgstr ""
 
-#: utils/validators.py:30
+#: utils/validators.py:28
 msgid "Not a valid IP protocol number"
 msgstr ""
 
-#: utils/validators.py:44
+#: utils/validators.py:42
 msgid "One colon allowed in port range"
 msgstr ""
 
-#: utils/validators.py:51
+#: utils/validators.py:49
 msgid "Port number must be integer"
 msgstr ""
 
-#: workflows/base.py:72
+#: workflows/base.py:70
 msgid "Processing..."
 msgstr ""
 
-#: workflows/base.py:477
+#: workflows/base.py:475
 msgid "All available"
 msgstr ""
 
-#: workflows/base.py:478
+#: workflows/base.py:476
 msgid "Members"
 msgstr ""
 
-#: workflows/base.py:479
+#: workflows/base.py:477
 msgid "None available."
 msgstr ""
 
-#: workflows/base.py:480
+#: workflows/base.py:478
 msgid "No members."
 msgstr ""
 
-#: workflows/base.py:596
+#: workflows/base.py:594
 msgid "Save"
 msgstr ""
 
-#: workflows/base.py:597
+#: workflows/base.py:595
 #, python-format
 msgid "%s completed successfully."
 msgstr ""
 
-#: workflows/base.py:598
+#: workflows/base.py:596
 #, python-format
 msgid "%s did not complete."
 msgstr ""

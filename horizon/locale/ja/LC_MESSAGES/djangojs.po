@@ -3,18 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Akihiro MOTOKI <amotoki@gmail.com>, 2014
-# Akihiro MOTOKI <amotoki@gmail.com>, 2014
-# *Irix_jp* <>, 2014
-# ykatabam <ykatabam@redhat.com>, 2014
+# yfukuda <fukuda.yuko@jp.fujitsu.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-04 11:03-0500\n"
-"PO-Revision-Date: 2014-04-01 09:41+0000\n"
-"Last-Translator: ykatabam <ykatabam@redhat.com>\n"
-"Language-Team: Japanese (http://www.transifex.com/projects/p/openstack/language/ja/)\n"
+"POT-Creation-Date: 2014-06-09 23:31-0500\n"
+"PO-Revision-Date: 2014-06-06 05:10+0000\n"
+"Last-Translator: yfukuda <fukuda.yuko@jp.fujitsu.com>\n"
+"Language-Team: Japanese (http://www.transifex.com/projects/p/horizon/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,18 +19,18 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: static/horizon/js/horizon.accordion_nav.js:83
-#: static/horizon/js/horizon.modals.js:280
+#: static/horizon/js/horizon.modals.js:281
 #: static/horizon/js/horizon.tabs.js:21
 msgid "Loading"
 msgstr "読み込み中"
 
-#: static/horizon/js/horizon.d3linechart.js:385
-#: static/horizon/js/horizon.d3linechart.js:395
+#: static/horizon/js/horizon.d3linechart.js:386
+#: static/horizon/js/horizon.d3linechart.js:396
 msgid "No data available."
 msgstr "データがありません。"
 
-#: static/horizon/js/horizon.d3linechart.js:401
-#: static/horizon/js/horizon.modals.js:299
+#: static/horizon/js/horizon.d3linechart.js:402
+#: static/horizon/js/horizon.modals.js:300
 #: static/horizon/js/horizon.tables_inline_edit.js:94
 #: static/horizon/js/horizon.tables_inline_edit.js:175
 msgid "An error occurred. Please try again later."
@@ -44,7 +41,7 @@ msgstr "エラーが発生しました。後からもう一度お試しくださ
 msgid "There was a problem communicating with the server, please try again."
 msgstr "サーバーとの通信中に問題がありました。再度お試しください。"
 
-#: static/horizon/js/horizon.forms.js:117
+#: static/horizon/js/horizon.forms.js:126
 msgid "Filter"
 msgstr "フィルター"
 
@@ -89,12 +86,12 @@ msgstr "エラー: "
 msgid "Cancel"
 msgstr "取り消し"
 
-#: static/horizon/js/horizon.modals.js:98
-#: static/horizon/js/horizon.tables.js:172
+#: static/horizon/js/horizon.modals.js:208
+#: static/horizon/js/horizon.tables.js:200
 msgid "Working"
 msgstr "反映中"
 
-#: static/horizon/js/horizon.modals.js:128
+#: static/horizon/js/horizon.modals.js:238
 msgid "There was an error submitting the form. Please try again."
 msgstr "フォームの送信中にエラーが発生しました。再度お試しください。"
 
@@ -124,33 +121,39 @@ msgid "view %s details"
 msgstr "%s の詳細を参照"
 
 #: static/horizon/js/horizon.tables.js:39
-#: static/horizon/js/horizon.tables.js:256
+#: static/horizon/js/horizon.tables.js:320
 msgid "No items to display."
 msgstr "表示する項目がありません"
 
-#: static/horizon/js/horizon.tables.js:50
+#: static/horizon/js/horizon.tables.js:52
+#: static/horizon/js/horizon.tables.js:129
 msgid "An error occurred while updating."
 msgstr "更新中にエラーが発生しました。"
 
-#: static/horizon/js/horizon.tables.js:155
+#: static/horizon/js/horizon.tables.js:183
 #, c-format
 msgid "You have selected %s. "
 msgstr "%s を選択しました。"
 
-#: static/horizon/js/horizon.tables.js:157
+#: static/horizon/js/horizon.tables.js:185
 #, c-format
 msgid "Confirm %s"
 msgstr "%sの確認"
 
-#: static/horizon/js/horizon.tables.js:158
+#: static/horizon/js/horizon.tables.js:186
 msgid "Please confirm your selection. This action cannot be undone."
 msgstr "選択内容を確認してください。この操作は取り消せません。"
 
-#: static/horizon/js/horizon.tables.js:243
+#: static/horizon/js/horizon.tables.js:307
 #, c-format
 msgid "Displaying %s item"
 msgid_plural "Displaying %s items"
-msgstr[0] "%s 項目を表示中"
+msgstr[0] "%s件表示"
+
+#: static/horizon/js/horizon.tables_inline_edit.js:88
+#: static/horizon/js/horizon.tables_inline_edit.js:169
+msgid "Not authorized to do this operation."
+msgstr "この操作を行う権限がありません。"
 
 #: static/horizon/js/horizon.tables_inline_edit.js:88
 #: static/horizon/js/horizon.tables_inline_edit.js:169

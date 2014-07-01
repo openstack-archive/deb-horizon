@@ -174,7 +174,7 @@ Rickshaw.Graph.Renderer.StaticAxes = Rickshaw.Class.create( Rickshaw.Graph.Rende
       xMin: undefined,
       xMax: undefined,
       yMin: undefined,
-      yMax: undefined,
+      yMax: undefined
     });
   },
   domain: function($super) {
@@ -184,7 +184,7 @@ Rickshaw.Graph.Renderer.StaticAxes = Rickshaw.Class.create( Rickshaw.Graph.Rende
       ret.y = [this.yMin, this.yMax];
     }
     return ret;
-  },
+  }
 });
 
 horizon.d3_line_chart = {
@@ -374,8 +374,8 @@ horizon.d3_line_chart = {
         url: self.final_url,
         success: function (data, textStatus, jqXHR) {
           // Clearing the old chart data.
-          $(self.html_element).html('');
-          $(self.legend_element).html('');
+          self.jquery_element.empty();
+          $(self.legend_element).empty();
 
           self.series = data.series;
           self.stats = data.stats;
@@ -384,7 +384,7 @@ horizon.d3_line_chart = {
 
           if (self.series.length <= 0) {
             $(self.html_element).html(gettext('No data available.'));
-            $(self.legend_element).html('');
+            $(self.legend_element).empty();
             // Setting a fix height breaks things when legend is getting
             // bigger.
             $(self.legend_element).css('height', '');
@@ -394,7 +394,7 @@ horizon.d3_line_chart = {
         },
         error: function (jqXHR, textStatus, errorThrown) {
           $(self.html_element).html(gettext('No data available.'));
-          $(self.legend_element).html('');
+          $(self.legend_element).empty();
           // Setting a fix height breaks things when legend is getting
           // bigger.
           $(self.legend_element).css('height', '');
@@ -439,7 +439,7 @@ horizon.d3_line_chart = {
         series: self.series,
         yMin: self.settings.yMin,
         yMax: self.settings.yMax,
-        interpolation: self.settings.interpolation,
+        interpolation: self.settings.interpolation
       });
 
       /*
@@ -548,7 +548,7 @@ horizon.d3_line_chart = {
       $(self.html_element).append(self.backdrop);
 
       // Hide the legend.
-      $(self.legend_element).html('').addClass('disabled');
+      $(self.legend_element).empty().addClass('disabled');
 
       // Show the spinner.
       self.spinner = $('<div class="spinner_wrapper"></div>');
@@ -736,5 +736,5 @@ horizon.d3_line_chart = {
 
 /* Init the graphs */
 horizon.addInitFunction(function () {
-  horizon.d3_line_chart.init('div[data-chart-type="line_chart"]', {'auto_resize': true});
+  horizon.d3_line_chart.init('div[data-chart-type="line_chart"]', {});
 });

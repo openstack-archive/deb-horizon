@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 OpenStack Foundation
 # Copyright 2012 Nebula, Inc.
 #
@@ -118,6 +116,8 @@ class AdminInstancesTable(tables.DataTable):
         ("suspended", True),
         ("paused", True),
         ("error", False),
+        ("rescue", True),
+        ("shelved offloaded", True),
     )
     tenant = tables.Column("tenant_name", verbose_name=_("Project"))
     # NOTE(gabriel): Commenting out the user column because all we have

@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012,  Nachi Ueno,  NTT MCL,  Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -33,6 +31,13 @@ class DeleteRouter(tables.DeleteAction):
     data_type_singular = _("Router")
     data_type_plural = _("Routers")
     redirect_url = "horizon:project:routers:index"
+    policy_rules = (("network", "delete_router"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def delete(self, request, obj_id):
         obj = self.table.get_object_by_id(obj_id)
@@ -40,12 +45,12 @@ class DeleteRouter(tables.DeleteAction):
         try:
             api.neutron.router_delete(request, obj_id)
         except q_ext.NeutronClientException as e:
-            msg = _('Unable to delete router "%s"') % e.message
+            msg = _('Unable to delete router "%s"') % e
             LOG.info(msg)
             messages.error(request, msg)
             redirect = reverse(self.redirect_url)
             raise exceptions.Http302(redirect, message=msg)
-        except Exception as e:
+        except Exception:
             msg = _('Unable to delete router "%s"') % name
             LOG.info(msg)
             exceptions.handle(request, msg)
@@ -59,6 +64,7 @@ class CreateRouter(tables.LinkAction):
     verbose_name = _("Create Router")
     url = "horizon:project:routers:create"
     classes = ("ajax-modal", "btn-create")
+    policy_rules = (("network", "create_router"),)
 
 
 class SetGateway(tables.LinkAction):
@@ -66,6 +72,13 @@ class SetGateway(tables.LinkAction):
     verbose_name = _("Set Gateway")
     url = "horizon:project:routers:setgateway"
     classes = ("ajax-modal", "btn-camera")
+    policy_rules = (("network", "update_router"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def allowed(self, request, datum=None):
         if datum.external_gateway_info:
@@ -81,6 +94,13 @@ class ClearGateway(tables.BatchAction):
     data_type_plural = _("Gateways")
     classes = ('btn-danger', 'btn-cleargateway')
     redirect_url = "horizon:project:routers:index"
+    policy_rules = (("network", "update_router"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def action(self, request, obj_id):
         obj = self.table.get_object_by_id(obj_id)
@@ -90,7 +110,7 @@ class ClearGateway(tables.BatchAction):
         except Exception as e:
             msg = (_('Unable to clear gateway for router '
                      '"%(name)s": "%(msg)s"')
-                   % {"name": name, "msg": e.message})
+                   % {"name": name, "msg": e})
             LOG.info(msg)
             redirect = reverse(self.redirect_url)
             exceptions.handle(request, msg, redirect=redirect)

@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 #    Copyright 2013, Big Switch Networks, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -23,6 +21,7 @@ from horizon import tabs
 from openstack_dashboard import api
 
 from openstack_dashboard.dashboards.project.loadbalancers import tables
+from openstack_dashboard.dashboards.project.loadbalancers import utils
 
 
 class PoolsTab(tabs.TableTab):
@@ -102,6 +101,9 @@ class PoolDetailsTab(tabs.Tab):
             pool = []
             exceptions.handle(request,
                               _('Unable to retrieve pool details.'))
+        for monitor in pool.health_monitors:
+            display_name = utils.get_monitor_display_name(monitor)
+            setattr(monitor, 'display_name', display_name)
         return {'pool': pool}
 
 

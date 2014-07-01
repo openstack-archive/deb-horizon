@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-#
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -119,7 +117,7 @@ class Resource(base.APIResourceWrapper):
     def __init__(self, apiresource, ceilometer_usage=None):
         super(Resource, self).__init__(apiresource)
 
-        # Save empty strings to IDs rather then None, sop it gets
+        # Save empty strings to IDs rather than None, so it gets
         # serialized correctly. We don't want 'None' strings.
         self.project_id = self.project_id or ""
         self.user_id = self.user_id or ""
@@ -128,6 +126,9 @@ class Resource(base.APIResourceWrapper):
         self._id = "%s__%s__%s" % (self.project_id,
                                    self.user_id,
                                    self.resource_id)
+
+        # Meters with statistics data
+        self._meters = {}
 
         # TODO(lsmola) make parallel obtaining of tenant and user
         # make the threading here, thread join into resource_list
@@ -171,6 +172,16 @@ class Resource(base.APIResourceWrapper):
     def query(self):
         return self._query
 
+    @property
+    def meters(self):
+        return self._meters
+
+    def get_meter(self, meter_name):
+        return self._meters.get(meter_name, None)
+
+    def set_meter(self, meter_name, value):
+        self._meters[meter_name] = value
+
 
 class ResourceAggregate(Resource):
     """Represents aggregate of more resources together.
@@ -196,6 +207,9 @@ class ResourceAggregate(Resource):
         self.tenant_id = None
         self.user_id = None
         self.resource_id = None
+
+        # Meters with statistics data
+        self._meters = {}
 
         if query:
             self._query = query
@@ -565,13 +579,14 @@ class CeilometerUsage(object):
             if statistics:
                 if stats_attr:
                     # I want to load only a specific attribute
-                    setattr(resource, meter,
-                            getattr(statistics[0], stats_attr, None))
+                    resource.set_meter(
+                        meter,
+                        getattr(statistics[0], stats_attr, None))
                 else:
                     # I want a dictionary of all statistics
-                    setattr(resource, meter, statistics)
+                    resource.set_meter(meter, statistics)
             else:
-                setattr(resource, meter, None)
+                resource.set_meter(meter, None)
 
         return resource
 

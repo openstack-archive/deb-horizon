@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -82,7 +80,7 @@ class UsageViewTests(test.TestCase):
             api.nova.usage_get(IsA(http.HttpRequest), self.tenant.id,
                                datetime.datetime(now.year,
                                                  now.month,
-                                                 now.day, 0, 0, 0, 0),
+                                                 1, 0, 0, 0, 0),
                                datetime.datetime(now.year,
                                                  now.month,
                                                  now.day, 23, 59, 59, 0)) \
@@ -124,7 +122,7 @@ class UsageViewTests(test.TestCase):
             api.nova.usage_get(IsA(http.HttpRequest), self.tenant.id,
                                datetime.datetime(now.year,
                                                  now.month,
-                                                 now.day, 0, 0, 0, 0),
+                                                1, 0, 0, 0, 0),
                                datetime.datetime(now.year,
                                                  now.month,
                                                  now.day, 23, 59, 59, 0)) \
@@ -160,7 +158,7 @@ class UsageViewTests(test.TestCase):
         api.nova.usage_get(IsA(http.HttpRequest), self.tenant.id,
                            datetime.datetime(now.year,
                                              now.month,
-                                             now.day, 0, 0, 0, 0),
+                                             1, 0, 0, 0, 0),
                            datetime.datetime(now.year,
                                              now.month,
                                              now.day, 23, 59, 59, 0)) \
@@ -190,7 +188,7 @@ class UsageViewTests(test.TestCase):
         api.nova.extension_supported(
             'SimpleTenantUsage', IsA(http.HttpRequest)) \
             .AndReturn(nova_stu_enabled)
-        start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
+        start = datetime.datetime(now.year, now.month, 1, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
 
         if nova_stu_enabled:
@@ -209,7 +207,7 @@ class UsageViewTests(test.TestCase):
 
     def test_usage_exception_usage(self):
         now = timezone.now()
-        start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
+        start = datetime.datetime(now.year, now.month, 1, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
         self._stub_nova_api_calls()
         api.nova.extension_supported(
@@ -235,7 +233,7 @@ class UsageViewTests(test.TestCase):
         api.nova.extension_supported(
             'SimpleTenantUsage', IsA(http.HttpRequest)) \
             .AndReturn(True)
-        start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
+        start = datetime.datetime(now.year, now.month, 1, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
         api.nova.usage_get(IsA(http.HttpRequest),
                            self.tenant.id,
@@ -257,7 +255,7 @@ class UsageViewTests(test.TestCase):
         api.nova.extension_supported(
             'SimpleTenantUsage', IsA(http.HttpRequest)) \
             .AndReturn(True)
-        start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
+        start = datetime.datetime(now.year, now.month, 1, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
         api.nova.usage_get(IsA(http.HttpRequest),
                            self.tenant.id,
@@ -280,31 +278,47 @@ class UsageViewTests(test.TestCase):
     def test_usage_with_neutron_nova_security_group(self):
         self._test_usage_with_neutron(neutron_sg_enabled=False)
 
-    def _test_usage_with_neutron(self, neutron_sg_enabled=True):
+    def _test_usage_with_neutron_prepare(self):
         now = timezone.now()
         usage_obj = api.nova.NovaUsage(self.usages.first())
         self._stub_nova_api_calls()
+        self._stub_cinder_api_calls()
         api.nova.extension_supported(
             'SimpleTenantUsage', IsA(http.HttpRequest)) \
             .AndReturn(True)
         self.mox.StubOutWithMock(api.neutron, 'tenant_quota_get')
-        start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
+        self.mox.StubOutWithMock(api.neutron, 'is_extension_supported')
+        self.mox.StubOutWithMock(api.network, 'tenant_floating_ip_list')
+        self.mox.StubOutWithMock(api.network, 'security_group_list')
+        start = datetime.datetime(now.year, now.month, 1, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
         api.nova.usage_get(IsA(http.HttpRequest),
                            self.tenant.id,
                            start, end).AndReturn(usage_obj)
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
             .AndReturn(self.limits['absolute'])
-        self._stub_neutron_api_calls(neutron_sg_enabled)
-        # NOTE: api.neutron.is_extension_supported is stubbed out in
-        # _stub_neutron_api_calls.
-        api.neutron.is_extension_supported(IsA(http.HttpRequest), 'quotas') \
-                           .AndReturn(True)
+
+    def _test_usage_with_neutron(self, neutron_sg_enabled=True):
+        self._test_usage_with_neutron_prepare()
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest), 'quotas').AndReturn(True)
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest),
+            'security-group').AndReturn(neutron_sg_enabled)
+        api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
+                           .AndReturn(self.floating_ips.list())
+        if neutron_sg_enabled:
+            api.network.security_group_list(IsA(http.HttpRequest)) \
+                .AndReturn(self.q_secgroups.list())
         api.neutron.tenant_quota_get(IsA(http.HttpRequest), self.tenant.id) \
                            .AndReturn(self.neutron_quotas.first())
-        self._stub_cinder_api_calls()
         self.mox.ReplayAll()
 
+        self._test_usage_with_neutron_check(neutron_sg_enabled)
+
+    def _test_usage_with_neutron_check(self, neutron_sg_enabled=True,
+                                       max_fip_expected=50,
+                                       max_sg_expected=20):
         res = self.client.get(reverse('horizon:project:overview:index'))
         self.assertContains(res, 'Floating IPs')
         self.assertContains(res, 'Security Groups')
@@ -312,11 +326,32 @@ class UsageViewTests(test.TestCase):
         res_limits = res.context['usage'].limits
         # Make sure the floating IPs comes from Neutron (50 vs. 10)
         max_floating_ips = res_limits['maxTotalFloatingIps']
-        self.assertEqual(max_floating_ips, 50)
+        self.assertEqual(max_floating_ips, max_fip_expected)
         if neutron_sg_enabled:
             # Make sure the security group limit comes from Neutron (20 vs. 10)
             max_security_groups = res_limits['maxSecurityGroups']
-            self.assertEqual(max_security_groups, 20)
+            self.assertEqual(max_security_groups, max_sg_expected)
+
+    @override_settings(OPENSTACK_NEUTRON_NETWORK={'enable_quotas': True})
+    def test_usage_with_neutron_quotas_ext_error(self):
+        self._test_usage_with_neutron_prepare()
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest), 'quotas').AndRaise(self.exceptions.neutron)
+        self.mox.ReplayAll()
+        self._test_usage_with_neutron_check(max_fip_expected=float("inf"),
+                                            max_sg_expected=float("inf"))
+
+    @override_settings(OPENSTACK_NEUTRON_NETWORK={'enable_quotas': True})
+    def test_usage_with_neutron_sg_ext_error(self):
+        self._test_usage_with_neutron_prepare()
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest), 'quotas').AndReturn(True)
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest),
+            'security-group').AndRaise(self.exceptions.neutron)
+        self.mox.ReplayAll()
+        self._test_usage_with_neutron_check(max_fip_expected=float("inf"),
+                                            max_sg_expected=float("inf"))
 
     def test_usage_with_cinder(self):
         self._test_usage_cinder(cinder_enabled=True)
@@ -333,7 +368,7 @@ class UsageViewTests(test.TestCase):
             'SimpleTenantUsage', IsA(http.HttpRequest)) \
             .AndReturn(True)
 
-        start = datetime.datetime(now.year, now.month, now.day, 0, 0, 0, 0)
+        start = datetime.datetime(now.year, now.month, 1, 0, 0, 0, 0)
         end = datetime.datetime(now.year, now.month, now.day, 23, 59, 59, 0)
         api.nova.usage_get(IsA(http.HttpRequest),
                            self.tenant.id,

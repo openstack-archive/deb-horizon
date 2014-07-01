@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -35,6 +33,7 @@ from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from django.utils import termcolors
 from django.utils.translation import ugettext_lazy as _
+import six
 
 from horizon import conf
 from horizon import exceptions
@@ -698,9 +697,10 @@ class Cell(html.HTMLElement):
         if self.column.status or \
                 self.column.name in self.column.table._meta.status_columns:
             #returns the first matching status found
-            data_value_lower = unicode(self.data).lower()
+            data_status_lower = unicode(
+                self.column.get_raw_data(self.datum)).lower()
             for status_name, status_value in self.column.status_choices:
-                if unicode(status_name).lower() == data_value_lower:
+                if unicode(status_name).lower() == data_status_lower:
                     self._status = status_value
                     return self._status
         self._status = None
@@ -1016,6 +1016,7 @@ class DataTableMetaclass(type):
         return type.__new__(mcs, name, bases, attrs)
 
 
+@six.add_metaclass(DataTableMetaclass)
 class DataTable(object):
     """A class which defines a table with all data and associated actions.
 
@@ -1040,7 +1041,6 @@ class DataTable(object):
         :class:`~horizon.tables.FilterAction` class (if one is provided)
         using the current request's query parameters.
     """
-    __metaclass__ = DataTableMetaclass
 
     def __init__(self, request, data=None, needs_form_wrapper=None, **kwargs):
         self.request = request
@@ -1063,7 +1063,7 @@ class DataTable(object):
 
         # Associate these actions with this table
         for action in self.base_actions.values():
-            action.table = self
+            action.associate_with_table(self)
 
         self.needs_summary_row = any([col.summation
                                       for col in self.columns.values()])
@@ -1251,6 +1251,19 @@ class DataTable(object):
             bound_actions.append(bound_action)
         return bound_actions
 
+    def set_multiselect_column_visibility(self, visible=True):
+        """hide checkbox column if no current table action is allowed."""
+        if not self.multi_select:
+            return
+        select_column = self.columns.values()[0]
+        #Try to find if the hidden class need to be
+        #removed or added based on visible flag.
+        hidden_found = 'hidden' in select_column.classes
+        if hidden_found and visible:
+            select_column.classes.remove('hidden')
+        elif not hidden_found and not visible:
+            select_column.classes.append('hidden')
+
     def render_table_actions(self):
         """Renders the actions specified in ``Meta.table_actions``."""
         template_path = self._meta.table_actions_template
@@ -1261,6 +1274,7 @@ class DataTable(object):
            self._filter_action(self._meta._filter_action, self.request):
             extra_context["filter"] = self._meta._filter_action
         context = template.RequestContext(self.request, extra_context)
+        self.set_multiselect_column_visibility(len(bound_actions) > 0)
         return table_actions_template.render(context)
 
     def render_row_actions(self, datum):
@@ -1584,4 +1598,5 @@ class DataTable(object):
             LOG.exception("Error while rendering table rows.")
             exc_info = sys.exc_info()
             raise template.TemplateSyntaxError, exc_info[1], exc_info[2]
+
         return rows

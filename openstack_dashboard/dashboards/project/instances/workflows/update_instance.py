@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -74,7 +72,7 @@ class UpdateInstanceSecurityGroupsAction(workflows.MembershipAction):
             api.network.server_update_security_groups(request, instance_id,
                                                       wanted_groups)
         except Exception as e:
-            exceptions.handle(request, e.message)
+            exceptions.handle(request, str(e))
             return False
         return True
 

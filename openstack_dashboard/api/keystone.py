@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -113,9 +111,8 @@ def _get_endpoint_url(request, endpoint_type, catalog=None):
 
     # TODO(gabriel): When the Service Catalog no longer contains API versions
     # in the endpoints this can be removed.
-    bits = urlparse.urlparse(url)
-    root = "://".join((bits.scheme, bits.netloc))
-    url = "%s/v%s" % (root, VERSIONS.active)
+    url = url.rstrip('/')
+    url = urlparse.urljoin(url, 'v%s' % VERSIONS.active)
 
     return url
 
@@ -430,15 +427,7 @@ def group_delete(request, group_id):
 
 def group_list(request, domain=None, project=None, user=None):
     manager = keystoneclient(request, admin=True).groups
-    groups = manager.list(user=user)
-    # TODO(dklyle): once keystoneclient supports filtering by
-    # domain change this to use that cleaner implementation
-    if domain:
-        domain_groups = []
-        for group in groups:
-            if group.domain_id == domain:
-                domain_groups.append(group)
-        groups = domain_groups
+    groups = manager.list(user=user, domain=domain)
 
     if project:
         project_groups = []

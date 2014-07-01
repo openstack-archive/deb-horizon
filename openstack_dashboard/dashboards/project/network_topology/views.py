@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -48,12 +46,12 @@ from openstack_dashboard.dashboards.project.routers import\
     views as r_views
 
 
-class NTCreateRouterView (r_views.CreateView):
+class NTCreateRouterView(r_views.CreateView):
     template_name = 'project/network_topology/create_router.html'
     success_url = reverse_lazy("horizon:project:network_topology:index")
 
 
-class NTCreateNetwork (n_workflows.CreateNetwork):
+class NTCreateNetwork(n_workflows.CreateNetwork):
     def get_success_url(self):
         return reverse("horizon:project:network_topology:index")
 
@@ -61,35 +59,55 @@ class NTCreateNetwork (n_workflows.CreateNetwork):
         return reverse("horizon:project:network_topology:index")
 
 
-class NTCreateNetworkView (n_views.CreateView):
+class NTCreateNetworkView(n_views.CreateView):
     workflow_class = NTCreateNetwork
 
 
-class NTLaunchInstance (i_workflows.LaunchInstance):
+class NTLaunchInstance(i_workflows.LaunchInstance):
     success_url = "horizon:project:network_topology:index"
 
 
-class NTLaunchInstanceView (i_views.LaunchInstanceView):
+class NTLaunchInstanceView(i_views.LaunchInstanceView):
     workflow_class = NTLaunchInstance
 
 
-class InstanceView (i_views.IndexView):
+class InstanceView(i_views.IndexView):
     table_class = instances_tables.InstancesTable
     template_name = 'project/network_topology/iframe.html'
 
 
-class RouterView (r_views.IndexView):
+class RouterView(r_views.IndexView):
     table_class = routers_tables.RoutersTable
     template_name = 'project/network_topology/iframe.html'
 
 
-class RouterDetailView (r_views.DetailView):
+class RouterDetailView(r_views.DetailView):
     table_classes = (ports_tables.PortsTable, )
     template_name = 'project/network_topology/iframe.html'
 
 
-class NetworkTopologyView (TemplateView):
+class NetworkTopologyView(TemplateView):
     template_name = 'project/network_topology/index.html'
+
+    def _has_permission(self, policy):
+        has_permission = True
+        policy_check = getattr(settings, "POLICY_CHECK_FUNCTION", None)
+
+        if policy_check:
+            has_permission = policy_check(policy, self.request)
+
+        return has_permission
+
+    def get_context_data(self, **kwargs):
+        context = super(NetworkTopologyView, self).get_context_data(**kwargs)
+
+        context['launch_instance_allowed'] = self._has_permission(
+            (("compute", "compute:create"),))
+        context['create_network_allowed'] = self._has_permission(
+            (("network", "create_network"),))
+        context['create_router_allowed'] = self._has_permission(
+            (("network", "create_router"),))
+        return context
 
 
 class JSONView(View):

@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2013 Rackspace Hosting
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -108,14 +106,14 @@ def db_link(obj):
 
 
 def db_name(obj):
-    if hasattr(obj.instance, 'name'):
-        return obj.instance.name
-    return obj.instance_id
+    if not hasattr(obj, 'instance') or not hasattr(obj.instance, 'name'):
+        return obj.instance_id
+    return obj.instance.name
 
 
 class BackupsTable(tables.DataTable):
     name = tables.Column("name",
-                         link=("horizon:project:database_backups:detail"),
+                         link="horizon:project:database_backups:detail",
                          verbose_name=_("Name"))
     created = tables.Column("created", verbose_name=_("Created At"),
                             filters=[filters.parse_isotime])

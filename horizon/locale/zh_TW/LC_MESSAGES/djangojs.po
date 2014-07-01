@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# zero00072 <zero00072@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-04 11:03-0500\n"
-"PO-Revision-Date: 2014-04-01 09:41+0000\n"
-"Last-Translator: zero00072 <zero00072@gmail.com>\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/openstack/language/zh_TW/)\n"
+"POT-Creation-Date: 2014-05-27 07:33-0500\n"
+"PO-Revision-Date: 2014-04-01 08:37+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/horizon/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,18 +18,18 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: static/horizon/js/horizon.accordion_nav.js:83
-#: static/horizon/js/horizon.modals.js:280
+#: static/horizon/js/horizon.modals.js:281
 #: static/horizon/js/horizon.tabs.js:21
 msgid "Loading"
 msgstr "讀取中"
 
-#: static/horizon/js/horizon.d3linechart.js:385
-#: static/horizon/js/horizon.d3linechart.js:395
+#: static/horizon/js/horizon.d3linechart.js:386
+#: static/horizon/js/horizon.d3linechart.js:396
 msgid "No data available."
 msgstr "無可用的資料。"
 
-#: static/horizon/js/horizon.d3linechart.js:401
-#: static/horizon/js/horizon.modals.js:299
+#: static/horizon/js/horizon.d3linechart.js:402
+#: static/horizon/js/horizon.modals.js:300
 #: static/horizon/js/horizon.tables_inline_edit.js:94
 #: static/horizon/js/horizon.tables_inline_edit.js:175
 msgid "An error occurred. Please try again later."
@@ -41,7 +40,7 @@ msgstr "發生錯誤。請稍後再試。"
 msgid "There was a problem communicating with the server, please try again."
 msgstr "與伺服器間的通訊有問題，請再試一次。"
 
-#: static/horizon/js/horizon.forms.js:117
+#: static/horizon/js/horizon.forms.js:118
 msgid "Filter"
 msgstr "篩選"
 
@@ -86,12 +85,12 @@ msgstr "錯誤："
 msgid "Cancel"
 msgstr "取消"
 
-#: static/horizon/js/horizon.modals.js:98
-#: static/horizon/js/horizon.tables.js:172
+#: static/horizon/js/horizon.modals.js:208
+#: static/horizon/js/horizon.tables.js:200
 msgid "Working"
 msgstr "運作中"
 
-#: static/horizon/js/horizon.modals.js:128
+#: static/horizon/js/horizon.modals.js:238
 msgid "There was an error submitting the form. Please try again."
 msgstr "提交表單時有錯誤。請再試一次。"
 
@@ -121,33 +120,34 @@ msgid "view %s details"
 msgstr "檢視 %s 的詳細資訊"
 
 #: static/horizon/js/horizon.tables.js:39
-#: static/horizon/js/horizon.tables.js:256
+#: static/horizon/js/horizon.tables.js:320
 msgid "No items to display."
 msgstr "沒有項目可以列出。"
 
-#: static/horizon/js/horizon.tables.js:50
+#: static/horizon/js/horizon.tables.js:52
+#: static/horizon/js/horizon.tables.js:129
 msgid "An error occurred while updating."
 msgstr "更新時發生錯誤。"
 
-#: static/horizon/js/horizon.tables.js:155
+#: static/horizon/js/horizon.tables.js:183
 #, c-format
 msgid "You have selected %s. "
 msgstr "您選擇了 %s。"
 
-#: static/horizon/js/horizon.tables.js:157
+#: static/horizon/js/horizon.tables.js:185
 #, c-format
 msgid "Confirm %s"
 msgstr "確認 %s"
 
-#: static/horizon/js/horizon.tables.js:158
+#: static/horizon/js/horizon.tables.js:186
 msgid "Please confirm your selection. This action cannot be undone."
 msgstr "請確認您的選擇。這個動作將無法回復。"
 
-#: static/horizon/js/horizon.tables.js:243
+#: static/horizon/js/horizon.tables.js:307
 #, c-format
 msgid "Displaying %s item"
 msgid_plural "Displaying %s items"
-msgstr[0] "正列出 %s 個項目"
+msgstr[0] ""
 
 #: static/horizon/js/horizon.tables_inline_edit.js:88
 #: static/horizon/js/horizon.tables_inline_edit.js:169

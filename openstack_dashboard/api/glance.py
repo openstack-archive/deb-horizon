@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -25,7 +23,6 @@ import logging
 import thread
 
 from django.conf import settings
-import six.moves.urllib.parse as urlparse
 
 import glanceclient as glance_client
 
@@ -38,8 +35,7 @@ LOG = logging.getLogger(__name__)
 
 
 def glanceclient(request):
-    o = urlparse.urlparse(base.url_for(request, 'image'))
-    url = "://".join((o.scheme, o.netloc))
+    url = base.url_for(request, 'image')
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
     LOG.debug('glanceclient connection created using token "%s" and url "%s"'
@@ -94,16 +90,20 @@ def image_update(request, image_id, **kwargs):
 
 
 def image_create(request, **kwargs):
-    copy_from = None
-
-    if kwargs.get('copy_from'):
-        copy_from = kwargs.pop('copy_from')
+    copy_from = kwargs.pop('copy_from', None)
+    data = kwargs.pop('data', None)
 
     image = glanceclient(request).images.create(**kwargs)
 
-    if copy_from:
+    if data:
         thread.start_new_thread(image_update,
                                 (request, image.id),
-                                {'copy_from': copy_from})
+                                {'data': data,
+                                 'purge_props': False})
+    elif copy_from:
+        thread.start_new_thread(image_update,
+                                (request, image.id),
+                                {'copy_from': copy_from,
+                                 'purge_props': False})
 
     return image

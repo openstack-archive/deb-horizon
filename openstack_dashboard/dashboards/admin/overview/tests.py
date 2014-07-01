@@ -1,5 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
 # Copyright 2012 United States Government as represented by the
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
@@ -79,7 +77,7 @@ class UsageViewTests(test.BaseAdminViewTests):
             api.nova.usage_list(IsA(http.HttpRequest),
                                 datetime.datetime(now.year,
                                                   now.month,
-                                                  now.day, 0, 0, 0, 0),
+                                                  1, 0, 0, 0, 0),
                                 datetime.datetime(now.year,
                                                   now.month,
                                                   now.day, 23, 59, 59, 0)) \
@@ -155,7 +153,7 @@ class UsageViewTests(test.BaseAdminViewTests):
             api.nova.usage_list(IsA(http.HttpRequest),
                                 datetime.datetime(now.year,
                                                   now.month,
-                                                  now.day, 0, 0, 0, 0),
+                                                  1, 0, 0, 0, 0),
                                 datetime.datetime(now.year,
                                                   now.month,
                                                   now.day, 23, 59, 59, 0)) \
