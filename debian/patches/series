@@ -1,4 +1,3 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
-fix-python-m-coverage.patch
