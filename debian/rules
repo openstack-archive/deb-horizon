@@ -24,7 +24,7 @@ override_dh_auto_install:
 	# Sets memcached by default in local_settings.py
 	cp $(CURDIR)/openstack_dashboard/local/local_settings.py.example \
 		$(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
-	sed -i -e 's/SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,/SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join("\/","var","lib","openstack-dashboard","secret-key",/' \
+	sed -i -e 's/os.path.join(LOCAL_PATH,/os.path.join("\/","var","lib","openstack-dashboard","secret-key",/' \
 		$(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
 	echo "COMPRESS_OFFLINE=True" >> $(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
 
