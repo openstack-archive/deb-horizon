@@ -26,6 +26,14 @@ class CreateVolumeType(tables.LinkAction):
     policy_rules = (("volume", "volume_extension:types_manage"),)
 
 
+class ViewVolumeTypeExtras(tables.LinkAction):
+    name = "extras"
+    verbose_name = _("View Extra Specs")
+    url = "horizon:admin:volumes:extras:index"
+    classes = ("btn-edit",)
+    policy_rules = (("volume", "volume_extension:types_manage"),)
+
+
 class DeleteVolumeType(tables.DeleteAction):
     data_type_singular = _("Volume Type")
     data_type_plural = _("Volume Types")
@@ -59,7 +67,7 @@ class VolumesTable(project_tables.VolumesTable):
         table_actions = (project_tables.DeleteVolume, VolumesFilterAction)
         row_actions = (project_tables.DeleteVolume,)
         columns = ('tenant', 'host', 'name', 'size', 'status', 'volume_type',
-                   'attachments', 'bootable')
+                   'attachments', 'bootable', 'encryption',)
 
 
 class VolumeTypesTable(tables.DataTable):
@@ -76,4 +84,4 @@ class VolumeTypesTable(tables.DataTable):
         name = "volume_types"
         verbose_name = _("Volume Types")
         table_actions = (CreateVolumeType, DeleteVolumeType,)
-        row_actions = (DeleteVolumeType,)
+        row_actions = (ViewVolumeTypeExtras, DeleteVolumeType,)

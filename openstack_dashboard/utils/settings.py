@@ -16,6 +16,8 @@ import pkgutil
 
 from django.utils import importlib
 
+import six
+
 
 def import_submodules(module):
     """Import all submodules and make them available in a dict."""
@@ -38,7 +40,7 @@ def import_dashboard_config(modules):
     """Imports configuration from all the modules and merges it."""
     config = collections.defaultdict(dict)
     for module in modules:
-        for key, submodule in import_submodules(module).iteritems():
+        for key, submodule in six.iteritems(import_submodules(module)):
             if hasattr(submodule, 'DASHBOARD'):
                 dashboard = submodule.DASHBOARD
                 config[dashboard].update(submodule.__dict__)
@@ -49,7 +51,7 @@ def import_dashboard_config(modules):
                 logging.warning("Skipping %s because it doesn't have DASHBOARD"
                                 ", PANEL or PANEL_GROUP defined.",
                                 submodule.__name__)
-    return sorted(config.iteritems(),
+    return sorted(six.iteritems(config),
                   key=lambda c: c[1]['__name__'].rsplit('.', 1))
 
 
@@ -94,16 +96,16 @@ def update_dashboards(modules, horizon_config, installed_apps):
         if config.get('DISABLED', False):
             continue
         apps.extend(config.get('ADD_INSTALLED_APPS', []))
+        exceptions.update(config.get('ADD_EXCEPTIONS', {}))
         angular_modules.extend(config.get('ADD_ANGULAR_MODULES', []))
         js_files.update(config.get('ADD_JS_FILES', []))
+        update_horizon_config.update(
+            config.get('UPDATE_HORIZON_CONFIG', {}))
         if config.get('DASHBOARD'):
             dashboard = key
             dashboards.append(dashboard)
-            exceptions.update(config.get('ADD_EXCEPTIONS', {}))
             if config.get('DEFAULT', False):
                 horizon_config['default_dashboard'] = dashboard
-            update_horizon_config.update(
-                config.get('UPDATE_HORIZON_CONFIG', {}))
         elif config.get('PANEL') or config.get('PANEL_GROUP'):
             config.pop("__builtins__", None)
             panel_customization.append(config)

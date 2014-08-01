@@ -34,10 +34,18 @@ class SetInstanceDetailsAction(workflows.Action):
                                 min_value=0,
                                 initial=1,
                                 help_text=_("Size of the volume in GB."))
+    datastore = forms.ChoiceField(label=_("Datastore"),
+                                  help_text=_("Type and version of datastore."))
 
     class Meta:
         name = _("Details")
         help_text_template = ("project/databases/_launch_details_help.html")
+
+    def clean(self):
+        if self.data.get("datastore", None) == "select_datastore_type_version":
+            msg = _("You must select a datastore type and version.")
+            self._errors["datastore"] = self.error_class([msg])
+        return self.cleaned_data
 
     @memoized.memoized_method
     def flavors(self, request):
@@ -51,6 +59,52 @@ class SetInstanceDetailsAction(workflows.Action):
         flavor_list = [(f.id, "%s" % f.name) for f in self.flavors(request)]
         return sorted(flavor_list)
 
+    @memoized.memoized_method
+    def datastores(self, request):
+        try:
+            return api.trove.datastore_list(request)
+        except Exception:
+            LOG.exception("Exception while obtaining datastores list")
+            self._datastores = []
+
+    @memoized.memoized_method
+    def datastore_versions(self, request, datastore):
+        try:
+            return api.trove.datastore_version_list(request, datastore)
+        except Exception:
+            LOG.exception("Exception while obtaining datastore version list")
+            self._datastore_versions = []
+
+    def populate_datastore_choices(self, request, context):
+        choices = ()
+        set_initial = False
+        datastores = self.datastores(request)
+        if datastores is not None:
+            num_datastores_with_one_version = 0
+            for ds in datastores:
+                versions = self.datastore_versions(request, ds.name)
+                if not set_initial:
+                    if len(versions) >= 2:
+                        set_initial = True
+                    elif len(versions) == 1:
+                        num_datastores_with_one_version = num_datastores_with_one_version + 1
+                        if num_datastores_with_one_version > 1:
+                            set_initial = True
+                if len(versions) > 0:
+                    # only add to choices if datastore has at least one version
+                    version_choices = ()
+                    for v in versions:
+                        version_choices = (version_choices +
+                                           ((ds.name + ',' + v.name, v.name),))
+                    datastore_choices = (ds.name, version_choices)
+                    choices = choices + (datastore_choices,)
+            if set_initial:
+                # prepend choice to force user to choose
+                initial = (('select_datastore_type_version',
+                            _('Select datastore type and version')))
+                choices = (initial,) + choices
+        return choices
+
 
 TROVE_ADD_USER_PERMS = getattr(settings, 'TROVE_ADD_USER_PERMS', [])
 TROVE_ADD_DATABASE_PERMS = getattr(settings, 'TROVE_ADD_DATABASE_PERMS', [])
@@ -59,7 +113,60 @@ TROVE_ADD_PERMS = TROVE_ADD_USER_PERMS + TROVE_ADD_DATABASE_PERMS
 
 class SetInstanceDetails(workflows.Step):
     action_class = SetInstanceDetailsAction
-    contributes = ("name", "volume", "flavor")
+    contributes = ("name", "volume", "flavor", "datastore")
+
+
+class SetNetworkAction(workflows.Action):
+    network = forms.MultipleChoiceField(label=_("Networks"),
+                                        required=True,
+                                        widget=forms.CheckboxSelectMultiple(),
+                                        error_messages={
+                                            'required': _(
+                                                "At least one network must"
+                                                " be specified.")},
+                                        help_text=_("Launch instance with"
+                                                    " these networks"))
+
+    def __init__(self, request, *args, **kwargs):
+        super(SetNetworkAction, self).__init__(request, *args, **kwargs)
+        network_list = self.fields["network"].choices
+        if len(network_list) == 1:
+            self.fields['network'].initial = [network_list[0][0]]
+
+    class Meta:
+        name = _("Networking")
+        permissions = ('openstack.services.network',)
+        help_text = _("Select networks for your instance.")
+
+    def populate_network_choices(self, request, context):
+        try:
+            tenant_id = self.request.user.tenant_id
+            networks = api.neutron.network_list_for_tenant(request, tenant_id)
+            for n in networks:
+                n.set_id_as_name_if_empty()
+            network_list = [(network.id, network.name) for network in networks]
+        except Exception:
+            network_list = []
+            exceptions.handle(request,
+                              _('Unable to retrieve networks.'))
+        return network_list
+
+
+class SetNetwork(workflows.Step):
+    action_class = SetNetworkAction
+    template_name = "project/databases/_launch_networks.html"
+    contributes = ("network_id",)
+
+    def contribute(self, data, context):
+        if data:
+            networks = self.workflow.request.POST.getlist("network")
+            # If no networks are explicitly specified, network list
+            # contains an empty string, so remove it.
+            networks = [n for n in networks if n != '']
+            if networks:
+                context['network_id'] = networks
+
+        return context
 
 
 class AddDatabasesAction(workflows.Action):
@@ -69,7 +176,7 @@ class AddDatabasesAction(workflows.Action):
     * TROVE_ADD_USER_PERMS = []
     * TROVE_ADD_DATABASE_PERMS = []
     """
-    databases = forms.CharField(label=_('Initial Database'),
+    databases = forms.CharField(label=_('Initial Databases'),
                                 required=False,
                                 help_text=_('Comma separated list of '
                                             'databases to create'))
@@ -79,7 +186,7 @@ class AddDatabasesAction(workflows.Action):
     password = forms.CharField(widget=forms.PasswordInput(),
                                label=_("Password"),
                                required=False)
-    host = forms.CharField(label=_("Host (optional)"),
+    host = forms.CharField(label=_("Allowed Host (optional)"),
                            required=False,
                            help_text=_("Host or IP that the user is allowed "
                                        "to connect through."))
@@ -118,14 +225,18 @@ class RestoreAction(workflows.Action):
         help_text_template = "project/databases/_launch_restore_help.html"
 
     def populate_backup_choices(self, request, context):
-        empty = [('', '-')]
         try:
             backups = api.trove.backup_list(request)
-            backup_list = [(b.id, b.name) for b in backups
-                           if b.status == 'COMPLETED']
+            choices = [(b.id, b.name) for b in backups
+                       if b.status == 'COMPLETED' ]
         except Exception:
-            backup_list = []
-        return empty + backup_list
+            choices = []
+
+        if choices:
+            choices.insert(0, ("", _("Select backup")))
+        else:
+            choices.insert(0, ("", _("No backups available")))
+        return choices
 
     def clean_backup(self):
         backup = self.cleaned_data['backup']
@@ -153,7 +264,17 @@ class LaunchInstance(workflows.Workflow):
     success_message = _('Launched %(count)s named "%(name)s".')
     failure_message = _('Unable to launch %(count)s named "%(name)s".')
     success_url = "horizon:project:databases:index"
-    default_steps = (SetInstanceDetails, InitializeDatabase, RestoreBackup)
+    default_steps = (SetInstanceDetails,
+                     SetNetwork,
+                     InitializeDatabase,
+                     RestoreBackup)
+
+    def __init__(self, request=None, context_seed=None, entry_point=None,
+                 *args, **kwargs):
+        super(LaunchInstance, self).__init__(request, context_seed,
+                                             entry_point, *args, **kwargs)
+        self.attrs['autocomplete'] = (
+            settings.HORIZON_CONFIG.get('password_autocomplete'))
 
     def format_status_message(self, message):
         name = self.context.get('name', 'unknown instance')
@@ -186,21 +307,37 @@ class LaunchInstance(workflows.Workflow):
             backup = {'backupRef': context['backup']}
         return backup
 
+    def _get_nics(self, context):
+        netids = context.get('network_id', None)
+        if netids:
+            return [{"net-id": netid, "v4-fixed-ip": ""}
+                    for netid in netids]
+        else:
+            return None
+
     def handle(self, request, context):
         try:
-            LOG.info("Launching instance with parameters "
-                     "{name=%s, volume=%s, flavor=%s, dbs=%s, users=%s, "
-                     "backups=%s}",
+            datastore = self.context['datastore'].split(',')[0]
+            datastore_version = self.context['datastore'].split(',')[1]
+            LOG.info("Launching database instance with parameters "
+                     "{name=%s, volume=%s, flavor=%s, "
+                     "datastore=%s, datastore_version=%s, "
+                     "dbs=%s, users=%s, "
+                     "backups=%s, nics=%s}",
                      context['name'], context['volume'], context['flavor'],
+                     datastore, datastore_version,
                      self._get_databases(context), self._get_users(context),
-                     self._get_backup(context))
+                     self._get_backup(context), self._get_nics(context))
             api.trove.instance_create(request,
                                       context['name'],
                                       context['volume'],
                                       context['flavor'],
+                                      datastore=datastore,
+                                      datastore_version=datastore_version,
                                       databases=self._get_databases(context),
                                       users=self._get_users(context),
-                                      restore_point=self._get_backup(context))
+                                      restore_point=self._get_backup(context),
+                                      nics=self._get_nics(context))
             return True
         except Exception:
             exceptions.handle(request)

@@ -40,6 +40,9 @@ LOG = logging.getLogger(__name__)
 
 IP_VERSION_DICT = {4: 'IPv4', 6: 'IPv6'}
 
+OFF_STATE = 'OFF'
+ON_STATE = 'ON'
+
 
 class NeutronAPIDictWrapper(base.APIDictWrapper):
 
@@ -98,6 +101,9 @@ class Port(NeutronAPIDictWrapper):
     def __init__(self, apiresource):
         apiresource['admin_state'] = \
             'UP' if apiresource['admin_state_up'] else 'DOWN'
+        if 'mac_learning_enabled' in apiresource:
+            apiresource['mac_state'] = \
+                ON_STATE if apiresource['mac_learning_enabled'] else OFF_STATE
         super(Port, self).__init__(apiresource)
 
 
@@ -441,14 +447,17 @@ def neutronclient(request):
 
 
 def network_list(request, **params):
-    LOG.debug("network_list(): params=%s" % (params))
+    LOG.debug("network_list(): params=%s", params)
     networks = neutronclient(request).list_networks(**params).get('networks')
     # Get subnet list to expand subnet info in network list.
     subnets = subnet_list(request)
-    subnet_dict = SortedDict([(s['id'], s) for s in subnets])
+    subnet_dict = dict([(s['id'], s) for s in subnets])
     # Expand subnet list from subnet_id to values.
     for n in networks:
-        n['subnets'] = [subnet_dict.get(s) for s in n.get('subnets', [])]
+        # Due to potential timing issues, we can't assume the subnet_dict data
+        # is in sync with the network data.
+        n['subnets'] = [subnet_dict[s] for s in n.get('subnets', []) if
+                        s in subnet_dict]
     return [Network(n) for n in networks]
 
 
@@ -859,14 +868,16 @@ def is_security_group_extension_supported(request):
     return is_extension_supported(request, 'security-group')
 
 
+def is_agent_extension_supported(request):
+    return is_extension_supported(request, 'agent')
+
+
 # Using this mechanism till a better plugin/sub-plugin detection
 # mechanism is available.
-# Using local_settings to detect if the "router" dashboard
-# should be turned on or not. When using specific plugins the
-# profile_support can be turned on if needed.
+# When using specific plugins the profile_support can be
+# turned on if needed to configure and/or use profiles.
 # Since this is a temporary mechanism used to detect profile_support
-# @memorize is not being used. This is mainly used in the run_tests
-# environment to detect when to use profile_support neutron APIs.
+# @memorize is not being used.
 # TODO(absubram): Change this config variable check with
 # subplugin/plugin detection API when it becomes available.
 def is_port_profiles_supported():

@@ -51,10 +51,20 @@ class OrchestrationPanels(horizon.PanelGroup):
 
 
 class DatabasePanels(horizon.PanelGroup):
-    name = _("Databases")
+    name = _("Database")
     slug = "database"
     panels = ('databases',
               'database_backups',)
+
+
+class DataProcessingPanels(horizon.PanelGroup):
+    name = _("Data Processing")
+    slug = "data_processing"
+    panels = ('data_processing.data_plugins',
+              'data_processing.data_image_registry',
+              'data_processing.nodegroup_templates',
+              'data_processing.cluster_templates',
+              'data_processing.clusters', )
 
 
 class Project(horizon.Dashboard):
@@ -65,7 +75,8 @@ class Project(horizon.Dashboard):
         NetworkPanels,
         ObjectStorePanels,
         OrchestrationPanels,
-        DatabasePanels,)
+        DatabasePanels,
+        DataProcessingPanels,)
     default_panel = 'overview'
     supports_tenants = True
 

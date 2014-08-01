@@ -6,7 +6,7 @@ set -o errexit
 # Increment me any time the environment should be rebuilt.
 # This includes dependency changes, directory renames, etc.
 # Simple integer sequence: 1, 2, 3...
-environment_version=42
+environment_version=43
 #--------------------------------------------------------#
 
 function usage {
@@ -28,10 +28,12 @@ function usage {
   echo "  -P, --no-pep8            Don't run pep8 by default"
   echo "  -t, --tabs               Check for tab characters in files."
   echo "  -y, --pylint             Just run pylint"
+  echo "  -j, --jshint             Just run jshint"
   echo "  -q, --quiet              Run non-interactively. (Relatively) quiet."
   echo "                           Implies -V if -N is not set."
   echo "  --only-selenium          Run only the Selenium unit tests"
   echo "  --with-selenium          Run unit tests including Selenium tests"
+  echo "  --selenium-headless      Run Selenium tests headless"
   echo "  --integration            Run the integration tests (requires a running "
   echo "                           OpenStack environment)"
   echo "  --runserver              Run the Django development server for"
@@ -67,12 +69,14 @@ no_pep8=0
 just_pylint=0
 just_docs=0
 just_tabs=0
+just_jshint=0
 never_venv=0
 quiet=0
 restore_env=0
 runserver=0
 only_selenium=0
 with_selenium=0
+selenium_headless=0
 integration=0
 testopts=""
 testargs=""
@@ -98,6 +102,7 @@ function process_option {
     -p|--pep8) just_pep8=1;;
     -P|--no-pep8) no_pep8=1;;
     -y|--pylint) just_pylint=1;;
+    -j|--jshint) just_jshint=1;;
     -f|--force) force=1;;
     -t|--tabs) just_tabs=1;;
     -q|--quiet) quiet=1;;
@@ -107,6 +112,7 @@ function process_option {
     --compilemessages) compilemessages=1;;
     --only-selenium) only_selenium=1;;
     --with-selenium) with_selenium=1;;
+    --selenium-headless) selenium_headless=1;;
     --integration) integration=1;;
     --docs) just_docs=1;;
     --runserver) runserver=1;;
@@ -142,6 +148,12 @@ function run_pylint {
   fi
 }
 
+function run_jshint {
+  echo "Running jshint ..."
+  jshint horizon/static/horizon/js
+  jshint horizon/static/horizon/tests
+}
+
 function run_pep8 {
   echo "Running flake8 ..."
   set +o errexit
@@ -158,7 +170,7 @@ function run_pep8 {
 
 function run_sphinx {
     echo "Building sphinx..."
-    ${command_wrapper} python setup.py build_sphinx
+    DJANGO_SETTINGS_MODULE=openstack_dashboard.test.settings ${command_wrapper} python setup.py build_sphinx
     echo "Build complete."
 }
 
@@ -299,6 +311,10 @@ function run_tests {
       testopts="$testopts --exclude-dir=openstack_dashboard/test/integration_tests"
   fi
 
+  if [ $selenium_headless -eq 1 ]; then
+    export SELENIUM_HEADLESS=1
+  fi
+
   if [ -z "$testargs" ]; then
      run_tests_all
   else
@@ -361,8 +377,16 @@ function run_tests_all {
 function run_integration_tests {
   export INTEGRATION_TESTS=1
 
+  if [ $selenium_headless -eq 1 ]; then
+    export SELENIUM_HEADLESS=1
+  fi
+
   echo "Running Horizon integration tests..."
-  ${command_wrapper} nosetests openstack_dashboard/test/integration_tests/tests
+  if [ -z "$testargs" ]; then
+      ${command_wrapper} nosetests openstack_dashboard/test/integration_tests/tests
+  else
+      ${command_wrapper} nosetests $testargs
+  fi
   exit 0
 }
 
@@ -474,6 +498,12 @@ fi
 # Pylint
 if [ $just_pylint -eq 1 ]; then
     run_pylint
+    exit $?
+fi
+
+# Jshint
+if [ $just_jshint -eq 1 ]; then
+    run_jshint
     exit $?
 fi
 

@@ -87,7 +87,8 @@ class IndexView(tables.DataTableView):
 
             try:
                 # TODO(gabriel): Handle pagination.
-                images, more = api.glance.image_list_detailed(self.request)
+                images, more, prev = api.glance.image_list_detailed(
+                    self.request)
             except Exception:
                 images = []
                 exceptions.handle(self.request, ignore=True)
@@ -104,10 +105,6 @@ class IndexView(tables.DataTableView):
                     if isinstance(instance.image, dict):
                         if instance.image.get('id') in image_map:
                             instance.image = image_map[instance.image['id']]
-                    else:
-                        # Instance from volume returns a string
-                        instance.image = {'name':
-                                instance.image if instance.image else _("-")}
 
                 try:
                     flavor_id = instance.flavor["id"]

@@ -14,6 +14,7 @@
 
 from django.core.urlresolvers import NoReverseMatch  # noqa
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse  # noqa
 from django.template import defaultfilters as filters
 from django.utils import html
 from django.utils.http import urlencode
@@ -89,6 +90,11 @@ class CreateVolume(tables.LinkAction):
     url = "horizon:project:volumes:volumes:create"
     classes = ("ajax-modal", "btn-create")
     policy_rules = (("volume", "volume:create"),)
+    ajax = True
+
+    def __init__(self, attrs=None, **kwargs):
+        kwargs['preempt'] = True
+        super(CreateVolume, self).__init__(attrs, **kwargs)
 
     def allowed(self, request, volume=None):
         usages = quotas.tenant_quota_usages(request)
@@ -103,6 +109,10 @@ class CreateVolume(tables.LinkAction):
             classes = [c for c in self.classes if c != "disabled"]
             self.classes = classes
         return True
+
+    def single(self, table, request, object_id=None):
+        self.allowed(request, None)
+        return HttpResponse(self.render())
 
 
 class ExtendVolume(tables.LinkAction):
@@ -160,6 +170,24 @@ class CreateSnapshot(tables.LinkAction):
 
     def allowed(self, request, volume=None):
         return volume.status in ("available", "in-use")
+
+
+class CreateBackup(tables.LinkAction):
+    name = "backups"
+    verbose_name = _("Create Backup")
+    url = "horizon:project:volumes:volumes:create_backup"
+    classes = ("ajax-modal",)
+    policy_rules = (("volume", "backup:create"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
+        return {"project_id": project_id}
+
+    def allowed(self, request, volume=None):
+        return (cinder.volume_backup_supported(request) and
+                volume.status == "available")
 
 
 class EditVolume(tables.LinkAction):
@@ -242,6 +270,7 @@ class VolumesTableBase(tables.DataTable):
         ("available", True),
         ("creating", None),
         ("error", False),
+        ("error_extending", False),
     )
     name = tables.Column("name",
                          verbose_name=_("Name"),
@@ -285,6 +314,10 @@ class VolumesTable(VolumesTableBase):
     bootable = tables.Column('is_bootable',
                          verbose_name=_("Bootable"),
                          filters=(filters.yesno, filters.capfirst))
+    encryption = tables.Column("encrypted",
+                               verbose_name=_("Encrypted"),
+                               empty_value="-",
+                               filters=(filters.yesno, filters.capfirst))
 
     class Meta:
         name = "volumes"
@@ -293,7 +326,7 @@ class VolumesTable(VolumesTableBase):
         row_class = UpdateRow
         table_actions = (CreateVolume, DeleteVolume, VolumesFilterAction)
         row_actions = (EditVolume, ExtendVolume, LaunchVolume, EditAttachments,
-                       CreateSnapshot, DeleteVolume)
+                       CreateSnapshot, CreateBackup, DeleteVolume)
 
 
 class DetachVolume(tables.BatchAction):

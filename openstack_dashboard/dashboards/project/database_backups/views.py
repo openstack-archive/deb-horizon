@@ -80,13 +80,23 @@ class DetailView(horizon_views.APIView):
         backup_id = kwargs.get("backup_id")
         try:
             backup = api.trove.backup_get(request, backup_id)
-            backup.created_at = filters.parse_isotime(backup.created)
-            backup.updated_at = filters.parse_isotime(backup.updated)
-            backup.duration = backup.updated_at - backup.created_at
+            created_at = filters.parse_isotime(backup.created)
+            updated_at = filters.parse_isotime(backup.updated)
+            backup.duration = updated_at - created_at
         except Exception:
             redirect = reverse('horizon:project:database_backups:index')
             msg = _('Unable to retrieve details for backup: %s') % backup_id
             exceptions.handle(self.request, msg, redirect=redirect)
+
+        try:
+            if(hasattr(backup, 'parent_id') and backup.parent_id is not None):
+                backup.parent = api.trove.backup_get(request, backup.parent_id)
+        except Exception:
+            redirect = reverse('horizon:project:database_backups:index')
+            msg = _('Unable to retrieve details for parent backup: %s') % \
+                  backup.parent_id
+            exceptions.handle(self.request, msg, redirect=redirect)
+
         try:
             instance = api.trove.instance_get(request, backup.instance_id)
         except Exception:

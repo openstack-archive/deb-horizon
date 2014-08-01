@@ -16,7 +16,9 @@ from cinderclient.v1 import availability_zones
 from cinderclient.v1 import quotas
 from cinderclient.v1 import services
 from cinderclient.v1 import volume_snapshots as vol_snaps
+from cinderclient.v1 import volume_types
 from cinderclient.v1 import volumes
+from cinderclient.v2 import volume_backups as vol_backups
 from cinderclient.v2 import volume_snapshots as vol_snaps_v2
 from cinderclient.v2 import volumes as volumes_v2
 
@@ -29,12 +31,14 @@ from openstack_dashboard.test.test_data import utils
 def data(TEST):
     TEST.cinder_services = utils.TestDataContainer()
     TEST.cinder_volumes = utils.TestDataContainer()
+    TEST.cinder_volume_backups = utils.TestDataContainer()
+    TEST.cinder_volume_types = utils.TestDataContainer()
     TEST.cinder_volume_snapshots = utils.TestDataContainer()
     TEST.cinder_quotas = utils.TestDataContainer()
     TEST.cinder_quota_usages = utils.TestDataContainer()
     TEST.cinder_availability_zones = utils.TestDataContainer()
 
-     # Services
+    # Services
     service_1 = services.Service(services.ServiceManager(None),
         {
             "service": "cinder-scheduler",
@@ -102,6 +106,15 @@ def data(TEST):
     TEST.cinder_volumes.add(api.cinder.Volume(nameless_volume))
     TEST.cinder_volumes.add(api.cinder.Volume(other_volume))
 
+    vol_type1 = volume_types.VolumeType(volume_types.VolumeTypeManager(None),
+                                        {'id': u'1',
+                                         'name': u'vol_type_1',
+                                         'extra_specs': {'foo': 'bar'}})
+    vol_type2 = volume_types.VolumeType(volume_types.VolumeTypeManager(None),
+                                        {'id': u'2',
+                                         'name': u'vol_type_2'})
+    TEST.cinder_volume_types.add(vol_type1, vol_type2)
+
     # Volumes - Cinder v2
     volume_v2 = volumes_v2.Volume(volumes_v2.VolumeManager(None),
                             {'id': "31023e92-8008-4c8b-8059-7f2293ff1234",
@@ -137,6 +150,29 @@ def data(TEST):
 
     TEST.cinder_volume_snapshots.add(api.cinder.VolumeSnapshot(snapshot))
     TEST.cinder_volume_snapshots.add(api.cinder.VolumeSnapshot(snapshot2))
+
+    volume_backup1 = vol_backups.VolumeBackup(vol_backups.
+                                              VolumeBackupManager(None),
+                     {'id': 'a374cbb8-3f99-4c3f-a2ef-3edbec842e31',
+                     'name': 'backup1',
+                     'description': 'volume backup 1',
+                     'size': 10,
+                     'status': 'available',
+                     'container_name': 'volumebackups',
+                     'volume_id': '11023e92-8008-4c8b-8059-7f2293ff3887'})
+
+    volume_backup2 = vol_backups.VolumeBackup(vol_backups.
+                                              VolumeBackupManager(None),
+                     {'id': 'c321cbb8-3f99-4c3f-a2ef-3edbec842e52',
+                     'name': 'backup2',
+                     'description': 'volume backup 2',
+                     'size': 20,
+                     'status': 'available',
+                     'container_name': 'volumebackups',
+                     'volume_id': '31023e92-8008-4c8b-8059-7f2293ff1234'})
+
+    TEST.cinder_volume_backups.add(volume_backup1)
+    TEST.cinder_volume_backups.add(volume_backup2)
 
     # Quota Sets
     quota_data = dict(volumes='1',

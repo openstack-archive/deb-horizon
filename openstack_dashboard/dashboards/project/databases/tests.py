@@ -81,9 +81,8 @@ class DatabaseTests(test.TestCase):
     def test_index_pagination(self):
         # Mock database instances
         databases = self.databases.list()
-        last_record = databases[-1]
-        databases = common.Paginated(databases,
-            next_marker="foo")
+        last_record = databases[1]
+        databases = common.Paginated(databases, next_marker="foo")
         api.trove.instance_list(IsA(http.HttpRequest), marker=None)\
             .AndReturn(databases)
         # Mock flavors
@@ -115,24 +114,52 @@ class DatabaseTests(test.TestCase):
         self.assertMessageCount(res, error=1)
 
     @test.create_stubs({
-        api.trove: ('flavor_list', 'backup_list',)})
+        api.trove: ('flavor_list', 'backup_list',
+                        'datastore_list', 'datastore_version_list')})
     def test_launch_instance(self):
         api.trove.flavor_list(IsA(http.HttpRequest))\
             .AndReturn(self.flavors.list())
         api.trove.backup_list(IsA(http.HttpRequest))\
             .AndReturn(self.database_backups.list())
-
+        # Mock datastores
+        api.trove.datastore_list(IsA(http.HttpRequest))\
+            .AndReturn(self.datastores.list())
+        # Mock datastore versions
+        api.trove.datastore_version_list(IsA(http.HttpRequest),
+            IsA(str)).AndReturn(self.datastore_versions.list())
         self.mox.ReplayAll()
         res = self.client.get(LAUNCH_URL)
         self.assertTemplateUsed(res, 'project/databases/launch.html')
 
     @test.create_stubs({
-        api.trove: ('flavor_list', 'backup_list', 'instance_create',)})
+        api.trove: ('flavor_list', 'backup_list', 'instance_create',
+                    'datastore_list', 'datastore_version_list'),
+        api.neutron: ('network_list',)})
     def test_create_simple_instance(self):
-        api.trove.flavor_list(IsA(http.HttpRequest))\
-            .AndReturn(self.flavors.list())
-        api.trove.backup_list(IsA(http.HttpRequest))\
-            .AndReturn(self.database_backups.list())
+        api.trove.flavor_list(IsA(http.HttpRequest)).AndReturn(
+            self.flavors.list())
+
+        api.trove.backup_list(IsA(http.HttpRequest)).AndReturn(
+            self.database_backups.list())
+
+        # Mock datastores
+        api.trove.datastore_list(IsA(http.HttpRequest))\
+            .AndReturn(self.datastores.list())
+
+        # Mock datastore versions
+        api.trove.datastore_version_list(IsA(http.HttpRequest),
+            IsA(str)).AndReturn(self.datastore_versions.list())
+
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False).AndReturn(
+                                     self.networks.list()[:1])
+
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True).AndReturn(
+                                     self.networks.list()[1:])
+
+        nics = [{"net-id": self.networks.first().id, "v4-fixed-ip": ''}]
 
         # Actual create database call
         api.trove.instance_create(
@@ -141,27 +168,54 @@ class DatabaseTests(test.TestCase):
             IsA(int),
             IsA(unicode),
             databases=None,
+            datastore=IsA(unicode),
+            datastore_version=IsA(unicode),
             restore_point=None,
-            users=None).AndReturn(self.databases.first())
+            users=None,
+            nics=nics).AndReturn(self.databases.first())
 
         self.mox.ReplayAll()
         post = {
             'name': "MyDB",
             'volume': '1',
             'flavor': 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            'network': self.networks.first().id,
+            'datastore': 'mysql,5.5'
         }
 
         res = self.client.post(LAUNCH_URL, post)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
     @test.create_stubs({
-        api.trove: ('flavor_list', 'backup_list', 'instance_create',)})
+        api.trove: ('flavor_list', 'backup_list', 'instance_create',
+                    'datastore_list', 'datastore_version_list'),
+        api.neutron: ('network_list',)})
     def test_create_simple_instance_exception(self):
         trove_exception = self.exceptions.nova
-        api.trove.flavor_list(IsA(http.HttpRequest))\
-            .AndReturn(self.flavors.list())
-        api.trove.backup_list(IsA(http.HttpRequest))\
-            .AndReturn(self.database_backups.list())
+        api.trove.flavor_list(IsA(http.HttpRequest)).AndReturn(
+            self.flavors.list())
+
+        api.trove.backup_list(IsA(http.HttpRequest)).AndReturn(
+            self.database_backups.list())
+
+        # Mock datastores
+        api.trove.datastore_list(IsA(http.HttpRequest))\
+            .AndReturn(self.datastores.list())
+
+        # Mock datastore versions
+        api.trove.datastore_version_list(IsA(http.HttpRequest),
+            IsA(str)).AndReturn(self.datastore_versions.list())
+
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False).AndReturn(
+                                     self.networks.list()[:1])
+
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True).AndReturn(
+                                     self.networks.list()[1:])
+
+        nics = [{"net-id": self.networks.first().id, "v4-fixed-ip": ''}]
 
         # Actual create database call
         api.trove.instance_create(
@@ -170,14 +224,19 @@ class DatabaseTests(test.TestCase):
             IsA(int),
             IsA(unicode),
             databases=None,
+            datastore=IsA(unicode),
+            datastore_version=IsA(unicode),
             restore_point=None,
-            users=None).AndRaise(trove_exception)
+            users=None,
+            nics=nics).AndRaise(trove_exception)
 
         self.mox.ReplayAll()
         post = {
             'name': "MyDB",
             'volume': '1',
             'flavor': 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            'network': self.networks.first().id,
+            'datastore': 'mysql,5.5'
         }
 
         res = self.client.post(LAUNCH_URL, post)
@@ -206,3 +265,94 @@ class DatabaseTests(test.TestCase):
     def test_details_with_hostname(self):
         database = self.databases.list()[1]
         self._test_details(database, with_designate=True)
+
+    @test.create_stubs(
+        {api.trove: ('instance_get', 'flavor_get', 'users_list',
+                     'user_list_access', 'user_delete')})
+    def test_user_delete(self):
+        database = self.databases.first()
+        user = self.database_users.first()
+        user_db = self.database_user_dbs.first()
+
+        database_id = database.id
+        # Instead of using the user's ID, the api uses the user's name. BOOO!
+        user_id = user.name
+
+        # views.py: DetailView.get_data
+        api.trove.instance_get(IsA(http.HttpRequest), IsA(unicode))\
+            .AndReturn(database)
+        api.trove.flavor_get(IsA(http.HttpRequest), IsA(str))\
+            .AndReturn(self.flavors.first())
+
+        # tabs.py: UserTab.get_user_data
+        api.trove.users_list(IsA(http.HttpRequest),
+                             database_id).AndReturn([user])
+        api.trove.user_list_access(IsA(http.HttpRequest),
+                                   database_id,
+                                   user_id).AndReturn([user_db])
+
+        # tables.py: DeleteUser.delete
+        api.trove.user_delete(IsA(http.HttpRequest),
+                              database_id,
+                              user_id).AndReturn(None)
+
+        self.mox.ReplayAll()
+
+        details_url = reverse('horizon:project:databases:detail',
+                              args=[database_id])
+        url = details_url + '?tab=instance_details__users_tab'
+        action_string = u"users__delete__%s" % user_id
+        form_data = {'action': action_string}
+        res = self.client.post(url, form_data)
+        self.assertRedirectsNoFollow(res, url)
+
+    @test.create_stubs(
+        {api.trove: ('instance_get', 'instance_resize_volume' )})
+    def test_resize_volume(self):
+        database = self.databases.first()
+        database_id = database.id
+        database_size = database.volume.get('size')
+
+        # views.py: DetailView.get_data
+        api.trove.instance_get(IsA(http.HttpRequest), IsA(unicode))\
+            .AndReturn(database)
+
+        # forms.py: ResizeVolumeForm.handle
+        api.trove.instance_resize_volume(IsA(http.HttpRequest),
+                              database_id, IsA(int)).AndReturn(None)
+
+        self.mox.ReplayAll()
+        url = reverse('horizon:project:databases:resize_volume',
+                              args=[database_id])
+        post = {
+            'instance_id': database_id,
+            'orig_size': database_size,
+            'new_size': database_size + 1
+        }
+        res = self.client.post(url, post)
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @test.create_stubs(
+        {api.trove: ('instance_get', 'instance_resize_volume' )})
+    def test_resize_volume_bad_value(self):
+        database = self.databases.first()
+        database_id = database.id
+        database_size = database.volume.get('size')
+
+        # views.py: DetailView.get_data
+        api.trove.instance_get(IsA(http.HttpRequest), IsA(unicode))\
+            .AndReturn(database)
+
+        self.mox.ReplayAll()
+        url = reverse('horizon:project:databases:resize_volume',
+                              args=[database_id])
+        post = {
+            'instance_id': database_id,
+            'orig_size': database_size,
+            'new_size': database_size
+        }
+        res = self.client.post(url, post)
+        self.assertContains(res,
+             "New size for volume must be greater than current size.")
+

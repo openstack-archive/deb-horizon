@@ -37,10 +37,11 @@ class VolumeSnapshotsViewTests(test.TestCase):
         volume = self.cinder_volumes.first()
         cinder.volume_get(IsA(http.HttpRequest), volume.id) \
             .AndReturn(volume)
+        snapshot_used = len(self.cinder_volume_snapshots.list())
         usage_limit = {'maxTotalVolumeGigabytes': 250,
                        'gigabytesUsed': 20,
-                       'volumesUsed': len(self.cinder_volumes.list()),
-                       'maxTotalVolumes': 6}
+                       'snapshotsUsed': snapshot_used,
+                       'maxTotalSnapshots': 6}
         quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
             AndReturn(usage_limit)
         self.mox.ReplayAll()
@@ -107,13 +108,18 @@ class VolumeSnapshotsViewTests(test.TestCase):
     @test.create_stubs({api.nova: ('server_list',),
                         api.cinder: ('volume_snapshot_list',
                                      'volume_list',
+                                     'volume_backup_supported',
+                                     'volume_backup_list',
                                      'volume_snapshot_delete'),
                         quotas: ('tenant_quota_usages',)})
     def test_delete_volume_snapshot(self):
         vol_snapshots = self.cinder_volume_snapshots.list()
         volumes = self.cinder_volumes.list()
+        vol_backups = self.cinder_volume_backups.list()
         snapshot = self.cinder_volume_snapshots.first()
 
+        api.cinder.volume_backup_supported(IsA(http.HttpRequest)). \
+            MultipleTimes().AndReturn(True)
         api.cinder.volume_snapshot_list(IsA(http.HttpRequest)). \
             AndReturn(vol_snapshots)
         api.cinder.volume_list(IsA(http.HttpRequest)). \
@@ -126,6 +132,10 @@ class VolumeSnapshotsViewTests(test.TestCase):
             AndReturn([self.servers.list(), False])
         api.cinder.volume_snapshot_list(IsA(http.HttpRequest)). \
             AndReturn([])
+        api.cinder.volume_list(IsA(http.HttpRequest)). \
+            AndReturn(volumes)
+        api.cinder.volume_backup_list(IsA(http.HttpRequest)). \
+            AndReturn(vol_backups)
         api.cinder.volume_list(IsA(http.HttpRequest)). \
             AndReturn(volumes)
         quotas.tenant_quota_usages(IsA(http.HttpRequest)).MultipleTimes(). \

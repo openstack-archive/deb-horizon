@@ -197,23 +197,18 @@ class UpdateProjectMembersAction(workflows.MembershipAction):
         # Figure out users & roles
         if project_id:
             try:
-                project_members = api.keystone.user_list(request,
-                    project=project_id)
+                users_roles = api.keystone.get_project_users_roles(request,
+                                                                   project_id)
             except Exception:
-                exceptions.handle(request, err_msg)
+                exceptions.handle(request,
+                                  err_msg,
+                                  redirect=reverse(INDEX_URL))
 
-            for user in project_members:
-                try:
-                    roles = api.keystone.roles_for_user(self.request,
-                                                        user.id,
-                                                        project_id)
-                except Exception:
-                    exceptions.handle(request,
-                                      err_msg,
-                                      redirect=reverse(INDEX_URL))
-                for role in roles:
-                    field_name = self.get_member_field_name(role.id)
-                    self.fields[field_name].initial.append(user.id)
+            for user_id in users_roles:
+                roles_ids = users_roles[user_id]
+                for role_id in roles_ids:
+                    field_name = self.get_member_field_name(role_id)
+                    self.fields[field_name].initial.append(user_id)
 
     class Meta:
         name = _("Project Members")
@@ -459,8 +454,11 @@ class CreateProject(workflows.Workflow):
 
             if api.base.is_service_enabled(request, 'network') and \
                     api.neutron.is_quotas_extension_supported(request):
-                neutron_data = dict([(key, data[key]) for key in
-                                     quotas.NEUTRON_QUOTA_FIELDS])
+                neutron_data = {}
+                disabled_quotas = quotas.get_disabled_quotas(request)
+                for key in quotas.NEUTRON_QUOTA_FIELDS:
+                    if key not in disabled_quotas:
+                        neutron_data[key] = data[key]
                 api.neutron.tenant_quota_update(request,
                                                 project_id,
                                                 **neutron_data)
@@ -631,7 +629,7 @@ class UpdateProject(workflows.Workflow):
                                          'update project quotas.')
                                        % {'users_to_modify': users_to_modify,
                                           'group_msg': group_msg})
-            return True
+            return False
 
         if PROJECT_GROUP_ENABLED:
             # update project groups
@@ -702,7 +700,7 @@ class UpdateProject(workflows.Workflow):
                                              'members, update project groups '
                                              'and update project quotas.'
                                              % groups_to_modify))
-                return True
+                return False
 
         # update the project quota
         nova_data = dict(
@@ -721,8 +719,11 @@ class UpdateProject(workflows.Workflow):
 
             if api.base.is_service_enabled(request, 'network') and \
                     api.neutron.is_quotas_extension_supported(request):
-                neutron_data = dict([(key, data[key]) for key in
-                                     quotas.NEUTRON_QUOTA_FIELDS])
+                neutron_data = {}
+                disabled_quotas = quotas.get_disabled_quotas(request)
+                for key in quotas.NEUTRON_QUOTA_FIELDS:
+                    if key not in disabled_quotas:
+                        neutron_data[key] = data[key]
                 api.neutron.tenant_quota_update(request,
                                                 project_id,
                                                 **neutron_data)
@@ -731,4 +732,4 @@ class UpdateProject(workflows.Workflow):
             exceptions.handle(request, _('Modified project information and '
                                          'members, but unable to modify '
                                          'project quotas.'))
-            return True
+            return False

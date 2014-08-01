@@ -26,6 +26,7 @@ from django.conf import settings
 from django.utils.functional import cached_property  # noqa
 from django.utils.translation import ugettext_lazy as _
 
+from novaclient import exceptions as nova_exceptions
 from novaclient.v1_1 import client as nova_client
 from novaclient.v1_1.contrib import list_extensions as nova_list_extensions
 from novaclient.v1_1 import security_group_rules as nova_rules
@@ -94,7 +95,7 @@ class Server(base.APIResourceWrapper):
         import glanceclient.exc as glance_exceptions
         from openstack_dashboard.api import glance
         if not self.image:
-            return "(not found)"
+            return "-"
         if hasattr(self.image, 'name'):
             return self.image.name
         if 'name' in self.image:
@@ -104,7 +105,7 @@ class Server(base.APIResourceWrapper):
                 image = glance.image_get(self.request, self.image['id'])
                 return image.name
             except glance_exceptions.ClientException:
-                return "(not found)"
+                return "-"
 
     @property
     def internal_name(self):
@@ -285,9 +286,24 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
             for group in groups_to_remove:
                 self.client.servers.remove_security_group(instance_id, group)
                 num_groups_to_modify -= 1
-        except Exception:
-            raise Exception(_('Failed to modify %d instance security groups.')
-                            % num_groups_to_modify)
+        except nova_exceptions.ClientException as err:
+            LOG.error(_("Failed to modify %(num_groups_to_modify)d instance "
+                        "security groups: %(err)s") %
+                      dict(num_groups_to_modify=num_groups_to_modify,
+                           err=err))
+            # reraise novaclient.exceptions.ClientException, but with
+            # a sanitized error message so we don't risk exposing
+            # sensitive information to the end user. This has to be
+            # novaclient.exceptions.ClientException, not just
+            # Exception, since the former is recognized as a
+            # "recoverable" exception by horizon, and therefore the
+            # error message is passed along to the end user, while
+            # Exception is swallowed alive by horizon and a gneric
+            # error message is given to the end user
+            raise nova_exceptions.ClientException(
+                err.code,
+                _("Failed to modify %d instance security groups") %
+                num_groups_to_modify)
         return True
 
 

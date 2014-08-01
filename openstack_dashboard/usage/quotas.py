@@ -72,9 +72,9 @@ class QuotaUsage(dict):
         return self.usages[key]
 
     def __setitem__(self, key, value):
-        raise NotImplemented("Directly setting QuotaUsage values is not "
-                             "supported. Please use the add_quota and "
-                             "tally methods.")
+        raise NotImplementedError("Directly setting QuotaUsage values is not "
+                                  "supported. Please use the add_quota and "
+                                  "tally methods.")
 
     def __repr__(self):
         return repr(dict(self.usages))
@@ -252,10 +252,12 @@ def tenant_limit_usages(request):
         try:
             limits.update(cinder.tenant_absolute_limits(request))
             volumes = cinder.volume_list(request)
+            snapshots = cinder.volume_snapshot_list(request)
             total_size = sum([getattr(volume, 'size', 0) for volume
                               in volumes])
             limits['gigabytesUsed'] = total_size
             limits['volumesUsed'] = len(volumes)
+            limits['snapshotsUsed'] = len(snapshots)
         except Exception:
             msg = _("Unable to retrieve volume limit information.")
             exceptions.handle(request, msg)

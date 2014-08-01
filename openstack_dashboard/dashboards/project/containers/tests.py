@@ -31,6 +31,8 @@ from openstack_dashboard.dashboards.project.containers import tables
 from openstack_dashboard.dashboards.project.containers import views
 from openstack_dashboard.test import helpers as test
 
+from horizon import exceptions
+
 
 CONTAINER_NAME_1 = u"container one%\u6346"
 CONTAINER_NAME_2 = u"container_two\u6346"
@@ -80,9 +82,16 @@ class SwiftTests(test.TestCase):
         action_string = u"containers__delete__%s" % container.name
         form_data = {"action": action_string}
         req = self.factory.post(CONTAINER_INDEX_URL, form_data)
+        req.META['HTTP_REFERER'] = '%s/%s' % (CONTAINER_INDEX_URL,
+                                              container.name)
         table = tables.ContainersTable(req, self.containers.list())
-        handled = table.maybe_handle()
-        self.assertEqual(handled['location'], CONTAINER_INDEX_URL)
+
+        # I'd prefer to call a self.assertRedirectnoFollow,
+        # but constructing the response object is a different paradigm
+        # from constructing the table and calling the maybe_handle method.
+        # I'd appreciate any suggestions on how this should properly be done.
+        self.assertRaises(exceptions.Http302, table.maybe_handle)
+
         self.assertEqual(unicode(list(req._messages)[0].message),
                          u"The container cannot be deleted "
                          u"since it's not empty.")
@@ -276,6 +285,26 @@ class SwiftTests(test.TestCase):
         req = self.factory.post(index_url, form_data)
         kwargs = {"container_name": container.name}
         table = tables.ObjectsTable(req, self.objects.list(), **kwargs)
+        handled = table.maybe_handle()
+        self.assertEqual(handled['location'], index_url)
+
+    @test.create_stubs({api.swift: ('swift_delete_object',)})
+    def test_delete_pseudo_folder(self):
+        container = self.containers.first()
+        folder = self.folder.first()
+        args = (utils_http.urlquote(tables.wrap_delimiter(container.name)),)
+        index_url = reverse('horizon:project:containers:index', args=args)
+        api.swift.swift_delete_object(IsA(http.HttpRequest),
+                                      container.name,
+                                      folder.name + '/')
+        self.mox.ReplayAll()
+
+        action_string = "objects__delete_object__%s/%s" % (container.name,
+                                                           folder.name)
+        form_data = {"action": action_string}
+        req = self.factory.post(index_url, form_data)
+        kwargs = {"container_name": container.name}
+        table = tables.ObjectsTable(req, self.folder.list(), **kwargs)
         handled = table.maybe_handle()
         self.assertEqual(handled['location'], index_url)
 

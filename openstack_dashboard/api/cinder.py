@@ -79,7 +79,7 @@ class Volume(BaseCinderAPIResourceWrapper):
               'volume_type', 'availability_zone', 'imageRef', 'bootable',
               'snapshot_id', 'source_volid', 'attachments', 'tenant_name',
               'os-vol-host-attr:host', 'os-vol-tenant-attr:tenant_id',
-              'metadata', 'volume_image_metadata']
+              'metadata', 'volume_image_metadata', 'encrypted']
 
     @property
     def is_bootable(self):
@@ -91,6 +91,29 @@ class VolumeSnapshot(BaseCinderAPIResourceWrapper):
     _attrs = ['id', 'name', 'description', 'size', 'status',
               'created_at', 'volume_id',
               'os-extended-snapshot-attributes:project_id']
+
+
+class VolumeBackup(BaseCinderAPIResourceWrapper):
+
+    _attrs = ['id', 'name', 'description', 'container', 'size', 'status',
+              'created_at', 'volume_id', 'availability_zone']
+    _volume = None
+
+    @property
+    def volume(self):
+        return self._volume
+
+    @volume.setter
+    def volume(self, value):
+        self._volume = value
+
+
+class VolTypeExtraSpec(object):
+    def __init__(self, type_id, key, val):
+        self.type_id = type_id
+        self.id = key
+        self.key = key
+        self.value = val
 
 
 def cinderclient(request):
@@ -115,7 +138,7 @@ def cinderclient(request):
             cinder_url = base.url_for(request, 'volume')
     except exceptions.ServiceCatalogException:
         LOG.debug('no volume service configured.')
-        return None
+        raise
     LOG.debug('cinderclient connection created using token "%s" and url "%s"' %
               (request.user.token.id, cinder_url))
     c = api_version['client'].Client(request.user.username,
@@ -232,6 +255,52 @@ def volume_snapshot_update(request, snapshot_id, name, description):
                                                          **snapshot_data)
 
 
+@memoized
+def volume_backup_supported(request):
+    """This method will determine if cinder supports backup.
+    """
+    # TODO(lcheng) Cinder does not expose the information if cinder
+    # backup is configured yet. This is a workaround until that
+    # capability is available.
+    # https://bugs.launchpad.net/cinder/+bug/1334856
+    cinder_config = getattr(settings, 'OPENSTACK_CINDER_FEATURES', {})
+    return cinder_config.get('enable_backup', False)
+
+
+def volume_backup_get(request, backup_id):
+    backup = cinderclient(request).backups.get(backup_id)
+    return VolumeBackup(backup)
+
+
+def volume_backup_list(request):
+    c_client = cinderclient(request)
+    if c_client is None:
+        return []
+    return [VolumeBackup(b) for b in c_client.backups.list()]
+
+
+def volume_backup_create(request,
+                         volume_id,
+                         container_name,
+                         name,
+                         description):
+    backup = cinderclient(request).backups.create(
+        volume_id,
+        container=container_name,
+        name=name,
+        description=description)
+    return VolumeBackup(backup)
+
+
+def volume_backup_delete(request, backup_id):
+    return cinderclient(request).backups.delete(backup_id)
+
+
+def volume_backup_restore(request, backup_id, volume_id):
+    return cinderclient(request).restores.restore(backup_id=backup_id,
+                                                  volume_id=volume_id)
+
+
 def tenant_quota_get(request, tenant_id):
     c_client = cinderclient(request)
     if c_client is None:
@@ -257,6 +326,31 @@ def volume_type_create(request, name):
 
 def volume_type_delete(request, volume_type_id):
     return cinderclient(request).volume_types.delete(volume_type_id)
+
+
+def volume_type_get(request, volume_type_id):
+    return cinderclient(request).volume_types.get(volume_type_id)
+
+
+def volume_type_extra_get(request, type_id, raw=False):
+    vol_type = volume_type_get(request, type_id)
+    extras = vol_type.get_keys()
+    if raw:
+        return extras
+    return [VolTypeExtraSpec(type_id, key, value) for
+            key, value in extras.items()]
+
+
+def volume_type_extra_set(request, type_id, metadata):
+    vol_type = volume_type_get(request, type_id)
+    if not metadata:
+        return None
+    return vol_type.set_keys(metadata)
+
+
+def volume_type_extra_delete(request, type_id, keys):
+    vol_type = volume_type_get(request, type_id)
+    return vol_type.unset_keys([keys])
 
 
 def tenant_absolute_limits(request):

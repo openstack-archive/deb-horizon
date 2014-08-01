@@ -56,8 +56,9 @@ def instance_delete(request, instance_id):
 
 
 def instance_create(request, name, volume, flavor, databases=None,
-                    users=None, restore_point=None):
-    #TODO(dklyle): adding conditional to support trove without volume
+                    users=None, restore_point=None, nics=None,
+                    datastore=None, datastore_version=None):
+    # TODO(dklyle): adding conditional to support trove without volume
     # support for now until API supports checking for volume support
     if volume > 0:
         volume_params = {'size': volume}
@@ -69,7 +70,14 @@ def instance_create(request, name, volume, flavor, databases=None,
         volume=volume_params,
         databases=databases,
         users=users,
-        restorePoint=restore_point)
+        restorePoint=restore_point,
+        nics=nics,
+        datastore=datastore,
+        datastore_version=datastore_version)
+
+
+def instance_resize_volume(request, instance_id, size):
+    return troveclient(request).instances.resize_volume(instance_id, size)
 
 
 def instance_backups(request, instance_id):
@@ -100,8 +108,9 @@ def backup_delete(request, backup_id):
     return troveclient(request).backups.delete(backup_id)
 
 
-def backup_create(request, name, instance_id, description=None):
-    return troveclient(request).backups.create(name, instance_id, description)
+def backup_create(request, name, instance_id, description=None, parent_id=None):
+    return troveclient(request).backups.create(name, instance_id,
+                                               description, parent_id)
 
 
 def flavor_list(request):
@@ -122,3 +131,11 @@ def user_delete(request, instance_id, user):
 
 def user_list_access(request, instance_id, user):
     return troveclient(request).users.list_access(instance_id, user)
+
+
+def datastore_list(request):
+    return troveclient(request).datastores.list()
+
+
+def datastore_version_list(request, datastore):
+    return troveclient(request).datastore_versions.list(datastore)

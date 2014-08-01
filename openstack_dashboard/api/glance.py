@@ -34,13 +34,21 @@ from openstack_dashboard.api import base
 LOG = logging.getLogger(__name__)
 
 
-def glanceclient(request):
+class ImageCustomProperty(object):
+    def __init__(self, image_id, key, val):
+        self.image_id = image_id
+        self.id = key
+        self.key = key
+        self.value = val
+
+
+def glanceclient(request, version='1'):
     url = base.url_for(request, 'image')
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
     LOG.debug('glanceclient connection created using token "%s" and url "%s"'
               % (request.user.token.id, url))
-    return glance_client.Client('1', url, token=request.user.token.id,
+    return glance_client.Client(version, url, token=request.user.token.id,
                                 insecure=insecure, cacert=cacert)
 
 
@@ -58,7 +66,28 @@ def image_get(request, image_id):
     return image
 
 
-def image_list_detailed(request, marker=None, filters=None, paginate=False):
+def image_get_properties(request, image_id, reserved=True):
+    """List all custom properties of an image."""
+    image = glanceclient(request, '2').images.get(image_id)
+    reserved_props = getattr(settings, 'IMAGE_RESERVED_CUSTOM_PROPERTIES', [])
+    properties_list = []
+    for key in image.keys():
+        if reserved or key not in reserved_props:
+            prop = ImageCustomProperty(image_id, key, image.get(key))
+            properties_list.append(prop)
+    return properties_list
+
+
+def image_get_property(request, image_id, key, reserved=True):
+    """Get a custom property of an image."""
+    for prop in image_get_properties(request, image_id, reserved):
+        if prop.key == key:
+            return prop
+    return None
+
+
+def image_list_detailed(request, marker=None, sort_dir='desc',
+                        sort_key='created_at', filters=None, paginate=False):
     limit = getattr(settings, 'API_RESULT_LIMIT', 1000)
     page_size = utils.get_page_size(request)
 
@@ -70,19 +99,32 @@ def image_list_detailed(request, marker=None, filters=None, paginate=False):
     kwargs = {'filters': filters or {}}
     if marker:
         kwargs['marker'] = marker
+    kwargs['sort_dir'] = sort_dir
+    kwargs['sort_key'] = sort_key
 
     images_iter = glanceclient(request).images.list(page_size=request_size,
                                                     limit=limit,
                                                     **kwargs)
+    has_prev_data = False
     has_more_data = False
     if paginate:
         images = list(itertools.islice(images_iter, request_size))
+        # first and middle page condition
         if len(images) > page_size:
             images.pop(-1)
             has_more_data = True
+            # middle page condition
+            if marker is not None:
+                has_prev_data = True
+        # first page condition when reached via prev back
+        elif sort_dir == 'asc' and marker is not None:
+            has_more_data = True
+        # last page condition
+        elif marker is not None:
+            has_prev_data = True
     else:
         images = list(images_iter)
-    return (images, has_more_data)
+    return (images, has_more_data, has_prev_data)
 
 
 def image_update(request, image_id, **kwargs):
@@ -107,3 +149,13 @@ def image_create(request, **kwargs):
                                  'purge_props': False})
 
     return image
+
+
+def image_update_properties(request, image_id, **kwargs):
+    """Add or update a custom property of an image."""
+    return glanceclient(request, '2').images.update(image_id, None, **kwargs)
+
+
+def image_delete_properties(request, image_id, keys):
+    """Delete custom properties for an image."""
+    return glanceclient(request, '2').images.update(image_id, keys)

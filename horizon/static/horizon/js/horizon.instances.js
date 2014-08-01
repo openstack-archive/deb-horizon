@@ -45,18 +45,19 @@ horizon.instances = {
    * Initializes an associative array of lists of the current
    * networks.
    **/
-  init_network_list: function() {
+  init_network_list: function () {
     horizon.instances.networks_selected = [];
     horizon.instances.networks_available = [];
-    $(this.get_network_element("")).each(function(){
+    $(this.get_network_element("")).each(function () {
       var $this = $(this);
       var $input = $this.children("input");
+      var name = horizon.escape_html($this.text().replace(/^\s+/, ""));
       var network_property = {
-        name:$this.text().replace(/^\s+/,""),
-        id:$input.attr("id"),
-        value:$input.attr("value")
+        "name": name,
+        "id": $input.attr("id"),
+        "value": $input.attr("value")
       };
-      if($input.is(':checked')) {
+      if ($input.is(":checked")) {
         horizon.instances.networks_selected.push(network_property);
       } else {
         horizon.instances.networks_available.push(network_property);
@@ -179,7 +180,7 @@ horizon.addInitFunction(function () {
         break;
 
       case "volume_image_id":
-        $("#id_image_id, #id_volume_size, #id_device_name, , #id_delete_on_terminate")
+        $("#id_image_id, #id_volume_size, #id_device_name, #id_delete_on_terminate")
           .closest(".control-group").show();
         break;
 

@@ -541,9 +541,11 @@ horizon.network_topology = {
     };
     if (d.type === 'router') {
       html_data.port = ports;
+      html_data.add_interface_url = d.url + 'addinterface';
+      html_data.add_interface_label = gettext("Add Interface");
       html = balloon_tmpl.render(html_data,{
         table1:device_tmpl,
-        table2:port_tmpl
+        table2:(ports.length > 0) ? port_tmpl : null
       });
     } else if (d.type === 'instance') {
       html_data.console_id = d.id;

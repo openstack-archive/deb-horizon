@@ -85,6 +85,11 @@ tests are not run by default.
 
     $ ./run_tests.sh --integration
 
+Like for the unit tests, you can choose to only run a subset. ::
+
+    $ ./run_tests.sh --integration openstack_dashboard.test.integration_tests.tests.test_login
+
+
 Using Dashboard and Panel Templates
 ===================================
 
@@ -159,6 +164,15 @@ For more detailed code analysis you can run::
     ./run_tests.sh --pylint
 
 The output will be saved in ``./pylint.txt``.
+
+JsHint
+------
+
+For code analysis of JavaScript files::
+
+    ./run_tests.sh --jshint
+
+You need to have jshint installed before running the command.
 
 Tab Characters
 --------------

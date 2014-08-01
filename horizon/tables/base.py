@@ -169,6 +169,8 @@ class Column(html.HTMLElement):
 
         An iterable of CSS classes which will be added when the column's text
         is displayed as a link.
+        This is left for backward compatibility. Deprecated in favor of the
+        link_attributes attribute.
         Example: ``classes=('link-foo', 'link-bar')``.
         Defaults to ``None``.
 
@@ -198,6 +200,15 @@ class Column(html.HTMLElement):
         method takes care of saving inline edited data. The tables.base.Row
         get_data method needs to be connected to table for obtaining the data.
         Example: ``update_action=UpdateCell``.
+        Defaults to ``None``.
+
+    .. attribute:: link_attrs
+
+        A dict of HTML attribute strings which should be added when the
+        column's text is displayed as a link.
+        Examples:
+        ``link_attrs={"data-foo": "bar"}``.
+        ``link_attrs={"target": "_blank", "class": "link-foo link-bar"}``.
         Defaults to ``None``.
     """
     summation_methods = {
@@ -234,7 +245,7 @@ class Column(html.HTMLElement):
                  empty_value=None, filters=None, classes=None, summation=None,
                  auto=None, truncate=None, link_classes=None, wrap_list=False,
                  form_field=None, form_field_attributes=None,
-                 update_action=None):
+                 update_action=None, link_attrs=None):
 
         self.classes = list(classes or getattr(self, "classes", []))
         super(Column, self).__init__()
@@ -265,11 +276,13 @@ class Column(html.HTMLElement):
         self.empty_value = empty_value or '-'
         self.filters = filters or []
         self.truncate = truncate
-        self.link_classes = link_classes or []
         self.wrap_list = wrap_list
         self.form_field = form_field
         self.form_field_attributes = form_field_attributes or {}
         self.update_action = update_action
+        self.link_attrs = link_attrs or {}
+        if link_classes:
+            self.link_attrs['class'] = ' '.join(link_classes)
 
         if status_choices:
             self.status_choices = status_choices
@@ -562,9 +575,11 @@ class Row(html.HTMLElement):
 
     def get_ajax_update_url(self):
         table_url = self.table.get_absolute_url()
-        params = urlencode({"table": self.table.name,
-                            "action": self.ajax_action_name,
-                            "obj_id": self.table.get_object_id(self.datum)})
+        params = urlencode(SortedDict([
+            ("action", self.ajax_action_name),
+            ("table", self.table.name),
+            ("obj_id", self.table.get_object_id(self.datum))
+        ]))
         return "%s?%s" % (table_url, params)
 
     def can_be_selected(self, datum):
@@ -671,11 +686,15 @@ class Cell(html.HTMLElement):
             data = None
             exc_info = sys.exc_info()
             raise template.TemplateSyntaxError, exc_info[1], exc_info[2]
+
         if self.url:
-            link_classes = ' '.join(self.column.link_classes)
+            link_attrs = ' '.join(['%s="%s"' % (k, v) for (k, v) in
+                                  self.column.link_attrs.items()])
             # Escape the data inside while allowing our HTML to render
-            data = mark_safe('<a href="%s" class="%s">%s</a>' %
-                             (self.url, link_classes, escape(unicode(data))))
+            data = mark_safe('<a href="%s" %s>%s</a>' % (
+                             (escape(self.url),
+                              link_attrs,
+                              escape(unicode(data)))))
         return data
 
     @property
@@ -733,10 +752,13 @@ class Cell(html.HTMLElement):
     def get_ajax_update_url(self):
         column = self.column
         table_url = column.table.get_absolute_url()
-        params = urlencode({"table": column.table.name,
-                            "action": self.row.ajax_cell_action_name,
-                            "obj_id": column.table.get_object_id(self.datum),
-                            "cell_name": column.name})
+        params = urlencode(SortedDict([
+            ("action", self.row.ajax_cell_action_name),
+            ("table", column.table.name),
+            ("cell_name", column.name),
+            ("obj_id", column.table.get_object_id(self.datum))
+        ]))
+
         return "%s?%s" % (table_url, params)
 
     @property
@@ -809,11 +831,18 @@ class DataTableOptions(object):
         The name of the context variable which will contain the table when
         it is rendered. Defaults to ``"table"``.
 
+    .. attribute:: prev_pagination_param
+
+        The name of the query string parameter which will be used when
+        paginating backward in this table. When using multiple tables in a
+        single view this will need to be changed to differentiate between the
+        tables. Default: ``"prev_marker"``.
+
     .. attribute:: pagination_param
 
         The name of the query string parameter which will be used when
-        paginating this table. When using multiple tables in a single
-        view this will need to be changed to differentiate between the
+        paginating forward in this table. When using multiple tables in a
+        single view this will need to be changed to differentiate between the
         tables. Default: ``"marker"``.
 
     .. attribute:: status_columns
@@ -882,6 +911,9 @@ class DataTableOptions(object):
         self.cell_class = getattr(options, 'cell_class', Cell)
         self.row_class = getattr(options, 'row_class', Row)
         self.column_class = getattr(options, 'column_class', Column)
+        self.prev_pagination_param = getattr(options,
+                                             'prev_pagination_param',
+                                             'prev_marker')
         self.pagination_param = getattr(options, 'pagination_param', 'marker')
         self.browser_table = getattr(options, 'browser_table', None)
         self.footer = getattr(options, 'footer', True)
@@ -920,6 +952,7 @@ class DataTableOptions(object):
                                     len(self.table_actions) > 0)
 
         # Set runtime table defaults; not configurable.
+        self.has_prev_data = False
         self.has_more_data = False
 
         # Set mixed data type table attr
@@ -1365,9 +1398,13 @@ class DataTable(object):
         if table_name == self.name:
             # Handle AJAX row updating.
             new_row = self._meta.row_class(self)
+
             if new_row.ajax and new_row.ajax_action_name == action_name:
                 try:
                     datum = new_row.get_data(request, obj_id)
+                    if self.get_object_id(datum) == self.current_item_id:
+                        self.selected = True
+                        new_row.classes.append('current_selected')
                     new_row.load_cells(datum)
                     error = False
                 except Exception:
@@ -1521,6 +1558,15 @@ class DataTable(object):
             return datum.name
         return None
 
+    def has_prev_data(self):
+        """Returns a boolean value indicating whether there is previous data
+        available to this table from the source (generally an API).
+
+        The method is largely meant for internal use, but if you want to
+        override it to provide custom behavior you can do so at your own risk.
+        """
+        return self._meta.has_prev_data
+
     def has_more_data(self):
         """Returns a boolean value indicating whether there is more data
         available to this table from the source (generally an API).
@@ -1530,14 +1576,31 @@ class DataTable(object):
         """
         return self._meta.has_more_data
 
+    def get_prev_marker(self):
+        """Returns the identifier for the first object in the current data set
+        for APIs that use marker/limit-based paging.
+        """
+        return http.urlquote_plus(self.get_object_id(self.data[0])) \
+            if self.data else ''
+
     def get_marker(self):
         """Returns the identifier for the last object in the current data set
         for APIs that use marker/limit-based paging.
         """
-        return http.urlquote_plus(self.get_object_id(self.data[-1]))
+        return http.urlquote_plus(self.get_object_id(self.data[-1])) \
+            if self.data else ''
+
+    def get_prev_pagination_string(self):
+        """Returns the query parameter string to paginate this table
+        to the previous page.
+        """
+        return "=".join([self._meta.prev_pagination_param,
+                         self.get_prev_marker()])
 
     def get_pagination_string(self):
-        """Returns the query parameter string to paginate this table."""
+        """Returns the query parameter string to paginate this table
+        to the next page.
+        """
         return "=".join([self._meta.pagination_param, self.get_marker()])
 
     def calculate_row_status(self, statuses):

@@ -12,6 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import logging
+
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -27,6 +29,9 @@ AVAILABLE_PROTOCOLS = ('HTTP', 'HTTPS', 'TCP')
 AVAILABLE_METHODS = ('ROUND_ROBIN', 'LEAST_CONNECTIONS', 'SOURCE_IP')
 
 
+LOG = logging.getLogger(__name__)
+
+
 class AddPoolAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Name"))
     description = forms.CharField(
@@ -39,7 +44,7 @@ class AddPoolAction(workflows.Action):
     protocol = forms.ChoiceField(label=_("Protocol"))
     lb_method = forms.ChoiceField(label=_("Load Balancing Method"))
     admin_state_up = forms.BooleanField(label=_("Admin State"),
-                                     initial=True, required=False)
+                                    initial=True, required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(AddPoolAction, self).__init__(request, *args, **kwargs)
@@ -153,14 +158,18 @@ class AddVipAction(workflows.Action):
         label=_("VIP Address from Floating IPs"),
         widget=forms.Select(attrs={'disabled': 'disabled'}),
         required=False)
+    subnet_id = forms.ChoiceField(label=_("VIP Subnet"),
+                                  initial="",
+                                  required=False)
     other_address = forms.IPField(required=False,
                                    initial="",
                                    version=forms.IPv4,
                                    mask=False)
-    protocol_port = forms.IntegerField(label=_("Protocol Port"), min_value=1,
-                              help_text=_("Enter an integer value "
-                                          "between 1 and 65535."),
-                              validators=[validators.validate_port_range])
+    protocol_port = forms.IntegerField(
+        label=_("Protocol Port"), min_value=1,
+        help_text=_("Enter an integer value "
+                    "between 1 and 65535."),
+        validators=[validators.validate_port_range])
     protocol = forms.ChoiceField(label=_("Protocol"))
     session_persistence = forms.ChoiceField(
         required=False, initial={}, label=_("Session Persistence"),
@@ -187,10 +196,20 @@ class AddVipAction(workflows.Action):
 
     def __init__(self, request, *args, **kwargs):
         super(AddVipAction, self).__init__(request, *args, **kwargs)
-
-        self.fields['other_address'].label = _("Specify a free IP address"
-                                               " from %s") % args[0]['subnet']
-
+        tenant_id = request.user.tenant_id
+        subnet_id_choices = [('', _("Select a Subnet"))]
+        try:
+            networks = api.neutron.network_list_for_tenant(request, tenant_id)
+        except Exception:
+            exceptions.handle(request,
+                              _('Unable to retrieve networks list.'))
+            networks = []
+        for n in networks:
+            for s in n['subnets']:
+                subnet_id_choices.append((s.id, s.cidr))
+        self.fields['subnet_id'].choices = subnet_id_choices
+        self.fields['other_address'].label = _("Specify a free IP address "
+                                               "from the selected subnet")
         protocol_choices = [('', _("Select a Protocol"))]
         [protocol_choices.append((p, p)) for p in AVAILABLE_PROTOCOLS]
         self.fields['protocol'].choices = protocol_choices
@@ -230,7 +249,7 @@ class AddVipAction(workflows.Action):
 class AddVipStep(workflows.Step):
     action_class = AddVipAction
     depends_on = ("pool_id", "subnet")
-    contributes = ("name", "description", "floatip_address",
+    contributes = ("name", "description", "floatip_address", "subnet_id",
                    "other_address", "protocol_port", "protocol",
                    "session_persistence", "cookie_name",
                    "connection_limit", "admin_state_up")
@@ -254,6 +273,17 @@ class AddVip(workflows.Workflow):
         return message % name
 
     def handle(self, request, context):
+        if context['subnet_id'] == '':
+            try:
+                pool = api.lbaas.pool_get(request, context['pool_id'])
+                context['subnet_id'] = pool['subnet_id']
+            except Exception:
+                context['subnet_id'] = None
+                self.failure_message = _(
+                    'Unable to retrieve the specified pool. '
+                    'Unable to add VIP "%s".')
+                return False
+
         if context['other_address'] == '':
             context['address'] = context['floatip_address']
         else:
@@ -263,14 +293,6 @@ class AddVip(workflows.Workflow):
                 return False
             else:
                 context['address'] = context['other_address']
-        try:
-            pool = api.lbaas.pool_get(request, context['pool_id'])
-            context['subnet_id'] = pool['subnet_id']
-        except Exception:
-            context['subnet_id'] = None
-            self.failure_message = _('Unable to retrieve the specified pool. '
-                                     'Unable to add VIP "%s".')
-            return False
 
         if context['session_persistence']:
             stype = context['session_persistence']
@@ -292,22 +314,49 @@ class AddVip(workflows.Workflow):
 
 class AddMemberAction(workflows.Action):
     pool_id = forms.ChoiceField(label=_("Pool"))
+    member_type = forms.ChoiceField(
+        label=_("Member Source"),
+        choices=[('server_list', _("Select from active instances")),
+                 ('member_address', _("Specify member IP address"))],
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'switchable',
+            'data-slug': 'membertype'
+        }))
     members = forms.MultipleChoiceField(
         label=_("Member(s)"),
-        required=True,
+        required=False,
         initial=["default"],
-        widget=forms.CheckboxSelectMultiple(),
-        error_messages={'required':
-                            _('At least one member must be specified')},
+        widget=forms.SelectMultiple(attrs={
+            'class': 'switched',
+            'data-switch-on': 'membertype',
+            'data-membertype-server_list': _("Member(s)"),
+        }),
         help_text=_("Select members for this pool "))
-    weight = forms.IntegerField(max_value=256, min_value=0, label=_("Weight"),
-                                required=False,
-                                help_text=_("Relative part of requests this "
-                                "pool member serves compared to others"))
-    protocol_port = forms.IntegerField(label=_("Protocol Port"), min_value=1,
-                              help_text=_("Enter an integer value "
-                                          "between 1 and 65535."),
-                              validators=[validators.validate_port_range])
+    address = forms.IPField(required=False, label=_("Member address"),
+                            help_text=_("Specify member IP address"),
+                            widget=forms.TextInput(attrs={
+                                'class': 'switched',
+                                'data-switch-on': 'membertype',
+                                'data-membertype-member_address':
+                                _("Member address"),
+                            }),
+                            initial="", version=forms.IPv4 | forms.IPv6,
+                            mask=False)
+    weight = forms.IntegerField(
+        max_value=256, min_value=1, label=_("Weight"), required=False,
+        help_text=_("Relative part of requests this pool member serves "
+                    "compared to others. \nThe same weight will be applied to "
+                    "all the selected members and can be modified later. "
+                    "Weight must be in the range 1 to 256.")
+    )
+    protocol_port = forms.IntegerField(
+        label=_("Protocol Port"), min_value=1,
+        help_text=_("Enter an integer value between 1 and 65535. "
+                    "The same port will be used for all the selected "
+                    "members and can be modified later."),
+        validators=[validators.validate_port_range]
+    )
     admin_state_up = forms.BooleanField(label=_("Admin State"),
                                         initial=True, required=False)
 
@@ -340,12 +389,8 @@ class AddMemberAction(workflows.Action):
             self.fields['members'].label = _(
                 "No servers available. To add a member, you "
                 "need at least one running instance.")
-            self.fields['members'].required = True
-            self.fields['members'].help_text = _("Select members "
-                                                 "for this pool ")
             self.fields['pool_id'].required = False
             self.fields['protocol_port'].required = False
-
             return
 
         for m in servers:
@@ -354,21 +399,35 @@ class AddMemberAction(workflows.Action):
             members_choices,
             key=lambda member: member[1])
 
+    def clean(self):
+        cleaned_data = super(AddMemberAction, self).clean()
+        if (cleaned_data.get('member_type') == 'server_list' and
+                not cleaned_data.get('members')):
+            msg = _('At least one member must be specified')
+            self._errors['members'] = self.error_class([msg])
+        elif (cleaned_data.get('member_type') == 'member_address' and
+                not cleaned_data.get('address')):
+            msg = _('Member IP address must be specified')
+            self._errors['address'] = self.error_class([msg])
+        return cleaned_data
+
     class Meta:
         name = _("Add New Member")
         permissions = ('openstack.services.network',)
-        help_text = _("Add member to selected pool.\n\n"
+        help_text = _("Add member(s) to the selected pool.\n\n"
                       "Choose one or more listed instances to be "
                       "added to the pool as member(s). "
-                      "Assign a numeric weight for this member "
-                      "Specify the port number the member(s) "
-                      "operate on; e.g., 80.")
+                      "Assign a numeric weight for the selected member(s). "
+                      "Specify the port number the selected member(s) "
+                      "operate(s) on; e.g., 80. \n\n"
+                      "There can only be one port associated with "
+                      "each instance.")
 
 
 class AddMemberStep(workflows.Step):
     action_class = AddMemberAction
-    contributes = ("pool_id", "members", "protocol_port", "weight",
-                   "admin_state_up")
+    contributes = ("pool_id", "member_type", "members", "address",
+                   "protocol_port", "weight", "admin_state_up")
 
     def contribute(self, data, context):
         context = super(AddMemberStep, self).contribute(data, context)
@@ -380,25 +439,37 @@ class AddMember(workflows.Workflow):
     name = _("Add Member")
     finalize_button_name = _("Add")
     success_message = _('Added member(s).')
-    failure_message = _('Unable to add member(s).')
+    failure_message = _('Unable to add member(s)')
     success_url = "horizon:project:loadbalancers:index"
     default_steps = (AddMemberStep,)
 
     def handle(self, request, context):
-        for m in context['members']:
-            params = {'device_id': m}
-            try:
-                plist = api.neutron.port_list(request, **params)
-            except Exception:
-                return False
-            if plist:
-                context['address'] = plist[0].fixed_ips[0]['ip_address']
+        if context['member_type'] == 'server_list':
+            for m in context['members']:
+                params = {'device_id': m}
+                try:
+                    plist = api.neutron.port_list(request, **params)
+                except Exception:
+                    return False
+                if plist:
+                    context['address'] = plist[0].fixed_ips[0]['ip_address']
+                try:
+                    context['member_id'] = api.lbaas.member_create(
+                        request, **context).id
+                except Exception as e:
+                    msg = self.failure_message
+                    LOG.info('%s: %s' % (msg, e))
+                    return False
+            return True
+        else:
             try:
                 context['member_id'] = api.lbaas.member_create(
                     request, **context).id
-            except Exception:
+                return True
+            except Exception as e:
+                msg = self.failure_message
+                LOG.info('%s: %s' % (msg, e))
                 return False
-        return True
 
 
 class AddMonitorAction(workflows.Action):
