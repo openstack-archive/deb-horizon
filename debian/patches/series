@@ -3,3 +3,4 @@ fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 fix-python-m-coverage.patch
 cve-2014-3473_3474_3475-stable-icehouse.patch
+fix-TEMPLATE_DIRS-must-be-tuple.patch
