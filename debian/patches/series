@@ -8,3 +8,4 @@
 0008_Fix-summation-code-to-handle-invalid-input-data.patch
 0009_Fix-TypeError-SecurityGroup-object-is-not-iterable-t.patch
 0010_Tentative-fix-for-a-test-suite-failure-after-the-las.patch
+0011_disable_test_change_password_shows.patch
