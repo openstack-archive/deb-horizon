@@ -1,0 +1,40 @@
+Description: Rename add_error methods to avoid conflict with Django's 1.7 add_error()
+ In Django 1.7, Forms have an add_error() method and our definition was
+ conflicting with Django's method.
+Author: Raphael Hertzog <hertzog@debian.org>
+Date: Mon, 4 Aug 2014 21:47:20 +0200
+
+diff --git a/horizon/workflows/base.py b/horizon/workflows/base.py
+index 45f4df8..0e9ddac 100644
+--- a/horizon/workflows/base.py
++++ b/horizon/workflows/base.py
+@@ -164,7 +164,7 @@ class Action(forms.Form):
+             text += linebreaks(force_unicode(self.help_text))
+         return safe(text)
+ 
+-    def add_error(self, message):
++    def add_action_error(self, message):
+         """Adds an error to the Action's Step based on API issues."""
+         self.errors[NON_FIELD_ERRORS] = self.error_class([message])
+ 
+@@ -432,9 +432,9 @@ class Step(object):
+         text += self.action.get_help_text()
+         return safe(text)
+ 
+-    def add_error(self, message):
++    def add_step_error(self, message):
+         """Adds an error to the Step based on API issues."""
+-        self.action.add_error(message)
++        self.action.add_action_error(message)
+ 
+     def has_required_fields(self):
+         """Returns True if action contains any required fields."""
+@@ -863,4 +863,4 @@ class Workflow(html.HTMLElement):
+         """
+         step = self.get_step(slug)
+         if step:
+-            step.add_error(message)
++            step.add_step_error(message)
+-- 
+2.0.1
+
