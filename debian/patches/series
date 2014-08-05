@@ -1,6 +1,6 @@
-fix-dashboard-django-wsgi.patch
-fix-dashboard-manage.patch
-fixed-horizon-MANIFEST.in.patch
-fix-python-m-coverage.patch
-cve-2014-3473_3474_3475-stable-icehouse.patch
-fix-TEMPLATE_DIRS-must-be-tuple.patch
+0001_fix-dashboard-django-wsgi.patch
+0002_fix-dashboard-manage.patch
+0003_fixed-horizon-MANIFEST.in.patch
+0004_fix-python-m-coverage.patch
+0005_cve-2014-3473_3474_3475-stable-icehouse.patch
+0006_fix-TEMPLATE_DIRS-must-be-tuple.patch
