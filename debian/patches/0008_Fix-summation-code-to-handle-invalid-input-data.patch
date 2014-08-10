@@ -67,7 +67,7 @@ index 10aaa98..63dc087 100644
 +    """
 +    try:
 +        return sum(data, 0.0) / len(data)
-+    except TypeError:
++    except (TypeError, ZeroDivisionError):
 +        return ''
 +
 +
