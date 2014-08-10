@@ -55,7 +55,11 @@ class DetailView(tables.DataTableView):
                               redirect=redirect)
 
     def get_data(self):
-        return self._get_data().rules
+        data = self._get_data()
+        if data is None:
+            return []
+        return sorted(data.rules, key=lambda rule: (rule.ip_protocol,
+                                                    rule.from_port))
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
