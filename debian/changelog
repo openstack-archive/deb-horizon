@@ -1,6 +1,8 @@
 horizon (2014.1.2-1) unstable; urgency=medium
 
   * New upstream point release.
+  * Removed CVE-2014-3473, CVE-2014-3474, CVE-2014-3475 patch, applied
+    upstream.
 
  -- Thomas Goirand <zigo@debian.org>  Sun, 10 Aug 2014 22:57:13 +0800
 
