@@ -52,6 +52,7 @@ Build-Depends-Indep: python-ceilometerclient (>= 1.0.6),
                      python-xstatic,
                      python-xstatic-jquery,
                      python-xvfbwrapper
+Build-Conflicts: python-unittest2
 Standards-Version: 3.9.5
 Homepage: http://horizon.openstack.org
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
