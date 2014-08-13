@@ -9,7 +9,8 @@ Description: Tentative fix for a test suite failure after the last change
  data has a volumeId attribute and it's the test data in
  openstack_dashboard/test/test_data/nova_data.py that needs to be modified
  instead.
-From: Raphael Hertzog <hertzog@debian.org>
+Author: Raphael Hertzog <hertzog@debian.org>
+Forwarded: https://review.openstack.org/111936
 Date: Mon, 4 Aug 2014 23:32:03 +0200
 
 diff --git a/openstack_dashboard/dashboards/project/instances/templates/instances/_detail_overview.html b/openstack_dashboard/dashboards/project/instances/templates/instances/_detail_overview.html

@@ -8,6 +8,7 @@ Description: TypeError: 'SecurityGroup' object is not iterable test failure with
  The other test_instance_details_*() were already doing the correct thing so
  just copy over the logic.
 From: Raphael Hertzog <hertzog@debian.org>
+Forwarded: https://review.openstack.org/111934
 Date: Mon, 4 Aug 2014 22:48:43 +0200
 
 diff --git a/openstack_dashboard/dashboards/project/instances/tests.py b/openstack_dashboard/dashboards/project/instances/tests.py

@@ -2,6 +2,7 @@ Description: Rename add_error methods to avoid conflict with Django's 1.7 add_er
  In Django 1.7, Forms have an add_error() method and our definition was
  conflicting with Django's method.
 Author: Raphael Hertzog <hertzog@debian.org>
+Forwarded: https://review.openstack.org/111930
 Date: Mon, 4 Aug 2014 21:47:20 +0200
 
 diff --git a/horizon/workflows/base.py b/horizon/workflows/base.py
