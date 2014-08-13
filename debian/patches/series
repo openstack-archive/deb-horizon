@@ -4,6 +4,6 @@
 0004_fix-python-m-coverage.patch
 0006_fix-TEMPLATE_DIRS-must-be-tuple.patch
 0007-Rename-add_error-methods-to-avoid-conflict-with-Djan.patch
-0008_Fix-summation-code-to-handle-invalid-input-data.patch
+0008_Handle_TypeError_from_table_column_summation_code.patch
 0009_Fix-TypeError-SecurityGroup-object-is-not-iterable-t.patch
 0010_Tentative-fix-for-a-test-suite-failure-after-the-las.patch
