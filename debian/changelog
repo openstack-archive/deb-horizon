@@ -1,3 +1,10 @@
+horizon (2014.1.2-3) unstable; urgency=medium
+
+  * CVE_2014-3594: Fix XSS issue with the unordered_list filter
+    (Closes: #758930).
+
+ -- Thomas Goirand <zigo@debian.org>  Sat, 23 Aug 2014 10:30:29 +0800
+
 horizon (2014.1.2-2) unstable; urgency=medium
 
   * Used the new version of the summation patch.
