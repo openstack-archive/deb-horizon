@@ -46,7 +46,7 @@ Build-Depends-Indep: python-ceilometerclient (>= 1.0.6),
                      python-testtools (>= 0.9.34),
                      python-troveclient (>= 1.0.3),
                      python-tz
-Build-Conflicts: python-unittest2
+Build-Conflicts: python-unittest2, python-webob
 Standards-Version: 3.9.5
 Homepage: http://horizon.openstack.org
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
