@@ -1,3 +1,10 @@
+horizon (2014.1.2-4) unstable; urgency=medium
+
+  * Moves the libapache2-mod-wsgi (>= 2.3) dependency to
+    openstack-dashboard-apache.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 16 Sep 2014 23:33:28 +0800
+
 horizon (2014.1.2-3) unstable; urgency=high
 
   * CVE_2014-3594: Fix XSS issue with the unordered_list filter

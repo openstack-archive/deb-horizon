@@ -7,10 +7,10 @@ Uploaders: Julien Danjou <acid@debian.org>,
            Mehdi Abaakouk <sileht@sileht.net>,
            Gonéri Le Bouder <goneri@debian.org>
 Build-Depends: debhelper (>= 9),
+               openstack-pkg-tools,
                po-debconf,
                python-all (>= 2.6.6-3~),
                python-pbr (>= 0.6),
-               openstack-pkg-tools,
                python-setuptools
 Build-Depends-Indep: python-ceilometerclient (>= 1.0.6),
                      python-cinderclient (>= 1:1.0.6),
@@ -33,9 +33,9 @@ Build-Depends-Indep: python-ceilometerclient (>= 1.0.6),
                      python-netaddr,
                      python-neutronclient (>= 2.3.4),
                      python-nose,
+                     python-nose-exclude,
                      python-nosehtmloutput,
                      python-nosexcover,
-                     python-nose-exclude,
                      python-novaclient (>= 2:2.17.0),
                      python-openstack-auth (>= 1.1.4),
                      python-openstack.nose-plugin,
@@ -96,7 +96,6 @@ Package: openstack-dashboard
 Architecture: all
 Pre-Depends: dpkg (>= 1.15.6~)
 Depends: adduser,
-         libapache2-mod-wsgi (>= 2.3),
          libjs-jquery,
          libjs-jquery-cookie,
          python-django-horizon (= ${source:Version}),
@@ -113,7 +112,10 @@ Description: OpenStack Dashboard
 Package: openstack-dashboard-apache
 Architecture: all
 Pre-Depends: dpkg (>= 1.15.6~)
-Depends: debconf, openstack-dashboard, ${misc:Depends}
+Depends: debconf,
+         libapache2-mod-wsgi (>= 2.3),
+         openstack-dashboard,
+         ${misc:Depends}
 Description: OpenStack Dashboard - Apache support
  The OpenStack Dashboard is a web application to control an OpenStack
  cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
