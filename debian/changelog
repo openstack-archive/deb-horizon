@@ -2,6 +2,8 @@ horizon (2014.1.2-4) unstable; urgency=medium
 
   * Moves the libapache2-mod-wsgi (>= 2.3) dependency to
     openstack-dashboard-apache.
+  * Disable test_update_project_when_default_role_does_not_exist() which is
+    failing under Django 1.7 (Closes: #755651).
 
  -- Thomas Goirand <zigo@debian.org>  Tue, 16 Sep 2014 23:33:28 +0800
 

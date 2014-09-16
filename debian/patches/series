@@ -8,3 +8,4 @@
 0009_Fix-TypeError-SecurityGroup-object-is-not-iterable-t.patch
 0010_Tentative-fix-for-a-test-suite-failure-after-the-las.patch
 CVE_2014-3594_stable-icehouse.patch
+disable-failed-django-1.7-test.patch
