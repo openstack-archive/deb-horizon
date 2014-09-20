@@ -23,7 +23,7 @@ from django import template
 from django.template.defaultfilters import linebreaks  # noqa
 from django.template.defaultfilters import safe  # noqa
 from django.template.defaultfilters import slugify  # noqa
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.importlib import import_module  # noqa
 from django.utils.translation import ugettext_lazy as _
 import six
@@ -139,7 +139,7 @@ class Action(forms.Form):
         self.required_css_class = 'required'
 
     def __unicode__(self):
-        return force_unicode(self.name)
+        return force_text(self.name)
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self.slug)
@@ -159,10 +159,10 @@ class Action(forms.Form):
             context = template.RequestContext(self.request, extra_context)
             text += tmpl.render(context)
         else:
-            text += linebreaks(force_unicode(self.help_text))
+            text += linebreaks(force_text(self.help_text))
         return safe(text)
 
-    def add_error(self, message):
+    def add_action_error(self, message):
         """Adds an error to the Action's Step based on API issues."""
         self.errors[NON_FIELD_ERRORS] = self.error_class([message])
 
@@ -207,7 +207,7 @@ class Step(object):
 
     A ``Step`` class has the following attributes:
 
-    .. attribute:: action
+    .. attribute:: action_class
 
         The :class:`~horizon.workflows.Action` class which this step wraps.
 
@@ -285,7 +285,7 @@ class Step(object):
         return "<%s: %s>" % (self.__class__.__name__, self.slug)
 
     def __unicode__(self):
-        return force_unicode(self.name)
+        return force_text(self.name)
 
     def __init__(self, workflow):
         super(Step, self).__init__()
@@ -293,7 +293,7 @@ class Step(object):
 
         cls = self.__class__.__name__
         if not (self.action_class and issubclass(self.action_class, Action)):
-            raise AttributeError("You must specify an action for %s." % cls)
+            raise AttributeError("action_class not specified for %s." % cls)
 
         self.slug = self.action_class.slug
         self.name = self.action_class.name
@@ -319,8 +319,8 @@ class Step(object):
                     self._handlers[key].append(possible_handler)
                     continue
                 elif not isinstance(possible_handler, basestring):
-                    return TypeError("Connection handlers must be either "
-                                     "callables or strings.")
+                    raise TypeError("Connection handlers must be either "
+                                    "callables or strings.")
                 bits = possible_handler.split(".")
                 if bits[0] == "self":
                     root = self
@@ -426,13 +426,13 @@ class Step(object):
 
     def get_help_text(self):
         """Returns the help text for this step."""
-        text = linebreaks(force_unicode(self.help_text))
+        text = linebreaks(force_text(self.help_text))
         text += self.action.get_help_text()
         return safe(text)
 
-    def add_error(self, message):
+    def add_step_error(self, message):
         """Adds an error to the Step based on API issues."""
-        self.action.add_error(message)
+        self.action.add_action_error(message)
 
     def has_required_fields(self):
         """Returns True if action contains any required fields."""
@@ -861,4 +861,4 @@ class Workflow(html.HTMLElement):
         """
         step = self.get_step(slug)
         if step:
-            step.add_error(message)
+            step.add_step_error(message)

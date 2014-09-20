@@ -15,10 +15,11 @@ from datetime import timedelta  # noqa
 
 import json
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse   # noqa
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
-from django.views import generic
+import django.views
 
 from horizon import exceptions
 from horizon import tables
@@ -39,7 +40,7 @@ class IndexView(tabs.TabbedTableView):
     template_name = 'admin/metering/index.html'
 
 
-class SamplesView(generic.TemplateView):
+class SamplesView(django.views.generic.TemplateView):
     template_name = "admin/metering/samples.csv"
 
     @staticmethod
@@ -125,12 +126,11 @@ class ReportView(tables.MultiTableView):
 
     def get_context_data(self, **kwargs):
         context = {'tables': self.get_tables().values()}
-        url = self.request.get_full_path().replace('/report', '/report/csv')
-        context['csv_url'] = url
+        context['csv_url'] = reverse('horizon:admin:metering:csvreport')
         return context
 
 
-class CsvReportView(generic.View):
+class CsvReportView(django.views.generic.View):
     def get(self, request, **response_kwargs):
         render_class = ReportCsvRenderer
         response_kwargs.setdefault("filename", "usage.csv")
@@ -208,8 +208,8 @@ def _calc_date_args(date_from, date_to, date_options):
             else:
                 date_to = datetime.now()
         except Exception:
-            raise ValueError("The dates haven't been "
-                             "recognized")
+            raise ValueError("The dates are not "
+                             "recognized.")
     else:
         try:
             date_from = datetime.now() - timedelta(days=int(date_options))

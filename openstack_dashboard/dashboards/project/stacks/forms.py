@@ -23,6 +23,7 @@ from horizon import forms
 from horizon import messages
 
 from openstack_dashboard import api
+from openstack_dashboard.openstack.common import strutils
 
 LOG = logging.getLogger(__name__)
 
@@ -48,8 +49,7 @@ class TemplateForm(forms.SelfHandlingForm):
 
     class Meta:
         name = _('Select Template')
-        help_text = _('From here you can select a template to launch '
-                      'a stack.')
+        help_text = _('Select a template to launch a stack.')
 
     # TODO(jomara) - update URL choice for template & environment files
     # w/ client side download when applicable
@@ -224,15 +224,11 @@ class TemplateForm(forms.SelfHandlingForm):
 class ChangeTemplateForm(TemplateForm):
     class Meta:
         name = _('Edit Template')
-        help_text = _('From here you can select a new template to re-launch '
-                      'a stack.')
+        help_text = _('Select a new template to re-launch a stack.')
     stack_id = forms.CharField(label=_('Stack ID'),
-        widget=forms.widgets.HiddenInput,
-        required=True)
+        widget=forms.widgets.HiddenInput)
     stack_name = forms.CharField(label=_('Stack Name'),
-        widget=forms.TextInput(
-            attrs={'readonly': 'readonly'}
-        ))
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
 
 class CreateStackForm(forms.SelfHandlingForm):
@@ -252,8 +248,7 @@ class CreateStackForm(forms.SelfHandlingForm):
         widget=forms.widgets.HiddenInput,
         required=False)
     parameters = forms.CharField(
-        widget=forms.widgets.HiddenInput,
-        required=True)
+        widget=forms.widgets.HiddenInput)
     stack_name = forms.RegexField(
         max_length='255',
         label=_('Stack Name'),
@@ -261,13 +256,11 @@ class CreateStackForm(forms.SelfHandlingForm):
         regex=r"^[a-zA-Z][a-zA-Z0-9_.-]*$",
         error_messages={'invalid': _('Name must start with a letter and may '
                             'only contain letters, numbers, underscores, '
-                            'periods and hyphens.')},
-        required=True)
+                            'periods and hyphens.')})
     timeout_mins = forms.IntegerField(
         initial=60,
         label=_('Creation Timeout (minutes)'),
-        help_text=_('Stack creation timeout in minutes.'),
-        required=True)
+        help_text=_('Stack creation timeout in minutes.'))
     enable_rollback = forms.BooleanField(
         label=_('Rollback On Failure'),
         help_text=_('Enable rollback on create/update failure.'),
@@ -286,7 +279,6 @@ class CreateStackForm(forms.SelfHandlingForm):
             label=_('Password for user "%s"') % self.request.user.username,
             help_text=_('This is required for operations to be performed '
                         'throughout the lifecycle of the stack'),
-            required=True,
             widget=forms.PasswordInput())
 
         self.help_text = template_validate['Description']
@@ -303,6 +295,7 @@ class CreateStackForm(forms.SelfHandlingForm):
             }
 
             param_type = param.get('Type', None)
+            hidden = strutils.bool_from_string(param.get('NoEcho', 'false'))
 
             if 'AllowedValues' in param:
                 choices = map(lambda x: (x, x), param['AllowedValues'])
@@ -315,6 +308,8 @@ class CreateStackForm(forms.SelfHandlingForm):
                     field_args['required'] = param.get('MinLength', 0) > 0
                 if 'MaxLength' in param:
                     field_args['max_length'] = int(param['MaxLength'])
+                if hidden:
+                    field_args['widget'] = forms.PasswordInput()
                 field = forms.CharField(**field_args)
 
             elif param_type == 'Number':
@@ -361,12 +356,9 @@ class EditStackForm(CreateStackForm):
         name = _('Update Stack Parameters')
 
     stack_id = forms.CharField(label=_('Stack ID'),
-        widget=forms.widgets.HiddenInput,
-        required=True)
+        widget=forms.widgets.HiddenInput)
     stack_name = forms.CharField(label=_('Stack Name'),
-        widget=forms.TextInput(
-            attrs={'readonly': 'readonly'}
-        ))
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
     @sensitive_variables('password')
     def handle(self, request, data):

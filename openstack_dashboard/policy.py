@@ -19,12 +19,11 @@ import logging
 import os.path
 
 from django.conf import settings
-
+from openstack_auth import utils as auth_utils
 from oslo.config import cfg
 
-from openstack_auth import utils as auth_utils
-
 from openstack_dashboard.openstack.common import policy
+
 
 LOG = logging.getLogger(__name__)
 
@@ -111,6 +110,9 @@ def check(actions, request, target={}):
     # same for user_id
     if target.get('user_id') is None:
         target['user_id'] = user.id
+    # same for domain_id
+    if target.get('domain_id') is None:
+        target['domain_id'] = user.domain_id
 
     credentials = _user_to_credentials(request, user)
 

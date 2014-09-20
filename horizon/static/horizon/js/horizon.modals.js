@@ -41,7 +41,6 @@ horizon.modals.create = function (title, body, confirm, cancel) {
 horizon.modals.success = function (data, textStatus, jqXHR) {
   var modal;
   $('#modal_wrapper').append(data);
-  $('.modal span.help-block').hide();
   modal = $('.modal:last');
   modal.modal();
   $(modal).trigger("new_modal", modal);
@@ -54,7 +53,7 @@ horizon.modals.modal_spinner = function (text) {
   horizon.modals.spinner = $(template.render({text: text}));
   horizon.modals.spinner.appendTo("#modal_wrapper");
   horizon.modals.spinner.modal({backdrop: 'static'});
-  horizon.modals.spinner.spin(horizon.conf.spinner_options.modal);
+  horizon.modals.spinner.find(".modal-body").spin(horizon.conf.spinner_options.modal);
 };
 
 horizon.modals.init_wizard = function () {
@@ -69,11 +68,11 @@ horizon.modals.init_wizard = function () {
     }
 
     // Clear old errors.
-    $form.find('td.actions div.alert-error').remove();
-    $form.find('.control-group.error').each(function () {
+    $form.find('td.actions div.alert-danger').remove();
+    $form.find('.form-group.error').each(function () {
       var $group = $(this);
       $group.removeClass('error');
-      $group.find('span.help-inline.error').remove();
+      $group.find('span.help-block.error').remove();
     });
 
     // Send the data for validation.
@@ -103,7 +102,7 @@ horizon.modals.init_wizard = function () {
             // Add global errors.
             $.each(errors, function (index, error) {
               $fieldset.find('td.actions').prepend(
-                '<div class="alert alert-message alert-error">' +
+                '<div class="alert alert-message alert-danger">' +
                 error + '</div>');
             });
             $fieldset.find('input,  select, textarea').first().focus();
@@ -111,10 +110,10 @@ horizon.modals.init_wizard = function () {
           }
           // Add field errors.
           $field = $fieldset.find('[name="' + field + '"]');
-          $field.closest('.control-group').addClass('error');
+          $field.closest('.form-group').addClass('error');
           $.each(errors, function (index, error) {
             $field.before(
-              '<span class="help-inline error">' +
+              '<span class="help-block error">' +
               error + '</span>');
           });
           // Focus the first invalid field.
@@ -182,12 +181,28 @@ horizon.addInitFunction(function() {
   // AJAX form submissions from modals. Makes validation happen in-modal.
   $(document).on('submit', '.modal form', function (evt) {
     var $form = $(this),
+      form = this,
       $button = $form.find(".modal-footer .btn-primary"),
       update_field_id = $form.attr("data-add-to-field"),
-      headers = {};
-    if ($form.attr("enctype") === "multipart/form-data") {
-      // AJAX-upload for files is not currently supported.
-      return;
+      headers = {},
+      modalFileUpload = $form.attr("enctype") === "multipart/form-data",
+      formData, ajaxOpts, featureFileList, featureFormData;
+
+    if (modalFileUpload) {
+      featureFileList = $("<input type='file'/>").get(0).files !== undefined;
+      featureFormData = window.FormData !== undefined;
+
+      if (!featureFileList || !featureFormData) {
+        // Test whether browser supports HTML5 FileList and FormData interfaces,
+        // which make XHR file upload possible. If not, it doesn't
+        // support setting custom headers in AJAX requests either, so
+        // modal forms won't work in them (namely, IE9).
+        return;
+      } else {
+        formData = new window.FormData(form);
+      }
+    } else {
+      formData = $form.serialize();
     }
     evt.preventDefault();
 
@@ -198,11 +213,11 @@ horizon.addInitFunction(function() {
       headers["X-Horizon-Add-To-Field"] = update_field_id;
     }
 
-    $.ajax({
+    ajaxOpts = {
       type: "POST",
       url: $form.attr('action'),
       headers: headers,
-      data: $form.serialize(),
+      data: formData,
       beforeSend: function () {
         $("#modal_wrapper .modal").last().modal("hide");
         horizon.modals.modal_spinner(gettext("Working"));
@@ -235,14 +250,20 @@ horizon.addInitFunction(function() {
           location.href = jqXHR.getResponseHeader("X-Horizon-Location");
         } else {
           $form.closest(".modal").modal("hide");
-          horizon.alert("error", gettext("There was an error submitting the form. Please try again."));
+          horizon.alert("danger", gettext("There was an error submitting the form. Please try again."));
         }
       }
-    });
+    };
+
+    if (modalFileUpload) {
+      ajaxOpts.contentType = false;  // tell jQuery not to process the data
+      ajaxOpts.processData = false;  // tell jQuery not to set contentType
+    }
+    $.ajax(ajaxOpts);
   });
 
   // Position modal so it's in-view even when scrolled down.
-  $(document).on('show', '.modal', function (evt) {
+  $(document).on('show.bs.modal', '.modal', function (evt) {
     // Filter out indirect triggers of "show" from (for example) tabs.
     if ($(evt.target).hasClass("modal")) {
       var scrollShift = $('body').scrollTop() || $('html').scrollTop(),
@@ -297,7 +318,7 @@ horizon.addInitFunction(function() {
         else {
           if (!horizon.ajax.get_messages(jqXHR)) {
             // Generic error handler. Really generic.
-            horizon.alert("error", gettext("An error occurred. Please try again later."));
+            horizon.alert("danger", gettext("An error occurred. Please try again later."));
           }
         }
       },
@@ -321,7 +342,7 @@ horizon.addInitFunction(function() {
   /* Manage the modal "stack" */
 
   // When a new modal is opened, hide any that are already in the stack.
-  $(document).on("show", ".modal", function () {
+  $(document).on("show.bs.modal", ".modal", function () {
     var container = $("#modal_wrapper"),
       modal_stack = container.find(".modal"),
       $this = $(this);
@@ -334,7 +355,7 @@ horizon.addInitFunction(function() {
   // Note: the modal should only be removed if it is the "top" of the stack of
   // modals, e.g. it's the one currently being interacted with and isn't just
   // temporarily being hidden.
-  $(document).on('hidden', '.modal', function () {
+  $(document).on('hidden.bs.modal', '.modal', function () {
     var $this = $(this),
       modal_stack = $("#modal_wrapper .modal");
     if ($this[0] === modal_stack.last()[0] || $this.hasClass("loading")) {

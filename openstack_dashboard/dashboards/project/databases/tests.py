@@ -13,11 +13,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import logging
+
 from django.core.urlresolvers import reverse
 from django import http
 
 from mox import IsA  # noqa
 
+from horizon import exceptions
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
 
@@ -98,13 +101,16 @@ class DatabaseTests(test.TestCase):
     @test.create_stubs(
         {api.trove: ('instance_list', 'flavor_list')})
     def test_index_flavor_list_exception(self):
-        #Mocking instances
+        # Mocking instances.
         databases = common.Paginated(self.databases.list())
-        api.trove.instance_list(IsA(http.HttpRequest), marker=None)\
-            .AndReturn(databases)
-        #Mocking flavor list with raising an exception
-        api.trove.flavor_list(IsA(http.HttpRequest))\
-            .AndRaise(self.exceptions.trove)
+        api.trove.instance_list(
+            IsA(http.HttpRequest),
+            marker=None,
+        ).AndReturn(databases)
+        # Mocking flavor list with raising an exception.
+        api.trove.flavor_list(
+            IsA(http.HttpRequest),
+        ).AndRaise(self.exceptions.trove)
 
         self.mox.ReplayAll()
 
@@ -130,6 +136,32 @@ class DatabaseTests(test.TestCase):
         self.mox.ReplayAll()
         res = self.client.get(LAUNCH_URL)
         self.assertTemplateUsed(res, 'project/databases/launch.html')
+
+    @test.create_stubs({api.trove: ('flavor_list',)})
+    def test_launch_instance_exception_on_flavors(self):
+        trove_exception = self.exceptions.nova
+        api.trove.flavor_list(IsA(http.HttpRequest)).AndRaise(trove_exception)
+        self.mox.ReplayAll()
+
+        toSuppress = ["openstack_dashboard.dashboards.project.databases."
+                           "workflows.create_instance",
+                      "horizon.workflows.base"]
+
+        # Suppress expected log messages in the test output
+        loggers = []
+        for cls in toSuppress:
+            logger = logging.getLogger(cls)
+            loggers.append((logger, logger.getEffectiveLevel()))
+            logger.setLevel(logging.CRITICAL)
+
+        try:
+            with self.assertRaises(exceptions.Http302):
+                self.client.get(LAUNCH_URL)
+
+        finally:
+            # Restore the previous log levels
+            for (log, level) in loggers:
+                log.setLevel(level)
 
     @test.create_stubs({
         api.trove: ('flavor_list', 'backup_list', 'instance_create',
@@ -180,7 +212,7 @@ class DatabaseTests(test.TestCase):
             'volume': '1',
             'flavor': 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
             'network': self.networks.first().id,
-            'datastore': 'mysql,5.5'
+            'datastore': 'mysql,5.5',
         }
 
         res = self.client.post(LAUNCH_URL, post)
@@ -236,7 +268,7 @@ class DatabaseTests(test.TestCase):
             'volume': '1',
             'flavor': 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
             'network': self.networks.first().id,
-            'datastore': 'mysql,5.5'
+            'datastore': 'mysql,5.5',
         }
 
         res = self.client.post(LAUNCH_URL, post)
@@ -306,8 +338,9 @@ class DatabaseTests(test.TestCase):
         res = self.client.post(url, form_data)
         self.assertRedirectsNoFollow(res, url)
 
-    @test.create_stubs(
-        {api.trove: ('instance_get', 'instance_resize_volume' )})
+    @test.create_stubs({
+        api.trove: ('instance_get', 'instance_resize_volume'),
+    })
     def test_resize_volume(self):
         database = self.databases.first()
         database_id = database.id
@@ -319,22 +352,24 @@ class DatabaseTests(test.TestCase):
 
         # forms.py: ResizeVolumeForm.handle
         api.trove.instance_resize_volume(IsA(http.HttpRequest),
-                              database_id, IsA(int)).AndReturn(None)
+                                         database_id,
+                                         IsA(int)).AndReturn(None)
 
         self.mox.ReplayAll()
         url = reverse('horizon:project:databases:resize_volume',
-                              args=[database_id])
+                      args=[database_id])
         post = {
             'instance_id': database_id,
             'orig_size': database_size,
-            'new_size': database_size + 1
+            'new_size': database_size + 1,
         }
         res = self.client.post(url, post)
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
-    @test.create_stubs(
-        {api.trove: ('instance_get', 'instance_resize_volume' )})
+    @test.create_stubs({
+        api.trove: ('instance_get', 'instance_resize_volume'),
+    })
     def test_resize_volume_bad_value(self):
         database = self.databases.first()
         database_id = database.id
@@ -346,13 +381,12 @@ class DatabaseTests(test.TestCase):
 
         self.mox.ReplayAll()
         url = reverse('horizon:project:databases:resize_volume',
-                              args=[database_id])
+                      args=[database_id])
         post = {
             'instance_id': database_id,
             'orig_size': database_size,
-            'new_size': database_size
+            'new_size': database_size,
         }
         res = self.client.post(url, post)
         self.assertContains(res,
              "New size for volume must be greater than current size.")
-

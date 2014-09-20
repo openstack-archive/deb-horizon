@@ -23,6 +23,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
+from horizon import messages
 from horizon import tables
 from horizon import tabs
 from horizon.utils import memoized
@@ -80,8 +81,13 @@ class IndexView(tables.DataTableView):
             if ext_net_id in ext_net_dict:
                 gateway_info['network'] = ext_net_dict[ext_net_id]
             else:
-                msg = _('External network "%s" not found.') % (ext_net_id)
-                exceptions.handle(self.request, msg)
+                msg_params = {'ext_net_id': ext_net_id, 'router_id': router.id}
+                msg = _('External network "%(ext_net_id)s" expected but not '
+                        'found for router "%(router_id)s".') % msg_params
+                messages.error(self.request, msg)
+                # gateway_info['network'] is just the network name, so putting
+                # in a smallish error message in the table is reasonable.
+                gateway_info['network'] = _('%s (Not Found)') % ext_net_id
 
 
 class DetailView(tabs.TabbedTableView):
@@ -97,7 +103,7 @@ class DetailView(tabs.TabbedTableView):
             router.set_id_as_name_if_empty(length=0)
         except Exception:
             msg = _('Unable to retrieve details for router "%s".') \
-                % (router_id)
+                % router_id
             exceptions.handle(self.request, msg, redirect=self.failure_url)
         if router.external_gateway_info:
             ext_net_id = router.external_gateway_info['network_id']
@@ -108,7 +114,7 @@ class DetailView(tabs.TabbedTableView):
                 router.external_gateway_info['network'] = ext_net.name
             except Exception:
                 msg = _('Unable to retrieve an external network "%s".') \
-                    % (ext_net_id)
+                    % ext_net_id
                 exceptions.handle(self.request, msg)
                 router.external_gateway_info['network'] = ext_net_id
         return router
@@ -116,6 +122,8 @@ class DetailView(tabs.TabbedTableView):
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
         context["router"] = self._get_data()
+        context['dvr_supported'] = api.neutron.get_dvr_permission(self.request,
+                                                              "get")
         return context
 
     def get(self, request, *args, **kwargs):
@@ -128,3 +136,34 @@ class CreateView(forms.ModalFormView):
     form_class = project_forms.CreateForm
     template_name = 'project/routers/create.html'
     success_url = reverse_lazy("horizon:project:routers:index")
+
+
+class UpdateView(forms.ModalFormView):
+    form_class = project_forms.UpdateForm
+    template_name = 'project/routers/update.html'
+    success_url = reverse_lazy("horizon:project:routers:index")
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateView, self).get_context_data(**kwargs)
+        context["router_id"] = self.kwargs['router_id']
+        return context
+
+    def _get_object(self, *args, **kwargs):
+        router_id = self.kwargs['router_id']
+        try:
+            return api.neutron.router_get(self.request, router_id)
+        except Exception:
+            redirect = self.success_url
+            msg = _('Unable to retrieve router details.')
+            exceptions.handle(self.request, msg, redirect=redirect)
+
+    def get_initial(self):
+        router = self._get_object()
+        initial = {'router_id': router['id'],
+                   'tenant_id': router['tenant_id'],
+                   'name': router['name'],
+                   'admin_state': router['admin_state_up']}
+        if hasattr(router, 'distributed'):
+            initial['mode'] = ('distributed' if router.distributed
+                               else 'centralized')
+        return initial

@@ -15,14 +15,15 @@
 import logging
 
 from django.core.urlresolvers import reverse
-from django.template.defaultfilters import title  # noqa
+from django.template import defaultfilters as filters
 from django.utils.translation import ugettext_lazy as _
+from neutronclient.common import exceptions as q_ext
 
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
-from neutronclient.common import exceptions as q_ext
 from openstack_dashboard import api
+
 
 LOG = logging.getLogger(__name__)
 
@@ -63,15 +64,32 @@ class CreateRouter(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Router")
     url = "horizon:project:routers:create"
-    classes = ("ajax-modal", "btn-create")
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("network", "create_router"),)
+
+
+class EditRouter(tables.LinkAction):
+    name = "update"
+    verbose_name = _("Edit Router")
+    url = "horizon:project:routers:update"
+    classes = ("ajax-modal",)
+    icon = "pencil"
+    policy_rules = (("network", "update_router"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
 
 class SetGateway(tables.LinkAction):
     name = "setgateway"
     verbose_name = _("Set Gateway")
     url = "horizon:project:routers:setgateway"
-    classes = ("ajax-modal", "btn-camera")
+    classes = ("ajax-modal",)
+    icon = "camera"
     policy_rules = (("network", "update_router"),)
 
     def get_policy_target(self, request, datum=None):
@@ -144,11 +162,23 @@ class RoutersTable(tables.DataTable):
                          verbose_name=_("Name"),
                          link="horizon:project:routers:detail")
     status = tables.Column("status",
-                           filters=(title,),
+                           filters=(filters.title,),
                            verbose_name=_("Status"),
                            status=True)
+    distributed = tables.Column("distributed",
+                                filters=(filters.yesno, filters.capfirst),
+                                verbose_name=_("Distributed"))
     ext_net = tables.Column(get_external_network,
                             verbose_name=_("External Network"))
+
+    def __init__(self, request, data=None, needs_form_wrapper=None, **kwargs):
+        super(RoutersTable, self).__init__(
+            request,
+            data=data,
+            needs_form_wrapper=needs_form_wrapper,
+            **kwargs)
+        if not api.neutron.get_dvr_permission(request, "get"):
+            del self.columns["distributed"]
 
     def get_object_display(self, obj):
         return obj.name
@@ -159,4 +189,4 @@ class RoutersTable(tables.DataTable):
         status_columns = ["status"]
         row_class = UpdateRow
         table_actions = (CreateRouter, DeleteRouter)
-        row_actions = (SetGateway, ClearGateway, DeleteRouter)
+        row_actions = (SetGateway, ClearGateway, EditRouter, DeleteRouter)

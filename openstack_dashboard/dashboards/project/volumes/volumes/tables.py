@@ -28,7 +28,6 @@ from horizon import tables
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
 from openstack_dashboard import policy
-from openstack_dashboard.usage import quotas
 
 
 DELETABLE_STATES = ("available", "error", "error_extending")
@@ -38,7 +37,8 @@ class LaunchVolume(tables.LinkAction):
     name = "launch_volume"
     verbose_name = _("Launch as Instance")
     url = "horizon:project:instances:launch"
-    classes = ("btn-launch", "ajax-modal")
+    classes = ("ajax-modal", "btn-launch")
+    icon = "cloud-upload"
     policy_rules = (("compute", "compute:create"),)
 
     def get_link_url(self, datum):
@@ -88,7 +88,8 @@ class CreateVolume(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Volume")
     url = "horizon:project:volumes:volumes:create"
-    classes = ("ajax-modal", "btn-create")
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("volume", "volume:create"),)
     ajax = True
 
@@ -97,9 +98,14 @@ class CreateVolume(tables.LinkAction):
         super(CreateVolume, self).__init__(attrs, **kwargs)
 
     def allowed(self, request, volume=None):
-        usages = quotas.tenant_quota_usages(request)
-        if usages['gigabytes']['available'] <= 0 or\
-           usages['volumes']['available'] <= 0:
+        limits = api.cinder.tenant_absolute_limits(request)
+
+        gb_available = (limits.get('maxTotalVolumeGigabytes', float("inf"))
+                        - limits.get('totalGigabytesUsed', 0))
+        volumes_available = (limits.get('maxTotalVolumes', float("inf"))
+                             - limits.get('totalVolumesUsed', 0))
+
+        if gb_available <= 0 or volumes_available <= 0:
             if "disabled" not in self.classes:
                 self.classes = [c for c in self.classes] + ['disabled']
                 self.verbose_name = string_concat(self.verbose_name, ' ',
@@ -136,7 +142,8 @@ class EditAttachments(tables.LinkAction):
     name = "attachments"
     verbose_name = _("Edit Attachments")
     url = "horizon:project:volumes:volumes:attach"
-    classes = ("ajax-modal", "btn-edit")
+    classes = ("ajax-modal",)
+    icon = "pencil"
 
     def allowed(self, request, volume=None):
         if volume:
@@ -159,7 +166,8 @@ class CreateSnapshot(tables.LinkAction):
     name = "snapshots"
     verbose_name = _("Create Snapshot")
     url = "horizon:project:volumes:volumes:create_snapshot"
-    classes = ("ajax-modal", "btn-camera")
+    classes = ("ajax-modal",)
+    icon = "camera"
     policy_rules = (("volume", "volume:create_snapshot"),)
 
     def get_policy_target(self, request, datum=None):
@@ -190,11 +198,35 @@ class CreateBackup(tables.LinkAction):
                 volume.status == "available")
 
 
+class UploadToImage(tables.LinkAction):
+    name = "upload_to_image"
+    verbose_name = _("Upload to Image")
+    url = "horizon:project:volumes:volumes:upload_to_image"
+    classes = ("ajax-modal",)
+    icon = "cloud-upload"
+    policy_rules = (("volume", "volume:upload_to_image"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
+
+        return {"project_id": project_id}
+
+    def allowed(self, request, volume=None):
+        has_image_service_perm = \
+            request.user.has_perm('openstack.services.image')
+
+        return volume.status in ("available", "in-use") and \
+               has_image_service_perm
+
+
 class EditVolume(tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit Volume")
     url = "horizon:project:volumes:volumes:update"
-    classes = ("ajax-modal", "btn-edit")
+    classes = ("ajax-modal",)
+    icon = "pencil"
     policy_rules = (("volume", "volume:update"),)
 
     def get_policy_target(self, request, datum=None):
@@ -205,6 +237,27 @@ class EditVolume(tables.LinkAction):
 
     def allowed(self, request, volume=None):
         return volume.status in ("available", "in-use")
+
+
+class RetypeVolume(tables.LinkAction):
+    name = "retype"
+    verbose_name = _("Change Volume Type")
+    url = "horizon:project:volumes:volumes:retype"
+    classes = ("ajax-modal",)
+    icon = "pencil"
+    policy_rules = (("volume", "volume:retype"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
+
+        return {"project_id": project_id}
+
+    def allowed(self, request, volume=None):
+        retype_supported = cinder.retype_supported()
+
+        return volume.status in ("available", "in-use") and retype_supported
 
 
 class UpdateRow(tables.Row):
@@ -264,6 +317,15 @@ def get_volume_type(volume):
     return volume.volume_type if volume.volume_type != "None" else None
 
 
+def get_encrypted_value(volume):
+    if not hasattr(volume, 'encrypted') or volume.encrypted is None:
+        return "-"
+    elif volume.encrypted is False:
+        return _("No")
+    else:
+        return _("Yes")
+
+
 class VolumesTableBase(tables.DataTable):
     STATUS_CHOICES = (
         ("in-use", True),
@@ -314,10 +376,8 @@ class VolumesTable(VolumesTableBase):
     bootable = tables.Column('is_bootable',
                          verbose_name=_("Bootable"),
                          filters=(filters.yesno, filters.capfirst))
-    encryption = tables.Column("encrypted",
-                               verbose_name=_("Encrypted"),
-                               empty_value="-",
-                               filters=(filters.yesno, filters.capfirst))
+    encryption = tables.Column(get_encrypted_value,
+                               verbose_name=_("Encrypted"))
 
     class Meta:
         name = "volumes"
@@ -326,7 +386,8 @@ class VolumesTable(VolumesTableBase):
         row_class = UpdateRow
         table_actions = (CreateVolume, DeleteVolume, VolumesFilterAction)
         row_actions = (EditVolume, ExtendVolume, LaunchVolume, EditAttachments,
-                       CreateSnapshot, CreateBackup, DeleteVolume)
+                       CreateSnapshot, CreateBackup, RetypeVolume,
+                       UploadToImage, DeleteVolume)
 
 
 class DetachVolume(tables.BatchAction):

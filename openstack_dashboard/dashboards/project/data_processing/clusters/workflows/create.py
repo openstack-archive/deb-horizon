@@ -35,6 +35,8 @@ import logging
 
 LOG = logging.getLogger(__name__)
 
+KEYPAIR_IMPORT_URL = "horizon:project:access_and_security:keypairs:import"
+
 
 class SelectPluginAction(t_flows.SelectPluginAction):
     class Meta:
@@ -44,13 +46,14 @@ class SelectPluginAction(t_flows.SelectPluginAction):
 
 
 class SelectPlugin(t_flows.SelectPlugin):
-    pass
+    action_class = SelectPluginAction
 
 
 class CreateCluster(t_flows.CreateClusterTemplate):
     slug = "create_cluster"
     name = _("Launch Cluster")
     success_url = "horizon:project:data_processing.cluster_templates:index"
+    default_steps = (SelectPlugin,)
 
 
 class GeneralConfigAction(workflows.Action):
@@ -65,23 +68,21 @@ class GeneralConfigAction(workflows.Action):
         required=False,
         widget=forms.HiddenInput(attrs={"class": "hidden_to_delete_field"}))
 
-    cluster_name = forms.CharField(label=_("Cluster Name"),
-                                   required=True)
+    cluster_name = forms.CharField(label=_("Cluster Name"))
 
     description = forms.CharField(label=_("Description"),
                                   required=False,
                                   widget=forms.Textarea)
     cluster_template = forms.ChoiceField(label=_("Cluster Template"),
-                                         initial=(None, "None"),
-                                         required=False)
+                                         initial=(None, "None"))
 
-    image = forms.ChoiceField(label=_("Base Image"),
-                              required=True)
+    image = forms.ChoiceField(label=_("Base Image"))
 
-    keypair = forms.ChoiceField(
+    keypair = forms.DynamicChoiceField(
         label=_("Keypair"),
         required=False,
-        help_text=_("Which keypair to use for authentication."))
+        help_text=_("Which keypair to use for authentication."),
+        add_item_link=KEYPAIR_IMPORT_URL)
 
     def __init__(self, request, *args, **kwargs):
         super(GeneralConfigAction, self).__init__(request, *args, **kwargs)
@@ -92,7 +93,6 @@ class GeneralConfigAction(workflows.Action):
         if saharaclient.base.is_service_enabled(request, 'network'):
             self.fields["neutron_management_network"] = forms.ChoiceField(
                 label=_("Neutron Management Network"),
-                required=True,
                 choices=self.populate_neutron_management_network_choices(
                     request, {})
             )
@@ -201,7 +201,7 @@ class ConfigureCluster(whelpers.StatusFormatMixin, workflows.Workflow):
 
     def handle(self, request, context):
         try:
-            #TODO(nkonovalov) Implement AJAX Node Groups
+            # TODO(nkonovalov) Implement AJAX Node Groups.
             node_groups = None
 
             plugin, hadoop_version = whelpers.\

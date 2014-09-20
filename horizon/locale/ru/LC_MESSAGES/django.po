@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-02 00:24-0500\n"
-"PO-Revision-Date: 2014-07-01 19:12+0000\n"
+"POT-Creation-Date: 2014-08-28 15:08-0500\n"
+"PO-Revision-Date: 2014-08-28 14:43+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/horizon/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: base.py:429
+#: base.py:454
 msgid "Other"
 msgstr "Другое"
 
@@ -31,12 +31,17 @@ msgstr "Войдите в систему чтобы продолжить."
 msgid "You are not authorized to access %s"
 msgstr "Вы не авторизованы для доступа к %s"
 
-#: exceptions.py:284
+#: exceptions.py:163
+#, python-format
+msgid "A %(resource)s with the name \"%(name)s\" already exists."
+msgstr ""
+
+#: exceptions.py:287
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "Не авторизован: %s"
 
-#: exceptions.py:287
+#: exceptions.py:290
 msgid "Unauthorized. Please try logging in again."
 msgstr "Вы не авторизованы. Попробуйте войти в систему еще раз."
 
@@ -69,80 +74,81 @@ msgstr "Неправильная версия IP-адреса"
 msgid "Invalid subnet mask"
 msgstr "Неправльная маска подсети"
 
-#: tables/actions.py:442
-#: templates/horizon/common/_data_table_table_actions.html:13
-#: templates/horizon/common/_data_table_table_actions.html:23
-#: templates/horizon/common/_workflow_step_update_members.html:11
-#: templates/horizon/common/_workflow_step_update_members.html:17
+#: tables/actions.py:458
+#: templates/horizon/common/_data_table_table_actions.html:16
+#: templates/horizon/common/_data_table_table_actions.html:26
+#: templates/horizon/common/_workflow_step_update_members.html:12
+#: templates/horizon/common/_workflow_step_update_members.html:21
 msgid "Filter"
 msgstr "Фильтр"
 
-#: tables/actions.py:633
+#: tables/actions.py:662
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:635
+#: tables/actions.py:664
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:665 tables/base.py:1438
+#: tables/actions.py:694 tables/base.py:1498
 msgid "N/A"
 msgstr "Недоступно"
 
-#: tables/actions.py:694
+#: tables/actions.py:723
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "Вам не разрешено %(action)s: %(objs)s"
 
-#: tables/actions.py:701
+#: tables/actions.py:730
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "Невозможно выполнить %(action)s: %(objs)s"
 
-#: tables/actions.py:707
+#: tables/actions.py:736
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:723
+#: tables/actions.py:778
 msgid "Delete"
 msgstr "Удалить"
 
-#: tables/actions.py:724
+#: tables/actions.py:779
 msgid "Deleted"
 msgstr "Удалено"
 
-#: tables/actions.py:741
+#: tables/actions.py:811
 msgid "Update"
 msgstr "Обновить"
 
-#: tables/actions.py:742
+#: tables/actions.py:812
 msgid "Updated"
 msgstr "Обновлён"
 
-#: tables/base.py:317
+#: tables/base.py:330
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "Атрибут %(attr)s не существует для %(obj)s."
 
-#: tables/base.py:905
+#: tables/base.py:931
 msgid "No items to display."
 msgstr "Нет элементов для отображения."
 
-#: tables/base.py:1012
+#: tables/base.py:1038
+#: templates/horizon/common/_data_table_table_actions.html:40
 msgid "Actions"
 msgstr "Действия"
 
-#: tables/base.py:1218
+#: tables/base.py:1263
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "Не найдено соответствий для id \"%s\"."
 
-#: tables/base.py:1358
+#: tables/base.py:1414
 msgid "Please select a row before taking that action."
 msgstr "Выберите строку перед выполнением этого действия."
 
@@ -215,12 +221,12 @@ msgid "&laquo;&nbsp;Prev"
 msgstr ""
 
 #: templates/horizon/common/_data_table.html:71
-msgid "More&nbsp;&raquo;"
+msgid "Next&nbsp;&raquo;"
 msgstr ""
 
-#: templates/horizon/common/_data_table_row_actions.html:10
-msgid "More"
-msgstr "Еще"
+#: templates/horizon/common/_data_table_table_actions.html:38
+msgid "More Actions"
+msgstr ""
 
 #: templates/horizon/common/_formset_table.html:35
 msgid "Add a row"
@@ -295,42 +301,51 @@ msgstr "Выберите период времени, чтобы сделать 
 
 #: templates/horizon/common/_usage_summary.html:9
 #, python-format
-msgid "<span>From: %(start)s </span><span>To: %(end)s </span>"
-msgstr "<span>С: %(start)s </span><span>По: %(end)s </span>"
+msgid ""
+"\n"
+"      <label>From:</label> %(start)s"
+msgstr ""
 
-#: templates/horizon/common/_usage_summary.html:10
+#: templates/horizon/common/_usage_summary.html:13
+#, python-format
+msgid ""
+"\n"
+"      <label>To:</label>%(end)s"
+msgstr ""
+
+#: templates/horizon/common/_usage_summary.html:16
 msgid "Submit"
 msgstr "Отправить"
 
-#: templates/horizon/common/_usage_summary.html:11
+#: templates/horizon/common/_usage_summary.html:17
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "Дата должна быть в следующем формате: YYYY-mm-dd."
 
-#: templates/horizon/common/_usage_summary.html:16
+#: templates/horizon/common/_usage_summary.html:20
 msgid "Active Instances"
 msgstr "Активные инстансы"
 
-#: templates/horizon/common/_usage_summary.html:17
+#: templates/horizon/common/_usage_summary.html:21
 msgid "Active RAM"
 msgstr "Активная память"
 
-#: templates/horizon/common/_usage_summary.html:18
+#: templates/horizon/common/_usage_summary.html:22
 msgid "This Period's VCPU-Hours"
 msgstr "Этот период VCPU-часов"
 
-#: templates/horizon/common/_usage_summary.html:19
+#: templates/horizon/common/_usage_summary.html:23
 msgid "This Period's GB-Hours"
 msgstr "Этот период в ГБ-часов"
 
-#: templates/horizon/common/_workflow.html:38
+#: templates/horizon/common/_workflow.html:40
 msgid "Back"
 msgstr "Назад"
 
-#: templates/horizon/common/_workflow.html:41
+#: templates/horizon/common/_workflow.html:43
 msgid "Next"
 msgstr "Следующий"
 
-#: templates/horizon/common/_workflow.html:47
+#: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "Отменить"
 
@@ -338,15 +353,15 @@ msgstr "Отменить"
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:119 templatetags/horizon.py:129
+#: templatetags/horizon.py:126 templatetags/horizon.py:136
 msgid "No Limit"
 msgstr "Без ограничений"
 
-#: templatetags/horizon.py:121 templatetags/horizon.py:123
+#: templatetags/horizon.py:128 templatetags/horizon.py:130
 msgid "Available"
 msgstr "Доступно"
 
-#: templatetags/sizeformat.py:43 templatetags/sizeformat.py:48
+#: templatetags/sizeformat.py:49 templatetags/sizeformat.py:54
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
@@ -354,30 +369,34 @@ msgstr[0] "%(size)d байт"
 msgstr[1] "%(size)d байта"
 msgstr[2] "%(size)d байтов"
 
-#: templatetags/sizeformat.py:51
+#: templatetags/sizeformat.py:57
 #, python-format
 msgid "%s KB"
 msgstr "%s КБ"
 
-#: templatetags/sizeformat.py:54
+#: templatetags/sizeformat.py:60
 #, python-format
 msgid "%s MB"
 msgstr "%s МБ"
 
-#: templatetags/sizeformat.py:57
+#: templatetags/sizeformat.py:63
 #, python-format
 msgid "%s GB"
 msgstr "%s ГБ"
 
-#: templatetags/sizeformat.py:60
+#: templatetags/sizeformat.py:66
 #, python-format
 msgid "%s TB"
 msgstr "%s ТБ"
 
-#: templatetags/sizeformat.py:62
+#: templatetags/sizeformat.py:68
 #, python-format
 msgid "%s PB"
 msgstr "%s ПБ"
+
+#: templatetags/sizeformat.py:77
+msgid "0 bytes"
+msgstr ""
 
 #: utils/filters.py:49
 msgid "Never"

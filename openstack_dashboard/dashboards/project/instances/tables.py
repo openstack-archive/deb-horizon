@@ -36,6 +36,10 @@ from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.access_and_security.floating_ips \
     import workflows
 from openstack_dashboard.dashboards.project.instances import tabs
+from openstack_dashboard.dashboards.project.instances.workflows \
+    import resize_instance
+from openstack_dashboard.dashboards.project.instances.workflows \
+    import update_instance
 
 
 LOG = logging.getLogger(__name__)
@@ -76,7 +80,8 @@ class TerminateInstance(tables.BatchAction):
     action_past = _("Scheduled termination of %(data_type)s")
     data_type_singular = _("Instance")
     data_type_plural = _("Instances")
-    classes = ('btn-danger', 'btn-terminate')
+    classes = ("btn-danger",)
+    icon = "off"
     policy_rules = (("compute", "compute:delete"),)
 
     def get_policy_target(self, request, datum=None):
@@ -135,7 +140,7 @@ class TogglePause(tables.BatchAction):
     action_past = (_("Paused"), _("Resumed"))
     data_type_singular = _("Instance")
     data_type_plural = _("Instances")
-    classes = ("btn-pause",)
+    icon = "pause"
 
     def allowed(self, request, instance=None):
         if not api.nova.extension_supported('AdminActions',
@@ -215,7 +220,8 @@ class LaunchLink(tables.LinkAction):
     name = "launch"
     verbose_name = _("Launch Instance")
     url = "horizon:project:instances:launch"
-    classes = ("btn-launch", "ajax-modal")
+    classes = ("ajax-modal", "btn-launch")
+    icon = "cloud-upload"
     policy_rules = (("compute", "compute:create"),)
     ajax = True
 
@@ -258,7 +264,8 @@ class EditInstance(tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit Instance")
     url = "horizon:project:instances:update"
-    classes = ("ajax-modal", "btn-edit")
+    classes = ("ajax-modal",)
+    icon = "pencil"
     policy_rules = (("compute", "compute:update"),)
 
     def get_policy_target(self, request, datum=None):
@@ -272,7 +279,10 @@ class EditInstance(tables.LinkAction):
 
     def _get_link_url(self, project, step_slug):
         base_url = urlresolvers.reverse(self.url, args=[project.id])
-        param = urlencode({"step": step_slug})
+        next_url = self.table.get_full_url()
+        params = {"step": step_slug,
+                  update_instance.UpdateInstance.redirect_param_name: next_url}
+        param = urlencode(params)
         return "?".join([base_url, param])
 
     def allowed(self, request, instance):
@@ -296,7 +306,8 @@ class CreateSnapshot(tables.LinkAction):
     name = "snapshot"
     verbose_name = _("Create Snapshot")
     url = "horizon:project:images:snapshots:create"
-    classes = ("ajax-modal", "btn-camera")
+    classes = ("ajax-modal",)
+    icon = "camera"
     policy_rules = (("compute", "compute:snapshot"),)
 
     def get_policy_target(self, request, datum=None):
@@ -324,7 +335,10 @@ class ConsoleLink(tables.LinkAction):
         return {"project_id": project_id}
 
     def allowed(self, request, instance=None):
-        return instance.status in ACTIVE_STATES and not is_deleting(instance)
+        # We check if ConsoleLink is allowed only if settings.CONSOLE_TYPE is
+        # not set at all, or if it's set to any value other than None or False.
+        return bool(getattr(settings, 'CONSOLE_TYPE', True)) and \
+            instance.status in ACTIVE_STATES and not is_deleting(instance)
 
     def get_link_url(self, datum):
         base_url = super(ConsoleLink, self).get_link_url(datum)
@@ -374,7 +388,10 @@ class ResizeLink(tables.LinkAction):
 
     def _get_link_url(self, project, step_slug):
         base_url = urlresolvers.reverse(self.url, args=[project.id])
-        param = urlencode({"step": step_slug})
+        next_url = self.table.get_full_url()
+        params = {"step": step_slug,
+                  resize_instance.ResizeInstance.redirect_param_name: next_url}
+        param = urlencode(params)
         return "?".join([base_url, param])
 
     def allowed(self, request, instance):
@@ -471,7 +488,8 @@ class AssociateIP(tables.LinkAction):
     name = "associate"
     verbose_name = _("Associate Floating IP")
     url = "horizon:project:access_and_security:floating_ips:associate"
-    classes = ("ajax-modal", "btn-associate")
+    classes = ("ajax-modal",)
+    icon = "link"
     policy_rules = (("compute", "network:associate_floating_ip"),)
 
     def get_policy_target(self, request, datum=None):
@@ -481,6 +499,8 @@ class AssociateIP(tables.LinkAction):
         return {"project_id": project_id}
 
     def allowed(self, request, instance):
+        if not api.network.floating_ip_supported(request):
+            return False
         if api.network.floating_ip_simple_associate_supported(request):
             return False
         return not is_deleting(instance)
@@ -497,7 +517,7 @@ class AssociateIP(tables.LinkAction):
 class SimpleAssociateIP(tables.Action):
     name = "associate-simple"
     verbose_name = _("Associate Floating IP")
-    classes = ("btn-associate-simple",)
+    icon = "link"
     policy_rules = (("compute", "network:associate_floating_ip"),)
 
     def get_policy_target(self, request, datum=None):
@@ -542,6 +562,8 @@ class SimpleDisassociateIP(tables.Action):
         return {"project_id": project_id}
 
     def allowed(self, request, instance):
+        if not api.network.floating_ip_supported(request):
+            return False
         if not conf.HORIZON_CONFIG["simple_ip_management"]:
             return False
         return not is_deleting(instance)
@@ -771,12 +793,11 @@ POWER_DISPLAY_CHOICES = (
 
 
 class InstancesFilterAction(tables.FilterAction):
-
-    def filter(self, table, instances, filter_string):
-        """Naive case-insensitive search."""
-        q = filter_string.lower()
-        return [instance for instance in instances
-                if q in instance.name.lower()]
+    filter_type = "server"
+    filter_choices = (('name', _("Instance Name"), True),
+                      ('status', _("Status ="), True),
+                      ('image', _("Image ID ="), True),
+                      ('flavor', _("Flavor ID ="), True))
 
 
 class InstancesTable(tables.DataTable):
@@ -791,7 +812,7 @@ class InstancesTable(tables.DataTable):
         ("paused", True),
         ("error", False),
         ("rescue", True),
-        ("shelved offloaded", True),
+        ("shelved_offloaded", True),
     )
     name = tables.Column("name",
                          link=("horizon:project:instances:detail"),

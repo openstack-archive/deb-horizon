@@ -14,6 +14,8 @@ import itertools
 import logging
 import sys
 
+import six
+
 from django import template
 from django.template import loader
 from django.utils import datastructures
@@ -36,7 +38,7 @@ class FormsetCell(horizon_tables.Cell):
         else:
             if self.field.errors:
                 self.attrs['class'] = (self.attrs.get('class', '') +
-                    ' error control-group')
+                    ' error form-group')
                 self.attrs['title'] = ' '.join(
                     unicode(error) for error in self.field.errors)
 
@@ -147,7 +149,8 @@ class FormsetDataTableMixin(object):
             # re-raising as a TemplateSyntaxError makes them visible.
             LOG.exception("Error while rendering table rows.")
             exc_info = sys.exc_info()
-            raise template.TemplateSyntaxError, exc_info[1], exc_info[2]
+            raise six.reraise(template.TemplateSyntaxError, exc_info[1],
+                              exc_info[2])
         return rows
 
     def get_object_id(self, datum):

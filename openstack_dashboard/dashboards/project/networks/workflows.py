@@ -14,10 +14,11 @@
 
 
 import logging
-import netaddr
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+import netaddr
 
 from horizon import exceptions
 from horizon import forms
@@ -70,7 +71,7 @@ class CreateNetworkInfoAction(workflows.Action):
 
     class Meta:
         name = _("Network")
-        help_text = _("From here you can create a new network.\n"
+        help_text = _("Create a new network. "
                       "In addition a subnet associated with the network "
                       "can be created in the next panel.")
 
@@ -104,7 +105,7 @@ class CreateSubnetInfoAction(workflows.Action):
                     "network address (e.g. 192.168.0.1 for "
                     "192.168.0.0/24). "
                     "If you use the default, leave blank. "
-                    "If you want to use no gateway, "
+                    "If you do not want to use a gateway, "
                     "check 'Disable Gateway' below."),
         version=forms.IPv4 | forms.IPv6,
         mask=False)
@@ -113,10 +114,18 @@ class CreateSubnetInfoAction(workflows.Action):
 
     class Meta:
         name = _("Subnet")
-        help_text = _('You can create a subnet associated with the new '
-                      'network, in which case "Network Address" must be '
-                      'specified. If you wish to create a network WITHOUT a '
-                      'subnet, uncheck the "Create Subnet" checkbox.')
+        help_text = _('Create a subnet associated with the new network, '
+                      'in which case "Network Address" must be specified. '
+                      'If you wish to create a network without a subnet, '
+                      'uncheck the "Create Subnet" checkbox.')
+
+    def __init__(self, request, context, *args, **kwargs):
+        super(CreateSubnetInfoAction, self).__init__(request, context, *args,
+                                                     **kwargs)
+        if not getattr(settings, 'OPENSTACK_NEUTRON_NETWORK',
+                       {}).get('enable_ipv6', True):
+            self.fields['ip_version'].widget = forms.HiddenInput()
+            self.fields['ip_version'].initial = 4
 
     def _check_subnet_data(self, cleaned_data, is_create=True):
         cidr = cleaned_data.get('cidr')
@@ -134,8 +143,8 @@ class CreateSubnetInfoAction(workflows.Action):
                 raise forms.ValidationError(msg)
             if (ip_version == 4 and subnet.prefixlen == 32) or \
                     (ip_version == 6 and subnet.prefixlen == 128):
-                msg = _("The subnet in the Network Address is too small (/%s)."
-                        % subnet.prefixlen)
+                msg = _("The subnet in the Network Address is "
+                        "too small (/%s).") % subnet.prefixlen
                 raise forms.ValidationError(msg)
         if not no_gateway and gateway_ip:
             if netaddr.IPAddress(gateway_ip).version is not ip_version:
@@ -165,7 +174,7 @@ class CreateSubnetDetailAction(workflows.Action):
     enable_dhcp = forms.BooleanField(label=_("Enable DHCP"),
                                      initial=True, required=False)
     allocation_pools = forms.CharField(
-        widget=forms.Textarea(),
+        widget=forms.Textarea(attrs={'rows': 4}),
         label=_("Allocation Pools"),
         help_text=_("IP address allocation pools. Each entry is: "
                     "start_ip_address,end_ip_address "
@@ -173,13 +182,13 @@ class CreateSubnetDetailAction(workflows.Action):
                     "and one entry per line."),
         required=False)
     dns_nameservers = forms.CharField(
-        widget=forms.widgets.Textarea(),
+        widget=forms.widgets.Textarea(attrs={'rows': 4}),
         label=_("DNS Name Servers"),
         help_text=_("IP address list of DNS name servers for this subnet. "
                     "One entry per line."),
         required=False)
     host_routes = forms.CharField(
-        widget=forms.widgets.Textarea(),
+        widget=forms.widgets.Textarea(attrs={'rows': 4}),
         label=_("Host Routes"),
         help_text=_("Additional routes announced to the hosts. "
                     "Each entry is: destination_cidr,nexthop "
@@ -189,24 +198,22 @@ class CreateSubnetDetailAction(workflows.Action):
 
     class Meta:
         name = _("Subnet Detail")
-        help_text = _('You can specify additional attributes for the subnet.')
+        help_text = _('Specify additional attributes for the subnet.')
 
     def _convert_ip_address(self, ip, field_name):
         try:
             return netaddr.IPAddress(ip)
         except (netaddr.AddrFormatError, ValueError):
-            msg = _('%(field_name)s: Invalid IP address '
-                    '(value=%(ip)s)' % dict(
-                        field_name=field_name, ip=ip))
+            msg = (_('%(field_name)s: Invalid IP address (value=%(ip)s)')
+                   % {'field_name': field_name, 'ip': ip})
             raise forms.ValidationError(msg)
 
     def _convert_ip_network(self, network, field_name):
         try:
             return netaddr.IPNetwork(network)
         except (netaddr.AddrFormatError, ValueError):
-            msg = _('%(field_name)s: Invalid IP address '
-                    '(value=%(network)s)' % dict(
-                        field_name=field_name, network=network))
+            msg = (_('%(field_name)s: Invalid IP address (value=%(network)s)')
+                   % {'field_name': field_name, 'network': network})
             raise forms.ValidationError(msg)
 
     def _check_allocation_pools(self, allocation_pools):
@@ -377,7 +384,6 @@ class CreateNetwork(workflows.Workflow):
             redirect = self.get_failure_url()
             messages.info(request, msg)
             raise exceptions.Http302(redirect)
-            #return exceptions.RecoverableError
         except Exception:
             msg = _('Failed to delete network "%s"') % network.name
             LOG.info(msg)

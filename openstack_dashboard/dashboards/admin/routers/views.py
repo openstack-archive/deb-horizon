@@ -22,6 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.admin.networks import views as n_views
+from openstack_dashboard.dashboards.admin.routers import forms as rforms
 from openstack_dashboard.dashboards.admin.routers import tables as rtbl
 from openstack_dashboard.dashboards.admin.routers import tabs as rtabs
 from openstack_dashboard.dashboards.project.routers import views as r_views
@@ -43,7 +44,7 @@ class IndexView(r_views.IndexView, n_views.IndexView):
             tenant_dict = self._get_tenant_list()
             ext_net_dict = self._list_external_networks()
             for r in routers:
-                 # Set tenant name
+                # Set tenant name
                 tenant = tenant_dict.get(r.tenant_id, None)
                 r.tenant_name = getattr(tenant, 'name', None)
                 # If name is empty use UUID as name
@@ -61,3 +62,9 @@ class DetailView(r_views.DetailView):
     tab_group_class = rtabs.RouterDetailTabs
     template_name = 'admin/routers/detail.html'
     failure_url = reverse_lazy('horizon:admin:routers:index')
+
+
+class UpdateView(r_views.UpdateView):
+    form_class = rforms.UpdateForm
+    template_name = 'admin/routers/update.html'
+    success_url = reverse_lazy("horizon:admin:routers:index")

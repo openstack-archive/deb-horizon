@@ -17,6 +17,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import collections
 import logging
 
 from django.conf import settings
@@ -44,7 +45,8 @@ DEFAULT_ROLE = None
 class IdentityAPIVersionManager(base.APIVersionManager):
     def upgrade_v2_user(self, user):
         if getattr(user, "project_id", None) is None:
-            user.project_id = getattr(user, "tenantId", None)
+            user.project_id = getattr(user, "default_project_id",
+                                      getattr(user, "tenantId", None))
         return user
 
     def get_project_manager(self, *args, **kwargs):
@@ -217,6 +219,7 @@ def tenant_create(request, name, description=None, enabled=None,
 
 def get_default_domain(request):
     """Gets the default domain object to use when creating Identity object.
+
     Returns the domain context if is set, otherwise return the domain
     of the logon user.
     """
@@ -250,8 +253,9 @@ def tenant_delete(request, project):
     return manager.delete(project)
 
 
-def tenant_list(request, paginate=False, marker=None, domain=None, user=None):
-    manager = VERSIONS.get_project_manager(request, admin=True)
+def tenant_list(request, paginate=False, marker=None, domain=None, user=None,
+                admin=True):
+    manager = VERSIONS.get_project_manager(request, admin=admin)
     page_size = utils.get_page_size(request)
 
     limit = None
@@ -492,23 +496,49 @@ def role_list(request):
     return keystoneclient(request, admin=True).roles.list()
 
 
-def roles_for_user(request, user, project):
+def roles_for_user(request, user, project=None, domain=None):
+    """Returns a list of user roles scoped to a project or domain."""
     manager = keystoneclient(request, admin=True).roles
     if VERSIONS.active < 3:
         return manager.roles_for_user(user, project)
     else:
-        return manager.list(user=user, project=project)
+        return manager.list(user=user, domain=domain, project=project)
+
+
+def get_domain_users_roles(request, domain):
+    users_roles = collections.defaultdict(list)
+    domain_role_assignments = role_assignments_list(request,
+                                                    domain=domain)
+    for role_assignment in domain_role_assignments:
+        if not hasattr(role_assignment, 'user'):
+            continue
+        user_id = role_assignment.user['id']
+        role_id = role_assignment.role['id']
+        users_roles[user_id].append(role_id)
+    return users_roles
+
+
+def add_domain_user_role(request, user, role, domain):
+    """Adds a role for a user on a domain."""
+    manager = keystoneclient(request, admin=True).roles
+    return manager.grant(role, user=user, domain=domain)
+
+
+def remove_domain_user_role(request, user, role, domain=None):
+    """Removes a given single role for a user from a domain."""
+    manager = keystoneclient(request, admin=True).roles
+    return manager.revoke(role, user=user, domain=domain)
 
 
 def get_project_users_roles(request, project):
-    users_roles = {}
+    users_roles = collections.defaultdict(list)
     if VERSIONS.active < 3:
         project_users = user_list(request, project=project)
 
         for user in project_users:
             roles = roles_for_user(request, user.id, project)
             roles_ids = [role.id for role in roles]
-            users_roles[user.id] = roles_ids
+            users_roles[user.id].extend(roles_ids)
     else:
         project_role_assignments = role_assignments_list(request,
                                                          project=project)
@@ -517,10 +547,7 @@ def get_project_users_roles(request, project):
                 continue
             user_id = role_assignment.user['id']
             role_id = role_assignment.role['id']
-            if user_id in users_roles:
-                users_roles[user_id].append(role_id)
-            else:
-                users_roles[user_id] = [role_id]
+            users_roles[user_id].append(role_id)
     return users_roles
 
 
@@ -575,9 +602,7 @@ def remove_group_role(request, role, group, domain=None, project=None):
 
 
 def remove_group_roles(request, group, domain=None, project=None):
-    """Removes all roles from a group on a domain or project,
-    removing them from it.
-    """
+    """Removes all roles from a group on a domain or project."""
     client = keystoneclient(request, admin=True)
     roles = client.roles.list(group=group, domain=domain, project=project)
     for role in roles:
@@ -586,8 +611,9 @@ def remove_group_roles(request, group, domain=None, project=None):
 
 
 def get_default_role(request):
-    """Gets the default role object from Keystone and saves it as a global
-    since this is configured in settings and should not change from request
+    """Gets the default role object from Keystone and saves it as a global.
+
+    Since this is configured in settings and should not change from request
     to request. Supports lookup by name or id.
     """
     global DEFAULT_ROLE

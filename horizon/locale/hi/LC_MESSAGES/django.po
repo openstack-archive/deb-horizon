@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-02 00:24-0500\n"
-"PO-Revision-Date: 2014-07-01 19:12+0000\n"
+"POT-Creation-Date: 2014-08-28 15:08-0500\n"
+"PO-Revision-Date: 2014-08-28 14:43+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Hindi (http://www.transifex.com/projects/p/horizon/language/hi/)\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base.py:429
+#: base.py:454
 msgid "Other"
 msgstr "अन्य"
 
@@ -30,12 +30,17 @@ msgstr "जारी रखने के लिए में लॉग इन �
 msgid "You are not authorized to access %s"
 msgstr "आप %sका उपयोग करने के लिए अधिकृत नहीं हैं"
 
-#: exceptions.py:284
+#: exceptions.py:163
+#, python-format
+msgid "A %(resource)s with the name \"%(name)s\" already exists."
+msgstr ""
+
+#: exceptions.py:287
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "अनधिकृत: %s"
 
-#: exceptions.py:287
+#: exceptions.py:290
 msgid "Unauthorized. Please try logging in again."
 msgstr "अनधिकृत. फिर लॉग इन करने का प्रयास करें."
 
@@ -68,80 +73,81 @@ msgstr "IP पता के लिए अवैध प्रारूप सं�
 msgid "Invalid subnet mask"
 msgstr "अवैध सबनेट मास्क"
 
-#: tables/actions.py:442
-#: templates/horizon/common/_data_table_table_actions.html:13
-#: templates/horizon/common/_data_table_table_actions.html:23
-#: templates/horizon/common/_workflow_step_update_members.html:11
-#: templates/horizon/common/_workflow_step_update_members.html:17
+#: tables/actions.py:458
+#: templates/horizon/common/_data_table_table_actions.html:16
+#: templates/horizon/common/_data_table_table_actions.html:26
+#: templates/horizon/common/_workflow_step_update_members.html:12
+#: templates/horizon/common/_workflow_step_update_members.html:21
 msgid "Filter"
 msgstr "छानना शुरू..."
 
-#: tables/actions.py:633
+#: tables/actions.py:662
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:635
+#: tables/actions.py:664
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:665 tables/base.py:1438
+#: tables/actions.py:694 tables/base.py:1498
 msgid "N/A"
 msgstr "लागू नहीं"
 
-#: tables/actions.py:694
+#: tables/actions.py:723
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "आपको %(action)s की अनुमति नहीं है.: %(objs)s"
 
-#: tables/actions.py:701
+#: tables/actions.py:730
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "%(action)s की अनुमति नहीं है.: %(objs)s"
 
-#: tables/actions.py:707
+#: tables/actions.py:736
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:723
+#: tables/actions.py:778
 msgid "Delete"
 msgstr "मिटाएँ"
 
-#: tables/actions.py:724
+#: tables/actions.py:779
 msgid "Deleted"
 msgstr "मिटाया"
 
-#: tables/actions.py:741
+#: tables/actions.py:811
 msgid "Update"
 msgstr "अद्यतन"
 
-#: tables/actions.py:742
+#: tables/actions.py:812
 msgid "Updated"
 msgstr "अद्यतित"
 
-#: tables/base.py:317
+#: tables/base.py:330
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "%(obj)s पर %(attr)s  गुण मौज़ूद नहीं हैं."
 
-#: tables/base.py:905
+#: tables/base.py:931
 msgid "No items to display."
 msgstr "दिखाने के लिए कोई सामग्रियों नहीं."
 
-#: tables/base.py:1012
+#: tables/base.py:1038
+#: templates/horizon/common/_data_table_table_actions.html:40
 msgid "Actions"
 msgstr "क्रियाएं"
 
-#: tables/base.py:1218
+#: tables/base.py:1263
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "इस आइडी \"%s\" के लिए कोई मेल नहीं मिला."
 
-#: tables/base.py:1358
+#: tables/base.py:1414
 msgid "Please select a row before taking that action."
 msgstr "कृपया इस क्रिया को करने से पहले पंक्ति का चयन करें."
 
@@ -213,12 +219,12 @@ msgid "&laquo;&nbsp;Prev"
 msgstr ""
 
 #: templates/horizon/common/_data_table.html:71
-msgid "More&nbsp;&raquo;"
+msgid "Next&nbsp;&raquo;"
 msgstr ""
 
-#: templates/horizon/common/_data_table_row_actions.html:10
-msgid "More"
-msgstr "अधिक"
+#: templates/horizon/common/_data_table_table_actions.html:38
+msgid "More Actions"
+msgstr ""
 
 #: templates/horizon/common/_formset_table.html:35
 msgid "Add a row"
@@ -291,42 +297,51 @@ msgstr "उपयोग के बारें में जानने के 
 
 #: templates/horizon/common/_usage_summary.html:9
 #, python-format
-msgid "<span>From: %(start)s </span><span>To: %(end)s </span>"
-msgstr "<span>से: %(start)s </span><span>तक: %(end)s </span>"
+msgid ""
+"\n"
+"      <label>From:</label> %(start)s"
+msgstr ""
 
-#: templates/horizon/common/_usage_summary.html:10
+#: templates/horizon/common/_usage_summary.html:13
+#, python-format
+msgid ""
+"\n"
+"      <label>To:</label>%(end)s"
+msgstr ""
+
+#: templates/horizon/common/_usage_summary.html:16
 msgid "Submit"
 msgstr "जमा करें"
 
-#: templates/horizon/common/_usage_summary.html:11
+#: templates/horizon/common/_usage_summary.html:17
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "तिथि को  YYYY-mm-dd प्रारूप में होना चाहिए"
 
-#: templates/horizon/common/_usage_summary.html:16
+#: templates/horizon/common/_usage_summary.html:20
 msgid "Active Instances"
 msgstr "सक्रिय इंस्टेंस"
 
-#: templates/horizon/common/_usage_summary.html:17
+#: templates/horizon/common/_usage_summary.html:21
 msgid "Active RAM"
 msgstr "सक्रिय रैम"
 
-#: templates/horizon/common/_usage_summary.html:18
+#: templates/horizon/common/_usage_summary.html:22
 msgid "This Period's VCPU-Hours"
 msgstr "इस अवधि में VCPU-Hours"
 
-#: templates/horizon/common/_usage_summary.html:19
+#: templates/horizon/common/_usage_summary.html:23
 msgid "This Period's GB-Hours"
 msgstr "इस अवधि में GB-Hours"
 
-#: templates/horizon/common/_workflow.html:38
+#: templates/horizon/common/_workflow.html:40
 msgid "Back"
 msgstr "पीछे"
 
-#: templates/horizon/common/_workflow.html:41
+#: templates/horizon/common/_workflow.html:43
 msgid "Next"
 msgstr "अगला"
 
-#: templates/horizon/common/_workflow.html:47
+#: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "रद्द करें"
 
@@ -334,45 +349,49 @@ msgstr "रद्द करें"
 msgid "Horizon"
 msgstr "होरिजन"
 
-#: templatetags/horizon.py:119 templatetags/horizon.py:129
+#: templatetags/horizon.py:126 templatetags/horizon.py:136
 msgid "No Limit"
 msgstr "कोई सीमा नहीं"
 
-#: templatetags/horizon.py:121 templatetags/horizon.py:123
+#: templatetags/horizon.py:128 templatetags/horizon.py:130
 msgid "Available"
 msgstr "उपलब्ध"
 
-#: templatetags/sizeformat.py:43 templatetags/sizeformat.py:48
+#: templatetags/sizeformat.py:49 templatetags/sizeformat.py:54
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
 msgstr[0] ""
 msgstr[1] "%(size)d बाइट"
 
-#: templatetags/sizeformat.py:51
+#: templatetags/sizeformat.py:57
 #, python-format
 msgid "%s KB"
 msgstr "%s केबी"
 
-#: templatetags/sizeformat.py:54
+#: templatetags/sizeformat.py:60
 #, python-format
 msgid "%s MB"
 msgstr "%s MB"
 
-#: templatetags/sizeformat.py:57
+#: templatetags/sizeformat.py:63
 #, python-format
 msgid "%s GB"
 msgstr "%s GB"
 
-#: templatetags/sizeformat.py:60
+#: templatetags/sizeformat.py:66
 #, python-format
 msgid "%s TB"
 msgstr "%s TB"
 
-#: templatetags/sizeformat.py:62
+#: templatetags/sizeformat.py:68
 #, python-format
 msgid "%s PB"
 msgstr "%s PB"
+
+#: templatetags/sizeformat.py:77
+msgid "0 bytes"
+msgstr ""
 
 #: utils/filters.py:49
 msgid "Never"

@@ -33,13 +33,15 @@ class CinderApiTests(test.APITestCase):
         api.cinder.volume_list(self.request, search_opts=search_opts)
 
     def test_volume_snapshot_list(self):
+        search_opts = {'all_tenants': 1}
         volume_snapshots = self.cinder_volume_snapshots.list()
         cinderclient = self.stub_cinderclient()
         cinderclient.volume_snapshots = self.mox.CreateMockAnything()
-        cinderclient.volume_snapshots.list().AndReturn(volume_snapshots)
+        cinderclient.volume_snapshots.list(search_opts=search_opts).\
+            AndReturn(volume_snapshots)
         self.mox.ReplayAll()
 
-        api.cinder.volume_snapshot_list(self.request)
+        api.cinder.volume_snapshot_list(self.request, search_opts=search_opts)
 
     def test_volume_snapshot_list_no_volume_configured(self):
         # remove volume from service catalog
@@ -47,14 +49,16 @@ class CinderApiTests(test.APITestCase):
         for service in catalog:
             if service["type"] == "volume":
                 self.service_catalog.remove(service)
+        search_opts = {'all_tenants': 1}
         volume_snapshots = self.cinder_volume_snapshots.list()
 
         cinderclient = self.stub_cinderclient()
         cinderclient.volume_snapshots = self.mox.CreateMockAnything()
-        cinderclient.volume_snapshots.list().AndReturn(volume_snapshots)
+        cinderclient.volume_snapshots.list(search_opts=search_opts).\
+            AndReturn(volume_snapshots)
         self.mox.ReplayAll()
 
-        api.cinder.volume_snapshot_list(self.request)
+        api.cinder.volume_snapshot_list(self.request, search_opts=search_opts)
 
 
 class CinderApiVersionTests(test.TestCase):
@@ -90,8 +94,8 @@ class CinderApiVersionTests(test.TestCase):
         description = "A volume description"
         setattr(volume._apiresource, 'display_name', name)
         setattr(volume._apiresource, 'display_description', description)
-        self.assertEqual(volume.name, name)
-        self.assertEqual(volume.description, description)
+        self.assertEqual(name, volume.name)
+        self.assertEqual(description, volume.description)
 
     def test_get_v2_volume_attributes(self):
         # Get a v2 volume
@@ -103,8 +107,8 @@ class CinderApiVersionTests(test.TestCase):
         description = "A v2 volume description"
         setattr(volume._apiresource, 'name', name)
         setattr(volume._apiresource, 'description', description)
-        self.assertEqual(volume.name, name)
-        self.assertEqual(volume.description, description)
+        self.assertEqual(name, volume.name)
+        self.assertEqual(description, volume.description)
 
     def test_get_v1_snapshot_attributes(self):
         # Get a v1 snapshot
@@ -115,8 +119,8 @@ class CinderApiVersionTests(test.TestCase):
         description = "A snapshot description"
         setattr(snapshot._apiresource, 'display_name', name)
         setattr(snapshot._apiresource, 'display_description', description)
-        self.assertEqual(snapshot.name, name)
-        self.assertEqual(snapshot.description, description)
+        self.assertEqual(name, snapshot.name)
+        self.assertEqual(description, snapshot.description)
 
     def test_get_v2_snapshot_attributes(self):
         # Get a v2 snapshot
@@ -128,13 +132,13 @@ class CinderApiVersionTests(test.TestCase):
         description = "A v2 snapshot description"
         setattr(snapshot._apiresource, 'name', name)
         setattr(snapshot._apiresource, 'description', description)
-        self.assertEqual(snapshot.name, name)
-        self.assertEqual(snapshot.description, description)
+        self.assertEqual(name, snapshot.name)
+        self.assertEqual(description, snapshot.description)
 
     def test_get_id_for_nameless_volume(self):
         volume = self.cinder_volumes.first()
         setattr(volume._apiresource, 'display_name', "")
-        self.assertEqual(volume.name, volume.id)
+        self.assertEqual(volume.id, volume.name)
 
     @override_settings(OPENSTACK_API_VERSIONS={'volume': 1})
     def test_adapt_dictionary_to_v1(self):
@@ -161,3 +165,18 @@ class CinderApiVersionTests(test.TestCase):
         self.assertIn('description', ret_data.keys())
         self.assertNotIn('display_name', ret_data.keys())
         self.assertNotIn('display_description', ret_data.keys())
+
+    @override_settings(OPENSTACK_API_VERSIONS={'volume': 1})
+    def test_version_get_1(self):
+        version = api.cinder.version_get()
+        self.assertEqual(version, 1)
+
+    @override_settings(OPENSTACK_API_VERSIONS={'volume': 2})
+    def test_version_get_2(self):
+        version = api.cinder.version_get()
+        self.assertEqual(version, 2)
+
+    @override_settings(OPENSTACK_API_VERSIONS={'volume': 1})
+    def test_retype_not_supported(self):
+        retype_supported = api.cinder.retype_supported()
+        self.assertFalse(retype_supported)

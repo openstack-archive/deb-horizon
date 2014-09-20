@@ -39,7 +39,8 @@ class AddInterface(tables.LinkAction):
     name = "create"
     verbose_name = _("Add Interface")
     url = "horizon:project:routers:addinterface"
-    classes = ("ajax-modal", "btn-create")
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("network", "add_router_interface"),)
 
     def get_policy_target(self, request, datum=None):
@@ -82,11 +83,6 @@ class RemoveInterface(tables.DeleteAction):
             redirect = reverse(self.failure_url,
                                args=[router_id])
             exceptions.handle(request, msg, redirect=redirect)
-
-    def allowed(self, request, datum=None):
-        if datum and datum['device_owner'] == 'network:router_gateway':
-            return False
-        return True
 
 
 class PortsTable(tables.DataTable):

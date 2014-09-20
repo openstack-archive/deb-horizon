@@ -20,6 +20,8 @@ import logging
 import os
 import sys
 
+import six
+
 from django.core.management import color_style  # noqa
 from django.http import HttpRequest  # noqa
 from django.utils import encoding
@@ -158,7 +160,7 @@ class AlreadyExists(HorizonException):
     """
     def __init__(self, name, resource_type):
         self.attrs = {"name": name, "resource": resource_type}
-        self.msg = 'A %(resource)s with the name "%(name)s" already exists.'
+        self.msg = _('A %(resource)s with the name "%(name)s" already exists.')
 
     def __repr__(self):
         return self.msg % self.attrs
@@ -167,7 +169,7 @@ class AlreadyExists(HorizonException):
         return self.msg % self.attrs
 
     def __unicode__(self):
-        return _(self.msg) % self.attrs
+        return self.msg % self.attrs
 
 
 class NotAvailable(HorizonException):
@@ -261,7 +263,7 @@ def handle(request, message=None, redirect=None, ignore=False,
         exc_type, exc_value, exc_traceback = exc_value.wrapped
         wrap = True
 
-    log_entry = encoding.force_unicode(exc_value)
+    log_entry = encoding.force_text(exc_value)
 
     # We trust messages from our own exceptions
     if issubclass(exc_type, HorizonException):
@@ -271,8 +273,9 @@ def handle(request, message=None, redirect=None, ignore=False,
         message = exc_value._safe_message
     # If the message has a placeholder for the exception, fill it in
     elif message and "%(exc)s" in message:
-        message = encoding.force_unicode(message) % {"exc": log_entry}
-    message = encoding.force_unicode(message)
+        message = encoding.force_text(message) % {"exc": log_entry}
+    if message:
+        message = encoding.force_text(message)
 
     if issubclass(exc_type, UNAUTHORIZED):
         if ignore:
@@ -327,4 +330,5 @@ def handle(request, message=None, redirect=None, ignore=False,
     # If we've gotten here, time to wrap and/or raise our exception.
     if wrap:
         raise HandledException([exc_type, exc_value, exc_traceback])
-    raise exc_type, exc_value, exc_traceback
+
+    six.reraise(exc_type, exc_value, exc_traceback)

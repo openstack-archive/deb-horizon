@@ -46,7 +46,8 @@ TEMPLATE_DEBUG = DEBUG
 # OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
 
 # Set Console type:
-# valid options would be "AUTO", "VNC", "SPICE" or "RDP"
+# valid options would be "AUTO"(default), "VNC", "SPICE", "RDP" or None
+# Set to None explicitly if you want to deactivate the console.
 # CONSOLE_TYPE = "AUTO"
 
 # Default OpenStack Dashboard configuration.
@@ -85,7 +86,7 @@ HORIZON_CONFIG = {
 LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Set custom secret key:
-# You can either set it to a specific value or you can let horizion generate a
+# You can either set it to a specific value or you can let horizon generate a
 # default secret key that is unique on this machine, e.i. regardless of the
 # amount of Python WSGI workers (if used behind Apache+mod_wsgi): However, there
 # may be situations where you would want to set this explicitly, e.g. when
@@ -178,15 +179,22 @@ OPENSTACK_CINDER_FEATURES = {
 # services provided by neutron. Options currently available are load
 # balancer service, security groups, quotas, VPN service.
 OPENSTACK_NEUTRON_NETWORK = {
-    'enable_lb': False,
-    'enable_firewall': False,
+    'enable_router': True,
     'enable_quotas': True,
-    'enable_vpn': False,
+    'enable_ipv6': True,
+    'enable_distributed_router': True,
+    'enable_lb': True,
+    'enable_firewall': True,
+    'enable_vpn': True,
     # The profile_support option is used to detect if an external router can be
     # configured via the dashboard. When using specific plugins the
     # profile_support can be turned on if needed.
     'profile_support': None,
     #'profile_support': 'cisco',
+    # Set which provider network types are supported. Only the network types
+    # in this list will be available to choose from when creating a network.
+    # Network types include local, flat, vlan, gre, and vxlan.
+    'supported_provider_types': ['*'],
 }
 
 # The OPENSTACK_IMAGE_BACKEND settings can be used to customize features
@@ -507,6 +515,12 @@ FLAVOR_EXTRA_KEYS = {
         ('quota:cpu_period', _('Quota: CPU period')),
         ('quota:vif_inbound_average', _('Quota: Inbound average')),
         ('quota:vif_outbound_average', _('Quota: Outbound average')),
+        ('hw:cpu_sockets', _('Quota: CPU sockets')),
+        ('hw:cpu_cores', _('Quota: CPU cores')),
+        ('hw:cpu_threads', _('Quota: CPU threads')),
+        ('hw:cpu_max_sockets', _('Quota: Max CPU sockets')),
+        ('hw:cpu_max_cores', _('Quota: Max CPU cores')),
+        ('hw:cpu_max_threads', _('Quota: Max CPU threads')),
     ]
 }
 

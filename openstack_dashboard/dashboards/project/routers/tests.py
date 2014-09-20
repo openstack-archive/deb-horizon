@@ -15,6 +15,7 @@ import copy
 
 from django.core.urlresolvers import reverse
 from django import http
+
 from mox import IsA  # noqa
 
 from openstack_dashboard import api
@@ -28,9 +29,12 @@ class RouterTests(test.TestCase):
     INDEX_URL = reverse('horizon:%s:routers:index' % DASHBOARD)
     DETAIL_PATH = 'horizon:%s:routers:detail' % DASHBOARD
 
-    def _mock_external_network_list(self):
+    def _mock_external_network_list(self, alter_ids=False):
         search_opts = {'router:external': True}
         ext_nets = [n for n in self.networks.list() if n['router:external']]
+        if alter_ids:
+            for ext_net in ext_nets:
+                ext_net.id += 'some extra garbage'
         api.neutron.network_list(
             IsA(http.HttpRequest),
             **search_opts).AndReturn(ext_nets)
@@ -71,6 +75,25 @@ class RouterTests(test.TestCase):
         self.assertEqual(len(res.context['table'].data), 0)
         self.assertMessageCount(res, error=1)
 
+    @test.create_stubs({api.neutron: ('router_list', 'network_list')})
+    def test_set_external_network_empty(self):
+        router = self.routers.first()
+        api.neutron.router_list(
+            IsA(http.HttpRequest),
+            tenant_id=self.tenant.id,
+            search_opts=None).AndReturn([router])
+        self._mock_external_network_list(alter_ids=True)
+        self.mox.ReplayAll()
+
+        res = self.client.get(self.INDEX_URL)
+
+        table_data = res.context['table'].data
+        self.assertEqual(len(table_data), 1)
+        self.assertIn('(Not Found)',
+                      table_data[0]['external_gateway_info']['network'])
+        self.assertTemplateUsed(res, '%s/routers/index.html' % self.DASHBOARD)
+        self.assertMessageCount(res, error=1)
+
     @test.create_stubs({api.neutron: ('router_get', 'port_list',
                                       'network_get')})
     def test_router_detail(self):
@@ -109,13 +132,16 @@ class RouterActionTests(test.TestCase):
     INDEX_URL = reverse('horizon:%s:routers:index' % DASHBOARD)
     DETAIL_PATH = 'horizon:%s:routers:detail' % DASHBOARD
 
-    @test.create_stubs({api.neutron: ('router_create',)})
+    @test.create_stubs({api.neutron: ('router_create',
+                                      'get_dvr_permission',)})
     def test_router_create_post(self):
         router = self.routers.first()
+        api.neutron.get_dvr_permission(IsA(http.HttpRequest), "create")\
+            .AndReturn(False)
         api.neutron.router_create(IsA(http.HttpRequest), name=router.name)\
             .AndReturn(router)
-        self.mox.ReplayAll()
 
+        self.mox.ReplayAll()
         form_data = {'name': router.name}
         url = reverse('horizon:%s:routers:create' % self.DASHBOARD)
         res = self.client.post(url, form_data)
@@ -123,9 +149,50 @@ class RouterActionTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, self.INDEX_URL)
 
-    @test.create_stubs({api.neutron: ('router_create',)})
+    @test.create_stubs({api.neutron: ('router_create',
+                                      'get_dvr_permission',)})
+    def test_router_create_post_mode_server_default(self):
+        router = self.routers.first()
+        api.neutron.get_dvr_permission(IsA(http.HttpRequest), "create")\
+            .AndReturn(True)
+        api.neutron.router_create(IsA(http.HttpRequest), name=router.name)\
+            .AndReturn(router)
+
+        self.mox.ReplayAll()
+        form_data = {'name': router.name,
+                     'mode': 'server_default'}
+        url = reverse('horizon:%s:routers:create' % self.DASHBOARD)
+        res = self.client.post(url, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, self.INDEX_URL)
+
+    @test.create_stubs({api.neutron: ('router_create',
+                                      'get_dvr_permission',)})
+    def test_dvr_router_create_post(self):
+        router = self.routers.first()
+        api.neutron.get_dvr_permission(IsA(http.HttpRequest), "create")\
+            .MultipleTimes().AndReturn(True)
+        param = {'name': router.name,
+               'distributed': True}
+        api.neutron.router_create(IsA(http.HttpRequest), **param)\
+            .AndReturn(router)
+
+        self.mox.ReplayAll()
+        form_data = {'name': router.name,
+                     'mode': 'distributed'}
+        url = reverse('horizon:%s:routers:create' % self.DASHBOARD)
+        res = self.client.post(url, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, self.INDEX_URL)
+
+    @test.create_stubs({api.neutron: ('router_create',
+                                      'get_dvr_permission',)})
     def test_router_create_post_exception_error_case_409(self):
         router = self.routers.first()
+        api.neutron.get_dvr_permission(IsA(http.HttpRequest), "create")\
+            .MultipleTimes().AndReturn(False)
         self.exceptions.neutron.status_code = 409
         api.neutron.router_create(IsA(http.HttpRequest), name=router.name)\
             .AndRaise(self.exceptions.neutron)
@@ -138,9 +205,12 @@ class RouterActionTests(test.TestCase):
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, self.INDEX_URL)
 
-    @test.create_stubs({api.neutron: ('router_create',)})
+    @test.create_stubs({api.neutron: ('router_create',
+                                      'get_dvr_permission',)})
     def test_router_create_post_exception_error_case_non_409(self):
         router = self.routers.first()
+        api.neutron.get_dvr_permission(IsA(http.HttpRequest), "create")\
+            .MultipleTimes().AndReturn(False)
         self.exceptions.neutron.status_code = 999
         api.neutron.router_create(IsA(http.HttpRequest), name=router.name)\
             .AndRaise(self.exceptions.neutron)
@@ -151,6 +221,107 @@ class RouterActionTests(test.TestCase):
         res = self.client.post(url, form_data)
 
         self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, self.INDEX_URL)
+
+    @test.create_stubs({api.neutron: ('router_get',
+                                      'get_dvr_permission')})
+    def _test_router_update_get(self, dvr_enabled=False,
+                                current_dvr=False):
+        router = [r for r in self.routers.list()
+                  if r.distributed == current_dvr][0]
+        api.neutron.router_get(IsA(http.HttpRequest), router.id)\
+            .AndReturn(router)
+        api.neutron.get_dvr_permission(IsA(http.HttpRequest), "update")\
+            .AndReturn(dvr_enabled)
+        self.mox.ReplayAll()
+
+        url = reverse('horizon:%s:routers:update' % self.DASHBOARD,
+                      args=[router.id])
+        return self.client.get(url)
+
+    def test_router_update_get_dvr_disabled(self):
+        res = self._test_router_update_get(dvr_enabled=False)
+
+        self.assertTemplateUsed(res, 'project/routers/update.html')
+        self.assertNotContains(res, 'Router Type')
+        self.assertNotContains(res, 'id="id_mode"')
+
+    def test_router_update_get_dvr_enabled_mode_centralized(self):
+        res = self._test_router_update_get(dvr_enabled=True, current_dvr=False)
+
+        self.assertTemplateUsed(res, 'project/routers/update.html')
+        self.assertContains(res, 'Router Type')
+        # Check both menu are displayed.
+        self.assertContains(
+            res,
+            '<option value="centralized" selected="selected">'
+            'Centralized</option>',
+            html=True)
+        self.assertContains(
+            res,
+            '<option value="distributed">Distributed</option>',
+            html=True)
+
+    def test_router_update_get_dvr_enabled_mode_distributed(self):
+        res = self._test_router_update_get(dvr_enabled=True, current_dvr=True)
+
+        self.assertTemplateUsed(res, 'project/routers/update.html')
+        self.assertContains(res, 'Router Type')
+        self.assertContains(
+            res,
+            '<input class=" form-control" id="id_mode" name="mode" '
+            'readonly="readonly" type="text" value="distributed" />',
+            html=True)
+        self.assertNotContains(res, 'centralized')
+
+    @test.create_stubs({api.neutron: ('router_get',
+                                      'router_update',
+                                      'get_dvr_permission')})
+    def test_router_update_post_dvr_disabled(self):
+        router = self.routers.first()
+        api.neutron.get_dvr_permission(IsA(http.HttpRequest), "update")\
+            .AndReturn(False)
+        api.neutron.router_update(IsA(http.HttpRequest), router.id,
+                                  name=router.name,
+                                  admin_state_up=router.admin_state_up)\
+            .AndReturn(router)
+        api.neutron.router_get(IsA(http.HttpRequest), router.id)\
+            .AndReturn(router)
+        self.mox.ReplayAll()
+
+        form_data = {'router_id': router.id,
+                     'name': router.name,
+                     'admin_state': router.admin_state_up}
+        url = reverse('horizon:%s:routers:update' % self.DASHBOARD,
+                      args=[router.id])
+        res = self.client.post(url, form_data)
+
+        self.assertRedirectsNoFollow(res, self.INDEX_URL)
+
+    @test.create_stubs({api.neutron: ('router_get',
+                                      'router_update',
+                                      'get_dvr_permission')})
+    def test_router_update_post_dvr_enabled(self):
+        router = self.routers.first()
+        api.neutron.get_dvr_permission(IsA(http.HttpRequest), "update")\
+            .AndReturn(True)
+        api.neutron.router_update(IsA(http.HttpRequest), router.id,
+                                  name=router.name,
+                                  admin_state_up=router.admin_state_up,
+                                  distributed=True)\
+            .AndReturn(router)
+        api.neutron.router_get(IsA(http.HttpRequest), router.id)\
+            .AndReturn(router)
+        self.mox.ReplayAll()
+
+        form_data = {'router_id': router.id,
+                     'name': router.name,
+                     'admin_state': router.admin_state_up,
+                     'mode': 'distributed'}
+        url = reverse('horizon:%s:routers:update' % self.DASHBOARD,
+                      args=[router.id])
+        res = self.client.post(url, form_data)
+
         self.assertRedirectsNoFollow(res, self.INDEX_URL)
 
     def _mock_network_list(self, tenant_id):

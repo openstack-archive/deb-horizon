@@ -12,21 +12,18 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
-
 from openstack_dashboard.api import base
 from openstack_dashboard.api import cinder
 from openstack_dashboard.api import keystone
 from openstack_dashboard.api import neutron
 from openstack_dashboard.api import nova
-from openstack_dashboard.usage import quotas
-
 from openstack_dashboard.dashboards.admin.info import constants
 from openstack_dashboard.dashboards.admin.info import tables
+from openstack_dashboard.usage import quotas
 
 
 class ServicesTab(tabs.TableTab):
@@ -90,7 +87,7 @@ class NetworkAgentsTab(tabs.TableTab):
     def allowed(self, request):
         try:
             return (base.is_service_enabled(request, 'network') and
-                    neutron.is_agent_extension_supported(request))
+                    neutron.is_extension_supported(request, 'agent'))
         except Exception:
             exceptions.handle(request, _('Unable to get network agents info.'))
             return False

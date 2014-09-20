@@ -35,7 +35,8 @@ class TerminateInstance(tables.BatchAction):
     action_past = _("Scheduled termination of %(data_type)s")
     data_type_singular = _("Instance")
     data_type_plural = _("Instances")
-    classes = ('btn-danger', 'btn-terminate')
+    classes = ("ajax-modal",)
+    icon = "off"
 
     def action(self, request, obj_id):
         api.trove.instance_delete(request, obj_id)
@@ -45,13 +46,13 @@ class RestartInstance(tables.BatchAction):
     name = "restart"
     action_present = _("Restart")
     action_past = _("Restarted")
-    data_type_singular = _("Database")
-    data_type_plural = _("Databases")
+    data_type_singular = _("Instance")
+    data_type_plural = _("Instances")
     classes = ('btn-danger', 'btn-reboot')
 
     def allowed(self, request, instance=None):
         return ((instance.status in ACTIVE_STATES
-                 or instance.status == 'SHUTOFF'))
+                 or instance.status == 'SHUTDOWN'))
 
     def action(self, request, obj_id):
         api.trove.instance_restart(request, obj_id)
@@ -93,14 +94,16 @@ class LaunchLink(tables.LinkAction):
     name = "launch"
     verbose_name = _("Launch Instance")
     url = "horizon:project:databases:launch"
-    classes = ("btn-launch", "ajax-modal")
+    classes = ("ajax-modal", "btn-launch")
+    icon = "cloud-upload"
 
 
 class CreateBackup(tables.LinkAction):
     name = "backup"
     verbose_name = _("Create Backup")
     url = "horizon:project:database_backups:create"
-    classes = ("ajax-modal", "btn-camera")
+    classes = ("ajax-modal",)
+    icon = "camera"
 
     def allowed(self, request, instance=None):
         return (instance.status in ACTIVE_STATES and
@@ -119,7 +122,7 @@ class ResizeVolume(tables.LinkAction):
 
     def allowed(self, request, instance=None):
         return ((instance.status in ACTIVE_STATES
-                 or instance.status == 'SHUTOFF'))
+                 or instance.status == 'SHUTDOWN'))
 
     def get_link_url(self, datum):
         instance_id = self.table.get_object_id(datum)
@@ -136,6 +139,7 @@ class UpdateRow(tables.Row):
             instance.full_flavor = api.trove.flavor_get(request, flavor_id)
         except Exception:
             pass
+        instance.host = get_host(instance)
         return instance
 
 
@@ -149,6 +153,14 @@ def get_datastore_version(instance):
     if hasattr(instance, "datastore"):
         return instance.datastore["version"]
     return _("Not available")
+
+
+def get_host(instance):
+    if hasattr(instance, "hostname"):
+        return instance.hostname
+    elif hasattr(instance, "ip") and instance.ip:
+        return instance.ip[0]
+    return _("Not Assigned")
 
 
 def get_size(instance):
@@ -176,20 +188,25 @@ def get_databases(user):
 
 class InstancesTable(tables.DataTable):
     STATUS_CHOICES = (
-        ("active", True),
-        ("shutoff", True),
-        ("suspended", True),
-        ("paused", True),
-        ("error", False),
+        ("ACTIVE", True),
+        ("BLOCKED", True),
+        ("BUILD", True),
+        ("FAILED", False),
+        ("REBOOT", None),
+        ("RESIZE", None),
+        ("BACKUP", None),
+        ("SHUTDOWN", False),
+        ("ERROR", False),
+        ("RESTART_REQUIRED", None),
     )
     name = tables.Column("name",
                          link=("horizon:project:databases:detail"),
-                         verbose_name=_("Database Name"))
+                         verbose_name=_("Instance Name"))
     datastore = tables.Column(get_datastore,
                               verbose_name=_("Datastore"))
     datastore_version = tables.Column(get_datastore_version,
                                       verbose_name=_("Datastore Version"))
-    host = tables.Column("host", verbose_name=_("Host"))
+    host = tables.Column(get_host, verbose_name=_("Host"))
     size = tables.Column(get_size,
                          verbose_name=_("Size"),
                          attrs={'data-type': 'size'})
@@ -205,7 +222,7 @@ class InstancesTable(tables.DataTable):
 
     class Meta:
         name = "databases"
-        verbose_name = _("Databases")
+        verbose_name = _("Instances")
         status_columns = ["status"]
         row_class = UpdateRow
         table_actions = (LaunchLink, TerminateInstance)
@@ -222,7 +239,7 @@ class UsersTable(tables.DataTable):
 
     class Meta:
         name = "users"
-        verbose_name = _("Database Instance Users")
+        verbose_name = _("Users")
         table_actions = [DeleteUser]
         row_actions = [DeleteUser]
 

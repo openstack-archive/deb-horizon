@@ -89,7 +89,6 @@ class SetInstanceDetailsAction(workflows.Action):
                                help_text=_("Number of instances to launch."))
 
     source_type = forms.ChoiceField(label=_("Instance Boot Source"),
-                                    required=True,
                                     help_text=_("Choose Your Boot Source "
                                                 "Type."))
 
@@ -110,6 +109,7 @@ class SetInstanceDetailsAction(workflows.Action):
                                               filesizeformat(x.bytes)))))
 
     volume_size = forms.IntegerField(label=_("Device size (GB)"),
+                                  min_value=1,
                                   required=False,
                                   help_text=_("Volume size in gigabytes "
                                               "(integer value)."))
@@ -178,6 +178,42 @@ class SetInstanceDetailsAction(workflows.Action):
             params = {'req': count,
                       'avail': available_count}
             raise forms.ValidationError(error_message % params)
+        try:
+            flavor_id = cleaned_data.get('flavor')
+            # We want to retrieve details for a given flavor,
+            # however flavor_list uses a memoized decorator
+            # so it is used instead of flavor_get to reduce the number
+            # of API calls.
+            flavors = instance_utils.flavor_list(self.request)
+            flavor = [x for x in flavors if x.id == flavor_id][0]
+        except IndexError:
+            flavor = None
+
+        count_error = []
+        # Validate cores and ram.
+        available_cores = usages['cores']['available']
+        if flavor and available_cores < count * flavor.vcpus:
+            count_error.append(_("Cores(Available: %(avail)s, "
+                                 "Requested: %(req)s)")
+                    % {'avail': available_cores,
+                       'req': count * flavor.vcpus})
+
+        available_ram = usages['ram']['available']
+        if flavor and available_ram < count * flavor.ram:
+            count_error.append(_("RAM(Available: %(avail)s, "
+                                 "Requested: %(req)s)")
+                    % {'avail': available_ram,
+                       'req': count * flavor.ram})
+
+        if count_error:
+            value_str = ", ".join(count_error)
+            msg = (_('The requested instance cannot be launched. '
+                     'The following requested resource(s) exceed '
+                     'quota(s): %s.') % value_str)
+            if count == 1:
+                self._errors['flavor'] = self.error_class([msg])
+            else:
+                self._errors['count'] = self.error_class([msg])
 
         # Validate our instance source.
         source_type = self.data.get('source_type', None)
@@ -209,30 +245,19 @@ class SetInstanceDetailsAction(workflows.Action):
                 except IndexError:
                     image = None
 
-                try:
-                    flavor_id = cleaned_data.get('flavor')
-                    # We want to retrieve details for a given flavor,
-                    # however flavor_list uses a memoized decorator
-                    # so it is used instead of flavor_get to reduce the number
-                    # of API calls.
-                    flavors = instance_utils.flavor_list(self.request)
-                    flavor = [x for x in flavors if x.id == flavor_id][0]
-                except IndexError:
-                    flavor = None
-
                 if image and flavor:
                     props_mapping = (("min_ram", "ram"), ("min_disk", "disk"))
                     for iprop, fprop in props_mapping:
                         if getattr(image, iprop) > 0 and \
                                 getattr(image, iprop) > getattr(flavor, fprop):
-                            msg = _("The flavor '%(flavor)s' is too small for "
-                                    "requested image.\n"
-                                    "Minimum requirements: "
-                                    "%(min_ram)s MB of RAM and "
-                                    "%(min_disk)s GB of Root Disk." %
-                                    {'flavor': flavor.name,
-                                     'min_ram': image.min_ram,
-                                     'min_disk': image.min_disk})
+                            msg = (_("The flavor '%(flavor)s' is too small "
+                                     "for requested image.\n"
+                                     "Minimum requirements: "
+                                     "%(min_ram)s MB of RAM and "
+                                     "%(min_disk)s GB of Root Disk.") %
+                                   {'flavor': flavor.name,
+                                    'min_ram': image.min_ram,
+                                    'min_disk': image.min_disk})
                             self._errors['image_id'] = self.error_class([msg])
                             break  # Not necessary to continue the tests.
 
@@ -242,12 +267,12 @@ class SetInstanceDetailsAction(workflows.Action):
                         img_gigs = functions.bytes_to_gigabytes(image.size)
                         smallest_size = max(img_gigs, image.min_disk)
                         if volume_size < smallest_size:
-                            msg = _("The Volume size is too small for the"
-                                    " '%(image_name)s' image and has to be"
-                                    " greater than or equal to "
-                                    "'%(smallest_size)d' GB." %
-                                    {'image_name': image.name,
-                                     'smallest_size': smallest_size})
+                            msg = (_("The Volume size is too small for the"
+                                     " '%(image_name)s' image and has to be"
+                                     " greater than or equal to "
+                                     "'%(smallest_size)d' GB.") %
+                                   {'image_name': image.name,
+                                    'smallest_size': smallest_size})
                             self._errors['volume_size'] = self.error_class(
                                 [msg])
 
@@ -447,7 +472,7 @@ KEYPAIR_IMPORT_URL = "horizon:project:access_and_security:keypairs:import"
 class SetAccessControlsAction(workflows.Action):
     keypair = forms.DynamicChoiceField(label=_("Key Pair"),
                                        required=False,
-                                       help_text=_("Which key pair to use for "
+                                       help_text=_("Key pair to use for "
                                                    "authentication."),
                                        add_item_link=KEYPAIR_IMPORT_URL)
     admin_pass = forms.RegexField(
@@ -461,7 +486,6 @@ class SetAccessControlsAction(workflows.Action):
         required=False,
         widget=forms.PasswordInput(render_value=False))
     groups = forms.MultipleChoiceField(label=_("Security Groups"),
-                                       required=True,
                                        initial=["default"],
                                        widget=forms.CheckboxSelectMultiple(),
                                        help_text=_("Launch instance in these "
@@ -553,7 +577,6 @@ class PostCreationStep(workflows.Step):
 
 class SetNetworkAction(workflows.Action):
     network = forms.MultipleChoiceField(label=_("Networks"),
-                                        required=True,
                                         widget=forms.CheckboxSelectMultiple(),
                                         error_messages={
                                             'required': _(
@@ -586,14 +609,14 @@ class SetNetworkAction(workflows.Action):
         help_text = _("Select networks for your instance.")
 
     def populate_network_choices(self, request, context):
+        network_list = []
         try:
             tenant_id = self.request.user.tenant_id
             networks = api.neutron.network_list_for_tenant(request, tenant_id)
             for n in networks:
                 n.set_id_as_name_if_empty()
-            network_list = [(network.id, network.name) for network in networks]
+                network_list.append((n.id, n.name))
         except Exception:
-            network_list = []
             exceptions.handle(request,
                               _('Unable to retrieve networks.'))
         return network_list
@@ -734,16 +757,15 @@ class LaunchInstance(workflows.Workflow):
         # for the use with the plugin supporting port profiles.
         # neutron port-create <Network name> --n1kv:profile <Port Profile ID>
         # for net_id in context['network_id']:
-        ## HACK for now use first network
+        # HACK for now use first network.
         if api.neutron.is_port_profiles_supported():
             net_id = context['network_id'][0]
             LOG.debug("Horizon->Create Port with %(netid)s %(profile_id)s",
                       {'netid': net_id, 'profile_id': context['profile_id']})
             port = None
             try:
-                port = api.neutron.port_create(request, net_id,
-                                               policy_profile_id=
-                                               context['profile_id'])
+                port = api.neutron.port_create(
+                    request, net_id, policy_profile_id=context['profile_id'])
             except Exception:
                 msg = (_('Port not created for profile-id (%s).') %
                        context['profile_id'])

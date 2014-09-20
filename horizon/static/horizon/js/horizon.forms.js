@@ -5,7 +5,7 @@ horizon.forms = {
       var $option = $(this).find("option:selected");
       var $form = $(this).closest('form');
       var $volName = $form.find('input#id_name');
-      if ($volName.val() == "") {
+      if ($volName.val() === "") {
         $volName.val($option.data("name"));
       }
       var $volSize = $form.find('input#id_size');
@@ -22,7 +22,7 @@ horizon.forms = {
       var $option = $(this).find("option:selected");
       var $form = $(this).closest('form');
       var $volName = $form.find('input#id_name');
-      if ($volName.val() == "") {
+      if ($volName.val() === "") {
         $volName.val($option.data("name"));
       }
       var $volSize = $form.find('input#id_size');
@@ -39,7 +39,7 @@ horizon.forms = {
       var $option = $(this).find("option:selected");
       var $form = $(this).closest('form');
       var $volName = $form.find('input#id_name');
-      if ($volName.val() == "") {
+      if ($volName.val() === "") {
         $volName.val($option.data("name"));
       }
       var $volSize = $form.find('input#id_size');
@@ -64,7 +64,7 @@ horizon.forms = {
    */
   handle_object_upload_source: function() {
     $("div.table_wrapper, #modal_wrapper").on("change", "input#id_object_file", function(evt) {
-      if (typeof($(this).attr("filename")) == 'undefined') {
+      if (typeof($(this).attr("filename")) === 'undefined') {
         $(this).attr("filename", "");
       }
       var $form = $(this).closest("form");
@@ -77,7 +77,7 @@ horizon.forms = {
         $filename = $filename.substring(1);
       }
 
-      if (typeof($obj_name.val()) == 'undefined' || $(this).attr("filename").localeCompare($obj_name.val()) == 0) {
+      if (typeof($obj_name.val()) === 'undefined' || $(this).attr("filename").localeCompare($obj_name.val()) === 0) {
         $obj_name.val($filename);
         $(this).attr("filename", $filename);
       }
@@ -121,7 +121,7 @@ horizon.forms.bind_add_item_handlers = function (el) {
     var $this = $(this);
     $button = $("<a href='" + $this.attr("data-add-item-url") + "' " +
       "data-add-to-field='" + $this.attr("id") + "' " +
-      "class='btn ajax-add ajax-modal btn-inline'>+</a>");
+      "class='btn ajax-add ajax-modal btn-default'>+</a>");
     $this.after($button);
   });
 };
@@ -142,6 +142,45 @@ horizon.forms.prevent_multiple_submission = function (el) {
   });
 };
 
+horizon.forms.add_password_fields_reveal_buttons = function (el) {
+  var _change_input_type = function ($input, type) {
+    /*
+     * In a perfect world, this function would just do:
+     *
+     *   $input.attr('type', type);
+     *
+     * however, Microsoft Internet Explorer exists and we have to support it.
+     */
+
+    var $new_input = $input.clone();
+
+    $new_input.attr('type', type);
+    $input.replaceWith($new_input);
+    return $new_input;
+  };
+
+
+  $(el).find('input[type="password"]').each(function (i, input) {
+    var $input = $(input);
+
+    $(
+      '<span class="password-reveal-button icon-eye-open"></span>'
+    ).insertAfter($input).click(function () {
+      var $icon = $(this);
+
+      if ($input.attr('type') === 'password') {
+        $icon.removeClass('icon-eye-open');
+        $icon.addClass('icon-eye-close');
+        $input = _change_input_type($input, 'text');
+      } else {
+        $icon.removeClass('icon-eye-close');
+        $icon.addClass('icon-eye-open');
+        $input = _change_input_type($input, 'password');
+      }
+    });
+  });
+};
+
 horizon.forms.init_examples = function (el) {
   var $el = $(el);
 
@@ -152,9 +191,6 @@ horizon.forms.init_examples = function (el) {
 
   // Table search box.
   $el.find(".table_search input").attr("placeholder", gettext("Filter"));
-
-  // Volume attachment form.
-  $el.find("#attach_volume_form #id_device").attr("placeholder", "/dev/vdc");
 };
 
 horizon.addInitFunction(function () {
@@ -172,6 +208,10 @@ horizon.addInitFunction(function () {
   horizon.forms.handle_image_source();
   horizon.forms.handle_object_upload_source();
   horizon.forms.datepicker();
+
+  horizon.forms.add_password_fields_reveal_buttons($("body"));
+  horizon.modals.addModalInitFunction(
+    horizon.forms.add_password_fields_reveal_buttons);
 
   // Bind event handlers to confirm dangerous actions.
   $("body").on("click", "form button.btn-danger", function (evt) {
@@ -197,10 +237,10 @@ horizon.addInitFunction(function () {
           data = $input.data(slug + "-" + val);
 
         if (typeof data === "undefined" || !visible) {
-          $input.closest('.form-field').hide();
+          $input.closest('.form-group').hide();
         } else {
           $('label[for=' + $input.attr('id') + ']').html(data);
-          $input.closest('.form-field').show();
+          $input.closest('.form-group').show();
         }
       });
     });
@@ -220,9 +260,9 @@ horizon.addInitFunction(function () {
 
     $this.find("option").each(function () {
       if (this.value !== base_type) {
-        $("#id_" + this.value).closest(".control-group").hide();
+        $("#id_" + this.value).closest(".form-group").hide();
       } else {
-        $("#id_" + this.value).closest(".control-group").show();
+        $("#id_" + this.value).closest(".form-group").show();
       }
     });
   }
@@ -240,19 +280,19 @@ horizon.addInitFunction(function () {
 
   // Apply standard handler for everything but checkboxes.
   $(document).tooltip({
-    selector: "div.form-field .help-icon",
+    selector: "div.form-group .help-icon",
     placement: function (tip, input) {
       // Position to the right unless this is a "split" for in which case put
       // the tooltip below so it doesn't block the next field.
       return $(input).closest("form[class*='split']").length ? "bottom" : 'right';
     },
     title: function () {
-      return $(this).closest('div.form-field').children('.help-block').text();
+      return $(this).closest('div.form-group').children('.help-block').text();
     }
   });
   // Hide the tooltip upon interaction with the field for select boxes.
   // We use mousedown and keydown since those "open" the select dropdown.
-  $(document).on('mousedown keydown', '.form-field select', function (evt) {
+  $(document).on('mousedown keydown', '.form-group select', function (evt) {
     $(this).tooltip('hide');
   });
   // Hide the tooltip after escape button pressed
@@ -263,5 +303,5 @@ horizon.addInitFunction(function () {
   });
 
   // Hide the help text for js-capable browsers
-  $('span.help-block').hide();
+  $('p.help-block').hide();
 });

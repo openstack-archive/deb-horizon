@@ -57,11 +57,14 @@ class DetailView(tabs.TabView):
                 att['instance'] = api.nova.server_get(self.request,
                                                       att['server_id'])
         except Exception:
-            redirect = reverse('horizon:project:volumes:index')
+            redirect = self.get_redirect_url()
             exceptions.handle(self.request,
                               _('Unable to retrieve volume details.'),
                               redirect=redirect)
         return volume
+
+    def get_redirect_url(self):
+        return reverse('horizon:project:volumes:index')
 
     def get_tabs(self, request, *args, **kwargs):
         volume = self.get_data()
@@ -143,6 +146,40 @@ class CreateSnapshotView(forms.ModalFormView):
 
     def get_initial(self):
         return {'volume_id': self.kwargs["volume_id"]}
+
+
+class UploadToImageView(forms.ModalFormView):
+    form_class = project_forms.UploadToImageForm
+    template_name = 'project/volumes/volumes/upload_to_image.html'
+    success_url = reverse_lazy("horizon:project:volumes:index")
+
+    @memoized.memoized_method
+    def get_data(self):
+        try:
+            volume_id = self.kwargs['volume_id']
+            volume = cinder.volume_get(self.request, volume_id)
+        except Exception:
+            error_message = _(
+                'Unable to retrieve volume information for volume: "%s"') \
+                % volume_id
+            exceptions.handle(self.request,
+                              error_message,
+                              redirect=self.success_url)
+
+        return volume
+
+    def get_context_data(self, **kwargs):
+        context = super(UploadToImageView, self).get_context_data(**kwargs)
+        context['volume'] = self.get_data()
+
+        return context
+
+    def get_initial(self):
+        volume = self.get_data()
+
+        return {'id': self.kwargs['volume_id'],
+                'name': volume.name,
+                'status': volume.status}
 
 
 class UpdateView(forms.ModalFormView):
@@ -239,3 +276,37 @@ class EditAttachmentsView(tables.DataTableView, forms.ModalFormView):
             return self.form_valid(form)
         else:
             return self.get(request, *args, **kwargs)
+
+
+class RetypeView(forms.ModalFormView):
+    form_class = project_forms.RetypeForm
+    template_name = 'project/volumes/volumes/retype.html'
+    success_url = reverse_lazy("horizon:project:volumes:index")
+
+    @memoized.memoized_method
+    def get_data(self):
+        try:
+            volume_id = self.kwargs['volume_id']
+            volume = cinder.volume_get(self.request, volume_id)
+        except Exception:
+            error_message = _(
+                'Unable to retrieve volume information for volume: "%s"') \
+                % volume_id
+            exceptions.handle(self.request,
+                              error_message,
+                              redirect=self.success_url)
+
+        return volume
+
+    def get_context_data(self, **kwargs):
+        context = super(RetypeView, self).get_context_data(**kwargs)
+        context['volume'] = self.get_data()
+
+        return context
+
+    def get_initial(self):
+        volume = self.get_data()
+
+        return {'id': self.kwargs['volume_id'],
+                'name': volume.name,
+                'volume_type': volume.volume_type}

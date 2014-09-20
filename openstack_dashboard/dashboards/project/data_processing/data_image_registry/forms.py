@@ -14,10 +14,10 @@
 import json
 
 from django.utils.translation import ugettext_lazy as _
+
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-
 from openstack_dashboard.api import glance
 from openstack_dashboard.api import sahara as saharaclient
 
@@ -29,8 +29,7 @@ class ImageForm(forms.SelfHandlingForm):
     description = forms.CharField(max_length=80,
                                   label=_("Description"),
                                   required=False,
-                                  widget=forms.Textarea(attrs={'cols': 80,
-                                                               'rows': 20}))
+                                  widget=forms.Textarea())
 
     def handle(self, request, data):
         try:
@@ -57,8 +56,7 @@ class EditTagsForm(ImageForm):
 
 
 class RegisterImageForm(ImageForm):
-    image_id = forms.ChoiceField(label=_("Image"),
-                                 required=True)
+    image_id = forms.ChoiceField(label=_("Image"))
 
     def __init__(self, request, *args, **kwargs):
         super(RegisterImageForm, self).__init__(request, *args, **kwargs)

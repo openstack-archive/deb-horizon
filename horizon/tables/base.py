@@ -323,7 +323,7 @@ class Column(html.HTMLElement):
                 self.transform in datum:
             data = datum.get(self.transform)
         else:
-        # Basic object lookups
+            # Basic object lookups
             try:
                 data = getattr(datum, self.transform)
             except AttributeError:
@@ -685,7 +685,8 @@ class Cell(html.HTMLElement):
         except Exception:
             data = None
             exc_info = sys.exc_info()
-            raise template.TemplateSyntaxError, exc_info[1], exc_info[2]
+            raise six.reraise(template.TemplateSyntaxError, exc_info[1],
+                              exc_info[2])
 
         if self.url:
             link_attrs = ' '.join(['%s="%s"' % (k, v) for (k, v) in
@@ -715,7 +716,7 @@ class Cell(html.HTMLElement):
 
         if self.column.status or \
                 self.column.name in self.column.table._meta.status_columns:
-            #returns the first matching status found
+            # returns the first matching status found
             data_status_lower = unicode(
                 self.column.get_raw_data(self.datum)).lower()
             for status_name, status_value in self.column.status_choices:
@@ -797,6 +798,13 @@ class DataTableOptions(object):
         A list of action classes derived from the
         :class:`~horizon.tables.Action` class. These actions will handle tasks
         such as bulk deletion, etc. for multiple objects at once.
+
+    .. attribute:: table_actions_menu
+
+        A list of action classes similar to ``table_actions`` except these
+        will be displayed in a menu instead of as individual buttons. Actions
+        from this list will take precedence over actions from the
+        ``table_actions`` list.
 
     .. attribute:: row_actions
 
@@ -908,6 +916,7 @@ class DataTableOptions(object):
         self.status_columns = getattr(options, 'status_columns', [])
         self.table_actions = getattr(options, 'table_actions', [])
         self.row_actions = getattr(options, 'row_actions', [])
+        self.table_actions_menu = getattr(options, 'table_actions_menu', [])
         self.cell_class = getattr(options, 'cell_class', Cell)
         self.row_class = getattr(options, 'row_class', Row)
         self.column_class = getattr(options, 'column_class', Column)
@@ -1036,7 +1045,8 @@ class DataTableMetaclass(type):
         # Gather and register actions for later access since we only want
         # to instantiate them once.
         # (list() call gives deterministic sort order, which sets don't have.)
-        actions = list(set(opts.row_actions) | set(opts.table_actions))
+        actions = list(set(opts.row_actions) | set(opts.table_actions) |
+                       set(opts.table_actions_menu))
         actions.sort(key=attrgetter('name'))
         actions_dict = SortedDict([(action.name, action())
                                    for action in actions])
@@ -1136,21 +1146,39 @@ class DataTable(object):
                                     and action.needs_preloading)
                 valid_method = (request_method == action.method)
                 if valid_method or needs_preloading:
+                    filter_field = self.get_filter_field()
                     if self._meta.mixed_data_type:
                         self._filtered_data = action.data_type_filter(self,
                                                                 self.data,
                                                                 filter_string)
-                    else:
+                    elif not action.is_api_filter(filter_field):
                         self._filtered_data = action.filter(self,
                                                             self.data,
                                                             filter_string)
         return self._filtered_data
 
     def get_filter_string(self):
+        """Get the filter string value. For 'server' type filters this is
+        saved in the session so that it gets persisted across table loads.
+        For other filter types this is obtained from the POST dict.
+        """
         filter_action = self._meta._filter_action
         param_name = filter_action.get_param_name()
-        filter_string = self.request.POST.get(param_name, '')
+        filter_string = ''
+        if filter_action.filter_type == 'server':
+            filter_string = self.request.session.get(param_name, '')
+        else:
+            filter_string = self.request.POST.get(param_name, '')
         return filter_string
+
+    def get_filter_field(self):
+        """Get the filter field value used for 'server' type filters. This
+        is the value from the filter action's list of filter choices.
+        """
+        filter_action = self._meta._filter_action
+        param_name = '%s_field' % filter_action.get_param_name()
+        filter_field = self.request.session.get(param_name, '')
+        return filter_field
 
     def _populate_data_cache(self):
         self._data_cache = {}
@@ -1258,8 +1286,12 @@ class DataTable(object):
 
     def get_table_actions(self):
         """Returns a list of the action instances for this table."""
-        bound_actions = [self.base_actions[action.name] for
-                         action in self._meta.table_actions]
+        button_actions = [self.base_actions[action.name] for action in
+                          self._meta.table_actions if
+                          action not in self._meta.table_actions_menu]
+        menu_actions = [self.base_actions[action.name] for
+                        action in self._meta.table_actions_menu]
+        bound_actions = button_actions + menu_actions
         return [action for action in bound_actions if
                 self._filter_action(action, self.request)]
 
@@ -1289,8 +1321,8 @@ class DataTable(object):
         if not self.multi_select:
             return
         select_column = self.columns.values()[0]
-        #Try to find if the hidden class need to be
-        #removed or added based on visible flag.
+        # Try to find if the hidden class need to be
+        # removed or added based on visible flag.
         hidden_found = 'hidden' in select_column.classes
         if hidden_found and visible:
             select_column.classes.remove('hidden')
@@ -1302,10 +1334,17 @@ class DataTable(object):
         template_path = self._meta.table_actions_template
         table_actions_template = template.loader.get_template(template_path)
         bound_actions = self.get_table_actions()
-        extra_context = {"table_actions": bound_actions}
-        if self._meta.filter and \
-           self._filter_action(self._meta._filter_action, self.request):
+        extra_context = {"table_actions": bound_actions,
+                         "table_actions_buttons": [],
+                         "table_actions_menu": []}
+        if self._meta.filter and (
+                self._filter_action(self._meta._filter_action, self.request)):
             extra_context["filter"] = self._meta._filter_action
+        for action in bound_actions:
+            if action.__class__ in self._meta.table_actions_menu:
+                extra_context['table_actions_menu'].append(action)
+            elif action != extra_context.get('filter'):
+                extra_context['table_actions_buttons'].append(action)
         context = template.RequestContext(self.request, extra_context)
         self.set_multiselect_column_visibility(len(bound_actions) > 0)
         return table_actions_template.render(context)
@@ -1660,6 +1699,7 @@ class DataTable(object):
             # re-raising as a TemplateSyntaxError makes them visible.
             LOG.exception("Error while rendering table rows.")
             exc_info = sys.exc_info()
-            raise template.TemplateSyntaxError, exc_info[1], exc_info[2]
+            raise six.reraise(template.TemplateSyntaxError, exc_info[1],
+                              exc_info[2])
 
         return rows

@@ -22,10 +22,24 @@ import sys
 
 import django
 from django.utils import html_parser
-from horizon.test import patches
 import xstatic.main
+import xstatic.pkg.angular
+import xstatic.pkg.angular_cookies
+import xstatic.pkg.angular_mock
+import xstatic.pkg.d3
+import xstatic.pkg.font_awesome
+import xstatic.pkg.hogan
+import xstatic.pkg.jasmine
 import xstatic.pkg.jquery
+import xstatic.pkg.jquery_migrate
+import xstatic.pkg.jquery_quicksearch
+import xstatic.pkg.jquery_tablesorter
+import xstatic.pkg.jsencrypt
+import xstatic.pkg.qunit
+import xstatic.pkg.rickshaw
+import xstatic.pkg.spin
 
+from horizon.test import patches
 
 # Patch django.utils.html_parser.HTMLParser as a workaround for bug 1273943
 if django.get_version() == '1.4' and sys.version_info[:3] > (2, 7, 3):
@@ -97,7 +111,7 @@ STATIC_URL = '/static/'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 ROOT_URLCONF = 'horizon.test.urls'
-TEMPLATE_DIRS = (os.path.join(ROOT_PATH, 'tests', 'templates'))
+TEMPLATE_DIRS = (os.path.join(ROOT_PATH, 'tests', 'templates'),)
 SITE_ID = 1
 SITE_BRANDING = 'Horizon'
 
@@ -139,7 +153,36 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_DIRS = (
-    ('horizon/lib/jquery', xstatic.main.XStatic(xstatic.pkg.jquery).base_dir),
+    ('horizon/lib/angular',
+        xstatic.main.XStatic(xstatic.pkg.angular).base_dir),
+    ('horizon/lib/angular',
+        xstatic.main.XStatic(xstatic.pkg.angular_cookies).base_dir),
+    ('horizon/lib/angular',
+        xstatic.main.XStatic(xstatic.pkg.angular_mock).base_dir),
+    ('horizon/lib',
+        xstatic.main.XStatic(xstatic.pkg.d3).base_dir),
+    ('horizon/lib',
+        xstatic.main.XStatic(xstatic.pkg.hogan).base_dir),
+    ('horizon/lib/font-awesome',
+        xstatic.main.XStatic(xstatic.pkg.font_awesome).base_dir),
+    ('horizon/lib/jasmine-1.3.1',
+        xstatic.main.XStatic(xstatic.pkg.jasmine).base_dir),
+    ('horizon/lib/jquery',
+        xstatic.main.XStatic(xstatic.pkg.jquery).base_dir),
+    ('horizon/lib/jquery',
+        xstatic.main.XStatic(xstatic.pkg.jquery_migrate).base_dir),
+    ('horizon/lib/jquery',
+        xstatic.main.XStatic(xstatic.pkg.jquery_quicksearch).base_dir),
+    ('horizon/lib/jquery',
+        xstatic.main.XStatic(xstatic.pkg.jquery_tablesorter).base_dir),
+    ('horizon/lib/jsencrypt',
+        xstatic.main.XStatic(xstatic.pkg.jsencrypt).base_dir),
+    ('horizon/lib/qunit',
+        xstatic.main.XStatic(xstatic.pkg.qunit).base_dir),
+    ('horizon/lib',
+        xstatic.main.XStatic(xstatic.pkg.rickshaw).base_dir),
+    ('horizon/lib',
+        xstatic.main.XStatic(xstatic.pkg.spin).base_dir),
 )
 
 LOGGING = {

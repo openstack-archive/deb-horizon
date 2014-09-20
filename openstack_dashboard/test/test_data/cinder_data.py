@@ -39,31 +39,27 @@ def data(TEST):
     TEST.cinder_availability_zones = utils.TestDataContainer()
 
     # Services
-    service_1 = services.Service(services.ServiceManager(None),
-        {
-            "service": "cinder-scheduler",
-            "status": "enabled",
-            "binary": "cinder-scheduler",
-            "zone": "internal",
-            "state": "up",
-            "updated_at": "2013-07-08T05:21:00.000000",
-            "host": "devstack001",
-            "disabled_reason": None
-        }
-    )
+    service_1 = services.Service(services.ServiceManager(None), {
+        "service": "cinder-scheduler",
+        "status": "enabled",
+        "binary": "cinder-scheduler",
+        "zone": "internal",
+        "state": "up",
+        "updated_at": "2013-07-08T05:21:00.000000",
+        "host": "devstack001",
+        "disabled_reason": None
+    })
 
-    service_2 = services.Service(services.ServiceManager(None),
-        {
-            "service": "cinder-volume",
-            "status": "enabled",
-            "binary": "cinder-volume",
-            "zone": "nova",
-            "state": "up",
-            "updated_at": "2013-07-08T05:20:51.000000",
-            "host": "devstack001",
-            "disabled_reason": None
-        }
-    )
+    service_2 = services.Service(services.ServiceManager(None), {
+        "service": "cinder-volume",
+        "status": "enabled",
+        "binary": "cinder-volume",
+        "zone": "nova",
+        "state": "up",
+        "updated_at": "2013-07-08T05:20:51.000000",
+        "host": "devstack001",
+        "disabled_reason": None
+    })
     TEST.cinder_services.add(service_1)
     TEST.cinder_services.add(service_2)
 
@@ -97,6 +93,17 @@ def data(TEST):
                              'volume_type': None,
                              'attachments': [{"id": "1", "server_id": '1',
                                             "device": "/dev/hda"}]})
+    volume_with_type = volumes.Volume(volumes.VolumeManager(None),
+                            {'id': "7dcb47fd-07d9-42c2-9647-be5eab799ebe",
+                             'name': 'my_volume2',
+                             'status': 'in-use',
+                             'size': 10,
+                             'display_name': u'my_volume2',
+                             'display_description': '',
+                             'created_at': '2013-04-01 10:30:00',
+                             'volume_type': 'vol_type_2',
+                             'attachments': [{"id": "2", "server_id": '2',
+                                            "device": "/dev/hdb"}]})
 
     volume.bootable = 'true'
     nameless_volume.bootable = 'true'
@@ -105,6 +112,7 @@ def data(TEST):
     TEST.cinder_volumes.add(api.cinder.Volume(volume))
     TEST.cinder_volumes.add(api.cinder.Volume(nameless_volume))
     TEST.cinder_volumes.add(api.cinder.Volume(other_volume))
+    TEST.cinder_volumes.add(api.cinder.Volume(volume_with_type))
 
     vol_type1 = volume_types.VolumeType(volume_types.VolumeTypeManager(None),
                                         {'id': u'1',

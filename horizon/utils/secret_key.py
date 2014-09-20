@@ -13,12 +13,11 @@
 #    under the License.
 
 
-from __future__ import with_statement  # Python 2.5 compliance
-
-import lockfile
 import os
 import random
 import string
+
+import lockfile
 
 
 class FilePermissionError(Exception):

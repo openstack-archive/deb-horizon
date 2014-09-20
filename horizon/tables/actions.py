@@ -14,7 +14,7 @@
 
 from collections import defaultdict
 import logging
-import new
+import types
 
 from django.conf import settings
 from django.core import urlresolvers
@@ -36,7 +36,7 @@ from horizon.utils import html
 LOG = logging.getLogger(__name__)
 
 # For Bootstrap integration; can be overridden in settings.
-ACTION_CSS_CLASSES = ("btn", "btn-small")
+ACTION_CSS_CLASSES = ("btn", "btn-default", "btn-sm")
 STRING_SEPARATOR = "__"
 
 
@@ -147,7 +147,7 @@ class BaseAction(html.HTMLElement):
 
     def get_default_classes(self):
         """Returns a list of the default classes for the action. Defaults to
-        ``["btn", "btn-small"]``.
+        ``["btn", "btn-default", "btn-sm"]``.
         """
         return getattr(settings, "ACTION_CSS_CLASSES", ACTION_CSS_CLASSES)
 
@@ -263,6 +263,7 @@ class Action(BaseAction):
         self.verbose_name_plural = kwargs.get('verbose_name_plural',
             "%ss" % self.verbose_name)
         self.allowed_data_types = kwargs.get('allowed_data_types', [])
+        self.icon = kwargs.get('icon', None)
 
         if attrs:
             self.attrs.update(attrs)
@@ -292,12 +293,12 @@ class Action(BaseAction):
         if not has_single:
             def single(self, data_table, request, object_id):
                 return self.handle(data_table, request, [object_id])
-            self.single = new.instancemethod(single, self)
+            self.single = types.MethodType(single, self)
 
         if not has_multiple and self.handles_multiple:
             def multiple(self, data_table, request, object_ids):
                 return self.handle(data_table, request, object_ids)
-            self.multiple = new.instancemethod(multiple, self)
+            self.multiple = types.MethodType(multiple, self)
 
     def get_param_name(self):
         """Returns the full POST parameter name for this action.
@@ -347,6 +348,8 @@ class LinkAction(BaseAction):
         self.verbose_name = kwargs.get('verbose_name', self.name.title())
         self.url = kwargs.get('url', None)
         self.allowed_data_types = kwargs.get('allowed_data_types', [])
+        self.icon = kwargs.get('icon', None)
+        self.kwargs = kwargs
 
         if not kwargs.get('verbose_name', None):
             raise NotImplementedError('A LinkAction object must have a '
@@ -419,7 +422,20 @@ class FilterAction(BaseAction):
 
     .. attribute: filter_type
 
-        A string representing the type of this filter. Default: ``"query"``.
+        A string representing the type of this filter. If this is set to
+        ``"server"`` then ``filter_choices`` must also be provided.
+        Default: ``"query"``.
+
+    .. attribute: filter_choices
+
+        Required for server type filters. A tuple of tuples representing the
+        filter options. Tuple composition should evaluate to (string, string,
+        boolean), representing the filter parameter, display value, and whether
+        or not it should be applied to the API request as an API query
+        attribute. API type filters do not need to be accounted for in the
+        filter method since the API will do the filtering. However, server
+        type filters in general will need to be performed in the filter method.
+        By default this attribute is not provided.
 
     .. attribute: needs_preloading
 
@@ -441,8 +457,15 @@ class FilterAction(BaseAction):
         self.name = kwargs.get('name', self.name)
         self.verbose_name = kwargs.get('verbose_name', _("Filter"))
         self.filter_type = kwargs.get('filter_type', "query")
+        self.filter_choices = kwargs.get('filter_choices')
         self.needs_preloading = kwargs.get('needs_preloading', False)
         self.param_name = kwargs.get('param_name', 'q')
+        self.icon = "search"
+
+        if self.filter_type == 'server' and self.filter_choices is None:
+            raise NotImplementedError('A FilterAction object with the '
+                'filter_type attribute set to "server" must also have a '
+                'filter_choices attribute.')
 
     def get_param_name(self):
         """Returns the full query parameter name for this action.
@@ -451,11 +474,6 @@ class FilterAction(BaseAction):
         ``{{ table.name }}__{{ action.name }}__{{ action.param_name }}``.
         """
         return "__".join([self.table.name, self.name, self.param_name])
-
-    def get_default_classes(self):
-        classes = super(FilterAction, self).get_default_classes()
-        classes += ("btn-search",)
-        return classes
 
     def assign_type_string(self, table, data, type_string):
         for datum in data:
@@ -487,6 +505,17 @@ class FilterAction(BaseAction):
         """
         raise NotImplementedError("The filter method has not been "
                                   "implemented by %s." % self.__class__)
+
+    def is_api_filter(self, filter_field):
+        """Determine if the given filter field should be used as an
+        API filter.
+        """
+        if self.filter_type == 'server':
+            for choice in self.filter_choices:
+                if (choice[0] == filter_field and len(choice) > 2 and
+                        choice[2] is True):
+                    return True
+        return False
 
 
 class FixedFilterAction(FilterAction):
@@ -671,7 +700,7 @@ class BatchAction(Action):
                 continue
             try:
                 self.action(request, datum_id)
-                #Call update to invoke changes if needed
+                # Call update to invoke changes if needed
                 self.update(request, datum)
                 action_success.append(datum_display)
                 self.success_ids.append(datum_id)
@@ -714,7 +743,33 @@ class BatchAction(Action):
 
 
 class DeleteAction(BatchAction):
-    """Doc missing."""
+    """A table action used to perform delete operations on table data.
+
+    .. attribute:: name
+
+        A short name or "slug" representing this action.
+        Defaults to 'delete'
+
+    .. attribute:: action_present
+
+        A string containing the transitive verb describing the delete action.
+        Defaults to 'Delete'
+
+    .. attribute:: action_past
+
+        A string set to the past tense of action_present.
+        Defaults to 'Deleted'
+
+    .. attribute:: data_type_singular
+
+        A string used to name the data to be deleted.
+
+    .. attribute:: data_type_plural
+
+        Optional. Plural of ``data_type_singular``.
+        Defaults to ``data_type_singular`` appended with an 's'.
+    """
+
     name = "delete"
 
     def __init__(self, **kwargs):
@@ -722,16 +777,31 @@ class DeleteAction(BatchAction):
         self.name = kwargs.get('name', self.name)
         self.action_present = kwargs.get('action_present', _("Delete"))
         self.action_past = kwargs.get('action_past', _("Deleted"))
+        self.icon = "remove"
 
     def action(self, request, obj_id):
+        """Action entry point. Overrides base class' action method.
+
+        Accepts a single object id passing it over to the delete method
+        responsible for the object's destruction.
+        """
         return self.delete(request, obj_id)
 
     def delete(self, request, obj_id):
+        """Required. Deletes an object referenced by obj_id.
+
+        Override to provide delete functionality specific to your data.
+        """
         raise NotImplementedError("DeleteAction must define a delete method.")
 
     def get_default_classes(self):
+        """Appends ``btn-danger`` to the action's default css classes.
+
+        This method ensures the corresponding button is highlighted
+        as a trigger for a potentially dangerous action.
+        """
         classes = super(DeleteAction, self).get_default_classes()
-        classes += ("btn-danger", "btn-delete")
+        classes += ("btn-danger",)
         return classes
 
 

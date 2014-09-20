@@ -11,15 +11,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 
 from django.utils.translation import ugettext_lazy as _
-import json
+from saharaclient.api import base as api_base
 
 from horizon import exceptions
 from horizon import forms
 from horizon import workflows
-
 from openstack_dashboard.api import sahara as saharaclient
 from openstack_dashboard.dashboards.project.data_processing. \
     utils import helpers as helpers
@@ -27,8 +27,6 @@ from openstack_dashboard.dashboards.project.data_processing. \
     utils import anti_affinity as aa
 import openstack_dashboard.dashboards.project.data_processing. \
     utils.workflow_helpers as whelpers
-
-from saharaclient.api import base as api_base
 
 
 LOG = logging.getLogger(__name__)
@@ -52,7 +50,6 @@ class SelectPluginAction(workflows.Action):
 
         self.fields["plugin_name"] = forms.ChoiceField(
             label=_("Plugin name"),
-            required=True,
             choices=plugin_choices,
             widget=forms.Select(attrs={"class": "plugin_name_choice"}))
 
@@ -60,7 +57,6 @@ class SelectPluginAction(workflows.Action):
             field_name = plugin.name + "_version"
             choice_field = forms.ChoiceField(
                 label=_("Hadoop version"),
-                required=True,
                 choices=[(version, version) for version in plugin.versions],
                 widget=forms.Select(
                     attrs={"class": "plugin_version_choice "
@@ -97,8 +93,7 @@ class GeneralConfigAction(workflows.Action):
         required=False,
         widget=forms.HiddenInput(attrs={"class": "hidden_to_delete_field"}))
 
-    cluster_template_name = forms.CharField(label=_("Template Name"),
-                                            required=True)
+    cluster_template_name = forms.CharField(label=_("Template Name"))
 
     description = forms.CharField(label=_("Description"),
                                   required=False,
@@ -286,7 +281,7 @@ class ConfigureClusterTemplate(whelpers.ServiceParametersWorkflow,
             plugin, hadoop_version = whelpers.\
                 get_plugin_and_hadoop_version(request)
 
-            #TODO(nkonovalov): Fix client to support default_image_id
+            # TODO(nkonovalov): Fix client to support default_image_id
             saharaclient.cluster_template_create(
                 request,
                 context["general_cluster_template_name"],
@@ -295,7 +290,8 @@ class ConfigureClusterTemplate(whelpers.ServiceParametersWorkflow,
                 context["general_description"],
                 configs_dict,
                 node_groups,
-                context["anti_affinity_info"])
+                context["anti_affinity_info"],
+            )
             return True
         except api_base.APIException as e:
             self.error_description = str(e)

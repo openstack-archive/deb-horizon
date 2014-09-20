@@ -2,7 +2,7 @@
 
 <h3>{% trans "Data Processing Plugin Overview" %}</h3>
 
-<div class="status row-fluid detail">
+<div class="status row detail">
     <h4>{% trans "Info" %}</h4>
     <hr class="header_rule">
     <dl>
@@ -14,7 +14,7 @@
         <dd>{{ plugin.description }}</dd>
         <dt>{% trans "Supported Versions" %}</dt>
         <dd>
-            <ul>
+            <ul class="list-bullet">
                 {% for version in plugin.versions %}
                     <li>{{ version }}</li>
                 {% endfor %}

@@ -12,11 +12,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import collections
 import copy
 import itertools
 import uuid
 
 from django import http
+from django.test.utils import override_settings
 from mox import IsA  # noqa
 
 from novaclient.v1_1 import floating_ip_pools
@@ -108,7 +110,7 @@ class NetworkApiNovaFloatingIpTests(NetworkApiNovaTestBase):
         self.mox.ReplayAll()
 
         ret = api.network.floating_ip_pools_list(self.request)
-        self.assertEqual([p.name for p in ret], pool_names)
+        self.assertEqual(pool_names, [p.name for p in ret])
 
     def test_floating_ip_list(self):
         fips = self.api_floating_ips.list()
@@ -120,8 +122,8 @@ class NetworkApiNovaFloatingIpTests(NetworkApiNovaTestBase):
         ret = api.network.tenant_floating_ip_list(self.request)
         for r, e in zip(ret, fips):
             for attr in ['id', 'ip', 'pool', 'fixed_ip', 'instance_id']:
-                self.assertEqual(getattr(r, attr), getattr(e, attr))
-            self.assertEqual(r.port_id, e.instance_id)
+                self.assertEqual(getattr(e, attr), getattr(r, attr))
+            self.assertEqual(e.instance_id, r.port_id)
 
     def test_floating_ip_get(self):
         fip = self.api_floating_ips.first()
@@ -132,8 +134,8 @@ class NetworkApiNovaFloatingIpTests(NetworkApiNovaTestBase):
 
         ret = api.network.tenant_floating_ip_get(self.request, fip.id)
         for attr in ['id', 'ip', 'pool', 'fixed_ip', 'instance_id']:
-            self.assertEqual(getattr(ret, attr), getattr(fip, attr))
-        self.assertEqual(ret.port_id, fip.instance_id)
+            self.assertEqual(getattr(fip, attr), getattr(ret, attr))
+        self.assertEqual(fip.instance_id, ret.port_id)
 
     def test_floating_ip_allocate(self):
         pool_name = 'fip_pool'
@@ -145,8 +147,8 @@ class NetworkApiNovaFloatingIpTests(NetworkApiNovaTestBase):
 
         ret = api.network.tenant_floating_ip_allocate(self.request, pool_name)
         for attr in ['id', 'ip', 'pool', 'fixed_ip', 'instance_id']:
-            self.assertEqual(getattr(ret, attr), getattr(fip, attr))
-        self.assertEqual(ret.port_id, fip.instance_id)
+            self.assertEqual(getattr(fip, attr), getattr(ret, attr))
+        self.assertEqual(fip.instance_id, ret.port_id)
 
     def test_floating_ip_release(self):
         fip = self.api_floating_ips.first()
@@ -200,8 +202,8 @@ class NetworkApiNovaFloatingIpTests(NetworkApiNovaTestBase):
 
         targets = api.network.floating_ip_target_list(self.request)
         for target, server in zip(targets, servers):
-            self.assertEqual(target.id, server.id)
-            self.assertEqual(target.name, '%s (%s)' % (server.name, server.id))
+            self.assertEqual(server.id, target.id)
+            self.assertEqual('%s (%s)' % (server.name, server.id), target.name)
 
     def test_floating_ip_target_get_by_instance(self):
         self.mox.ReplayAll()
@@ -218,14 +220,120 @@ class NetworkApiNeutronTestBase(test.APITestCase):
         api.base.is_service_enabled(IsA(http.HttpRequest), 'network') \
             .AndReturn(True)
         self.qclient = self.stub_neutronclient()
-        self.qclient.list_extensions() \
-            .AndReturn({'extensions': self.api_extensions.list()})
+
+
+class NetworkApiNeutronTests(NetworkApiNeutronTestBase):
+
+    def _get_expected_addresses(self, server, no_fip_expected=True):
+        server_ports = self.ports.filter(device_id=server.id)
+        addresses = collections.defaultdict(list)
+        for p in server_ports:
+            net_name = self.networks.get(id=p['network_id']).name
+            for ip in p.fixed_ips:
+                addresses[net_name].append(
+                    {'version': 4,
+                     'addr': ip['ip_address'],
+                     'OS-EXT-IPS-MAC:mac_addr': p.mac_address,
+                     'OS-EXT-IPS:type': 'fixed'})
+                if no_fip_expected:
+                    continue
+                fips = self.q_floating_ips.filter(port_id=p['id'])
+                if not fips:
+                    continue
+                # Only one FIP should match.
+                fip = fips[0]
+                addresses[net_name].append(
+                    {'version': 4,
+                     'addr': fip.floating_ip_address,
+                     'OS-EXT-IPS-MAC:mac_addr': p.mac_address,
+                     'OS-EXT-IPS:type': 'floating'})
+        return addresses
+
+    def _check_server_address(self, res_server_data, no_fip_expected=False):
+        expected_addresses = self._get_expected_addresses(res_server_data,
+                                                          no_fip_expected)
+        self.assertEqual(len(expected_addresses),
+                         len(res_server_data.addresses))
+        for net, addresses in expected_addresses.items():
+            self.assertIn(net, res_server_data.addresses)
+            self.assertEqual(addresses, res_server_data.addresses[net])
+
+    def _test_servers_update_addresses(self, router_enabled=True):
+        tenant_id = self.request.user.tenant_id
+
+        servers = copy.deepcopy(self.servers.list())
+        server_ids = [server.id for server in servers]
+        server_ports = [p for p in self.api_ports.list()
+                        if p['device_id'] in server_ids]
+        server_port_ids = [p['id'] for p in server_ports]
+        if router_enabled:
+            assoc_fips = [fip for fip in self.api_q_floating_ips.list()
+                          if fip['port_id'] in server_port_ids]
+        server_network_ids = [p['network_id'] for p in server_ports]
+        server_networks = [net for net in self.api_networks.list()
+                           if net['id'] in server_network_ids]
+
+        self.qclient.list_ports(device_id=server_ids) \
+            .AndReturn({'ports': server_ports})
+        if router_enabled:
+            self.qclient.list_floatingips(tenant_id=tenant_id,
+                                          port_id=server_port_ids) \
+                .AndReturn({'floatingips': assoc_fips})
+            self.qclient.list_ports(tenant_id=tenant_id) \
+                .AndReturn({'ports': self.api_ports.list()})
+        self.qclient.list_networks(id=server_network_ids) \
+            .AndReturn({'networks': server_networks})
+        self.qclient.list_subnets() \
+            .AndReturn({'subnets': self.api_subnets.list()})
+        self.mox.ReplayAll()
+
+        api.network.servers_update_addresses(self.request, servers)
+
+        self.assertEqual(self.servers.count(), len(servers))
+        self.assertEqual([server.id for server in self.servers.list()],
+                         [server.id for server in servers])
+
+        no_fip_expected = not router_enabled
+
+        # server[0] has one fixed IP and one floating IP
+        # if router ext isenabled.
+        self._check_server_address(servers[0], no_fip_expected)
+        # The expected is also calculated, we examine the result manually once.
+        addrs = servers[0].addresses['net1']
+        if router_enabled:
+            self.assertEqual(2, len(addrs))
+            self.assertEqual('fixed', addrs[0]['OS-EXT-IPS:type'])
+            self.assertEqual('floating', addrs[1]['OS-EXT-IPS:type'])
+        else:
+            self.assertEqual(1, len(addrs))
+            self.assertEqual('fixed', addrs[0]['OS-EXT-IPS:type'])
+
+        # server[1] has one fixed IP.
+        self._check_server_address(servers[1], no_fip_expected)
+        # manual check.
+        addrs = servers[1].addresses['net2']
+        self.assertEqual(1, len(addrs))
+        self.assertEqual('fixed', addrs[0]['OS-EXT-IPS:type'])
+
+        # server[2] has no corresponding ports in neutron_data,
+        # so it should be an empty dict.
+        self.assertFalse(servers[2].addresses)
+
+    @override_settings(OPENSTACK_NEUTRON_NETWORK={'enable_router': True})
+    def test_servers_update_addresses(self):
+        self._test_servers_update_addresses()
+
+    @override_settings(OPENSTACK_NEUTRON_NETWORK={'enable_router': False})
+    def test_servers_update_addresses_router_disabled(self):
+        self._test_servers_update_addresses(router_enabled=False)
 
 
 class NetworkApiNeutronSecurityGroupTests(NetworkApiNeutronTestBase):
 
     def setUp(self):
         super(NetworkApiNeutronSecurityGroupTests, self).setUp()
+        self.qclient.list_extensions() \
+            .AndReturn({'extensions': self.api_extensions.list()})
         self.sg_dict = dict([(sg['id'], sg['name']) for sg
                              in self.api_q_secgroups.list()])
 
@@ -233,10 +341,14 @@ class NetworkApiNeutronSecurityGroupTests(NetworkApiNeutronTestBase):
         self.assertEqual(exprule['id'], retrule.id)
         self.assertEqual(exprule['security_group_id'],
                          retrule.parent_group_id)
-        self.assertEqual(exprule['direction'], retrule.direction)
-        self.assertEqual(exprule['ethertype'], retrule.ethertype)
-        self.assertEqual(exprule['port_range_min'], retrule.from_port)
-        self.assertEqual(exprule['port_range_max'], retrule.to_port)
+        self.assertEqual(exprule['direction'],
+                         retrule.direction)
+        self.assertEqual(exprule['ethertype'],
+                         retrule.ethertype)
+        self.assertEqual(exprule['port_range_min'],
+                         retrule.from_port)
+        self.assertEqual(exprule['port_range_max'],
+                         retrule.to_port,)
         if (exprule['remote_ip_prefix'] is None and
                 exprule['remote_group_id'] is None):
             expcidr = ('::/0' if exprule['ethertype'] == 'IPv6'
@@ -393,11 +505,27 @@ class NetworkApiNeutronSecurityGroupTests(NetworkApiNeutronTestBase):
 
     def test_security_group_backend(self):
         self.mox.ReplayAll()
-        self.assertEqual(api.network.security_group_backend(self.request),
-                         'neutron')
+        self.assertEqual('neutron',
+                         api.network.security_group_backend(self.request))
 
 
 class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
+
+    def setUp(self):
+        super(NetworkApiNeutronFloatingIpTests, self).setUp()
+        self.qclient.list_extensions() \
+            .AndReturn({'extensions': self.api_extensions.list()})
+
+    @override_settings(OPENSTACK_NEUTRON_NETWORK={'enable_router': True})
+    def test_floating_ip_supported(self):
+        self.mox.ReplayAll()
+        self.assertTrue(api.network.floating_ip_supported(self.request))
+
+    @override_settings(OPENSTACK_NEUTRON_NETWORK={'enable_router': False})
+    def test_floating_ip_supported_false(self):
+        self.mox.ReplayAll()
+        self.assertFalse(api.network.floating_ip_supported(self.request))
+
     def test_floating_ip_pools_list(self):
         search_opts = {'router:external': True}
         ext_nets = [n for n in self.api_networks.list()
@@ -408,8 +536,8 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
 
         rets = api.network.floating_ip_pools_list(self.request)
         for attr in ['id', 'name']:
-            self.assertEqual([getattr(p, attr) for p in rets],
-                             [p[attr] for p in ext_nets])
+            self.assertEqual([p[attr] for p in ext_nets],
+                             [getattr(p, attr) for p in rets])
 
     def test_floating_ip_list(self):
         fips = self.api_q_floating_ips.list()
@@ -425,10 +553,10 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
         self.assertEqual(len(fips), len(rets))
         for ret, exp in zip(rets, fips):
             for attr in ['id', 'ip', 'pool', 'fixed_ip', 'port_id']:
-                self.assertEqual(getattr(ret, attr), exp[attr])
+                self.assertEqual(exp[attr], getattr(ret, attr))
             if exp['port_id']:
                 dev_id = assoc_port['device_id'] if exp['port_id'] else None
-                self.assertEqual(ret.instance_id, dev_id)
+                self.assertEqual(dev_id, ret.instance_id)
 
     def test_floating_ip_get_associated(self):
         fip = self.api_q_floating_ips.list()[1]
@@ -440,8 +568,8 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
 
         ret = api.network.tenant_floating_ip_get(self.request, fip['id'])
         for attr in ['id', 'ip', 'pool', 'fixed_ip', 'port_id']:
-            self.assertEqual(getattr(ret, attr), fip[attr])
-        self.assertEqual(ret.instance_id, assoc_port['device_id'])
+            self.assertEqual(fip[attr], getattr(ret, attr))
+        self.assertEqual(assoc_port['device_id'], ret.instance_id)
 
     def test_floating_ip_get_unassociated(self):
         fip = self.api_q_floating_ips.list()[0]
@@ -450,7 +578,7 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
 
         ret = api.network.tenant_floating_ip_get(self.request, fip['id'])
         for attr in ['id', 'ip', 'pool', 'fixed_ip', 'port_id']:
-            self.assertEqual(getattr(ret, attr), fip[attr])
+            self.assertEqual(fip[attr], getattr(ret, attr))
         self.assertIsNone(ret.instance_id)
 
     def test_floating_ip_allocate(self):
@@ -466,7 +594,7 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
         ret = api.network.tenant_floating_ip_allocate(self.request,
                                                       ext_net['id'])
         for attr in ['id', 'ip', 'pool', 'fixed_ip', 'port_id']:
-            self.assertEqual(getattr(ret, attr), fip[attr])
+            self.assertEqual(fip[attr], getattr(ret, attr))
         self.assertIsNone(ret.instance_id)
 
     def test_floating_ip_release(self):
@@ -526,10 +654,10 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
         self.mox.ReplayAll()
 
         rets = api.network.floating_ip_target_list(self.request)
-        self.assertEqual(len(rets), len(target_ports))
+        self.assertEqual(len(target_ports), len(rets))
         for ret, exp in zip(rets, target_ports):
-            self.assertEqual(ret.id, exp[0])
-            self.assertEqual(ret.name, exp[1])
+            self.assertEqual(exp[0], ret.id)
+            self.assertEqual(exp[1], ret.name)
 
     def test_floating_ip_target_get_by_instance(self):
         ports = self.api_ports.list()
@@ -539,7 +667,7 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
         self.mox.ReplayAll()
 
         ret = api.network.floating_ip_target_get_by_instance(self.request, '1')
-        self.assertEqual(ret, self._get_target_id(candidates[0]))
+        self.assertEqual(self._get_target_id(candidates[0]), ret)
 
     def test_target_floating_ip_port_by_instance(self):
         ports = self.api_ports.list()
@@ -550,5 +678,5 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
 
         ret = api.network.floating_ip_target_list_by_instance(self.request,
                                                               '1')
-        self.assertEqual(ret[0], self._get_target_id(candidates[0]))
-        self.assertEqual(len(ret), len(candidates))
+        self.assertEqual(self._get_target_id(candidates[0]), ret[0])
+        self.assertEqual(len(candidates), len(ret))

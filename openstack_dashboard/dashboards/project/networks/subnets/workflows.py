@@ -35,9 +35,9 @@ class CreateSubnetInfoAction(network_workflows.CreateSubnetInfoAction):
 
     class Meta:
         name = _("Subnet")
-        help_text = _('You can create a subnet associated with the '
-                      'network. Advanced configuration are available '
-                      'at "Subnet Detail" tab.')
+        help_text = _('Create a subnet associated with the network. '
+                      'Advanced configuration is available by clicking on the '
+                      '"Subnet Detail" tab.')
 
     def clean(self):
         cleaned_data = workflows.Action.clean(self)
@@ -95,8 +95,6 @@ class UpdateSubnetInfoAction(CreateSubnetInfoAction):
     # Thus now I use HiddenInput for the ip_version ChoiceField as a work
     # around.
     ip_version = forms.ChoiceField(choices=[(4, 'IPv4'), (6, 'IPv6')],
-                                   #widget=forms.Select(
-                                   #    attrs={'disabled': 'disabled'}),
                                    widget=forms.HiddenInput(),
                                    label=_("IP Version"))
 
@@ -105,9 +103,8 @@ class UpdateSubnetInfoAction(CreateSubnetInfoAction):
         required=False,
         initial="",
         help_text=_("IP address of Gateway (e.g. 192.168.0.254). "
-                    "You need to specify an explicit address "
-                    "to set the gateway. "
-                    "If you want to use no gateway, "
+                    "Specify an explicit address to set the gateway. "
+                    "If you do not want to use a gateway, "
                     "check 'Disable Gateway' below."),
         version=forms.IPv4 | forms.IPv6,
         mask=False)
@@ -116,9 +113,9 @@ class UpdateSubnetInfoAction(CreateSubnetInfoAction):
 
     class Meta:
         name = _("Subnet")
-        help_text = _('You can update a subnet associated with the '
-                      'network. Advanced configuration are available '
-                      'at "Subnet Detail" tab.')
+        help_text = _('Update a subnet associated with the network. '
+                      'Advanced configuration are available at '
+                      '"Subnet Detail" tab.')
 
     def clean(self):
         cleaned_data = workflows.Action.clean(self)
@@ -137,7 +134,7 @@ class UpdateSubnetDetailAction(network_workflows.CreateSubnetDetailAction):
 
     class Meta:
         name = _("Subnet Detail")
-        help_text = _('You can specify additional attributes for the subnet.')
+        help_text = _('Specify additional attributes for the subnet.')
 
 
 class UpdateSubnetDetail(network_workflows.CreateSubnetDetail):
@@ -174,10 +171,9 @@ class UpdateSubnet(network_workflows.CreateNetwork):
             elif data['gateway_ip']:
                 params['gateway_ip'] = data['gateway_ip']
 
-            #We should send gateway_ip only when it is changed,
-            #because updating gateway_ip is prohibited
-            #when the ip is used.
-            #see bug 1227268
+            # We should send gateway_ip only when it is changed, because
+            # updating gateway_ip is prohibited when the ip is used.
+            # See bug 1227268.
             subnet = api.neutron.subnet_get(request, subnet_id)
             if params['gateway_ip'] == subnet.gateway_ip:
                 del params['gateway_ip']

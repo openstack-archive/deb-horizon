@@ -93,6 +93,12 @@ class VolumeSnapshot(BaseCinderAPIResourceWrapper):
               'os-extended-snapshot-attributes:project_id']
 
 
+class VolumeType(BaseCinderAPIResourceWrapper):
+
+    _attrs = ['id', 'name', 'extra_specs', 'created_at',
+              'os-extended-snapshot-attributes:project_id']
+
+
 class VolumeBackup(BaseCinderAPIResourceWrapper):
 
     _attrs = ['id', 'name', 'description', 'container', 'size', 'status',
@@ -162,6 +168,11 @@ def _replace_v2_parameters(data):
     return data
 
 
+def version_get():
+    api_version = VERSIONS.get_active_version()
+    return api_version['version']
+
+
 def volume_list(request, search_opts=None):
     """To see all volumes in the cloud as an admin you can pass in a special
     search option: {'all_tenants': 1}
@@ -212,6 +223,16 @@ def volume_delete(request, volume_id):
     return cinderclient(request).volumes.delete(volume_id)
 
 
+def volume_retype(request, volume_id, new_type, migration_policy):
+
+    if not retype_supported():
+        raise exceptions.NotAvailable
+
+    return cinderclient(request).volumes.retype(volume_id,
+                                                new_type,
+                                                migration_policy)
+
+
 def volume_update(request, volume_id, name, description):
     vol_data = {'name': name,
                 'description': description}
@@ -220,16 +241,30 @@ def volume_update(request, volume_id, name, description):
                                                 **vol_data)
 
 
+def volume_reset_state(request, volume_id, state):
+    return cinderclient(request).volumes.reset_state(volume_id, state)
+
+
+def volume_upload_to_image(request, volume_id, force, image_name,
+                           container_format, disk_format):
+    return cinderclient(request).volumes.upload_to_image(volume_id,
+                                                         force,
+                                                         image_name,
+                                                         container_format,
+                                                         disk_format)
+
+
 def volume_snapshot_get(request, snapshot_id):
     snapshot = cinderclient(request).volume_snapshots.get(snapshot_id)
     return VolumeSnapshot(snapshot)
 
 
-def volume_snapshot_list(request):
+def volume_snapshot_list(request, search_opts=None):
     c_client = cinderclient(request)
     if c_client is None:
         return []
-    return [VolumeSnapshot(s) for s in c_client.volume_snapshots.list()]
+    return [VolumeSnapshot(s) for s in c_client.volume_snapshots.list(
+        search_opts=search_opts)]
 
 
 def volume_snapshot_create(request, volume_id, name,
@@ -253,6 +288,11 @@ def volume_snapshot_update(request, snapshot_id, name, description):
     snapshot_data = _replace_v2_parameters(snapshot_data)
     return cinderclient(request).volume_snapshots.update(snapshot_id,
                                                          **snapshot_data)
+
+
+def volume_snapshot_reset_state(request, snapshot_id, state):
+    return cinderclient(request).volume_snapshots.reset_state(
+        snapshot_id, state)
 
 
 @memoized
@@ -353,6 +393,7 @@ def volume_type_extra_delete(request, type_id, keys):
     return vol_type.unset_keys([keys])
 
 
+@memoized
 def tenant_absolute_limits(request):
     limits = cinderclient(request).limits.get().absolute
     limits_dict = {}
@@ -388,3 +429,10 @@ def extension_supported(request, extension_name):
         if extension.name == extension_name:
             return True
     return False
+
+
+@memoized
+def retype_supported():
+    """retype is only supported after cinder v2.
+    """
+    return version_get() >= 2

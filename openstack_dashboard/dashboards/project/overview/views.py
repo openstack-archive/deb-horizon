@@ -29,9 +29,9 @@ from openstack_dashboard import usage
 
 class ProjectUsageCsvRenderer(csvbase.BaseCsvResponse):
 
-    columns = [_("Instance Name"), _("VCPUs"), _("Ram (MB)"),
+    columns = [_("Instance Name"), _("VCPUs"), _("RAM (MB)"),
                _("Disk (GB)"), _("Usage (Hours)"),
-               _("Uptime(Seconds)"), _("State")]
+               _("Uptime (Seconds)"), _("State")]
 
     def get_row_data(self):
 

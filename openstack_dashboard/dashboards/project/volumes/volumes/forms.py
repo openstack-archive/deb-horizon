@@ -36,6 +36,11 @@ from openstack_dashboard.dashboards.project.images import utils
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.usage import quotas
 
+IMAGE_BACKEND_SETTINGS = getattr(settings, 'OPENSTACK_IMAGE_BACKEND', {})
+IMAGE_FORMAT_CHOICES = IMAGE_BACKEND_SETTINGS.get('image_formats', [])
+VALID_DISK_FORMATS = ('raw', 'vmdk', 'vdi', 'qcow2')
+DEFAULT_CONTAINER_FORMAT = 'bare'
+
 
 class CreateForm(forms.SelfHandlingForm):
     name = forms.CharField(max_length="255", label=_("Volume Name"))
@@ -218,6 +223,23 @@ class CreateForm(forms.SelfHandlingForm):
             else:
                 del self.fields['volume_source_type']
 
+    def clean(self):
+        cleaned_data = super(CreateForm, self).clean()
+        source_type = self.cleaned_data.get('volume_source_type')
+        if (source_type == 'image_source' and
+                not cleaned_data.get('image_source')):
+            msg = _('Image source must be specified')
+            self._errors['image_source'] = self.error_class([msg])
+        elif (source_type == 'snapshot_source' and
+                not cleaned_data.get('snapshot_source')):
+            msg = _('Snapshot source must be specified')
+            self._errors['snapshot_source'] = self.error_class([msg])
+        elif (source_type == 'volume_source' and
+                not cleaned_data.get('volume_source')):
+            msg = _('Volume source must be specified')
+            self._errors['volume_source'] = self.error_class([msg])
+        return cleaned_data
+
     # Determine whether the extension for Cinder AZs is enabled
     def cinder_az_supported(self, request):
         try:
@@ -363,9 +385,15 @@ class AttachForm(forms.SelfHandlingForm):
     instance = forms.ChoiceField(label=_("Attach to Instance"),
                                  help_text=_("Select an instance to "
                                              "attach to."))
+
     device = forms.CharField(label=_("Device Name"),
+                             widget=forms.TextInput(attrs={'placeholder':
+                                                           '/dev/vdc'}),
+                             required=False,
                              help_text=_("Actual device name may differ due "
-                                         "to hypervisor settings."))
+                                         "to hypervisor settings. If not "
+                                         "specified, then hypervisor will "
+                                         "select a device name."))
 
     def __init__(self, *args, **kwargs):
         super(AttachForm, self).__init__(*args, **kwargs)
@@ -378,7 +406,6 @@ class AttachForm(forms.SelfHandlingForm):
                                                       False)
         if not can_set_mount_point:
             self.fields['device'].widget = forms.widgets.HiddenInput()
-            self.fields['device'].required = False
 
         # populate volume_id
         volume = kwargs.get('initial', {}).get("volume", None)
@@ -489,15 +516,75 @@ class UpdateForm(forms.SelfHandlingForm):
                               redirect=redirect)
 
 
+class UploadToImageForm(forms.SelfHandlingForm):
+    name = forms.CharField(label=_('Volume Name'),
+                           widget=forms.TextInput(
+                               attrs={'readonly': 'readonly'}))
+    image_name = forms.CharField(max_length="255", label=_('Image Name'),
+                                 required=True)
+    disk_format = forms.ChoiceField(label=_('Disk Format'),
+                                    widget=forms.Select(),
+                                    required=False)
+    force = forms.BooleanField(label=_("Force"),
+                               widget=forms.CheckboxInput(),
+                               required=False)
+
+    def __init__(self, request, *args, **kwargs):
+        super(UploadToImageForm, self).__init__(request, *args, **kwargs)
+
+        # 'vhd','iso','aki','ari' and 'ami' disk formats are supported by
+        # glance, but not by qemu-img. qemu-img supports 'vpc', 'cloop', 'cow'
+        # and 'qcow' which are not supported by glance.
+        # I can only use 'raw', 'vmdk', 'vdi' or 'qcow2' so qemu-img will not
+        # have issues when processes image request from cinder.
+        disk_format_choices = [(value, name) for value, name
+                                in IMAGE_FORMAT_CHOICES
+                                if value in VALID_DISK_FORMATS]
+        self.fields['disk_format'].choices = disk_format_choices
+        self.fields['disk_format'].initial = 'raw'
+        if self.initial['status'] != 'in-use':
+            self.fields['force'].widget = forms.widgets.HiddenInput()
+
+    def handle(self, request, data):
+        volume_id = self.initial['id']
+
+        try:
+            # 'aki','ari','ami' container formats are supported by glance,
+            # but they need matching disk format to use.
+            # Glance usually uses 'bare' for other disk formats except
+            # amazon's. Please check the comment in CreateImageForm class
+            cinder.volume_upload_to_image(request,
+                                          volume_id,
+                                          data['force'],
+                                          data['image_name'],
+                                          DEFAULT_CONTAINER_FORMAT,
+                                          data['disk_format'])
+            message = _(
+                'Successfully sent the request to upload volume to image '
+                'for volume: "%s"') % data['name']
+            messages.info(request, message)
+
+            return True
+        except Exception:
+            error_message = _(
+                'Unable to upload volume to image for volume: "%s"') \
+                % data['name']
+            exceptions.handle(request, error_message)
+
+            return False
+
+
 class ExtendForm(forms.SelfHandlingForm):
-    name = forms.CharField(label=_("Volume Name"),
-                           widget=forms.TextInput(
-                               attrs={'readonly': 'readonly'}
-                           ), required=False)
-    orig_size = forms.IntegerField(label=_("Current Size (GB)"),
-                           widget=forms.TextInput(
-                               attrs={'readonly': 'readonly'}
-                           ), required=False)
+    name = forms.CharField(
+        label=_("Volume Name"),
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        required=False,
+    )
+    orig_size = forms.IntegerField(
+        label=_("Current Size (GB)"),
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        required=False,
+    )
     new_size = forms.IntegerField(label=_("New Size (GB)"))
 
     def clean(self):
@@ -524,3 +611,69 @@ class ExtendForm(forms.SelfHandlingForm):
             exceptions.handle(request,
                               _('Unable to extend volume.'),
                               redirect=redirect)
+
+
+class RetypeForm(forms.SelfHandlingForm):
+    name = forms.CharField(label=_('Volume Name'),
+                           widget=forms.TextInput(
+                               attrs={'readonly': 'readonly'}))
+    volume_type = forms.ChoiceField(label=_('Type'),
+                                    required=True)
+    MIGRATION_POLICY_CHOICES = [('never', _('Never')),
+                                ('on-demand', _('On Demand'))]
+    migration_policy = forms.ChoiceField(label=_('Migration Policy'),
+                                         widget=forms.Select(),
+                                         choices=(MIGRATION_POLICY_CHOICES),
+                                         initial='never',
+                                         required=False)
+
+    def __init__(self, request, *args, **kwargs):
+        super(RetypeForm, self).__init__(request, *args, **kwargs)
+
+        try:
+            volume_types = cinder.volume_type_list(request)
+            self.fields['volume_type'].choices = [(t.name, t.name)
+                                                   for t in volume_types]
+            self.fields['volume_type'].initial = self.initial['volume_type']
+
+        except Exception:
+            redirect_url = reverse("horizon:project:volumes:index")
+            error_message = _('Unable to retrieve the volume type list.')
+            exceptions.handle(request, error_message, redirect=redirect_url)
+
+    def clean_volume_type(self):
+        cleaned_volume_type = self.cleaned_data['volume_type']
+        origin_type = self.initial['volume_type']
+
+        if cleaned_volume_type == origin_type:
+            error_message = _(
+                'New volume type must be different from '
+                'the original volume type "%s".') % cleaned_volume_type
+            raise ValidationError(error_message)
+
+        return cleaned_volume_type
+
+    def handle(self, request, data):
+        volume_id = self.initial['id']
+
+        try:
+            cinder.volume_retype(request,
+                                 volume_id,
+                                 data['volume_type'],
+                                 data['migration_policy'])
+
+            message = _(
+                'Successfully sent the request to change the volume '
+                'type to "%(vtype)s" for volume: "%(name)s"')
+            params = {'name': data['name'],
+                      'vtype': data['volume_type']}
+            messages.info(request, message % params)
+
+            return True
+        except Exception:
+            error_message = _(
+                'Unable to change the volume type for volume: "%s"') \
+                % data['name']
+            exceptions.handle(request, error_message)
+
+            return False

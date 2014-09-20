@@ -14,7 +14,6 @@ import os
 
 from horizon.test.settings import *  # noqa
 from horizon.utils import secret_key
-
 from openstack_dashboard import exceptions
 
 
@@ -46,6 +45,7 @@ INSTALLED_APPS = (
     'openstack_dashboard',
     'openstack_dashboard.dashboards.project',
     'openstack_dashboard.dashboards.admin',
+    'openstack_dashboard.dashboards.identity',
     'openstack_dashboard.dashboards.settings',
     'openstack_dashboard.dashboards.router',
 )
@@ -55,7 +55,7 @@ AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 SITE_BRANDING = 'OpenStack'
 
 HORIZON_CONFIG = {
-    'dashboards': ('project', 'admin', 'settings', 'router',),
+    'dashboards': ('project', 'admin', 'identity', 'settings', 'router',),
     'default_dashboard': 'project',
     "password_validator": {
         "regex": '^.{8,18}$',
@@ -104,12 +104,20 @@ OPENSTACK_CINDER_FEATURES = {
 }
 
 OPENSTACK_NEUTRON_NETWORK = {
-    'enable_lb': True,
-    'enable_firewall': True,
+    'enable_router': True,
     'enable_quotas': False,  # Enabled in specific tests only
-    'enable_vpn': True,
+    # Parameters below (enable_lb, enable_firewall, enable_vpn)
+    # control if these panels are displayed or not,
+    # i.e. they only affect the navigation menu.
+    # These panels are registered even if enable_XXX is False,
+    # so we don't need to set them to True in most unit tests
+    # to avoid stubbing neutron extension check calls.
+    'enable_lb': False,
+    'enable_firewall': False,
+    'enable_vpn': False,
     'profile_support': None,
-    #'profile_support': 'cisco'
+    'enable_distributed_router': False,
+    # 'profile_support': 'cisco'
 }
 
 OPENSTACK_HYPERVISOR_FEATURES = {

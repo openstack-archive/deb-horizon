@@ -20,18 +20,19 @@
 Views for managing Swift containers.
 """
 
+import os
+
 from django.core.urlresolvers import reverse
 from django import http
 from django.utils.functional import cached_property  # noqa
 from django.utils import http as utils_http
 from django.utils.translation import ugettext_lazy as _
-from django.views import generic
+import django.views.generic
 
 from horizon import browsers
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
-
 from openstack_dashboard import api
 from openstack_dashboard.api import swift
 from openstack_dashboard.dashboards.project.containers \
@@ -39,8 +40,6 @@ from openstack_dashboard.dashboards.project.containers \
 from openstack_dashboard.dashboards.project.containers \
     import forms as project_forms
 from openstack_dashboard.dashboards.project.containers import tables
-
-import os
 
 
 def for_url(container_name):
@@ -244,14 +243,21 @@ class CopyView(forms.ModalFormView):
         kwargs['containers'] = [(c.name, c.name) for c in containers[0]]
         return kwargs
 
+    @staticmethod
+    def get_copy_name(object_name):
+        filename, ext = os.path.splitext(object_name)
+        return "%s.copy%s" % (filename, ext)
+
     def get_initial(self):
         path = self.kwargs["subfolder_path"]
-        orig = "%s%s" % (path or '', self.kwargs["object_name"])
+        object_name = self.kwargs["object_name"]
+        orig = "%s%s" % (path or '', object_name)
+
         return {"new_container_name": self.kwargs["container_name"],
                 "orig_container_name": self.kwargs["container_name"],
                 "orig_object_name": orig,
                 "path": path,
-                "new_object_name": "%s copy" % self.kwargs["object_name"]}
+                "new_object_name": self.get_copy_name(object_name)}
 
     def get_context_data(self, **kwargs):
         context = super(CopyView, self).get_context_data(**kwargs)
@@ -261,7 +267,8 @@ class CopyView(forms.ModalFormView):
         return context
 
 
-class ContainerDetailView(forms.ModalFormMixin, generic.TemplateView):
+class ContainerDetailView(forms.ModalFormMixin,
+                          django.views.generic.TemplateView):
     template_name = 'project/containers/container_detail.html'
 
     @memoized.memoized_method
@@ -283,7 +290,8 @@ class ContainerDetailView(forms.ModalFormMixin, generic.TemplateView):
         return context
 
 
-class ObjectDetailView(forms.ModalFormMixin, generic.TemplateView):
+class ObjectDetailView(forms.ModalFormMixin,
+                       django.views.generic.TemplateView):
     template_name = 'project/containers/object_detail.html'
 
     @memoized.memoized_method

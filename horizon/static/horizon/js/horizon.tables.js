@@ -60,23 +60,14 @@ horizon.datatables = {
 
             if ($new_row.hasClass('status_unknown')) {
               var spinner_elm = $new_row.find("td.status_unknown:last");
-
-              if ($new_row.find('.btn-action-required').length > 0) {
-                spinner_elm.prepend(
-                  $("<div />")
-                    .addClass("action_required_img")
-                    .append(
-                      $("<img />")
-                        .attr("src", "/static/dashboard/img/action_required.png")));
-              } else {
-                // Replacing spin.js here with an animated gif to reduce CPU
-                spinner_elm.prepend(
-                  $("<div />")
-                    .addClass("loading_gif")
-                    .append(
-                      $("<img />")
-                        .attr("src", "/static/dashboard/img/loading.gif")));
-              }
+              var imagePath = $new_row.find('.btn-action-required').length > 0 ?
+                "dashboard/img/action_required.png":
+                "dashboard/img/loading.gif";
+              imagePath = STATIC_URL + imagePath;
+              spinner_elm.prepend(
+                $("<div>")
+                  .addClass("loading_gif")
+                  .append($("<img>").attr("src", imagePath)));
             }
 
             // Only replace row if the html content has changed
@@ -150,7 +141,36 @@ horizon.datatables = {
       action_buttons.toggleClass("disabled",
                                  !checkboxes.filter(":checked").length);
     });
+  },
+
+  initialize_checkboxes_behavior: function() {
+    // Bind the "select all" checkbox action.
+    $('div.table_wrapper, #modal_wrapper').on('click', 'table thead .multi_select_column .table-row-multi-select:checkbox', function(evt) {
+      var $this = $(this),
+      $table = $this.closest('table'),
+      is_checked = $this.prop('checked'),
+      checkboxes = $table.find('tbody .table-row-multi-select:visible:checkbox');
+      checkboxes.prop('checked', is_checked);
+    });
+    // Change "select all" checkbox behavior while any checkbox is checked/unchecked.
+    $("div.table_wrapper, #modal_wrapper").on("click", 'table tbody .table-row-multi-select:checkbox', function (evt) {
+      var $table = $(this).closest('table');
+      var $multi_select_checkbox = $table.find('thead .multi_select_column .table-row-multi-select:checkbox');
+      var any_unchecked = $table.find("tbody .table-row-multi-select:checkbox").not(":checked");
+      $multi_select_checkbox.prop('checked', any_unchecked.length === 0);
+    });
+    // Enable dangerous buttons only if one or more checkbox is checked.
+    $("div.table_wrapper, #modal_wrapper").on("click", '.table-row-multi-select:checkbox', function (evt) {
+      var $form = $(this).closest("form");
+      var any_checked = $form.find("tbody .table-row-multi-select:checkbox").is(":checked");
+      if(any_checked) {
+        $form.find(".table_actions button.btn-danger").removeClass("disabled");
+      }else {
+        $form.find(".table_actions button.btn-danger").addClass("disabled");
+      }
+    });
   }
+
 };
 
 /* Generates a confirmation modal dialog for the given action. */
@@ -169,7 +189,8 @@ horizon.datatables.confirm = function (action) {
   closest_table_id = $(action).closest("table").attr("id");
   // Check if data-display attribute is available
   if ($("#"+closest_table_id+" tr[data-display]").length > 0) {
-    if($(action).closest("div").hasClass("table_actions")) {
+    var actions_div = $(action).closest("div");
+    if(actions_div.hasClass("table_actions") || actions_div.hasClass("table_actions_menu")) {
       // One or more checkboxes selected
       $("#"+closest_table_id+" tr[data-display]").has(".table-row-multi-select:checkbox:checked").each(function() {
         name_array.push(" \"" + $(this).attr("data-display") + "\"");
@@ -428,7 +449,7 @@ horizon.datatables.set_table_query_filter = function (parent) {
           return false;
         }
       });
-      input.next('button.btn-search').on('click keypress', function (evt) {
+      input.next('button.btn span.glyphicon-search').on('click keypress', function (evt) {
         return false;
       });
 
@@ -493,31 +514,7 @@ horizon.addInitFunction(function() {
   $('table.datatable').each(function (idx, el) {
     horizon.datatables.update_footer_count($(el), 0);
   });
-  // Bind the "select all" checkbox action.
-  $('div.table_wrapper, #modal_wrapper').on('click', 'table thead .multi_select_column .table-row-multi-select:checkbox', function(evt) {
-    var $this = $(this),
-      $table = $this.closest('table'),
-      is_checked = $this.prop('checked'),
-      checkboxes = $table.find('tbody .table-row-multi-select:visible:checkbox');
-    checkboxes.prop('checked', is_checked);
-  });
-  // Change "select all" checkbox behaviour while any checkbox is checked/unchecked.
-  $("div.table_wrapper, #modal_wrapper").on("click", 'table tbody .table-row-multi-select:checkbox', function (evt) {
-    var $table = $(this).closest('table');
-    var $multi_select_checkbox = $table.find('thead .multi_select_column .table-row-multi-select:checkbox');
-    var any_unchecked = $table.find("tbody .table-row-multi-select:checkbox").not(":checked");
-    $multi_select_checkbox.prop('checked', any_unchecked.length === 0);
-  });
-  // Enable dangerous buttons only if one or more checkbox is checked.
-  $("div.table_wrapper, #modal_wrapper").on("click", '.table-row-multi-select:checkbox', function (evt) {
-    var $form = $(this).closest("form");
-    var any_checked = $form.find("tbody .table-row-multi-select:checkbox").is(":checked");
-    if(any_checked) {
-      $form.find(".table_actions button.btn-danger").removeClass("disabled");
-    }else {
-      $form.find(".table_actions button.btn-danger").addClass("disabled");
-    }
-  });
+  horizon.datatables.initialize_checkboxes_behavior();
 
   // Trigger run-once setup scripts for tables.
   horizon.datatables.add_table_checkboxes($('body'));
@@ -536,6 +533,8 @@ horizon.addInitFunction(function() {
   horizon.tabs.addTabLoadFunction(horizon.datatables.set_table_sorting);
   horizon.tabs.addTabLoadFunction(horizon.datatables.set_table_query_filter);
   horizon.tabs.addTabLoadFunction(horizon.datatables.set_table_fixed_filter);
+  horizon.tabs.addTabLoadFunction(horizon.datatables.initialize_checkboxes_behavior);
+  horizon.tabs.addTabLoadFunction(horizon.datatables.validate_button);
 
   horizon.datatables.update();
 });

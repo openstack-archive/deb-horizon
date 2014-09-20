@@ -35,8 +35,8 @@ class VolumeTests(test.BaseAdminViewTests):
                        .AndReturn([self.servers.list(), False])
         cinder.volume_type_list(IsA(http.HttpRequest)).\
                                AndReturn(self.volume_types.list())
-        keystone.tenant_list(IsA(http.HttpRequest)) \
-                .AndReturn([self.tenants.list(), False])
+        keystone.tenant_list(IsA(http.HttpRequest)). \
+            AndReturn([self.tenants.list(), False])
 
         self.mox.ReplayAll()
 
@@ -55,10 +55,11 @@ class VolumeTests(test.BaseAdminViewTests):
                                   AndReturn(self.volume_types.first())
         self.mox.ReplayAll()
 
-        res = self.client.post(reverse('horizon:admin:volumes:create_type'),
-                               formData)
+        res = self.client.post(
+            reverse('horizon:admin:volumes:volumes:create_type'),
+            formData)
 
-        redirect = reverse('horizon:admin:volumes:index')
+        redirect = reverse('horizon:admin:volumes:volumes_tab')
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, redirect)
 
@@ -84,9 +85,47 @@ class VolumeTests(test.BaseAdminViewTests):
                 .AndReturn([self.tenants.list(), False])
         self.mox.ReplayAll()
 
-        res = self.client.post(reverse('horizon:admin:volumes:index'),
-                               formData)
+        res = self.client.post(
+            reverse('horizon:admin:volumes:volumes_tab'),
+            formData)
 
-        redirect = reverse('horizon:admin:volumes:index')
+        redirect = reverse('horizon:admin:volumes:volumes_tab')
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, redirect)
+
+    @test.create_stubs({cinder: ('volume_reset_state',
+                                 'volume_get')})
+    def test_update_volume_status(self):
+        volume = self.volumes.first()
+        formData = {'status': 'error'}
+
+        cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
+        cinder.volume_reset_state(IsA(http.HttpRequest),
+                                  volume.id,
+                                  formData['status'])
+        self.mox.ReplayAll()
+
+        res = self.client.post(
+            reverse('horizon:admin:volumes:volumes:update_status',
+                args=(volume.id,)),
+            formData)
+        self.assertNoFormErrors(res)
+
+    @test.create_stubs({api.nova: ('server_list',),
+                        cinder: ('volume_list',
+                                 'volume_snapshot_list',),
+                        keystone: ('tenant_list',)})
+    def test_snapshot_tab(self):
+        cinder.volume_snapshot_list(IsA(http.HttpRequest), search_opts={
+            'all_tenants': True}). \
+            AndReturn(self.cinder_volume_snapshots.list())
+        cinder.volume_list(IsA(http.HttpRequest), search_opts={
+            'all_tenants': True}).\
+            AndReturn(self.cinder_volumes.list())
+        keystone.tenant_list(IsA(http.HttpRequest)). \
+            AndReturn([self.tenants.list(), False])
+        self.mox.ReplayAll()
+
+        res = self.client.get(reverse('horizon:admin:volumes:snapshots_tab'))
+        self.assertEqual(res.status_code, 200)
+        self.assertTemplateUsed(res, 'horizon/common/_detail_table.html')

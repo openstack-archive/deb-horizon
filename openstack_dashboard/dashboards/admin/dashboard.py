@@ -25,16 +25,10 @@ class SystemPanels(horizon.PanelGroup):
               'networks', 'routers', 'info')
 
 
-class IdentityPanels(horizon.PanelGroup):
-    slug = "identity"
-    name = _("Identity")
-    panels = ('domains', 'projects', 'users', 'groups', 'roles')
-
-
 class Admin(horizon.Dashboard):
     name = _("Admin")
     slug = "admin"
-    panels = (SystemPanels, IdentityPanels)
+    panels = (SystemPanels,)
     default_panel = 'overview'
     permissions = ('openstack.roles.admin',)
 

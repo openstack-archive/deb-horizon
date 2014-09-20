@@ -28,6 +28,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from novaclient import exceptions as nova_exceptions
 from novaclient.v1_1 import client as nova_client
+from novaclient.v1_1.contrib import instance_action as nova_instance_action
 from novaclient.v1_1.contrib import list_extensions as nova_list_extensions
 from novaclient.v1_1 import security_group_rules as nova_rules
 from novaclient.v1_1 import security_groups as nova_security_groups
@@ -51,31 +52,33 @@ DEFAULT_QUOTA_NAME = 'default'
 
 
 class VNCConsole(base.APIDictWrapper):
-    """Wrapper for the "console" dictionary returned by the
-    novaclient.servers.get_vnc_console method.
+    """Wrapper for the "console" dictionary.
+
+    Returned by the novaclient.servers.get_vnc_console method.
     """
     _attrs = ['url', 'type']
 
 
 class SPICEConsole(base.APIDictWrapper):
-    """Wrapper for the "console" dictionary returned by the
-    novaclient.servers.get_spice_console method.
+    """Wrapper for the "console" dictionary.
+
+    Returned by the novaclient.servers.get_spice_console method.
     """
     _attrs = ['url', 'type']
 
 
 class RDPConsole(base.APIDictWrapper):
-    """Wrapper for the "console" dictionary returned by the
-    novaclient.servers.get_rdp_console method.
+    """Wrapper for the "console" dictionary.
+
+    Returned by the novaclient.servers.get_rdp_console method.
     """
     _attrs = ['url', 'type']
 
 
 class Server(base.APIResourceWrapper):
-    """Simple wrapper around novaclient.server.Server
+    """Simple wrapper around novaclient.server.Server.
 
-       Preserves the request info so image name can later be retrieved
-
+    Preserves the request info so image name can later be retrieved.
     """
     _attrs = ['addresses', 'attrs', 'id', 'image', 'links',
              'metadata', 'name', 'private_ip', 'public_ip', 'status', 'uuid',
@@ -92,8 +95,9 @@ class Server(base.APIResourceWrapper):
     # TODO(gabriel): deprecate making a call to Glance as a fallback.
     @property
     def image_name(self):
-        import glanceclient.exc as glance_exceptions
-        from openstack_dashboard.api import glance
+        import glanceclient.exc as glance_exceptions  # noqa
+        from openstack_dashboard.api import glance  # noqa
+
         if not self.image:
             return "-"
         if hasattr(self.image, 'name'):
@@ -116,8 +120,27 @@ class Server(base.APIResourceWrapper):
         return getattr(self, 'OS-EXT-AZ:availability_zone', "")
 
 
+class Hypervisor(base.APIDictWrapper):
+    """Simple wrapper around novaclient.hypervisors.Hypervisor."""
+
+    _attrs = ['manager', '_loaded', '_info', 'hypervisor_hostname', 'id',
+              'servers']
+
+    @property
+    def servers(self):
+        # if hypervisor doesn't have servers, the attribute is not present
+        servers = []
+        try:
+            servers = self._apidict.servers
+        except Exception:
+            pass
+
+        return servers
+
+
 class NovaUsage(base.APIResourceWrapper):
     """Simple wrapper around contrib/simple_usage.py."""
+
     _attrs = ['start', 'server_usages', 'stop', 'tenant_id',
              'total_local_gb_usage', 'total_memory_mb_usage',
              'total_vcpus_usage', 'total_hours']
@@ -159,9 +182,11 @@ class NovaUsage(base.APIResourceWrapper):
 
 
 class SecurityGroup(base.APIResourceWrapper):
-    """Wrapper around novaclient.security_groups.SecurityGroup which wraps its
-    rules in SecurityGroupRule objects and allows access to them.
+    """Wrapper around novaclient.security_groups.SecurityGroup.
+
+    Wraps its rules in SecurityGroupRule objects and allows access to them.
     """
+
     _attrs = ['id', 'name', 'description', 'tenant_id']
 
     @cached_property
@@ -175,6 +200,7 @@ class SecurityGroup(base.APIResourceWrapper):
 
 class SecurityGroupRule(base.APIResourceWrapper):
     """Wrapper for individual rules in a SecurityGroup."""
+
     _attrs = ['id', 'ip_protocol', 'from_port', 'to_port', 'ip_range', 'group']
 
     def __unicode__(self):
@@ -382,6 +408,9 @@ class FloatingIpManager(network_base.FloatingIpManager):
     def is_simple_associate_supported(self):
         return conf.HORIZON_CONFIG["simple_ip_management"]
 
+    def is_supported(self):
+        return True
+
 
 def novaclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
@@ -506,7 +535,7 @@ def server_create(request, name, image, flavor, key_name, user_data,
                   security_groups, block_device_mapping=None,
                   block_device_mapping_v2=None, nics=None,
                   availability_zone=None, instance_count=1, admin_pass=None,
-                  disk_config=None):
+                  disk_config=None, meta=None):
     return Server(novaclient(request).servers.create(
         name, image, flavor, userdata=user_data,
         security_groups=security_groups,
@@ -514,7 +543,7 @@ def server_create(request, name, image, flavor, key_name, user_data,
         block_device_mapping_v2=block_device_mapping_v2,
         nics=nics, availability_zone=availability_zone,
         min_count=instance_count, admin_pass=admin_pass,
-        disk_config=disk_config), request)
+        disk_config=disk_config, meta=meta), request)
 
 
 def server_delete(request, instance):
@@ -696,6 +725,32 @@ def hypervisor_search(request, query, servers=True):
     return novaclient(request).hypervisors.search(query, servers)
 
 
+def evacuate_host(request, host, target=None, on_shared_storage=False):
+    # TODO(jmolle) This should be change for nova atomic api host_evacuate
+    hypervisors = novaclient(request).hypervisors.search(host, True)
+    response = []
+    err_code = None
+    for hypervisor in hypervisors:
+        hyper = Hypervisor(hypervisor)
+        # if hypervisor doesn't have servers, the attribute is not present
+        for server in hyper.servers:
+            try:
+                novaclient(request).servers.evacuate(server['uuid'],
+                                                     target,
+                                                     on_shared_storage)
+            except nova_exceptions.ClientException as err:
+                err_code = err.code
+                msg = _("Name: %(name)s ID: %(uuid)s")
+                msg = msg % {'name': server['name'], 'uuid': server['uuid']}
+                response.append(msg)
+
+    if err_code:
+        msg = _('Failed to evacuate instances: %s') % ', '.join(response)
+        raise nova_exceptions.ClientException(err_code, msg)
+
+    return True
+
+
 def tenant_absolute_limits(request, reserved=False):
     limits = novaclient(request).limits.get(reserved=reserved).absolute
     limits_dict = {}
@@ -712,8 +767,8 @@ def availability_zone_list(request, detailed=False):
     return novaclient(request).availability_zones.list(detailed=detailed)
 
 
-def service_list(request):
-    return novaclient(request).services.list()
+def service_list(request, binary=None):
+    return novaclient(request).services.list(binary=binary)
 
 
 def aggregate_details_list(request):
@@ -759,8 +814,9 @@ def list_extensions(request):
 
 @memoized
 def extension_supported(extension_name, request):
-    """this method will determine if nova supports a given extension name.
-    example values for the extension_name include AdminActions, ConsoleOutput,
+    """Determine if nova supports a given extension name.
+
+    Example values for the extension_name include AdminActions, ConsoleOutput,
     etc.
     """
     extensions = list_extensions(request)
@@ -773,3 +829,8 @@ def extension_supported(extension_name, request):
 def can_set_server_password():
     features = getattr(settings, 'OPENSTACK_HYPERVISOR_FEATURES', {})
     return features.get('can_set_password', False)
+
+
+def instance_action_list(request, instance_id):
+    return nova_instance_action.InstanceActionManager(
+        novaclient(request)).list(instance_id)

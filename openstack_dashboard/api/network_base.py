@@ -112,21 +112,28 @@ class FloatingIpManager(object):
 
     @abc.abstractmethod
     def get_target_id_by_instance(self, instance_id):
-        """Returns a target ID of floating IP association based on
-        a backend implementation.
+        """Returns a target ID of floating IP association.
+
+        Based on a backend implementation.
         """
         pass
 
     @abc.abstractmethod
     def list_target_id_by_instance(self, instance_id):
-        """Returns a list of instance's target IDs of floating IP association
-        based on the backend implementation
+        """Returns a list of instance's target IDs of floating IP association.
+
+        Based on the backend implementation
         """
         pass
 
     @abc.abstractmethod
     def is_simple_associate_supported(self):
         """Returns True if the default floating IP pool is enabled."""
+        pass
+
+    @abc.abstractmethod
+    def is_supported(self):
+        """Returns True if floating IP feature is supported."""
         pass
 
 

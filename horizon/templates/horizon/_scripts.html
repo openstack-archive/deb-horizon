@@ -3,6 +3,7 @@
 
 {% comment %} Django's JavaScript i18n Implementation {% endcomment %}
 <script type="text/javascript" src="{% url 'horizon:jsi18n' 'horizon' %}"></script>
+<script type="text/javascript">var STATIC_URL = "{{ STATIC_URL }}";</script>
 
 {% comment %} Compress jQuery, Angular, Plugins, Bootstrap, Hogan.js and Horizon-specific JS. {% endcomment %}
 {% compress js %}
@@ -28,7 +29,7 @@
 <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
 <script src='{{ STATIC_URL }}bootstrap/js/bootstrap-datepicker.js' type='text/javascript' charset='utf-8'></script>
 
-<script src="{{ STATIC_URL }}horizon/lib/hogan-2.0.0.js" type="text/javascript" charset='utf-8'></script>
+<script src="{{ STATIC_URL }}horizon/lib/hogan.js" type="text/javascript" charset='utf-8'></script>
 
 <script src='{{ STATIC_URL }}horizon/js/horizon.accordion_nav.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.communication.js' type='text/javascript' charset='utf-8'></script>
@@ -53,6 +54,7 @@
 <script src='{{ STATIC_URL }}horizon/js/horizon.firewalls.js' type='text/javascript' charset='utf-8'></script>
 <script src='{{ STATIC_URL }}horizon/lib/jsencrypt/jsencrypt.js' type='text/javascript' charset='utf-8'></script>
 
+<script src='{{ STATIC_URL }}horizon/js/horizon.images.js' type='text/javascript' charset='utf-8'></script>
 {% block custom_js_files %}{% endblock %}
 {% endcompress %}
 

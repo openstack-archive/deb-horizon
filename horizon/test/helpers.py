@@ -30,16 +30,17 @@ from django.core.handlers import wsgi
 from django import http
 from django import test as django_test
 from django.test.client import RequestFactory  # noqa
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils import unittest
 
 LOG = logging.getLogger(__name__)
 
 
 try:
-    from horizon.test.webdriver import WebDriver  # noqa
     from selenium.webdriver.support import ui as selenium_ui
     import xvfbwrapper  # Only needed when running the Selenium tests headless
+
+    from horizon.test.webdriver import WebDriver  # noqa
 except ImportError as e:
     # NOTE(saschpe): Several distribution can't ship selenium due to its
     # non-free license. So they have to patch it out of test-requirements.txt
@@ -155,7 +156,7 @@ class TestCase(django_test.TestCase):
 
         # Otherwise, make sure we got the expected messages.
         for msg_type, count in kwargs.items():
-            msgs = [force_unicode(m.message)
+            msgs = [force_text(m.message)
                     for m in messages if msg_type in m.tags]
             assert len(msgs) == count, \
                    "%s messages not as expected: %s" % (msg_type.title(),
@@ -170,7 +171,7 @@ class SeleniumTestCase(django_test.LiveServerTestCase):
         socket.setdefaulttimeout(60)
         if os.environ.get('WITH_SELENIUM', False):
             time.sleep(1)
-             # Start a virtual display server for running the tests headless.
+            # Start a virtual display server for running the tests headless.
             if os.environ.get('SELENIUM_HEADLESS', False):
                 cls.vdisplay = xvfbwrapper.Xvfb(width=1280, height=720)
                 cls.vdisplay.start()
@@ -188,6 +189,7 @@ class SeleniumTestCase(django_test.LiveServerTestCase):
 
     def setUp(self):
         socket.setdefaulttimeout(60)
+        self.selenium.implicitly_wait(30)
         self.ui = selenium_ui
         super(SeleniumTestCase, self).setUp()
 

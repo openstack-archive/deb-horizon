@@ -16,11 +16,11 @@
   </div>
   <div class="right">
     <h3>{% trans "Description" %}:</h3>
-    <p>{% trans "From here you can modify name and description of a volume." %}</p>
+    <p>{% trans "Modify name and description of a volume." %}</p>
   </div>
 {% endblock %}
 
 {% block modal-footer %}
   <input class="btn btn-primary pull-right" type="submit" value="{% trans "Edit Volume" %}" />
-  <a href="{% url 'horizon:project:volumes:index' %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+  <a href="{% url 'horizon:project:volumes:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}

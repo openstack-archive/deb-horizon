@@ -224,9 +224,8 @@ results.
 
 Default: ``20``
 
-Similar to ``API_RESULT_LIMIT``. This setting currently only controls the
-Glance image list page size. It will be removed in a future version.
-
+Similar to ``API_RESULT_LIMIT``. This setting controls the number of items
+to be shown per page if API pagination support for this exists.
 
 ``AVAILABLE_REGIONS``
 ---------------------
@@ -488,13 +487,147 @@ by cinder.  Currently only the backup service is available.
 ``OPENSTACK_NEUTRON_NETWORK``
 -----------------------------
 
-.. versionadded:: 2013.2(Havana)
+.. versionadded:: 2013.1(Grizzly)
 
-Default: ``{'enable_lb': False}``
+Default::
+
+        {
+            'enable_router': True,
+            'enable_distributed_router': False,
+            'enable_lb': True,
+            'enable_quotas': False,
+            'enable_firewall': True,
+            'enable_vpn': True,
+            'profile_support': None,
+            'supported_provider_types': ["*"],
+            'segmentation_id_range': None
+        }
 
 A dictionary of settings which can be used to enable optional services provided
-by neutron.  Currently only the load balancer service is available.
+by Neutron and configure Neutron specific features.  The following options are
+available.
 
+``enable_router``:
+
+.. versionadded:: 2014.2(Juno)
+
+Default: ``True``
+
+Enable (True) or disable (False) the panels and menus related
+to router and Floating IP features. This option only affects
+when Neutron is enabled. If your neutron has no support for
+Layer-3 features, or you do no not wish to provide the Layer-3
+features through the Dashboard, this should be set to ``False``.
+
+``enable_distributed_router``:
+
+.. versionadded:: 2014.2(Juno)
+
+Default: ``False``
+
+Enable or disable Neutron distributed virtual router (DVR) feature in
+the Router panel. For the DVR feature to be enabled, this option needs
+to be set to True and your Neutron deployment must support DVR. Even
+when your Neutron plugin (like ML2 plugin) supports DVR feature, DVR
+feature depends on l3-agent configuration, so deployers should set this
+option appropriately depending on your deployment.
+
+``enable_lb``:
+
+.. versionadded:: 2013.1(Grizzly)
+
+(Deprecated)
+
+Default: ``True``
+
+Enables the load balancer panel. load balancer panel will be enabled
+when this option is True and your Neutron deployment supports
+LBaaS. If you want to disable load balancer panel even when your
+Neutron supports LBaaS, set it to False.
+
+This option is now marked as "deprecated" and will be removed in
+Kilo or later release. The load balancer panel is now enabled only
+when LBaaS feature is available in Neutron and this option is no
+longer needed. We suggest not to use this option to disable the
+load balancer panel from now on.
+
+``supported_provider_types``:
+
+.. versionadded:: 2014.2(Juno)
+
+Default: ``["*"]``
+
+For use with the provider network extension. Use this to explicitly set which
+provider network types are supported. Only the network types in this list will
+be available to choose from when creating a network. Network types include
+local, flat, vlan, gre, and vxlan. By default all provider network types will
+be available to choose from.
+
+Example: ``['local', 'flat', 'gre']``
+
+``segmentation_id_range``:
+
+.. versionadded:: 2014.2(Juno)
+
+Default: ``None``
+
+For use with the provider network extension. This is a dictionary where each
+key is a provider network type and each value is a list containing two numbers.
+The first number is the minimum segmentation ID that is valid. The second
+number is the maximum segmentation ID. Pertains only to the vlan, gre, and
+vxlan network types. By default this option is not provided and each minimum
+and maximum value will be the default for the provider network type.
+
+Example: ``{'vlan': [1024, 2048], 'gre': [4094, 65536]}``
+
+``enable_quotas``:
+
+Default: ``False``
+
+Enable support for Neutron quotas feature. To make this feature work
+appropriately, you need to use Neutron plugins with quotas extension support
+and quota_driver should be DbQuotaDriver (default config).
+
+``enable_firewall``:
+
+(Deprecated)
+
+Default: ``True``
+
+Enables the firewall panel. firewall panel will be enabled when this
+option is True and your Neutron deployment supports FWaaS. If you want
+to disable firewall panel even when your Neutron supports FWaaS, set
+it to False.
+
+This option is now marked as "deprecated" and will be removed in
+Kilo or later release. The firewall panel is now enabled only
+when FWaaS feature is available in Neutron and this option is no
+longer needed. We suggest not to use this option to disable the
+firewall panel from now on.
+
+``enable_vpn``:
+
+(Deprecated)
+
+Default: ``True``
+
+Enables the VPN panel. VPN panel will be enabled when this option is True
+and your Neutron deployment supports VPNaaS. If you want to disable
+VPN panel even when your Neutron supports VPNaaS, set it to False.
+
+This option is now marked as "deprecated" and will be removed in
+Kilo or later release. The VPN panel is now enabled only
+when VPNaaS feature is available in Neutron and this option is no
+longer needed. We suggest not to use this option to disable the
+VPN panel from now on.
+
+``profile_support``:
+
+Default: ``None``
+
+This option specifies a type of network port profile support. Currently the
+available value is either ``None`` or ``"cisco"``. ``None`` means to disable
+port profile support. ``cisco`` can be used with Neutron Cisco plugins.
 
 ``OPENSTACK_SSL_CACERT``
 ------------------------
@@ -562,6 +695,17 @@ Default:  ``False``
 This setting notifies the Data Processing (Sahara) system whether or not
 automatic IP allocation is enabled.  You would want to set this to True
 if you were running Nova Networking with auto_assign_floating_ip = True.
+
+``CONSOLE_TYPE``
+-------------------------------------
+
+Default:  ``"AUTO"``
+
+This settings specifies the type of in-browser VNC console used to access the
+VMs.
+Valid values are  ``"AUTO"``(default), ``"VNC"``, ``"SPICE"``, ``"RDP"`` and
+``None``(this latest value is available in version 2014.2(Juno) to allow
+deactivating the in-browser console).
 
 
 Django Settings (Partial)
@@ -867,3 +1011,4 @@ following content::
     PANEL_GROUP = 'plugin_panel_group'
     PANEL_GROUP_NAME = 'Plugin Panel Group'
     PANEL_GROUP_DASHBOARD = 'admin'
+

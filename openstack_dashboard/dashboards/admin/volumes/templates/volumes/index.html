@@ -7,11 +7,9 @@
 {% endblock page_header %}
 
 {% block main %}
-  <div id="volumes">
-      {{ volumes_table.render }}
+<div class="row">
+  <div class="col-sm-12">
+    {{ tab_group.render }}
   </div>
-
-  <div id="volume-types">
-      {{ volume_types_table.render }}
-  </div>
+</div>
 {% endblock %}

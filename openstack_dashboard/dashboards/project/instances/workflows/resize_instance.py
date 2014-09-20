@@ -21,9 +21,7 @@ from django.views.decorators.debug import sensitive_variables  # noqa
 from horizon import exceptions
 from horizon import forms
 from horizon import workflows
-
 from openstack_dashboard import api
-
 from openstack_dashboard.dashboards.project.instances \
     import utils as instance_utils
 from openstack_dashboard.dashboards.project.instances.workflows \
@@ -32,13 +30,12 @@ from openstack_dashboard.dashboards.project.instances.workflows \
 
 class SetFlavorChoiceAction(workflows.Action):
     old_flavor_id = forms.CharField(required=False, widget=forms.HiddenInput())
-    old_flavor_name = forms.CharField(label=_("Old Flavor"),
-                                 required=False,
-                                 widget=forms.TextInput(
-                                     attrs={'readonly': 'readonly'}
-                                 ))
+    old_flavor_name = forms.CharField(
+        label=_("Old Flavor"),
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        required=False,
+    )
     flavor = forms.ChoiceField(label=_("New Flavor"),
-                               required=True,
                                help_text=_("Choose the flavor to launch."))
 
     class Meta:
@@ -52,8 +49,8 @@ class SetFlavorChoiceAction(workflows.Action):
         flavor = cleaned_data.get('flavor', None)
 
         if flavor is None or flavor == cleaned_data['old_flavor_id']:
-            raise forms.ValidationError(_('Please  choose a new flavor that '
-                                          'can not be same as the old one.'))
+            raise forms.ValidationError(_('Please choose a new flavor that '
+                                          'is not the same as the old one.'))
         return cleaned_data
 
     def populate_flavor_choices(self, request, context):

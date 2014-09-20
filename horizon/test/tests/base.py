@@ -53,6 +53,19 @@ class AdminPanel(horizon.Panel):
     urls = 'horizon.test.test_dashboards.cats.kittens.urls'
 
 
+class RbacNoAccessPanel(horizon.Panel):
+    name = "RBAC Panel No"
+    slug = "rbac_panel_no"
+
+    def _can_access(self, request):
+        return False
+
+
+class RbacYesAccessPanel(horizon.Panel):
+    name = "RBAC Panel Yes"
+    slug = "rbac_panel_yes"
+
+
 class BaseHorizonTests(test.TestCase):
 
     def setUp(self):
@@ -121,9 +134,9 @@ class HorizonTests(BaseHorizonTests):
         ``settings.INSTALLED_APPS`` are loaded from the start.
         """
         # Registration
-        self.assertEqual(len(base.Horizon._registry), 2)
+        self.assertEqual(2, len(base.Horizon._registry))
         horizon.register(MyDash)
-        self.assertEqual(len(base.Horizon._registry), 3)
+        self.assertEqual(3, len(base.Horizon._registry))
         with self.assertRaises(ValueError):
             horizon.register(MyPanel)
         with self.assertRaises(ValueError):
@@ -142,29 +155,29 @@ class HorizonTests(BaseHorizonTests):
                                   '<Dashboard: mydash>'])
 
         # Removal
-        self.assertEqual(len(base.Horizon._registry), 3)
+        self.assertEqual(3, len(base.Horizon._registry))
         horizon.unregister(MyDash)
-        self.assertEqual(len(base.Horizon._registry), 2)
+        self.assertEqual(2, len(base.Horizon._registry))
         with self.assertRaises(base.NotRegistered):
             horizon.get_dashboard(MyDash)
 
     def test_site(self):
-        self.assertEqual(unicode(base.Horizon), "Horizon")
-        self.assertEqual(repr(base.Horizon), "<Site: horizon>")
+        self.assertEqual("Horizon", unicode(base.Horizon))
+        self.assertEqual("<Site: horizon>", repr(base.Horizon))
         dash = base.Horizon.get_dashboard('cats')
-        self.assertEqual(base.Horizon.get_default_dashboard(), dash)
+        self.assertEqual(dash, base.Horizon.get_default_dashboard())
         test_user = User()
-        self.assertEqual(base.Horizon.get_user_home(test_user),
-                         dash.get_absolute_url())
+        self.assertEqual(dash.get_absolute_url(),
+                         base.Horizon.get_user_home(test_user))
 
     def test_dashboard(self):
         cats = horizon.get_dashboard("cats")
-        self.assertEqual(cats._registered_with, base.Horizon)
+        self.assertEqual(base.Horizon, cats._registered_with)
         self.assertQuerysetEqual(cats.get_panels(),
                                  ['<Panel: kittens>',
                                   '<Panel: tigers>'])
-        self.assertEqual(cats.get_absolute_url(), "/cats/")
-        self.assertEqual(cats.name, "Cats")
+        self.assertEqual("/cats/", cats.get_absolute_url())
+        self.assertEqual("Cats", cats.name)
 
         # Test registering a module with a dashboard that defines panels
         # as a panel group.
@@ -188,8 +201,8 @@ class HorizonTests(BaseHorizonTests):
     def test_panels(self):
         cats = horizon.get_dashboard("cats")
         tigers = cats.get_panel("tigers")
-        self.assertEqual(tigers._registered_with, cats)
-        self.assertEqual(tigers.get_absolute_url(), "/cats/tigers/")
+        self.assertEqual(cats, tigers._registered_with)
+        self.assertEqual("/cats/tigers/", tigers.get_absolute_url())
 
     def test_panel_without_slug_fails(self):
         class InvalidPanel(horizon.Panel):
@@ -210,7 +223,7 @@ class HorizonTests(BaseHorizonTests):
         with self.assertRaises(urlresolvers.NoReverseMatch):
             tigers.get_absolute_url()
         tigers.index_url_name = "index"
-        self.assertEqual(tigers.get_absolute_url(), "/cats/tigers/")
+        self.assertEqual("/cats/tigers/", tigers.get_absolute_url())
 
     def test_lazy_urls(self):
         urlpatterns = horizon.urls[0]
@@ -246,9 +259,9 @@ class HorizonTests(BaseHorizonTests):
         # Simulate ajax call
         resp = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         # Response should be HTTP 401 with redirect header
-        self.assertEqual(resp.status_code, 401)
-        self.assertEqual(resp["X-Horizon-Location"],
-                         redirect_url)
+        self.assertEqual(401, resp.status_code)
+        self.assertEqual(redirect_url,
+                         resp["X-Horizon-Location"])
 
     def test_required_permissions(self):
         dash = horizon.get_dashboard("cats")
@@ -258,16 +271,16 @@ class HorizonTests(BaseHorizonTests):
         self.assertQuerysetEqual(self.user.get_all_permissions(), [])
 
         resp = self.client.get(panel.get_absolute_url())
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(302, resp.status_code)
 
         resp = self.client.get(panel.get_absolute_url(),
                                follow=False,
                                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(resp.status_code, 401)
+        self.assertEqual(401, resp.status_code)
 
         # Test insufficient permissions for logged-in user
         resp = self.client.get(panel.get_absolute_url(), follow=True)
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(200, resp.status_code)
         self.assertTemplateUsed(resp, "auth/login.html")
         self.assertContains(resp, "Login as different user", 1, 200)
 
@@ -275,13 +288,13 @@ class HorizonTests(BaseHorizonTests):
         self.set_permissions(permissions=['test'])
 
         resp = self.client.get(panel.get_absolute_url())
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(200, resp.status_code)
 
         # Test modal form
         resp = self.client.get(panel.get_absolute_url(),
                                follow=False,
                                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(200, resp.status_code)
 
     def test_ssl_redirect_by_proxy(self):
         dogs = horizon.get_dashboard("dogs")
@@ -299,9 +312,9 @@ class HorizonTests(BaseHorizonTests):
                                             'https')
 
         resp = self.client.get(url, HTTP_X_FORWARDED_PROTOCOL="https")
-        self.assertEqual(resp.status_code, 302)
-        self.assertEqual(resp['location'],
-                         'https://testserver:80%s' % redirect_url)
+        self.assertEqual(302, resp.status_code)
+        self.assertEqual('https://testserver:80%s' % redirect_url,
+                         resp['location'])
 
         # Restore settings
         settings.SECURE_PROXY_SSL_HEADER = None
@@ -332,7 +345,7 @@ class GetUserHomeTests(BaseHorizonTests):
                                base.Horizon.get_user_home(self.test_user))
 
     def test_using_module_function(self):
-        module_func = 'django.utils.encoding.force_unicode'
+        module_func = 'django.utils.encoding.force_text'
         settings.HORIZON_CONFIG['user_home'] = module_func
         conf.HORIZON_CONFIG._setup()
 
@@ -377,7 +390,7 @@ class CustomPanelTests(BaseHorizonTests):
 
     def test_customize_dashboard(self):
         cats = horizon.get_dashboard("cats")
-        self.assertEqual(cats.name, "WildCats")
+        self.assertEqual("WildCats", cats.name)
         self.assertQuerysetEqual(cats.get_panels(),
                                  ['<Panel: kittens>'])
         with self.assertRaises(base.NotRegistered):
@@ -415,16 +428,16 @@ class CustomPermissionsTests(BaseHorizonTests):
         self.assertQuerysetEqual(self.user.get_all_permissions(), [])
 
         resp = self.client.get(panel.get_absolute_url())
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(302, resp.status_code)
 
         resp = self.client.get(panel.get_absolute_url(),
                                follow=False,
                                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(resp.status_code, 401)
+        self.assertEqual(401, resp.status_code)
 
         # Test customized permissions for logged-in user
         resp = self.client.get(panel.get_absolute_url(), follow=True)
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(200, resp.status_code)
         self.assertTemplateUsed(resp, "auth/login.html")
         self.assertContains(resp, "Login as different user", 1, 200)
 
@@ -432,10 +445,74 @@ class CustomPermissionsTests(BaseHorizonTests):
         self.set_permissions(permissions=['test'])
 
         resp = self.client.get(panel.get_absolute_url())
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(200, resp.status_code)
 
         # Test modal form
         resp = self.client.get(panel.get_absolute_url(),
                                follow=False,
                                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(resp.status_code, 200)
+
+
+class RbacHorizonTests(test.TestCase):
+
+    def setUp(self):
+        super(RbacHorizonTests, self).setUp()
+        # Adjust our horizon config and register our custom dashboards/panels.
+        self.old_default_dash = settings.HORIZON_CONFIG['default_dashboard']
+        settings.HORIZON_CONFIG['default_dashboard'] = 'cats'
+        self.old_dashboards = settings.HORIZON_CONFIG['dashboards']
+        settings.HORIZON_CONFIG['dashboards'] = ('cats', 'dogs')
+        base.Horizon.register(Cats)
+        base.Horizon.register(Dogs)
+        Cats.register(RbacNoAccessPanel)
+        Cats.default_panel = 'rbac_panel_no'
+        Dogs.register(RbacYesAccessPanel)
+        Dogs.default_panel = 'rbac_panel_yes'
+        # Trigger discovery, registration, and URLconf generation if it
+        # hasn't happened yet.
+        base.Horizon._urls()
+        # Store our original dashboards
+        self._discovered_dashboards = base.Horizon._registry.keys()
+        # Gather up and store our original panels for each dashboard
+        self._discovered_panels = {}
+        for dash in self._discovered_dashboards:
+            panels = base.Horizon._registry[dash]._registry.keys()
+            self._discovered_panels[dash] = panels
+
+    def tearDown(self):
+        super(RbacHorizonTests, self).tearDown()
+        # Restore our settings
+        settings.HORIZON_CONFIG['default_dashboard'] = self.old_default_dash
+        settings.HORIZON_CONFIG['dashboards'] = self.old_dashboards
+        # Destroy our singleton and re-create it.
+        base.HorizonSite._instance = None
+        del base.Horizon
+        base.Horizon = base.HorizonSite()
+        # Reload the convenience references to Horizon stored in __init__
+        reload(import_module("horizon"))
+        # Re-register our original dashboards and panels.
+        # This is necessary because autodiscovery only works on the first
+        # import, and calling reload introduces innumerable additional
+        # problems. Manual re-registration is the only good way for testing.
+        self._discovered_dashboards.remove(Cats)
+        self._discovered_dashboards.remove(Dogs)
+        for dash in self._discovered_dashboards:
+            base.Horizon.register(dash)
+            for panel in self._discovered_panels[dash]:
+                dash.register(panel)
+
+    def test_rbac_panels(self):
+        context = {'request': None}
+        cats = horizon.get_dashboard("cats")
+        self.assertEqual(cats._registered_with, base.Horizon)
+        self.assertQuerysetEqual(cats.get_panels(),
+                                 ['<Panel: rbac_panel_no>'])
+        self.assertFalse(cats.can_access(context))
+
+        dogs = horizon.get_dashboard("dogs")
+        self.assertEqual(dogs._registered_with, base.Horizon)
+        self.assertQuerysetEqual(dogs.get_panels(),
+                                 ['<Panel: rbac_panel_yes>'])
+
+        self.assertTrue(dogs.can_access(context))

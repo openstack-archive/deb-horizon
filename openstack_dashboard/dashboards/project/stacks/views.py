@@ -12,21 +12,20 @@
 
 import json
 import logging
+from operator import attrgetter
+
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponse  # noqa
+from django.utils.translation import ugettext_lazy as _
+import django.views.generic
 
 from horizon import exceptions
 from horizon import forms
 from horizon import tables
 from horizon import tabs
 from horizon.utils import memoized
-
-from django.core.urlresolvers import reverse
-from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponse  # noqa
-from django.utils.translation import ugettext_lazy as _
-from django.views import generic
-
 from openstack_dashboard import api
-
 from openstack_dashboard.dashboards.project.stacks \
     import api as project_api
 from openstack_dashboard.dashboards.project.stacks \
@@ -48,18 +47,34 @@ class IndexView(tables.DataTableView):
         super(IndexView, self).__init__(*args, **kwargs)
         self._more = None
 
+    def has_prev_data(self, table):
+        return self._prev
+
     def has_more_data(self, table):
         return self._more
 
     def get_data(self):
         stacks = []
-        marker = self.request.GET.get(
-            project_tables.StacksTable._meta.pagination_param)
+        prev_marker = self.request.GET.get(
+            project_tables.StacksTable._meta.prev_pagination_param)
+        if prev_marker is not None:
+            sort_dir = 'asc'
+            marker = prev_marker
+        else:
+            sort_dir = 'desc'
+            marker = self.request.GET.get(
+                project_tables.StacksTable._meta.pagination_param)
         try:
-            stacks, self._more = api.heat.stacks_list(self.request,
-                                                      marker=marker,
-                                                      paginate=True)
+            stacks, self._more, self._prev = api.heat.stacks_list(
+                self.request,
+                marker=marker,
+                paginate=True,
+                sort_dir=sort_dir)
+            if prev_marker is not None:
+                stacks = sorted(stacks, key=attrgetter('creation_time'),
+                                reverse=True)
         except Exception:
+            self._prev = False
             self._more = False
             msg = _('Unable to retrieve stack list.')
             exceptions.handle(self.request, msg)
@@ -246,7 +261,7 @@ class ResourceView(tabs.TabView):
             request, resource=resource, metadata=metadata, **kwargs)
 
 
-class JSONView(generic.View):
+class JSONView(django.views.generic.View):
     def get(self, request, stack_id=''):
         return HttpResponse(project_api.d3_data(request, stack_id=stack_id),
                             content_type="application/json")

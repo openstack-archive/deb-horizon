@@ -26,6 +26,7 @@ class Parameter(object):
         self.initial_value = self.default_value
         self.param_type = config['config_type']
         self.priority = int(config.get('priority', 2))
+        self.choices = config.get('config_values', None)
 
 
 def build_control(parameter):
@@ -58,7 +59,7 @@ def build_control(parameter):
 
     elif parameter.param_type == "dropdown":
         return forms.ChoiceField(
-            widget=forms.CheckboxInput(attrs=attrs),
+            widget=forms.Select(attrs=attrs),
             label=parameter.name,
             required=parameter.required,
             choices=parameter.choices,
@@ -104,17 +105,14 @@ def _create_step_action(name, title, parameters, advanced_fields=None,
 def build_node_group_fields(action, name, template, count):
     action.fields[name] = forms.CharField(
         label=_("Name"),
-        required=True,
         widget=forms.TextInput())
 
     action.fields[template] = forms.CharField(
         label=_("Node group cluster"),
-        required=True,
         widget=forms.HiddenInput())
 
     action.fields[count] = forms.IntegerField(
         label=_("Count"),
-        required=True,
         min_value=0,
         widget=forms.HiddenInput())
 
@@ -155,7 +153,6 @@ class PluginAndVersionMixin(object):
 
         self.fields["plugin_name"] = forms.ChoiceField(
             label=_("Plugin Name"),
-            required=True,
             choices=plugin_choices,
             widget=forms.Select(attrs={"class": "plugin_name_choice"}))
 
@@ -163,7 +160,6 @@ class PluginAndVersionMixin(object):
             field_name = plugin.name + "_version"
             choice_field = forms.ChoiceField(
                 label=_("Hadoop Version"),
-                required=True,
                 choices=[(version, version) for version in plugin.versions],
                 widget=forms.Select(
                     attrs={"class": "plugin_version_choice "

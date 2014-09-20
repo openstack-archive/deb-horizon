@@ -154,17 +154,13 @@ class AddVipAction(workflows.Action):
     description = forms.CharField(
         initial="", required=False,
         max_length=80, label=_("Description"))
-    floatip_address = forms.ChoiceField(
-        label=_("VIP Address from Floating IPs"),
-        widget=forms.Select(attrs={'disabled': 'disabled'}),
-        required=False)
     subnet_id = forms.ChoiceField(label=_("VIP Subnet"),
                                   initial="",
                                   required=False)
-    other_address = forms.IPField(required=False,
-                                   initial="",
-                                   version=forms.IPv4,
-                                   mask=False)
+    address = forms.IPField(label=_("Specify a free IP address "
+                                    "from the selected subnet"),
+                            version=forms.IPv4,
+                            mask=False)
     protocol_port = forms.IntegerField(
         label=_("Protocol Port"), min_value=1,
         help_text=_("Enter an integer value "
@@ -208,8 +204,6 @@ class AddVipAction(workflows.Action):
             for s in n['subnets']:
                 subnet_id_choices.append((s.id, s.cidr))
         self.fields['subnet_id'].choices = subnet_id_choices
-        self.fields['other_address'].label = _("Specify a free IP address "
-                                               "from the selected subnet")
         protocol_choices = [('', _("Select a Protocol"))]
         [protocol_choices.append((p, p)) for p in AVAILABLE_PROTOCOLS]
         self.fields['protocol'].choices = protocol_choices
@@ -219,9 +213,6 @@ class AddVipAction(workflows.Action):
             session_persistence_choices.append((mode.lower(), mode))
         self.fields[
             'session_persistence'].choices = session_persistence_choices
-
-        floatip_address_choices = [('', _("Currently Not Supported"))]
-        self.fields['floatip_address'].choices = floatip_address_choices
 
     def clean(self):
         cleaned_data = super(AddVipAction, self).clean()
@@ -238,19 +229,18 @@ class AddVipAction(workflows.Action):
         name = _("Specify VIP")
         permissions = ('openstack.services.network',)
         help_text = _("Create a VIP for this pool. "
-                      "Assign a name and description for the VIP. "
-                      "Specify an IP address and port for the VIP. "
+                      "Assign a name, description, IP address, port, "
+                      "and maximum connections allowed for the VIP. "
                       "Choose the protocol and session persistence "
-                      "method for the VIP."
-                      "Specify the max connections allowed. "
+                      "method for the VIP. "
                       "Admin State is UP (checked) by default.")
 
 
 class AddVipStep(workflows.Step):
     action_class = AddVipAction
     depends_on = ("pool_id", "subnet")
-    contributes = ("name", "description", "floatip_address", "subnet_id",
-                   "other_address", "protocol_port", "protocol",
+    contributes = ("name", "description", "subnet_id",
+                   "address", "protocol_port", "protocol",
                    "session_persistence", "cookie_name",
                    "connection_limit", "admin_state_up")
 
@@ -283,16 +273,6 @@ class AddVip(workflows.Workflow):
                     'Unable to retrieve the specified pool. '
                     'Unable to add VIP "%s".')
                 return False
-
-        if context['other_address'] == '':
-            context['address'] = context['floatip_address']
-        else:
-            if not context['floatip_address'] == '':
-                self.failure_message = _('Only one address can be specified. '
-                                         'Unable to add VIP "%s".')
-                return False
-            else:
-                context['address'] = context['other_address']
 
         if context['session_persistence']:
             stype = context['session_persistence']
@@ -417,10 +397,9 @@ class AddMemberAction(workflows.Action):
         help_text = _("Add member(s) to the selected pool.\n\n"
                       "Choose one or more listed instances to be "
                       "added to the pool as member(s). "
-                      "Assign a numeric weight for the selected member(s). "
-                      "Specify the port number the selected member(s) "
-                      "operate(s) on; e.g., 80. \n\n"
-                      "There can only be one port associated with "
+                      "Assign a numeric weight and port number for the "
+                      "selected member(s) to operate(s) on; e.g., 80. \n\n"
+                      "Only one port can be associated with "
                       "each instance.")
 
 
@@ -445,21 +424,44 @@ class AddMember(workflows.Workflow):
 
     def handle(self, request, context):
         if context['member_type'] == 'server_list':
+            try:
+                pool = api.lbaas.pool_get(request, context['pool_id'])
+                subnet_id = pool['subnet_id']
+            except Exception:
+                self.failure_message = _('Unable to retrieve '
+                                         'the specified pool.')
+                return False
             for m in context['members']:
                 params = {'device_id': m}
                 try:
                     plist = api.neutron.port_list(request, **params)
                 except Exception:
                     return False
-                if plist:
-                    context['address'] = plist[0].fixed_ips[0]['ip_address']
-                try:
-                    context['member_id'] = api.lbaas.member_create(
-                        request, **context).id
-                except Exception as e:
-                    msg = self.failure_message
-                    LOG.info('%s: %s' % (msg, e))
-                    return False
+
+                # Sort port list for each member. This is needed to avoid
+                # attachment of random ports in case of creation of several
+                # members attached to several networks.
+                plist = sorted(plist, key=lambda port: port.network_id)
+                psubnet = [p for p in plist for ips in p.fixed_ips
+                           if ips['subnet_id'] == subnet_id]
+
+                # If possible, select a port on pool subnet.
+                if psubnet:
+                    selected_port = psubnet[0]
+                elif plist:
+                    selected_port = plist[0]
+                else:
+                    selected_port = None
+
+                if selected_port:
+                    context['address'] = \
+                        selected_port.fixed_ips[0]['ip_address']
+                    try:
+                        api.lbaas.member_create(request, **context).id
+                    except Exception as e:
+                        msg = self.failure_message
+                        LOG.info('%s: %s' % (msg, e))
+                        return False
             return True
         else:
             try:
@@ -621,8 +623,9 @@ class AddPMAssociationAction(workflows.Action):
             tenant_id = self.request.user.tenant_id
             monitors = api.lbaas.pool_health_monitor_list(request,
                                                           tenant_id=tenant_id)
+            pool_monitors_ids = [pm.id for pm in context['pool_monitors']]
             for m in monitors:
-                if m.id not in context['pool_monitors']:
+                if m.id not in pool_monitors_ids:
                     display_name = utils.get_monitor_display_name(m)
                     monitor_id_choices.append((m.id, display_name))
         except Exception:
@@ -682,8 +685,9 @@ class DeletePMAssociationAction(workflows.Action):
         monitor_id_choices = [('', _("Select a Monitor"))]
         try:
             monitors = api.lbaas.pool_health_monitor_list(request)
+            pool_monitors_ids = [pm.id for pm in context['pool_monitors']]
             for m in monitors:
-                if m.id in context['pool_monitors']:
+                if m.id in pool_monitors_ids:
                     display_name = utils.get_monitor_display_name(m)
                     monitor_id_choices.append((m.id, display_name))
         except Exception:

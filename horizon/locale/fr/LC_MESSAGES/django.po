@@ -3,18 +3,22 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Claire Delcourt <cldelcou@gmail.com>, 2014
 # cloudwatt_l10n <l10n@cloudwatt.com>, 2014
+# Orizhial <contact@prunier.es>, 2014
 # EVEILLARD <stephane.eveillard@gmail.com>, 2014
+# François Bureau, 2014
 # Kamel_CW <yamani.kamel@gmail.com>, 2014
+# Léo Carré <carre.leo+transifex@gmail.com>, 2014
 # Mohamed-Younès BOUMEDIENE <m-boumediene@live.fr>, 2014
 # zopanix <christophe.vandekerchove-ext@cloudwatt.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-20 13:39-0500\n"
-"PO-Revision-Date: 2014-07-19 09:10+0000\n"
-"Last-Translator: Mohamed-Younès BOUMEDIENE <m-boumediene@live.fr>\n"
+"POT-Creation-Date: 2014-08-28 15:08-0500\n"
+"PO-Revision-Date: 2014-08-28 14:43+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/horizon/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +26,7 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: base.py:429
+#: base.py:454
 msgid "Other"
 msgstr "Autre"
 
@@ -35,12 +39,17 @@ msgstr "Merci de vous connecter pour continuer."
 msgid "You are not authorized to access %s"
 msgstr "Vous n'êtes pas autorisé à accéder à %s"
 
-#: exceptions.py:284
+#: exceptions.py:163
+#, python-format
+msgid "A %(resource)s with the name \"%(name)s\" already exists."
+msgstr "Des %(resource)s avec le nom \"%(name)s\" existent déjà."
+
+#: exceptions.py:287
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "%s : non autorisé"
 
-#: exceptions.py:287
+#: exceptions.py:290
 msgid "Unauthorized. Please try logging in again."
 msgstr "Accès non autorisé. Merci de vous reconnecter."
 
@@ -73,58 +82,58 @@ msgstr "Version d'adresse IP invalide"
 msgid "Invalid subnet mask"
 msgstr "Masque de sous-réseau invalide"
 
-#: tables/actions.py:442
-#: templates/horizon/common/_data_table_table_actions.html:13
-#: templates/horizon/common/_data_table_table_actions.html:23
-#: templates/horizon/common/_workflow_step_update_members.html:11
-#: templates/horizon/common/_workflow_step_update_members.html:17
+#: tables/actions.py:458
+#: templates/horizon/common/_data_table_table_actions.html:16
+#: templates/horizon/common/_data_table_table_actions.html:26
+#: templates/horizon/common/_workflow_step_update_members.html:12
+#: templates/horizon/common/_workflow_step_update_members.html:21
 msgid "Filter"
 msgstr "Filtrer"
 
-#: tables/actions.py:633
+#: tables/actions.py:662
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:635
+#: tables/actions.py:664
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:665 tables/base.py:1459
+#: tables/actions.py:694 tables/base.py:1498
 msgid "N/A"
 msgstr "N/D"
 
-#: tables/actions.py:694
+#: tables/actions.py:723
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
-msgstr "Vous n'êtes pas autorisé à %(action)s: %(objs)s"
+msgstr "Vous n'êtes pas autorisé à %(action)s : %(objs)s"
 
-#: tables/actions.py:701
+#: tables/actions.py:730
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "Impossible de %(action)s : %(objs)s"
 
-#: tables/actions.py:707
+#: tables/actions.py:736
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s : %(objs)s"
 
-#: tables/actions.py:723
+#: tables/actions.py:778
 msgid "Delete"
 msgstr "Supprimer"
 
-#: tables/actions.py:724
+#: tables/actions.py:779
 msgid "Deleted"
 msgstr "Supprimé"
 
-#: tables/actions.py:741
+#: tables/actions.py:811
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: tables/actions.py:742
+#: tables/actions.py:812
 msgid "Updated"
 msgstr "Mis à jour"
 
@@ -133,20 +142,21 @@ msgstr "Mis à jour"
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "L'attribut %(attr)s n'existe pas sur %(obj)s."
 
-#: tables/base.py:922
+#: tables/base.py:931
 msgid "No items to display."
 msgstr "Aucun élément à afficher."
 
-#: tables/base.py:1029
+#: tables/base.py:1038
+#: templates/horizon/common/_data_table_table_actions.html:40
 msgid "Actions"
 msgstr "Actions"
 
-#: tables/base.py:1235
+#: tables/base.py:1263
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "Aucun résultat retourné pour l'id \"%s\"."
 
-#: tables/base.py:1375
+#: tables/base.py:1414
 msgid "Please select a row before taking that action."
 msgstr "Merci de sélectionner une ligne avant de faire cette action."
 
@@ -173,7 +183,7 @@ msgstr "Se connecter"
 
 #: templates/auth/_login.html:15
 msgid "You do not have permission to access the resource:"
-msgstr "Vous n'avez pas la permission d'accéder à la ressource:"
+msgstr "Vous n'avez pas la permission d'accéder à la ressource :"
 
 #: templates/auth/_login.html:17
 #, python-format
@@ -218,12 +228,12 @@ msgid "&laquo;&nbsp;Prev"
 msgstr "&laquo;&nbsp;Aperçu"
 
 #: templates/horizon/common/_data_table.html:71
-msgid "More&nbsp;&raquo;"
-msgstr "Plus&nbsp;&raquo;"
+msgid "Next&nbsp;&raquo;"
+msgstr "Suivant&nbsp;&raquo;"
 
-#: templates/horizon/common/_data_table_row_actions.html:10
-msgid "More"
-msgstr "Plus"
+#: templates/horizon/common/_data_table_table_actions.html:38
+msgid "More Actions"
+msgstr ""
 
 #: templates/horizon/common/_formset_table.html:35
 msgid "Add a row"
@@ -296,42 +306,51 @@ msgstr "Sélectionner une période pour en visualiser l'utilisation"
 
 #: templates/horizon/common/_usage_summary.html:9
 #, python-format
-msgid "<span>From: %(start)s </span><span>To: %(end)s </span>"
-msgstr "<span>Du : %(start)s </span><span>Au : %(end)s </span>"
+msgid ""
+"\n"
+"      <label>From:</label> %(start)s"
+msgstr "\n<label>De:</label> %(start)s"
 
-#: templates/horizon/common/_usage_summary.html:10
+#: templates/horizon/common/_usage_summary.html:13
+#, python-format
+msgid ""
+"\n"
+"      <label>To:</label>%(end)s"
+msgstr "\n<label>à:</label>%(end)s"
+
+#: templates/horizon/common/_usage_summary.html:16
 msgid "Submit"
 msgstr "Envoyer"
 
-#: templates/horizon/common/_usage_summary.html:11
+#: templates/horizon/common/_usage_summary.html:17
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "La date doit être au format AAAA-mm-jj"
 
-#: templates/horizon/common/_usage_summary.html:16
+#: templates/horizon/common/_usage_summary.html:20
 msgid "Active Instances"
 msgstr "Instances actives"
 
-#: templates/horizon/common/_usage_summary.html:17
+#: templates/horizon/common/_usage_summary.html:21
 msgid "Active RAM"
 msgstr "RAM active"
 
-#: templates/horizon/common/_usage_summary.html:18
+#: templates/horizon/common/_usage_summary.html:22
 msgid "This Period's VCPU-Hours"
 msgstr "Heures-VCPUs de la période"
 
-#: templates/horizon/common/_usage_summary.html:19
+#: templates/horizon/common/_usage_summary.html:23
 msgid "This Period's GB-Hours"
 msgstr "Go-heures de la période"
 
-#: templates/horizon/common/_workflow.html:38
+#: templates/horizon/common/_workflow.html:40
 msgid "Back"
 msgstr "Retour"
 
-#: templates/horizon/common/_workflow.html:41
+#: templates/horizon/common/_workflow.html:43
 msgid "Next"
 msgstr "Suivant"
 
-#: templates/horizon/common/_workflow.html:47
+#: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -339,45 +358,49 @@ msgstr "Annuler"
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:119 templatetags/horizon.py:129
+#: templatetags/horizon.py:126 templatetags/horizon.py:136
 msgid "No Limit"
 msgstr "Pas de limite"
 
-#: templatetags/horizon.py:121 templatetags/horizon.py:123
+#: templatetags/horizon.py:128 templatetags/horizon.py:130
 msgid "Available"
 msgstr "Disponible"
 
-#: templatetags/sizeformat.py:48 templatetags/sizeformat.py:53
+#: templatetags/sizeformat.py:49 templatetags/sizeformat.py:54
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
 msgstr[0] "%(size)d Octet"
 msgstr[1] "%(size)d Octets"
 
-#: templatetags/sizeformat.py:56
+#: templatetags/sizeformat.py:57
 #, python-format
 msgid "%s KB"
 msgstr "%s Ko"
 
-#: templatetags/sizeformat.py:59
+#: templatetags/sizeformat.py:60
 #, python-format
 msgid "%s MB"
 msgstr "%s Mo"
 
-#: templatetags/sizeformat.py:62
+#: templatetags/sizeformat.py:63
 #, python-format
 msgid "%s GB"
 msgstr "%s Go"
 
-#: templatetags/sizeformat.py:65
+#: templatetags/sizeformat.py:66
 #, python-format
 msgid "%s TB"
 msgstr "%s To"
 
-#: templatetags/sizeformat.py:67
+#: templatetags/sizeformat.py:68
 #, python-format
 msgid "%s PB"
 msgstr "%s Po"
+
+#: templatetags/sizeformat.py:77
+msgid "0 bytes"
+msgstr "0 octet"
 
 #: utils/filters.py:49
 msgid "Never"

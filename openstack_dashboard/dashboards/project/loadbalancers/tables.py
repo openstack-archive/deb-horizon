@@ -28,14 +28,16 @@ class AddPoolLink(tables.LinkAction):
     name = "addpool"
     verbose_name = _("Add Pool")
     url = "horizon:project:loadbalancers:addpool"
-    classes = ("ajax-modal", "btn-create",)
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("network", "create_pool"),)
 
 
 class AddVipLink(tables.LinkAction):
     name = "addvip"
     verbose_name = _("Add VIP")
-    classes = ("ajax-modal", "btn-create",)
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("network", "create_vip"),)
 
     def get_link_url(self, pool):
@@ -53,7 +55,8 @@ class AddMemberLink(tables.LinkAction):
     name = "addmember"
     verbose_name = _("Add Member")
     url = "horizon:project:loadbalancers:addmember"
-    classes = ("ajax-modal", "btn-create",)
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("network", "create_member"),)
 
 
@@ -61,7 +64,8 @@ class AddMonitorLink(tables.LinkAction):
     name = "addmonitor"
     verbose_name = _("Add Monitor")
     url = "horizon:project:loadbalancers:addmonitor"
-    classes = ("ajax-modal", "btn-create",)
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("network", "create_health_monitor"),)
 
 
@@ -72,6 +76,12 @@ class DeleteVipLink(tables.DeleteAction):
     data_type_singular = _("VIP")
     data_type_plural = _("VIPs")
     policy_rules = (("network", "delete_vip"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def allowed(self, request, datum=None):
         if datum and not datum.vip_id:
@@ -87,6 +97,12 @@ class DeletePoolLink(tables.DeleteAction):
     data_type_plural = _("Pools")
     policy_rules = (("network", "delete_pool"),)
 
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
+
     def allowed(self, request, datum=None):
         if datum and datum.vip_id:
             return False
@@ -101,6 +117,12 @@ class DeleteMonitorLink(tables.DeleteAction):
     data_type_plural = _("Monitors")
     policy_rules = (("network", "delete_health_monitor"),)
 
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
+
 
 class DeleteMemberLink(tables.DeleteAction):
     name = "deletemember"
@@ -110,12 +132,24 @@ class DeleteMemberLink(tables.DeleteAction):
     data_type_plural = _("Members")
     policy_rules = (("network", "delete_member"),)
 
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
+
 
 class UpdatePoolLink(tables.LinkAction):
     name = "updatepool"
     verbose_name = _("Edit Pool")
     classes = ("ajax-modal", "btn-update",)
     policy_rules = (("network", "update_pool"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:updatepool",
@@ -128,6 +162,12 @@ class UpdateVipLink(tables.LinkAction):
     verbose_name = _("Edit VIP")
     classes = ("ajax-modal", "btn-update",)
     policy_rules = (("network", "update_vip"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def get_link_url(self, pool):
         base_url = reverse("horizon:project:loadbalancers:updatevip",
@@ -146,6 +186,12 @@ class UpdateMemberLink(tables.LinkAction):
     classes = ("ajax-modal", "btn-update",)
     policy_rules = (("network", "update_member"),)
 
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
+
     def get_link_url(self, member):
         base_url = reverse("horizon:project:loadbalancers:updatemember",
                            kwargs={'member_id': member.id})
@@ -157,6 +203,12 @@ class UpdateMonitorLink(tables.LinkAction):
     verbose_name = _("Edit Monitor")
     classes = ("ajax-modal", "btn-update",)
     policy_rules = (("network", "update_health_monitor"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def get_link_url(self, monitor):
         base_url = reverse("horizon:project:loadbalancers:updatemonitor",
@@ -176,8 +228,15 @@ class AddPMAssociationLink(tables.LinkAction):
     name = "addassociation"
     verbose_name = _("Associate Monitor")
     url = "horizon:project:loadbalancers:addassociation"
-    classes = ("ajax-modal", "btn-create",)
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("network", "create_pool_health_monitor"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def allowed(self, request, datum=None):
         try:
@@ -197,8 +256,15 @@ class DeletePMAssociationLink(tables.LinkAction):
     name = "deleteassociation"
     verbose_name = _("Disassociate Monitor")
     url = "horizon:project:loadbalancers:deleteassociation"
-    classes = ("ajax-modal", "btn-delete", "btn-danger")
+    classes = ("ajax-modal", "btn-danger")
+    icon = "remove"
     policy_rules = (("network", "delete_pool_health_monitor"),)
+
+    def get_policy_target(self, request, datum=None):
+        project_id = None
+        if datum:
+            project_id = getattr(datum, 'tenant_id', None)
+        return {"project_id": project_id}
 
     def allowed(self, request, datum=None):
         if datum and not datum['health_monitors']:

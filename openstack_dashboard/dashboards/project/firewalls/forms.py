@@ -102,8 +102,8 @@ class UpdateRule(forms.SelfHandlingForm):
             messages.success(request, msg)
             return rule
         except Exception as e:
-            msg = _('Failed to update rule %(name)s: %(reason)s' %
-                    {'name': name_or_id, 'reason': e})
+            msg = (_('Failed to update rule %(name)s: %(reason)s') %
+                   {'name': name_or_id, 'reason': e})
             LOG.error(msg)
             redirect = reverse(self.failure_url)
             exceptions.handle(request, msg, redirect=redirect)
@@ -142,8 +142,7 @@ class UpdateFirewall(forms.SelfHandlingForm):
     description = forms.CharField(max_length=80,
                                   label=_("Description"),
                                   required=False)
-    firewall_policy_id = forms.ChoiceField(label=_("Policy"),
-                                           required=True)
+    firewall_policy_id = forms.ChoiceField(label=_("Policy"))
     admin_state_up = forms.BooleanField(label=_("Admin State Up"),
                                         required=False)
 

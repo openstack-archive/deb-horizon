@@ -34,7 +34,7 @@ class NetworkClient(object):
             self.floating_ips = nova.FloatingIpManager(request)
 
         if (neutron_enabled and
-                neutron.is_security_group_extension_supported(request)):
+                neutron.is_extension_supported(request, 'security-group')):
             self.secgroups = neutron.SecurityGroupManager(request)
         else:
             self.secgroups = nova.SecurityGroupManager(request)
@@ -86,6 +86,10 @@ def floating_ip_target_list_by_instance(request, instance_id):
 
 def floating_ip_simple_associate_supported(request):
     return NetworkClient(request).floating_ips.is_simple_associate_supported()
+
+
+def floating_ip_supported(request):
+    return NetworkClient(request).floating_ips.is_supported()
 
 
 def security_group_list(request):

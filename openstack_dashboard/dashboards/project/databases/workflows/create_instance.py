@@ -15,19 +15,24 @@
 import logging
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
 from horizon import workflows
-
 from openstack_dashboard import api
+
+from openstack_dashboard.dashboards.project.instances \
+    import utils as instance_utils
+
 
 LOG = logging.getLogger(__name__)
 
 
 class SetInstanceDetailsAction(workflows.Action):
-    name = forms.CharField(max_length=80, label=_("Database Name"))
+    name = forms.CharField(max_length=80, label=_("Instance Name"))
     flavor = forms.ChoiceField(label=_("Flavor"),
                                help_text=_("Size of image to launch."))
     volume = forms.IntegerField(label=_("Volume Size"),
@@ -35,11 +40,12 @@ class SetInstanceDetailsAction(workflows.Action):
                                 initial=1,
                                 help_text=_("Size of the volume in GB."))
     datastore = forms.ChoiceField(label=_("Datastore"),
-                                  help_text=_("Type and version of datastore."))
+                                  help_text=_(
+                                      "Type and version of datastore."))
 
     class Meta:
         name = _("Details")
-        help_text_template = ("project/databases/_launch_details_help.html")
+        help_text_template = "project/databases/_launch_details_help.html"
 
     def clean(self):
         if self.data.get("datastore", None) == "select_datastore_type_version":
@@ -53,11 +59,16 @@ class SetInstanceDetailsAction(workflows.Action):
             return api.trove.flavor_list(request)
         except Exception:
             LOG.exception("Exception while obtaining flavors list")
-            self._flavors = []
+            redirect = reverse("horizon:project:databases:index")
+            exceptions.handle(request,
+                              _('Unable to obtain flavors.'),
+                              redirect=redirect)
 
     def populate_flavor_choices(self, request, context):
-        flavor_list = [(f.id, "%s" % f.name) for f in self.flavors(request)]
-        return sorted(flavor_list)
+        flavors = self.flavors(request)
+        if flavors:
+            return instance_utils.sort_flavor_list(request, flavors)
+        return []
 
     @memoized.memoized_method
     def datastores(self, request):
@@ -87,7 +98,7 @@ class SetInstanceDetailsAction(workflows.Action):
                     if len(versions) >= 2:
                         set_initial = True
                     elif len(versions) == 1:
-                        num_datastores_with_one_version = num_datastores_with_one_version + 1
+                        num_datastores_with_one_version += 1
                         if num_datastores_with_one_version > 1:
                             set_initial = True
                 if len(versions) > 0:
@@ -118,7 +129,6 @@ class SetInstanceDetails(workflows.Step):
 
 class SetNetworkAction(workflows.Action):
     network = forms.MultipleChoiceField(label=_("Networks"),
-                                        required=True,
                                         widget=forms.CheckboxSelectMultiple(),
                                         error_messages={
                                             'required': _(
@@ -228,7 +238,7 @@ class RestoreAction(workflows.Action):
         try:
             backups = api.trove.backup_list(request)
             choices = [(b.id, b.name) for b in backups
-                       if b.status == 'COMPLETED' ]
+                       if b.status == 'COMPLETED']
         except Exception:
             choices = []
 
@@ -258,8 +268,8 @@ class RestoreBackup(workflows.Step):
 
 
 class LaunchInstance(workflows.Workflow):
-    slug = "launch_database"
-    name = _("Launch Database")
+    slug = "launch_instance"
+    name = _("Launch Instance")
     finalize_button_name = _("Launch")
     success_message = _('Launched %(count)s named "%(name)s".')
     failure_message = _('Unable to launch %(count)s named "%(name)s".')
@@ -294,7 +304,7 @@ class LaunchInstance(workflows.Workflow):
             user = {
                 'name': context['user'],
                 'password': context['password'],
-                'databases': self._get_databases(context)
+                'databases': self._get_databases(context),
             }
             if context['host']:
                 user['host'] = context['host']
