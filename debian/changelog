@@ -6,6 +6,10 @@ horizon (2014.2~b3-1) experimental; urgency=medium
   * Added 0008_Handle_TypeError_from_table_column_summation_code.patch.
   * Added 0009_Fix-TypeError-SecurityGroup-object-is-not-iterable-t.patch
   * Added disable-failed-django-1.7-test.patch
+  * Note: there's still 2 unit test errors, one about selenium not being
+    installed, which can be safely ignored (Selenium is non-free, and Horizon
+    can't build-depend on it), and the 2nd one is about Trove flavors, which
+    isn't crytical IMO.
 
  -- Thomas Goirand <zigo@debian.org>  Tue, 01 Jul 2014 16:06:08 +0800
 
