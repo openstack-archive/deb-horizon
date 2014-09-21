@@ -1,0 +1,105 @@
+Description: Fix summation code to handle invalid input data
+ This commit fixes multiple test failures with Django 1.7 that all ended with
+ this:
+ .
+  File "/usr/lib/python2.7/dist-packages/django/template/base.py", line 734, in resolve
+    value = self._resolve_lookup(context)
+  File "/usr/lib/python2.7/dist-packages/django/template/base.py", line 788, in _resolve_lookup
+    current = current()
+  File "/home/rhertzog/tmp/django17/horizon/horizon/tables/base.py", line 404, in get_summation
+    summation = summation_function(data)
+  File "/home/rhertzog/tmp/django17/horizon/horizon/tables/base.py", line 206, in <lambda>
+    "average": lambda data: sum(data, 0.0) / len(data)
+ TypeError: unsupported operand type(s) for +: 'float' and 'str'
+ .
+ With Django 1.6, the template code that looked up the variable behind
+ get_summation was catching the TypeError exception:
+ .
+    try: # method call (assuming no args required)
+	current = current()
+    except TypeError: # arguments *were* required
+	# GOTCHA: This will also catch any TypeError
+	# raised in the function itself.
+	current = settings.TEMPLATE_STRING_IF_INVALID  # invalid method call
+ .
+ With Django 1.7, the code has been refined to catch the exception only when
+ the function really requires argument (which get_summation() doesn't):
+ .
+    try:  # method call (assuming no args required)
+	current = current()
+    except TypeError:
+	try:
+	    getcallargs(current)
+	except TypeError:  # arguments *were* required
+	    current = settings.TEMPLATE_STRING_IF_INVALID  # invalid method call
+	else:
+	    raise
+ .
+ So instead of blindly relying on sum(), I introduced a safe_sum() and safe_average()
+ functions which mimick the behaviour we got with Django 1.6 by returning an empty
+ string when we have invalid input data.
+Author: Raphael Hertzog <hertzog@debian.org>
+Date: Mon, 4 Aug 2014 22:27:51 +0200
+
+From d9c8a2e62fbf620eef4d1bdb292cb6ca6b830f17 Mon Sep 17 00:00:00 2001
+From: Akihiro Motoki <motoki@da.jp.nec.com>
+Date: Wed, 13 Aug 2014 04:05:11 +0900
+Subject: [PATCH] Handle TypeError from table column summation code
+
+This commit catches TypeError from horizon.tables.Column
+summation calculation. This TypeError is caught inside Django
+until Django 1.6, but Django 1.7 code is refined to catch
+more specific case and it leads to horizon unit test failure.
+
+Closes-Bug: #1355939
+Change-Id: I9d5b4565f1238a9880ccf117f2ea623fed466a44
+---
+ horizon/tables/base.py       |   14 ++++++++------
+ horizon/test/tests/tables.py |    9 +++++++++
+ 2 files changed, 17 insertions(+), 6 deletions(-)
+
+Index: horizon/horizon/tables/base.py
+===================================================================
+--- horizon.orig/horizon/tables/base.py
++++ horizon/horizon/tables/base.py
+@@ -413,12 +413,14 @@ class Column(html.HTMLElement):
+         data = filter(lambda datum: datum is not None, data)
+ 
+         if len(data):
+-            summation = summation_function(data)
+-            for filter_func in self.filters:
+-                summation = filter_func(summation)
+-            return summation
+-        else:
+-            return None
++            try:
++                summation = summation_function(data)
++                for filter_func in self.filters:
++                    summation = filter_func(summation)
++                return summation
++            except TypeError:
++                pass
++        return None
+ 
+ 
+ class Row(html.HTMLElement):
+Index: horizon/horizon/test/tests/tables.py
+===================================================================
+--- horizon.orig/horizon/test/tests/tables.py
++++ horizon/horizon/test/tests/tables.py
+@@ -1110,6 +1110,15 @@ class DataTableTests(test.TestCase):
+         self.assertNotContains(res, '<td>3.0</td>')
+         self.assertNotContains(res, '<td>6</td>')
+ 
++        # Even if "average" summation method is specified,
++        # we have summation fields but no value is provoded
++        # if the provided data cannot be summed.
++        table = MyTable(self.request, TEST_DATA)
++        res = http.HttpResponse(table.render())
++        self.assertContains(res, '<tr class="summation"')
++        self.assertNotContains(res, '<td>3.0</td>')
++        self.assertNotContains(res, '<td>6</td>')
++
+     def test_table_action_attributes(self):
+         table = MyTable(self.request, TEST_DATA)
+         self.assertTrue(table.has_actions)
