@@ -4,6 +4,7 @@ horizon (2014.2~b3-1) experimental; urgency=medium
   * Fixed (build-)depends for this release.
   * Removed fix-python-m-coverage.patch FINALLY applied upstream !!! :)
   * Added 0008_Handle_TypeError_from_table_column_summation_code.patch.
+  * Added 0009_Fix-TypeError-SecurityGroup-object-is-not-iterable-t.patch
 
  -- Thomas Goirand <zigo@debian.org>  Tue, 01 Jul 2014 16:06:08 +0800
 

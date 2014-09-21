@@ -1,0 +1,33 @@
+Description: TypeError: 'SecurityGroup' object is not iterable test failure with Django 1.7
+ The two tests modified here were incorrectly defining instance.security_groups
+ as a single value instead of a list.
+ .
+ Apparently Django 1.7 is no longer happy trying to iterate something that is
+ not an iterable.
+ .
+ The other test_instance_details_*() were already doing the correct thing so
+ just copy over the logic.
+From: Raphael Hertzog <hertzog@debian.org>
+Forwarded: https://review.openstack.org/111934
+Date: Mon, 4 Aug 2014 22:48:43 +0200
+
+--- horizon-2014.2~b3.orig/openstack_dashboard/dashboards/project/instances/tests.py
++++ horizon-2014.2~b3/openstack_dashboard/dashboards/project/instances/tests.py
+@@ -686,7 +686,7 @@ class InstanceTests(helpers.TestCase):
+     def test_instance_details_volumes(self):
+         server = self.servers.first()
+         volumes = [self.volumes.list()[1]]
+-        security_group = self.security_groups.first()
++        security_group = self.security_groups.list()
+ 
+         res = self._get_instance_details(server, volumes_return=volumes,
+                                          security_groups_return=security_group)
+@@ -698,7 +698,7 @@ class InstanceTests(helpers.TestCase):
+     def test_instance_details_volume_sorting(self):
+         server = self.servers.first()
+         volumes = self.volumes.list()[1:3]
+-        security_group = self.security_groups.first()
++        security_group = self.security_groups.list()
+ 
+         res = self._get_instance_details(server, volumes_return=volumes,
+                                          security_groups_return=security_group)

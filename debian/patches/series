@@ -2,3 +2,4 @@ fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 0008_Handle_TypeError_from_table_column_summation_code.patch
+0009_Fix-TypeError-SecurityGroup-object-is-not-iterable-t.patch
