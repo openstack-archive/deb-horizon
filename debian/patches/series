@@ -2,10 +2,6 @@
 0002_fix-dashboard-manage.patch
 0003_fixed-horizon-MANIFEST.in.patch
 0004_fix-python-m-coverage.patch
-0006_fix-TEMPLATE_DIRS-must-be-tuple.patch
-0007-Rename-add_error-methods-to-avoid-conflict-with-Djan.patch
 0008_Handle_TypeError_from_table_column_summation_code.patch
 0009_Fix-TypeError-SecurityGroup-object-is-not-iterable-t.patch
-0010_Tentative-fix-for-a-test-suite-failure-after-the-las.patch
-CVE_2014-3594_stable-icehouse.patch
 disable-failed-django-1.7-test.patch
