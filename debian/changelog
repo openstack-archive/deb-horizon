@@ -3,6 +3,9 @@ horizon (2014.2~rc1-1) experimental; urgency=medium
   * New upstream release.
   * Added missing python-xstatic-bootstrap-datepicker depends.
   * Updated (build-)depends for this release.
+  * Removed all Django 1.7 fix-up, as they were applied upstream. Only
+    disable-failed-django-1.7-test.patch remains, as nobody was able to work
+    on it and solve it.
 
  -- Thomas Goirand <zigo@debian.org>  Sat, 04 Oct 2014 11:46:51 +0800
 
