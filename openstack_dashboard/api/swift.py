@@ -25,6 +25,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
+from horizon.utils.memoized import memoized  # noqa
 
 from openstack_dashboard.api import base
 from openstack_dashboard.openstack.common import timeutils
@@ -104,9 +105,11 @@ def _metadata_to_header(metadata):
     return headers
 
 
+@memoized
 def swift_api(request):
     endpoint = base.url_for(request, 'object-store')
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
+    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     LOG.debug('Swift connection created using token "%s" and url "%s"'
               % (request.user.token.id, endpoint))
     return swiftclient.client.Connection(None,
@@ -115,6 +118,7 @@ def swift_api(request):
                                          preauthtoken=request.user.token.id,
                                          preauthurl=endpoint,
                                          cacert=cacert,
+                                         insecure=insecure,
                                          auth_version="2.0")
 
 

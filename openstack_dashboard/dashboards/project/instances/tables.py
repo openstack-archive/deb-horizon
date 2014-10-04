@@ -22,8 +22,11 @@ from django import shortcuts
 from django import template
 from django.template.defaultfilters import title  # noqa
 from django.utils.http import urlencode
+from django.utils.translation import npgettext_lazy
+from django.utils.translation import pgettext_lazy
 from django.utils.translation import string_concat  # noqa
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import conf
 from horizon import exceptions
@@ -40,6 +43,7 @@ from openstack_dashboard.dashboards.project.instances.workflows \
     import resize_instance
 from openstack_dashboard.dashboards.project.instances.workflows \
     import update_instance
+from openstack_dashboard import policy
 
 
 LOG = logging.getLogger(__name__)
@@ -74,21 +78,27 @@ def is_deleting(instance):
     return task_state.lower() == "deleting"
 
 
-class TerminateInstance(tables.BatchAction):
+class TerminateInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "terminate"
-    action_present = _("Terminate")
-    action_past = _("Scheduled termination of %(data_type)s")
-    data_type_singular = _("Instance")
-    data_type_plural = _("Instances")
     classes = ("btn-danger",)
     icon = "off"
     policy_rules = (("compute", "compute:delete"),)
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Terminate Instance",
+            u"Terminate Instances",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Scheduled termination of Instance",
+            u"Scheduled termination of Instances",
+            count
+        )
 
     def allowed(self, request, instance=None):
         """Allow terminate action if instance not currently being deleted."""
@@ -98,20 +108,26 @@ class TerminateInstance(tables.BatchAction):
         api.nova.server_delete(request, obj_id)
 
 
-class RebootInstance(tables.BatchAction):
+class RebootInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "reboot"
-    action_present = _("Hard Reboot")
-    action_past = _("Hard Rebooted")
-    data_type_singular = _("Instance")
-    data_type_plural = _("Instances")
     classes = ('btn-danger', 'btn-reboot')
     policy_rules = (("compute", "compute:reboot"),)
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Hard Reboot Instance",
+            u"Hard Reboot Instances",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Hard Rebooted Instance",
+            u"Hard Rebooted Instances",
+            count
+        )
 
     def allowed(self, request, instance=None):
         if instance is not None:
@@ -127,8 +143,22 @@ class RebootInstance(tables.BatchAction):
 
 class SoftRebootInstance(RebootInstance):
     name = "soft_reboot"
-    action_present = _("Soft Reboot")
-    action_past = _("Soft Rebooted")
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Soft Reboot Instance",
+            u"Soft Reboot Instances",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Soft Rebooted Instance",
+            u"Soft Rebooted Instances",
+            count
+        )
 
     def action(self, request, obj_id):
         api.nova.server_reboot(request, obj_id, soft_reboot=True)
@@ -136,11 +166,37 @@ class SoftRebootInstance(RebootInstance):
 
 class TogglePause(tables.BatchAction):
     name = "pause"
-    action_present = (_("Pause"), _("Resume"))
-    action_past = (_("Paused"), _("Resumed"))
-    data_type_singular = _("Instance")
-    data_type_plural = _("Instances")
     icon = "pause"
+
+    @staticmethod
+    def action_present(count):
+        return (
+            ungettext_lazy(
+                u"Pause Instance",
+                u"Pause Instances",
+                count
+            ),
+            ungettext_lazy(
+                u"Resume Instance",
+                u"Resume Instances",
+                count
+            ),
+        )
+
+    @staticmethod
+    def action_past(count):
+        return (
+            ungettext_lazy(
+                u"Paused Instance",
+                u"Paused Instances",
+                count
+            ),
+            ungettext_lazy(
+                u"Resumed Instance",
+                u"Resumed Instances",
+                count
+            ),
+        )
 
     def allowed(self, request, instance=None):
         if not api.nova.extension_supported('AdminActions',
@@ -177,11 +233,37 @@ class TogglePause(tables.BatchAction):
 
 class ToggleSuspend(tables.BatchAction):
     name = "suspend"
-    action_present = (_("Suspend"), _("Resume"))
-    action_past = (_("Suspended"), _("Resumed"))
-    data_type_singular = _("Instance")
-    data_type_plural = _("Instances")
     classes = ("btn-suspend",)
+
+    @staticmethod
+    def action_present(count):
+        return (
+            ungettext_lazy(
+                u"Suspend Instance",
+                u"Suspend Instances",
+                count
+            ),
+            ungettext_lazy(
+                u"Resume Instance",
+                u"Resume Instances",
+                count
+            ),
+        )
+
+    @staticmethod
+    def action_past(count):
+        return (
+            ungettext_lazy(
+                u"Suspended Instance",
+                u"Suspended Instances",
+                count
+            ),
+            ungettext_lazy(
+                u"Resumed Instance",
+                u"Resumed Instances",
+                count
+            ),
+        )
 
     def allowed(self, request, instance=None):
         if not api.nova.extension_supported('AdminActions',
@@ -260,19 +342,13 @@ class LaunchLink(tables.LinkAction):
         return HttpResponse(self.render())
 
 
-class EditInstance(tables.LinkAction):
+class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit Instance")
     url = "horizon:project:instances:update"
     classes = ("ajax-modal",)
     icon = "pencil"
     policy_rules = (("compute", "compute:update"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def get_link_url(self, project):
         return self._get_link_url(project, 'instance_info')
@@ -302,7 +378,7 @@ class EditInstanceSecurityGroups(EditInstance):
                 request.user.tenant_id == instance.tenant_id)
 
 
-class CreateSnapshot(tables.LinkAction):
+class CreateSnapshot(policy.PolicyTargetMixin, tables.LinkAction):
     name = "snapshot"
     verbose_name = _("Create Snapshot")
     url = "horizon:project:images:snapshots:create"
@@ -310,29 +386,17 @@ class CreateSnapshot(tables.LinkAction):
     icon = "camera"
     policy_rules = (("compute", "compute:snapshot"),)
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
-
     def allowed(self, request, instance=None):
         return instance.status in SNAPSHOT_READY_STATES \
             and not is_deleting(instance)
 
 
-class ConsoleLink(tables.LinkAction):
+class ConsoleLink(policy.PolicyTargetMixin, tables.LinkAction):
     name = "console"
     verbose_name = _("Console")
     url = "horizon:project:instances:detail"
     classes = ("btn-console",)
     policy_rules = (("compute", "compute_extension:consoles"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def allowed(self, request, instance=None):
         # We check if ConsoleLink is allowed only if settings.CONSOLE_TYPE is
@@ -347,18 +411,12 @@ class ConsoleLink(tables.LinkAction):
         return "?".join([base_url, tab_query_string])
 
 
-class LogLink(tables.LinkAction):
+class LogLink(policy.PolicyTargetMixin, tables.LinkAction):
     name = "log"
     verbose_name = _("View Log")
     url = "horizon:project:instances:detail"
     classes = ("btn-log",)
     policy_rules = (("compute", "compute_extension:console_output"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def allowed(self, request, instance=None):
         return instance.status in ACTIVE_STATES and not is_deleting(instance)
@@ -370,18 +428,12 @@ class LogLink(tables.LinkAction):
         return "?".join([base_url, tab_query_string])
 
 
-class ResizeLink(tables.LinkAction):
+class ResizeLink(policy.PolicyTargetMixin, tables.LinkAction):
     name = "resize"
     verbose_name = _("Resize Instance")
     url = "horizon:project:instances:resize"
     classes = ("ajax-modal", "btn-resize")
     policy_rules = (("compute", "compute:resize"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def get_link_url(self, project):
         return self._get_link_url(project, 'flavor_choice')
@@ -400,17 +452,11 @@ class ResizeLink(tables.LinkAction):
                 and not is_deleting(instance))
 
 
-class ConfirmResize(tables.Action):
+class ConfirmResize(policy.PolicyTargetMixin, tables.Action):
     name = "confirm"
     verbose_name = _("Confirm Resize/Migrate")
     classes = ("btn-confirm", "btn-action-required")
     policy_rules = (("compute", "compute:confirm_resize"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def allowed(self, request, instance):
         return instance.status == 'VERIFY_RESIZE'
@@ -419,17 +465,11 @@ class ConfirmResize(tables.Action):
         api.nova.server_confirm_resize(request, instance)
 
 
-class RevertResize(tables.Action):
+class RevertResize(policy.PolicyTargetMixin, tables.Action):
     name = "revert"
     verbose_name = _("Revert Resize/Migrate")
     classes = ("btn-revert", "btn-action-required")
     policy_rules = (("compute", "compute:revert_resize"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def allowed(self, request, instance):
         return instance.status == 'VERIFY_RESIZE'
@@ -438,18 +478,12 @@ class RevertResize(tables.Action):
         api.nova.server_revert_resize(request, instance)
 
 
-class RebuildInstance(tables.LinkAction):
+class RebuildInstance(policy.PolicyTargetMixin, tables.LinkAction):
     name = "rebuild"
     verbose_name = _("Rebuild Instance")
     classes = ("btn-rebuild", "ajax-modal")
     url = "horizon:project:instances:rebuild"
     policy_rules = (("compute", "compute:rebuild"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def allowed(self, request, instance):
         return ((instance.status in ACTIVE_STATES
@@ -484,19 +518,13 @@ class DecryptInstancePassword(tables.LinkAction):
                                                     keypair_name])
 
 
-class AssociateIP(tables.LinkAction):
+class AssociateIP(policy.PolicyTargetMixin, tables.LinkAction):
     name = "associate"
     verbose_name = _("Associate Floating IP")
     url = "horizon:project:access_and_security:floating_ips:associate"
     classes = ("ajax-modal",)
     icon = "link"
     policy_rules = (("compute", "network:associate_floating_ip"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def allowed(self, request, instance):
         if not api.network.floating_ip_supported(request):
@@ -514,17 +542,11 @@ class AssociateIP(tables.LinkAction):
         return "?".join([base_url, params])
 
 
-class SimpleAssociateIP(tables.Action):
+class SimpleAssociateIP(policy.PolicyTargetMixin, tables.Action):
     name = "associate-simple"
     verbose_name = _("Associate Floating IP")
     icon = "link"
     policy_rules = (("compute", "network:associate_floating_ip"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def allowed(self, request, instance):
         if not api.network.floating_ip_simple_associate_supported(request):
@@ -549,17 +571,11 @@ class SimpleAssociateIP(tables.Action):
         return shortcuts.redirect("horizon:project:instances:index")
 
 
-class SimpleDisassociateIP(tables.Action):
+class SimpleDisassociateIP(policy.PolicyTargetMixin, tables.Action):
     name = "disassociate"
     verbose_name = _("Disassociate Floating IP")
     classes = ("btn-danger", "btn-disassociate",)
     policy_rules = (("compute", "network:disassociate_floating_ip"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
     def allowed(self, request, instance):
         if not api.network.floating_ip_supported(request):
@@ -632,19 +648,25 @@ class UpdateRow(tables.Row):
         return instance
 
 
-class StartInstance(tables.BatchAction):
+class StartInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "start"
-    action_present = _("Start")
-    action_past = _("Started")
-    data_type_singular = _("Instance")
-    data_type_plural = _("Instances")
     policy_rules = (("compute", "compute:start"),)
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Start Instance",
+            u"Start Instances",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Started Instance",
+            u"Started Instances",
+            count
+        )
 
     def allowed(self, request, instance):
         return instance.status in ("SHUTDOWN", "SHUTOFF", "CRASHED")
@@ -653,20 +675,28 @@ class StartInstance(tables.BatchAction):
         api.nova.server_start(request, obj_id)
 
 
-class StopInstance(tables.BatchAction):
+class StopInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "stop"
-    action_present = _("Shut Off")
-    action_past = _("Shut Off")
-    data_type_singular = _("Instance")
-    data_type_plural = _("Instances")
     classes = ('btn-danger',)
     policy_rules = (("compute", "compute:stop"),)
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
+    @staticmethod
+    def action_present(count):
+        return npgettext_lazy(
+            "Action to perform (the instance is currently running)",
+            u"Shut Off Instance",
+            u"Shut Off Instances",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return npgettext_lazy(
+            "Past action (the instance is currently already Shut Off)",
+            u"Shut Off Instance",
+            u"Shut Off Instances",
+            count
+        )
 
     def allowed(self, request, instance):
         return ((get_power_state(instance)
@@ -714,81 +744,117 @@ def get_power_state(instance):
 
 
 STATUS_DISPLAY_CHOICES = (
-    ("deleted", _("Deleted")),
-    ("active", _("Active")),
-    ("shutoff", _("Shutoff")),
-    ("suspended", _("Suspended")),
-    ("paused", _("Paused")),
-    ("error", _("Error")),
-    ("resize", _("Resize/Migrate")),
-    ("verify_resize", _("Confirm or Revert Resize/Migrate")),
-    ("revert_resize", _("Revert Resize/Migrate")),
-    ("reboot", _("Reboot")),
-    ("hard_reboot", _("Hard Reboot")),
-    ("password", _("Password")),
-    ("rebuild", _("Rebuild")),
-    ("migrating", _("Migrating")),
-    ("build", _("Build")),
-    ("rescue", _("Rescue")),
-    ("deleted", _("Deleted")),
-    ("soft_deleted", _("Soft Deleted")),
-    ("shelved", _("Shelved")),
-    ("shelved_offloaded", _("Shelved Offloaded")),
+    ("deleted", pgettext_lazy("Current status of an Instance", u"Deleted")),
+    ("active", pgettext_lazy("Current status of an Instance", u"Active")),
+    ("shutoff", pgettext_lazy("Current status of an Instance", u"Shutoff")),
+    ("suspended", pgettext_lazy("Current status of an Instance",
+                                u"Suspended")),
+    ("paused", pgettext_lazy("Current status of an Instance", u"Paused")),
+    ("error", pgettext_lazy("Current status of an Instance", u"Error")),
+    ("resize", pgettext_lazy("Current status of an Instance",
+                             u"Resize/Migrate")),
+    ("verify_resize", pgettext_lazy("Current status of an Instance",
+                                    u"Confirm or Revert Resize/Migrate")),
+    ("revert_resize", pgettext_lazy(
+        "Current status of an Instance", u"Revert Resize/Migrate")),
+    ("reboot", pgettext_lazy("Current status of an Instance", u"Reboot")),
+    ("hard_reboot", pgettext_lazy("Current status of an Instance",
+                                  u"Hard Reboot")),
+    ("password", pgettext_lazy("Current status of an Instance", u"Password")),
+    ("rebuild", pgettext_lazy("Current status of an Instance", u"Rebuild")),
+    ("migrating", pgettext_lazy("Current status of an Instance",
+                                u"Migrating")),
+    ("build", pgettext_lazy("Current status of an Instance", u"Build")),
+    ("rescue", pgettext_lazy("Current status of an Instance", u"Rescue")),
+    ("deleted", pgettext_lazy("Current status of an Instance", u"Deleted")),
+    ("soft_deleted", pgettext_lazy("Current status of an Instance",
+                                   u"Soft Deleted")),
+    ("shelved", pgettext_lazy("Current status of an Instance", u"Shelved")),
+    ("shelved_offloaded", pgettext_lazy("Current status of an Instance",
+                                        u"Shelved Offloaded")),
 )
 
 
 TASK_DISPLAY_CHOICES = (
-    ("scheduling", _("Scheduling")),
-    ("block_device_mapping", _("Block Device Mapping")),
-    ("networking", _("Networking")),
-    ("spawning", _("Spawning")),
-    ("image_snapshot", _("Snapshotting")),
-    ("image_snapshot_pending", _("Image Snapshot Pending")),
-    ("image_pending_upload", _("Image Pending Upload")),
-    ("image_uploading", _("Image Uploading")),
-    ("image_backup", _("Image Backup")),
-    ("updating_password", _("Updating Password")),
-    ("resize_prep", _("Preparing Resize or Migrate")),
-    ("resize_migrating", _("Resizing or Migrating")),
-    ("resize_migrated", _("Resized or Migrated")),
-    ("resize_finish", _("Finishing Resize or Migrate")),
-    ("resize_reverting", _("Reverting Resize or Migrate")),
-    ("resize_confirming", _("Confirming Resize or Migrate")),
-    ("rebooting", _("Rebooting")),
-    ("rebooting_hard", _("Rebooting Hard")),
-    ("pausing", _("Pausing")),
-    ("unpausing", _("Resuming")),
-    ("suspending", _("Suspending")),
-    ("resuming", _("Resuming")),
-    ("powering-off", _("Powering Off")),
-    ("powering-on", _("Powering On")),
-    ("rescuing", _("Rescuing")),
-    ("unrescuing", _("Unrescuing")),
-    ("rebuilding", _("Rebuilding")),
-    ("rebuild_block_device_mapping", _("Rebuild Block Device Mapping")),
-    ("rebuild_spawning", _("Rebuild Spawning")),
-    ("migrating", _("Migrating")),
-    ("deleting", _("Deleting")),
-    ("soft-deleting", _("Soft Deleting")),
-    ("restoring", _("Restoring")),
-    ("shelving", _("Shelving")),
-    ("shelving_image_pending_upload", _("Shelving Image Pending Upload")),
-    ("shelving_image_uploading", _("Shelving Image Uploading")),
-    ("shelving_offloading", _("Shelving Offloading")),
-    ("unshelving", _("Unshelving")),
+    ("scheduling", pgettext_lazy("Task status of an Instance",
+                                 u"Scheduling")),
+    ("block_device_mapping", pgettext_lazy("Task status of an Instance",
+                                           u"Block Device Mapping")),
+    ("networking", pgettext_lazy("Task status of an Instance",
+                                 u"Networking")),
+    ("spawning", pgettext_lazy("Task status of an Instance", u"Spawning")),
+    ("image_snapshot", pgettext_lazy("Task status of an Instance",
+                                     u"Snapshotting")),
+    ("image_snapshot_pending", pgettext_lazy("Task status of an Instance",
+                                             u"Image Snapshot Pending")),
+    ("image_pending_upload", pgettext_lazy("Task status of an Instance",
+                                           u"Image Pending Upload")),
+    ("image_uploading", pgettext_lazy("Task status of an Instance",
+                                      u"Image Uploading")),
+    ("image_backup", pgettext_lazy("Task status of an Instance",
+                                   u"Image Backup")),
+    ("updating_password", pgettext_lazy("Task status of an Instance",
+                                        u"Updating Password")),
+    ("resize_prep", pgettext_lazy("Task status of an Instance",
+                                  u"Preparing Resize or Migrate")),
+    ("resize_migrating", pgettext_lazy("Task status of an Instance",
+                                       u"Resizing or Migrating")),
+    ("resize_migrated", pgettext_lazy("Task status of an Instance",
+                                      u"Resized or Migrated")),
+    ("resize_finish", pgettext_lazy("Task status of an Instance",
+                                    u"Finishing Resize or Migrate")),
+    ("resize_reverting", pgettext_lazy("Task status of an Instance",
+                                       u"Reverting Resize or Migrate")),
+    ("resize_confirming", pgettext_lazy("Task status of an Instance",
+                                        u"Confirming Resize or Migrate")),
+    ("rebooting", pgettext_lazy("Task status of an Instance", u"Rebooting")),
+    ("rebooting_hard", pgettext_lazy("Task status of an Instance",
+                                     u"Rebooting Hard")),
+    ("pausing", pgettext_lazy("Task status of an Instance", u"Pausing")),
+    ("unpausing", pgettext_lazy("Task status of an Instance", u"Resuming")),
+    ("suspending", pgettext_lazy("Task status of an Instance",
+                                 u"Suspending")),
+    ("resuming", pgettext_lazy("Task status of an Instance", u"Resuming")),
+    ("powering-off", pgettext_lazy("Task status of an Instance",
+                                   u"Powering Off")),
+    ("powering-on", pgettext_lazy("Task status of an Instance",
+                                  u"Powering On")),
+    ("rescuing", pgettext_lazy("Task status of an Instance", u"Rescuing")),
+    ("unrescuing", pgettext_lazy("Task status of an Instance",
+                                 u"Unrescuing")),
+    ("rebuilding", pgettext_lazy("Task status of an Instance",
+                                 u"Rebuilding")),
+    ("rebuild_block_device_mapping", pgettext_lazy(
+        "Task status of an Instance", u"Rebuild Block Device Mapping")),
+    ("rebuild_spawning", pgettext_lazy("Task status of an Instance",
+                                       u"Rebuild Spawning")),
+    ("migrating", pgettext_lazy("Task status of an Instance", u"Migrating")),
+    ("deleting", pgettext_lazy("Task status of an Instance", u"Deleting")),
+    ("soft-deleting", pgettext_lazy("Task status of an Instance",
+                                    u"Soft Deleting")),
+    ("restoring", pgettext_lazy("Task status of an Instance", u"Restoring")),
+    ("shelving", pgettext_lazy("Task status of an Instance", u"Shelving")),
+    ("shelving_image_pending_upload", pgettext_lazy(
+        "Task status of an Instance", u"Shelving Image Pending Upload")),
+    ("shelving_image_uploading", pgettext_lazy("Task status of an Instance",
+                                               u"Shelving Image Uploading")),
+    ("shelving_offloading", pgettext_lazy("Task status of an Instance",
+                                          u"Shelving Offloading")),
+    ("unshelving", pgettext_lazy("Task status of an Instance",
+                                 u"Unshelving")),
 )
 
 POWER_DISPLAY_CHOICES = (
-    ("NO STATE", _("No State")),
-    ("RUNNING", _("Running")),
-    ("BLOCKED", _("Blocked")),
-    ("PAUSED", _("Paused")),
-    ("SHUTDOWN", _("Shut Down")),
-    ("SHUTOFF", _("Shut Off")),
-    ("CRASHED", _("Crashed")),
-    ("SUSPENDED", _("Suspended")),
-    ("FAILED", _("Failed")),
-    ("BUILDING", _("Building")),
+    ("NO STATE", pgettext_lazy("Power state of an Instance", u"No State")),
+    ("RUNNING", pgettext_lazy("Power state of an Instance", u"Running")),
+    ("BLOCKED", pgettext_lazy("Power state of an Instance", u"Blocked")),
+    ("PAUSED", pgettext_lazy("Power state of an Instance", u"Paused")),
+    ("SHUTDOWN", pgettext_lazy("Power state of an Instance", u"Shut Down")),
+    ("SHUTOFF", pgettext_lazy("Power state of an Instance", u"Shut Off")),
+    ("CRASHED", pgettext_lazy("Power state of an Instance", u"Crashed")),
+    ("SUSPENDED", pgettext_lazy("Power state of an Instance", u"Suspended")),
+    ("FAILED", pgettext_lazy("Power state of an Instance", u"Failed")),
+    ("BUILDING", pgettext_lazy("Power state of an Instance", u"Building")),
 )
 
 
@@ -845,7 +911,7 @@ class InstancesTable(tables.DataTable):
                           verbose_name=_("Power State"),
                           display_choices=POWER_DISPLAY_CHOICES)
     created = tables.Column("created",
-                            verbose_name=_("Uptime"),
+                            verbose_name=_("Time since created"),
                             filters=(filters.parse_isotime,
                                      filters.timesince_sortable),
                             attrs={'data-type': 'timesince'})

@@ -10,8 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls import patterns  # noqa
-from django.conf.urls import url  # noqa
+from django.conf.urls import patterns
+from django.conf.urls import url
 
 from openstack_dashboard.dashboards.admin.aggregates \
     import views
@@ -24,6 +24,8 @@ urlpatterns = patterns('openstack_dashboard.dashboards.admin.aggregates.views',
         views.CreateView.as_view(), name='create'),
     url(r'^(?P<id>[^/]+)/update/$',
         views.UpdateView.as_view(), name='update'),
+    url(r'^(?P<id>[^/]+)/update_metadata/$',
+        views.UpdateMetadataView.as_view(), name='update_metadata'),
     url(r'^(?P<id>[^/]+)/manage_hosts/$',
         views.ManageHostsView.as_view(), name='manage_hosts'),
 )

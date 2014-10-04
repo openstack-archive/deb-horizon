@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-28 15:08-0500\n"
-"PO-Revision-Date: 2014-08-28 14:43+0000\n"
+"POT-Creation-Date: 2014-09-29 22:50-0500\n"
+"PO-Revision-Date: 2014-09-29 07:12+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/horizon/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,7 @@ msgstr "Yetkisiz: %s"
 msgid "Unauthorized. Please try logging in again."
 msgstr "Yetkisiz Giriş. Lütfen tekrar giriş yapın. "
 
-#: middleware.py:117
+#: middleware.py:97
 msgid "Session timed out."
 msgstr "Oturum sona erdi"
 
@@ -61,19 +61,29 @@ msgstr "Göz atmak için bir %s seçin."
 msgid "Password is not accepted"
 msgstr "Parola kabul edilmedi"
 
-#: forms/fields.py:63
+#: forms/fields.py:64
 msgid "Incorrect format for IP address"
 msgstr "Hatalı IP adres biçemi"
 
-#: forms/fields.py:64
+#: forms/fields.py:65
 msgid "Invalid version for IP address"
 msgstr "Geçersiz IP adres sürümü"
 
-#: forms/fields.py:65
+#: forms/fields.py:66
 msgid "Invalid subnet mask"
 msgstr "Geçersiz subnet maskesi"
 
-#: tables/actions.py:458
+#: forms/views.py:81 templates/horizon/common/_usage_summary.html:16
+msgid "Submit"
+msgstr "Gönder"
+
+#: forms/views.py:82
+#: templates/horizon/common/_modal_form_update_metadata.html:239
+#: templates/horizon/common/_workflow.html:49
+msgid "Cancel"
+msgstr "İptal"
+
+#: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:16
 #: templates/horizon/common/_data_table_table_actions.html:26
 #: templates/horizon/common/_workflow_step_update_members.html:12
@@ -81,73 +91,73 @@ msgstr "Geçersiz subnet maskesi"
 msgid "Filter"
 msgstr "Filtre"
 
-#: tables/actions.py:662
+#: tables/actions.py:756
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:664
+#: tables/actions.py:758
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:694 tables/base.py:1498
+#: tables/actions.py:786 tables/base.py:1537
 msgid "N/A"
 msgstr "N/A"
 
-#: tables/actions.py:723
+#: tables/actions.py:815
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "Bu işlem için izniniz yok %(action)s: %(objs)s"
 
-#: tables/actions.py:730
+#: tables/actions.py:822
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s işlemi yapılamıyor."
 
-#: tables/actions.py:736
+#: tables/actions.py:828
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:778
+#: tables/actions.py:898
 msgid "Delete"
 msgstr "Sil"
 
-#: tables/actions.py:779
+#: tables/actions.py:900
 msgid "Deleted"
 msgstr "Silinmiş"
 
-#: tables/actions.py:811
+#: tables/actions.py:931
 msgid "Update"
 msgstr "Güncelle"
 
-#: tables/actions.py:812
+#: tables/actions.py:932
 msgid "Updated"
 msgstr "Güncellenmiş"
 
-#: tables/base.py:330
+#: tables/base.py:355
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr " %(obj)s objesinde %(attr)s özniteliği yer almıyor."
 
-#: tables/base.py:931
+#: tables/base.py:967
 msgid "No items to display."
 msgstr "Görüntülenecek öğe yok."
 
-#: tables/base.py:1038
+#: tables/base.py:1074
 #: templates/horizon/common/_data_table_table_actions.html:40
 msgid "Actions"
 msgstr "Eylemler"
 
-#: tables/base.py:1263
+#: tables/base.py:1302
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "\"%s\" ID'si için bir eşleşme bulunamadı."
 
-#: tables/base.py:1414
+#: tables/base.py:1453
 msgid "Please select a row before taking that action."
 msgstr "Bir işlem yapmadan önce lütfen bir satır seçin."
 
@@ -272,6 +282,52 @@ msgstr "Diskler"
 msgid "Volume Storage"
 msgstr "Disk Depolama Birimi"
 
+#: templates/horizon/common/_modal_form_update_metadata.html:12
+msgid ""
+"\n"
+"        You can specify metadata by adding items from the left column to\n"
+"        the right column. You may select the metadata added to glance\n"
+"        dictionary or you can use the \"Other\" option using a key of\n"
+"        your choice.\n"
+"      "
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:26
+msgid "Available Metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:56
+msgid "Duplicate keys are not allowed"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:59
+msgid "Invalid key name"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:88
+#: templates/horizon/common/_modal_form_update_metadata.html:200
+msgid "No existing metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:99
+msgid "Existing Metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:216
+msgid ""
+"\n"
+"          You can specify resource metadata by moving items from the left\n"
+"          column to the right column. In the left columns there are metadata\n"
+"          definitions from the Glance Metadata Catalog. Use the \"Other\" option\n"
+"          to add metadata with the key of your choice.\n"
+"        "
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:238
+#: workflows/base.py:594
+msgid "Save"
+msgstr "Kaydet"
+
 #: templates/horizon/common/_resource_browser.html:10
 #, python-format
 msgid "Displaying %(nav_items)s item"
@@ -306,10 +362,6 @@ msgid ""
 "      <label>To:</label>%(end)s"
 msgstr ""
 
-#: templates/horizon/common/_usage_summary.html:16
-msgid "Submit"
-msgstr "Gönder"
-
 #: templates/horizon/common/_usage_summary.html:17
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "Tarih YYYY-AA-GG formatında olmalı."
@@ -338,19 +390,15 @@ msgstr "Geri"
 msgid "Next"
 msgstr "İleri"
 
-#: templates/horizon/common/_workflow.html:49
-msgid "Cancel"
-msgstr "İptal"
-
 #: templatetags/branding.py:34
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:126 templatetags/horizon.py:136
+#: templatetags/horizon.py:130 templatetags/horizon.py:141
 msgid "No Limit"
 msgstr "Limitsiz"
 
-#: templatetags/horizon.py:128 templatetags/horizon.py:130
+#: templatetags/horizon.py:133 templatetags/horizon.py:135
 msgid "Available"
 msgstr "Uygun"
 
@@ -388,6 +436,16 @@ msgstr "%s PB"
 #: templatetags/sizeformat.py:77
 msgid "0 bytes"
 msgstr ""
+
+#: test/test_dashboards/dogs/puppies/tables.py:31
+msgid "Sell Puppy"
+msgid_plural "Sell Puppies"
+msgstr[0] ""
+
+#: test/test_dashboards/dogs/puppies/tables.py:40
+msgid "Sold Puppy"
+msgid_plural "Sold Puppies"
+msgstr[0] ""
 
 #: utils/filters.py:49
 msgid "Never"
@@ -428,10 +486,6 @@ msgstr "Hiçbiri uygun değil"
 #: workflows/base.py:478
 msgid "No members."
 msgstr "Üye yok."
-
-#: workflows/base.py:594
-msgid "Save"
-msgstr "Kaydet"
 
 #: workflows/base.py:595
 #, python-format

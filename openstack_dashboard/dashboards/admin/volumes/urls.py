@@ -11,21 +11,34 @@
 # under the License.
 
 from django.conf.urls import include  # noqa
-from django.conf.urls import patterns  # noqa
-from django.conf.urls import url  # noqa
+from django.conf.urls import patterns
+from django.conf.urls import url
 
 from openstack_dashboard.dashboards.admin.volumes.snapshots \
     import urls as snapshot_urls
 from openstack_dashboard.dashboards.admin.volumes import views
+from openstack_dashboard.dashboards.admin.volumes.volume_types \
+    import urls as volume_types_urls
 from openstack_dashboard.dashboards.admin.volumes.volumes \
     import urls as volumes_urls
 
 urlpatterns = patterns('',
-    url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^$',
+        views.IndexView.as_view(),
+        name='index'),
     url(r'^\?tab=volumes_group_tabs__snapshots_tab$',
-        views.IndexView.as_view(), name='snapshots_tab'),
+        views.IndexView.as_view(),
+        name='snapshots_tab'),
     url(r'^\?tab=volumes_group_tabs__volumes_tab$',
-        views.IndexView.as_view(), name='volumes_tab'),
-    url(r'', include(volumes_urls, namespace='volumes')),
-    url(r'snapshots/', include(snapshot_urls, namespace='snapshots')),
+        views.IndexView.as_view(),
+        name='volumes_tab'),
+    url(r'^\?tab=volumes_group_tabs__volume_types_tab$',
+        views.IndexView.as_view(),
+        name='volume_types_tab'),
+    url(r'',
+        include(volumes_urls, namespace='volumes')),
+    url(r'volume_types/',
+        include(volume_types_urls, namespace='volume_types')),
+    url(r'snapshots/',
+        include(snapshot_urls, namespace='snapshots')),
 )

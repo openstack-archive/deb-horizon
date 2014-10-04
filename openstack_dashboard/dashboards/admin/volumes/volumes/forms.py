@@ -26,7 +26,7 @@ from openstack_dashboard.api import cinder
 
 
 class CreateVolumeType(forms.SelfHandlingForm):
-    name = forms.CharField(max_length="255", label=_("Name"))
+    name = forms.CharField(max_length=255, label=_("Name"))
 
     def handle(self, request, data):
         try:
@@ -81,4 +81,23 @@ class UpdateStatus(forms.SelfHandlingForm):
             exceptions.handle(request,
                               _('Unable to update volume status to "%s".') %
                              new_status)
+            return False
+
+
+class CreateQosSpec(forms.SelfHandlingForm):
+    name = forms.CharField(max_length=255, label=_("Name"))
+    consumer = forms.ChoiceField(label=_("Consumer"),
+                                 choices=cinder.CONSUMER_CHOICES)
+
+    def handle(self, request, data):
+        try:
+            qos_spec = cinder.qos_spec_create(request,
+                                              data['name'],
+                                              {'consumer': data['consumer']})
+            messages.success(request, _('Successfully created QOS Spec: %s')
+                                      % data['name'])
+            return qos_spec
+        except Exception:
+            exceptions.handle(request,
+                              _('Unable to create QOS Spec.'))
             return False

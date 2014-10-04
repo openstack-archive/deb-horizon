@@ -16,18 +16,23 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import json
 import logging
 
+from django import conf
+from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
+from horizon import forms
 from horizon import tables
+from horizon.utils import memoized
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.images.images import views
 
-from openstack_dashboard.dashboards.admin.images import forms
+from openstack_dashboard.dashboards.admin.images import forms as project_forms
 from openstack_dashboard.dashboards.admin.images \
     import tables as project_tables
 
@@ -101,16 +106,87 @@ class IndexView(tables.DataTableView):
 
 class CreateView(views.CreateView):
     template_name = 'admin/images/create.html'
-    form_class = forms.AdminCreateImageForm
+    form_class = project_forms.AdminCreateImageForm
     success_url = reverse_lazy('horizon:admin:images:index')
 
 
 class UpdateView(views.UpdateView):
     template_name = 'admin/images/update.html'
-    form_class = forms.AdminUpdateImageForm
+    form_class = project_forms.AdminUpdateImageForm
     success_url = reverse_lazy('horizon:admin:images:index')
 
 
 class DetailView(views.DetailView):
     """Admin placeholder for image detail view."""
     pass
+
+
+class UpdateMetadataView(forms.ModalFormView):
+    template_name = "admin/images/update_metadata.html"
+    form_class = project_forms.UpdateMetadataForm
+    success_url = reverse_lazy('horizon:admin:images:index')
+
+    def get_initial(self):
+        image = self.get_object()
+        return {'id': self.kwargs["id"], 'metadata': image.properties}
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateMetadataView, self).get_context_data(**kwargs)
+
+        image = self.get_object()
+        reserved_props = getattr(conf.settings,
+                                 'IMAGE_RESERVED_CUSTOM_PROPERTIES', [])
+        image.properties = dict((k, v)
+                                for (k, v) in image.properties.iteritems()
+                                if k not in reserved_props)
+        context['existing_metadata'] = json.dumps(image.properties)
+
+        resource_type = 'OS::Glance::Image'
+        namespaces = []
+        try:
+            # metadefs_namespace_list() returns a tuple with list as 1st elem
+            available_namespaces = [x.namespace for x in
+                          api.glance.metadefs_namespace_list(
+                              self.request,
+                              filters={"resource_types":
+                                       [resource_type]}
+                          )[0]]
+            for namespace in available_namespaces:
+                details = api.glance.metadefs_namespace_get(self.request,
+                    namespace, resource_type)
+                # Filter out reserved custom properties from namespace
+                if reserved_props:
+                    if hasattr(details, 'properties'):
+                        details.properties = dict(
+                            (k, v)
+                            for (k, v) in details.properties.iteritems()
+                            if k not in reserved_props
+                        )
+
+                    if hasattr(details, 'objects'):
+                        for obj in details.objects:
+                            obj['properties'] = dict(
+                                (k, v)
+                                for (k, v) in obj['properties'].iteritems()
+                                if k not in reserved_props
+                            )
+
+                namespaces.append(details)
+
+        except Exception:
+            msg = _('Unable to retrieve available properties for image.')
+            exceptions.handle(self.request, msg)
+
+        context['available_metadata'] = json.dumps({'namespaces': namespaces})
+        context['id'] = self.kwargs['id']
+        return context
+
+    @memoized.memoized_method
+    def get_object(self):
+        image_id = self.kwargs['id']
+        try:
+            return api.glance.image_get(self.request, image_id)
+        except Exception:
+            msg = _('Unable to retrieve the image to be updated.')
+            exceptions.handle(self.request, msg,
+                redirect=reverse('horizon:admin:images:index'))

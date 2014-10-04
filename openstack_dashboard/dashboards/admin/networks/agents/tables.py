@@ -20,6 +20,7 @@ import logging
 from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import exceptions
 from horizon import tables
@@ -32,8 +33,22 @@ LOG = logging.getLogger(__name__)
 
 
 class DeleteDHCPAgent(tables.DeleteAction):
-    data_type_singular = _("DHCP Agent")
-    data_type_plural = _("DHCP Agents")
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete DHCP Agent",
+            u"Delete DHCP Agents",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted DHCP Agent",
+            u"Deleted DHCP Agents",
+            count
+        )
+
     policy_rules = (("network", "delete_agent"),)
 
     def delete(self, request, obj_id):
@@ -74,7 +89,7 @@ def get_agent_state(agent):
 
 
 class DHCPAgentsTable(tables.DataTable):
-    id = tables.Column('id', verbose_name=_('Id'), hidden=True)
+    id = tables.Column('id', verbose_name=_('ID'), hidden=True)
     host = tables.Column('host', verbose_name=_('Host'))
     status = tables.Column(get_agent_status, verbose_name=_('Status'))
     state = tables.Column(get_agent_state, verbose_name=_('Admin State'))

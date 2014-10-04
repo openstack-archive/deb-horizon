@@ -73,11 +73,13 @@ class UpdateRule(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         super(UpdateRule, self).__init__(request, *args, **kwargs)
 
-        protocol = kwargs['initial']['protocol'].upper()
+        protocol = kwargs['initial']['protocol']
+        protocol = protocol.upper() if protocol else 'ANY'
         action = kwargs['initial']['action'].upper()
 
         protocol_choices = [(protocol, protocol)]
-        for tup in [('TCP', _('TCP')), ('UDP', _('UDP')), ('ICMP', _('ICMP'))]:
+        for tup in [('TCP', _('TCP')), ('UDP', _('UDP')), ('ICMP', _('ICMP')),
+                    ('ANY', _('ANY'))]:
             if tup[0] != protocol:
                 protocol_choices.append(tup)
         self.fields['protocol'].choices = protocol_choices
@@ -91,6 +93,8 @@ class UpdateRule(forms.SelfHandlingForm):
     def handle(self, request, context):
         rule_id = self.initial['rule_id']
         name_or_id = context.get('name') or rule_id
+        if context['protocol'] == 'ANY':
+            context['protocol'] = None
         for f in ['source_ip_address', 'destination_ip_address',
                   'source_port', 'destination_port']:
             if not context[f]:
@@ -143,8 +147,9 @@ class UpdateFirewall(forms.SelfHandlingForm):
                                   label=_("Description"),
                                   required=False)
     firewall_policy_id = forms.ChoiceField(label=_("Policy"))
-    admin_state_up = forms.BooleanField(label=_("Admin State Up"),
-                                        required=False)
+    # TODO(amotoki): make UP/DOWN translatable
+    admin_state_up = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+                                       label=_("Admin State"))
 
     failure_url = 'horizon:project:firewalls:index'
 
@@ -174,6 +179,7 @@ class UpdateFirewall(forms.SelfHandlingForm):
     def handle(self, request, context):
         firewall_id = self.initial['firewall_id']
         name_or_id = context.get('name') or firewall_id
+        context['admin_state_up'] = (context['admin_state_up'] == 'True')
         try:
             firewall = api.fwaas.firewall_update(request, firewall_id,
                                                  **context)

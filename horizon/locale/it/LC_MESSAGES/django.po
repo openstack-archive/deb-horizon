@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-28 15:08-0500\n"
-"PO-Revision-Date: 2014-08-28 14:43+0000\n"
+"POT-Creation-Date: 2014-09-29 22:50-0500\n"
+"PO-Revision-Date: 2014-09-29 07:12+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/horizon/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,7 @@ msgstr "Non autorizzato: %s"
 msgid "Unauthorized. Please try logging in again."
 msgstr "Non autorizzato. Ritentare il login."
 
-#: middleware.py:117
+#: middleware.py:97
 msgid "Session timed out."
 msgstr "Sessione scaduta."
 
@@ -61,19 +61,29 @@ msgstr "Selezionare un %s per sfogliare."
 msgid "Password is not accepted"
 msgstr "La password non è stata accettata."
 
-#: forms/fields.py:63
+#: forms/fields.py:64
 msgid "Incorrect format for IP address"
 msgstr "Formato incorretto per l'indirizzo IP"
 
-#: forms/fields.py:64
+#: forms/fields.py:65
 msgid "Invalid version for IP address"
 msgstr "Versione dell'indirizzo IP non valida"
 
-#: forms/fields.py:65
+#: forms/fields.py:66
 msgid "Invalid subnet mask"
 msgstr "Maschera sottorete non valida."
 
-#: tables/actions.py:458
+#: forms/views.py:81 templates/horizon/common/_usage_summary.html:16
+msgid "Submit"
+msgstr "Invia"
+
+#: forms/views.py:82
+#: templates/horizon/common/_modal_form_update_metadata.html:239
+#: templates/horizon/common/_workflow.html:49
+msgid "Cancel"
+msgstr "Annulla"
+
+#: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:16
 #: templates/horizon/common/_data_table_table_actions.html:26
 #: templates/horizon/common/_workflow_step_update_members.html:12
@@ -81,73 +91,73 @@ msgstr "Maschera sottorete non valida."
 msgid "Filter"
 msgstr "Filtro"
 
-#: tables/actions.py:662
+#: tables/actions.py:756
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:664
+#: tables/actions.py:758
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:694 tables/base.py:1498
+#: tables/actions.py:786 tables/base.py:1537
 msgid "N/A"
 msgstr "N/A"
 
-#: tables/actions.py:723
+#: tables/actions.py:815
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "Non si è autorizzati a %(action)s: %(objs)s"
 
-#: tables/actions.py:730
+#: tables/actions.py:822
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "Impossibile %(action)s: %(objs)s"
 
-#: tables/actions.py:736
+#: tables/actions.py:828
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:778
+#: tables/actions.py:898
 msgid "Delete"
 msgstr "Elimina"
 
-#: tables/actions.py:779
+#: tables/actions.py:900
 msgid "Deleted"
 msgstr "Eliminato"
 
-#: tables/actions.py:811
+#: tables/actions.py:931
 msgid "Update"
 msgstr "Aggiorna"
 
-#: tables/actions.py:812
+#: tables/actions.py:932
 msgid "Updated"
 msgstr "Aggiornato"
 
-#: tables/base.py:330
+#: tables/base.py:355
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "L'attributo %(attr)s non esiste in %(obj)s"
 
-#: tables/base.py:931
+#: tables/base.py:967
 msgid "No items to display."
 msgstr "Nessun elemento da visualizzare"
 
-#: tables/base.py:1038
+#: tables/base.py:1074
 #: templates/horizon/common/_data_table_table_actions.html:40
 msgid "Actions"
 msgstr "Azioni"
 
-#: tables/base.py:1263
+#: tables/base.py:1302
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "Nessuna corrispondenza restituita per l'identificativo \"%s\""
 
-#: tables/base.py:1414
+#: tables/base.py:1453
 msgid "Please select a row before taking that action."
 msgstr "Per cortesia, selezionare una riga prima di eseguire tale azione."
 
@@ -273,6 +283,52 @@ msgstr "Volumi"
 msgid "Volume Storage"
 msgstr "Volume Storage"
 
+#: templates/horizon/common/_modal_form_update_metadata.html:12
+msgid ""
+"\n"
+"        You can specify metadata by adding items from the left column to\n"
+"        the right column. You may select the metadata added to glance\n"
+"        dictionary or you can use the \"Other\" option using a key of\n"
+"        your choice.\n"
+"      "
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:26
+msgid "Available Metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:56
+msgid "Duplicate keys are not allowed"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:59
+msgid "Invalid key name"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:88
+#: templates/horizon/common/_modal_form_update_metadata.html:200
+msgid "No existing metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:99
+msgid "Existing Metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:216
+msgid ""
+"\n"
+"          You can specify resource metadata by moving items from the left\n"
+"          column to the right column. In the left columns there are metadata\n"
+"          definitions from the Glance Metadata Catalog. Use the \"Other\" option\n"
+"          to add metadata with the key of your choice.\n"
+"        "
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:238
+#: workflows/base.py:594
+msgid "Save"
+msgstr "Salva"
+
 #: templates/horizon/common/_resource_browser.html:10
 #, python-format
 msgid "Displaying %(nav_items)s item"
@@ -309,10 +365,6 @@ msgid ""
 "      <label>To:</label>%(end)s"
 msgstr ""
 
-#: templates/horizon/common/_usage_summary.html:16
-msgid "Submit"
-msgstr "Invia"
-
 #: templates/horizon/common/_usage_summary.html:17
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "La data deve essere nel formato YYYY-mm-dd."
@@ -341,19 +393,15 @@ msgstr "Indietro"
 msgid "Next"
 msgstr "Prossimo"
 
-#: templates/horizon/common/_workflow.html:49
-msgid "Cancel"
-msgstr "Annulla"
-
 #: templatetags/branding.py:34
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:126 templatetags/horizon.py:136
+#: templatetags/horizon.py:130 templatetags/horizon.py:141
 msgid "No Limit"
 msgstr "Nessun Limite"
 
-#: templatetags/horizon.py:128 templatetags/horizon.py:130
+#: templatetags/horizon.py:133 templatetags/horizon.py:135
 msgid "Available"
 msgstr "Disponibile"
 
@@ -392,6 +440,18 @@ msgstr "%s PB"
 #: templatetags/sizeformat.py:77
 msgid "0 bytes"
 msgstr ""
+
+#: test/test_dashboards/dogs/puppies/tables.py:31
+msgid "Sell Puppy"
+msgid_plural "Sell Puppies"
+msgstr[0] ""
+msgstr[1] ""
+
+#: test/test_dashboards/dogs/puppies/tables.py:40
+msgid "Sold Puppy"
+msgid_plural "Sold Puppies"
+msgstr[0] ""
+msgstr[1] ""
 
 #: utils/filters.py:49
 msgid "Never"
@@ -432,10 +492,6 @@ msgstr "Nessuno disponibile."
 #: workflows/base.py:478
 msgid "No members."
 msgstr "Nessun membro."
-
-#: workflows/base.py:594
-msgid "Save"
-msgstr "Salva"
 
 #: workflows/base.py:595
 #, python-format

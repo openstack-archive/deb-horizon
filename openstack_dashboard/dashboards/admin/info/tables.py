@@ -12,7 +12,7 @@
 
 from django import template
 from django.template import defaultfilters as filters
-from django.utils.translation import pgettext  # noqa
+from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
@@ -29,15 +29,22 @@ SERVICE_STATUS_DISPLAY_CHOICES = (
 
 
 class ServiceFilterAction(tables.FilterAction):
+    filter_field = 'type'
+
     def filter(self, table, services, filter_string):
         q = filter_string.lower()
 
         def comp(service):
-            if q in service.type.lower():
+            attr = getattr(service, self.filter_field, '')
+            if attr is not None and q in attr.lower():
                 return True
             return False
 
         return filter(comp, services)
+
+
+class SubServiceFilterAction(ServiceFilterAction):
+    filter_field = 'binary'
 
 
 def get_stats(service):
@@ -91,7 +98,7 @@ class NovaServicesTable(tables.DataTable):
     state = tables.Column('state', verbose_name=_('State'),
                           filters=(filters.title,))
     updated_at = tables.Column('updated_at',
-                               verbose_name=pgettext(
+                               verbose_name=pgettext_lazy(
                                    'Time since the last update',
                                    u'Last Updated'),
                                filters=(utils_filters.parse_isotime,
@@ -103,7 +110,7 @@ class NovaServicesTable(tables.DataTable):
     class Meta:
         name = "nova_services"
         verbose_name = _("Compute Services")
-        table_actions = (ServiceFilterAction,)
+        table_actions = (SubServiceFilterAction,)
         multi_select = False
 
 
@@ -116,7 +123,7 @@ class CinderServicesTable(tables.DataTable):
     state = tables.Column('state', verbose_name=_('State'),
                           filters=(filters.title, ))
     updated_at = tables.Column('updated_at',
-                               verbose_name=pgettext(
+                               verbose_name=pgettext_lazy(
                                    'Time since the last update',
                                    u'Last Updated'),
                                filters=(utils_filters.parse_isotime,
@@ -128,7 +135,7 @@ class CinderServicesTable(tables.DataTable):
     class Meta:
         name = "cinder_services"
         verbose_name = _("Block Storage Services")
-        table_actions = (ServiceFilterAction,)
+        table_actions = (SubServiceFilterAction,)
         multi_select = False
 
 
@@ -165,7 +172,7 @@ class NetworkAgentsTable(tables.DataTable):
     status = tables.Column(get_network_agent_status, verbose_name=_('Status'))
     state = tables.Column(get_network_agent_state, verbose_name=_('State'))
     heartbeat_timestamp = tables.Column('heartbeat_timestamp',
-                                        verbose_name=pgettext(
+                                        verbose_name=pgettext_lazy(
                                             'Time since the last update',
                                             u'Last Updated'),
                                         filters=(utils_filters.parse_isotime,
@@ -178,56 +185,4 @@ class NetworkAgentsTable(tables.DataTable):
         name = "network_agents"
         verbose_name = _("Network Agents")
         table_actions = (NetworkAgentsFilterAction,)
-        multi_select = False
-
-
-class QuotaFilterAction(tables.FilterAction):
-    def filter(self, table, tenants, filter_string):
-        q = filter_string.lower()
-
-        def comp(tenant):
-            if q in tenant.name.lower():
-                return True
-            return False
-
-        return filter(comp, tenants)
-
-
-def get_quota_name(quota):
-    QUOTA_NAMES = {
-        'injected_file_content_bytes': _('Injected File Content Bytes'),
-        'injected_file_path_bytes': _('Length of Injected File Path'),
-        'metadata_items': _('Metadata Items'),
-        'cores': _('VCPUs'),
-        'instances': _('Instances'),
-        'injected_files': _('Injected Files'),
-        'volumes': _('Volumes'),
-        'snapshots': _('Volume Snapshots'),
-        'gigabytes': _('Total Size of Volumes and Snapshots (GB)'),
-        'ram': _('RAM (MB)'),
-        'floating_ips': _('Floating IPs'),
-        'security_groups': _('Security Groups'),
-        'security_group_rules': _('Security Group Rules'),
-        'key_pairs': _('Key Pairs'),
-        'fixed_ips': _('Fixed IPs'),
-        'volumes_volume_luks': _('LUKS Volumes'),
-        'snapshots_volume_luks': _('LUKS Volume Snapshots'),
-        'gigabytes_volume_luks':
-        _('Total Size of LUKS Volumes and Snapshots (GB)'),
-        'dm-crypt': _('dm-crypt'),
-    }
-    return QUOTA_NAMES.get(quota.name, quota.name.replace("_", " ").title())
-
-
-class QuotasTable(tables.DataTable):
-    name = tables.Column(get_quota_name, verbose_name=_('Quota Name'))
-    limit = tables.Column("limit", verbose_name=_('Limit'))
-
-    def get_object_id(self, obj):
-        return obj.name
-
-    class Meta:
-        name = "quotas"
-        verbose_name = _("Quotas")
-        table_actions = (QuotaFilterAction,)
         multi_select = False

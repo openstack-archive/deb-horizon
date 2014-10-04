@@ -26,6 +26,7 @@ from horizon import messages
 from horizon import workflows
 
 from openstack_dashboard import api
+from openstack_dashboard.dashboards.project.networks.subnets import utils
 
 
 LOG = logging.getLogger(__name__)
@@ -42,8 +43,12 @@ class CreateNetworkInfoAction(workflows.Action):
     net_profile_id = forms.ChoiceField(label=_("Network Profile"),
                                        required=False,
                                        widget=widget)
-    admin_state = forms.BooleanField(label=_("Admin State"),
-                                     initial=True, required=False)
+
+    # TODO(amotoki): make UP/DOWN translatable
+    admin_state = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+                                    label=_("Admin State"),
+                                    help_text=_("The state to start"
+                                                " the network in."))
 
     def __init__(self, request, *args, **kwargs):
         super(CreateNetworkInfoAction, self).__init__(request,
@@ -91,10 +96,14 @@ class CreateSubnetInfoAction(workflows.Action):
                           required=False,
                           initial="",
                           help_text=_("Network address in CIDR format "
-                                      "(e.g. 192.168.0.0/24)"),
+                                      "(e.g. 192.168.0.0/24, 2001:DB8::/48)"),
                           version=forms.IPv4 | forms.IPv6,
                           mask=True)
     ip_version = forms.ChoiceField(choices=[(4, 'IPv4'), (6, 'IPv6')],
+                                   widget=forms.Select(attrs={
+                                       'class': 'switchable',
+                                       'data-slug': 'ipversion',
+                                   }),
                                    label=_("IP Version"))
     gateway_ip = forms.IPField(
         label=_("Gateway IP"),
@@ -102,8 +111,9 @@ class CreateSubnetInfoAction(workflows.Action):
         initial="",
         help_text=_("IP address of Gateway (e.g. 192.168.0.254) "
                     "The default value is the first IP of the "
-                    "network address (e.g. 192.168.0.1 for "
-                    "192.168.0.0/24). "
+                    "network address "
+                    "(e.g. 192.168.0.1 for 192.168.0.0/24, "
+                    "2001:DB8::1 for 2001:DB8::/48). "
                     "If you use the default, leave blank. "
                     "If you do not want to use a gateway, "
                     "check 'Disable Gateway' below."),
@@ -111,6 +121,8 @@ class CreateSubnetInfoAction(workflows.Action):
         mask=False)
     no_gateway = forms.BooleanField(label=_("Disable Gateway"),
                                     initial=False, required=False)
+    msg = _('Specify "Network Address" or '
+            'clear "Create Subnet" checkbox.')
 
     class Meta:
         name = _("Subnet")
@@ -133,9 +145,7 @@ class CreateSubnetInfoAction(workflows.Action):
         gateway_ip = cleaned_data.get('gateway_ip')
         no_gateway = cleaned_data.get('no_gateway')
         if not cidr:
-            msg = _('Specify "Network Address" or '
-                    'clear "Create Subnet" checkbox.')
-            raise forms.ValidationError(msg)
+            raise forms.ValidationError(self.msg)
         if cidr:
             subnet = netaddr.IPNetwork(cidr)
             if subnet.version != ip_version:
@@ -173,6 +183,21 @@ class CreateSubnetInfo(workflows.Step):
 class CreateSubnetDetailAction(workflows.Action):
     enable_dhcp = forms.BooleanField(label=_("Enable DHCP"),
                                      initial=True, required=False)
+    ipv6_modes = forms.ChoiceField(
+        label=_("IPv6 Address Configuration Mode"),
+        widget=forms.Select(attrs={
+            'class': 'switched',
+            'data-switch-on': 'ipversion',
+            'data-ipversion-6': _("IPv6 Address Configuration Mode"),
+        }),
+        initial=utils.IPV6_DEFAULT_MODE,
+        required=False,
+        help_text=_("It specifies how IPv6 address and additional information "
+                    "are configured. We can specify SLAAC/DHCPv6 stateful/"
+                    "DHCPv6 stateless provided by OpenStack, "
+                    "or specify no option. "
+                    "'No option selected' means addresses are configured "
+                    "manually or configured by non-OpenStack system."))
     allocation_pools = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 4}),
         label=_("Allocation Pools"),
@@ -199,6 +224,12 @@ class CreateSubnetDetailAction(workflows.Action):
     class Meta:
         name = _("Subnet Detail")
         help_text = _('Specify additional attributes for the subnet.')
+
+    def populate_ipv6_modes_choices(self, request, context):
+        return [(value, _("%s (Default)") % label)
+                if value == utils.IPV6_DEFAULT_MODE
+                else (value, label)
+                for value, label in utils.IPV6_MODE_CHOICES]
 
     def _convert_ip_address(self, ip, field_name):
         try:
@@ -264,7 +295,7 @@ class CreateSubnetDetailAction(workflows.Action):
 
 class CreateSubnetDetail(workflows.Step):
     action_class = CreateSubnetDetailAction
-    contributes = ("enable_dhcp", "allocation_pools",
+    contributes = ("enable_dhcp", "ipv6_modes", "allocation_pools",
                    "dns_nameservers", "host_routes")
 
 
@@ -292,7 +323,7 @@ class CreateNetwork(workflows.Workflow):
     def _create_network(self, request, data):
         try:
             params = {'name': data['net_name'],
-                      'admin_state_up': data['admin_state']}
+                      'admin_state_up': (data['admin_state'] == 'True')}
             if api.neutron.is_port_profiles_supported():
                 params['net_profile_id'] = data['net_profile_id']
             network = api.neutron.network_create(request, **params)
@@ -317,6 +348,13 @@ class CreateNetwork(workflows.Workflow):
         """
         is_update = not is_create
         params['enable_dhcp'] = data['enable_dhcp']
+        if int(data['ip_version']) == 6:
+            ipv6_modes = utils.get_ipv6_modes_attrs_from_menu(
+                data['ipv6_modes'])
+            if ipv6_modes[0] or is_update:
+                params['ipv6_ra_mode'] = ipv6_modes[0]
+            if ipv6_modes[1] or is_update:
+                params['ipv6_address_mode'] = ipv6_modes[1]
         if is_create and data['allocation_pools']:
             pools = [dict(zip(['start', 'end'], pool.strip().split(',')))
                      for pool in data['allocation_pools'].split('\n')

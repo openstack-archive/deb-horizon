@@ -17,6 +17,7 @@ import logging
 from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import exceptions
 from horizon import tables
@@ -24,21 +25,29 @@ from horizon import tables
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.networks \
     import tables as project_tables
-
+from openstack_dashboard import policy
 
 LOG = logging.getLogger(__name__)
 
 
-class DeleteNetwork(tables.DeleteAction):
-    data_type_singular = _("Network")
-    data_type_plural = _("Networks")
-    policy_rules = (("network", "delete_network"),)
+class DeleteNetwork(policy.PolicyTargetMixin, tables.DeleteAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Network",
+            u"Delete Networks",
+            count
+        )
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Network",
+            u"Deleted Networks",
+            count
+        )
+
+    policy_rules = (("network", "delete_network"),)
 
     def delete(self, request, obj_id):
         try:
@@ -59,19 +68,13 @@ class CreateNetwork(tables.LinkAction):
     policy_rules = (("network", "create_network"),)
 
 
-class EditNetwork(tables.LinkAction):
+class EditNetwork(policy.PolicyTargetMixin, tables.LinkAction):
     name = "update"
     verbose_name = _("Edit Network")
     url = "horizon:admin:networks:update"
     classes = ("ajax-modal",)
     icon = "pencil"
     policy_rules = (("network", "update_network"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, 'tenant_id', None)
-        return {"project_id": project_id}
 
 
 # def _get_subnets(network):

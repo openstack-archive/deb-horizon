@@ -74,14 +74,14 @@ def floating_ip_target_list(request):
     return NetworkClient(request).floating_ips.list_targets()
 
 
-def floating_ip_target_get_by_instance(request, instance_id):
+def floating_ip_target_get_by_instance(request, instance_id, cache=None):
     return NetworkClient(request).floating_ips.get_target_id_by_instance(
-        instance_id)
+        instance_id, cache)
 
 
-def floating_ip_target_list_by_instance(request, instance_id):
+def floating_ip_target_list_by_instance(request, instance_id, cache=None):
     floating_ips = NetworkClient(request).floating_ips
-    return floating_ips.list_target_id_by_instance(instance_id)
+    return floating_ips.list_target_id_by_instance(instance_id, cache)
 
 
 def floating_ip_simple_associate_supported(request):
@@ -139,7 +139,7 @@ def security_group_backend(request):
     return NetworkClient(request).secgroups.backend
 
 
-def servers_update_addresses(request, servers):
+def servers_update_addresses(request, servers, all_tenants=False):
     """Retrieve servers networking information from Neutron if enabled.
 
        Should be used when up to date networking information is required,
@@ -148,4 +148,4 @@ def servers_update_addresses(request, servers):
     """
     neutron_enabled = base.is_service_enabled(request, 'network')
     if neutron_enabled:
-        neutron.servers_update_addresses(request, servers)
+        neutron.servers_update_addresses(request, servers, all_tenants)

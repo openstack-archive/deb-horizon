@@ -14,6 +14,7 @@
 
 from django.utils.translation import string_concat  # noqa
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import tables
 
@@ -22,9 +23,23 @@ from openstack_dashboard.usage import quotas
 
 
 class DeleteKeyPairs(tables.DeleteAction):
-    data_type_singular = _("Key Pair")
-    data_type_plural = _("Key Pairs")
     policy_rules = (("compute", "compute_extension:keypairs:delete"),)
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Key Pair",
+            u"Delete Key Pairs",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Key Pair",
+            u"Deleted Key Pairs",
+            count
+        )
 
     def delete(self, request, obj_id):
         api.nova.keypair_delete(request, obj_id)

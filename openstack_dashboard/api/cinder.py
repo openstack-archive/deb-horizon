@@ -23,6 +23,7 @@ from __future__ import absolute_import
 import logging
 
 from django.conf import settings
+from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from cinderclient.v1.contrib import list_extensions as cinder_list_extensions
@@ -40,6 +41,12 @@ LOG = logging.getLogger(__name__)
 VOLUME_STATE_AVAILABLE = "available"
 DEFAULT_QUOTA_NAME = 'default'
 
+# Available consumer choices associated with QOS Specs
+CONSUMER_CHOICES = (
+    ('back-end', _('back-end')),
+    ('front-end', _('front-end')),
+    ('both', pgettext_lazy('Both of front-end and back-end', u'both')),
+)
 
 VERSIONS = base.APIVersionManager("volume", preferred_version=1)
 
@@ -122,6 +129,14 @@ class VolTypeExtraSpec(object):
         self.value = val
 
 
+class QosSpec(object):
+    def __init__(self, id, key, val):
+        self.id = id
+        self.key = key
+        self.value = val
+
+
+@memoized
 def cinderclient(request):
     api_version = VERSIONS.get_active_version()
 
@@ -356,6 +371,32 @@ def default_quota_get(request, tenant_id):
     return base.QuotaSet(cinderclient(request).quotas.defaults(tenant_id))
 
 
+def volume_type_list_with_qos_associations(request):
+    vol_types = volume_type_list(request)
+    vol_types_dict = {}
+
+    # initialize and build a dictionary for lookup access below
+    for vol_type in vol_types:
+        vol_type.associated_qos_spec = ""
+        vol_types_dict[vol_type.id] = vol_type
+
+    # get all currently defined qos specs
+    qos_specs = qos_spec_list(request)
+    for qos_spec in qos_specs:
+        # get all volume types this qos spec is associated with
+        assoc_vol_types = qos_spec_get_associations(request, qos_spec.id)
+        for assoc_vol_type in assoc_vol_types:
+            # update volume type to hold this association info
+            vol_type = vol_types_dict[assoc_vol_type.id]
+            vol_type.associated_qos_spec = qos_spec.name
+
+    return vol_types
+
+
+def default_quota_update(request, **kwargs):
+    cinderclient(request).quota_classes.update(DEFAULT_QUOTA_NAME, **kwargs)
+
+
 def volume_type_list(request):
     return cinderclient(request).volume_types.list()
 
@@ -391,6 +432,51 @@ def volume_type_extra_set(request, type_id, metadata):
 def volume_type_extra_delete(request, type_id, keys):
     vol_type = volume_type_get(request, type_id)
     return vol_type.unset_keys([keys])
+
+
+def qos_spec_list(request):
+    return cinderclient(request).qos_specs.list()
+
+
+def qos_spec_get(request, qos_spec_id):
+    return cinderclient(request).qos_specs.get(qos_spec_id)
+
+
+def qos_spec_delete(request, qos_spec_id):
+    return cinderclient(request).qos_specs.delete(qos_spec_id, force=True)
+
+
+def qos_spec_create(request, name, specs):
+    return cinderclient(request).qos_specs.create(name, specs)
+
+
+def qos_spec_get_keys(request, qos_spec_id, raw=False):
+    spec = qos_spec_get(request, qos_spec_id)
+    qos_specs = spec.specs
+    if raw:
+        return spec
+    return [QosSpec(qos_spec_id, key, value) for
+            key, value in qos_specs.items()]
+
+
+def qos_spec_set_keys(request, qos_spec_id, specs):
+    return cinderclient(request).qos_specs.set_keys(qos_spec_id, specs)
+
+
+def qos_spec_unset_keys(request, qos_spec_id, specs):
+    return cinderclient(request).qos_specs.unset_keys(qos_spec_id, specs)
+
+
+def qos_spec_associate(request, qos_specs, vol_type_id):
+    return cinderclient(request).qos_specs.associate(qos_specs, vol_type_id)
+
+
+def qos_spec_disassociate(request, qos_specs, vol_type_id):
+    return cinderclient(request).qos_specs.disassociate(qos_specs, vol_type_id)
+
+
+def qos_spec_get_associations(request, qos_spec_id):
+    return cinderclient(request).qos_specs.get_associations(qos_spec_id)
 
 
 @memoized

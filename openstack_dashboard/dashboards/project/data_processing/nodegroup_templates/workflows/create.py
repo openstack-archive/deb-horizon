@@ -44,7 +44,7 @@ class GeneralConfigAction(workflows.Action):
 
     storage = forms.ChoiceField(
         label=_("Storage location"),
-        help_text=_("Storage"),
+        help_text=_("Choose a storage location"),
         choices=[("ephemeral_drive", "Ephemeral Drive"),
                  ("cinder_volume", "Cinder Volume")],
         widget=forms.Select(attrs={"class": "storage_field"}))
@@ -70,8 +70,7 @@ class GeneralConfigAction(workflows.Action):
     def __init__(self, request, *args, **kwargs):
         super(GeneralConfigAction, self).__init__(request, *args, **kwargs)
 
-        sahara = saharaclient.client(request)
-        hlps = helpers.Helpers(sahara)
+        hlps = helpers.Helpers(request)
 
         plugin, hadoop_version = (
             workflow_helpers.get_plugin_and_hadoop_version(request))
@@ -97,6 +96,21 @@ class GeneralConfigAction(workflows.Action):
                 label=_("Floating IP pool"),
                 choices=pool_choices,
                 required=False)
+
+        self.fields["autogroup"] = forms.BooleanField(
+            label=_("Auto Security Group"),
+            widget=forms.CheckboxInput(),
+            help_text=_("Create security group for this Node Group."),
+            required=False)
+
+        groups = network.security_group_list(request)
+        security_group_list = [(sg.id, sg.name) for sg in groups]
+        self.fields["groups"] = forms.MultipleChoiceField(
+            label=_("Security Groups"),
+            widget=forms.CheckboxSelectMultiple(),
+            help_text=_("Launch instances in these security groups."),
+            choices=security_group_list,
+            required=False)
 
         self.fields["processes"] = forms.MultipleChoiceField(
             label=_("Processes"),
@@ -165,8 +179,7 @@ class ConfigureNodegroupTemplate(workflow_helpers.ServiceParametersWorkflow,
     default_steps = (GeneralConfig,)
 
     def __init__(self, request, context_seed, entry_point, *args, **kwargs):
-        sahara = saharaclient.client(request)
-        hlps = helpers.Helpers(sahara)
+        hlps = helpers.Helpers(request)
 
         plugin, hadoop_version = (
             workflow_helpers.get_plugin_and_hadoop_version(request))
@@ -243,7 +256,9 @@ class ConfigureNodegroupTemplate(workflow_helpers.ServiceParametersWorkflow,
                 volumes_size=volumes_size,
                 node_processes=processes,
                 node_configs=configs_dict,
-                floating_ip_pool=context.get("general_floating_ip_pool", None))
+                floating_ip_pool=context.get("general_floating_ip_pool"),
+                security_groups=context["general_groups"],
+                auto_security_group=context["general_autogroup"])
             return True
         except api_base.APIException as e:
             self.error_description = str(e)

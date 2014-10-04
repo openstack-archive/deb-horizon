@@ -302,7 +302,8 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
 
 
 class FloatingIp(base.APIDictWrapper):
-    _attrs = ['id', 'ip', 'fixed_ip', 'port_id', 'instance_id', 'pool']
+    _attrs = ['id', 'ip', 'fixed_ip', 'port_id', 'instance_id',
+              'instance_type', 'pool']
 
     def __init__(self, fip):
         fip['ip'] = fip['floating_ip_address']
@@ -320,6 +321,12 @@ class FloatingIpTarget(base.APIDictWrapper):
 
 
 class FloatingIpManager(network_base.FloatingIpManager):
+
+    device_owner_map = {
+        'compute:': 'compute',
+        'neutron:LOADBALANCER': 'loadbalancer',
+    }
+
     def __init__(self, request):
         self.request = request
         self.client = neutronclient(request)
@@ -329,37 +336,52 @@ class FloatingIpManager(network_base.FloatingIpManager):
         return [FloatingIpPool(pool) for pool
                 in self.client.list_networks(**search_opts).get('networks')]
 
-    def list(self, **search_opts):
-        tenant_id = self.request.user.tenant_id
-        # In Neutron, list_floatingips returns Floating IPs from all tenants
-        # when the API is called with admin role, so we need to filter them
-        # with tenant_id.
-        fips = self.client.list_floatingips(tenant_id=tenant_id, **search_opts)
+    def _get_instance_type_from_device_owner(self, device_owner):
+        for key, value in self.device_owner_map.items():
+            if device_owner.startswith(key):
+                return value
+        return device_owner
+
+    def _set_instance_info(self, fip, port=None):
+        if fip['port_id']:
+            if not port:
+                port = port_get(self.request, fip['port_id'])
+            fip['instance_id'] = port.device_id
+            fip['instance_type'] = self._get_instance_type_from_device_owner(
+                port.device_owner)
+        else:
+            fip['instance_id'] = None
+            fip['instance_type'] = None
+
+    def list(self, all_tenants=False, **search_opts):
+        if not all_tenants:
+            tenant_id = self.request.user.tenant_id
+            # In Neutron, list_floatingips returns Floating IPs from
+            # all tenants when the API is called with admin role, so
+            # we need to filter them with tenant_id.
+            search_opts['tenant_id'] = tenant_id
+            port_search_opts = {'tenant_id': tenant_id}
+        else:
+            port_search_opts = {}
+        fips = self.client.list_floatingips(**search_opts)
         fips = fips.get('floatingips')
         # Get port list to add instance_id to floating IP list
         # instance_id is stored in device_id attribute
-        ports = port_list(self.request, tenant_id=tenant_id)
-        device_id_dict = SortedDict([(p['id'], p['device_id']) for p in ports])
+        ports = port_list(self.request, **port_search_opts)
+        port_dict = SortedDict([(p['id'], p) for p in ports])
         for fip in fips:
-            if fip['port_id']:
-                fip['instance_id'] = device_id_dict[fip['port_id']]
-            else:
-                fip['instance_id'] = None
+            self._set_instance_info(fip, port_dict.get(fip['port_id']))
         return [FloatingIp(fip) for fip in fips]
 
     def get(self, floating_ip_id):
         fip = self.client.show_floatingip(floating_ip_id).get('floatingip')
-        if fip['port_id']:
-            fip['instance_id'] = port_get(self.request,
-                                          fip['port_id']).device_id
-        else:
-            fip['instance_id'] = None
+        self._set_instance_info(fip)
         return FloatingIp(fip)
 
     def allocate(self, pool):
         body = {'floatingip': {'floating_network_id': pool}}
         fip = self.client.create_floatingip(body).get('floatingip')
-        fip['instance_id'] = None
+        self._set_instance_info(fip)
         return FloatingIp(fip)
 
     def release(self, floating_ip_id):
@@ -379,11 +401,26 @@ class FloatingIpManager(network_base.FloatingIpManager):
         self.client.update_floatingip(floating_ip_id,
                                       {'floatingip': update_dict})
 
+    def _get_reachable_subnets(self, ports):
+        # Retrieve subnet list reachable from external network
+        ext_net_ids = [ext_net.id for ext_net in self.list_pools()]
+        gw_routers = [r.id for r in router_list(self.request)
+                      if (r.external_gateway_info and
+                          r.external_gateway_info.get('network_id')
+                          in ext_net_ids)]
+        reachable_subnets = set([p.fixed_ips[0]['subnet_id'] for p in ports
+                                 if ((p.device_owner ==
+                                      'network:router_interface')
+                                     and (p.device_id in gw_routers))])
+        return reachable_subnets
+
     def list_targets(self):
         tenant_id = self.request.user.tenant_id
         ports = port_list(self.request, tenant_id=tenant_id)
         servers, has_more = nova.server_list(self.request)
         server_dict = SortedDict([(s.id, s.name) for s in servers])
+        reachable_subnets = self._get_reachable_subnets(ports)
+
         targets = []
         for p in ports:
             # Remove network ports from Floating IP targets
@@ -392,8 +429,11 @@ class FloatingIpManager(network_base.FloatingIpManager):
             port_id = p.id
             server_name = server_dict.get(p.device_id)
             for ip in p.fixed_ips:
+                if ip['subnet_id'] not in reachable_subnets:
+                    continue
                 target = {'name': '%s: %s' % (server_name, ip['ip_address']),
-                          'id': '%s_%s' % (port_id, ip['ip_address'])}
+                          'id': '%s_%s' % (port_id, ip['ip_address']),
+                          'instance_id': p.device_id}
                 targets.append(FloatingIpTarget(target))
         return targets
 
@@ -403,19 +443,30 @@ class FloatingIpManager(network_base.FloatingIpManager):
         search_opts = {'device_id': instance_id}
         return port_list(self.request, **search_opts)
 
-    def get_target_id_by_instance(self, instance_id):
-        # In Neutron one port can have multiple ip addresses, so this method
-        # picks up the first one and generate target id.
-        ports = self._target_ports_by_instance(instance_id)
-        if not ports:
-            return None
-        return '{0}_{1}'.format(ports[0].id,
-                                ports[0].fixed_ips[0]['ip_address'])
+    def get_target_id_by_instance(self, instance_id, target_list=None):
+        if target_list is not None:
+            targets = [target for target in target_list
+                       if target['instance_id'] == instance_id]
+            if not targets:
+                return None
+            return targets[0]['id']
+        else:
+            # In Neutron one port can have multiple ip addresses, so this
+            # method picks up the first one and generate target id.
+            ports = self._target_ports_by_instance(instance_id)
+            if not ports:
+                return None
+            return '{0}_{1}'.format(ports[0].id,
+                                    ports[0].fixed_ips[0]['ip_address'])
 
-    def list_target_id_by_instance(self, instance_id):
-        ports = self._target_ports_by_instance(instance_id)
-        return ['{0}_{1}'.format(p.id, p.fixed_ips[0]['ip_address'])
-                for p in ports]
+    def list_target_id_by_instance(self, instance_id, target_list=None):
+        if target_list is not None:
+            return [target['id'] for target in target_list
+                    if target['instance_id'] == instance_id]
+        else:
+            ports = self._target_ports_by_instance(instance_id)
+            return ['{0}_{1}'.format(p.id, p.fixed_ips[0]['ip_address'])
+                    for p in ports]
 
     def is_simple_associate_supported(self):
         # NOTE: There are two reason that simple association support
@@ -437,6 +488,7 @@ def get_ipver_str(ip_version):
     return IP_VERSION_DICT.get(ip_version, '')
 
 
+@memoized
 def neutronclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
@@ -777,7 +829,7 @@ def provider_list(request):
     return providers['service_providers']
 
 
-def servers_update_addresses(request, servers):
+def servers_update_addresses(request, servers, all_tenants=False):
     """Retrieve servers networking information from Neutron if enabled.
 
        Should be used when up to date networking information is required,
@@ -790,7 +842,8 @@ def servers_update_addresses(request, servers):
                           device_id=[instance.id for instance in servers])
         fips = FloatingIpManager(request)
         if fips.is_supported():
-            floating_ips = fips.list(port_id=[port.id for port in ports])
+            floating_ips = fips.list(all_tenants=all_tenants,
+                                     port_id=[port.id for port in ports])
         else:
             floating_ips = []
         networks = network_list(request,
@@ -919,31 +972,90 @@ def is_port_profiles_supported():
         return True
 
 
-def get_dvr_permission(request, operation):
-    """Check if "distributed" field can be displayed.
+# FEATURE_MAP is used to define:
+# - related neutron extension name (key: "extension")
+# - corresponding dashboard config (key: "config")
+# - RBAC policies (key: "poclies")
+# If a key is not contained, the corresponding permission check is skipped.
+FEATURE_MAP = {
+    'dvr': {
+        'extension': 'dvr',
+        'config': {
+            'name': 'enable_distributed_router',
+            'default': False,
+        },
+        'policies': {
+            'get': 'get_router:distributed',
+            'create': 'create_router:distributed',
+            'update': 'update_router:distributed',
+        }
+    },
+    'l3-ha': {
+        'extension': 'l3-ha',
+        'config': {'name': 'enable_ha_router',
+                   'default': False},
+        'policies': {
+            'get': 'get_router:ha',
+            'create': 'create_router:ha',
+            'update': 'update_router:ha',
+        }
+    },
+}
+
+
+def get_feature_permission(request, feature, operation=None):
+    """Check if a feature-specific field can be displayed.
+
+    This method check a permission for a feature-specific field.
+    Such field is usually provided through Neutron extension.
 
     :param request: Request Object
-    :param operation: Operation type. The valid value is "get" or "create"
+    :param feature: feature name defined in FEATURE_MAP
+    :param operation (optional): Operation type. The valid value should be
+        defined in FEATURE_MAP[feature]['policies']
+        It must be specified if FEATURE_MAP[feature] has 'policies'.
     """
     network_config = getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {})
-    if not network_config.get('enable_distributed_router', False):
-        return False
+    feature_info = FEATURE_MAP.get(feature)
+    if not feature_info:
+        # Translators: Only used inside Horizon code and invisible to users
+        raise ValueError(_("The requested feature '%(feature)s' is unknown. "
+                           "Please make sure to specify a feature defined "
+                           "in FEATURE_MAP."))
+
+    # Check dashboard settings
+    feature_config = feature_info.get('config')
+    if feature_config:
+        if not network_config.get(feature_config['name'],
+                                  feature_config['default']):
+            return False
+
+    # Check policy
+    feature_policies = feature_info.get('policies')
     policy_check = getattr(settings, "POLICY_CHECK_FUNCTION", None)
-    allowed_operations = ("get", "create", "update")
-    if operation not in allowed_operations:
-        raise ValueError(_("The 'operation' parameter for get_dvr_permission "
-                           "is invalid. It should be one of %s")
-                         % ' '.join(allowed_operations))
-    role = (("network", "%s_router:distributed" % operation),)
-    if policy_check:
-        has_permission = policy.check(role, request)
-    else:
-        has_permission = True
-    if not has_permission:
-        return False
-    try:
-        return is_extension_supported(request, 'dvr')
-    except Exception:
-        msg = _('Failed to check Neutron "dvr" extension is not supported')
-        LOG.info(msg)
-        return False
+    if feature_policies and policy_check:
+        policy_name = feature_policies.get(operation)
+        if not policy_name:
+            # Translators: Only used inside Horizon code and invisible to users
+            raise ValueError(_("The 'operation' parameter for "
+                               "get_feature_permission '%(feature)s' "
+                               "is invalid. It should be one of %(allowed)s")
+                             % {'feature': feature,
+                                'allowed': ' '.join(feature_policies.keys())})
+        role = (('network', policy_name),)
+        if not policy.check(role, request):
+            return False
+
+    # Check if a required extension is enabled
+    feature_extension = feature_info.get('extension')
+    if feature_extension:
+        try:
+            return is_extension_supported(request, feature_extension)
+        except Exception:
+            msg = (_("Failed to check Neutron '%s' extension is not supported")
+                   % feature_extension)
+            LOG.info(msg)
+            return False
+
+    # If all checks are passed, now a given feature is allowed.
+    return True

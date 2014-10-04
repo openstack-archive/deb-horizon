@@ -21,6 +21,7 @@ from django.utils.http import urlencode
 from django.utils import safestring
 from django.utils.translation import string_concat  # noqa
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import exceptions
 from horizon import tables
@@ -31,6 +32,10 @@ from openstack_dashboard import policy
 
 
 DELETABLE_STATES = ("available", "error", "error_extending")
+
+
+class VolumePolicyTargetMixin(policy.PolicyTargetMixin):
+    policy_target_attrs = (("project_id", 'os-vol-tenant-attr:tenant_id'),)
 
 
 class LaunchVolume(tables.LinkAction):
@@ -50,22 +55,29 @@ class LaunchVolume(tables.LinkAction):
         return "?".join([base_url, params])
 
     def allowed(self, request, volume=None):
-        if volume:
+        if getattr(volume, 'bootable', '') == 'true':
             return volume.status == "available"
         return False
 
 
-class DeleteVolume(tables.DeleteAction):
-    data_type_singular = _("Volume")
-    data_type_plural = _("Volumes")
-    action_past = _("Scheduled deletion of %(data_type)s")
-    policy_rules = (("volume", "volume:delete"),)
+class DeleteVolume(VolumePolicyTargetMixin, tables.DeleteAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Volume",
+            u"Delete Volumes",
+            count
+        )
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
-        return {"project_id": project_id}
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Scheduled deletion of Volume",
+            u"Scheduled deletion of Volumes",
+            count
+        )
+
+    policy_rules = (("volume", "volume:delete"),)
 
     def delete(self, request, obj_id):
         obj = self.table.get_object_by_id(obj_id)
@@ -121,18 +133,12 @@ class CreateVolume(tables.LinkAction):
         return HttpResponse(self.render())
 
 
-class ExtendVolume(tables.LinkAction):
+class ExtendVolume(VolumePolicyTargetMixin, tables.LinkAction):
     name = "extend"
     verbose_name = _("Extend Volume")
     url = "horizon:project:volumes:volumes:extend"
     classes = ("ajax-modal", "btn-extend")
     policy_rules = (("volume", "volume:extend"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
-        return {"project_id": project_id}
 
     def allowed(self, request, volume=None):
         return volume.status == "available"
@@ -162,7 +168,7 @@ class EditAttachments(tables.LinkAction):
         return False
 
 
-class CreateSnapshot(tables.LinkAction):
+class CreateSnapshot(VolumePolicyTargetMixin, tables.LinkAction):
     name = "snapshots"
     verbose_name = _("Create Snapshot")
     url = "horizon:project:volumes:volumes:create_snapshot"
@@ -170,48 +176,42 @@ class CreateSnapshot(tables.LinkAction):
     icon = "camera"
     policy_rules = (("volume", "volume:create_snapshot"),)
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
-        return {"project_id": project_id}
-
     def allowed(self, request, volume=None):
+        try:
+            limits = api.cinder.tenant_absolute_limits(request)
+        except Exception:
+            exceptions.handle(request, _('Unable to retrieve tenant limits.'))
+            limits = {}
+
+        snapshots_available = (limits.get('maxTotalSnapshots', float("inf"))
+                             - limits.get('totalSnapshotsUsed', 0))
+
+        if snapshots_available <= 0 and "disabled" not in self.classes:
+            self.classes = [c for c in self.classes] + ['disabled']
+            self.verbose_name = string_concat(self.verbose_name, ' ',
+                                                  _("(Quota exceeded)"))
         return volume.status in ("available", "in-use")
 
 
-class CreateBackup(tables.LinkAction):
+class CreateBackup(VolumePolicyTargetMixin, tables.LinkAction):
     name = "backups"
     verbose_name = _("Create Backup")
     url = "horizon:project:volumes:volumes:create_backup"
     classes = ("ajax-modal",)
     policy_rules = (("volume", "backup:create"),)
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
-        return {"project_id": project_id}
-
     def allowed(self, request, volume=None):
         return (cinder.volume_backup_supported(request) and
                 volume.status == "available")
 
 
-class UploadToImage(tables.LinkAction):
+class UploadToImage(VolumePolicyTargetMixin, tables.LinkAction):
     name = "upload_to_image"
     verbose_name = _("Upload to Image")
     url = "horizon:project:volumes:volumes:upload_to_image"
     classes = ("ajax-modal",)
     icon = "cloud-upload"
     policy_rules = (("volume", "volume:upload_to_image"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
-
-        return {"project_id": project_id}
 
     def allowed(self, request, volume=None):
         has_image_service_perm = \
@@ -221,7 +221,7 @@ class UploadToImage(tables.LinkAction):
                has_image_service_perm
 
 
-class EditVolume(tables.LinkAction):
+class EditVolume(VolumePolicyTargetMixin, tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit Volume")
     url = "horizon:project:volumes:volumes:update"
@@ -229,30 +229,17 @@ class EditVolume(tables.LinkAction):
     icon = "pencil"
     policy_rules = (("volume", "volume:update"),)
 
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
-        return {"project_id": project_id}
-
     def allowed(self, request, volume=None):
         return volume.status in ("available", "in-use")
 
 
-class RetypeVolume(tables.LinkAction):
+class RetypeVolume(VolumePolicyTargetMixin, tables.LinkAction):
     name = "retype"
     verbose_name = _("Change Volume Type")
     url = "horizon:project:volumes:volumes:retype"
     classes = ("ajax-modal",)
     icon = "pencil"
     policy_rules = (("volume", "volume:retype"),)
-
-    def get_policy_target(self, request, datum=None):
-        project_id = None
-        if datum:
-            project_id = getattr(datum, "os-vol-tenant-attr:tenant_id", None)
-
-        return {"project_id": project_id}
 
     def allowed(self, request, volume=None):
         retype_supported = cinder.retype_supported()

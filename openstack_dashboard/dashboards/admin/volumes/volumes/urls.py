@@ -11,23 +11,17 @@
 # under the License.
 
 from django.conf.urls import include  # noqa
-from django.conf.urls import patterns  # noqa
-from django.conf.urls import url  # noqa
+from django.conf.urls import patterns
+from django.conf.urls import url
 
-from openstack_dashboard.dashboards.admin.volumes.volumes.extras \
-    import urls as extras_urls
 from openstack_dashboard.dashboards.admin.volumes.volumes \
     import views
 
 VIEWS_MOD = ('openstack_dashboard.dashboards.admin.volumes.volumes.views')
 
 urlpatterns = patterns(VIEWS_MOD,
-    url(r'^create_type$', views.CreateVolumeTypeView.as_view(),
-        name='create_type'),
     url(r'^(?P<volume_id>[^/]+)/$', views.DetailView.as_view(),
         name='detail'),
     url(r'^(?P<volume_id>[^/]+)/update_status$',
         views.UpdateStatusView.as_view(), name='update_status'),
-    url(r'^(?P<type_id>[^/]+)/extras/',
-        include(extras_urls, namespace='extras')),
 )

@@ -19,6 +19,7 @@ from openstack_dashboard import exceptions
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.abspath(os.path.join(TEST_DIR, ".."))
+STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
 
 SECRET_KEY = secret_key.generate_or_read_from_file(
     os.path.join(TEST_DIR, '.secret_key_store'))
@@ -198,17 +199,6 @@ POLICY_FILES_PATH = os.path.join(ROOT_PATH, "conf")
 POLICY_FILES = {
     'identity': 'keystone_policy.json',
     'compute': 'nova_policy.json'
-}
-
-FLAVOR_EXTRA_KEYS = {
-    'flavor_keys': [
-        ('quota:disk_read_bytes_sec', 'Quota: Read bytes'),
-        ('quota:disk_write_bytes_sec', 'Quota: Write bytes'),
-        ('quota:cpu_quota', 'Quota: CPU'),
-        ('quota:cpu_period', 'Quota: CPU period'),
-        ('quota:vif_inbound_average', 'Quota: Inbound average'),
-        ('quota:vif_outbound_average', 'Quota: Outbound average'),
-    ]
 }
 
 # The openstack_auth.user.Token object isn't JSON-serializable ATM

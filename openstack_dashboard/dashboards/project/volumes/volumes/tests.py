@@ -570,13 +570,11 @@ class VolumeViewTests(test.TestCase):
                         api.glance: ('image_get',
                                      'image_list_detailed'),
                         quotas: ('tenant_limit_usages',)})
-    def test_create_volume_from_image_under_image_min_disk_size(self):
+    def _test_create_volume_from_image_under_image_min_disk_size(self, image):
         usage_limit = {'maxTotalVolumeGigabytes': 100,
                        'gigabytesUsed': 20,
                        'volumesUsed': len(self.cinder_volumes.list()),
                        'maxTotalVolumes': 6}
-        image = self.images.get(name="protected_images")
-        image.min_disk = 30
         formData = {'name': u'A Volume I Am Making',
                     'description': u'This is a volume I am making for a test.',
                     'method': u'CreateForm',
@@ -605,6 +603,17 @@ class VolumeViewTests(test.TestCase):
         self.assertFormError(res, 'form', None,
                              "The volume size cannot be less than the "
                              "image minimum disk size (30GB)")
+
+    def test_create_volume_from_image_under_image_min_disk_size(self):
+        image = self.images.get(name="protected_images")
+        image.min_disk = 30
+        self._test_create_volume_from_image_under_image_min_disk_size(image)
+
+    def test_create_volume_from_image_under_image_property_min_disk_size(self):
+        image = self.images.get(name="protected_images")
+        image.min_disk = 0
+        image.properties['min_disk'] = 30
+        self._test_create_volume_from_image_under_image_min_disk_size(image)
 
     @test.create_stubs({cinder: ('volume_snapshot_list',
                                  'volume_type_list',
@@ -878,6 +887,36 @@ class VolumeViewTests(test.TestCase):
         self.assertEqual(res.status_code, 200)
 
     @test.create_stubs({cinder: ('tenant_absolute_limits',
+                                 'volume_get',)})
+    def test_create_snapshot_button_disabled_when_quota_exceeded(self):
+        limits = {'maxTotalSnapshots': 1}
+        limits['totalSnapshotsUsed'] = limits['maxTotalSnapshots']
+        volume = self.cinder_volumes.first()
+
+        cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).AndReturn(limits)
+        self.mox.ReplayAll()
+
+        create_link = tables.CreateSnapshot()
+        url = reverse(create_link.get_link_url(), args=[volume.id])
+        res_url = VOLUME_INDEX_URL + \
+                "?action=row_update&table=volumes&obj_id=" + volume.id
+
+        res = self.client.get(res_url, {},
+                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        classes = list(create_link.get_default_classes())\
+                    + list(create_link.classes)
+        link_name = "%s (%s)" % (unicode(create_link.verbose_name),
+                                 "Quota exceeded")
+        expected_string = "<a href='%s' class=\"%s disabled\" "\
+            "id=\"volumes__row_%s__action_snapshots\">%s</a>" \
+            % (url, " ".join(classes), volume.id, link_name)
+
+        self.assertContains(res, expected_string, html=True,
+                msg_prefix="The create snapshot button is not disabled")
+
+    @test.create_stubs({cinder: ('tenant_absolute_limits',
                                  'volume_list',
                                  'volume_backup_supported',),
                         api.nova: ('server_list',)})
@@ -947,12 +986,16 @@ class VolumeViewTests(test.TestCase):
 
         self.assertNoMessages()
 
-    @test.create_stubs({cinder: ('volume_get',)})
+    @test.create_stubs({cinder: ('tenant_absolute_limits',
+                                 'volume_get',)})
     def test_get_data(self):
         volume = self.cinder_volumes.get(name='v2_volume')
         volume._apiresource.name = ""
 
         cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
+
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest))\
+            .MultipleTimes().AndReturn(self.cinder_limits['absolute'])
 
         self.mox.ReplayAll()
 
@@ -1047,16 +1090,22 @@ class VolumeViewTests(test.TestCase):
         self.assertRedirectsNoFollow(res, redirect_url)
 
     @test.create_stubs({cinder: ('volume_get',
-                                 'volume_extend')})
+                                 'volume_extend'),
+                        quotas: ('tenant_limit_usages',)})
     def test_extend_volume(self):
         volume = self.cinder_volumes.first()
+        usage_limit = {'maxTotalVolumeGigabytes': 100,
+                       'gigabytesUsed': 20,
+                       'volumesUsed': len(self.volumes.list()),
+                       'maxTotalVolumes': 6}
         formData = {'name': u'A Volume I Am Making',
                     'orig_size': volume.size,
-                    'new_size': 100}
+                    'new_size': 120}
 
         cinder.volume_get(IsA(http.HttpRequest), volume.id).\
-                          AndReturn(self.cinder_volumes.first())
-
+            AndReturn(self.cinder_volumes.first())
+        quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
+            AndReturn(usage_limit)
         cinder.volume_extend(IsA(http.HttpRequest),
                              volume.id,
                              formData['new_size']).AndReturn(volume)
@@ -1097,14 +1146,18 @@ class VolumeViewTests(test.TestCase):
                              "current size.")
 
     @test.create_stubs({cinder: ('volume_get',
-                                 'retype_supported'),
+                                 'retype_supported',
+                                 'tenant_absolute_limits'),
                         api.nova: ('server_get',)})
     def test_retype_volume_not_supported_no_action_item(self):
         volume = self.cinder_volumes.get(name='my_volume')
+        limits = self.cinder_limits['absolute']
         server = self.servers.first()
 
         cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
         cinder.retype_supported().AndReturn(False)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest))\
+            .MultipleTimes('limits').AndReturn(limits)
         api.nova.server_get(IsA(http.HttpRequest), server.id).AndReturn(server)
 
         self.mox.ReplayAll()
@@ -1120,12 +1173,16 @@ class VolumeViewTests(test.TestCase):
         self.assertNotContains(res, 'retype')
 
     @test.create_stubs({cinder: ('volume_get',
-                                 'retype_supported')})
+                                 'retype_supported',
+                                 'tenant_absolute_limits')})
     def test_retype_volume_supported_action_item(self):
         volume = self.cinder_volumes.get(name='v2_volume')
+        limits = self.cinder_limits['absolute']
 
         cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
         cinder.retype_supported().AndReturn(True)
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest))\
+            .MultipleTimes('limits').AndReturn(limits)
 
         self.mox.ReplayAll()
 
@@ -1240,3 +1297,31 @@ class VolumeViewTests(test.TestCase):
 
         for row in rows:
             self.assertEqual(row.cells['encryption'].data, column_value)
+
+    @test.create_stubs({cinder: ('volume_get',),
+                        quotas: ('tenant_limit_usages',)})
+    def test_extend_volume_with_size_out_of_quota(self):
+        volume = self.volumes.first()
+        usage_limit = {'maxTotalVolumeGigabytes': 100,
+                       'gigabytesUsed': 20,
+                       'volumesUsed': len(self.volumes.list()),
+                       'maxTotalVolumes': 6}
+        formData = {'name': u'A Volume I Am Making',
+                    'orig_size': volume.size,
+                    'new_size': 1000}
+
+        quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
+            AndReturn(usage_limit)
+        cinder.volume_get(IsA(http.HttpRequest), volume.id).\
+            AndReturn(self.volumes.first())
+        quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
+            AndReturn(usage_limit)
+
+        self.mox.ReplayAll()
+
+        url = reverse('horizon:project:volumes:volumes:extend',
+                      args=[volume.id])
+        res = self.client.post(url, formData)
+        self.assertFormError(res, "form", "new_size",
+                             "Volume cannot be extended to 1000GB as you only "
+                             "have 80GB of your quota available.")

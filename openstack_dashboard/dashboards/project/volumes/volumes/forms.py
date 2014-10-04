@@ -21,6 +21,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.forms import ValidationError  # noqa
 from django.template.defaultfilters import filesizeformat  # noqa
+from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -43,13 +44,10 @@ DEFAULT_CONTAINER_FORMAT = 'bare'
 
 
 class CreateForm(forms.SelfHandlingForm):
-    name = forms.CharField(max_length="255", label=_("Volume Name"))
-    description = forms.CharField(widget=forms.Textarea(
+    name = forms.CharField(max_length=255, label=_("Volume Name"))
+    description = forms.CharField(max_length=255, widget=forms.Textarea(
         attrs={'class': 'modal-body-fixed-width'}),
         label=_("Description"), required=False)
-    type = forms.ChoiceField(label=_("Type"),
-                             required=False)
-    size = forms.IntegerField(min_value=1, label=_("Size (GB)"))
     volume_source_type = forms.ChoiceField(label=_("Volume Source"),
                                            required=False,
                                            widget=forms.Select(attrs={
@@ -77,6 +75,15 @@ class CreateForm(forms.SelfHandlingForm):
             transform=lambda x: "%s (%s)" % (x.name,
                 filesizeformat(x.size * 1024 * 1024 * 1024))),
         required=False)
+    type = forms.ChoiceField(
+        label=_("Type"),
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'switched',
+                   'data-switch-on': 'source',
+                   'data-source-no_source_type': _('Type'),
+                   'data-source-image_source': _('Type')}))
+    size = forms.IntegerField(min_value=1, initial=1, label=_("Size (GB)"))
     availability_zone = forms.ChoiceField(
         label=_("Availability Zone"),
         required=False,
@@ -131,7 +138,9 @@ class CreateForm(forms.SelfHandlingForm):
                 size_help_text = _('Volume size must be equal to or greater '
                                    'than the image size (%s)') \
                                  % filesizeformat(image.size)
-                min_disk_size = getattr(image, 'min_disk', 0)
+                properties = getattr(image, 'properties', {})
+                min_disk_size = getattr(image, 'min_disk', 0) or \
+                                properties.get('min_disk', 0)
                 if (min_disk_size > min_vol_size):
                     min_vol_size = min_disk_size
                     size_help_text = _('Volume size must be equal to or '
@@ -314,8 +323,10 @@ class CreateForm(forms.SelfHandlingForm):
                     error_message = _('The volume size cannot be less than '
                         'the image size (%s)') % filesizeformat(image.size)
                     raise ValidationError(error_message)
-                min_disk_size = getattr(image, 'min_disk', 0)
-                if (min_disk_size > 0 and data['size'] < image.min_disk):
+                properties = getattr(image, 'properties', {})
+                min_disk_size = getattr(image, 'min_disk', 0) or \
+                                properties.get('min_disk', 0)
+                if (min_disk_size > 0 and data['size'] < min_disk_size):
                     error_message = _('The volume size cannot be less than '
                         'the image minimum disk size (%sGB)') % min_disk_size
                     raise ValidationError(error_message)
@@ -458,8 +469,8 @@ class AttachForm(forms.SelfHandlingForm):
 
 
 class CreateSnapshotForm(forms.SelfHandlingForm):
-    name = forms.CharField(max_length="255", label=_("Snapshot Name"))
-    description = forms.CharField(widget=forms.Textarea,
+    name = forms.CharField(max_length=255, label=_("Snapshot Name"))
+    description = forms.CharField(max_length=255, widget=forms.Textarea,
             label=_("Description"), required=False)
 
     def __init__(self, request, *args, **kwargs):
@@ -496,8 +507,8 @@ class CreateSnapshotForm(forms.SelfHandlingForm):
 
 
 class UpdateForm(forms.SelfHandlingForm):
-    name = forms.CharField(max_length="255", label=_("Volume Name"))
-    description = forms.CharField(widget=forms.Textarea,
+    name = forms.CharField(max_length=255, label=_("Volume Name"))
+    description = forms.CharField(max_length=255, widget=forms.Textarea,
             label=_("Description"), required=False)
 
     def handle(self, request, data):
@@ -520,14 +531,15 @@ class UploadToImageForm(forms.SelfHandlingForm):
     name = forms.CharField(label=_('Volume Name'),
                            widget=forms.TextInput(
                                attrs={'readonly': 'readonly'}))
-    image_name = forms.CharField(max_length="255", label=_('Image Name'),
-                                 required=True)
+    image_name = forms.CharField(max_length=255, label=_('Image Name'))
     disk_format = forms.ChoiceField(label=_('Disk Format'),
                                     widget=forms.Select(),
                                     required=False)
-    force = forms.BooleanField(label=_("Force"),
-                               widget=forms.CheckboxInput(),
-                               required=False)
+    force = forms.BooleanField(
+        label=pgettext_lazy("Force upload volume in in-use status to image",
+                            u"Force"),
+        widget=forms.CheckboxInput(),
+        required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(UploadToImageForm, self).__init__(request, *args, **kwargs)
@@ -590,10 +602,20 @@ class ExtendForm(forms.SelfHandlingForm):
     def clean(self):
         cleaned_data = super(ExtendForm, self).clean()
         new_size = cleaned_data.get('new_size')
-        if new_size <= self.initial['orig_size']:
+        orig_size = self.initial['orig_size']
+        if new_size <= orig_size:
             raise ValidationError(
                 _("New size must be greater than current size."))
 
+        usages = quotas.tenant_limit_usages(self.request)
+        availableGB = usages['maxTotalVolumeGigabytes'] - \
+            usages['gigabytesUsed']
+        if availableGB < (new_size - orig_size):
+            message = _('Volume cannot be extended to %(req)iGB as '
+                        'you only have %(avail)iGB of your quota '
+                        'available.')
+            params = {'req': new_size, 'avail': availableGB}
+            self._errors["new_size"] = self.error_class([message % params])
         return cleaned_data
 
     def handle(self, request, data):
@@ -617,8 +639,7 @@ class RetypeForm(forms.SelfHandlingForm):
     name = forms.CharField(label=_('Volume Name'),
                            widget=forms.TextInput(
                                attrs={'readonly': 'readonly'}))
-    volume_type = forms.ChoiceField(label=_('Type'),
-                                    required=True)
+    volume_type = forms.ChoiceField(label=_('Type'))
     MIGRATION_POLICY_CHOICES = [('never', _('Never')),
                                 ('on-demand', _('On Demand'))]
     migration_policy = forms.ChoiceField(label=_('Migration Policy'),

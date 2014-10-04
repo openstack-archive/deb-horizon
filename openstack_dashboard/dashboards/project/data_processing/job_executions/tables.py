@@ -13,9 +13,10 @@
 
 import logging
 
-from django.core import urlresolvers
+from django.core.urlresolvers import reverse
 from django.utils import http
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import tables
 
@@ -27,11 +28,23 @@ LOG = logging.getLogger(__name__)
 
 
 class DeleteJobExecution(tables.BatchAction):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Job execution",
+            u"Delete Job executions",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Job execution",
+            u"Deleted Job executions",
+            count
+        )
+
     name = "delete"
-    action_present = _("Delete")
-    action_past = _("Deleted")
-    data_type_singular = _("Job execution")
-    data_type_plural = _("Job executions")
     classes = ('btn-danger', 'btn-terminate')
 
     def action(self, request, obj_id):
@@ -39,30 +52,53 @@ class DeleteJobExecution(tables.BatchAction):
 
 
 class ReLaunchJobExistingCluster(j_t.ChoosePlugin):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Launch Job",
+            u"Launch Jobs",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Launched Job",
+            u"Launched Jobs",
+            count
+        )
+
     name = "relaunch-job-existing"
     verbose_name = _("Relaunch On Existing Cluster")
-    action_present = _("Launch")
-    action_past = _("Launched")
-    data_type_singular = _("Job")
-    data_type_plural = _("Jobs")
     url = "horizon:project:data_processing.jobs:launch-job"
     classes = ('ajax-modal', 'btn-launch')
 
     def get_link_url(self, datum):
-        base_url = urlresolvers.reverse(self.url)
-
+        base_url = reverse(self.url)
         params = http.urlencode({'job_id': datum.job_id,
                                  'job_execution_id': datum.id})
         return "?".join([base_url, params])
 
 
 class ReLaunchJobNewCluster(ReLaunchJobExistingCluster):
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Launch Job",
+            u"Launch Jobs",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Launched Job",
+            u"Launched Jobs",
+            count
+        )
+
     name = "relaunch-job-new"
     verbose_name = _("Relaunch On New Cluster")
-    action_present = _("Launch")
-    action_past = _("Launched")
-    data_type_singular = _("Job")
-    data_type_plural = _("Jobs")
     url = "horizon:project:data_processing.jobs:choose-plugin"
     classes = ('ajax-modal', 'btn-launch')
 
@@ -74,6 +110,16 @@ class UpdateRow(tables.Row):
         job_execution = saharaclient.job_execution_get(request,
                                                        job_execution_id)
         return job_execution
+
+
+def get_job_link(job_execution):
+    return reverse("horizon:project:data_processing.jobs:details",
+                   args=(http.urlquote(job_execution.job_id),))
+
+
+def get_cluster_link(job_execution):
+    return reverse("horizon:project:data_processing.clusters:details",
+                   args=(http.urlquote(job_execution.cluster_id),))
 
 
 class JobExecutionsTable(tables.DataTable):
@@ -92,11 +138,18 @@ class JobExecutionsTable(tables.DataTable):
         verbose_name=_("ID"),
         display_choices=(("id", "ID"), ("name", "Name")),
         link=("horizon:project:data_processing.job_executions:details"))
-
+    job_name = tables.Column(
+        "job_name",
+        verbose_name=_("Job"),
+        link=get_job_link)
+    cluster_name = tables.Column(
+        "cluster_name",
+        verbose_name=_("Cluster"),
+        link=get_cluster_link)
     status = StatusColumn("info",
-                          status=True,
-                          status_choices=STATUS_CHOICES,
-                          verbose_name=_("Status"))
+        status=True,
+        status_choices=STATUS_CHOICES,
+        verbose_name=_("Status"))
 
     def get_object_display(self, datum):
         return datum.id

@@ -66,7 +66,8 @@ def show_project_list(context):
     if 'request' not in context:
         return {}
     request = context['request']
-    context = {'projects': context['authorized_tenants'],
+    context = {'projects': sorted(context['authorized_tenants'],
+                    key=lambda project: project.name),
                'project_id': request.user.project_id,
                'request': request}
     return context
@@ -81,6 +82,6 @@ def show_region_list(context):
     context = {'multi_region':
                     len(request.user.available_services_regions) > 1,
                'region_name': request.user.services_region,
-               'regions': request.user.available_services_regions,
+               'regions': sorted(request.user.available_services_regions),
                'request': request}
     return context

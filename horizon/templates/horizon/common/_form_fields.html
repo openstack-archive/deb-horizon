@@ -1,37 +1,4 @@
-{% load bootstrap_form_field %}
-
-{% for hidden in form.hidden_fields %}
-  {{ hidden }}
-{% endfor %}
-{% if form.warnings %}
-  <div class="alert alert-message alert-warning">
-    {{ form.warnings }}
-  </div>
-{% endif %}
-{% if form.non_field_errors %}
-  <div class="alert alert-message alert-danger">
-    {{ form.non_field_errors }}
-  </div>
-{% endif %}
+{% include 'horizon/common/_form_errors.html' with form=form %}
 {% for field in form.visible_fields %}
-  <!-- <div class="form-group form-field clearfix{% if field.errors %} has-error{% endif %} {{ field.css_classes }}">
-    {{ field.label_tag }}
-    {% if field.help_text %}
-      <span class="help-icon"><i class="icon-question-sign"></i></span>
-    {% endif %}
-    {% if field.errors %}
-      {% for error in field.errors %}
-        <p class="help-block">{{ error }}</p>
-      {% endfor %}
-    {% endif %}
-    {% comment %}
-    Escape help_text a second time here, to avoid an XSS issue in bootstrap.js.
-    This can most likely be removed once we upgrade bootstrap.js past 2.0.2.
-    Note: the spaces are necessary here.
-    {% endcomment %}
-    <span class="help-block">{% filter force_escape %} {{ field.help_text }} {% endfilter %} </span>
-    {{ field }}
-  </div>
- -->
-  {{ field|bootstrap_form_field }}
+  {% include 'horizon/common/_form_field.html' with field=field %}
 {% endfor %}

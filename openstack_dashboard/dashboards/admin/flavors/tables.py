@@ -20,6 +20,7 @@ from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import tables
 
@@ -27,8 +28,21 @@ from openstack_dashboard import api
 
 
 class DeleteFlavor(tables.DeleteAction):
-    data_type_singular = _("Flavor")
-    data_type_plural = _("Flavors")
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Flavor",
+            u"Delete Flavors",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Flavor",
+            u"Deleted Flavors",
+            count
+        )
 
     def delete(self, request, obj_id):
         api.nova.flavor_delete(request, obj_id)
@@ -50,10 +64,11 @@ class UpdateFlavor(tables.LinkAction):
     icon = "pencil"
 
 
-class ViewFlavorExtras(tables.LinkAction):
-    name = "extras"
-    verbose_name = _("View Extra Specs")
-    url = "horizon:admin:flavors:extras:index"
+class UpdateMetadata(tables.LinkAction):
+    url = "horizon:admin:flavors:update_metadata"
+    name = "update_metadata"
+    verbose_name = _("Update Metadata")
+    classes = ("ajax-modal",)
     icon = "pencil"
 
 
@@ -123,8 +138,9 @@ class FlavorsTable(tables.DataTable):
                            empty_value=False,
                            filters=(filters.yesno, filters.capfirst))
     extra_specs = tables.Column(get_extra_specs,
-                                verbose_name=_("Extra Specs"),
-                                link=("horizon:admin:flavors:extras:index"),
+                                verbose_name=_("Metadata"),
+                                link="horizon:admin:flavors:update_metadata",
+                                link_classes=("ajax-modal",),
                                 empty_value=False,
                                 filters=(filters.yesno, filters.capfirst))
 
@@ -134,5 +150,5 @@ class FlavorsTable(tables.DataTable):
         table_actions = (FlavorFilterAction, CreateFlavor, DeleteFlavor)
         row_actions = (UpdateFlavor,
                        ModifyAccess,
-                       ViewFlavorExtras,
+                       UpdateMetadata,
                        DeleteFlavor)

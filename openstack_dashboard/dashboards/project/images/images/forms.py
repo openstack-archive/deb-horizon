@@ -37,7 +37,7 @@ IMAGE_FORMAT_CHOICES = IMAGE_BACKEND_SETTINGS.get('image_formats', [])
 
 
 class CreateImageForm(forms.SelfHandlingForm):
-    name = forms.CharField(max_length="255", label=_("Name"))
+    name = forms.CharField(max_length=255, label=_("Name"))
     description = forms.CharField(widget=forms.widgets.Textarea(
         attrs={'class': 'modal-body-fixed-width', 'rows': 4}),
         label=_("Description"),
@@ -52,7 +52,7 @@ class CreateImageForm(forms.SelfHandlingForm):
             'class': 'switchable',
             'data-slug': 'source'}))
 
-    copy_from = forms.CharField(max_length="255",
+    copy_from = forms.CharField(max_length=255,
                                 label=_("Image Location"),
                                 help_text=_("An external (HTTP) URL to load "
                                             "the image from."),
@@ -80,7 +80,7 @@ class CreateImageForm(forms.SelfHandlingForm):
                                     widget=forms.Select(attrs={
                                         'class': 'switchable',
                                         'ng-model': 'diskFormat'}))
-    architecture = forms.CharField(max_length="255", label=_("Architecture"),
+    architecture = forms.CharField(max_length=255, label=_("Architecture"),
                                    required=False)
     minimum_disk = forms.IntegerField(label=_("Minimum Disk (GB)"),
                                     min_value=0,
@@ -192,20 +192,20 @@ class CreateImageForm(forms.SelfHandlingForm):
 
 class UpdateImageForm(forms.SelfHandlingForm):
     image_id = forms.CharField(widget=forms.HiddenInput())
-    name = forms.CharField(max_length="255", label=_("Name"))
+    name = forms.CharField(max_length=255, label=_("Name"))
     description = forms.CharField(
         widget=forms.widgets.Textarea(),
         label=_("Description"),
         required=False,
     )
     kernel = forms.CharField(
-        max_length="36",
+        max_length=36,
         label=_("Kernel ID"),
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
     ramdisk = forms.CharField(
-        max_length="36",
+        max_length=36,
         label=_("Ramdisk ID"),
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -218,6 +218,22 @@ class UpdateImageForm(forms.SelfHandlingForm):
     disk_format = forms.ChoiceField(
         label=_("Format"),
     )
+    minimum_disk = forms.IntegerField(label=_("Minimum Disk (GB)"),
+                                      min_value=0,
+                                      help_text=_('The minimum disk size'
+                                                  ' required to boot the'
+                                                  ' image. If unspecified,'
+                                                  ' this value defaults to'
+                                                  ' 0 (no minimum).'),
+                                      required=False)
+    minimum_ram = forms.IntegerField(label=_("Minimum RAM (MB)"),
+                                     min_value=0,
+                                     help_text=_('The minimum memory size'
+                                                 ' required to boot the'
+                                                 ' image. If unspecified,'
+                                                 ' this value defaults to'
+                                                 ' 0 (no minimum).'),
+                                     required=False)
     public = forms.BooleanField(label=_("Public"), required=False)
     protected = forms.BooleanField(label=_("Protected"), required=False)
 
@@ -244,6 +260,8 @@ class UpdateImageForm(forms.SelfHandlingForm):
                 'disk_format': data['disk_format'],
                 'container_format': container_format,
                 'name': data['name'],
+                'min_ram': (data['minimum_ram'] or 0),
+                'min_disk': (data['minimum_disk'] or 0),
                 'properties': {'description': data['description']}}
         if data['kernel']:
             meta['properties']['kernel_id'] = data['kernel']

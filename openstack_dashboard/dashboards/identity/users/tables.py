@@ -12,11 +12,13 @@
 
 from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import messages
 from horizon import tables
 
 from openstack_dashboard import api
+from openstack_dashboard import policy
 
 
 ENABLE = 0
@@ -38,7 +40,7 @@ class CreateUserLink(tables.LinkAction):
         return api.keystone.keystone_can_edit_user()
 
 
-class EditUserLink(tables.LinkAction):
+class EditUserLink(policy.PolicyTargetMixin, tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit")
     url = "horizon:identity:users:update"
@@ -46,27 +48,47 @@ class EditUserLink(tables.LinkAction):
     icon = "pencil"
     policy_rules = (("identity", "identity:update_user"),
                     ("identity", "identity:list_projects"),)
-
-    def get_policy_target(self, request, user):
-        return {"user_id": user.id}
+    policy_target_attrs = (("user_id", "id"),)
 
     def allowed(self, request, user):
         return api.keystone.keystone_can_edit_user()
 
 
-class ToggleEnabled(tables.BatchAction):
+class ToggleEnabled(policy.PolicyTargetMixin, tables.BatchAction):
     name = "toggle"
-    action_present = (_("Enable"), _("Disable"))
-    action_past = (_("Enabled"), _("Disabled"))
-    data_type_singular = _("User")
-    data_type_plural = _("Users")
+
+    @staticmethod
+    def action_present(count):
+        return (
+            ungettext_lazy(
+                u"Enable User",
+                u"Enable Users",
+                count
+            ),
+            ungettext_lazy(
+                u"Disable User",
+                u"Disable Users",
+                count
+            ),
+        )
+
+    @staticmethod
+    def action_past(count):
+        return (
+            ungettext_lazy(
+                u"Enabled User",
+                u"Enabled Users",
+                count
+            ),
+            ungettext_lazy(
+                u"Disabled User",
+                u"Disabled Users",
+                count
+            ),
+        )
     classes = ("btn-toggle",)
     policy_rules = (("identity", "identity:update_user"),)
-
-    def get_policy_target(self, request, user=None):
-        if user:
-            return {"user_id": user.id}
-        return {}
+    policy_target_attrs = (("user_id", "id"),)
 
     def allowed(self, request, user=None):
         if not api.keystone.keystone_can_edit_user():
@@ -101,8 +123,21 @@ class ToggleEnabled(tables.BatchAction):
 
 
 class DeleteUsersAction(tables.DeleteAction):
-    data_type_singular = _("User")
-    data_type_plural = _("Users")
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete User",
+            u"Delete Users",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted User",
+            u"Deleted Users",
+            count
+        )
     policy_rules = (("identity", "identity:delete_user"),)
 
     def allowed(self, request, datum):

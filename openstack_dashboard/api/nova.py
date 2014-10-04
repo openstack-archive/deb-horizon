@@ -342,10 +342,13 @@ class FlavorExtraSpec(object):
 
 
 class FloatingIp(base.APIResourceWrapper):
-    _attrs = ['id', 'ip', 'fixed_ip', 'port_id', 'instance_id', 'pool']
+    _attrs = ['id', 'ip', 'fixed_ip', 'port_id', 'instance_id',
+              'instance_type', 'pool']
 
     def __init__(self, fip):
         fip.__setattr__('port_id', fip.instance_id)
+        fip.__setattr__('instance_type',
+                        'compute' if fip.instance_id else None)
         super(FloatingIp, self).__init__(fip)
 
 
@@ -399,10 +402,10 @@ class FloatingIpManager(network_base.FloatingIpManager):
     def list_targets(self):
         return [FloatingIpTarget(s) for s in self.client.servers.list()]
 
-    def get_target_id_by_instance(self, instance_id):
+    def get_target_id_by_instance(self, instance_id, target_list=None):
         return instance_id
 
-    def list_target_id_by_instance(self, instance_id):
+    def list_target_id_by_instance(self, instance_id, target_list=None):
         return [instance_id, ]
 
     def is_simple_associate_supported(self):
@@ -412,6 +415,7 @@ class FloatingIpManager(network_base.FloatingIpManager):
         return True
 
 
+@memoized
 def novaclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
@@ -535,7 +539,7 @@ def server_create(request, name, image, flavor, key_name, user_data,
                   security_groups, block_device_mapping=None,
                   block_device_mapping_v2=None, nics=None,
                   availability_zone=None, instance_count=1, admin_pass=None,
-                  disk_config=None, meta=None):
+                  disk_config=None, config_drive=None, meta=None):
     return Server(novaclient(request).servers.create(
         name, image, flavor, userdata=user_data,
         security_groups=security_groups,
@@ -543,7 +547,8 @@ def server_create(request, name, image, flavor, key_name, user_data,
         block_device_mapping_v2=block_device_mapping_v2,
         nics=nics, availability_zone=availability_zone,
         min_count=instance_count, admin_pass=admin_pass,
-        disk_config=disk_config, meta=meta), request)
+        disk_config=disk_config, config_drive=config_drive,
+        meta=meta), request)
 
 
 def server_delete(request, instance):
@@ -665,6 +670,10 @@ def default_quota_get(request, tenant_id):
     return base.QuotaSet(novaclient(request).quotas.defaults(tenant_id))
 
 
+def default_quota_update(request, **kwargs):
+    novaclient(request).quota_classes.update(DEFAULT_QUOTA_NAME, **kwargs)
+
+
 def usage_get(request, tenant_id, start, end):
     return NovaUsage(novaclient(request).usage.get(tenant_id, start, end))
 
@@ -755,9 +764,15 @@ def tenant_absolute_limits(request, reserved=False):
     limits = novaclient(request).limits.get(reserved=reserved).absolute
     limits_dict = {}
     for limit in limits:
-        # -1 is used to represent unlimited quotas
-        if limit.value == -1:
-            limits_dict[limit.name] = float("inf")
+        if limit.value < 0:
+            # Workaround for nova bug 1370867 that absolute_limits
+            # returns negative value for total.*Used instead of 0.
+            # For such case, replace negative values with 0.
+            if limit.name.startswith('total') and limit.name.endswith('Used'):
+                limits_dict[limit.name] = 0
+            else:
+                # -1 is used to represent unlimited quotas
+                limits_dict[limit.name] = float("inf")
         else:
             limits_dict[limit.name] = limit.value
     return limits_dict
@@ -793,6 +808,10 @@ def aggregate_get(request, aggregate_id):
 
 def aggregate_update(request, aggregate_id, values):
     return novaclient(request).aggregates.update(aggregate_id, values)
+
+
+def aggregate_set_metadata(request, aggregate_id, metadata):
+    return novaclient(request).aggregates.set_metadata(aggregate_id, metadata)
 
 
 def host_list(request):

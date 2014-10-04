@@ -15,6 +15,7 @@ import logging
 
 from django.conf import settings
 
+from horizon.utils.memoized import memoized  # noqa
 from openstack_dashboard.api import base
 
 from saharaclient import client as api_client
@@ -37,6 +38,7 @@ VERSIONS.load_supported_version(1.1, {"client": api_client,
                                       "version": 1.1})
 
 
+@memoized
 def client(request):
     return api_client.Client(VERSIONS.get_active_version()["version"],
                              sahara_url=base.url_for(request, SAHARA_SERVICE),
@@ -90,7 +92,8 @@ def nodegroup_template_create(request, name, plugin_name, hadoop_version,
                               flavor_id, description=None,
                               volumes_per_node=None, volumes_size=None,
                               node_processes=None, node_configs=None,
-                              floating_ip_pool=None):
+                              floating_ip_pool=None, security_groups=None,
+                              auto_security_group=False):
     return client(request).node_group_templates.create(name, plugin_name,
                                                        hadoop_version,
                                                        flavor_id, description,
@@ -98,7 +101,9 @@ def nodegroup_template_create(request, name, plugin_name, hadoop_version,
                                                        volumes_size,
                                                        node_processes,
                                                        node_configs,
-                                                       floating_ip_pool)
+                                                       floating_ip_pool,
+                                                       security_groups,
+                                                       auto_security_group)
 
 
 def nodegroup_template_list(request):
@@ -286,7 +291,13 @@ def job_execution_create(request, job_id, cluster_id,
 
 
 def job_execution_list(request):
-    return client(request).job_executions.list()
+    jex_list = client(request).job_executions.list()
+    job_dict = dict((j.id, j) for j in job_list(request))
+    cluster_dict = dict((c.id, c) for c in cluster_list(request))
+    for jex in jex_list:
+        setattr(jex, 'job_name', job_dict.get(jex.job_id).name)
+        setattr(jex, 'cluster_name', cluster_dict.get(jex.cluster_id).name)
+    return jex_list
 
 
 def job_execution_get(request, jex_id):

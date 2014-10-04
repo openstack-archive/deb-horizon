@@ -109,7 +109,8 @@ class SetInstanceDetailsAction(workflows.Action):
                                               filesizeformat(x.bytes)))))
 
     volume_size = forms.IntegerField(label=_("Device size (GB)"),
-                                  min_value=1,
+                                  initial=1,
+                                  min_value=0,
                                   required=False,
                                   help_text=_("Volume size in gigabytes "
                                               "(integer value)."))
@@ -220,8 +221,12 @@ class SetInstanceDetailsAction(workflows.Action):
 
         if source_type in ('image_id', 'volume_image_id'):
             if source_type == 'volume_image_id':
-                if not self.data.get('volume_size', None):
+                volume_size = self.data.get('volume_size', None)
+                if not volume_size:
                     msg = _("You must set volume size")
+                    self._errors['volume_size'] = self.error_class([msg])
+                if float(volume_size) <= 0:
+                    msg = _("Volume size must be greater than 0")
                     self._errors['volume_size'] = self.error_class([msg])
                 if not cleaned_data.get('device_name'):
                     msg = _("You must set device name")
@@ -555,24 +560,84 @@ class SetAccessControls(workflows.Step):
 
 
 class CustomizeAction(workflows.Action):
-    customization_script = forms.CharField(widget=forms.Textarea,
-                                           label=_("Customization Script"),
-                                           required=False,
-                                           help_text=_("A script or set of "
-                                                       "commands to be "
-                                                       "executed after the "
-                                                       "instance has been "
-                                                       "built (max 16kb)."))
-
     class Meta:
         name = _("Post-Creation")
         help_text_template = ("project/instances/"
                               "_launch_customize_help.html")
 
+    source_choices = [('raw', _('Direct Input')),
+                      ('file', _('File'))]
+
+    attributes = {'class': 'switchable', 'data-slug': 'scriptsource'}
+    script_source = forms.ChoiceField(label=_('Customization Script Source'),
+                                        choices=source_choices,
+                                        widget=forms.Select(attrs=attributes))
+
+    script_help = _("A script or set of commands to be executed after the "
+                    "instance has been built (max 16kb).")
+
+    script_upload = forms.FileField(
+        label=_('Script File'),
+        help_text=script_help,
+        widget=forms.FileInput(attrs={
+            'class': 'switched',
+            'data-switch-on': 'scriptsource',
+            'data-scriptsource-file': _('Script File')}),
+        required=False)
+
+    script_data = forms.CharField(
+        label=_('Script Data'),
+        help_text=script_help,
+        widget=forms.widgets.Textarea(attrs={
+            'class': 'switched',
+            'data-switch-on': 'scriptsource',
+            'data-scriptsource-raw': _('Script Data')}),
+        required=False)
+
+    def __init__(self, *args):
+        super(CustomizeAction, self).__init__(*args)
+
+    def clean(self):
+        cleaned = super(CustomizeAction, self).clean()
+
+        files = self.request.FILES
+        script = self.clean_uploaded_files('script', files)
+
+        if script is not None:
+            cleaned['script_data'] = script
+
+        return cleaned
+
+    def clean_uploaded_files(self, prefix, files):
+        upload_str = prefix + "_upload"
+
+        has_upload = upload_str in files
+        if has_upload:
+            upload_file = files[upload_str]
+            log_script_name = upload_file.name
+            LOG.info('got upload %s' % log_script_name)
+
+            if upload_file._size > 16 * 1024:  # 16kb
+                msg = _('File exceeds maximum size (16kb)')
+                raise forms.ValidationError(msg)
+            else:
+                script = upload_file.read()
+                if script != "":
+                    try:
+                        normalize_newlines(script)
+                    except Exception as e:
+                        msg = _('There was a problem parsing the'
+                                ' %(prefix)s: %(error)s')
+                        msg = msg % {'prefix': prefix, 'error': e}
+                        raise forms.ValidationError(msg)
+                return script
+        else:
+            return None
+
 
 class PostCreationStep(workflows.Step):
     action_class = CustomizeAction
-    contributes = ("customization_script",)
+    contributes = ("script_data",)
 
 
 class SetNetworkAction(workflows.Action):
@@ -616,6 +681,7 @@ class SetNetworkAction(workflows.Action):
             for n in networks:
                 n.set_id_as_name_if_empty()
                 network_list.append((n.id, n.name))
+            sorted(network_list, key=lambda obj: obj[1])
         except Exception:
             exceptions.handle(request,
                               _('Unable to retrieve networks.'))
@@ -663,11 +729,18 @@ class SetNetwork(workflows.Step):
 
 
 class SetAdvancedAction(workflows.Action):
-    disk_config = forms.ChoiceField(label=_("Disk Partition"),
-                                    required=False)
+    disk_config = forms.ChoiceField(label=_("Disk Partition"), required=False,
+        help_text=_("Automatic: The entire disk is a single partition and "
+                    "automatically resizes. Manual: Results in faster build "
+                    "times but requires manual partitioning."))
+    config_drive = forms.BooleanField(label=_("Configuration Drive"),
+        required=False, help_text=_("Configure OpenStack to write metadata to "
+                                    "a special configuration drive that "
+                                    "attaches to the instance when it boots."))
 
-    def __init__(self, request, *args, **kwargs):
-        super(SetAdvancedAction, self).__init__(request, *args, **kwargs)
+    def __init__(self, request, context, *args, **kwargs):
+        super(SetAdvancedAction, self).__init__(request, context,
+                                                *args, **kwargs)
         try:
             if not api.nova.extension_supported("DiskConfig", request):
                 del self.fields['disk_config']
@@ -676,6 +749,12 @@ class SetAdvancedAction(workflows.Action):
                 config_choices = [("AUTO", _("Automatic")),
                                   ("MANUAL", _("Manual"))]
                 self.fields['disk_config'].choices = config_choices
+            # Only show the Config Drive option for the Launch Instance
+            # workflow (not Resize Instance) and only if the extension
+            # is supported.
+            if context.get('workflow_slug') != 'launch_instance' or (
+                    not api.nova.extension_supported("ConfigDrive", request)):
+                del self.fields['config_drive']
         except Exception:
             exceptions.handle(request, _('Unable to retrieve extensions '
                                          'information.'))
@@ -688,7 +767,16 @@ class SetAdvancedAction(workflows.Action):
 
 class SetAdvanced(workflows.Step):
     action_class = SetAdvancedAction
-    contributes = ("disk_config",)
+    contributes = ("disk_config", "config_drive",)
+
+    def prepare_action_context(self, request, context):
+        context = super(SetAdvanced, self).prepare_action_context(request,
+                                                                  context)
+        # Add the workflow slug to the context so that we can tell which
+        # workflow is being used when creating the action. This step is
+        # used by both the Launch Instance and Resize Instance workflows.
+        context['workflow_slug'] = self.workflow.slug
+        return context
 
 
 class LaunchInstance(workflows.Workflow):
@@ -698,6 +786,7 @@ class LaunchInstance(workflows.Workflow):
     success_message = _('Launched %(count)s named "%(name)s".')
     failure_message = _('Unable to launch %(count)s named "%(name)s".')
     success_url = "horizon:project:instances:index"
+    multipart = True
     default_steps = (SelectProjectUser,
                      SetInstanceDetails,
                      SetAccessControls,
@@ -716,7 +805,7 @@ class LaunchInstance(workflows.Workflow):
 
     @sensitive_variables('context')
     def handle(self, request, context):
-        custom_script = context.get('customization_script', '')
+        custom_script = context.get('script_data', '')
 
         dev_mapping_1 = None
         dev_mapping_2 = None
@@ -788,7 +877,8 @@ class LaunchInstance(workflows.Workflow):
                                    availability_zone=avail_zone,
                                    instance_count=int(context['count']),
                                    admin_pass=context['admin_pass'],
-                                   disk_config=context.get('disk_config'))
+                                   disk_config=context.get('disk_config'),
+                                   config_drive=context.get('config_drive'))
             return True
         except Exception:
             exceptions.handle(request)

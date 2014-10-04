@@ -24,6 +24,7 @@ from django.core import urlresolvers
 from django import forms
 from django.http import HttpResponse  # noqa
 from django import template
+from django.template.defaultfilters import slugify  # noqa
 from django.template.defaultfilters import truncatechars  # noqa
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
@@ -157,6 +158,28 @@ class Column(html.HTMLElement):
         A dict of HTML attribute strings which should be added to this column.
         Example: ``attrs={"data-foo": "bar"}``.
 
+    .. attribute:: cell_attributes_getter
+
+       A callable to get the HTML attributes of a column cell depending
+       on the data. For example, to add additional description or help
+       information for data in a column cell (e.g. in Images panel, for the
+       column 'format'):
+
+            helpText = {
+              'ARI':'Amazon Ramdisk Image'
+              'QCOW2':'QEMU' Emulator'
+              }
+
+            getHoverHelp(data):
+              text = helpText.get(data, None)
+              if text:
+                  return {'title': text}
+              else:
+                  return {}
+            ...
+            ...
+            cell_attributes_getter = getHoverHelp
+
     .. attribute:: truncate
 
         An integer for the maximum length of the string in this column. If the
@@ -245,7 +268,8 @@ class Column(html.HTMLElement):
                  empty_value=None, filters=None, classes=None, summation=None,
                  auto=None, truncate=None, link_classes=None, wrap_list=False,
                  form_field=None, form_field_attributes=None,
-                 update_action=None, link_attrs=None):
+                 update_action=None, link_attrs=None,
+                 cell_attributes_getter=None):
 
         self.classes = list(classes or getattr(self, "classes", []))
         super(Column, self).__init__()
@@ -283,6 +307,7 @@ class Column(html.HTMLElement):
         self.link_attrs = link_attrs or {}
         if link_classes:
             self.link_attrs['class'] = ' '.join(link_classes)
+        self.cell_attributes_getter = cell_attributes_getter
 
         if status_choices:
             self.status_choices = status_choices
@@ -413,12 +438,14 @@ class Column(html.HTMLElement):
         data = filter(lambda datum: datum is not None, data)
 
         if len(data):
-            summation = summation_function(data)
-            for filter_func in self.filters:
-                summation = filter_func(summation)
-            return summation
-        else:
-            return None
+            try:
+                summation = summation_function(data)
+                for filter_func in self.filters:
+                    summation = filter_func(summation)
+                return summation
+            except TypeError:
+                pass
+        return None
 
 
 class Row(html.HTMLElement):
@@ -592,8 +619,7 @@ class Row(html.HTMLElement):
         """Fetches the updated data for the row based on the object id
         passed in. Must be implemented by a subclass to allow AJAX updating.
         """
-        raise NotImplementedError("You must define a get_data method on %s"
-                                  % self.__class__.__name__)
+        return {}
 
 
 class Cell(html.HTMLElement):
@@ -654,6 +680,9 @@ class Cell(html.HTMLElement):
             table._data_cache[column][table.get_object_id(datum)] = data
         else:
             data = column.get_data(datum)
+            if column.cell_attributes_getter:
+                cell_attributes = column.cell_attributes_getter(data) or {}
+                self.attrs.update(cell_attributes)
         return data
 
     def __repr__(self):
@@ -739,7 +768,7 @@ class Cell(html.HTMLElement):
         """Returns a flattened string of the cell's CSS classes."""
         if not self.url:
             self.column.classes = [cls for cls in self.column.classes
-                                    if cls != "anchor"]
+                                   if cls != "anchor"]
         column_class_string = self.column.get_final_attrs().get('class', "")
         classes = set(column_class_string.split(" "))
         if self.column.status:
@@ -881,10 +910,16 @@ class DataTableOptions(object):
         The class which should be used for handling the columns of this table.
         Optional. Default: :class:`~horizon.tables.Column`.
 
+    .. attribute:: css_classes
+
+        A custom CSS class or classes to add to the ``<table>`` tag of the
+        rendered table, for when the particular table requires special styling.
+        Default: ``""``.
+
     .. attribute:: mixed_data_type
 
         A toggle to indicate if the table accepts two or more types of data.
-        Optional. Default: :``False``
+        Optional. Default: ``False``
 
     .. attribute:: data_types
 
@@ -909,8 +944,8 @@ class DataTableOptions(object):
     """
     def __init__(self, options):
         self.name = getattr(options, 'name', self.__class__.__name__)
-        verbose_name = getattr(options, 'verbose_name', None) \
-                                    or self.name.title()
+        verbose_name = (getattr(options, 'verbose_name', None)
+                        or self.name.title())
         self.verbose_name = verbose_name
         self.columns = getattr(options, 'columns', None)
         self.status_columns = getattr(options, 'status_columns', [])
@@ -920,6 +955,7 @@ class DataTableOptions(object):
         self.cell_class = getattr(options, 'cell_class', Cell)
         self.row_class = getattr(options, 'row_class', Row)
         self.column_class = getattr(options, 'column_class', Column)
+        self.css_classes = getattr(options, 'css_classes', '')
         self.prev_pagination_param = getattr(options,
                                              'prev_pagination_param',
                                              'prev_marker')
@@ -947,9 +983,9 @@ class DataTableOptions(object):
                                 'template',
                                 'horizon/common/_data_table.html')
         self.row_actions_template = \
-                        'horizon/common/_data_table_row_actions.html'
+            'horizon/common/_data_table_row_actions.html'
         self.table_actions_template = \
-                        'horizon/common/_data_table_table_actions.html'
+            'horizon/common/_data_table_table_actions.html'
         self.context_var_name = unicode(getattr(options,
                                                 'context_var_name',
                                                 'table'))
@@ -1157,6 +1193,9 @@ class DataTable(object):
                                                             filter_string)
         return self._filtered_data
 
+    def slugify_name(self):
+        return str(slugify(self._meta.name))
+
     def get_filter_string(self):
         """Get the filter string value. For 'server' type filters this is
         saved in the session so that it gets persisted across table loads.
@@ -1261,7 +1300,7 @@ class DataTable(object):
         if not matches:
             raise exceptions.Http302(self.get_absolute_url(),
                                      _('No match returned for the id "%s".')
-                                       % lookup)
+                                     % lookup)
         return matches[0]
 
     @property
@@ -1703,3 +1742,7 @@ class DataTable(object):
                               exc_info[2])
 
         return rows
+
+    def css_classes(self):
+        """Returns the additional CSS class to be added to <table> tag."""
+        return self._meta.css_classes

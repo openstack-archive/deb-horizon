@@ -116,7 +116,11 @@ def data(TEST):
                         'segment_range': '3000-3100',
                         'id':
                         '00000000-1111-1111-1111-000000000000',
-                        'project': network_dict['tenant_id']}
+#                        'project': network_dict['tenant_id'],
+                        'project': TEST.networks.get(name="net1")['tenant_id'],
+                        # vlan profiles have no sub_type or multicast_ip_range
+                        'multicast_ip_range': None,
+                        'sub_type': None}
 
     TEST.api_net_profiles.add(net_profile_dict)
     TEST.net_profiles.add(neutron.Profile(net_profile_dict))
@@ -176,6 +180,20 @@ def data(TEST):
     TEST.api_ports.add(port_dict)
     TEST.ports.add(neutron.Port(port_dict))
     assoc_port = port_dict
+
+    port_dict = {'admin_state_up': True,
+                 'device_id': '279989f7-54bb-41d9-ba42-0d61f12fda61',
+                 'device_owner': 'network:router_interface',
+                 'fixed_ips': [{'ip_address': '10.0.0.1',
+                                'subnet_id': subnet_dict['id']}],
+                 'id': '9036eedb-e7fa-458e-bc6e-d9d06d9d1bc4',
+                 'mac_address': 'fa:16:3e:9c:d5:7f',
+                 'name': '',
+                 'network_id': network_dict['id'],
+                 'status': 'ACTIVE',
+                 'tenant_id': network_dict['tenant_id']}
+    TEST.api_ports.add(port_dict)
+    TEST.ports.add(neutron.Port(port_dict))
 
     # 2nd network.
     network_dict = {'admin_state_up': True,
@@ -258,6 +276,70 @@ def data(TEST):
     TEST.networks.add(neutron.Network(network))
     TEST.subnets.add(subnet)
 
+    # 1st v6 network.
+    network_dict = {'admin_state_up': True,
+                    'id': '96688ea1-ffa5-78ec-22ca-33aaabfaf775',
+                    'name': 'v6_net1',
+                    'status': 'ACTIVE',
+                    'subnets': ['88ddd443-4377-ab1f-87dd-4bc4a662dbb6'],
+                    'tenant_id': '1',
+                    'router:external': False,
+                    'shared': False}
+    subnet_dict = {'allocation_pools': [{'end': 'ff09::ff',
+                                         'start': 'ff09::02'}],
+                   'dns_nameservers': [],
+                   'host_routes': [],
+                   'cidr': 'ff09::/64',
+                   'enable_dhcp': True,
+                   'gateway_ip': 'ff09::1',
+                   'id': network_dict['subnets'][0],
+                   'ip_version': 6,
+                   'name': 'v6_subnet1',
+                   'network_id': network_dict['id'],
+                   'tenant_id': network_dict['tenant_id'],
+                   'ipv6_modes': 'none/none'}
+
+    TEST.api_networks.add(network_dict)
+    TEST.api_subnets.add(subnet_dict)
+
+    network = copy.deepcopy(network_dict)
+    subnet = neutron.Subnet(subnet_dict)
+    network['subnets'] = [subnet]
+    TEST.networks.add(neutron.Network(network))
+    TEST.subnets.add(subnet)
+
+    # 2nd v6 network - slaac.
+    network_dict = {'admin_state_up': True,
+                    'id': 'c62e4bb3-296a-4cd1-8f6b-aaa7a0092326',
+                    'name': 'v6_net2',
+                    'status': 'ACTIVE',
+                    'subnets': ['5d736a21-0036-4779-8f8b-eed5f98077ec'],
+                    'tenant_id': '1',
+                    'router:external': False,
+                    'shared': False}
+    subnet_dict = {'allocation_pools': [{'end': 'ff09::ff',
+                                         'start': 'ff09::02'}],
+                   'dns_nameservers': [],
+                   'host_routes': [],
+                   'cidr': 'ff09::/64',
+                   'enable_dhcp': True,
+                   'gateway_ip': 'ff09::1',
+                   'id': network_dict['subnets'][0],
+                   'ip_version': 6,
+                   'name': 'v6_subnet2',
+                   'network_id': network_dict['id'],
+                   'tenant_id': network_dict['tenant_id'],
+                   'ipv6_modes': 'slaac/slaac'}
+
+    TEST.api_networks.add(network_dict)
+    TEST.api_subnets.add(subnet_dict)
+
+    network = copy.deepcopy(network_dict)
+    subnet = neutron.Subnet(subnet_dict)
+    network['subnets'] = [subnet]
+    TEST.networks.add(neutron.Network(network))
+    TEST.subnets.add(subnet)
+
     # Set up router data.
     port_dict = {'admin_state_up': True,
                  'device_id': '7180cede-bcd8-4334-b19f-f7ef2f331f53',
@@ -267,7 +349,7 @@ def data(TEST):
                  'id': '44ec6726-4bdc-48c5-94d4-df8d1fbf613b',
                  'mac_address': 'fa:16:3e:9c:d5:7e',
                  'name': '',
-                 'network_id': network_dict['id'],
+                 'network_id': TEST.networks.get(name="ext_net")['id'],
                  'status': 'ACTIVE',
                  'tenant_id': '1'}
     TEST.api_ports.add(port_dict)
@@ -578,10 +660,14 @@ def data(TEST):
                    "alias": "dvr",
                    "description":
                    "Enables configuration of Distributed Virtual Routers."}
+    extension_5 = {"name": "HA Router extension",
+                   "alias": "l3-ha",
+                   "description": "Add HA capability to routers."}
     TEST.api_extensions.add(extension_1)
     TEST.api_extensions.add(extension_2)
     TEST.api_extensions.add(extension_3)
     TEST.api_extensions.add(extension_4)
+    TEST.api_extensions.add(extension_5)
 
     # 1st agent.
     agent_dict = {"binary": "neutron-openvswitch-agent",
@@ -815,7 +901,7 @@ def data(TEST):
                   'tenant_id': '1',
                   'name': 'rule3',
                   'description': 'rule3 description',
-                  'protocol': 'icmp',
+                  'protocol': None,
                   'action': 'allow',
                   'source_ip_address': '1.2.3.0/24',
                   'source_port': '80',
@@ -907,7 +993,9 @@ def data(TEST):
                         'multicast_ip_range': '144.0.0.0-144.0.0.100',
                         'id':
                         '00000000-2222-2222-2222-000000000000',
-                        'project': '1'}
+                        'project': '1',
+                        # overlay profiles have no physical_network
+                        'physical_network': None}
 
     TEST.api_net_profiles.add(net_profile_dict)
     TEST.net_profiles.add(neutron.Profile(net_profile_dict))

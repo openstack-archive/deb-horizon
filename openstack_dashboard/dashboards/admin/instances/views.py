@@ -84,7 +84,8 @@ class AdminIndexView(tables.DataTableView):
                               _('Unable to retrieve instance list.'))
         if instances:
             try:
-                api.network.servers_update_addresses(self.request, instances)
+                api.network.servers_update_addresses(self.request, instances,
+                                                     all_tenants=True)
             except Exception:
                 exceptions.handle(
                     self.request,
@@ -150,10 +151,10 @@ class LiveMigrateView(forms.ModalFormView):
     @memoized.memoized_method
     def get_hosts(self, *args, **kwargs):
         try:
-            return api.nova.hypervisor_list(self.request)
+            return api.nova.host_list(self.request)
         except Exception:
             redirect = reverse("horizon:admin:instances:index")
-            msg = _('Unable to retrieve hypervisor information.')
+            msg = _('Unable to retrieve host information.')
             exceptions.handle(self.request, msg, redirect=redirect)
 
     @memoized.memoized_method

@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# richajha <richa.jha2@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-28 15:08-0500\n"
-"PO-Revision-Date: 2014-08-28 14:43+0000\n"
+"POT-Creation-Date: 2014-09-29 22:50-0500\n"
+"PO-Revision-Date: 2014-09-29 07:12+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Hindi (http://www.transifex.com/projects/p/horizon/language/hi/)\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +34,7 @@ msgstr "आप %sका उपयोग करने के लिए अधि�
 #: exceptions.py:163
 #, python-format
 msgid "A %(resource)s with the name \"%(name)s\" already exists."
-msgstr ""
+msgstr "एक %(resource)s , \"%(name)s\" से पहले से ही मौजूद है "
 
 #: exceptions.py:287
 #, python-format
@@ -44,7 +45,7 @@ msgstr "अनधिकृत: %s"
 msgid "Unauthorized. Please try logging in again."
 msgstr "अनधिकृत. फिर लॉग इन करने का प्रयास करें."
 
-#: middleware.py:117
+#: middleware.py:97
 msgid "Session timed out."
 msgstr "सत्र का समय समाप्त हुआ."
 
@@ -61,19 +62,29 @@ msgstr "एक% s को ब्राउज़ करने के लिए च
 msgid "Password is not accepted"
 msgstr "पासवर्ड स्वीकार नहीं किया है"
 
-#: forms/fields.py:63
+#: forms/fields.py:64
 msgid "Incorrect format for IP address"
 msgstr "IP पता के लिए गलत प्रारूप"
 
-#: forms/fields.py:64
+#: forms/fields.py:65
 msgid "Invalid version for IP address"
 msgstr "IP पता के लिए अवैध प्रारूप संस्करण"
 
-#: forms/fields.py:65
+#: forms/fields.py:66
 msgid "Invalid subnet mask"
 msgstr "अवैध सबनेट मास्क"
 
-#: tables/actions.py:458
+#: forms/views.py:81 templates/horizon/common/_usage_summary.html:16
+msgid "Submit"
+msgstr "जमा करें"
+
+#: forms/views.py:82
+#: templates/horizon/common/_modal_form_update_metadata.html:239
+#: templates/horizon/common/_workflow.html:49
+msgid "Cancel"
+msgstr "रद्द करें"
+
+#: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:16
 #: templates/horizon/common/_data_table_table_actions.html:26
 #: templates/horizon/common/_workflow_step_update_members.html:12
@@ -81,73 +92,73 @@ msgstr "अवैध सबनेट मास्क"
 msgid "Filter"
 msgstr "छानना शुरू..."
 
-#: tables/actions.py:662
+#: tables/actions.py:756
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:664
+#: tables/actions.py:758
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:694 tables/base.py:1498
+#: tables/actions.py:786 tables/base.py:1537
 msgid "N/A"
 msgstr "लागू नहीं"
 
-#: tables/actions.py:723
+#: tables/actions.py:815
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "आपको %(action)s की अनुमति नहीं है.: %(objs)s"
 
-#: tables/actions.py:730
+#: tables/actions.py:822
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "%(action)s की अनुमति नहीं है.: %(objs)s"
 
-#: tables/actions.py:736
+#: tables/actions.py:828
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:778
+#: tables/actions.py:898
 msgid "Delete"
 msgstr "मिटाएँ"
 
-#: tables/actions.py:779
+#: tables/actions.py:900
 msgid "Deleted"
 msgstr "मिटाया"
 
-#: tables/actions.py:811
+#: tables/actions.py:931
 msgid "Update"
 msgstr "अद्यतन"
 
-#: tables/actions.py:812
+#: tables/actions.py:932
 msgid "Updated"
 msgstr "अद्यतित"
 
-#: tables/base.py:330
+#: tables/base.py:355
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "%(obj)s पर %(attr)s  गुण मौज़ूद नहीं हैं."
 
-#: tables/base.py:931
+#: tables/base.py:967
 msgid "No items to display."
 msgstr "दिखाने के लिए कोई सामग्रियों नहीं."
 
-#: tables/base.py:1038
+#: tables/base.py:1074
 #: templates/horizon/common/_data_table_table_actions.html:40
 msgid "Actions"
 msgstr "क्रियाएं"
 
-#: tables/base.py:1263
+#: tables/base.py:1302
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "इस आइडी \"%s\" के लिए कोई मेल नहीं मिला."
 
-#: tables/base.py:1414
+#: tables/base.py:1453
 msgid "Please select a row before taking that action."
 msgstr "कृपया इस क्रिया को करने से पहले पंक्ति का चयन करें."
 
@@ -224,7 +235,7 @@ msgstr ""
 
 #: templates/horizon/common/_data_table_table_actions.html:38
 msgid "More Actions"
-msgstr ""
+msgstr "अधिक क्रिया"
 
 #: templates/horizon/common/_formset_table.html:35
 msgid "Add a row"
@@ -273,6 +284,52 @@ msgstr "वॉल्यूम"
 msgid "Volume Storage"
 msgstr "खंड भंडारण"
 
+#: templates/horizon/common/_modal_form_update_metadata.html:12
+msgid ""
+"\n"
+"        You can specify metadata by adding items from the left column to\n"
+"        the right column. You may select the metadata added to glance\n"
+"        dictionary or you can use the \"Other\" option using a key of\n"
+"        your choice.\n"
+"      "
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:26
+msgid "Available Metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:56
+msgid "Duplicate keys are not allowed"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:59
+msgid "Invalid key name"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:88
+#: templates/horizon/common/_modal_form_update_metadata.html:200
+msgid "No existing metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:99
+msgid "Existing Metadata"
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:216
+msgid ""
+"\n"
+"          You can specify resource metadata by moving items from the left\n"
+"          column to the right column. In the left columns there are metadata\n"
+"          definitions from the Glance Metadata Catalog. Use the \"Other\" option\n"
+"          to add metadata with the key of your choice.\n"
+"        "
+msgstr ""
+
+#: templates/horizon/common/_modal_form_update_metadata.html:238
+#: workflows/base.py:594
+msgid "Save"
+msgstr "सहेजें"
+
 #: templates/horizon/common/_resource_browser.html:10
 #, python-format
 msgid "Displaying %(nav_items)s item"
@@ -300,7 +357,7 @@ msgstr "उपयोग के बारें में जानने के 
 msgid ""
 "\n"
 "      <label>From:</label> %(start)s"
-msgstr ""
+msgstr "\n\n<label> से :</label> %(start)s"
 
 #: templates/horizon/common/_usage_summary.html:13
 #, python-format
@@ -308,10 +365,6 @@ msgid ""
 "\n"
 "      <label>To:</label>%(end)s"
 msgstr ""
-
-#: templates/horizon/common/_usage_summary.html:16
-msgid "Submit"
-msgstr "जमा करें"
 
 #: templates/horizon/common/_usage_summary.html:17
 msgid "The date should be in YYYY-mm-dd format."
@@ -341,19 +394,15 @@ msgstr "पीछे"
 msgid "Next"
 msgstr "अगला"
 
-#: templates/horizon/common/_workflow.html:49
-msgid "Cancel"
-msgstr "रद्द करें"
-
 #: templatetags/branding.py:34
 msgid "Horizon"
 msgstr "होरिजन"
 
-#: templatetags/horizon.py:126 templatetags/horizon.py:136
+#: templatetags/horizon.py:130 templatetags/horizon.py:141
 msgid "No Limit"
 msgstr "कोई सीमा नहीं"
 
-#: templatetags/horizon.py:128 templatetags/horizon.py:130
+#: templatetags/horizon.py:133 templatetags/horizon.py:135
 msgid "Available"
 msgstr "उपलब्ध"
 
@@ -392,6 +441,18 @@ msgstr "%s PB"
 #: templatetags/sizeformat.py:77
 msgid "0 bytes"
 msgstr ""
+
+#: test/test_dashboards/dogs/puppies/tables.py:31
+msgid "Sell Puppy"
+msgid_plural "Sell Puppies"
+msgstr[0] ""
+msgstr[1] ""
+
+#: test/test_dashboards/dogs/puppies/tables.py:40
+msgid "Sold Puppy"
+msgid_plural "Sold Puppies"
+msgstr[0] ""
+msgstr[1] ""
 
 #: utils/filters.py:49
 msgid "Never"
@@ -432,10 +493,6 @@ msgstr "कोई उपलब्ध नहीं"
 #: workflows/base.py:478
 msgid "No members."
 msgstr "कोई सदस्य नहीं"
-
-#: workflows/base.py:594
-msgid "Save"
-msgstr "सहेजें"
 
 #: workflows/base.py:595
 #, python-format

@@ -15,8 +15,11 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from neutronclient.common import exceptions as neutron_exc
+
 from horizon import exceptions
 from horizon import forms
+from horizon.utils import memoized
 from horizon import workflows
 
 from openstack_dashboard import api
@@ -53,16 +56,19 @@ class AssociateIPAction(workflows.Action):
         # and set the initial value of instance_id ChoiceField.
         q_instance_id = self.request.GET.get('instance_id')
         if q_instance_id:
+            targets = self._get_target_list()
             target_id = api.network.floating_ip_target_get_by_instance(
-                self.request, q_instance_id)
+                self.request, q_instance_id, targets)
             self.initial['instance_id'] = target_id
 
     def populate_ip_id_choices(self, request, context):
         ips = []
+        redirect = reverse('horizon:project:access_and_security:index')
         try:
             ips = api.network.tenant_floating_ip_list(self.request)
+        except neutron_exc.ConnectionFailed:
+            exceptions.handle(self.request, redirect=redirect)
         except Exception:
-            redirect = reverse('horizon:project:access_and_security:index')
             exceptions.handle(self.request,
                               _('Unable to retrieve floating IP addresses.'),
                               redirect=redirect)
@@ -74,7 +80,8 @@ class AssociateIPAction(workflows.Action):
 
         return options
 
-    def populate_instance_id_choices(self, request, context):
+    @memoized.memoized_method
+    def _get_target_list(self):
         targets = []
         try:
             targets = api.network.floating_ip_target_list(self.request)
@@ -83,6 +90,11 @@ class AssociateIPAction(workflows.Action):
             exceptions.handle(self.request,
                               _('Unable to retrieve instance list.'),
                               redirect=redirect)
+        return targets
+
+    def populate_instance_id_choices(self, request, context):
+        targets = self._get_target_list()
+
         instances = []
         for target in targets:
             instances.append((target.id, target.name))

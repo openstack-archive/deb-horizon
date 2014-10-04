@@ -263,26 +263,6 @@ This example sorts flavors by vcpus in descending order::
          'reverse': True,
     }
 
-``FLAVOR_EXTRA_KEYS``
----------------------
-
-.. versionadded:: 2014.1(Icehouse)
-
-Default::
-
-    {
-        'flavor_keys': [
-            ('quota:disk_read_bytes_sec', _('Quota: Read bytes')),
-            ('quota:disk_write_bytes_sec', _('Quota: Write bytes')),
-            ('quota:cpu_quota', _('Quota: CPU')),
-            ('quota:cpu_period', _('Quota: CPU period')),
-            ('quota:vif_inbound_average', _('Quota: Inbound average')),
-            ('quota:vif_outbound_average', _('Quota: Outbound average'))
-        ]
-    }
-
-Used to customize flavor extra specs keys
-
 ``IMAGES_LIST_FILTER_TENANTS``
 ------------------------------
 
@@ -308,7 +288,7 @@ Example: ``[{'text': 'Official', 'tenant': '27d0058849da47c896d205e2fc25a5e8', '
 Default: ``[]``
 
 A list of image custom property keys that should not be displayed in the
-Image Custom Properties table.
+Update Metadata tree.
 
 This setting can be used in the case where a separate panel is used for
 managing a custom property or if a certain custom property should never be
@@ -494,6 +474,7 @@ Default::
         {
             'enable_router': True,
             'enable_distributed_router': False,
+            'enable_ha_router': False,
             'enable_lb': True,
             'enable_quotas': False,
             'enable_firewall': True,
@@ -530,6 +511,19 @@ the Router panel. For the DVR feature to be enabled, this option needs
 to be set to True and your Neutron deployment must support DVR. Even
 when your Neutron plugin (like ML2 plugin) supports DVR feature, DVR
 feature depends on l3-agent configuration, so deployers should set this
+option appropriately depending on your deployment.
+
+``enable_ha_router``:
+
+.. versionadded:: 2014.2(Juno)
+
+Default: ``False``
+
+Enable or disable HA (High Availability) mode in Neutron virtual router
+in the Router panel. For the HA router mode to be enabled, this option needs
+to be set to True and your Neutron deployment must support HA router mode.
+Even when your Neutron plugin (like ML2 plugin) supports HA router mode,
+the feature depends on l3-agent configuration, so deployers should set this
 option appropriately depending on your deployment.
 
 ``enable_lb``:

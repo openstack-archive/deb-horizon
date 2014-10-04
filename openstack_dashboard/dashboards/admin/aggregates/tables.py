@@ -12,6 +12,7 @@
 
 from django.template import defaultfilters as filters
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 import six
 
@@ -22,8 +23,21 @@ from openstack_dashboard.dashboards.admin.aggregates import constants
 
 
 class DeleteAggregateAction(tables.DeleteAction):
-    data_type_singular = _("Host Aggregate")
-    data_type_plural = _("Host Aggregates")
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Host Aggregate",
+            u"Delete Host Aggregates",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Host Aggregate",
+            u"Deleted Host Aggregates",
+            count
+        )
 
     def delete(self, request, obj_id):
         api.nova.aggregate_delete(request, obj_id)
@@ -43,6 +57,14 @@ class ManageHostsAction(tables.LinkAction):
     url = constants.AGGREGATES_MANAGE_HOSTS_URL
     classes = ("ajax-modal",)
     icon = "plus"
+
+
+class UpdateMetadataAction(tables.LinkAction):
+    name = "update-metadata"
+    verbose_name = _("Update Metadata")
+    url = constants.AGGREGATES_UPDATE_METADATA_URL
+    classes = ("ajax-modal",)
+    icon = "pencil"
 
 
 class UpdateAggregateAction(tables.LinkAction):
@@ -68,7 +90,7 @@ class AvailabilityZoneFilterAction(tables.FilterAction):
         q = filter_string.lower()
 
         def comp(availabilityZone):
-            return q in availabilityZone.name.lower()
+            return q in availabilityZone.zoneName.lower()
 
         return filter(comp, availability_zones)
 
@@ -123,6 +145,7 @@ class HostAggregatesTable(tables.DataTable):
                          DeleteAggregateAction)
         row_actions = (UpdateAggregateAction,
                        ManageHostsAction,
+                       UpdateMetadataAction,
                        DeleteAggregateAction)
 
 
@@ -144,5 +167,5 @@ class AvailabilityZonesTable(tables.DataTable):
     class Meta:
         name = "availability_zones"
         verbose_name = _("Availability Zones")
-        table_actions = (AggregateFilterAction,)
+        table_actions = (AvailabilityZoneFilterAction,)
         multi_select = False

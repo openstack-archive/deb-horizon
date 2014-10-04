@@ -16,8 +16,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf.urls import patterns  # noqa
-from django.conf.urls import url  # noqa
+from django.conf.urls import patterns
+from django.conf.urls import url
 
 from openstack_dashboard.dashboards.project.access_and_security.keypairs \
     import views
@@ -30,4 +30,6 @@ urlpatterns = patterns('',
             name='download'),
     url(r'^(?P<keypair_name>[^/]+)/generate/$', views.GenerateView.as_view(),
             name='generate'),
+    url(r'^(?P<keypair_name>[^/]+)/(?P<optional>[^/]+)/generate/$',
+            views.GenerateView.as_view(), name='generate'),
 )
