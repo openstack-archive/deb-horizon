@@ -1,0 +1,128 @@
+Description: Remove selenium dependency when not using selenium tests
+Author: Gary W. Smith <gary.w.smith@hp.com>
+Date: Wed, 8 Oct 2014 00:24:08 +0000 (-0700)
+X-Git-Url: https://review.openstack.org/gitweb?p=openstack%2Fhorizon.git;a=commitdiff_plain;h=83fd6a7631a6a3ea6adbebca725a5f19c2c1796c
+Bug-Ubuntu: https://launchpad.net/bugs/1377372
+Change-Id: I6a493989d7280eaa2a1c999a9d1be4365aa77d52
+Origin: upstream, https://review.openstack.org/#/c/126777/
+Last-Update: 2014-10-08
+
+diff --git a/horizon/test/webdriver.py b/horizon/test/webdriver.py
+index 0974e91..7b832c8 100644
+--- a/horizon/test/webdriver.py
++++ b/horizon/test/webdriver.py
+@@ -17,62 +17,70 @@
+ #   limitations under the License.
+ #
+ 
++import os
+ import platform
+ import shutil
+ import subprocess
+ 
+-from selenium.common import exceptions as selenium_exceptions
+-from selenium.webdriver import firefox
++from django.utils import unittest
+ 
++with_sel = os.environ.get('WITH_SELENIUM', False)
++if with_sel:
++    from selenium.common import exceptions as selenium_exceptions
++    from selenium.webdriver import firefox
+ 
+-class FirefoxBinary(firefox.firefox_binary.FirefoxBinary):
+-    """Workarounds selenium firefox issues.
++    @unittest.skipUnless(os.environ.get('WITH_SELENIUM', False),
++                        "The WITH_SELENIUM env variable is not set.")
++    class FirefoxBinary(firefox.firefox_binary.FirefoxBinary):
++        """Workarounds selenium firefox issues.
+ 
+-    There is race condition in the way firefox is spawned. The exact cause
+-    hasn't been properly diagnosed yet but it's around:
++        There is race condition in the way firefox is spawned. The exact cause
++        hasn't been properly diagnosed yet but it's around:
+ 
+-    - getting a free port from the OS with selenium.webdriver.common.utils
+-      free_port(),
++        - getting a free port from the OS with selenium.webdriver.common.utils
++        free_port(),
+ 
+-    - release the port immediately but record it in ff prefs so that ff can
+-      listen on that port for the internal http server.
++        - release the port immediately but record it in ff prefs so that ff can
++        listen on that port for the internal http server.
+ 
+-    It has been observed that this leads to hanging processes for 'firefox
+-    -silent'.
+-    """
++        It has been observed that this leads to hanging processes for 'firefox
++        -silent'.
++        """
+ 
+-    def _start_from_profile_path(self, path):
+-        self._firefox_env["XRE_PROFILE_PATH"] = path
++        def _start_from_profile_path(self, path):
++            self._firefox_env["XRE_PROFILE_PATH"] = path
+ 
+-        if platform.system().lower() == 'linux':
+-            self._modify_link_library_path()
+-        command = [self._start_cmd, "-silent"]
+-        if self.command_line is not None:
+-            for cli in self.command_line:
+-                command.append(cli)
++            if platform.system().lower() == 'linux':
++                self._modify_link_library_path()
++            command = [self._start_cmd, "-silent"]
++            if self.command_line is not None:
++                for cli in self.command_line:
++                    command.append(cli)
+ 
+-# The following exists upstream and is known to create hanging firefoxes,
+-# leading to zombies.
+-#        subprocess.Popen(command, stdout=self._log_file,
+-#              stderr=subprocess.STDOUT,
+-#              env=self._firefox_env).communicate()
+-        command[1] = '-foreground'
+-        self.process = subprocess.Popen(
+-            command, stdout=self._log_file, stderr=subprocess.STDOUT,
+-            env=self._firefox_env)
++    # The following exists upstream and is known to create hanging firefoxes,
++    # leading to zombies.
++    #        subprocess.Popen(command, stdout=self._log_file,
++    #              stderr=subprocess.STDOUT,
++    #              env=self._firefox_env).communicate()
++            command[1] = '-foreground'
++            self.process = subprocess.Popen(
++                command, stdout=self._log_file, stderr=subprocess.STDOUT,
++                env=self._firefox_env)
+ 
++    @unittest.skipUnless(os.environ.get('WITH_SELENIUM', False),
++                        "The WITH_SELENIUM env variable is not set.")
++    class WebDriver(firefox.webdriver.WebDriver):
++        """Workarounds selenium firefox issues."""
+ 
+-class WebDriver(firefox.webdriver.WebDriver):
+-    """Workarounds selenium firefox issues."""
+-
+-    def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
+-                 capabilities=None, proxy=None):
+-        try:
+-            super(WebDriver, self).__init__(
+-                firefox_profile, FirefoxBinary(), timeout, capabilities, proxy)
+-        except selenium_exceptions.WebDriverException:
+-            # If we can't start, cleanup profile
+-            shutil.rmtree(self.profile.path)
+-            if self.profile.tempfolder is not None:
+-                shutil.rmtree(self.profile.tempfolder)
+-            raise
++        def __init__(self, firefox_profile=None, firefox_binary=None,
++                    timeout=30, capabilities=None, proxy=None):
++            try:
++                super(WebDriver, self).__init__(
++                    firefox_profile, FirefoxBinary(), timeout, capabilities,
++                    proxy)
++            except selenium_exceptions.WebDriverException:
++                # If we can't start, cleanup profile
++                shutil.rmtree(self.profile.path)
++                if self.profile.tempfolder is not None:
++                    shutil.rmtree(self.profile.tempfolder)
++                raise
