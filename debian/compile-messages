@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+set -x
+
+CURDIR=`pwd`
+cd horizon
+${CURDIR}/manage.py compilemessages
+cd ..
+cd openstack_dashboard
+${CURDIR}/manage.py compilemessages
+cd ..
+rm -vf horizon/locale/en/LC_MESSAGES/django*.mo
+rm -vf openstack_dashboard/locale/en/LC_MESSAGES/django.mo
