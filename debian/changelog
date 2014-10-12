@@ -1,5 +1,8 @@
-horizon (2014.2~rc1-2) experimental; urgency=medium
+horizon (2014.2~rc2-1) experimental; urgency=medium
 
+  * New upstream release.
+  * New debian/compile-messages to build the .mo files which were removed
+    upstream.
   * Mangling upstream rc and beta versions in watch file.
   * Fixed bootstrap-datepicker (build-)depends.
   * Adds Remove_selenium_dependency_when_not_using_selenium_tests.patch.
