@@ -1,8 +1,9 @@
-horizon (2014.1.3-2) UNRELEASED; urgency=medium
+horizon (2014.1.3-3) unstable; urgency=medium
 
   * Mangling upstream rc and beta versions in watch file.
+  * Added patch to fix wrong WSGI application with Django 1.7.
 
- -- Thomas Goirand <zigo@debian.org>  Sun, 05 Oct 2014 14:33:48 +0800
+ -- Thomas Goirand <zigo@debian.org>  Thu, 16 Oct 2014 16:43:58 +0000
 
 horizon (2014.1.3-1) unstable; urgency=medium
 
