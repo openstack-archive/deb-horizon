@@ -3,3 +3,4 @@ fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 disable-failed-django-1.7-test.patch
 Remove_selenium_dependency_when_not_using_selenium_tests.patch
+Update_WSGI_app_creation_to_be_compatible_with_Django_1.7.patch
