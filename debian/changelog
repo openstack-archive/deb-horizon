@@ -1,3 +1,9 @@
+horizon (2014.2-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 16 Oct 2014 14:56:33 +0000
+
 horizon (2014.2~rc2-1) experimental; urgency=medium
 
   * New upstream release.
