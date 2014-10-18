@@ -8,13 +8,14 @@ Origin: upstream, https://review.openstack.org/#/c/126777/
 Last-Update: 2014-10-08
 
 diff --git a/horizon/test/webdriver.py b/horizon/test/webdriver.py
-index 0974e91..7b832c8 100644
+index 0974e91..8750c9d 100644
 --- a/horizon/test/webdriver.py
 +++ b/horizon/test/webdriver.py
-@@ -17,62 +17,70 @@
+@@ -17,62 +17,79 @@
  #   limitations under the License.
  #
  
++import logging
 +import os
  import platform
  import shutil
@@ -22,17 +23,20 @@ index 0974e91..7b832c8 100644
  
 -from selenium.common import exceptions as selenium_exceptions
 -from selenium.webdriver import firefox
-+from django.utils import unittest
++LOG = logging.getLogger(__name__)
  
-+with_sel = os.environ.get('WITH_SELENIUM', False)
-+if with_sel:
++try:
++    # NOTE: Several distribution can't ship selenium due to its
++    # non-free license. So they have to patch it out of test-requirements.txt
++    # Avoid import failure and force not running selenium tests.
++    # The entire file is encapsulated in the try block because the classes
++    # inherit from the firefox class contained in selenium.webdriver, and
++    # python will throw a NameError if the import is skipped.
 +    from selenium.common import exceptions as selenium_exceptions
 +    from selenium.webdriver import firefox
  
 -class FirefoxBinary(firefox.firefox_binary.FirefoxBinary):
 -    """Workarounds selenium firefox issues.
-+    @unittest.skipUnless(os.environ.get('WITH_SELENIUM', False),
-+                        "The WITH_SELENIUM env variable is not set.")
 +    class FirefoxBinary(firefox.firefox_binary.FirefoxBinary):
 +        """Workarounds selenium firefox issues.
  
@@ -95,14 +99,24 @@ index 0974e91..7b832c8 100644
 +                command, stdout=self._log_file, stderr=subprocess.STDOUT,
 +                env=self._firefox_env)
  
-+    @unittest.skipUnless(os.environ.get('WITH_SELENIUM', False),
-+                        "The WITH_SELENIUM env variable is not set.")
 +    class WebDriver(firefox.webdriver.WebDriver):
 +        """Workarounds selenium firefox issues."""
  
 -class WebDriver(firefox.webdriver.WebDriver):
 -    """Workarounds selenium firefox issues."""
--
++        def __init__(self, firefox_profile=None, firefox_binary=None,
++                     timeout=30, capabilities=None, proxy=None):
++            try:
++                super(WebDriver, self).__init__(
++                    firefox_profile, FirefoxBinary(), timeout, capabilities,
++                    proxy)
++            except selenium_exceptions.WebDriverException:
++                # If we can't start, cleanup profile
++                shutil.rmtree(self.profile.path)
++                if self.profile.tempfolder is not None:
++                    shutil.rmtree(self.profile.tempfolder)
++                raise
+ 
 -    def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
 -                 capabilities=None, proxy=None):
 -        try:
@@ -114,15 +128,9 @@ index 0974e91..7b832c8 100644
 -            if self.profile.tempfolder is not None:
 -                shutil.rmtree(self.profile.tempfolder)
 -            raise
-+        def __init__(self, firefox_profile=None, firefox_binary=None,
-+                    timeout=30, capabilities=None, proxy=None):
-+            try:
-+                super(WebDriver, self).__init__(
-+                    firefox_profile, FirefoxBinary(), timeout, capabilities,
-+                    proxy)
-+            except selenium_exceptions.WebDriverException:
-+                # If we can't start, cleanup profile
-+                shutil.rmtree(self.profile.path)
-+                if self.profile.tempfolder is not None:
-+                    shutil.rmtree(self.profile.tempfolder)
-+                raise
++except ImportError as e:
++    # NOTE(saschpe): Several distribution can't ship selenium due to its
++    # non-free license. So they have to patch it out of test-requirements.txt
++    # Avoid import failure and force not running selenium tests.
++    LOG.warning("{0}, force WITH_SELENIUM=False".format(str(e)))
++    os.environ['WITH_SELENIUM'] = ''
