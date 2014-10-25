@@ -1,0 +1,60 @@
+# Dutch translation of horizon debconf templates.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the horizon package.
+# Frans Spiesschaert <Frans.Spiesschaert@yucom.be>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: horizon\n"
+"Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
+"POT-Creation-Date: 2014-03-07 10:34+0100\n"
+"PO-Revision-Date: 2014-10-08 23:05+0200\n"
+"Last-Translator: Frans Spiesschaert <Frans.Spiesschaert@yucom.be>\n"
+"Language-Team: Dutch <debian-l10n-dutch@lists.debian.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid "Activate Dashboard and disable default VirtualHost?"
+msgstr "Dashboard activeren en de standaard VirtualHost uitzetten?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"The Apache package sets up a default web site and a default page, configured "
+"in /etc/apache2/sites-available/default."
+msgstr ""
+"Het pakket Apache zet een standaardwebsite en een standaardpagina op in /etc/"
+"apache2/sites-available/default."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"Choose this option to replace that default with the OpenStack Dashboard "
+"configuration."
+msgstr ""
+"Kies deze optie om die standaard te vervangen door de configuratie van "
+"OpenStack Dashboard."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid "Should the Dashboard use HTTPS?"
+msgstr "Moet Dashboard gebruik maken van HTTPS?"
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:3001
+msgid ""
+"Select this option if you would like Horizon to be served over HTTPS only, "
+"with a redirection to HTTPS if HTTP is in use."
+msgstr ""
+"Kies deze optie indien u wenst dat Horizon enkel over HTTPS bediend wordt, "
+"met een omlegging naar HTTPS als HTTP gebruikt wordt."
