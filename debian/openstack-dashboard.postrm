@@ -5,6 +5,7 @@ set -e
 if [ "${1}" = "purge" ] ; then
 	rm -rf /var/lib/openstack-dashboard
 	rm -rf /var/lib/horizon
+	rm -rf /usr/share/openstack-dashboard
 fi
 
 #DEBHELPER#
