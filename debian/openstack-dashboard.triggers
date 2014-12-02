@@ -1,3 +1,5 @@
+interest /usr/lib/python2.7/dist-packages/xstatic/pkg/bootstrap_scss/data
+interest /usr/lib/python2.7/dist-packages/xstatic/pkg/jasmine/data
 interest /usr/share/javascript/angular.js
 interest /usr/share/javascript/d3
 interest /usr/share/javascript/jquery
