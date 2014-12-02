@@ -1,3 +1,9 @@
+horizon (2014.2-2) experimental; urgency=medium
+
+  * Added a trigger thing when a javascript lib is updated.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 02 Dec 2014 19:03:08 +0800
+
 horizon (2014.2-1) experimental; urgency=medium
 
   * New upstream release.

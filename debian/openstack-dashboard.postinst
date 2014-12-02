@@ -20,7 +20,10 @@ if [ "$1" = "configure" ] ; then
 	/usr/share/openstack-dashboard/manage.py compress --force
 	rm /var/lib/openstack-dashboard/secret-key/.secret_key_store
 	chown -R www-data /var/lib/openstack-dashboard/secret-key
+fi
 
+if [ "$1" = "triggered" ] ; then
+	/usr/share/openstack-dashboard/manage.py compress --force
 fi
 
 #DEBHELPER#
