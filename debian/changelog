@@ -1,6 +1,8 @@
 horizon (2014.2.1-1) experimental; urgency=medium
 
   * New upstream release.
+  * Removed Update_WSGI_app_creation_to_be_compatible_with_Django_1.7.patch
+    applied upstream.
 
  -- Thomas Goirand <zigo@debian.org>  Sun, 14 Dec 2014 11:44:10 +0000
 
