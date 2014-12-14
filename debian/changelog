@@ -1,3 +1,9 @@
+horizon (2014.2.1-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Sun, 14 Dec 2014 11:44:10 +0000
+
 horizon (2014.2-3) experimental; urgency=medium
 
   * CVE-2014-8124: Horizon denial of service attack through login page. Applied
