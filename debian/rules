@@ -9,6 +9,8 @@ export OSLO_PACKAGE_VERSION=$(VERSION)
 	dh $@ --with python2
 
 override_dh_auto_install:
+	# Note: upstream advises to use "python setup.py compile_catalog"
+	# maybe we should do that next time.
 	chmod +x debian/compile-messages
 	$(CURDIR)/debian/compile-messages
 
