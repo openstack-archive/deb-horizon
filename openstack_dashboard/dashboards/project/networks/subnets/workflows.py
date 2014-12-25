@@ -38,7 +38,7 @@ class CreateSubnetInfoAction(network_workflows.CreateSubnetInfoAction):
         name = _("Subnet")
         help_text = _('Create a subnet associated with the network. '
                       'Advanced configuration is available by clicking on the '
-                      '"Subnet Detail" tab.')
+                      '"Subnet Details" tab.')
 
     def clean(self):
         cleaned_data = workflows.Action.clean(self)
@@ -79,14 +79,14 @@ class CreateSubnet(network_workflows.CreateNetwork):
 
 class UpdateSubnetInfoAction(CreateSubnetInfoAction):
     cidr = forms.IPField(label=_("Network Address"),
-                          required=False,
-                          initial="",
-                          widget=forms.TextInput(
-                              attrs={'readonly': 'readonly'}),
-                          help_text=_("Network address in CIDR format "
-                                      "(e.g. 192.168.0.0/24)"),
-                          version=forms.IPv4 | forms.IPv6,
-                          mask=True)
+                         required=False,
+                         initial="",
+                         widget=forms.TextInput(
+                             attrs={'readonly': 'readonly'}),
+                         help_text=_("Network address in CIDR format "
+                                     "(e.g. 192.168.0.0/24)"),
+                         version=forms.IPv4 | forms.IPv6,
+                         mask=True)
     # NOTE(amotoki): When 'disabled' attribute is set for the ChoiceField
     # and ValidationError is raised for POST request, the initial value of
     # the ip_version ChoiceField is not set in the re-displayed form
@@ -116,7 +116,7 @@ class UpdateSubnetInfoAction(CreateSubnetInfoAction):
         name = _("Subnet")
         help_text = _('Update a subnet associated with the network. '
                       'Advanced configuration are available at '
-                      '"Subnet Detail" tab.')
+                      '"Subnet Details" tab.')
 
     def clean(self):
         cleaned_data = workflows.Action.clean(self)
@@ -147,7 +147,7 @@ class UpdateSubnetDetailAction(network_workflows.CreateSubnetDetailAction):
         self.fields['ipv6_modes'].required = False
 
     class Meta:
-        name = _("Subnet Detail")
+        name = _("Subnet Details")
         help_text = _('Specify additional attributes for the subnet.')
 
 

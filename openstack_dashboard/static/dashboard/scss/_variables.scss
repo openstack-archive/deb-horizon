@@ -1,32 +1,18 @@
-/* Horizon Variables */
+@import "/bootstrap/scss/bootstrap/variables";
 
-$gray-darker: #222222;
-$gray-dark: #333333;
-$gray: #555555;
+/* Bootstrap variables overrides */
+
+$icon-font-path: "../../bootstrap/fonts/bootstrap/";
+$font-size-base: 13px;
+$modal-md: 732px;
 $gray-light: #cccccc;
-$gray-lighter: #eeeeee;
 
-$brand-primary: #428bca;
-$brand-success: #5cb85c;
-$brand-info: #5bc0de;
-$brand-warning: #f0ad4e;
-$brand-danger: #d9534f;
+/* Horizon Custom Variables */
 
-$body-bg: #ffffff;
-
-$text-color: $gray-dark;
-
-$link-color: $brand-primary;
-$link-hover-color: darken($link-color, 15%);
-
+$sidebar-background-color: #f9f9f9;
+$sidebar-width: 220px;
 $border-color: #dddddd;
-
-$headings-color: $gray-dark;
-
-$table-border-color: $border-color;
-$table-bg-hover: #f5f5f5;
 $table-bg-odd: #f9f9f9;
-
 
 /* Workflows */
 
@@ -67,3 +53,6 @@ $rbrowser-header-background-color: $gray-lighter;
 $rbrowser-footer-background-color: #f1f1f1;
 // Note: the content-wrapper background colors are determined by
 //       .table-striped-datatable styles.
+
+// Font-awesome path to the icon fonts
+$fa-font-path: "/static/horizon/lib/font-awesome/fonts";

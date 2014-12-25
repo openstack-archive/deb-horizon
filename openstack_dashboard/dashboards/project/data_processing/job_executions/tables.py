@@ -14,10 +14,14 @@
 import logging
 
 from django.core.urlresolvers import reverse
+from django.http import Http404  # noqa
 from django.utils import http
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
+from saharaclient.api import base as api_base
+
+from horizon import messages
 from horizon import tables
 
 from openstack_dashboard.api import sahara as saharaclient
@@ -27,27 +31,24 @@ from openstack_dashboard.dashboards.project.data_processing. \
 LOG = logging.getLogger(__name__)
 
 
-class DeleteJobExecution(tables.BatchAction):
+class DeleteJobExecution(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete Job execution",
-            u"Delete Job executions",
+            u"Delete Job Execution",
+            u"Delete Job Executions",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Deleted Job execution",
-            u"Deleted Job executions",
+            u"Deleted Job Execution",
+            u"Deleted Job Executions",
             count
         )
 
-    name = "delete"
-    classes = ('btn-danger', 'btn-terminate')
-
-    def action(self, request, obj_id):
+    def delete(self, request, obj_id):
         saharaclient.job_execution_delete(request, obj_id)
 
 
@@ -107,9 +108,13 @@ class UpdateRow(tables.Row):
     ajax = True
 
     def get_data(self, request, job_execution_id):
-        job_execution = saharaclient.job_execution_get(request,
-                                                       job_execution_id)
-        return job_execution
+        try:
+            return saharaclient.job_execution_get(request, job_execution_id)
+        except api_base.APIException as e:
+            if e.error_code == 404:
+                raise Http404
+            else:
+                messages.error(request, _("Unable to update row"))
 
 
 def get_job_link(job_execution):
@@ -135,9 +140,10 @@ class JobExecutionsTable(tables.DataTable):
     )
 
     name = tables.Column("id",
-        verbose_name=_("ID"),
-        display_choices=(("id", "ID"), ("name", "Name")),
-        link=("horizon:project:data_processing.job_executions:details"))
+                         verbose_name=_("ID"),
+                         display_choices=(("id", "ID"), ("name", "Name")),
+                         link=("horizon:project:data_processing."
+                               "job_executions:details"))
     job_name = tables.Column(
         "job_name",
         verbose_name=_("Job"),
@@ -147,9 +153,9 @@ class JobExecutionsTable(tables.DataTable):
         verbose_name=_("Cluster"),
         link=get_cluster_link)
     status = StatusColumn("info",
-        status=True,
-        status_choices=STATUS_CHOICES,
-        verbose_name=_("Status"))
+                          status=True,
+                          status_choices=STATUS_CHOICES,
+                          verbose_name=_("Status"))
 
     def get_object_display(self, datum):
         return datum.id

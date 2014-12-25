@@ -4,18 +4,14 @@
 # 
 # Translators:
 # Andreas Jaeger <jaegerandi@gmail.com>, 2014
-# Carsten Duch <cad@teuto.net>, 2014
-# Christian Berendt <berendt@b1-systems.de>, 2014
-# Ettore Atalan <atalanttore@googlemail.com>, 2014
-# Robert Simai, 2014
 # Robert Simai, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-05 14:55+0000\n"
-"PO-Revision-Date: 2014-10-06 16:01+0000\n"
-"Last-Translator: Robert Simai\n"
+"POT-Creation-Date: 2014-12-03 20:48-0600\n"
+"PO-Revision-Date: 2014-12-04 03:01+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/horizon/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +19,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base.py:454
+#: base.py:483 templates/horizon/common/_modal_form_update_metadata.html:38
 msgid "Other"
 msgstr "Andere"
 
@@ -61,7 +57,7 @@ msgstr "Navigations-Eintrag"
 #: browsers/views.py:41
 #, python-format
 msgid "Select a %s to browse."
-msgstr "Wählen Sie %s zum Durchsuchen."
+msgstr "Wähle %s zum Durchsuchen."
 
 #: conf/default.py:41
 msgid "Password is not accepted"
@@ -79,12 +75,12 @@ msgstr "Ungültige Version der IP-Adresse"
 msgid "Invalid subnet mask"
 msgstr "Ungültige Subnetzmaske"
 
-#: forms/views.py:81 templates/horizon/common/_usage_summary.html:16
+#: forms/views.py:102 templates/horizon/common/_usage_summary.html:16
 msgid "Submit"
 msgstr "Abschicken"
 
-#: forms/views.py:82
-#: templates/horizon/common/_modal_form_update_metadata.html:239
+#: forms/views.py:103
+#: templates/horizon/common/_modal_form_update_metadata.html:236
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -92,78 +88,84 @@ msgstr "Abbrechen"
 #: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:16
 #: templates/horizon/common/_data_table_table_actions.html:26
+#: templates/horizon/common/_modal_form_update_metadata.html:28
+#: templates/horizon/common/_modal_form_update_metadata.html:98
 #: templates/horizon/common/_workflow_step_update_members.html:12
 #: templates/horizon/common/_workflow_step_update_members.html:21
 msgid "Filter"
 msgstr "Filter"
 
-#: tables/actions.py:756
+#: tables/actions.py:758
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:758
+#: tables/actions.py:760
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:786 tables/base.py:1537
+#: tables/actions.py:794 tables/base.py:1565
 msgid "N/A"
 msgstr "Nicht verfügbar"
 
-#: tables/actions.py:815
+#: tables/actions.py:823
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "Sie haben keine Berechtigung für %(action)s: %(objs)s"
 
-#: tables/actions.py:822
+#: tables/actions.py:830
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "Außerstande zu %(action)s: %(objs)s"
 
-#: tables/actions.py:828
+#: tables/actions.py:836
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:898
+#: tables/actions.py:906
 msgid "Delete"
 msgstr "Löschen"
 
-#: tables/actions.py:900
+#: tables/actions.py:908
 msgid "Deleted"
 msgstr "Gelöscht"
 
-#: tables/actions.py:931
+#: tables/actions.py:939
 msgid "Update"
 msgstr "Aktualisieren"
 
-#: tables/actions.py:932
+#: tables/actions.py:940
 msgid "Updated"
 msgstr "Aktualisiert"
 
-#: tables/base.py:355
+#: tables/base.py:305
+msgid "-"
+msgstr "-"
+
+#: tables/base.py:361
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "Das Attribut %(attr)s existiert nicht für %(obj)s."
 
-#: tables/base.py:967
+#: tables/base.py:985
 msgid "No items to display."
 msgstr "Kein Eintrag zum anzeigen."
 
-#: tables/base.py:1074
+#: tables/base.py:1094
 #: templates/horizon/common/_data_table_table_actions.html:40
 msgid "Actions"
 msgstr "Aktionen"
 
-#: tables/base.py:1302
+#: tables/base.py:1324
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "Keine Übereinstimmung für die ID \"%s\"."
 
-#: tables/base.py:1453
+#: tables/base.py:1481
 msgid "Please select a row before taking that action."
 msgstr "Bitte wählen Sie vor dem Ausführen dieser Aktion eine Zeile aus."
 
@@ -219,22 +221,22 @@ msgstr "Erfolg:"
 msgid "Error: "
 msgstr "Fehler:"
 
-#: templates/horizon/common/_data_table.html:54
+#: templates/horizon/common/_data_table.html:63
 msgid "Summary"
 msgstr "Zusammenfassung"
 
-#: templates/horizon/common/_data_table.html:63
+#: templates/horizon/common/_data_table.html:72
 #, python-format
 msgid "Displaying %(counter)s item"
 msgid_plural "Displaying %(counter)s items"
-msgstr[0] "Zeige %(counter)s Eintrag an."
-msgstr[1] "Zeige %(counter)s Einträge an."
+msgstr[0] "Zeige %(counter)s Eintrag"
+msgstr[1] "Zeige %(counter)s Einträge"
 
-#: templates/horizon/common/_data_table.html:68
+#: templates/horizon/common/_data_table.html:77
 msgid "&laquo;&nbsp;Prev"
 msgstr "&laquo;&nbsp;Zurück"
 
-#: templates/horizon/common/_data_table.html:71
+#: templates/horizon/common/_data_table.html:80
 msgid "Next&nbsp;&raquo;"
 msgstr "Weiter&nbsp;&raquo;"
 
@@ -242,9 +244,19 @@ msgstr "Weiter&nbsp;&raquo;"
 msgid "More Actions"
 msgstr "Weitere Aktionen"
 
+#: templates/horizon/common/_domain_page_header.html:6
+#, python-format
+msgid "%(context_name)s:"
+msgstr "%(context_name)s:"
+
 #: templates/horizon/common/_formset_table.html:35
 msgid "Add a row"
 msgstr "Eine Zeile hinzufügen"
+
+#: templates/horizon/common/_formset_table_row.html:15
+#, python-format
+msgid "%(name)s: %(error)s"
+msgstr "%(name)s: %(error)s"
 
 #: templates/horizon/common/_limit_summary.html:4
 msgid "Limit Summary"
@@ -297,7 +309,7 @@ msgid ""
 "        dictionary or you can use the \"Other\" option using a key of\n"
 "        your choice.\n"
 "      "
-msgstr "\nSie können Metadaten angeben, in dem Sie Einträge von der linken Spalte zur rechten Spalte hinzufügen. Sie können wählen, ob Sie die Metadaten zum Glance Verzeichnis hinzufügen wollen oder Sie wählen die Option \"Andere\" und benutzen eine Bezeichnung Ihrer Wahl."
+msgstr "\nSie können Metadaten angeben in dem Sie Einträge von der linken Spalten zur rechten Spalte hinzufügen. Sie können wählen, ob Sie die Metadaten zum Glance Verzeichnis hinzufügen wollen oder Sie wählen die Option \"Other\" und benutzen eine Bezeichnung Ihrer Wahl."
 
 #: templates/horizon/common/_modal_form_update_metadata.html:26
 msgid "Available Metadata"
@@ -307,20 +319,16 @@ msgstr "Verfügbare Metadaten"
 msgid "Duplicate keys are not allowed"
 msgstr "Doppelte Schlüssel sind nicht erlaubt"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:59
-msgid "Invalid key name"
-msgstr "Ungültiger Schlüsselname"
+#: templates/horizon/common/_modal_form_update_metadata.html:85
+#: templates/horizon/common/_modal_form_update_metadata.html:197
+msgid "No available metadata"
+msgstr "Keine Metadaten vorhanden"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:88
-#: templates/horizon/common/_modal_form_update_metadata.html:200
-msgid "No existing metadata"
-msgstr "Keine existierenden Metadaten"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:99
+#: templates/horizon/common/_modal_form_update_metadata.html:96
 msgid "Existing Metadata"
 msgstr "Existierende Metadaten"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:216
+#: templates/horizon/common/_modal_form_update_metadata.html:213
 msgid ""
 "\n"
 "          You can specify resource metadata by moving items from the left\n"
@@ -328,9 +336,9 @@ msgid ""
 "          definitions from the Glance Metadata Catalog. Use the \"Other\" option\n"
 "          to add metadata with the key of your choice.\n"
 "        "
-msgstr "\nSie können Ressource-Metadaten angeben, in dem Sie Einträge von der linken Spalte zur rechten Spalte verschieben. In der linken Spalte sind Metadatenangaben aus dem Glance Metadaten Katalog. Wählen Sie die Option \"Other\" um eine Bezeichnung Ihrer Wahl zu benutzen."
+msgstr "\nSie können Ressource-Metadaten angeben in dem Sie Einträge von der linken Spalten zur rechten Spalte verschieben. In der linken Spalte sind Metadatenangaben aus dem Glance Metadaten Katalog. Wählen Sie die Option \"Other\" um eine Bezeichnung Ihrer Wahl zu benutzen."
 
-#: templates/horizon/common/_modal_form_update_metadata.html:238
+#: templates/horizon/common/_modal_form_update_metadata.html:235
 #: workflows/base.py:594
 msgid "Save"
 msgstr "Speichern"
@@ -339,23 +347,23 @@ msgstr "Speichern"
 #, python-format
 msgid "Displaying %(nav_items)s item"
 msgid_plural "Displaying %(nav_items)s items"
-msgstr[0] "Zeige %(nav_items)s Eintrag an."
-msgstr[1] "Zeige %(nav_items)s Einträge an."
+msgstr[0] "Zeige %(nav_items)s Eintrag"
+msgstr[1] "Zeige %(nav_items)s Einträge"
 
 #: templates/horizon/common/_resource_browser.html:11
 #, python-format
 msgid "Displaying %(content_items)s item"
 msgid_plural "Displaying %(content_items)s items"
-msgstr[0] "Zeige %(content_items)s Eintrag an."
-msgstr[1] "Zeige %(content_items)s Einträge an."
+msgstr[0] "Zeige %(content_items)s Eintrag"
+msgstr[1] "Zeige %(content_items)s Einträge"
 
 #: templates/horizon/common/_usage_summary.html:3
 msgid "Usage Summary"
 msgstr "Nutzungsübersicht"
 
 #: templates/horizon/common/_usage_summary.html:7
-msgid "Select a period of time to query its usage"
-msgstr "Wählen Sie einen Zeitbereich um die Verwendung abzufragen"
+msgid "Select a period of time to query its usage:"
+msgstr "Wählen Sie einen Zeitbereich, um die Auslastung abzurufen:"
 
 #: templates/horizon/common/_usage_summary.html:9
 #, python-format
@@ -376,20 +384,20 @@ msgid "The date should be in YYYY-mm-dd format."
 msgstr "Das Datum sollte im YYYY-mm-dd Format sein."
 
 #: templates/horizon/common/_usage_summary.html:20
-msgid "Active Instances"
-msgstr "Aktive Instanzen"
+msgid "Active Instances:"
+msgstr "Aktive Instanzen:"
 
 #: templates/horizon/common/_usage_summary.html:21
-msgid "Active RAM"
-msgstr "Aktives RAM"
+msgid "Active RAM:"
+msgstr "Aktiver RAM:"
 
 #: templates/horizon/common/_usage_summary.html:22
-msgid "This Period's VCPU-Hours"
-msgstr "VCPU-Stunden in diesem Zeitbereich"
+msgid "This Period's VCPU-Hours:"
+msgstr "VCPU-Stunden in diesem Zeitraum:"
 
 #: templates/horizon/common/_usage_summary.html:23
-msgid "This Period's GB-Hours"
-msgstr "GB-Stunden in diesem Zeitraum"
+msgid "This Period's GB-Hours:"
+msgstr "GB-Stunden in diesem Zeitraum:"
 
 #: templates/horizon/common/_workflow.html:40
 msgid "Back"
@@ -403,11 +411,11 @@ msgstr "Weiter"
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:130 templatetags/horizon.py:141
+#: templatetags/horizon.py:133 templatetags/horizon.py:144
 msgid "No Limit"
 msgstr "Kein Limit"
 
-#: templatetags/horizon.py:133 templatetags/horizon.py:135
+#: templatetags/horizon.py:136 templatetags/horizon.py:138
 msgid "Available"
 msgstr "Verfügbar"
 
@@ -441,18 +449,20 @@ msgstr "%s TB"
 #: templatetags/sizeformat.py:68
 #, python-format
 msgid "%s PB"
-msgstr "%s PB"
+msgstr "%s TB"
 
 #: templatetags/sizeformat.py:77
-msgid "0 bytes"
+msgid "0 Bytes"
 msgstr "0 Bytes"
 
+#. Translators: test code, don't really have to translate
 #: test/test_dashboards/dogs/puppies/tables.py:31
 msgid "Sell Puppy"
 msgid_plural "Sell Puppies"
 msgstr[0] "Sell Puppy"
 msgstr[1] "Sell Puppies"
 
+#. Translators: test code, don't really have to translate
 #: test/test_dashboards/dogs/puppies/tables.py:40
 msgid "Sold Puppy"
 msgid_plural "Sold Puppies"

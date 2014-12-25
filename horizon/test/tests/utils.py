@@ -27,6 +27,7 @@ from horizon.utils.filters import parse_isotime  # noqa
 from horizon.utils import functions
 from horizon.utils import memoized
 from horizon.utils import secret_key
+from horizon.utils import units
 from horizon.utils import validators
 
 
@@ -119,33 +120,33 @@ class ValidatorsTests(test.TestCase):
 
     def test_validate_IPs(self):
         GOOD_IPS_V4 = ("0.0.0.0",
-                      "10.144.11.107",
-                      "169.144.11.107",
-                      "172.100.11.107",
-                      "255.255.255.255",
-                      "0.1.2.3")
+                       "10.144.11.107",
+                       "169.144.11.107",
+                       "172.100.11.107",
+                       "255.255.255.255",
+                       "0.1.2.3")
         GOOD_IPS_V6 = ("",
-                      "::ffff:0:0",
-                      "2001:0db8::1428:57ab",
-                      "FEC0::",
-                      "fe80::204:61ff:254.157.241.86",
-                      "fe80::204:61ff:254.157.241.86",
-                      "2001:0DB8::CD30:0:0:0:0")
+                       "::ffff:0:0",
+                       "2001:0db8::1428:57ab",
+                       "FEC0::",
+                       "fe80::204:61ff:254.157.241.86",
+                       "fe80::204:61ff:254.157.241.86",
+                       "2001:0DB8::CD30:0:0:0:0")
         BAD_IPS_V4 = ("1111:2222:3333:4444:::",
-                     "::2222:3333:4444:5555:6666:7777:8888:",
-                     ":1111:2222:3333:4444::6666:1.2.3.4",
-                     "1111:2222::4444:5555:6666::8888",
-                     "1111:2222::4444:5555:6666:8888/",
-                     "1111:2222::4444:5555:6666::8888/130",
-                     "127.0.0.1/",
-                     "127.0.0.1/33",
-                     "127.0.0.1/-1")
+                      "::2222:3333:4444:5555:6666:7777:8888:",
+                      ":1111:2222:3333:4444::6666:1.2.3.4",
+                      "1111:2222::4444:5555:6666::8888",
+                      "1111:2222::4444:5555:6666:8888/",
+                      "1111:2222::4444:5555:6666::8888/130",
+                      "127.0.0.1/",
+                      "127.0.0.1/33",
+                      "127.0.0.1/-1")
         BAD_IPS_V6 = ("1111:2222:3333:4444:::",
-                     "::2222:3333:4444:5555:6666:7777:8888:",
-                     ":1111:2222:3333:4444::6666:1.2.3.4",
-                     "1111:2222::4444:5555:6666::8888",
-                     "1111:2222::4444:5555:6666:8888/",
-                     "1111:2222::4444:5555:6666::8888/130")
+                      "::2222:3333:4444:5555:6666:7777:8888:",
+                      ":1111:2222:3333:4444::6666:1.2.3.4",
+                      "1111:2222::4444:5555:6666::8888",
+                      "1111:2222::4444:5555:6666:8888/",
+                      "1111:2222::4444:5555:6666::8888/130")
         ipv4 = forms.IPField(required=True, version=forms.IPv4)
         ipv6 = forms.IPField(required=False, version=forms.IPv6)
         ipmixed = forms.IPField(required=False,
@@ -395,3 +396,63 @@ class GetPageSizeTests(test.TestCase):
         self.assertRaises(ValueError,
                           functions.get_page_size,
                           request, default)
+
+
+class UnitsTests(test.TestCase):
+    def test_is_supported(self):
+        self.assertTrue(units.is_supported('MB'))
+        self.assertTrue(units.is_supported('min'))
+        self.assertFalse(units.is_supported('KWh'))
+        self.assertFalse(units.is_supported('unknown_unit'))
+
+    def test_is_larger(self):
+        self.assertTrue(units.is_larger('KB', 'B'))
+        self.assertTrue(units.is_larger('MB', 'B'))
+        self.assertTrue(units.is_larger('GB', 'B'))
+        self.assertTrue(units.is_larger('TB', 'B'))
+        self.assertTrue(units.is_larger('GB', 'MB'))
+        self.assertFalse(units.is_larger('B', 'KB'))
+        self.assertFalse(units.is_larger('MB', 'GB'))
+
+        self.assertTrue(units.is_larger('min', 's'))
+        self.assertTrue(units.is_larger('hr', 'min'))
+        self.assertTrue(units.is_larger('hr', 's'))
+        self.assertFalse(units.is_larger('s', 'min'))
+
+    def test_convert(self):
+        self.assertEqual(units.convert(4096, 'MB', 'GB'), (4, 'GB'))
+        self.assertEqual(units.convert(4, 'GB', 'MB'), (4096, 'MB'))
+
+        self.assertEqual(units.convert(1.5, 'hr', 'min'), (90, 'min'))
+        self.assertEqual(units.convert(12, 'hr', 'day'), (0.5, 'day'))
+
+    def test_normalize(self):
+        self.assertEqual(units.normalize(1, 'B'), (1, 'B'))
+        self.assertEqual(units.normalize(1000, 'B'), (1000, 'B'))
+        self.assertEqual(units.normalize(1024, 'B'), (1, 'KB'))
+        self.assertEqual(units.normalize(1024 * 1024, 'B'), (1, 'MB'))
+        self.assertEqual(units.normalize(10 * 1024 ** 3, 'B'), (10, 'GB'))
+        self.assertEqual(units.normalize(1000 * 1024 ** 4, 'B'), (1000, 'TB'))
+        self.assertEqual(units.normalize(1024, 'KB'), (1, 'MB'))
+        self.assertEqual(units.normalize(1024 ** 2, 'KB'), (1, 'GB'))
+        self.assertEqual(units.normalize(10 * 1024, 'MB'), (10, 'GB'))
+        self.assertEqual(units.normalize(0.5, 'KB'), (512, 'B'))
+        self.assertEqual(units.normalize(0.0001, 'MB'), (104.9, 'B'))
+
+        self.assertEqual(units.normalize(1, 's'), (1, 's'))
+        self.assertEqual(units.normalize(120, 's'), (2, 'min'))
+        self.assertEqual(units.normalize(3600, 's'), (60, 'min'))
+        self.assertEqual(units.normalize(3600 * 24, 's'), (24, 'hr'))
+        self.assertEqual(units.normalize(10 * 3600 * 24, 's'), (10, 'day'))
+        self.assertEqual(units.normalize(90, 'min'), (90, 'min'))
+        self.assertEqual(units.normalize(150, 'min'), (2.5, 'hr'))
+        self.assertEqual(units.normalize(60 * 24, 'min'), (24, 'hr'))
+        self.assertEqual(units.normalize(0.5, 'day'), (12, 'hr'))
+        self.assertEqual(units.normalize(10800000000000, 'ns'), (3, 'hr'))
+        self.assertEqual(units.normalize(14, 'day'), (2, 'week'))
+        self.assertEqual(units.normalize(91, 'day'), (3, 'month'))
+        self.assertEqual(units.normalize(18, 'month'), (18, 'month'))
+        self.assertEqual(units.normalize(24, 'month'), (2, 'year'))
+
+        self.assertEqual(units.normalize(1, 'unknown_unit'),
+                         (1, 'unknown_unit'))

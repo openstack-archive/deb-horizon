@@ -1,16 +1,13 @@
-// bootstrap overrides:
-$icon-font-path: "../../bootstrap/fonts/bootstrap/";
-$font-size-base: 13px;
-$modal-md: 732px;
-
-@import "/bootstrap/scss/bootstrap";
+@import "variables";
+@import "/horizon/lib/font-awesome/scss/font-awesome"; // Configured in _variables.scss.
+@import "/bootstrap/scss/bootstrap"; // Configured in _variables.scss.
 @import "/horizon/lib/bootstrap_datepicker/datepicker.css";
-@import "_variables";
-@import "_accordion_nav";
+@import "accordion_nav";
+@import "inline_edit";
 
 // Components
 @import "components/resource_browser";
-
+@import "components/topbar";
 
 /* new clearfix */
 .clearfix:after {
@@ -46,6 +43,11 @@ $modal-md: 732px;
 
 body {
   background-color: $body-bg;
+  &:not(#splash) {
+    background-image: url('../img/sidebar_bg.png');
+    background-repeat: repeat-y;
+    background-position: -200px top;
+  }
   color: $text-color;
   min-width: 900px;
 }
@@ -85,99 +87,14 @@ dt {
   font-weight: bold;
 }
 
-.topbar {
-  background: $gray-lighter;
-  // How to convert to SCSS?
-  //#gradient > {
-  //  +vertical($body-bg, $gray-lighter);
-  //}
-  border-bottom: 1px solid $gray-light;
-  padding: 10px 0px 15px 0px;
-}
-
-.topbar .switcher_bar {
-  display: inline-block;
-  height: auto;
-  width: 160px;
-  max-width: 160px;
-  background-position: 140px center;
-  margin-bottom: 0;
-  margin-right: 10px;
-  padding: 0;
-  background-image: url(../img/drop_arrow.png);
-  background-color: $gray-lighter;
-  background-repeat: no-repeat;
-  border: 1px solid $gray-light;
-  border-bottom-color: darken($gray-light, 10%);
-  border-radius: 4px;
-  // How to convert to SCSS?
-  // @include box-shadow(inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-  ul#tenant_list a {
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-.topbar .switcher_bar a {
-  margin-left: 0;
-  display: block;
-}
-
-.topbar .switcher_bar ul {
-  width: 130px;
-}
-
-.topbar .switcher_bar div {
-  padding: 2px 10px 1px;
-  line-height: 20px;
-  color: $gray;
-  text-decoration: none;
-  overflow: hidden;
-  padding-right: 32px;
-  text-overflow: ellipsis;
-}
-
-.topbar .context-box {
-  display: inline;
-  @import "_context_selection";
-}
-
-.hide_image {
-  background-image: none !important;
-}
-
-#profile_editor_switcher {
-  width:auto;
-  max-width: 200px;
-  vertical-align: top;
-  white-space: nowrap;
-  background-image: url(../img/profile_drop.png);
-  background-repeat: no-repeat;
-  background-position: right center;
-}
-
-#user_info {
-  margin: auto 10px;
-  padding-bottom: 15px;
-  padding-right: 25px;
-}
-
-#user_info > a {
-  color: $text-color;
-  margin-left: 15px;
-  line-height: 20px;
-  font-size: 13px !important;
-}
-
 .page-header {
   margin: 0 0 5px 0;
-  padding: 0 0 5px 0;
-  border-bottom: 2px solid $headings-color;
+  padding: 10px 0 5px 0;
+  border-bottom: 0;
   font-family: anivers;
   height: auto;
   width: 100%;
-  h2 {
+  h1 {
     margin: 0;
   }
 }
@@ -227,17 +144,17 @@ h2 {
   margin-top: 190px;
 }
 
-.container-fluid {
-  padding-left: 0;
-}
 
 .sidebar {
-  border-width: 0 5px 5px 0;
-  border-color: $border-color;
-  border-style: solid;
-  border-radius: 0 0 5px 0;
-  float: left;
-  min-width: 236px;
+  background-color: $sidebar-background-color;
+  padding-top: 20px;
+  margin-left: -$sidebar-width;
+  left: $sidebar-width;
+  width: $sidebar-width;
+  position: absolute;
+  z-index: 0;
+  -webkit-box-shadow:inset -3px 2px 6px -2px #C7C7C7, inset -1px 0 0 0 #cccccc;
+  box-shadow:inset -3px 2px 6px -2px #C7C7C7, inset -1px 0 0 0 #cccccc;
 }
 
 .sidebar h4 {
@@ -253,24 +170,10 @@ h2 {
   background-color: $body-bg;
 }
 
-h1.brand {
-  width: 100%;
-  margin: 0;
-}
 
-h1.brand a {
-  background: url(../img/logo.png) top left no-repeat;
-  display: block;
-  float: left;
-  width: 216px;
-  height: 35px;
-  text-indent: -9999px;
-  margin-left: 16px;
-}
 
 
 /* Tenant Dropdown */
-
 
 a.current_item {
   width: 163px;
@@ -623,7 +526,11 @@ table form {
 
 .table_actions .table_search,
 .table_actions .table_filter {
-  display: inline-block;
+   display: inline-flex;
+   display: -ms-inline-flexbox;
+   -ms-flex-direction: row;
+   display: -webkit-inline-flex;
+   display: -moz-inline-flex;
 }
 
 .table_search {
@@ -645,7 +552,7 @@ table form {
     a, button {
       margin-left: 0px;
       padding-left: 22px;
-      .glyphicon {
+      .fa {
         margin-left: -14px;
       }
     }
@@ -667,142 +574,12 @@ td.loading {
   background-color: #e6e6e6 !important;
 }
 
-@mixin btn-icon-inline_edit($x, $y, $top: 1px, $left: 5px,
-    $icons: "../../bootstrap/img/glyphicons-halflings.png") {
-  padding: 9px 12px 9px 12px;
-  position: relative;
-  border-radius: 0px;
-
-  &:before {
-    display: inline-block;
-    content: "";
-    width: 18px;
-    height: 20px;
-    margin-top: 0px;
-    *margin-right: .3em;
-    line-height: 14px;
-    background-image: url($icons);
-    background-position: $x $y;
-    background-repeat: no-repeat;
-    position: absolute;
-    top: $top;
-    left: $left;
-  }
-}
-
-td.inline_edit_available div.table_cell_wrapper .table_cell_action button.ajax-inline-edit {
-  @include btn-icon-inline_edit(0, -72px, 2px, 4px);
-  position: relative;
-  display: block;
-  background: none;
-  border: 0 none;
-}
-
-@mixin status-icon($x, $y, $top: 1px, $left: 5px,
-    $icons: "../../bootstrap/img/glyphicons-halflings.png") {
-  padding: 9px 12px 9px 12px;
-  position: relative;
-  border-radius: 0px;
-
-  &:before {
-    display: inline-block;
-    content: "";
-    width: 20px;
-    height: 20px;
-    margin-top: 0px;
-    *margin-right: .3em;
-    line-height: 14px;
-    background-image: url($icons);
-    background-position: $x $y;
-    background-repeat: no-repeat;
-    position: absolute;
-    top: $top;
-    left: $left;
-  }
-}
-
-div.table_cell_wrapper {
-   min-height: 18px;
-   position: relative;
-
-  .inline-edit-label {
-    display: inline;
-  }
-
-  .inline-edit-form {
-    float: left;
-  }
-
-  .inline-edit-actions, .table_cell_action {
-    float: right;
-    width: 20px;
-    margin: 0;
-
-    button.ajax-inline-edit {
-      padding: 10px;
-      position: relative;
-      display: none;
-      background: none;
-      border: 0 none;
-    }
-  }
-
-  .table_cell_action {
-    width: auto;
-
-    margin: auto 0px 0px 0px;
-    display: none;
-    position: absolute;
-    top: -10px;
-    right: 0px;
-    z-index: 99;
-  }
-
-  .inline-edit-error {
-    .error {
-      @include status-icon(-144px, -120px, 0px, 0px);
-      position: absolute;
-      width: 18px;
-      height: 20px;
-
-      top: 20px;
-      left: 2px;
-      padding: 0;
-    }
-  }
-  .inline-edit-status {
-    .success {
-      @include status-icon(-288px, 0px, 0px, 0px);
-      padding: 0;
-      position:absolute;
-      top: 2px;
-      right: 18px;
-
-      width: 18px;
-      height: 20px;
-      z-index: 100;
-    }
-    .loading {
-      @include status-icon(0px, 0px, 0px, 0px, '../img/spinner.gif');
-      padding: 0;
-      position:absolute;
-      top: 0px;
-      right: 24px;
-
-      width: 18px;
-      height: 20px;
-      z-index: 100;
-    }
-  }
-  .inline-edit-status.inline-edit-mod {
-    .loading {
-      top: 15px;
-      right: 34px;
-    }
-  }
-}
-
 .table_header .table_actions {
+  display: inline-flex;
+  display: -ms-inline-flexbox;
+  -ms-flex-direction: row;
+  display: -webkit-inline-flex;
+  display: -moz-inline-flex;
   min-width: 0;
 }
 
@@ -811,6 +588,7 @@ div.table_cell_wrapper {
 .table_header .table_actions .table_search button {
   display: inline-block;
   float: none;
+  max-height: 32px;
 }
 
 .table_header .table_actions .table_search select {
@@ -935,17 +713,6 @@ form label {
     display: inline-block;
 }
 
-form .form-group > div.dynamic-select {
-  display: table;
-  border-collapse: separate;
-  > * {
-    display: table-cell;
-  }
-  > a {
-    width: 1%;
-  }
-}
-
 .modal.fullscreen .modal-dialog {
   width: 90%;
   margin: auto;
@@ -980,27 +747,16 @@ form .form-group > div.dynamic-select {
 }
 
 .static_page {
-  float: left;
-  background-color: $body-bg;
-  border: 1px solid $border-color;
-}
-.static_page > form {
-  margin-bottom: 0;
-}
-
-.left {
-    float: left;
-    width: 342px;
-    margin-right: 15px;
+  float: left; //should be removed (jtomasek)
+  background-color: $body-bg; //should be removed (jtomasek)
+  > form {
+    margin-bottom: 0;
+  }
 }
 
-.left form {
-  margin: 0;
-}
-
-.right {
-  float: left;
-  width: 342px;
+// should be removed and replaced by row + col-sm-6 in template
+.left, .right {
+  @extend .col-sm-6;
 }
 
 .clear {
@@ -1091,21 +847,30 @@ td.select {
 
 /* Actions dropdown */
 
-td.actions_column {
+.actions_column {
   white-space: nowrap;
   padding: 10px;
   position: relative;
-  width: 200px;
+  width: 1em;
   background-clip: padding-box;
 }
 
-td.actions_column .btn-group {
-  display: inline-block;
+form.actions_column {
+  width: auto;
+  font-family: $font-family-base;
 }
 
-td.actions_column .row_actions a,
-td.actions_column .row_actions input,
-td.actions_column .row_actions button,
+.actions_column .btn-group {
+  display: inline-flex;
+  display: -ms-inline-flexbox;
+  -ms-flex-direction: row;
+  display: -webkit-inline-flex;
+  display: -moz-inline-flex;
+}
+
+.actions_column .row_actions a,
+.actions_column .row_actions input,
+.actions_column .row_actions button,
 div.table_actions_menu .dropdown-menu a,
 div.table_actions_menu .dropdown-menu input,
 div.table_actions_menu .dropdown-menu button {
@@ -1120,11 +885,11 @@ div.table_actions_menu .dropdown-menu button {
   @include box-shadow(none);
 }
 
-td.actions_column .row_actions .hide {
+.actions_column .row_actions .hide {
   display: none;
 }
 
-td.actions_column .btn-action-required {
+.actions_column .btn-action-required {
   font-weight: bold;
 }
 
@@ -1158,8 +923,8 @@ td.actions_column .btn-action-required {
   background: none;
 }
 
-td.actions_column .dropdown-menu a:hover,
-td.actions_column .dropdown-menu button:hover,
+.actions_column .dropdown-menu a:hover,
+.actions_column .dropdown-menu button:hover,
 div.table_actions_menu .dropdown-menu a:hover,
 div.table_actions_menu .dropdown-menu button:hover {
   background-color: $gray-lighter;
@@ -1174,30 +939,30 @@ div.table_actions_menu .dropdown-menu button:hover {
 
 /* Overrides for single-action rows (no dropdown) */
 
-tr td.actions_column ul.row_actions.single,
-tr:hover td.actions_column ul.row_actions.single,
-td.actions_column ul.row_actions.single,
-td.actions_column ul.row_actions.single:hover {
+tr .actions_column ul.row_actions.single,
+tr:hover .actions_column ul.row_actions.single,
+.actions_column ul.row_actions.single,
+.actions_column ul.row_actions.single:hover {
   border: none;
 }
 
-td.actions_column ul.row_actions.single li.action {
+.actions_column ul.row_actions.single li.action {
   display: block;
 }
 
-td.actions_column ul.row_actions.single li.action:hover {
+.actions_column ul.row_actions.single li.action:hover {
   background-color: transparent;
 }
 
-td.actions_column ul.row_actions.single a,
-td.actions_column ul.row_actions.single input,
-td.actions_column ul.row_actions.single button {
+.actions_column ul.row_actions.single a,
+.actions_column ul.row_actions.single input,
+.actions_column ul.row_actions.single button {
   color: $brand-info;
 }
 
-td.actions_column ul.row_actions.single a:hover,
-td.actions_column ul.row_actions.single input:hover,
-td.actions_column ul.row_actions.single button:hover {
+.actions_column ul.row_actions.single a:hover,
+.actions_column ul.row_actions.single input:hover,
+.actions_column ul.row_actions.single button:hover {
   color: $text-color;
 }
 
@@ -1257,12 +1022,34 @@ tr.terminated {
 }
 
 #main_content .nav-tabs {
-  margin-bottom: 0;
+  border-top: 1px solid $nav-tabs-border-color;
+  border-bottom: none;
+  > li {
+    margin-bottom: 0;
+    margin-top: -1px;
+    > a {
+      margin-right: 0;
+      border-radius: 0;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      &:hover {
+        border-color: $nav-tabs-border-color $nav-tabs-link-hover-border-color $nav-tabs-link-hover-border-color;
+      }
+    }
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+        font-weight: bold;
+        background-color: #555;
+        border-color: #555;
+        color: #fff;
+      }
+    }
+  }
 }
 
 #main_content .tab-content {
-  border: 1px solid #ddd;
-  border-top: 0 none;
   padding: 10px;
 }
 
@@ -1275,11 +1062,12 @@ tr.terminated {
   border-left: 0 none;
   border-right: 0 none;
   border-bottom: 0 none;
+  padding-top: 10px;
 }
 
 #content_body {
-  padding-left: 255px;
-  padding-right: 25px;
+  padding-left: $sidebar-width + 15px;
+  padding-right: 15px;
 }
 
 .tab_wrapper {
@@ -1451,14 +1239,6 @@ div .flavor_table {
   text-align: left;
   padding: 7px 12px 7px 7px;
   width: 160px;
-}
-
-#main_content .row {
-  margin: 10px 0 20px;
-}
-
-#main_content .row:last-child {
-  margin-bottom: 0;
 }
 
 .version_label {
@@ -1633,93 +1413,98 @@ label.log-length {
 .membership {
   min-height: 200px;
 
-    /* Buttons */
-  .btn-group {
-    margin-left:0px;
-    padding: 3px 10px;
-    margin-bottom: 0px;
-    border: 1px solid $gray-light;
-    border-bottom: none;
-  }
-  .btn-group .active {
-    float: right;
-  }
-  a.btn-primary:hover {
-    background-color: $link-hover-color;
-  }
-
   /* Header */
   .help_text {
-    margin-left: 5px;
     margin-bottom: 15px;
-    width: 650px;
   }
-  .members_title {
-    color: $gray;
-    font-weight: bold;
-    float: left;
-    line-height: 30px;
-    width: 160px;
-  }
-  input[type="text"]:disabled + span.glyphicon-search {
-    color: $gray-light;
-  }
+
   .fake_table_header {
-    background-color: $body-bg;
-    padding: 10px;
+    padding: 8px;
     border: 1px solid $table-border-color;
     border-bottom: none;
     overflow: hidden;
   }
 
-    /* 'Fake table' body */
-  .fake_table {
-    > ul {
-      padding: 0;
-      &.no_results {
-        border: 1px solid $table-border-color;
-        padding: 10px;
+  .members_title {
+    color: $gray;
+    font-weight: bold;
+    float: left;
+    padding: 6px 0;
+  }
+
+  input.filter {
+    width: 120px;
+    float: right;
+    &[type="text"]:disabled {
+      background-color: $gray-lighter;
+      & + span.search-icon {
+        color: $gray-light;
       }
     }
-    ul.btn-group:hover {
-        background-color: $border-color;
-    }
+  }
+
+  .form-control-feedback { top: 0; }
+  .no_results {
+    border: 1px solid $table-border-color;
+    padding: 9px 10px 8px 10px;
+    opacity: 0.5;
+  }
+
+  li.scope input{
+      background: none;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      width: 120px;
+      margin-left: 10px;
+  }
+
+  li.select_resource {
+    margin-left: 5px;
+    margin-top: 15px;
+  }
+
+  li.display_name {
+    width: 130px;
+    margin: 15px 7px 15px 10px;
   }
 
   /* Member lists */
-  .member {
-    text-align: left;
-    line-height: 32px;
-  }
-
-  .members ul.btn-group,
-  .available_members ul.btn-group {
-    display: block;
-    &.nav-pills > li > a {
-      padding: 6px 11px;
+  .members, .available_members {
+    padding: 0;
+    // reset nav-pills display to block
+    ul.nav-pills {
+      display: block;
+    }
+    ul.btn-group {
+      margin-left:0px;
+      padding: 3px;
+      margin-bottom: 0px;
+      border: 1px solid $gray-light;
+      border-bottom: none;
+      &.last_stripe {
+        border-bottom: 1px solid $table-border-color;
+      }
+      &.light_stripe {
+        background-color: white;
+      }
+      &.dark_stripe {
+        background-color: $table-bg-odd;
+      }
+      &:hover {
+        background-color: $border-color;
+      }
+      li.member {
+        padding: 6px 10px 5px 10px;
+      }
+      li.active {
+        float: right;
+        a:hover {
+          background-color: $link-hover-color;
+        }
+      }
     }
   }
-  .dark_stripe {
-    background-color: $table-bg-odd;
-  }
-  .light_stripe {
-    background-color: white;
-  }
-  .last_stripe {
-    border-bottom: 1px solid $table-border-color;
-  }
-  .has-feedback {
-    display: inline-block;
-    float: right;
-    margin-bottom: 0;
-  }
-  /* List filtering */
-  .filter {
-    width: 130px;
-  }
-  .form-control-feedback {
-    top:0;
-  }
+
   /* Role dropdown menus */
   .role_dropdown li {
     cursor: pointer;
@@ -1733,18 +1518,11 @@ label.log-length {
     border: 0 none;
     @include box-shadow(none);
     z-index: 99999;
-    i {
-      @extend .glyphicon;
-      &:before { content: "\e013"; }
-      opacity: 0;
-      display: inline-block;
-      width: 14px;
-      font-size: 12px;
-      line-height: 14px;
-      vertical-align: text-top;
-    }
     &:hover {
       background-color: #cdcdcd;
+    }
+    i {
+      opacity: 0;
     }
     &.selected i {
       opacity: 1;
@@ -1756,7 +1534,6 @@ label.log-length {
   }
   .nav .role_options {
     float: right;
-    padding-right: 5px;
   }
 }
 
@@ -1771,6 +1548,28 @@ label.log-length {
   float: right;
   margin-top: 10px;
   margin-right: 15px;
+}
+
+.resource-types  {
+  .membership {
+    li .scope {
+      background: none;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    li .select_resource {
+      margin-left: 5px;
+      margin-top: 15px;
+    }
+
+    li .display_name {
+      width: 130px;
+      margin-left: 10px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+  }
 }
 
 /* Fixes overflow on dropdowns in modal */
@@ -2315,7 +2114,20 @@ label.log-length {
   }
 }
 
+/* Read only text fields */
+.form-control[readonly], .view-credentials input {
+    cursor: text;
+}
+
 /**** Popover ****/
 a.link-popover { cursor: default; }
 
 a:hover.link-popover { text-decoration: none; }
+
+/* Fix for password fields reveal icon */
+.form-group span.form-control-feedback.fa {
+    line-height: 32px;
+}
+.has-feedback .form-control-feedback {
+  top: 0;
+}

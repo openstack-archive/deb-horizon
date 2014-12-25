@@ -13,9 +13,11 @@
 from selenium.webdriver.common import by
 from selenium.webdriver.common import keys
 
-from openstack_dashboard.test.integration_tests.pages import adminpage
+from openstack_dashboard.test.integration_tests.pages.admin.system import \
+    overviewpage as system_overviewpage
 from openstack_dashboard.test.integration_tests.pages import pageobject
-from openstack_dashboard.test.integration_tests.pages import projectpage
+from openstack_dashboard.test.integration_tests.pages.project.compute import \
+    overviewpage as compute_overviewpage
 
 
 class LoginPage(pageobject.PageObject):
@@ -31,19 +33,19 @@ class LoginPage(pageobject.PageObject):
 
     def is_login_page(self):
         return self.is_the_current_page() and \
-            self.is_element_visible(*self._login_submit_button_locator)
+            self._is_element_visible(*self._login_submit_button_locator)
 
     @property
     def username(self):
-        return self.get_element(*self._login_username_field_locator)
+        return self._get_element(*self._login_username_field_locator)
 
     @property
     def password(self):
-        return self.get_element(*self._login_password_field_locator)
+        return self._get_element(*self._login_password_field_locator)
 
     @property
     def login_button(self):
-        return self.get_element(*self._login_submit_button_locator)
+        return self._get_element(*self._login_submit_button_locator)
 
     def _click_on_login_button(self):
         self.login_button.click()
@@ -77,10 +79,10 @@ class LoginPage(pageobject.PageObject):
         self.username.send_keys(self.conf.identity.admin_username)
         self.password.send_keys(password)
         login_method()
-        return adminpage.AdminPage(self.driver, self.conf)
+        return system_overviewpage.OverviewPage(self.driver, self.conf)
 
     def login_as_user(self, user, password, login_method):
         self.username.send_keys(user)
         self.password.send_keys(password)
         login_method()
-        return projectpage.ProjectPage(self.driver, self.conf)
+        return compute_overviewpage.OverviewPage(self.driver, self.conf)

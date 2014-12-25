@@ -11,8 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-#
-# @author: KC Wang, Big Switch Networks
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -240,8 +238,8 @@ class AddFirewallAction(workflows.Action):
     shared = forms.BooleanField(label=_("Shared"),
                                 initial=False,
                                 required=False)
-    # TODO(amotoki): make UP/DOWN translatable
-    admin_state_up = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+    admin_state_up = forms.ChoiceField(choices=[(True, _('UP')),
+                                                (False, _('DOWN'))],
                                        label=_("Admin State"))
 
     def __init__(self, request, *args, **kwargs):

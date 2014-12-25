@@ -57,7 +57,7 @@ class SelectPluginAction(workflows.Action):
         for plugin in plugins:
             field_name = plugin.name + "_version"
             choice_field = forms.ChoiceField(
-                label=_("Hadoop version"),
+                label=_("Version"),
                 choices=[(version, version) for version in plugin.versions],
                 widget=forms.Select(
                     attrs={"class": "plugin_version_choice "
@@ -98,7 +98,7 @@ class GeneralConfigAction(workflows.Action):
 
     description = forms.CharField(label=_("Description"),
                                   required=False,
-                                  widget=forms.Textarea)
+                                  widget=forms.Textarea(attrs={'rows': 4}))
 
     anti_affinity = aa.anti_affinity_field()
 
@@ -169,9 +169,8 @@ class ConfigureNodegroupsAction(workflows.Action):
         plugin, hadoop_version = whelpers.\
             get_plugin_and_hadoop_version(request)
 
-        self.templates = saharaclient.nodegroup_template_find(request,
-            plugin_name=plugin,
-            hadoop_version=hadoop_version)
+        self.templates = saharaclient.nodegroup_template_find(
+            request, plugin_name=plugin, hadoop_version=hadoop_version)
 
         deletable = request.REQUEST.get("deletable", dict())
 

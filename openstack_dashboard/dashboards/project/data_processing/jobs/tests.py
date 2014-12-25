@@ -32,7 +32,7 @@ class DataProcessingJobTests(test.TestCase):
         self.mox.ReplayAll()
         res = self.client.get(INDEX_URL)
         self.assertTemplateUsed(res,
-            'project/data_processing.jobs/jobs.html')
+                                'project/data_processing.jobs/jobs.html')
         self.assertContains(res, 'Jobs')
         self.assertContains(res, 'Name')
 
@@ -43,5 +43,21 @@ class DataProcessingJobTests(test.TestCase):
         self.mox.ReplayAll()
         res = self.client.get(DETAILS_URL)
         self.assertTemplateUsed(res,
-            'project/data_processing.jobs/details.html')
+                                'project/data_processing.jobs/details.html')
         self.assertContains(res, 'pigjob')
+
+    @test.create_stubs({api.sahara: ('job_list',
+                                     'job_delete')})
+    def test_delete(self):
+        job = self.jobs.first()
+        api.sahara.job_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.jobs.list())
+        api.sahara.job_delete(IsA(http.HttpRequest), job.id)
+        self.mox.ReplayAll()
+
+        form_data = {'action': 'jobs__delete__%s' % job.id}
+        res = self.client.post(INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+        self.assertMessageCount(success=1)

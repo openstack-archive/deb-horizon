@@ -14,6 +14,8 @@ import json
 import logging
 from operator import attrgetter
 
+import yaml
+
 from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse  # noqa
@@ -197,7 +199,14 @@ class DetailView(tabs.TabView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-        context["stack"] = self.get_data(self.request, **kwargs)
+        stack = self.get_data(self.request, **kwargs)
+        table = project_tables.StacksTable(self.request)
+        context["stack"] = stack
+        context["url"] = self.get_redirect_url()
+        context["actions"] = table.render_row_actions(stack)
+        context["page_title"] = _("Stack Details: "
+                                  "%(stack_name)s") % {'stack_name':
+                                                       stack.stack_name}
         return context
 
     @memoized.memoized_method
@@ -210,12 +219,28 @@ class DetailView(tabs.TabView):
             return stack
         except Exception:
             msg = _("Unable to retrieve stack.")
-            redirect = reverse('horizon:project:stacks:index')
-            exceptions.handle(request, msg, redirect=redirect)
+            exceptions.handle(request, msg, redirect=self.get_redirect_url())
+
+    @memoized.memoized_method
+    def get_template(self, request, **kwargs):
+        try:
+            stack_template = api.heat.template_get(
+                request,
+                kwargs['stack_id'])
+            return yaml.safe_dump(stack_template, indent=2)
+        except Exception:
+            msg = _("Unable to retrieve stack template.")
+            exceptions.handle(request, msg, redirect=self.get_redirect_url())
 
     def get_tabs(self, request, **kwargs):
         stack = self.get_data(request, **kwargs)
-        return self.tab_group_class(request, stack=stack, **kwargs)
+        stack_template = self.get_template(request, **kwargs)
+        return self.tab_group_class(
+            request, stack=stack, stack_template=stack_template, **kwargs)
+
+    @staticmethod
+    def get_redirect_url():
+        return reverse('horizon:project:stacks:index')
 
 
 class ResourceView(tabs.TabView):
@@ -224,8 +249,10 @@ class ResourceView(tabs.TabView):
 
     def get_context_data(self, **kwargs):
         context = super(ResourceView, self).get_context_data(**kwargs)
-        context["resource"] = self.get_data(self.request, **kwargs)
+        resource = self.get_data(self.request, **kwargs)
+        context["resource"] = resource
         context["metadata"] = self.get_metadata(self.request, **kwargs)
+        context["page_title"] = _("Resource Details: %s") % resource
         return context
 
     @memoized.memoized_method

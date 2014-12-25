@@ -33,9 +33,11 @@ horizon.modals.create = function (title, body, confirm, cancel) {
     cancel = gettext("Cancel");
   }
   var template = horizon.templates.compiled_templates["#modal_template"],
-    params = {title: title, body: body, confirm: confirm, cancel: cancel},
-    modal = $(template.render(params)).appendTo("#modal_wrapper");
-  return modal;
+    params = {
+      title: title, body: body, confirm: confirm, cancel: cancel,
+      modal_backdrop: horizon.modals.MODAL_BACKDROP
+    };
+  return $(template.render(params)).appendTo("#modal_wrapper");
 };
 
 horizon.modals.success = function (data, textStatus, jqXHR) {
@@ -166,7 +168,7 @@ horizon.modals.init_wizard = function () {
 };
 
 
-horizon.addInitFunction(function() {
+horizon.addInitFunction(horizon.modals.init = function() {
 
   // Bind handler for initializing new modals.
   $('#modal_wrapper').on('new_modal', function (evt, modal) {
@@ -292,7 +294,9 @@ horizon.addInitFunction(function() {
     $(modal).find(":text, select, textarea").filter(":visible:first").focus();
   });
 
-  horizon.modals.addModalInitFunction(horizon.datatables.validate_button);
+  horizon.modals.addModalInitFunction(function(modal) {
+    horizon.datatables.validate_button($(modal).find(".table_wrapper > form"));
+  });
   horizon.modals.addModalInitFunction(horizon.utils.loadAngular);
 
   // Load modals for ajax-modal links.
@@ -369,5 +373,12 @@ horizon.addInitFunction(function() {
         $("#modal_wrapper .modal").last().modal("show");
       }
     }
+  });
+
+  // Make modals draggable
+  $(document).on("show.bs.modal", ".modal", function () {
+    $(".modal-content").draggable({
+      handle: ".modal-header"
+    });
   });
 });

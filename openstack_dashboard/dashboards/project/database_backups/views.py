@@ -93,8 +93,8 @@ class DetailView(horizon_views.APIView):
                 backup.parent = api.trove.backup_get(request, backup.parent_id)
         except Exception:
             redirect = reverse('horizon:project:database_backups:index')
-            msg = _('Unable to retrieve details for parent backup: %s') % \
-                  backup.parent_id
+            msg = (_('Unable to retrieve details for parent backup: %s')
+                   % backup.parent_id)
             exceptions.handle(self.request, msg, redirect=redirect)
 
         try:
@@ -103,4 +103,8 @@ class DetailView(horizon_views.APIView):
             instance = None
         context['backup'] = backup
         context['instance'] = instance
+        context['page_title'] = _("Backup Details: "
+                                  "%(backup_name)s") % {'backup_name':
+                                                        backup.name}
+
         return context

@@ -45,7 +45,15 @@ class DetailView(tabs.TabView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-        context["volume"] = self.get_data()
+        volume = self.get_data()
+        table = project_tables.VolumesTable(self.request)
+        context["volume"] = volume
+        context["url"] = self.get_redirect_url()
+        context["actions"] = table.render_row_actions(volume)
+        context["page_title"] = _("Volume Details: "
+                                  "%(volume_name)s") % {'volume_name':
+                                                        volume.name}
+
         return context
 
     @memoized.memoized_method

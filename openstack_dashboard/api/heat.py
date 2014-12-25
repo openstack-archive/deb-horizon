@@ -36,8 +36,6 @@ def heatclient(request, password=None):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
     endpoint = base.url_for(request, 'orchestration')
-    LOG.debug('heatclient connection created using token "%s" and url "%s"' %
-              (request.user.token.id, endpoint))
     kwargs = {
         'token': request.user.token.id,
         'insecure': insecure,
@@ -104,10 +102,8 @@ def stack_create(request, password=None, **kwargs):
     return heatclient(request, password).stacks.create(**kwargs)
 
 
-def stack_update(request, stack_id, **kwargs):
-    if kwargs.get('password'):
-        kwargs.pop('password')
-    return heatclient(request).stacks.update(stack_id, **kwargs)
+def stack_update(request, stack_id, password=None, **kwargs):
+    return heatclient(request, password).stacks.update(stack_id, **kwargs)
 
 
 def events_list(request, stack_name):

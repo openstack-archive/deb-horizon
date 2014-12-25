@@ -69,9 +69,9 @@ class GeneralTab(tabs.Tab):
                 net_name = None
 
             cluster_info.update({"cluster": cluster,
-                "base_image": base_image,
-                "cluster_template": cluster_template,
-                "network": net_name})
+                                 "base_image": base_image,
+                                 "cluster_template": cluster_template,
+                                 "network": net_name})
         except Exception as e:
             LOG.error("Unable to fetch cluster details: %s" % str(e))
 
@@ -102,9 +102,10 @@ class NodeGroupsTab(tabs.Tab):
                         self._get_floating_ip_pool_name(
                             request, ng["floating_ip_pool"]))
 
-                ng["node_group_template"] = helpers.safe_call(
-                    sahara.node_group_templates.get,
-                    ng.get("node_group_template_id", None))
+                if ng.get("node_group_template_id", None):
+                    ng["node_group_template"] = helpers.safe_call(
+                        sahara.node_group_templates.get,
+                        ng["node_group_template_id"])
         except Exception:
             cluster = {}
             exceptions.handle(request,

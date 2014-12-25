@@ -33,7 +33,7 @@ class CreateJob(tables.LinkAction):
     icon = "plus"
 
 
-class DeleteJob(tables.BatchAction):
+class DeleteJob(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -50,30 +50,11 @@ class DeleteJob(tables.BatchAction):
             count
         )
 
-    name = "delete"
-    classes = ('btn-danger', 'btn-terminate')
-
-    def action(self, request, obj_id):
+    def delete(self, request, obj_id):
         saharaclient.job_delete(request, obj_id)
 
 
 class LaunchJobExistingCluster(tables.LinkAction):
-    @staticmethod
-    def action_present(count):
-        return ungettext_lazy(
-            u"Launch Job",
-            u"Launch Jobs",
-            count
-        )
-
-    @staticmethod
-    def action_past(count):
-        return ungettext_lazy(
-            u"Launched Job",
-            u"Launched Jobs",
-            count
-        )
-
     name = "launch-job-existing"
     verbose_name = _("Launch On Existing Cluster")
     url = "horizon:project:data_processing.jobs:launch-job"
@@ -87,22 +68,6 @@ class LaunchJobExistingCluster(tables.LinkAction):
 
 
 class LaunchJobNewCluster(tables.LinkAction):
-    @staticmethod
-    def action_present(count):
-        return ungettext_lazy(
-            u"Launch Job",
-            u"Launch Jobs",
-            count
-        )
-
-    @staticmethod
-    def action_past(count):
-        return ungettext_lazy(
-            u"Launched Job",
-            u"Launched Jobs",
-            count
-        )
-
     name = "launch-job-new"
     verbose_name = _("Launch On New Cluster")
     url = "horizon:project:data_processing.jobs:launch-job-new-cluster"
@@ -116,22 +81,6 @@ class LaunchJobNewCluster(tables.LinkAction):
 
 
 class ChoosePlugin(tables.LinkAction):
-    @staticmethod
-    def action_present(count):
-        return ungettext_lazy(
-            u"Launch Job",
-            u"Launch Jobs",
-            count
-        )
-
-    @staticmethod
-    def action_past(count):
-        return ungettext_lazy(
-            u"Launched Job",
-            u"Launched Jobs",
-            count
-        )
-
     name = "launch-job-new"
     verbose_name = _("Launch On New Cluster")
     url = "horizon:project:data_processing.jobs:choose-plugin"
@@ -146,8 +95,8 @@ class ChoosePlugin(tables.LinkAction):
 
 class JobsTable(tables.DataTable):
     name = tables.Column("name",
-        verbose_name=_("Name"),
-        link=("horizon:project:data_processing.jobs:details"))
+                         verbose_name=_("Name"),
+                         link=("horizon:project:data_processing.jobs:details"))
     description = tables.Column("description",
                                 verbose_name=_("Description"))
 
@@ -156,4 +105,4 @@ class JobsTable(tables.DataTable):
         verbose_name = _("Jobs")
         table_actions = (CreateJob,
                          DeleteJob)
-        row_actions = (ChoosePlugin, LaunchJobExistingCluster, DeleteJob,)
+        row_actions = (LaunchJobExistingCluster, ChoosePlugin, DeleteJob,)

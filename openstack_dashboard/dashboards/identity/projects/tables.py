@@ -14,6 +14,9 @@ from django.core.exceptions import ValidationError  # noqa
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
+
+from openstack_auth import utils as auth_utils
 
 from horizon import exceptions
 from horizon import forms
@@ -24,9 +27,30 @@ from openstack_dashboard import api
 from openstack_dashboard import policy
 
 
+class RescopeTokenToProject(tables.LinkAction):
+    name = "rescope"
+    verbose_name = _("Set as Active Project")
+    url = "switch_tenants"
+
+    def allowed(self, request, project):
+        # allow rescoping token to any project the user has a role on,
+        # authorized_tenants, and that they are not currently scoped to
+        return next((True for proj in request.user.authorized_tenants
+                     if proj.id == project.id and
+                     project.id != request.user.project_id), False)
+
+    def get_link_url(self, project):
+        # redirects to the switch_tenants url which then will redirect
+        # back to this page
+        dash_url = reverse("horizon:identity:projects:index")
+        base_url = reverse(self.url, args=[project.id])
+        param = urlencode({"next": dash_url})
+        return "?".join([base_url, param])
+
+
 class UpdateMembersLink(tables.LinkAction):
     name = "users"
-    verbose_name = _("Modify Users")
+    verbose_name = _("Manage Members")
     url = "horizon:identity:projects:update"
     classes = ("ajax-modal",)
     icon = "pencil"
@@ -109,8 +133,22 @@ class ModifyQuotas(tables.LinkAction):
 
 
 class DeleteTenantsAction(tables.DeleteAction):
-    data_type_singular = _("Project")
-    data_type_plural = _("Projects")
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Project",
+            u"Delete Projects",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Project",
+            u"Deleted Projects",
+            count
+        )
+
     policy_rules = (("identity", "identity:delete_project"),)
 
     def allowed(self, request, project):
@@ -118,6 +156,12 @@ class DeleteTenantsAction(tables.DeleteAction):
 
     def delete(self, request, obj_id):
         api.keystone.tenant_delete(request, obj_id)
+
+    def handle(self, table, request, obj_ids):
+        response = \
+            super(DeleteTenantsAction, self).handle(table, request, obj_ids)
+        auth_utils.remove_project_cache(request.user.token.id)
+        return response
 
 
 class TenantFilterAction(tables.FilterAction):
@@ -181,7 +225,7 @@ class TenantsTable(tables.DataTable):
     description = tables.Column(lambda obj: getattr(obj, 'description', None),
                                 verbose_name=_('Description'),
                                 form_field=forms.CharField(
-                                    widget=forms.Textarea(),
+                                    widget=forms.Textarea(attrs={'rows': 4}),
                                     required=False),
                                 update_action=UpdateCell)
     id = tables.Column('id', verbose_name=_('Project ID'))
@@ -196,7 +240,8 @@ class TenantsTable(tables.DataTable):
         verbose_name = _("Projects")
         row_class = UpdateRow
         row_actions = (UpdateMembersLink, UpdateGroupsLink, UpdateProject,
-                       UsageLink, ModifyQuotas, DeleteTenantsAction)
+                       UsageLink, ModifyQuotas, DeleteTenantsAction,
+                       RescopeTokenToProject)
         table_actions = (TenantFilterAction, CreateProject,
                          DeleteTenantsAction)
         pagination_param = "tenant_marker"

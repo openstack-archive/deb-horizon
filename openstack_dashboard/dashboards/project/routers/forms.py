@@ -83,8 +83,8 @@ class CreateForm(forms.SelfHandlingForm):
 
 class UpdateForm(forms.SelfHandlingForm):
     name = forms.CharField(label=_("Name"), required=False)
-    # TODO(amotoki): make UP/DOWN translatable
-    admin_state = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+    admin_state = forms.ChoiceField(choices=[(True, _('UP')),
+                                             (False, _('DOWN'))],
                                     label=_("Admin State"))
     router_id = forms.CharField(label=_("ID"),
                                 widget=forms.HiddenInput())
@@ -111,8 +111,11 @@ class UpdateForm(forms.SelfHandlingForm):
                             ('distributed', _('Distributed'))]
             self.fields['mode'].choices = mode_choices
 
-        self.ha_allowed = api.neutron.get_feature_permission(self.request,
-                                                             "l3-ha", "update")
+        # TODO(amotoki): Due to Neutron Bug 1378525, Neutron disables
+        # PUT operation. It will be fixed in Kilo cycle.
+        # self.ha_allowed = api.neutron.get_feature_permission(
+        #     self.request, "l3-ha", "update")
+        self.ha_allowed = False
         if not self.ha_allowed:
             del self.fields['ha']
 

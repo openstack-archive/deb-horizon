@@ -19,6 +19,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django import shortcuts
 from django.utils.http import urlencode
+from django.utils.translation import pgettext_lazy
 from django.utils.translation import string_concat  # noqa
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
@@ -41,7 +42,7 @@ class AllocateIP(tables.LinkAction):
     name = "allocate"
     verbose_name = _("Allocate IP To Project")
     classes = ("ajax-modal",)
-    icon = "download-alt"
+    icon = "link"
     url = "horizon:project:access_and_security:floating_ips:allocate"
 
     def single(self, data_table, request, *args):
@@ -71,7 +72,7 @@ class AllocateIP(tables.LinkAction):
 class ReleaseIPs(tables.BatchAction):
     name = "release"
     classes = ('btn-danger',)
-    icon = "arrow-up"
+    icon = "unlink"
 
     @staticmethod
     def action_present(count):
@@ -128,6 +129,7 @@ class DisassociateIP(tables.Action):
     name = "disassociate"
     verbose_name = _("Disassociate")
     classes = ("btn-disassociate", "btn-danger")
+    icon = "unlink"
 
     def allowed(self, request, fip):
         if api.base.is_service_enabled(request, "network"):
@@ -141,8 +143,7 @@ class DisassociateIP(tables.Action):
     def single(self, table, request, obj_id):
         try:
             fip = table.get_object_by_id(filters.get_int_or_uuid(obj_id))
-            api.network.floating_ip_disassociate(request, fip.id,
-                                                 fip.port_id)
+            api.network.floating_ip_disassociate(request, fip.id)
             LOG.info('Disassociating Floating IP "%s".' % obj_id)
             messages.success(request,
                              _('Successfully disassociated Floating IP: %s')
@@ -174,17 +175,39 @@ def get_instance_link(datum):
         return None
 
 
+STATUS_DISPLAY_CHOICES = (
+    ("active", pgettext_lazy("Current status of a Floating IP", u"Active")),
+    ("down", pgettext_lazy("Current status of a Floating IP", u"Down")),
+    ("error", pgettext_lazy("Current status of a Floating IP", u"Error")),
+)
+
+
 class FloatingIPsTable(tables.DataTable):
+    STATUS_CHOICES = (
+        ("active", True),
+        ("down", True),
+        ("error", False)
+    )
     ip = tables.Column("ip",
                        verbose_name=_("IP Address"),
                        attrs={'data-type': "ip"})
     fixed_ip = tables.Column(get_instance_info,
                              link=get_instance_link,
-                             verbose_name=_("Mapped Fixed IP Address"),
-                             empty_value="-")
+                             verbose_name=_("Mapped Fixed IP Address"))
     pool = tables.Column("pool_name",
-                         verbose_name=_("Floating IP Pool"),
-                         empty_value="-")
+                         verbose_name=_("Pool"))
+    status = tables.Column("status",
+                           verbose_name=_("Status"),
+                           status=True,
+                           status_choices=STATUS_CHOICES,
+                           display_choices=STATUS_DISPLAY_CHOICES)
+
+    def __init__(self, request, data=None, needs_form_wrapper=None, **kwargs):
+        super(FloatingIPsTable, self).__init__(
+            request, data=data, needs_form_wrapper=needs_form_wrapper,
+            **kwargs)
+        if not api.base.is_service_enabled(request, 'network'):
+            del self.columns['status']
 
     def sanitize_id(self, obj_id):
         return filters.get_int_or_uuid(obj_id)

@@ -34,27 +34,24 @@ class CreateJobBinary(tables.LinkAction):
     icon = "plus"
 
 
-class DeleteJobBinary(tables.BatchAction):
+class DeleteJobBinary(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete Job binary",
-            u"Delete Job binaries",
+            u"Delete Job Binary",
+            u"Delete Job Binaries",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Deleted Job binary",
-            u"Deleted Job binaries",
+            u"Deleted Job Binary",
+            u"Deleted Job Binaries",
             count
         )
 
-    name = "delete"
-    classes = ('btn-danger', 'btn-terminate')
-
-    def action(self, request, obj_id):
+    def delete(self, request, obj_id):
         jb = saharaclient.job_binary_get(request, obj_id)
         (jb_type, jb_internal_id) = jb.url.split("://")
         if jb_type == "internal-db":
@@ -77,7 +74,8 @@ class DownloadJobBinary(tables.LinkAction):
 
 
 class JobBinariesTable(tables.DataTable):
-    name = tables.Column("name",
+    name = tables.Column(
+        "name",
         verbose_name=_("Name"),
         link=("horizon:project:data_processing.job_binaries:details"))
     type = tables.Column("url",

@@ -101,7 +101,10 @@ def data(TEST):
         "created_at": "2014-06-04 14:01:03.701243",
         "description": None,
         "flavor_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "availability_zone": None,
         "floating_ip_pool": None,
+        "auto_security_group": True,
+        "security_groups": [],
         "hadoop_version": "1.2.1",
         "id": "c166dfcc-9cc7-4b48-adc9-f0946169bb36",
         "image_id": None,
@@ -332,9 +335,23 @@ def data(TEST):
         "url": "internal-db://80121dea-f8bd-4ad3-bcc7-096f4bfc722d"
     }
 
+    job_binary2_dict = {
+        "created_at": "2014-10-10 13:12:15.583631",
+        "description": "Test for spaces in name",
+        "id": "abcdef56-1234-abcd-abcd-defabcdaedcb",
+        "name": "example with spaces.pig",
+        "tenant_id": "429ad8447c2d47bc8e0382d244e1d1df",
+        "updated_at": None,
+        "url": "internal-db://abcdef56-1234-abcd-abcd-defabcdaedcb"
+    }
+
     job_binary1 = job_binaries.JobBinaries(
         job_binaries.JobBinariesManager(None), job_binary1_dict)
+    job_binary2 = job_binaries.JobBinaries(
+        job_binaries.JobBinariesManager(None), job_binary2_dict)
+
     TEST.job_binaries.add(job_binary1)
+    TEST.job_binaries.add(job_binary2)
 
     # Jobs.
     job1_dict = {

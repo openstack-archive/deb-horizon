@@ -31,8 +31,8 @@ class DataProcessingDataSourceTests(test.TestCase):
             .AndReturn(self.data_sources.list())
         self.mox.ReplayAll()
         res = self.client.get(INDEX_URL)
-        self.assertTemplateUsed(res,
-            'project/data_processing.data_sources/data_sources.html')
+        self.assertTemplateUsed(
+            res, 'project/data_processing.data_sources/data_sources.html')
         self.assertContains(res, 'Data Sources')
         self.assertContains(res, 'Name')
         self.assertContains(res, 'sampleOutput')
@@ -44,7 +44,23 @@ class DataProcessingDataSourceTests(test.TestCase):
             .AndReturn(self.data_sources.list()[0])
         self.mox.ReplayAll()
         res = self.client.get(DETAILS_URL)
-        self.assertTemplateUsed(res,
-            'project/data_processing.data_sources/details.html')
+        self.assertTemplateUsed(
+            res, 'project/data_processing.data_sources/details.html')
         self.assertContains(res, 'sampleOutput')
         self.assertContains(res, 'Data Source Details')
+
+    @test.create_stubs({api.sahara: ('data_source_list',
+                                     'data_source_delete')})
+    def test_delete(self):
+        data_source = self.data_sources.first()
+        api.sahara.data_source_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.data_sources.list())
+        api.sahara.data_source_delete(IsA(http.HttpRequest), data_source.id)
+        self.mox.ReplayAll()
+
+        form_data = {'action': 'data_sources__delete__%s' % data_source.id}
+        res = self.client.post(INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+        self.assertMessageCount(success=1)

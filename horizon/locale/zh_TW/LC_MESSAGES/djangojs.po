@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Tom Fifield <tom@openstack.org>, 2014
+# Xiao Xi LIU <liuxx@cn.ibm.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-02 00:51-0600\n"
-"PO-Revision-Date: 2014-12-02 08:24+0000\n"
-"Last-Translator: Zhang Xiaowei <zero00072@gmail.com>\n"
+"POT-Creation-Date: 2014-11-20 22:42-0600\n"
+"PO-Revision-Date: 2014-11-21 01:50+0000\n"
+"Last-Translator: Xiao Xi LIU <liuxx@cn.ibm.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/horizon/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,20 +37,20 @@ msgid "An error occurred. Please try again later."
 msgstr "發生錯誤。請稍後再試。"
 
 #: static/horizon/js/horizon.firewalls.js:30
-#: static/horizon/js/horizon.instances.js:30
+#: static/horizon/js/horizon.instances.js:31
 msgid "There was a problem communicating with the server, please try again."
 msgstr "與伺服器間的通訊有問題，請再試一次。"
 
-#: static/horizon/js/horizon.forms.js:195
+#: static/horizon/js/horizon.forms.js:184
 msgid "Filter"
 msgstr "篩選"
 
-#: static/horizon/js/horizon.instances.js:248
+#: static/horizon/js/horizon.instances.js:264
 msgid "Could not read the file"
 msgstr "不能讀取檔案"
 
-#: static/horizon/js/horizon.instances.js:254
-#: static/horizon/js/horizon.instances.js:281
+#: static/horizon/js/horizon.instances.js:270
+#: static/horizon/js/horizon.instances.js:297
 msgid "Could not decrypt the password"
 msgstr "不能解鎖密碼"
 
@@ -87,7 +87,7 @@ msgid "Cancel"
 msgstr "取消"
 
 #: static/horizon/js/horizon.modals.js:225
-#: static/horizon/js/horizon.tables.js:221
+#: static/horizon/js/horizon.tables.js:226
 msgid "Working"
 msgstr "運作中"
 
@@ -122,7 +122,7 @@ msgstr "刪除網路卡介面"
 
 #: static/horizon/js/horizon.networktopology.js:537
 msgid "Open Console"
-msgstr "開啟終端機"
+msgstr ""
 
 #: static/horizon/js/horizon.networktopology.js:538
 msgid "View Details"
@@ -130,11 +130,11 @@ msgstr "檢視詳細資訊"
 
 #: static/horizon/js/horizon.networktopology.js:541
 msgid "Delete Router"
-msgstr "刪除路由器"
+msgstr ""
 
 #: static/horizon/js/horizon.networktopology.js:542
 msgid "View Router Details"
-msgstr "檢視路由器詳細資訊"
+msgstr ""
 
 #: static/horizon/js/horizon.networktopology.js:545
 msgid "Add Interface"
@@ -142,14 +142,14 @@ msgstr "加入網路卡介面"
 
 #: static/horizon/js/horizon.networktopology.js:551
 msgid "Terminate Instance"
-msgstr "中止執行實例"
+msgstr ""
 
 #: static/horizon/js/horizon.networktopology.js:552
 msgid "View Instance Details"
-msgstr "檢視執行實例詳細資訊"
+msgstr ""
 
 #: static/horizon/js/horizon.tables.js:39
-#: static/horizon/js/horizon.tables.js:377
+#: static/horizon/js/horizon.tables.js:382
 msgid "No items to display."
 msgstr "沒有項目可以列出。"
 
@@ -158,25 +158,25 @@ msgstr "沒有項目可以列出。"
 msgid "An error occurred while updating."
 msgstr "更新時發生錯誤。"
 
-#: static/horizon/js/horizon.tables.js:204
+#: static/horizon/js/horizon.tables.js:209
 #, c-format
 msgid "You have selected %s. "
 msgstr "您選擇了 %s。"
 
-#: static/horizon/js/horizon.tables.js:206
+#: static/horizon/js/horizon.tables.js:211
 #, c-format
 msgid "Confirm %s"
 msgstr "確認 %s"
 
-#: static/horizon/js/horizon.tables.js:207
+#: static/horizon/js/horizon.tables.js:212
 msgid "Please confirm your selection. This action cannot be undone."
 msgstr "請確認您的選擇。這個動作將無法回復。"
 
-#: static/horizon/js/horizon.tables.js:364
+#: static/horizon/js/horizon.tables.js:369
 #, c-format
 msgid "Displaying %s item"
 msgid_plural "Displaying %s items"
-msgstr[0] "顯示 %s 個項目"
+msgstr[0] ""
 
 #: static/horizon/js/horizon.tables_inline_edit.js:88
 #: static/horizon/js/horizon.tables_inline_edit.js:169
@@ -185,4 +185,4 @@ msgstr "沒有足夠的權限執行這個操作。"
 
 #: static/horizon/js/horizon.users.js:18
 msgid "Passwords do not match."
-msgstr "密碼沒有符合。"
+msgstr "密碼沒有相配。"

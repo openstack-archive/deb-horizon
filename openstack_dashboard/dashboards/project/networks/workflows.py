@@ -44,8 +44,8 @@ class CreateNetworkInfoAction(workflows.Action):
                                        required=False,
                                        widget=widget)
 
-    # TODO(amotoki): make UP/DOWN translatable
-    admin_state = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+    admin_state = forms.ChoiceField(choices=[(True, _('UP')),
+                                             (False, _('DOWN'))],
                                     label=_("Admin State"),
                                     help_text=_("The state to start"
                                                 " the network in."))
@@ -88,25 +88,48 @@ class CreateNetworkInfo(workflows.Step):
 
 class CreateSubnetInfoAction(workflows.Action):
     with_subnet = forms.BooleanField(label=_("Create Subnet"),
-                                     initial=True, required=False)
+                                     widget=forms.CheckboxInput(attrs={
+                                         'class': 'switchable',
+                                         'data-slug': 'with_subnet',
+                                         'data-hide-tab': 'create_network__'
+                                                          'createsubnetdetail'
+                                                          'action',
+                                         'data-hide-on-checked': 'false'
+                                     }),
+                                     initial=True,
+                                     required=False)
     subnet_name = forms.CharField(max_length=255,
+                                  widget=forms.TextInput(attrs={
+                                      'class': 'switched',
+                                      'data-switch-on': 'with_subnet',
+                                  }),
                                   label=_("Subnet Name"),
                                   required=False)
     cidr = forms.IPField(label=_("Network Address"),
-                          required=False,
-                          initial="",
-                          help_text=_("Network address in CIDR format "
-                                      "(e.g. 192.168.0.0/24, 2001:DB8::/48)"),
-                          version=forms.IPv4 | forms.IPv6,
-                          mask=True)
+                         required=False,
+                         initial="",
+                         widget=forms.TextInput(attrs={
+                             'class': 'switched',
+                             'data-switch-on': 'with_subnet',
+                             'data-is-required': 'true'
+                         }),
+                         help_text=_("Network address in CIDR format "
+                                     "(e.g. 192.168.0.0/24, 2001:DB8::/48)"),
+                         version=forms.IPv4 | forms.IPv6,
+                         mask=True)
     ip_version = forms.ChoiceField(choices=[(4, 'IPv4'), (6, 'IPv6')],
                                    widget=forms.Select(attrs={
-                                       'class': 'switchable',
+                                       'class': 'switchable switched',
                                        'data-slug': 'ipversion',
+                                       'data-switch-on': 'with_subnet'
                                    }),
                                    label=_("IP Version"))
     gateway_ip = forms.IPField(
         label=_("Gateway IP"),
+        widget=forms.TextInput(attrs={
+            'class': 'switched',
+            'data-switch-on': 'with_subnet gateway_ip'
+        }),
         required=False,
         initial="",
         help_text=_("IP address of Gateway (e.g. 192.168.0.254) "
@@ -120,7 +143,14 @@ class CreateSubnetInfoAction(workflows.Action):
         version=forms.IPv4 | forms.IPv6,
         mask=False)
     no_gateway = forms.BooleanField(label=_("Disable Gateway"),
-                                    initial=False, required=False)
+                                    widget=forms.CheckboxInput(attrs={
+                                        'class': 'switched switchable',
+                                        'data-slug': 'gateway_ip',
+                                        'data-switch-on': 'with_subnet',
+                                        'data-hide-on-checked': 'true'
+                                    }),
+                                    initial=False,
+                                    required=False)
     msg = _('Specify "Network Address" or '
             'clear "Create Subnet" checkbox.')
 
@@ -192,12 +222,12 @@ class CreateSubnetDetailAction(workflows.Action):
         }),
         initial=utils.IPV6_DEFAULT_MODE,
         required=False,
-        help_text=_("It specifies how IPv6 address and additional information "
+        help_text=_("Specifies how IPv6 addresses and additional information "
                     "are configured. We can specify SLAAC/DHCPv6 stateful/"
                     "DHCPv6 stateless provided by OpenStack, "
                     "or specify no option. "
-                    "'No option selected' means addresses are configured "
-                    "manually or configured by non-OpenStack system."))
+                    "'No options specified' means addresses are configured "
+                    "manually or configured by a non-OpenStack system."))
     allocation_pools = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 4}),
         label=_("Allocation Pools"),
@@ -222,7 +252,7 @@ class CreateSubnetDetailAction(workflows.Action):
         required=False)
 
     class Meta:
-        name = _("Subnet Detail")
+        name = _("Subnet Details")
         help_text = _('Specify additional attributes for the subnet.')
 
     def populate_ipv6_modes_choices(self, request, context):

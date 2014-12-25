@@ -196,8 +196,7 @@ class NetworkApiNovaFloatingIpTests(NetworkApiNovaTestBase):
         self.mox.ReplayAll()
 
         api.network.floating_ip_disassociate(self.request,
-                                             floating_ip.id,
-                                             server.id)
+                                             floating_ip.id)
 
     def test_floating_ip_target_list(self):
         servers = self.servers.list()
@@ -406,8 +405,9 @@ class NetworkApiNeutronSecurityGroupTests(NetworkApiNeutronTestBase):
     def test_security_group_create(self):
         secgroup = self.api_q_secgroups.list()[1]
         body = {'security_group':
-                    {'name': secgroup['name'],
-                     'description': secgroup['description']}}
+                {'name': secgroup['name'],
+                 'description': secgroup['description'],
+                 'tenant_id': self.request.user.project_id}}
         self.qclient.create_security_group(body) \
             .AndReturn({'security_group': copy.deepcopy(secgroup)})
         self.mox.ReplayAll()
@@ -421,8 +421,8 @@ class NetworkApiNeutronSecurityGroupTests(NetworkApiNeutronTestBase):
         secgroup['name'] = 'newname'
         secgroup['description'] = 'new description'
         body = {'security_group':
-                    {'name': secgroup['name'],
-                     'description': secgroup['description']}}
+                {'name': secgroup['name'],
+                 'description': secgroup['description']}}
         self.qclient.update_security_group(secgroup['id'], body) \
             .AndReturn({'security_group': secgroup})
         self.mox.ReplayAll()
@@ -638,7 +638,8 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
         ext_net = ext_nets[0]
         fip = self.api_q_floating_ips.first()
         self.qclient.create_floatingip(
-            {'floatingip': {'floating_network_id': ext_net['id']}}) \
+            {'floatingip': {'floating_network_id': ext_net['id'],
+                            'tenant_id': self.request.user.project_id}}) \
             .AndReturn({'floatingip': fip})
         self.mox.ReplayAll()
 
@@ -671,15 +672,11 @@ class NetworkApiNeutronFloatingIpTests(NetworkApiNeutronTestBase):
 
     def test_floating_ip_disassociate(self):
         fip = self.api_q_floating_ips.list()[1]
-        assoc_port = self.api_ports.list()[1]
-        ip_address = assoc_port['fixed_ips'][0]['ip_address']
-        target_id = '%s_%s' % (assoc_port['id'], ip_address)
         self.qclient.update_floatingip(fip['id'],
                                        {'floatingip': {'port_id': None}})
         self.mox.ReplayAll()
 
-        api.network.floating_ip_disassociate(self.request, fip['id'],
-                                             target_id)
+        api.network.floating_ip_disassociate(self.request, fip['id'])
 
     def _get_target_id(self, port):
         param = {'id': port['id'],

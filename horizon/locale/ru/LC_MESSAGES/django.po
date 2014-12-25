@@ -3,16 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Ainur Shakirov <ainur.shakirov.tt@gmail.com>, 2014
-# Dasha Sher <sher.dasha@gmail.com>, 2014
-# Ilya Alekseyev <ilyaalekseyev@acm.org>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-02 00:51-0600\n"
-"PO-Revision-Date: 2014-11-11 16:23+0000\n"
-"Last-Translator: Dasha Sher <sher.dasha@gmail.com>\n"
+"POT-Creation-Date: 2014-12-03 20:48-0600\n"
+"PO-Revision-Date: 2014-12-04 03:01+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/horizon/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,18 +17,18 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: base.py:454 templates/horizon/common/_modal_form_update_metadata.html:38
+#: base.py:483 templates/horizon/common/_modal_form_update_metadata.html:38
 msgid "Other"
 msgstr "Другое"
 
 #: decorators.py:53
 msgid "Please log in to continue."
-msgstr "Войдите в систему чтобы продолжить."
+msgstr "Войдите в систему для продолжения."
 
 #: decorators.py:85
 #, python-format
 msgid "You are not authorized to access %s"
-msgstr "Вы не авторизованы для доступа к %s"
+msgstr "Нет права доступа к %s"
 
 #: exceptions.py:163
 #, python-format
@@ -49,7 +46,7 @@ msgstr "Вы не авторизованы. Попробуйте войти в �
 
 #: middleware.py:97
 msgid "Session timed out."
-msgstr "Время сеанса истекло"
+msgstr "Время сеанса истекло."
 
 #: browsers/base.py:88
 msgid "Navigation Item"
@@ -76,93 +73,97 @@ msgstr "Неправильная версия IP-адреса"
 msgid "Invalid subnet mask"
 msgstr "Неправльная маска подсети"
 
-#: forms/views.py:81 templates/horizon/common/_usage_summary.html:16
+#: forms/views.py:102 templates/horizon/common/_usage_summary.html:16
 msgid "Submit"
 msgstr "Отправить"
 
-#: forms/views.py:82
-#: templates/horizon/common/_modal_form_update_metadata.html:239
+#: forms/views.py:103
+#: templates/horizon/common/_modal_form_update_metadata.html:236
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
-msgstr "Отменить"
+msgstr "Отмена"
 
 #: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:16
 #: templates/horizon/common/_data_table_table_actions.html:26
 #: templates/horizon/common/_modal_form_update_metadata.html:28
-#: templates/horizon/common/_modal_form_update_metadata.html:101
+#: templates/horizon/common/_modal_form_update_metadata.html:98
 #: templates/horizon/common/_workflow_step_update_members.html:12
 #: templates/horizon/common/_workflow_step_update_members.html:21
 msgid "Filter"
 msgstr "Фильтр"
 
-#: tables/actions.py:756
+#: tables/actions.py:758
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:758
+#: tables/actions.py:760
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:786 tables/base.py:1537
+#: tables/actions.py:794 tables/base.py:1565
 msgid "N/A"
-msgstr "Недоступно"
+msgstr "Н/Д"
 
-#: tables/actions.py:815
+#: tables/actions.py:823
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
-msgstr "Вам не разрешено %(action)s: %(objs)s"
+msgstr "Не разрешено: %(action)s: %(objs)s"
 
-#: tables/actions.py:822
+#: tables/actions.py:830
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "Невозможно выполнить %(action)s: %(objs)s"
 
-#: tables/actions.py:828
+#: tables/actions.py:836
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:898
+#: tables/actions.py:906
 msgid "Delete"
 msgstr "Удалить"
 
-#: tables/actions.py:900
+#: tables/actions.py:908
 msgid "Deleted"
 msgstr "Удалено"
 
-#: tables/actions.py:931
+#: tables/actions.py:939
 msgid "Update"
 msgstr "Обновить"
 
-#: tables/actions.py:932
+#: tables/actions.py:940
 msgid "Updated"
-msgstr "Обновлён"
+msgstr "Обновлено"
 
-#: tables/base.py:355
+#: tables/base.py:305
+msgid "-"
+msgstr "-"
+
+#: tables/base.py:361
 #, python-format
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "Атрибут %(attr)s не существует для %(obj)s."
 
-#: tables/base.py:967
+#: tables/base.py:985
 msgid "No items to display."
 msgstr "Нет элементов для отображения."
 
-#: tables/base.py:1074
+#: tables/base.py:1094
 #: templates/horizon/common/_data_table_table_actions.html:40
 msgid "Actions"
 msgstr "Действия"
 
-#: tables/base.py:1302
+#: tables/base.py:1324
 #, python-format
 msgid "No match returned for the id \"%s\"."
-msgstr "Не найдено соответствий для id \"%s\"."
+msgstr "Нет совпадений для id \"%s\"."
 
-#: tables/base.py:1453
+#: tables/base.py:1481
 msgid "Please select a row before taking that action."
 msgstr "Выберите строку перед выполнением этого действия."
 
@@ -189,18 +190,18 @@ msgstr "Войти"
 
 #: templates/auth/_login.html:15
 msgid "You do not have permission to access the resource:"
-msgstr "Вы не имеете разрешения для доступа к ресурсу:"
+msgstr "Вы не имеете права доступа к ресурсу:"
 
 #: templates/auth/_login.html:17
 #, python-format
 msgid ""
 "Login as different user or go back to <a href=\"%(home_url)s\"> home "
 "page</a>"
-msgstr "Войдите как другой пользователь или вернитесь на домашнюю страницу <a href=\"%(home_url)s\"> </a>"
+msgstr "Войдите под другим пользователем или вернитесь на домашнюю страницу <a href=\"%(home_url)s\"> </a>"
 
 #: templates/auth/_login.html:32
 msgid "Sign In"
-msgstr "Зарегистрироваться"
+msgstr "Вход"
 
 #: templates/horizon/_messages.html:7
 msgid "Info: "
@@ -218,23 +219,23 @@ msgstr "Успешно:"
 msgid "Error: "
 msgstr "Ошибка:"
 
-#: templates/horizon/common/_data_table.html:54
+#: templates/horizon/common/_data_table.html:63
 msgid "Summary"
 msgstr "Итого"
 
-#: templates/horizon/common/_data_table.html:63
+#: templates/horizon/common/_data_table.html:72
 #, python-format
 msgid "Displaying %(counter)s item"
 msgid_plural "Displaying %(counter)s items"
-msgstr[0] "Показан %(counter)s элемент"
-msgstr[1] "Показано %(counter)s элемента"
-msgstr[2] "Показано %(counter)s элементов"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
-#: templates/horizon/common/_data_table.html:68
+#: templates/horizon/common/_data_table.html:77
 msgid "&laquo;&nbsp;Prev"
 msgstr "&laquo;&nbsp;Предыдущее"
 
-#: templates/horizon/common/_data_table.html:71
+#: templates/horizon/common/_data_table.html:80
 msgid "Next&nbsp;&raquo;"
 msgstr "Следующее&nbsp;&raquo;"
 
@@ -242,17 +243,27 @@ msgstr "Следующее&nbsp;&raquo;"
 msgid "More Actions"
 msgstr "Еще действия"
 
+#: templates/horizon/common/_domain_page_header.html:6
+#, python-format
+msgid "%(context_name)s:"
+msgstr ""
+
 #: templates/horizon/common/_formset_table.html:35
 msgid "Add a row"
-msgstr "Добавьте строку"
+msgstr "Добавить строку"
+
+#: templates/horizon/common/_formset_table_row.html:15
+#, python-format
+msgid "%(name)s: %(error)s"
+msgstr ""
 
 #: templates/horizon/common/_limit_summary.html:4
 msgid "Limit Summary"
-msgstr "Краткое изложение"
+msgstr "Краткая сводка"
 
 #: templates/horizon/common/_limit_summary.html:7
 msgid "Instances"
-msgstr "Инстансы"
+msgstr "Машины"
 
 #: templates/horizon/common/_limit_summary.html:8
 #: templates/horizon/common/_limit_summary.html:15
@@ -267,11 +278,11 @@ msgstr "Использовано <span> %(used)s </span> из <span> %(available
 
 #: templates/horizon/common/_limit_summary.html:14
 msgid "VCPUs"
-msgstr "VCPU"
+msgstr "ВЦПУ"
 
 #: templates/horizon/common/_limit_summary.html:21
 msgid "RAM"
-msgstr "RAM"
+msgstr "ОЗУ"
 
 #: templates/horizon/common/_limit_summary.html:28
 msgid "Floating IPs"
@@ -287,7 +298,7 @@ msgstr "Диски"
 
 #: templates/horizon/common/_limit_summary.html:49
 msgid "Volume Storage"
-msgstr "Объем хранения"
+msgstr "Хранилище"
 
 #: templates/horizon/common/_modal_form_update_metadata.html:12
 msgid ""
@@ -307,20 +318,16 @@ msgstr "Доступные метаданные"
 msgid "Duplicate keys are not allowed"
 msgstr "Повторяющиеся ключи не допускаются"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:59
-msgid "Invalid key name"
-msgstr "Неправильное имя ключа"
+#: templates/horizon/common/_modal_form_update_metadata.html:85
+#: templates/horizon/common/_modal_form_update_metadata.html:197
+msgid "No available metadata"
+msgstr ""
 
-#: templates/horizon/common/_modal_form_update_metadata.html:88
-#: templates/horizon/common/_modal_form_update_metadata.html:200
-msgid "No existing metadata"
-msgstr "Нет метаданных"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:99
+#: templates/horizon/common/_modal_form_update_metadata.html:96
 msgid "Existing Metadata"
 msgstr "Имеющиеся метаданные"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:216
+#: templates/horizon/common/_modal_form_update_metadata.html:213
 msgid ""
 "\n"
 "          You can specify resource metadata by moving items from the left\n"
@@ -330,7 +337,7 @@ msgid ""
 "        "
 msgstr "\nВы можете указать метаданные ресурса, перемещая элементы с левой\nколонки в правую колонку. В левом столбце есть определения\nметаданных из Glance каталога метаданных. Используйте \"Другой\" вариант,\nчтобы добавить метаданные с помощью клавиши на ваш выбор."
 
-#: templates/horizon/common/_modal_form_update_metadata.html:238
+#: templates/horizon/common/_modal_form_update_metadata.html:235
 #: workflows/base.py:594
 msgid "Save"
 msgstr "Сохранить"
@@ -339,25 +346,25 @@ msgstr "Сохранить"
 #, python-format
 msgid "Displaying %(nav_items)s item"
 msgid_plural "Displaying %(nav_items)s items"
-msgstr[0] "Показан %(nav_items)s элемент"
-msgstr[1] "Показано %(nav_items)s элемента"
-msgstr[2] "Показано %(nav_items)s элементов"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: templates/horizon/common/_resource_browser.html:11
 #, python-format
 msgid "Displaying %(content_items)s item"
 msgid_plural "Displaying %(content_items)s items"
-msgstr[0] "Показан %(content_items)s элемент"
-msgstr[1] "Показано %(content_items)s элемента"
-msgstr[2] "Показано %(content_items)s элементов"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: templates/horizon/common/_usage_summary.html:3
 msgid "Usage Summary"
 msgstr "Сводка использования"
 
 #: templates/horizon/common/_usage_summary.html:7
-msgid "Select a period of time to query its usage"
-msgstr "Выберите период времени, чтобы сделать запрос его использования"
+msgid "Select a period of time to query its usage:"
+msgstr ""
 
 #: templates/horizon/common/_usage_summary.html:9
 #, python-format
@@ -375,23 +382,23 @@ msgstr "\n      <label>До:</label>%(end)s"
 
 #: templates/horizon/common/_usage_summary.html:17
 msgid "The date should be in YYYY-mm-dd format."
-msgstr "Дата должна быть в следующем формате: YYYY-mm-dd."
+msgstr "Дата должна иметь формат YYYY-mm-dd."
 
 #: templates/horizon/common/_usage_summary.html:20
-msgid "Active Instances"
-msgstr "Активные инстансы"
+msgid "Active Instances:"
+msgstr ""
 
 #: templates/horizon/common/_usage_summary.html:21
-msgid "Active RAM"
-msgstr "Активная память"
+msgid "Active RAM:"
+msgstr ""
 
 #: templates/horizon/common/_usage_summary.html:22
-msgid "This Period's VCPU-Hours"
-msgstr "Этот период VCPU-часов"
+msgid "This Period's VCPU-Hours:"
+msgstr ""
 
 #: templates/horizon/common/_usage_summary.html:23
-msgid "This Period's GB-Hours"
-msgstr "Этот период в ГБ-часов"
+msgid "This Period's GB-Hours:"
+msgstr ""
 
 #: templates/horizon/common/_workflow.html:40
 msgid "Back"
@@ -405,11 +412,11 @@ msgstr "Следующий"
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:130 templatetags/horizon.py:141
+#: templatetags/horizon.py:133 templatetags/horizon.py:144
 msgid "No Limit"
 msgstr "Без ограничений"
 
-#: templatetags/horizon.py:133 templatetags/horizon.py:135
+#: templatetags/horizon.py:136 templatetags/horizon.py:138
 msgid "Available"
 msgstr "Доступно"
 
@@ -417,9 +424,9 @@ msgstr "Доступно"
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
-msgstr[0] "%(size)d байт"
-msgstr[1] "%(size)d байта"
-msgstr[2] "%(size)d байтов"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: templatetags/sizeformat.py:57
 #, python-format
@@ -447,21 +454,23 @@ msgid "%s PB"
 msgstr "%s ПБ"
 
 #: templatetags/sizeformat.py:77
-msgid "0 bytes"
-msgstr "0 байт"
+msgid "0 Bytes"
+msgstr ""
 
+#. Translators: test code, don't really have to translate
 #: test/test_dashboards/dogs/puppies/tables.py:31
 msgid "Sell Puppy"
 msgid_plural "Sell Puppies"
-msgstr[0] "Sell Puppy"
-msgstr[1] "Sell Puppies"
+msgstr[0] ""
+msgstr[1] ""
 msgstr[2] "Sell Puppies"
 
+#. Translators: test code, don't really have to translate
 #: test/test_dashboards/dogs/puppies/tables.py:40
 msgid "Sold Puppy"
 msgid_plural "Sold Puppies"
-msgstr[0] "Sold Puppy"
-msgstr[1] "Sold Puppies"
+msgstr[0] ""
+msgstr[1] ""
 msgstr[2] "Sold Puppies"
 
 #: utils/filters.py:49
@@ -478,7 +487,7 @@ msgstr "Недопустимый номер IP-протокола"
 
 #: utils/validators.py:42
 msgid "One colon allowed in port range"
-msgstr "Одна запятая допустима в списке портов"
+msgstr "В списке портов допустима одна запятая"
 
 #: utils/validators.py:49
 msgid "Port number must be integer"

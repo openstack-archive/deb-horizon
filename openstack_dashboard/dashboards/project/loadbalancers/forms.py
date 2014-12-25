@@ -11,8 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-#
-# @author: Tatiana Mazur
 
 import logging
 
@@ -32,13 +30,13 @@ LOG = logging.getLogger(__name__)
 class UpdatePool(forms.SelfHandlingForm):
     name = forms.CharField(max_length=80, label=_("Name"))
     pool_id = forms.CharField(label=_("ID"),
-                                 widget=forms.TextInput(
-                                     attrs={'readonly': 'readonly'}))
+                              widget=forms.TextInput(
+                                  attrs={'readonly': 'readonly'}))
     description = forms.CharField(required=False,
                                   max_length=80, label=_("Description"))
     lb_method = forms.ChoiceField(label=_("Load Balancing Method"))
-    # TODO(amotoki): make UP/DOWN translatable
-    admin_state_up = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+    admin_state_up = forms.ChoiceField(choices=[(True, _('UP')),
+                                                (False, _('DOWN'))],
                                        label=_("Admin State"))
 
     failure_url = 'horizon:project:loadbalancers:index'
@@ -74,8 +72,8 @@ class UpdatePool(forms.SelfHandlingForm):
 class UpdateVip(forms.SelfHandlingForm):
     name = forms.CharField(max_length=80, label=_("Name"))
     vip_id = forms.CharField(label=_("ID"),
-                                 widget=forms.TextInput(
-                                     attrs={'readonly': 'readonly'}))
+                             widget=forms.TextInput(
+                                 attrs={'readonly': 'readonly'}))
     description = forms.CharField(required=False,
                                   max_length=80, label=_("Description"))
     pool_id = forms.ChoiceField(label=_("Pool"))
@@ -92,8 +90,8 @@ class UpdateVip(forms.SelfHandlingForm):
         min_value=-1, label=_("Connection Limit"),
         help_text=_("Maximum number of connections allowed "
                     "for the VIP or '-1' if the limit is not set"))
-    # TODO(amotoki): make UP/DOWN translatable
-    admin_state_up = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+    admin_state_up = forms.ChoiceField(choices=[(True, _('UP')),
+                                                (False, _('DOWN'))],
                                        label=_("Admin State"))
 
     failure_url = 'horizon:project:loadbalancers:index'
@@ -169,14 +167,14 @@ class UpdateVip(forms.SelfHandlingForm):
 
 class UpdateMember(forms.SelfHandlingForm):
     member_id = forms.CharField(label=_("ID"),
-                                 widget=forms.TextInput(
-                                     attrs={'readonly': 'readonly'}))
+                                widget=forms.TextInput(
+                                    attrs={'readonly': 'readonly'}))
     pool_id = forms.ChoiceField(label=_("Pool"))
     weight = forms.IntegerField(max_value=256, min_value=0, label=_("Weight"),
                                 help_text=_("Relative part of requests this "
                                 "pool member serves compared to others"))
-    # TODO(amotoki): make UP/DOWN translatable
-    admin_state_up = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+    admin_state_up = forms.ChoiceField(choices=[(True, _('UP')),
+                                                (False, _('DOWN'))],
                                        label=_("Admin State"))
 
     failure_url = 'horizon:project:loadbalancers:index'
@@ -237,8 +235,8 @@ class UpdateMonitor(forms.SelfHandlingForm):
         label=_("Max Retries (1~10)"),
         help_text=_("Number of permissible failures before changing "
                     "the status of member to inactive"))
-    # TODO(amotoki): make UP/DOWN translatable
-    admin_state_up = forms.ChoiceField(choices=[(True, 'UP'), (False, 'DOWN')],
+    admin_state_up = forms.ChoiceField(choices=[(True, _('UP')),
+                                                (False, _('DOWN'))],
                                        label=_("Admin State"))
 
     failure_url = 'horizon:project:loadbalancers:index'
@@ -254,8 +252,8 @@ class UpdateMonitor(forms.SelfHandlingForm):
                     'timeout': context['timeout'],
                     'max_retries': context['max_retries'],
                     'admin_state_up': context['admin_state_up']}}
-            monitor = api.lbaas.pool_health_monitor_update(request,
-                                             context['monitor_id'], **data)
+            monitor = api.lbaas.pool_health_monitor_update(
+                request, context['monitor_id'], **data)
             msg = _('Health monitor %s was successfully updated.')\
                 % context['monitor_id']
             LOG.debug(msg)

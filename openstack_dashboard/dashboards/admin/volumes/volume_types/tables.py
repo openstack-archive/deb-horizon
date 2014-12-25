@@ -14,6 +14,7 @@ from django.template import defaultfilters as filters
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
+from horizon import exceptions
 from horizon import tables
 
 from openstack_dashboard.api import cinder
@@ -38,7 +39,7 @@ class ViewVolumeTypeExtras(tables.LinkAction):
 
 class ManageQosSpecAssociation(tables.LinkAction):
     name = "associate"
-    verbose_name = _("Manage QOS Spec Association")
+    verbose_name = _("Manage QoS Spec Association")
     url = "horizon:admin:volumes:volume_types:manage_qos_spec_association"
     classes = ("ajax-modal",)
     icon = "pencil"
@@ -49,16 +50,16 @@ class DeleteVolumeType(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete VolumeType",
-            u"Delete VolumeTypes",
+            u"Delete Volume Type",
+            u"Delete Volume Types",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Deleted VolumeType",
-            u"Deleted VolumeTypes",
+            u"Deleted Volume Type",
+            u"Deleted Volume Types",
             count
         )
     policy_rules = (("volume", "volume_extension:types_manage"),)
@@ -67,10 +68,49 @@ class DeleteVolumeType(tables.DeleteAction):
         cinder.volume_type_delete(request, obj_id)
 
 
+class CreateVolumeTypeEncryption(tables.LinkAction):
+    name = "create_encryption"
+    verbose_name = _("Create Encryption")
+    url = "horizon:admin:volumes:volume_types:create_type_encryption"
+    classes = ("ajax-modal",)
+    icon = "plus"
+    policy_rules = (("volume", "volume_extension:volume_type_encryption"),)
+
+    def allowed(self, request, volume_type):
+        if _is_vol_type_enc_possible(request):
+            return (hasattr(volume_type, 'encryption')
+                    and not hasattr(volume_type.encryption, 'provider'))
+        else:
+            return False
+
+
+def _is_vol_type_enc_possible(request):
+    try:
+        supported = cinder.extension_supported(request,
+                                               'VolumeTypeEncryption')
+    except Exception:
+        exceptions.handle(request, _('Unable to determine if volume type '
+                                     'encryption is supported.'))
+        return False
+    return supported
+
+
+def get_volume_type_encryption(volume_type):
+    try:
+        provider = volume_type.encryption.provider
+    except Exception:
+        provider = None
+    return provider
+
+
 class VolumeTypesTable(tables.DataTable):
     name = tables.Column("name", verbose_name=_("Name"))
     assoc_qos_spec = tables.Column("associated_qos_spec",
-                                   verbose_name=_("Associated QOS Spec"))
+                                   verbose_name=_("Associated QoS Spec"))
+    encryption = tables.Column(get_volume_type_encryption,
+                               verbose_name=_("Encryption"),
+                               link="horizon:admin:volumes:volume_types:"
+                                    "type_encryption_detail")
 
     def get_object_display(self, vol_type):
         return vol_type.name
@@ -80,9 +120,11 @@ class VolumeTypesTable(tables.DataTable):
 
     class Meta:
         name = "volume_types"
+        hidden_title = False
         verbose_name = _("Volume Types")
         table_actions = (CreateVolumeType, DeleteVolumeType,)
-        row_actions = (ViewVolumeTypeExtras,
+        row_actions = (CreateVolumeTypeEncryption,
+                       ViewVolumeTypeExtras,
                        ManageQosSpecAssociation,
                        DeleteVolumeType,)
 
@@ -104,7 +146,7 @@ def render_spec_keys(qos_spec):
 
 class CreateQosSpec(tables.LinkAction):
     name = "create"
-    verbose_name = _("Create QOS Spec")
+    verbose_name = _("Create QoS Spec")
     url = "horizon:admin:volumes:volume_types:create_qos_spec"
     classes = ("ajax-modal",)
     icon = "plus"
@@ -115,16 +157,16 @@ class DeleteQosSpecs(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete QOS Spec",
-            u"Delete QOS Specs",
+            u"Delete QoS Spec",
+            u"Delete QoS Specs",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Deleted QOS Spec",
-            u"Deleted QOS Specs",
+            u"Deleted QoS Spec",
+            u"Deleted QoS Specs",
             count
         )
     policy_rules = (("volume", "volume_extension:types_manage"),)
@@ -158,6 +200,7 @@ class QosSpecsTable(tables.DataTable):
 
     class Meta:
         name = "qos_specs"
-        verbose_name = _("QOS Specs")
+        hidden_title = False
+        verbose_name = _("QoS Specs")
         table_actions = (CreateQosSpec, DeleteQosSpecs,)
         row_actions = (ManageQosSpec, EditConsumer, DeleteQosSpecs)

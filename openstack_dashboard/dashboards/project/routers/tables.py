@@ -23,8 +23,11 @@ from neutronclient.common import exceptions as q_ext
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
+
 from openstack_dashboard import api
 from openstack_dashboard import policy
+from openstack_dashboard.usage import quotas
+
 
 LOG = logging.getLogger(__name__)
 
@@ -50,9 +53,14 @@ class DeleteRouter(policy.PolicyTargetMixin, tables.DeleteAction):
     policy_rules = (("network", "delete_router"),)
 
     def delete(self, request, obj_id):
-        obj = self.table.get_object_by_id(obj_id)
-        name = self.table.get_object_display(obj)
         try:
+            # detach all interfaces before attempting to delete the router
+            search_opts = {'device_owner': 'network:router_interface',
+                           'device_id': obj_id}
+            ports = api.neutron.port_list(request, **search_opts)
+            for port in ports:
+                api.neutron.router_remove_interface(request, obj_id,
+                                                    port_id=port.id)
             api.neutron.router_delete(request, obj_id)
         except q_ext.NeutronClientException as e:
             msg = _('Unable to delete router "%s"') % e
@@ -61,6 +69,8 @@ class DeleteRouter(policy.PolicyTargetMixin, tables.DeleteAction):
             redirect = reverse(self.redirect_url)
             raise exceptions.Http302(redirect, message=msg)
         except Exception:
+            obj = self.table.get_object_by_id(obj_id)
+            name = self.table.get_object_display(obj)
             msg = _('Unable to delete router "%s"') % name
             LOG.info(msg)
             exceptions.handle(request, msg)
@@ -76,6 +86,18 @@ class CreateRouter(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
     policy_rules = (("network", "create_router"),)
+
+    def allowed(self, request, datum=None):
+        usages = quotas.tenant_quota_usages(request)
+        if usages['routers']['available'] <= 0:
+            if "disabled" not in self.classes:
+                self.classes = [c for c in self.classes] + ["disabled"]
+                self.verbose_name = _("Create Router (Quota exceeded)")
+        else:
+            self.verbose_name = _("Create Router")
+            self.classes = [c for c in self.classes if c != "disabled"]
+
+        return True
 
 
 class EditRouter(policy.PolicyTargetMixin, tables.LinkAction):
@@ -157,7 +179,7 @@ def get_external_network(router):
     if router.external_gateway_info:
         return router.external_gateway_info['network']
     else:
-        return "-"
+        return _("-")
 
 
 class RoutersTable(tables.DataTable):

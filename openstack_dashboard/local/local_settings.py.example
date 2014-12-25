@@ -52,8 +52,6 @@ TEMPLATE_DEBUG = DEBUG
 
 # Default OpenStack Dashboard configuration.
 HORIZON_CONFIG = {
-    'dashboards': ('project', 'admin', 'settings',),
-    'default_dashboard': 'project',
     'user_home': 'openstack_dashboard.views.get_user_home',
     'ajax_queue_limit': 10,
     'auto_fade_alerts': {
@@ -65,6 +63,7 @@ HORIZON_CONFIG = {
     'exceptions': {'recoverable': exceptions.RECOVERABLE,
                    'not_found': exceptions.NOT_FOUND,
                    'unauthorized': exceptions.UNAUTHORIZED},
+    'modal_backdrop': 'static',
     'angular_modules': [],
     'js_files': [],
 }
@@ -249,6 +248,9 @@ IMAGE_RESERVED_CUSTOM_PROPERTIES = []
 # to paginate results.
 API_RESULT_LIMIT = 1000
 API_RESULT_PAGE_SIZE = 20
+
+# Specify a maximum number of items to display in a dropdown.
+DROPDOWN_MAX_ITEMS = 30
 
 # The timezone of the server. This should correspond with the timezone
 # of your entire OpenStack installation, and hopefully be in UTC.

@@ -15,6 +15,7 @@
 
 from django.template.defaultfilters import title  # noqa
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 
 from horizon import tables
 from horizon.utils import filters
@@ -31,12 +32,24 @@ class AdminEditInstance(project_tables.EditInstance):
 
 class MigrateInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "migrate"
-    action_present = _("Migrate")
-    action_past = _("Scheduled migration (pending confirmation) of")
-    data_type_singular = _("Instance")
-    data_type_plural = _("Instances")
     classes = ("btn-migrate", "btn-danger")
     policy_rules = (("compute", "compute_extension:admin_actions:migrate"),)
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Migrate Instance",
+            u"Migrate Instances",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Scheduled migration (pending confirmation) of Instance",
+            u"Scheduled migration (pending confirmation) of Instances",
+            count
+        )
 
     def allowed(self, request, instance):
         return ((instance.status in project_tables.ACTIVE_STATES
@@ -77,7 +90,7 @@ class AdminInstanceFilterAction(tables.FilterAction):
     # session property used for persisting the filter.
     name = "filter_admin_instances"
     filter_type = "server"
-    filter_choices = (('project', _("Project"), False),
+    filter_choices = (('project', _("Project"), True),
                       ('host', _("Host ="), True),
                       ('name', _("Name"), True),
                       ('ip', _("IPv4 Address ="), True),
@@ -85,16 +98,6 @@ class AdminInstanceFilterAction(tables.FilterAction):
                       ('status', _("Status ="), True),
                       ('image', _("Image ID ="), True),
                       ('flavor', _("Flavor ID ="), True))
-
-    def filter(self, table, instances, filter_string):
-        """Server side search.
-        When filtering is supported in the api, then we will handle in view
-        """
-        filter_field = table.get_filter_field()
-        if filter_field == 'project' and filter_string:
-            return [inst for inst in instances
-                    if inst.tenant_name == filter_string]
-        return instances
 
 
 class AdminInstancesTable(tables.DataTable):
@@ -132,22 +135,23 @@ class AdminInstancesTable(tables.DataTable):
                          verbose_name=_("Size"),
                          classes=('nowrap-col',),
                          attrs={'data-type': 'size'})
-    status = tables.Column("status",
-                           filters=(title, filters.replace_underscores),
-                           verbose_name=_("Status"),
-                           status=True,
-                           status_choices=STATUS_CHOICES,
-                           display_choices=
-                               project_tables.STATUS_DISPLAY_CHOICES)
+    status = tables.Column(
+        "status",
+        filters=(title, filters.replace_underscores),
+        verbose_name=_("Status"),
+        status=True,
+        status_choices=STATUS_CHOICES,
+        display_choices=project_tables.STATUS_DISPLAY_CHOICES)
     task = tables.Column("OS-EXT-STS:task_state",
                          verbose_name=_("Task"),
-                         filters=(title, filters.replace_underscores),
+                         empty_value=project_tables.TASK_DISPLAY_NONE,
                          status=True,
                          status_choices=TASK_STATUS_CHOICES,
                          display_choices=project_tables.TASK_DISPLAY_CHOICES)
     state = tables.Column(project_tables.get_power_state,
                           filters=(title, filters.replace_underscores),
-                          verbose_name=_("Power State"))
+                          verbose_name=_("Power State"),
+                          display_choices=project_tables.POWER_DISPLAY_CHOICES)
     created = tables.Column("created",
                             verbose_name=_("Time since created"),
                             filters=(filters.parse_isotime,

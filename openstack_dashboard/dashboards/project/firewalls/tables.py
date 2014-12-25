@@ -11,8 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-#
-# @author: KC Wang, Big Switch Networks
 
 from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
@@ -158,7 +156,7 @@ class InsertRuleToPolicyLink(policy.PolicyTargetMixin,
     verbose_name = _("Insert Rule")
     classes = ("ajax-modal", "btn-update",)
     policy_rules = (("network", "get_firewall_policy"),
-        ("network", "insert_rule"),)
+                    ("network", "insert_rule"),)
 
     def get_link_url(self, policy):
         base_url = reverse("horizon:project:firewalls:insertrule",
@@ -172,7 +170,7 @@ class RemoveRuleFromPolicyLink(policy.PolicyTargetMixin,
     verbose_name = _("Remove Rule")
     classes = ("ajax-modal", "btn-danger",)
     policy_rules = (("network", "get_firewall_policy"),
-        ("network", "remove_rule"),)
+                    ("network", "remove_rule"),)
 
     def get_link_url(self, policy):
         base_url = reverse("horizon:project:firewalls:removerule",
@@ -215,7 +213,7 @@ class RulesTable(tables.DataTable):
                            filters=(filters.upper,),
                            verbose_name=_("Action"))
     enabled = tables.Column("enabled",
-                           verbose_name=_("Enabled"))
+                            verbose_name=_("Enabled"))
     firewall_policy_id = tables.Column(get_policy_name,
                                        link=get_policy_link,
                                        verbose_name=_("In Policy"))

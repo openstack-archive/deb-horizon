@@ -81,12 +81,12 @@ class Server(base.APIResourceWrapper):
     Preserves the request info so image name can later be retrieved.
     """
     _attrs = ['addresses', 'attrs', 'id', 'image', 'links',
-             'metadata', 'name', 'private_ip', 'public_ip', 'status', 'uuid',
-             'image_name', 'VirtualInterfaces', 'flavor', 'key_name', 'fault',
-             'tenant_id', 'user_id', 'created', 'OS-EXT-STS:power_state',
-             'OS-EXT-STS:task_state', 'OS-EXT-SRV-ATTR:instance_name',
-             'OS-EXT-SRV-ATTR:host', 'OS-EXT-AZ:availability_zone',
-             'OS-DCF:diskConfig']
+              'metadata', 'name', 'private_ip', 'public_ip', 'status', 'uuid',
+              'image_name', 'VirtualInterfaces', 'flavor', 'key_name', 'fault',
+              'tenant_id', 'user_id', 'created', 'OS-EXT-STS:power_state',
+              'OS-EXT-STS:task_state', 'OS-EXT-SRV-ATTR:instance_name',
+              'OS-EXT-SRV-ATTR:host', 'OS-EXT-AZ:availability_zone',
+              'OS-DCF:diskConfig']
 
     def __init__(self, apiresource, request):
         super(Server, self).__init__(apiresource)
@@ -99,7 +99,7 @@ class Server(base.APIResourceWrapper):
         from openstack_dashboard.api import glance  # noqa
 
         if not self.image:
-            return "-"
+            return _("-")
         if hasattr(self.image, 'name'):
             return self.image.name
         if 'name' in self.image:
@@ -109,7 +109,7 @@ class Server(base.APIResourceWrapper):
                 image = glance.image_get(self.request, self.image['id'])
                 return image.name
             except glance_exceptions.ClientException:
-                return "-"
+                return _("-")
 
     @property
     def internal_name(self):
@@ -118,6 +118,10 @@ class Server(base.APIResourceWrapper):
     @property
     def availability_zone(self):
         return getattr(self, 'OS-EXT-AZ:availability_zone', "")
+
+    @property
+    def host_server(self):
+        return getattr(self, 'OS-EXT-SRV-ATTR:host', '')
 
 
 class Hypervisor(base.APIDictWrapper):
@@ -142,8 +146,8 @@ class NovaUsage(base.APIResourceWrapper):
     """Simple wrapper around contrib/simple_usage.py."""
 
     _attrs = ['start', 'server_usages', 'stop', 'tenant_id',
-             'total_local_gb_usage', 'total_memory_mb_usage',
-             'total_vcpus_usage', 'total_hours']
+              'total_local_gb_usage', 'total_memory_mb_usage',
+              'total_vcpus_usage', 'total_hours']
 
     def get_summary(self):
         return {'instances': self.total_active_instances,
@@ -394,7 +398,7 @@ class FloatingIpManager(network_base.FloatingIpManager):
         fip = self.client.floating_ips.get(floating_ip_id)
         self.client.servers.add_floating_ip(server.id, fip.ip)
 
-    def disassociate(self, floating_ip_id, port_id):
+    def disassociate(self, floating_ip_id):
         fip = self.client.floating_ips.get(floating_ip_id)
         server = self.client.servers.get(fip.instance_id)
         self.client.servers.remove_floating_ip(server.id, fip.ip)
@@ -419,8 +423,6 @@ class FloatingIpManager(network_base.FloatingIpManager):
 def novaclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
-    LOG.debug('novaclient connection created using token "%s" and url "%s"' %
-              (request.user.token.id, base.url_for(request, 'compute')))
     c = nova_client.Client(request.user.username,
                            request.user.token.id,
                            project_id=request.user.tenant_id,
@@ -434,8 +436,8 @@ def novaclient(request):
 
 
 def server_vnc_console(request, instance_id, console_type='novnc'):
-    return VNCConsole(novaclient(request).servers.get_vnc_console(instance_id,
-                                                  console_type)['console'])
+    return VNCConsole(novaclient(request).servers.get_vnc_console(
+        instance_id, console_type)['console'])
 
 
 def server_spice_console(request, instance_id, console_type='spice-html5'):
@@ -575,7 +577,7 @@ def server_list(request, search_opts=None, all_tenants=False):
     else:
         search_opts['project_id'] = request.user.tenant_id
     servers = [Server(s, request)
-                for s in c.servers.list(True, search_opts)]
+               for s in c.servers.list(True, search_opts)]
 
     has_more_data = False
     if paginate and len(servers) > page_size:
@@ -658,6 +660,14 @@ def server_stop(request, instance_id):
     novaclient(request).servers.stop(instance_id)
 
 
+def server_lock(request, instance_id):
+    novaclient(request).servers.lock(instance_id)
+
+
+def server_unlock(request, instance_id):
+    novaclient(request).servers.unlock(instance_id)
+
+
 def tenant_quota_get(request, tenant_id):
     return base.QuotaSet(novaclient(request).quotas.get(tenant_id))
 
@@ -701,13 +711,13 @@ def get_password(request, instance_id, private_key=None):
 
 def instance_volume_attach(request, volume_id, instance_id, device):
     return novaclient(request).volumes.create_server_volume(instance_id,
-                                                              volume_id,
-                                                              device)
+                                                            volume_id,
+                                                            device)
 
 
 def instance_volume_detach(request, instance_id, att_id):
     return novaclient(request).volumes.delete_server_volume(instance_id,
-                                                              att_id)
+                                                            att_id)
 
 
 def instance_volumes_list(request, instance_id):
@@ -786,6 +796,18 @@ def service_list(request, binary=None):
     return novaclient(request).services.list(binary=binary)
 
 
+def service_enable(request, host, binary):
+    return novaclient(request).services.enable(host, binary)
+
+
+def service_disable(request, host, binary, reason=None):
+    if reason:
+        return novaclient(request).services.disable_log_reason(host,
+                                                               binary, reason)
+    else:
+        return novaclient(request).services.disable(host, binary)
+
+
 def aggregate_details_list(request):
     result = []
     c = novaclient(request)
@@ -853,3 +875,10 @@ def can_set_server_password():
 def instance_action_list(request, instance_id):
     return nova_instance_action.InstanceActionManager(
         novaclient(request)).list(instance_id)
+
+
+def can_set_mount_point():
+    """Return the Hypervisor's capability of setting mount points."""
+    hypervisor_features = getattr(
+        settings, "OPENSTACK_HYPERVISOR_FEATURES", {})
+    return hypervisor_features.get("can_set_mount_point", False)

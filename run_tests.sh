@@ -2,13 +2,6 @@
 
 set -o errexit
 
-# ---------------UPDATE ME-------------------------------#
-# Increment me any time the environment should be rebuilt.
-# This includes dependency changes, directory renames, etc.
-# Simple integer sequence: 1, 2, 3...
-environment_version=47
-#--------------------------------------------------------#
-
 function usage {
   echo "Usage: $0 [OPTION]..."
   echo "Run Horizon's test suite(s)"
@@ -24,6 +17,7 @@ function usage {
   echo "  -m, --manage             Run a Django management command."
   echo "  --makemessages           Create/Update English translation files."
   echo "  --compilemessages        Compile all translation files."
+  echo "  --check-only             Do not update translation files (--makemessages only)."
   echo "  -p, --pep8               Just run pep8"
   echo "  -8, --pep8-changed [<basecommit>]"
   echo "                           Just run PEP8 and HACKING compliance check"
@@ -59,6 +53,7 @@ function usage {
 #
 root=`pwd -P`
 venv=$root/.venv
+venv_env_version=$venv/environments
 with_venv=tools/with_venv.sh
 included_dirs="openstack_dashboard horizon"
 
@@ -87,6 +82,7 @@ testargs=""
 with_coverage=0
 makemessages=0
 compilemessages=0
+check_only=0
 manage=0
 
 # Jenkins sets a "JOB_NAME" variable, if it's not set, we'll make it "default"
@@ -115,6 +111,7 @@ function process_option {
     -m|--manage) manage=1;;
     --makemessages) makemessages=1;;
     --compilemessages) compilemessages=1;;
+    --check-only) check_only=1;;
     --only-selenium) only_selenium=1;;
     --with-selenium) with_selenium=1;;
     --selenium-headless) selenium_headless=1;;
@@ -218,21 +215,20 @@ function destroy_venv {
   echo "Removing virtualenv..."
   rm -rf $venv
   echo "Virtualenv removed."
-  rm -f .environment_version
-  echo "Environment cleaned."
 }
 
 function environment_check {
   echo "Checking environment."
-  if [ -f .environment_version ]; then
-    ENV_VERS=`cat .environment_version`
-    if [ $ENV_VERS -eq $environment_version ]; then
-      if [ -e ${venv} ]; then
-        # If the environment exists and is up-to-date then set our variables
-        command_wrapper="${root}/${with_venv}"
-        echo "Environment is up to date."
-        return 0
-      fi
+  if [ -f $venv_env_version ]; then
+    set +o errexit
+    cat requirements.txt test-requirements.txt | cmp $venv_env_version - > /dev/null
+    local env_check_result=$?
+    set -o errexit
+    if [ $env_check_result -eq 0 ]; then
+      # If the environment exists and is up-to-date then set our variables
+      command_wrapper="${root}/${with_venv}"
+      echo "Environment is up to date."
+      return 0
     fi
   fi
 
@@ -281,7 +277,6 @@ function backup_environment {
     fi
     mkdir -p /tmp/.horizon_environment/$JOB_NAME
     cp -r $venv /tmp/.horizon_environment/$JOB_NAME/
-    cp .environment_version /tmp/.horizon_environment/$JOB_NAME/
     # Remove the backup now that we've completed successfully
     rm -rf /tmp/.horizon_environment/$JOB_NAME.old
     echo "Backup completed"
@@ -297,7 +292,6 @@ function restore_environment {
     fi
 
     cp -r /tmp/.horizon_environment/$JOB_NAME/.venv ./ || true
-    cp -r /tmp/.horizon_environment/$JOB_NAME/.environment_version ./ || true
 
     echo "Environment restored successfully."
   fi
@@ -317,7 +311,7 @@ function install_venv {
   # Make sure it worked and record the environment version
   sanity_check
   chmod -R 754 $venv
-  echo $environment_version > .environment_version
+  cat requirements.txt test-requirements.txt > $venv_env_version
 }
 
 function run_tests {
@@ -414,7 +408,7 @@ function run_integration_tests {
 }
 
 function run_makemessages {
-  OPTS="-l en --no-obsolete"
+  OPTS="-l en --no-obsolete --settings=openstack_dashboard.test.settings"
   DASHBOARD_OPTS="--extension=html,txt,csv --ignore=openstack"
   echo -n "horizon: "
   cd horizon
@@ -428,15 +422,20 @@ function run_makemessages {
   ${command_wrapper} $root/manage.py makemessages $DASHBOARD_OPTS $OPTS
   DASHBOARD_RESULT=$?
   cd ..
+  if [ $check_only -eq 1 ]; then
+    git checkout -- horizon/locale/en/LC_MESSAGES/django*.po
+    git checkout -- openstack_dashboard/locale/en/LC_MESSAGES/django.po
+  fi
   exit $(($HORIZON_PY_RESULT || $HORIZON_JS_RESULT || $DASHBOARD_RESULT))
 }
 
 function run_compilemessages {
+  OPTS="--settings=openstack_dashboard.test.settings"
   cd horizon
-  ${command_wrapper} $root/manage.py compilemessages
+  ${command_wrapper} $root/manage.py compilemessages $OPTS
   HORIZON_PY_RESULT=$?
   cd ../openstack_dashboard
-  ${command_wrapper} $root/manage.py compilemessages
+  ${command_wrapper} $root/manage.py compilemessages $OPTS
   DASHBOARD_RESULT=$?
   cd ..
   # English is the source language, so compiled catalogs are unnecessary.

@@ -11,9 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-#
-# @author: Yingjun Li <liyingjun1988@gmail.com>
-#
 
 import logging
 
@@ -68,7 +65,8 @@ class AddDHCPAgent(tables.LinkAction):
     name = "add"
     verbose_name = _("Add DHCP Agent")
     url = "horizon:admin:networks:adddhcpagent"
-    classes = ("ajax-modal", "btn-create")
+    classes = ("ajax-modal",)
+    icon = "plus"
     policy_rules = (("network", "update_agent"),)
 
     def get_link_url(self, datum=None):
@@ -103,3 +101,4 @@ class DHCPAgentsTable(tables.DataTable):
         verbose_name = _("DHCP Agents")
         table_actions = (AddDHCPAgent, DeleteDHCPAgent)
         row_actions = (DeleteDHCPAgent,)
+        hidden_title = False

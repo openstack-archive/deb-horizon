@@ -183,9 +183,9 @@ class Column(html.HTMLElement):
     .. attribute:: truncate
 
         An integer for the maximum length of the string in this column. If the
-        data in this column is larger than the supplied number, the data for
-        this column will be truncated and an ellipsis will be appended to the
-        truncated data.
+        length of the data in this column is larger than the supplied number,
+        the data for this column will be truncated and an ellipsis will be
+        appended to the truncated data.
         Defaults to ``None``.
 
     .. attribute:: link_classes
@@ -194,7 +194,7 @@ class Column(html.HTMLElement):
         is displayed as a link.
         This is left for backward compatibility. Deprecated in favor of the
         link_attributes attribute.
-        Example: ``classes=('link-foo', 'link-bar')``.
+        Example: ``link_classes=('link-foo', 'link-bar')``.
         Defaults to ``None``.
 
     .. attribute:: wrap_list
@@ -233,6 +233,11 @@ class Column(html.HTMLElement):
         ``link_attrs={"data-foo": "bar"}``.
         ``link_attrs={"target": "_blank", "class": "link-foo link-bar"}``.
         Defaults to ``None``.
+
+    .. attribute:: help_text
+
+        A string of simple help text displayed in a tooltip when you hover
+        over the help icon beside the Column name. Defaults to ``None``.
     """
     summation_methods = {
         "sum": sum,
@@ -269,7 +274,7 @@ class Column(html.HTMLElement):
                  auto=None, truncate=None, link_classes=None, wrap_list=False,
                  form_field=None, form_field_attributes=None,
                  update_action=None, link_attrs=None,
-                 cell_attributes_getter=None):
+                 cell_attributes_getter=None, help_text=None):
 
         self.classes = list(classes or getattr(self, "classes", []))
         super(Column, self).__init__()
@@ -297,7 +302,7 @@ class Column(html.HTMLElement):
         self.allowed_data_types = allowed_data_types
         self.hidden = hidden
         self.status = status
-        self.empty_value = empty_value or '-'
+        self.empty_value = empty_value or _('-')
         self.filters = filters or []
         self.truncate = truncate
         self.wrap_list = wrap_list
@@ -305,6 +310,7 @@ class Column(html.HTMLElement):
         self.form_field_attributes = form_field_attributes or {}
         self.update_action = update_action
         self.link_attrs = link_attrs or {}
+        self.help_text = help_text
         if link_classes:
             self.link_attrs['class'] = ' '.join(link_classes)
         self.cell_attributes_getter = cell_attributes_getter
@@ -526,7 +532,7 @@ class Row(html.HTMLElement):
 
     def load_cells(self, datum=None):
         """Load the row's data (either provided at initialization or as an
-        argument to this function), initiailize all the cells contained
+        argument to this function), initialize all the cells contained
         by this row, and set the appropriate row properties which require
         the row's data to be determined.
 
@@ -641,6 +647,12 @@ class Cell(html.HTMLElement):
             self.attrs['data-cell-name'] = column.name
             self.attrs['data-update-url'] = self.get_ajax_update_url()
         self.inline_edit_mod = False
+        # add tooltip to cells if the truncate variable is set
+        if column.truncate:
+            data = getattr(datum, column.name, '') or ''
+            if len(data) > column.truncate:
+                self.attrs['data-toggle'] = 'tooltip'
+                self.attrs['title'] = data
         self.data = self.get_data(datum, column, row)
 
     def get_data(self, datum, column, row):
@@ -676,7 +688,7 @@ class Cell(html.HTMLElement):
                                  form_field_attributes)
             table._data_cache[column][table.get_object_id(datum)] = data
         elif column.auto == "actions":
-            data = table.render_row_actions(datum)
+            data = table.render_row_actions(datum, pull_right=False)
             table._data_cache[column][table.get_object_id(datum)] = data
         else:
             data = column.get_data(datum)
@@ -937,6 +949,11 @@ class DataTableOptions(object):
         Boolean to control whether or not to show the table's footer.
         Default: ``True``.
 
+    .. attribute:: hidden_title
+
+        Boolean to control whether or not to show the table's title.
+        Default: ``True``.
+
     .. attribute:: permissions
 
         A list of permission names which this table requires in order to be
@@ -962,6 +979,7 @@ class DataTableOptions(object):
         self.pagination_param = getattr(options, 'pagination_param', 'marker')
         self.browser_table = getattr(options, 'browser_table', None)
         self.footer = getattr(options, 'footer', True)
+        self.hidden_title = getattr(options, 'hidden_title', True)
         self.no_data_message = getattr(options,
                                        "no_data_message",
                                        _("No items to display."))
@@ -982,16 +1000,18 @@ class DataTableOptions(object):
         self.template = getattr(options,
                                 'template',
                                 'horizon/common/_data_table.html')
-        self.row_actions_template = \
-            'horizon/common/_data_table_row_actions.html'
+        self.row_actions_dropdown_template = ('horizon/common/_data_table_'
+                                              'row_actions_dropdown.html')
+        self.row_actions_row_template = ('horizon/common/_data_table_'
+                                         'row_actions_row.html')
         self.table_actions_template = \
             'horizon/common/_data_table_table_actions.html'
         self.context_var_name = unicode(getattr(options,
                                                 'context_var_name',
                                                 'table'))
         self.actions_column = getattr(options,
-                                     'actions_column',
-                                     len(self.row_actions) > 0)
+                                      'actions_column',
+                                      len(self.row_actions) > 0)
         self.multi_select = getattr(options,
                                     'multi_select',
                                     len(self.table_actions) > 0)
@@ -1176,21 +1196,22 @@ class DataTable(object):
             if self._meta.filter and self._meta._filter_action:
                 action = self._meta._filter_action
                 filter_string = self.get_filter_string()
+                filter_field = self.get_filter_field()
                 request_method = self.request.method
                 needs_preloading = (not filter_string
                                     and request_method == 'GET'
                                     and action.needs_preloading)
                 valid_method = (request_method == action.method)
-                if valid_method or needs_preloading:
-                    filter_field = self.get_filter_field()
+                not_api_filter = (filter_string
+                                  and not action.is_api_filter(filter_field))
+
+                if valid_method or needs_preloading or not_api_filter:
                     if self._meta.mixed_data_type:
-                        self._filtered_data = action.data_type_filter(self,
-                                                                self.data,
-                                                                filter_string)
-                    elif not action.is_api_filter(filter_field):
-                        self._filtered_data = action.filter(self,
-                                                            self.data,
-                                                            filter_string)
+                        self._filtered_data = action.data_type_filter(
+                            self, self.data, filter_string)
+                    else:
+                        self._filtered_data = action.filter(
+                            self, self.data, filter_string)
         return self._filtered_data
 
     def slugify_name(self):
@@ -1244,7 +1265,8 @@ class DataTable(object):
     def render(self):
         """Renders the table using the template from the table options."""
         table_template = template.loader.get_template(self._meta.template)
-        extra_context = {self._meta.context_var_name: self}
+        extra_context = {self._meta.context_var_name: self,
+                         'hidden_title': self._meta.hidden_title}
         context = template.RequestContext(self.request, extra_context)
         return table_template.render(context)
 
@@ -1296,7 +1318,7 @@ class DataTable(object):
                 matches.append(datum)
         if len(matches) > 1:
             raise ValueError("Multiple matches were returned for that id: %s."
-                           % matches)
+                             % matches)
         if not matches:
             raise exceptions.Http302(self.get_absolute_url(),
                                      _('No match returned for the id "%s".')
@@ -1388,15 +1410,21 @@ class DataTable(object):
         self.set_multiselect_column_visibility(len(bound_actions) > 0)
         return table_actions_template.render(context)
 
-    def render_row_actions(self, datum):
+    def render_row_actions(self, datum, pull_right=True, row=False):
         """Renders the actions specified in ``Meta.row_actions`` using the
-        current row data.
+        current row data. If `row` is True, the actions are rendered in a row
+        of buttons. Otherwise they are rendered in a dropdown box.
         """
-        template_path = self._meta.row_actions_template
+        if row:
+            template_path = self._meta.row_actions_row_template
+        else:
+            template_path = self._meta.row_actions_dropdown_template
+
         row_actions_template = template.loader.get_template(template_path)
         bound_actions = self.get_row_actions(datum)
         extra_context = {"row_actions": bound_actions,
-                         "row_id": self.get_object_id(datum)}
+                         "row_id": self.get_object_id(datum),
+                         "pull_right": pull_right}
         context = template.RequestContext(self.request, extra_context)
         return row_actions_template.render(context)
 
@@ -1601,7 +1629,7 @@ class DataTable(object):
         table_name, action_name, obj_id = self.check_handler(request)
         if table_name == self.name and action_name:
             action_names = [action.name for action in
-                self.base_actions.values() if not action.preempt]
+                            self.base_actions.values() if not action.preempt]
             # do not run preemptive actions here
             if action_name in action_names:
                 return self.take_action(action_name, obj_id)

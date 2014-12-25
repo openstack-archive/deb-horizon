@@ -20,6 +20,7 @@ from ceilometerclient.v2 import statistics
 from keystoneclient.v2_0 import tenants
 from keystoneclient.v2_0 import users
 
+from openstack_dashboard.api import ceilometer
 from openstack_dashboard.test.test_data import utils
 
 
@@ -27,6 +28,7 @@ def data(TEST):
     TEST.ceilometer_users = utils.TestDataContainer()
     TEST.ceilometer_tenants = utils.TestDataContainer()
     TEST.resources = utils.TestDataContainer()
+    TEST.api_resources = utils.TestDataContainer()
     TEST.samples = utils.TestDataContainer()
     TEST.meters = utils.TestDataContainer()
     TEST.statistics = utils.TestDataContainer()
@@ -38,21 +40,21 @@ def data(TEST):
 
     # users
     ceilometer_user_dict1 = {'id': "1",
-                 'name': 'user',
-                 'email': 'test@example.com',
-                 'password': 'password',
-                 'token': 'test_token',
-                 'project_id': '1',
-                 'enabled': True,
-                 'domain_id': "1"}
+                             'name': 'user',
+                             'email': 'test@example.com',
+                             'password': 'password',
+                             'token': 'test_token',
+                             'project_id': '1',
+                             'enabled': True,
+                             'domain_id': "1"}
     ceilometer_user_dict2 = {'id': "2",
-                 'name': 'user2',
-                 'email': 'test2@example.com',
-                 'password': 'password',
-                 'token': 'test_token',
-                 'project_id': '2',
-                 'enabled': True,
-                 'domain_id': "2"}
+                             'name': 'user2',
+                             'email': 'test2@example.com',
+                             'password': 'password',
+                             'token': 'test_token',
+                             'project_id': '2',
+                             'enabled': True,
+                             'domain_id': "2"}
     TEST.ceilometer_users.add(users.User(None,
                                          ceilometer_user_dict1))
     TEST.ceilometer_users.add(users.User(None,
@@ -108,39 +110,65 @@ def data(TEST):
         user_id="fake_user_id",
         timestamp='2012-07-02T10:42:00.000000',
         metadata={'tag': 'self.counter3', 'display_name': 'test-server'},
-        links=[{'url': 'test_url', 'rel': 'intance'}],
+        links=[{'url': 'test_url', 'rel': 'instance'}],
     )
+    resource_dict_4 = dict(
+        resource_id='fake_resource_id3',
+        project_id='fake_project_id',
+        user_id="fake_user_id",
+        timestamp='2012-07-02T10:42:00.000000',
+        metadata={'tag': 'self.counter3', 'display_name': 'test-server'},
+        links=[{'url': 'test_url', 'rel': 'memory'}],
+    )
+
     resource_1 = resources.Resource(resources.ResourceManager(None),
                                     resource_dict_1)
     resource_2 = resources.Resource(resources.ResourceManager(None),
                                     resource_dict_2)
     resource_3 = resources.Resource(resources.ResourceManager(None),
                                     resource_dict_3)
+    resource_4 = resources.Resource(resources.ResourceManager(None),
+                                    resource_dict_4)
+
     TEST.resources.add(resource_1)
     TEST.resources.add(resource_2)
     TEST.resources.add(resource_3)
 
+    # Having a separate set of fake objects for openstack_dashboard
+    # api Resource class. This is required because of additional methods
+    # defined in openstack_dashboard.api.ceilometer.Resource
+
+    api_resource_1 = ceilometer.Resource(resource_1)
+    api_resource_2 = ceilometer.Resource(resource_2)
+    api_resource_3 = ceilometer.Resource(resource_3)
+    api_resource_4 = ceilometer.Resource(resource_4)
+
+    TEST.api_resources.add(api_resource_1)
+    TEST.api_resources.add(api_resource_2)
+    TEST.api_resources.add(api_resource_3)
+    TEST.api_resources.add(api_resource_4)
+
     # samples
     sample_dict_1 = {'resource_id': 'fake_resource_id',
-                   'project_id': 'fake_project_id',
-                   'user_id': 'fake_user_id',
-                   'counter_name': 'image',
-                   'counter_type': 'gauge',
-                   'counter_unit': 'image',
-                   'counter_volume': 1,
-                   'timestamp': '2012-12-21T11:00:55.000000',
-                   'metadata': {'name1': 'value1', 'name2': 'value2'},
-                    'message_id': 'fake_message_id'}
+                     'project_id': 'fake_project_id',
+                     'user_id': 'fake_user_id',
+                     'counter_name': 'image',
+                     'counter_type': 'gauge',
+                     'counter_unit': 'image',
+                     'counter_volume': 1,
+                     'timestamp': '2012-12-21T11:00:55.000000',
+                     'metadata': {'name1': 'value1', 'name2': 'value2'},
+                     'message_id': 'fake_message_id'}
     sample_dict_2 = {'resource_id': 'fake_resource_id2',
-                   'project_id': 'fake_project_id',
-                   'user_id': 'fake_user_id',
-                   'counter_name': 'image',
-                   'counter_type': 'gauge',
-                   'counter_unit': 'image',
-                   'counter_volume': 1,
-                   'timestamp': '2012-12-21T11:00:55.000000',
-                   'metadata': {'name1': 'value1', 'name2': 'value2'},
-                    'message_id': 'fake_message_id'}
+                     'project_id': 'fake_project_id',
+                     'user_id': 'fake_user_id',
+                     'counter_name': 'image',
+                     'counter_type': 'gauge',
+                     'counter_unit': 'image',
+                     'counter_volume': 1,
+                     'timestamp': '2012-12-21T11:00:55.000000',
+                     'metadata': {'name1': 'value1', 'name2': 'value2'},
+                     'message_id': 'fake_message_id'}
     sample_1 = samples.Sample(samples.SampleManager(None), sample_dict_1)
     sample_2 = samples.Sample(samples.SampleManager(None), sample_dict_2)
     TEST.samples.add(sample_1)
@@ -148,29 +176,29 @@ def data(TEST):
 
     # meters
     meter_dict_1 = {'name': 'instance',
-                  'type': 'gauge',
-                  'unit': 'instance',
-                  'resource_id': 'fake_resource_id',
-                  'project_id': 'fake_project_id',
-                  'user_id': 'fake_user_id'}
+                    'type': 'gauge',
+                    'unit': 'instance',
+                    'resource_id': 'fake_resource_id',
+                    'project_id': 'fake_project_id',
+                    'user_id': 'fake_user_id'}
     meter_dict_2 = {'name': 'instance',
-                  'type': 'gauge',
-                  'unit': 'instance',
-                  'resource_id': 'fake_resource_id',
-                  'project_id': 'fake_project_id',
-                  'user_id': 'fake_user_id'}
+                    'type': 'gauge',
+                    'unit': 'instance',
+                    'resource_id': 'fake_resource_id',
+                    'project_id': 'fake_project_id',
+                    'user_id': 'fake_user_id'}
     meter_dict_3 = {'name': 'disk.read.bytes',
-                  'type': 'gauge',
-                  'unit': 'instance',
-                  'resource_id': 'fake_resource_id',
-                  'project_id': 'fake_project_id',
-                  'user_id': 'fake_user_id'}
+                    'type': 'gauge',
+                    'unit': 'instance',
+                    'resource_id': 'fake_resource_id',
+                    'project_id': 'fake_project_id',
+                    'user_id': 'fake_user_id'}
     meter_dict_4 = {'name': 'disk.write.bytes',
-                  'type': 'gauge',
-                  'unit': 'instance',
-                  'resource_id': 'fake_resource_id',
-                  'project_id': 'fake_project_id',
-                  'user_id': 'fake_user_id'}
+                    'type': 'gauge',
+                    'unit': 'instance',
+                    'resource_id': 'fake_resource_id',
+                    'project_id': 'fake_project_id',
+                    'user_id': 'fake_user_id'}
     meter_1 = meters.Meter(meters.MeterManager(None), meter_dict_1)
     meter_2 = meters.Meter(meters.MeterManager(None), meter_dict_2)
     meter_3 = meters.Meter(meters.MeterManager(None), meter_dict_3)
@@ -182,15 +210,15 @@ def data(TEST):
 
     # statistic
     statistic_dict_1 = {'min': 1,
-                 'max': 9,
-                 'avg': 4.55,
-                 'sum': 45,
-                 'count': 10,
-                 'duration_start': '2012-12-21T11:00:55.000000',
-                 'duration_end': '2012-12-21T11:00:55.000000',
-                 'period': 7200,
-                 'period_start': '2012-12-21T11:00:55.000000',
-                 'period_end': '2012-12-21T11:00:55.000000'}
+                        'max': 9,
+                        'avg': 4.55,
+                        'sum': 45,
+                        'count': 10,
+                        'duration_start': '2012-12-21T11:00:55.000000',
+                        'duration_end': '2012-12-21T11:00:55.000000',
+                        'period': 7200,
+                        'period_start': '2012-12-21T11:00:55.000000',
+                        'period_end': '2012-12-21T11:00:55.000000'}
     statistic_1 = statistics.Statistics(statistics.StatisticsManager(None),
                                         statistic_dict_1)
     TEST.statistics.add(statistic_1)

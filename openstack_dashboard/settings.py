@@ -73,8 +73,6 @@ STATIC_URL = '/static/'
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
 HORIZON_CONFIG = {
-    'dashboards': ('project', 'admin', 'router',),
-    'default_dashboard': 'project',
     'user_home': 'openstack_dashboard.views.get_user_home',
     'ajax_queue_limit': 10,
     'auto_fade_alerts': {
@@ -192,12 +190,14 @@ STATICFILES_DIRS = [
 
 if xstatic.main.XStatic(xstatic.pkg.jquery_ui).version.startswith('1.10.'):
     # The 1.10.x versions already contain the 'ui' directory.
-    STATICFILES_DIRS.append(('horizon/lib/jquery-ui',
-        xstatic.main.XStatic(xstatic.pkg.jquery_ui).base_dir))
+    STATICFILES_DIRS.append(
+        ('horizon/lib/jquery-ui',
+         xstatic.main.XStatic(xstatic.pkg.jquery_ui).base_dir))
 else:
     # Newer versions dropped the directory, add it to keep the path the same.
-    STATICFILES_DIRS.append(('horizon/lib/jquery-ui/ui',
-        xstatic.main.XStatic(xstatic.pkg.jquery_ui).base_dir))
+    STATICFILES_DIRS.append(
+        ('horizon/lib/jquery-ui/ui',
+         xstatic.main.XStatic(xstatic.pkg.jquery_ui).base_dir))
 
 COMPRESS_PRECOMPILERS = (
     ('text/scss', 'django_pyscss.compressor.DjangoScssFilter'),
@@ -229,7 +229,7 @@ INSTALLED_APPS = [
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
-MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_HTTPONLY = True

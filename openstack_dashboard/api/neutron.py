@@ -243,7 +243,8 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
 
     def create(self, name, desc):
         body = {'security_group': {'name': name,
-                                   'description': desc}}
+                                   'description': desc,
+                                   'tenant_id': self.request.user.project_id}}
         secgroup = self.client.create_security_group(body)
         return SecurityGroup(secgroup.get('security_group'))
 
@@ -270,14 +271,14 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
             ip_protocol = None
 
         body = {'security_group_rule':
-                    {'security_group_id': parent_group_id,
-                     'direction': direction,
-                     'ethertype': ethertype,
-                     'protocol': ip_protocol,
-                     'port_range_min': from_port,
-                     'port_range_max': to_port,
-                     'remote_ip_prefix': cidr,
-                     'remote_group_id': group_id}}
+                {'security_group_id': parent_group_id,
+                 'direction': direction,
+                 'ethertype': ethertype,
+                 'protocol': ip_protocol,
+                 'port_range_min': from_port,
+                 'port_range_max': to_port,
+                 'remote_ip_prefix': cidr,
+                 'remote_group_id': group_id}}
         rule = self.client.create_security_group_rule(body)
         rule = rule.get('security_group_rule')
         sg_dict = self._sg_name_dict(parent_group_id, [rule])
@@ -380,7 +381,8 @@ class FloatingIpManager(network_base.FloatingIpManager):
         return FloatingIp(fip)
 
     def allocate(self, pool):
-        body = {'floatingip': {'floating_network_id': pool}}
+        body = {'floatingip': {'floating_network_id': pool,
+                               'tenant_id': self.request.user.project_id}}
         fip = self.client.create_floatingip(body).get('floatingip')
         self._set_instance_info(fip)
         return FloatingIp(fip)
@@ -397,7 +399,7 @@ class FloatingIpManager(network_base.FloatingIpManager):
         self.client.update_floatingip(floating_ip_id,
                                       {'floatingip': update_dict})
 
-    def disassociate(self, floating_ip_id, port_id):
+    def disassociate(self, floating_ip_id):
         update_dict = {'port_id': None}
         self.client.update_floatingip(floating_ip_id,
                                       {'floatingip': update_dict})
@@ -493,10 +495,6 @@ def get_ipver_str(ip_version):
 def neutronclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
-    LOG.debug('neutronclient connection created using token "%s" and url "%s"'
-              % (request.user.token.id, base.url_for(request, 'network')))
-    LOG.debug('user_id=%(user)s, tenant_id=%(tenant)s' %
-              {'user': request.user.id, 'tenant': request.user.tenant_id})
     c = neutron_client.Client(token=request.user.token.id,
                               auth_url=base.url_for(request, 'identity'),
                               endpoint_url=base.url_for(request, 'network'),
@@ -566,6 +564,8 @@ def network_create(request, **kwargs):
     # In the case network profiles are being used, profile id is needed.
     if 'net_profile_id' in kwargs:
         kwargs['n1kv:profile_id'] = kwargs.pop('net_profile_id')
+    if 'tenant_id' not in kwargs:
+        kwargs['tenant_id'] = request.user.project_id
     body = {'network': kwargs}
     network = neutronclient(request).create_network(body=body).get('network')
     return Network(network)
@@ -612,9 +612,11 @@ def subnet_create(request, network_id, cidr, ip_version, **kwargs):
     LOG.debug("subnet_create(): netid=%s, cidr=%s, ipver=%d, kwargs=%s"
               % (network_id, cidr, ip_version, kwargs))
     body = {'subnet':
-                {'network_id': network_id,
-                 'ip_version': ip_version,
-                 'cidr': cidr}}
+            {'network_id': network_id,
+             'ip_version': ip_version,
+             'cidr': cidr}}
+    if 'tenant_id' not in kwargs:
+        kwargs['tenant_id'] = request.user.project_id
     body['subnet'].update(kwargs)
     subnet = neutronclient(request).create_subnet(body=body).get('subnet')
     return Subnet(subnet)
@@ -660,6 +662,8 @@ def port_create(request, network_id, **kwargs):
     if 'policy_profile_id' in kwargs:
         kwargs['n1kv:profile_id'] = kwargs.pop('policy_profile_id')
     body = {'port': {'network_id': network_id}}
+    if 'tenant_id' not in kwargs:
+        kwargs['tenant_id'] = request.user.project_id
     body['port'].update(kwargs)
     port = neutronclient(request).create_port(body=body).get('port')
     return Port(port)
@@ -739,6 +743,8 @@ def profile_bindings_list(request, type_p, **params):
 def router_create(request, **kwargs):
     LOG.debug("router_create():, kwargs=%s" % kwargs)
     body = {'router': {}}
+    if 'tenant_id' not in kwargs:
+        kwargs['tenant_id'] = request.user.project_id
     body['router'].update(kwargs)
     router = neutronclient(request).create_router(body=body).get('router')
     return Router(router)

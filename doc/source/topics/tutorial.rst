@@ -1,6 +1,6 @@
-===================
-Building on Horizon
-===================
+============================================
+Tutorial: Building a Dashboard using Horizon
+============================================
 
 This tutorial covers how to use the various components in Horizon to build
 an example dashboard and a panel with a tab which has a table containing data
@@ -319,7 +319,7 @@ group which has one tab. The completed code should look like the following::
                 error_message = _('Unable to get instances')
                 exceptions.handle(self.request, error_message)
 
-                return instances[]
+                return []
 
     class MypanelTabs(tabs.TabGroup):
         slug = "mypanel_tabs"

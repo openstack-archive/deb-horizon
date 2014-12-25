@@ -31,9 +31,9 @@ class VolumeTests(test.BaseAdminViewTests):
             'all_tenants': True}).AndReturn(self.cinder_volumes.list())
         api.nova.server_list(IsA(http.HttpRequest), search_opts={
                              'all_tenants': True}) \
-                       .AndReturn([self.servers.list(), False])
+            .AndReturn([self.servers.list(), False])
         keystone.tenant_list(IsA(http.HttpRequest)) \
-                .AndReturn([self.tenants.list(), False])
+            .AndReturn([self.tenants.list(), False])
 
         self.mox.ReplayAll()
         res = self.client.get(reverse('horizon:admin:volumes:index'))
@@ -56,26 +56,38 @@ class VolumeTests(test.BaseAdminViewTests):
 
         res = self.client.post(
             reverse('horizon:admin:volumes:volumes:update_status',
-                args=(volume.id,)),
+                    args=(volume.id,)),
             formData)
         self.assertNoFormErrors(res)
 
     @test.create_stubs({cinder: ('volume_type_list_with_qos_associations',
-                                 'qos_spec_list',)})
+                                 'qos_spec_list',
+                                 'extension_supported',
+                                 'volume_encryption_type_list')})
     def test_volume_types_tab(self):
+        encryption_list = (self.cinder_volume_encryption_types.list()[0],
+                           self.cinder_volume_encryption_types.list()[1])
         cinder.volume_type_list_with_qos_associations(
             IsA(http.HttpRequest)).\
             AndReturn(self.volume_types.list())
         cinder.qos_spec_list(IsA(http.HttpRequest)).\
             AndReturn(self.cinder_qos_specs.list())
+        cinder.volume_encryption_type_list(IsA(http.HttpRequest))\
+            .AndReturn(encryption_list)
+        cinder.extension_supported(IsA(http.HttpRequest),
+                                   'VolumeTypeEncryption')\
+            .AndReturn(True)
+        cinder.extension_supported(IsA(http.HttpRequest),
+                                   'VolumeTypeEncryption')\
+            .AndReturn(True)
 
         self.mox.ReplayAll()
         res = self.client.get(reverse(
             'horizon:admin:volumes:volume_types_tab'))
 
         self.assertEqual(res.status_code, 200)
-        self.assertTemplateUsed(res,
-            'admin/volumes/volume_types/volume_types_tables.html')
+        self.assertTemplateUsed(
+            res, 'admin/volumes/volume_types/volume_types_tables.html')
         volume_types = res.context['volume_types_table'].data
         self.assertItemsEqual(volume_types, self.volume_types.list())
         qos_specs = res.context['qos_specs_table'].data

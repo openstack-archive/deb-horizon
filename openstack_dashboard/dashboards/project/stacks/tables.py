@@ -83,13 +83,17 @@ class StacksUpdateRow(tables.Row):
 
     def get_data(self, request, stack_id):
         try:
-            return api.heat.stack_get(request, stack_id)
-        except exc.HTTPNotFound:
-            # returning 404 to the ajax call removes the
-            # row from the table on the ui
-            raise Http404
+            stack = api.heat.stack_get(request, stack_id)
+            if stack.stack_status == 'DELETE_COMPLETE':
+                # returning 404 to the ajax call removes the
+                # row from the table on the ui
+                raise Http404
+            return stack
+        except Http404:
+            raise
         except Exception as e:
             messages.error(request, e)
+            raise
 
 
 class StacksTable(tables.DataTable):
@@ -184,14 +188,14 @@ class ResourcesTable(tables.DataTable):
                                      verbose_name=_("Stack Resource"),
                                      link=get_resource_url)
     physical_resource = tables.Column('physical_resource_id',
-                                     verbose_name=_("Resource"),
-                                     link=mappings.resource_to_url)
+                                      verbose_name=_("Resource"),
+                                      link=mappings.resource_to_url)
     resource_type = tables.Column("resource_type",
-                           verbose_name=_("Stack Resource Type"),)
+                                  verbose_name=_("Stack Resource Type"),)
     updated_time = tables.Column('updated_time',
-                              verbose_name=_("Date Updated"),
-                              filters=(filters.parse_isotime,
-                                       filters.timesince_or_never))
+                                 verbose_name=_("Date Updated"),
+                                 filters=(filters.parse_isotime,
+                                          filters.timesince_or_never))
     status = tables.Column("resource_status",
                            filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),

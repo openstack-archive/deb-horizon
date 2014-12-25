@@ -32,8 +32,8 @@ class DataProcessingClusterTemplateTests(test.TestCase):
         self.mox.ReplayAll()
         res = self.client.get(INDEX_URL)
         self.assertTemplateUsed(res,
-            'project/data_processing.cluster_templates/'
-            'cluster_templates.html')
+                                'project/data_processing.cluster_templates/'
+                                'cluster_templates.html')
         self.assertContains(res, 'Cluster Templates')
         self.assertContains(res, 'Name')
 
@@ -80,3 +80,19 @@ class DataProcessingClusterTemplateTests(test.TestCase):
         step = workflow.get_step("generalconfigaction")
         self.assertEqual(step.action['cluster_template_name'].field.initial,
                          ct.name + "-copy")
+
+    @test.create_stubs({api.sahara: ('cluster_template_list',
+                                     'cluster_template_delete')})
+    def test_delete(self):
+        ct = self.cluster_templates.first()
+        api.sahara.cluster_template_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.cluster_templates.list())
+        api.sahara.cluster_template_delete(IsA(http.HttpRequest), ct.id)
+        self.mox.ReplayAll()
+
+        form_data = {'action': 'cluster_templates__delete__%s' % ct.id}
+        res = self.client.post(INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+        self.assertMessageCount(success=1)

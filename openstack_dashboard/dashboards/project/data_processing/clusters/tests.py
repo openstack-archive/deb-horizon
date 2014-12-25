@@ -31,7 +31,36 @@ class DataProcessingClusterTests(test.TestCase):
             .AndReturn(self.clusters.list())
         self.mox.ReplayAll()
         res = self.client.get(INDEX_URL)
-        self.assertTemplateUsed(res,
-            'project/data_processing.clusters/clusters.html')
+        self.assertTemplateUsed(
+            res, 'project/data_processing.clusters/clusters.html')
         self.assertContains(res, 'Clusters')
         self.assertContains(res, 'Name')
+
+    @test.create_stubs({api.sahara: ('cluster_template_list', 'image_list')})
+    def test_launch_cluster_get_nodata(self):
+        api.sahara.cluster_template_list(IsA(http.HttpRequest)) \
+            .AndReturn([])
+        api.sahara.image_list(IsA(http.HttpRequest)) \
+            .AndReturn([])
+        self.mox.ReplayAll()
+        url = reverse(
+            'horizon:project:data_processing.clusters:configure-cluster')
+        res = self.client.get("%s?plugin_name=shoes&hadoop_version=1.1" % url)
+        self.assertContains(res, "No Images Available")
+        self.assertContains(res, "No Templates Available")
+
+    @test.create_stubs({api.sahara: ('cluster_list',
+                                     'cluster_delete')})
+    def test_delete(self):
+        cluster = self.clusters.first()
+        api.sahara.cluster_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.clusters.list())
+        api.sahara.cluster_delete(IsA(http.HttpRequest), cluster.id)
+        self.mox.ReplayAll()
+
+        form_data = {'action': 'clusters__delete__%s' % cluster.id}
+        res = self.client.post(INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+        self.assertMessageCount(success=1)

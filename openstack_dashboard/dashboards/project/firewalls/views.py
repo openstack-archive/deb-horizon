@@ -11,8 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-#
-# @author: KC Wang, Big Switch Networks
 
 import re
 
@@ -128,8 +126,12 @@ class UpdateRuleView(forms.ModalFormView):
         context = super(UpdateRuleView, self).get_context_data(**kwargs)
         context['rule_id'] = self.kwargs['rule_id']
         obj = self._get_object()
+        context['page_title'] = _("Edit Rule")
         if obj:
             context['name'] = obj.name
+            context['page_title'] = _("Edit Rule "
+                                      "%(rule_name)s") % {'rule_name':
+                                                          obj.name}
         return context
 
     @memoized.memoized_method
@@ -147,6 +149,9 @@ class UpdateRuleView(forms.ModalFormView):
     def get_initial(self):
         rule = self._get_object()
         initial = rule.get_dict()
+        protocol = initial['protocol']
+        initial['protocol'] = protocol.upper() if protocol else 'ANY'
+        initial['action'] = initial['action'].upper()
         return initial
 
 
@@ -160,8 +165,10 @@ class UpdatePolicyView(forms.ModalFormView):
         context = super(UpdatePolicyView, self).get_context_data(**kwargs)
         context["policy_id"] = self.kwargs['policy_id']
         obj = self._get_object()
+        context['page_title'] = _("Edit Policy")
         if obj:
             context['name'] = obj.name
+            context['page_title'] = _("Edit Policy %s") % obj.name
         return context
 
     @memoized.memoized_method
@@ -192,8 +199,10 @@ class UpdateFirewallView(forms.ModalFormView):
         context = super(UpdateFirewallView, self).get_context_data(**kwargs)
         context["firewall_id"] = self.kwargs['firewall_id']
         obj = self._get_object()
+        context['page_title'] = _("Edit Firewall")
         if obj:
             context['name'] = obj.name
+            context['page_title'] = _("Edit Firewall %s") % obj.name
         return context
 
     @memoized.memoized_method
@@ -201,7 +210,7 @@ class UpdateFirewallView(forms.ModalFormView):
         firewall_id = self.kwargs['firewall_id']
         try:
             firewall = api.fwaas.firewall_get(self.request,
-                                                  firewall_id)
+                                              firewall_id)
             firewall.set_id_as_name_if_empty()
             return firewall
         except Exception:

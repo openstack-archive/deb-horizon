@@ -9,9 +9,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-#
-# @author: Abishek Subramanian, Cisco Systems, Inc.
-# @author: Sergey Sudakovich,   Cisco Systems, Inc.
 
 import logging
 
@@ -69,12 +66,13 @@ class CreateNetworkProfile(forms.SelfHandlingForm):
                                              _("Sub Type")}))
     # Sub type options available for Trunk segment type
     sub_type_trunk = forms.ChoiceField(label=_('Sub Type'),
-                                 choices=[('vlan', _('VLAN'))],
-                                 required=False,
-                                 widget=forms.Select
-                                 (attrs={'class': 'switched',
-                                         'data-switch-on': 'segtype',
-                                         'data-segtype-trunk': _("Sub Type")}))
+                                       choices=[('vlan', _('VLAN'))],
+                                       required=False,
+                                       widget=forms.Select
+                                       (attrs={'class': 'switched',
+                                               'data-switch-on': 'segtype',
+                                               'data-segtype-trunk':
+                                                   _("Sub Type")}))
     segment_range = forms.CharField(max_length=255,
                                     label=_("Segment Range"),
                                     required=False,
@@ -109,7 +107,7 @@ class CreateNetworkProfile(forms.SelfHandlingForm):
                                             'data-subtype-other':
                                                 _("Sub Type Value "
                                                   "(Manual Input)")}),
-                            help_text=_("Enter parameter (e.g. GRE)"))
+                                    help_text=_("Enter parameter (e.g. GRE)"))
     physical_network = forms.CharField(max_length=255,
                                        label=_("Physical Network"),
                                        required=False,

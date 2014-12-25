@@ -26,7 +26,19 @@ var BKGRND = "#F2F2F2";
 var FRGRND = "#006CCF";
 var FULL = "#D0342B";
 var NEARLY_FULL = "#FFA500";
-var STROKE = "#CCCCCC";
+var STROKE_USAGE = "#CCCCCC";
+var STROKE_DISTRIBUTION = "#609ED2";
+var BLUE_SHADES = [
+  "#609ED2",
+  "#BFD8ED",
+  "#EFF5FB",
+  "#2D6997",
+  "#1F4A6F",
+  "#122A40",
+  "#428BCA",
+  "#90BAE0",
+  "#DFEBF6"
+];
 
 
 function create_vis(chart) {
@@ -82,7 +94,7 @@ horizon.d3_pie_chart_usage = {
       .attr("class","arc")
       .attr("d", arc)
       .style("fill", BKGRND)
-      .style("stroke", STROKE)
+      .style("stroke", STROKE_USAGE)
       .style("stroke-width", 1);
 
     // Animate filling the pie chart
@@ -102,7 +114,7 @@ horizon.d3_pie_chart_usage = {
             return FRGRND;
           }
         })
-        .style("stroke", STROKE)
+        .style("stroke", STROKE_USAGE)
         .style("stroke-width", function() {
           if (self.data[0].percentage <= 0 || self.data[0].percentage >= 100) {
             return 0;
@@ -129,7 +141,7 @@ horizon.d3_pie_chart_usage = {
 
 
 horizon.d3_pie_chart_distribution = {
-  colors: d3.scale.category20(),
+  colors: BLUE_SHADES,
 
   init: function() {
     var self = this;
@@ -177,7 +189,7 @@ horizon.d3_pie_chart_distribution = {
       .attr("class","arc")
       .attr("d", arc)
       .style("fill", BKGRND)
-      .style("stroke", STROKE)
+      .style("stroke", STROKE_DISTRIBUTION)
       .style("stroke-width", 1);
 
     // Animate filling the pie chart
@@ -188,8 +200,10 @@ horizon.d3_pie_chart_distribution = {
         .append("path")
         .attr("class","arc")
         .attr("d", arc)
-        .style("fill", function(d) { return self.colors(d.data.key); })
-        .style("stroke", STROKE)
+        .style("fill", function(d) {
+          return self.colors[self.data.indexOf(d.data)];
+        })
+        .style("stroke", STROKE_DISTRIBUTION)
         .style("stroke-width", 1)
         .transition()
         .duration(500)
@@ -223,7 +237,16 @@ horizon.d3_pie_chart_distribution = {
     legend.append("rect")
       .attr("width", 18)
       .attr("height", 18)
-      .style("fill", self.colors);
+      .style("fill", function(d) {
+        var item;
+        for (var i = 0; i < self.data.length; i++) {
+          if (self.data[i].key == d) {
+            item = self.data[i];
+            break;
+          }
+        }
+        return self.colors[self.data.indexOf(item)];
+      });
 
     legend.append("text")
       .attr("x", 24)
@@ -248,9 +271,5 @@ horizon.d3_pie_chart_distribution = {
 
 horizon.addInitFunction(function () {
   horizon.d3_pie_chart_usage.init();
-});
-
-
-horizon.addInitFunction(function () {
   horizon.d3_pie_chart_distribution.init();
 });

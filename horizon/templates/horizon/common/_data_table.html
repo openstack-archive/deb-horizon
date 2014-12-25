@@ -9,7 +9,9 @@
   {% block table_caption %}
       <tr class='table_caption'>
         <th class='table_header' colspan='{{ columns|length }}'>
-          <h3 class='table_title'>{{ table }}</h3>
+          {% if not hidden_title %}
+            <h3 class='table_title'>{{ table }}</h3>
+          {% endif %}
           {{ table.render_table_actions }}
         </th>
       </tr>
@@ -27,7 +29,14 @@
       {% if not table.is_browser_table %}
       <tr>
         {% for column in columns %}
-          <th {{ column.attr_string|safe }}>{{ column }}</th>
+          <th {{ column.attr_string|safe }}>
+            {{ column }}
+            {% if column.help_text %}
+              <span class="help-icon" data-toggle="tooltip" title="{{ column.help_text }}">
+                <span class="fa fa-question-circle"></span>
+              </span>
+            {% endif %}
+          </th>
         {% endfor %}
       </tr>
       {% endif %}

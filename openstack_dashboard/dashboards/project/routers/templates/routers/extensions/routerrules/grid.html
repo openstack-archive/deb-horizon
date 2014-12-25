@@ -15,7 +15,7 @@
           {% csrf_token %}
           <input type="hidden" name="router_id" value="{{ router.id }}"/>
           <button class="btn btn-sm btn-danger"
-                  type="submit" href="#" name="action" value="routerrules__resetrules"><span class="glyphicon glyphicon-remove"> {% trans "Reset to Default" %}</button>
+                  type="submit" href="#" name="action" value="routerrules__resetrules"><span class="fa fa-close"> {% trans "Reset to Default" %}</button>
           </form>
        </div>
      </th>
@@ -27,7 +27,7 @@
          <th>
             {{ dest.networkname }}<br/>
             {% if dest.subnetname|length > 0 %}
-             {% trans "Subnet" %}: {{ dest.subnetname }}</br>
+              {% blocktrans with dest_subnetname=dest.subnetname %}Subnet: {{ dest_subnetname }}{% endblocktrans %}</br>
             {% endif %}
             {{ dest.cidr }}
          </th>
@@ -41,7 +41,8 @@
 <td>
 <b>{{ row.source.networkname }}
 {% if row.source.subnetname|length > 0 %}
-    <br/>{% trans "Subnet" %}: {{ row.source.subnetname }}
+    <br/>
+    {% blocktrans with row_source_subnetname=row.source.subnetname %}Subnet: {{ row_source_subnetname }}{% endblocktrans %}
 {% endif %}
 <br/>
 {{ row.source.cidr }}
@@ -73,19 +74,19 @@
            {% endif %}
            {% if dest.reachable == 'none' %}
               <center>
-              <i class="icon-ban-circle"></i>
-              <button type="submit" class="btn btn-default btn-xs" href="#"><i class="icon-random"></i></button></center>
+              <i class="fa fa-ban"></i>
+              <button type="submit" class="btn btn-default btn-xs" href="#"><i class="fa fa-random"></i></button></center>
            {% elif dest.reachable == 'full' %}
            <center>
-              <i class="icon-ok"></i>
+              <i class="fa fa-check"></i>
               {% if not dest.cidr == row.source.cidr %}
-                   <button type="submit" class="btn btn-default btn-xs" href="#"><i class="icon-random"></i></button>
+                   <button type="submit" class="btn btn-default btn-xs" href="#"><i class="fa fa-random"></i></button>
               {% else %}
                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {% endif %}
            </center>
            {% else %}
-                <center><a type="button" class="btn btn-default btn-xs" href="#modal_{{ dest.subnetid|add:row.source.subnetid }}" data-toggle="modal"><span class="glyphicon glyphicon-exclamation-sign"></span> Conflict</a></center>
+                <center><a type="button" class="btn btn-default btn-xs" href="#modal_{{ dest.subnetid|add:row.source.subnetid }}" data-toggle="modal"><span class="fa fa-exclamation-circle"></span> Conflict</a></center>
                <div class="modal hide" id="modal_{{ dest.subnetid|add:row.source.subnetid }}">
                  <div class="modal-header">
                    <a class="close" data-dismiss="modal">&times;</a>
@@ -95,9 +96,9 @@
                    <p>{% blocktrans %}A more specific rule affects a portion of this traffic so a rule cannot be automatically generated to control the behavior of the entire source/destination combination.{% endblocktrans %}</p>
                    <hr>
                    <h4>{% trans "Conflicting Rule" %}</h4>
-                   <b>{% trans "Source" %}:</b> {{ dest.conflicting_rule.source }}<br>
-                   <b>{% trans "Destination" %}:</b> {{ dest.conflicting_rule.destination }}<br>
-                   <b>{% trans "Action" %}:</b> {{ dest.conflicting_rule.action }}<br>
+                   <b>{% trans "Source:" %}</b> {{ dest.conflicting_rule.source }}<br>
+                   <b>{% trans "Destination:" %}</b> {{ dest.conflicting_rule.destination }}<br>
+                   <b>{% trans "Action:" %}</b> {{ dest.conflicting_rule.action }}<br>
                  </div>
                  <div class="modal-footer">
                    <a href="#" class="btn" data-dismiss="modal">{% trans "Close" %}</a>
@@ -120,7 +121,7 @@
   </table>
   <h3>{% trans "Description" %}</h3>
   <p>{% blocktrans %}The color and icon of an intersection indicates whether or not traffic is permitted from the source (row) to the destination (column).
-     Clicking the <i class="icon-random"></i> button in the intersection will install a rule to switch the traffic behavior.<br/>
+     Clicking the <i class="fa fa-random"></i> button in the intersection will install a rule to switch the traffic behavior.<br/>
 
      <b>Note:</b> Rules only affect one direction of traffic. The opposite direction is outlined when hovering over an intersection.
  {% endblocktrans %} </p>

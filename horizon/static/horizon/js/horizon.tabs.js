@@ -36,7 +36,7 @@ horizon.tabs.load_tab = function (evt) {
   $this.attr("data-loaded", "true");
 };
 
-horizon.addInitFunction(function () {
+horizon.addInitFunction(horizon.tabs.init = function () {
   var data = horizon.cookies.get("tabs") || {};
 
   $(".tab-content").find(".js-tab-pane").addClass("tab-pane");
@@ -97,3 +97,5 @@ horizon.addInitFunction(function () {
     }
   });
 });
+
+horizon.tabs.addTabLoadFunction(horizon.inline_edit.init);

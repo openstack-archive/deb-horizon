@@ -28,6 +28,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
+from horizon import messages
 from horizon import tables
 from horizon import tabs
 from horizon.utils import memoized
@@ -121,12 +122,13 @@ class IndexView(tables.DataTableView):
         return instances
 
     def get_filters(self, filters):
-        filter_field = self.table.get_filter_field()
         filter_action = self.table._meta._filter_action
-        if filter_action.is_api_filter(filter_field):
-            filter_string = self.table.get_filter_string()
-            if filter_field and filter_string:
-                filters[filter_field] = filter_string
+        if filter_action:
+            filter_field = self.table.get_filter_field()
+            if filter_action.is_api_filter(filter_field):
+                filter_string = self.table.get_filter_string()
+                if filter_field and filter_string:
+                    filters[filter_field] = filter_string
         return filters
 
 
@@ -141,19 +143,19 @@ class LaunchInstanceView(workflows.WorkflowView):
 
 
 def console(request, instance_id):
-    try:
-        # TODO(jakedahn): clean this up once the api supports tailing.
-        tail = request.GET.get('length', None)
-        data = api.nova.server_console_output(request,
-                                              instance_id,
-                                              tail_length=tail)
-    except Exception:
-        data = _('Unable to get log for instance "%s".') % instance_id
-        exceptions.handle(request, ignore=True)
-    response = http.HttpResponse(content_type='text/plain')
-    response.write(data)
-    response.flush()
-    return response
+    data = _('Unable to get log for instance "%s".') % instance_id
+    tail = request.GET.get('length')
+    if tail and not tail.isdigit():
+        msg = _('Log length must be a nonnegative integer.')
+        messages.warning(request, msg)
+    else:
+        try:
+            data = api.nova.server_console_output(request,
+                                                  instance_id,
+                                                  tail_length=tail)
+        except Exception:
+            exceptions.handle(request, ignore=True)
+    return http.HttpResponse(data.encode('utf-8'), content_type='text/plain')
 
 
 def vnc(request, instance_id):
@@ -211,7 +213,7 @@ class UpdateView(workflows.WorkflowView):
     def get_initial(self):
         initial = super(UpdateView, self).get_initial()
         initial.update({'instance_id': self.kwargs['instance_id'],
-                'name': getattr(self.get_object(), 'name', '')})
+                        'name': getattr(self.get_object(), 'name', '')})
         return initial
 
 
@@ -253,46 +255,77 @@ class DetailView(tabs.TabView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-        context["instance"] = self.get_data()
+        instance = self.get_data()
+        context["instance"] = instance
+        table = project_tables.InstancesTable(self.request)
+        context["url"] = reverse(self.redirect_url)
+        context["actions"] = table.render_row_actions(instance)
+        context["page_title"] = _("Instance Details: "
+                                  "%(instance_name)s") % {'instance_name':
+                                                          instance.name}
         return context
 
     @memoized.memoized_method
     def get_data(self):
+        instance_id = self.kwargs['instance_id']
+
         try:
-            instance_id = self.kwargs['instance_id']
             instance = api.nova.server_get(self.request, instance_id)
-            status_label = [label for (value, label) in
-                            project_tables.STATUS_DISPLAY_CHOICES
-                            if value.lower() ==
-                            (instance.status or '').lower()]
-            if status_label:
-                instance.status_label = status_label[0]
-            else:
-                instance.status_label = instance.status
-            instance.volumes = api.nova.instance_volumes_list(self.request,
-                                                              instance_id)
-            # Sort by device name
-            instance.volumes.sort(key=lambda vol: vol.device)
-            instance.full_flavor = api.nova.flavor_get(
-                self.request, instance.flavor["id"])
-            instance.security_groups = api.network.server_security_groups(
-                self.request, instance_id)
         except Exception:
             redirect = reverse(self.redirect_url)
             exceptions.handle(self.request,
                               _('Unable to retrieve details for '
                                 'instance "%s".') % instance_id,
-                                redirect=redirect)
+                              redirect=redirect)
             # Not all exception types handled above will result in a redirect.
             # Need to raise here just in case.
             raise exceptions.Http302(redirect)
+
+        status_label = [label for (value, label) in
+                        project_tables.STATUS_DISPLAY_CHOICES
+                        if value.lower() == (instance.status or '').lower()]
+        if status_label:
+            instance.status_label = status_label[0]
+        else:
+            instance.status_label = instance.status
+
+        try:
+            instance.volumes = api.nova.instance_volumes_list(self.request,
+                                                              instance_id)
+            # Sort by device name
+            instance.volumes.sort(key=lambda vol: vol.device)
+        except Exception:
+            msg = _('Unable to retrieve volume list for instance '
+                    '"%(name)s" (%(id)s).') % {'name': instance.name,
+                                               'id': instance_id}
+            exceptions.handle(self.request, msg, ignore=True)
+
+        try:
+            instance.full_flavor = api.nova.flavor_get(
+                self.request, instance.flavor["id"])
+        except Exception:
+            msg = _('Unable to retrieve flavor information for instance '
+                    '"%(name)s" (%(id)s).') % {'name': instance.name,
+                                               'id': instance_id}
+            exceptions.handle(self.request, msg, ignore=True)
+
+        try:
+            instance.security_groups = api.network.server_security_groups(
+                self.request, instance_id)
+        except Exception:
+            msg = _('Unable to retrieve security groups for instance '
+                    '"%(name)s" (%(id)s).') % {'name': instance.name,
+                                               'id': instance_id}
+            exceptions.handle(self.request, msg, ignore=True)
+
         try:
             api.network.servers_update_addresses(self.request, [instance])
         except Exception:
-            exceptions.handle(
-                self.request,
-                _('Unable to retrieve IP addresses from Neutron for instance '
-                  '"%s".') % instance_id, ignore=True)
+            msg = _('Unable to retrieve IP addresses from Neutron for '
+                    'instance "%(name)s" (%(id)s).') % {'name': instance.name,
+                                                        'id': instance_id}
+            exceptions.handle(self.request, msg, ignore=True)
+
         return instance
 
     def get_tabs(self, request, *args, **kwargs):
@@ -314,17 +347,23 @@ class ResizeView(workflows.WorkflowView):
         instance_id = self.kwargs['instance_id']
         try:
             instance = api.nova.server_get(self.request, instance_id)
-            flavor_id = instance.flavor['id']
-            flavors = self.get_flavors()
-            if flavor_id in flavors:
-                instance.flavor_name = flavors[flavor_id].name
-            else:
-                flavor = api.nova.flavor_get(self.request, flavor_id)
-                instance.flavor_name = flavor.name
         except Exception:
             redirect = reverse("horizon:project:instances:index")
             msg = _('Unable to retrieve instance details.')
             exceptions.handle(self.request, msg, redirect=redirect)
+        flavor_id = instance.flavor['id']
+        flavors = self.get_flavors()
+        if flavor_id in flavors:
+            instance.flavor_name = flavors[flavor_id].name
+        else:
+            try:
+                flavor = api.nova.flavor_get(self.request, flavor_id)
+                instance.flavor_name = flavor.name
+            except Exception:
+                msg = _('Unable to retrieve flavor information for instance '
+                        '"%s".') % instance_id
+                exceptions.handle(self.request, msg, ignore=True)
+                instance.flavor_name = _("Not available")
         return instance
 
     @memoized.memoized_method
@@ -335,15 +374,17 @@ class ResizeView(workflows.WorkflowView):
         except Exception:
             redirect = reverse("horizon:project:instances:index")
             exceptions.handle(self.request,
-                _('Unable to retrieve flavors.'), redirect=redirect)
+                              _('Unable to retrieve flavors.'),
+                              redirect=redirect)
 
     def get_initial(self):
         initial = super(ResizeView, self).get_initial()
         _object = self.get_object()
         if _object:
-            initial.update({'instance_id': self.kwargs['instance_id'],
-                'name': getattr(_object, 'name', None),
-                'old_flavor_id': _object.flavor['id'],
-                'old_flavor_name': getattr(_object, 'flavor_name', ''),
-                'flavors': self.get_flavors()})
+            initial.update(
+                {'instance_id': self.kwargs['instance_id'],
+                 'name': getattr(_object, 'name', None),
+                 'old_flavor_id': _object.flavor['id'],
+                 'old_flavor_name': getattr(_object, 'flavor_name', ''),
+                 'flavors': self.get_flavors()})
         return initial

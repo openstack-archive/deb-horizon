@@ -46,7 +46,7 @@ class ScaleCluster(tables.LinkAction):
         return cluster.status == "Active"
 
 
-class DeleteCluster(tables.BatchAction):
+class DeleteCluster(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -63,10 +63,7 @@ class DeleteCluster(tables.BatchAction):
             count
         )
 
-    name = "delete"
-    classes = ('btn-danger', 'btn-terminate')
-
-    def action(self, request, obj_id):
+    def delete(self, request, obj_id):
         saharaclient.cluster_delete(request, obj_id)
 
 
@@ -105,8 +102,9 @@ class ClustersTable(tables.DataTable):
     )
 
     name = tables.Column("name",
-        verbose_name=_("Name"),
-        link=("horizon:project:data_processing.clusters:details"))
+                         verbose_name=_("Name"),
+                         link=("horizon:project:data_processing."
+                               "clusters:details"))
     status = tables.Column("status",
                            verbose_name=_("Status"),
                            status=True,

@@ -61,8 +61,8 @@ TEST_DATA_4 = (
 )
 
 TEST_DATA_5 = (
-    FakeObject('1', 'object_1', 'A Value That is longer than 35 characters!',
-               'down', 'optional_1'),
+    FakeObject('1', 'object_1', 'value_1',
+               'A Status that is longer than 35 characters!', 'optional_1'),
 )
 
 TEST_DATA_6 = (
@@ -209,7 +209,7 @@ class MyTable(tables.DataTable):
     tooltip_dict = {'up': {'title': 'service is up and running',
                            'style': 'color:green;cursor:pointer'},
                     'down': {'title': 'service is not available',
-                           'style': 'color:red;cursor:pointer'}}
+                             'style': 'color:red;cursor:pointer'}}
     id = tables.Column('id', hidden=True, sortable=False)
     name = tables.Column(get_name,
                          verbose_name="Verbose Name",
@@ -222,11 +222,10 @@ class MyTable(tables.DataTable):
                           link='http://example.com/',
                           attrs={'class': 'green blue'},
                           summation="average",
-                          truncate=35,
                           link_classes=('link-modal',),
                           link_attrs={'data-type': 'modal dialog',
                                       'data-tip': 'click for dialog'})
-    status = tables.Column('status', link=get_link,
+    status = tables.Column('status', link=get_link, truncate=35,
                            cell_attributes_getter=tooltip_dict.get)
     optional = tables.Column('optional', empty_value='N/A')
     excluded = tables.Column('excluded')
@@ -549,9 +548,9 @@ class DataTableTests(test.TestCase):
         self.table = MyTable(self.request, TEST_DATA_5)
         row = self.table.get_rows()[0]
 
-        self.assertEqual(35, len(row.cells['value'].data))
-        self.assertEqual(u'A Value That is longer than 35 c...',
-                         row.cells['value'].data)
+        self.assertEqual(35, len(row.cells['status'].data))
+        self.assertEqual(u'A Status that is longer than 35 ...',
+                         row.cells['status'].data)
 
     def test_table_rendering(self):
         self.table = MyTable(self.request, TEST_DATA)
@@ -581,12 +580,19 @@ class DataTableTests(test.TestCase):
         update_string = "action=row_update&amp;table=my_table&amp;obj_id="
         self.assertContains(resp, update_string, 3)
         self.assertContains(resp, "data-update-interval", 3)
+        # Verify no table heading
+        self.assertNotContains(resp, "<h3 class='table_title'")
         # Verify our XSS protection
         self.assertContains(resp, '<a href="http://example.com/" '
                                   'data-tip="click for dialog" '
                                   'data-type="modal dialog" '
                                   'class="link-modal">'
                                   '&lt;strong&gt;evil&lt;/strong&gt;</a>', 1)
+        # Hidden Title = False shows the table title
+        self.table._meta.hidden_title = False
+        resp = http.HttpResponse(self.table.render())
+        self.assertContains(resp, "<h3 class='table_title'", 1)
+
         # Filter = False hides the search box
         self.table._meta.filter = False
         table_actions = self.table.render_table_actions()
@@ -1117,7 +1123,7 @@ class DataTableTests(test.TestCase):
         self.assertNotContains(res, '<td>6</td>')
 
         # Even if "average" summation method is specified,
-        # we have summation fields but no value is provoded
+        # we have summation fields but no value is provided
         # if the provided data cannot be summed.
         table = MyTable(self.request, TEST_DATA)
         res = http.HttpResponse(table.render())
@@ -1343,25 +1349,65 @@ class DataTableViewTests(test.TestCase):
         self.assertEqual(TableWithPermissions,
                          context['table_with_permissions_table'].__class__)
 
-    def test_api_filter_table_view(self):
-        filter_value_param = "my_table__filter__q"
-        filter_field_param = '%s_field' % filter_value_param
-        req = self.factory.post('/my_url/', {filter_value_param: 'up',
-                                             filter_field_param: 'status'})
-        req.user = self.user
+    fil_value_param = "my_table__filter__q"
+    fil_field_param = '%s_field' % fil_value_param
+
+    def _test_filter_setup_view(self, request):
         view = APIFilterTableView()
-        view.request = req
+        view.request = request
         view.kwargs = {}
-        view.handle_server_filter(req)
+        view.handle_server_filter(request)
+        return view
+
+    def test_api_filter_table_view(self):
+        req = self.factory.post('/my_url/', {self.fil_value_param: 'up',
+                                             self.fil_field_param: 'status'})
+        req.user = self.user
+        view = self._test_filter_setup_view(req)
+        data = view.get_data()
         context = view.get_context_data()
         self.assertEqual(context['table'].__class__, MyServerFilterTable)
-        data = view.get_data()
         self.assertQuerysetEqual(data,
                                  ['<FakeObject: object_1>',
                                   '<FakeObject: object_2>',
                                   '<FakeObject: object_3>'])
-        self.assertEqual(req.session.get(filter_value_param), 'up')
-        self.assertEqual(req.session.get(filter_field_param), 'status')
+        self.assertEqual(req.session.get(self.fil_value_param), 'up')
+        self.assertEqual(req.session.get(self.fil_field_param), 'status')
+
+    def test_filter_changed_deleted(self):
+        req = self.factory.post('/my_url/', {self.fil_value_param: '',
+                                             self.fil_field_param: 'status'})
+        req.session[self.fil_value_param] = 'up'
+        req.session[self.fil_field_param] = 'status'
+        req.user = self.user
+        view = self._test_filter_setup_view(req)
+        context = view.get_context_data()
+        self.assertEqual(context['table'].__class__, MyServerFilterTable)
+        self.assertEqual(req.session.get(self.fil_value_param), '')
+        self.assertEqual(req.session.get(self.fil_field_param), 'status')
+
+    def test_filter_changed_nothing_sent(self):
+        req = self.factory.post('/my_url/', {})
+        req.session[self.fil_value_param] = 'up'
+        req.session[self.fil_field_param] = 'status'
+        req.user = self.user
+        view = self._test_filter_setup_view(req)
+        context = view.get_context_data()
+        self.assertEqual(context['table'].__class__, MyServerFilterTable)
+        self.assertEqual(req.session.get(self.fil_value_param), 'up')
+        self.assertEqual(req.session.get(self.fil_field_param), 'status')
+
+    def test_filter_changed_new_filter_sent(self):
+        req = self.factory.post('/my_url/', {self.fil_value_param: 'down',
+                                             self.fil_field_param: 'status'})
+        req.session[self.fil_value_param] = 'up'
+        req.session[self.fil_field_param] = 'status'
+        req.user = self.user
+        view = self._test_filter_setup_view(req)
+        context = view.get_context_data()
+        self.assertEqual(context['table'].__class__, MyServerFilterTable)
+        self.assertEqual(req.session.get(self.fil_value_param), 'down')
+        self.assertEqual(req.session.get(self.fil_field_param), 'status')
 
 
 class FormsetTableTests(test.TestCase):

@@ -37,10 +37,10 @@ def show_overview(context):
         return {}
     request = context['request']
     context = {'domain_supported': is_multidomain_supported(),
-               'domain_name': request.user.user_domain_id,
+               'domain_name': request.user.user_domain_name,
                'project_name': request.user.project_name,
                'multi_region':
-                    len(request.user.available_services_regions) > 1,
+               len(request.user.available_services_regions) > 1,
                'region_name': request.user.services_region,
                'request': request}
 
@@ -55,7 +55,7 @@ def show_domain_list(context):
         return {}
     request = context['request']
     context = {'domain_supported': is_multidomain_supported(),
-               'domain_name': request.user.user_domain_id,
+               'domain_name': request.user.user_domain_name,
                'request': request}
     return context
 
@@ -63,11 +63,14 @@ def show_domain_list(context):
 @register.inclusion_tag('context_selection/_project_list.html',
                         takes_context=True)
 def show_project_list(context):
+    max_proj = getattr(settings,
+                       'DROPDOWN_MAX_ITEMS',
+                       30)
     if 'request' not in context:
         return {}
     request = context['request']
     context = {'projects': sorted(context['authorized_tenants'],
-                    key=lambda project: project.name),
+                                  key=lambda project: project.name)[:max_proj],
                'project_id': request.user.project_id,
                'request': request}
     return context
@@ -80,7 +83,7 @@ def show_region_list(context):
         return {}
     request = context['request']
     context = {'multi_region':
-                    len(request.user.available_services_regions) > 1,
+               len(request.user.available_services_regions) > 1,
                'region_name': request.user.services_region,
                'regions': sorted(request.user.available_services_regions),
                'request': request}

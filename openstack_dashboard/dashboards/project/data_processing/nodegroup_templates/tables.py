@@ -49,7 +49,7 @@ class CopyTemplate(tables.LinkAction):
     classes = ("ajax-modal", )
 
 
-class DeleteTemplate(tables.BatchAction):
+class DeleteTemplate(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -66,22 +66,19 @@ class DeleteTemplate(tables.BatchAction):
             count
         )
 
-    name = "delete_nodegroup_template"
-    verbose_name = _("Delete")
-    classes = ("btn-terminate", "btn-danger")
-
-    def action(self, request, template_id):
+    def delete(self, request, template_id):
         saharaclient.nodegroup_template_delete(request, template_id)
 
 
 class NodegroupTemplatesTable(tables.DataTable):
-    name = tables.Column("name",
+    name = tables.Column(
+        "name",
         verbose_name=_("Name"),
         link=("horizon:project:data_processing.nodegroup_templates:details"))
     plugin_name = tables.Column("plugin_name",
                                 verbose_name=_("Plugin"))
     hadoop_version = tables.Column("hadoop_version",
-                                   verbose_name=_("Hadoop Version"))
+                                   verbose_name=_("Version"))
     node_processes = tables.Column("node_processes",
                                    verbose_name=_("Node Processes"),
                                    wrap_list=True,

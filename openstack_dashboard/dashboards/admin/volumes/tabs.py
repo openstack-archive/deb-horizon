@@ -40,7 +40,10 @@ class VolumeTab(tabs.TableTab, volumes_tabs.VolumeTableMixIn):
     def get_volumes_data(self):
         volumes = self._get_volumes(search_opts={'all_tenants': True})
         instances = self._get_instances(search_opts={'all_tenants': True})
-        self._set_attachments_string(volumes, instances)
+        volume_ids_with_snapshots = self._get_volumes_ids_with_snapshots(
+            search_opts={'all_tenants': True})
+        self._set_volume_attributes(
+            volumes, instances, volume_ids_with_snapshots)
 
         # Gather our tenants to correlate against IDs
         try:
@@ -76,6 +79,25 @@ class VolumeTypesTab(tabs.TableTab, volumes_tabs.VolumeTableMixIn):
             exceptions.handle(self.request,
                               _("Unable to retrieve volume types"))
 
+        # Gather volume type encryption information
+        try:
+            vol_type_enc_list = cinder.volume_encryption_type_list(
+                self.request)
+        except Exception:
+            vol_type_enc_list = []
+            msg = _('Unable to retrieve volume type encryption information.')
+            exceptions.handle(self.request, msg)
+
+        vol_type_enc_dict = SortedDict([(e.volume_type_id, e) for e in
+                                        vol_type_enc_list])
+        for volume_type in volume_types:
+            vol_type_enc = vol_type_enc_dict.get(volume_type.id, None)
+            if vol_type_enc is not None:
+                volume_type.encryption = vol_type_enc
+                volume_type.encryption.name = volume_type.name
+            else:
+                volume_type.encryption = None
+
         return volume_types
 
     def get_qos_specs_data(self):
@@ -84,7 +106,7 @@ class VolumeTypesTab(tabs.TableTab, volumes_tabs.VolumeTableMixIn):
         except Exception:
             qos_specs = []
             exceptions.handle(self.request,
-                              _("Unable to retrieve QOS specs"))
+                              _("Unable to retrieve QoS specs"))
         return qos_specs
 
 
@@ -98,9 +120,11 @@ class SnapshotTab(tabs.TableTab):
     def get_volume_snapshots_data(self):
         if api.base.is_service_enabled(self.request, 'volume'):
             try:
-                snapshots = cinder.volume_snapshot_list(self.request,
+                snapshots = cinder.volume_snapshot_list(
+                    self.request,
                     search_opts={'all_tenants': True})
-                volumes = cinder.volume_list(self.request,
+                volumes = cinder.volume_list(
+                    self.request,
                     search_opts={'all_tenants': True})
                 volumes = dict((v.id, v) for v in volumes)
             except Exception:
@@ -121,7 +145,7 @@ class SnapshotTab(tabs.TableTab):
             for snapshot in snapshots:
                 volume = volumes.get(snapshot.volume_id)
                 tenant_id = getattr(volume,
-                    'os-vol-tenant-attr:tenant_id', None)
+                                    'os-vol-tenant-attr:tenant_id', None)
                 tenant = tenant_dict.get(tenant_id, None)
                 snapshot._volume = volume
                 snapshot.tenant_name = getattr(tenant, "name", None)

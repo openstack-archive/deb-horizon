@@ -15,6 +15,7 @@
 import json
 import os
 
+from django.conf import settings
 from django import http
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
@@ -23,6 +24,35 @@ from horizon import exceptions
 
 
 ADD_TO_FIELD_HEADER = "HTTP_X_HORIZON_ADD_TO_FIELD"
+
+
+class ModalBackdropMixin(object):
+    """This mixin class is to be used for together with ModalFormView and
+    WorkflowView classes to augment them with modal_backdrop context data.
+
+    .. attribute: modal_backdrop (optional)
+
+        The appearance and behavior of backdrop under the modal element.
+        Possible options are:
+        * 'true' - show backdrop element outside the modal, close the modal
+        after clicking on backdrop (the default one);
+        * 'false' - do not show backdrop element, do not close the modal after
+        clicking outside of it;
+        * 'static' - show backdrop element outside the modal, do not close
+        the modal after clicking on backdrop.
+    """
+    modal_backdrop = 'static'
+
+    def __init__(self):
+        super(ModalBackdropMixin, self).__init__()
+        config = getattr(settings, 'HORIZON_CONFIG', {})
+        if 'modal_backdrop' in config:
+            self.modal_backdrop = config['modal_backdrop']
+
+    def get_context_data(self, **kwargs):
+        context = super(ModalBackdropMixin, self).get_context_data(**kwargs)
+        context['modal_backdrop'] = self.modal_backdrop
+        return context
 
 
 class ModalFormMixin(object):
@@ -47,7 +77,7 @@ class ModalFormMixin(object):
         return context
 
 
-class ModalFormView(ModalFormMixin, generic.FormView):
+class ModalFormView(ModalBackdropMixin, ModalFormMixin, generic.FormView):
     """The main view class from which all views which handle forms in Horizon
     should inherit. It takes care of all details with processing
     :class:`~horizon.forms.base.SelfHandlingForm` classes, and modal concerns
@@ -60,6 +90,22 @@ class ModalFormView(ModalFormMixin, generic.FormView):
     See Django's documentation on the `FormView <https://docs.djangoproject.com
     /en/dev/ref/class-based-views/generic-editing/#formview>`_ class for
     more details.
+
+    .. attribute: modal_id (recommended)
+
+        The HTML element id of this modal.
+
+    .. attribute: modal_header (recommended)
+
+        The title of this modal.
+
+    .. attribute: form_id (recommended)
+
+        The HTML element id of the form in this modal.
+
+    .. attribute: submit_url (required)
+
+        The url for a submit action.
 
     .. attribute: submit_label (optional)
 
@@ -78,12 +124,21 @@ class ModalFormView(ModalFormMixin, generic.FormView):
         if ommitted. Note that the cancel_url redirect is nullified when
         shown in a modal dialog.
     """
+
+    modal_id = None
+    modal_header = ""
+    form_id = None
+    submit_url = None
     submit_label = _("Submit")
     cancel_label = _("Cancel")
     cancel_url = None
 
     def get_context_data(self, **kwargs):
         context = super(ModalFormView, self).get_context_data(**kwargs)
+        context['modal_id'] = self.modal_id
+        context['modal_header'] = self.modal_header
+        context['form_id'] = self.form_id
+        context['submit_url'] = self.submit_url
         context['submit_label'] = self.submit_label
         context['cancel_label'] = self.cancel_label
         context['cancel_url'] = self.get_cancel_url()

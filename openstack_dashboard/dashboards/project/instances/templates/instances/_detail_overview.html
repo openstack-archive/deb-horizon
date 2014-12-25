@@ -4,7 +4,7 @@
 <h3>{% trans "Instance Overview" %}</h3>
 
 <div class="status row detail">
-  <h4>{% trans "Info" %}</h4>
+  <h4>{% trans "Information" %}</h4>
   <hr class="header_rule">
   <dl>
     <dt>{% trans "Name" %}</dt>
@@ -14,11 +14,13 @@
     <dt>{% trans "Status" %}</dt>
     <dd>{{ instance.status_label|title }}</dd>
     <dt>{% trans "Availability Zone" %}</dt>
-    <dd>{{ instance.availability_zone|default:"-" }}</dd>
+    <dd>{{ instance.availability_zone|default:_("-") }}</dd>
     <dt>{% trans "Created" %}</dt>
     <dd>{{ instance.created|parse_isotime }}</dd>
     <dt>{% trans "Uptime" %}</dt>
     <dd>{{ instance.created|parse_isotime|timesince }}</dd>
+    <dt>{% trans "Host" %}</dt>
+    <dd>{{ instance.host_server|default:_("-") }}</dd>
   </dl>
 </div>
 
@@ -44,16 +46,20 @@
   <hr class="header_rule">
   <dl>
     <dt>{% trans "Flavor" %}</dt>
-    <dd>{{ instance.full_flavor.name }}</dd>
-    <dt>{% trans "RAM" %}</dt>
-    <dd>{{ instance.full_flavor.ram|mbformat }}</dd>
-    <dt>{% trans "VCPUs" %}</dt>
-    <dd>{{ instance.full_flavor.vcpus }} {% trans "VCPU" %}</dd>
-    <dt>{% trans "Disk" %}</dt>
-    <dd>{{ instance.full_flavor.disk }}{% trans "GB" %}</dd>
-    {% if instance.full_flavor.ephemeral %}
-    <dt>{% trans "Ephemeral Disk" %}</dt>
-    <dd>{{ instance.full_flavor.ephemeral }}{% trans "GB" %}</dd>
+    {% if instance.full_flavor %}
+      <dd>{{ instance.full_flavor.name }}</dd>
+      <dt>{% trans "RAM" %}</dt>
+      <dd>{{ instance.full_flavor.ram|mb_float_format }}</dd>
+      <dt>{% trans "VCPUs" %}</dt>
+      <dd>{{ instance.full_flavor.vcpus }} {% trans "VCPU" %}</dd>
+      <dt>{% trans "Disk" %}</dt>
+      <dd>{{ instance.full_flavor.disk }}{% trans "GB" %}</dd>
+      {% if instance.full_flavor.ephemeral %}
+      <dt>{% trans "Ephemeral Disk" %}</dt>
+      <dd>{{ instance.full_flavor.ephemeral }}{% trans "GB" %}</dd>
+      {% endif %}
+    {% else %}
+      {% trans "Not available" %}
     {% endif %}
   </dl>
 </div>
@@ -88,12 +94,14 @@
       {% endfor %}
       </ul>
     </dd>
+  {% empty %}
+    {% trans "Not available" %}
   {% endfor %}
   </dl>
 </div>
 
 <div class="meta row detail">
-  <h4>{% trans "Meta" %}</h4>
+  <h4>{% trans "Metadata" %}</h4>
   <hr class="header_rule">
   <dl>
     <dt>{% trans "Key Name" %}</dt>
@@ -125,14 +133,10 @@
     {% for volume in instance.volumes %}
         <dt>{% trans "Attached To" %}</dt>
         <dd>
-            <a href="{% url 'horizon:project:volumes:volumes:detail' volume.id %}">
-            {% if volume.name %}
-                {{ volume.name }}
-            {%  else %}
-                {{ volume.id }}
-            {% endif %}
-            </a>
-            <span> {% trans "on" %} {{ volume.device }}</span>
+            {% url 'horizon:project:volumes:volumes:detail' volume.id as volume_url %}
+            {% blocktrans with volume_label=volume.name|default:volume.id volume_device=volume.device %}
+            <a href="{{ volume_url }}">{{ volume_label }}</a> on {{ volume_device }}
+            {% endblocktrans %}
         </dd>
         {% empty %}
         <dt>{% trans "Volume" %}</dt>

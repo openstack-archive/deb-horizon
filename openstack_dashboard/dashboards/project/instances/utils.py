@@ -55,9 +55,19 @@ def sort_flavor_list(request, flavors):
         else:
             key = sort_key
         flavor_list = [(flavor.id, '%s' % flavor.name)
-                   for flavor in sorted(flavors, key=key, reverse=rev)]
+                       for flavor in sorted(flavors, key=key, reverse=rev)]
         return flavor_list
     except Exception:
         exceptions.handle(request,
                           _('Unable to sort instance flavors.'))
+        return []
+
+
+def availability_zone_list(request):
+    """Utility method to retrieve a list of availability zones."""
+    try:
+        return api.nova.availability_zone_list(request)
+    except Exception:
+        exceptions.handle(request,
+                          _('Unable to retrieve Nova availability zones.'))
         return []

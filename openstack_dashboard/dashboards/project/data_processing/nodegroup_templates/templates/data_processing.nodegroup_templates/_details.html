@@ -14,6 +14,12 @@
         <dt>{% trans "Flavor" %}</dt>
         <dd>{{ flavor.name }}</dd>
     </dl>
+    {% if template.availability_zone %}
+    <dl>
+        <dt>{% trans "Availability Zone" %}</dt>
+        <dd>{{ template.availability_zone }}</dd>
+    </dl>
+    {% endif %}
     {% if template.floating_ip_pool %}
     <dl>
         <dt>{% trans "Floating IP Pool" %}</dt>
@@ -23,7 +29,7 @@
     <dl>
         <dt>{% trans "Plugin" %}</dt>
         <dd><a href="{% url 'horizon:project:data_processing.data_plugins:details' template.plugin_name %}">{{ template.plugin_name }}</a></dd>
-        <dt>{% trans "Hadoop Version" %}</dt>
+        <dt>{% trans "Version" %}</dt>
         <dd>{{ template.hadoop_version }}</dd>
     </dl>
 

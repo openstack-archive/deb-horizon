@@ -3,7 +3,7 @@
 {% block title %}{% trans "Backup Details" %}{% endblock %}
 
 {% block page_header %}
-  {% include "horizon/common/_page_header.html" with title=_("Backup Details: ")|add:backup.name %}
+  {% include "horizon/common/_page_header.html" with title=page_title %}
 {% endblock page_header %}
 
 {% block main %}
@@ -12,7 +12,7 @@
     <h3>{% trans "Backup Overview" %}</h3>
 
     <div class="status row detail">
-      <h4>{% trans "Info" %}</h4>
+      <h4>{% trans "Information" %}</h4>
       <hr class="header_rule">
       <dl>
         <dt>{% trans "Name" %}</dt>

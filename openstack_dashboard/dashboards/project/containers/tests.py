@@ -114,7 +114,7 @@ class SwiftTests(test.TestCase):
 
         self.assertEqual(unicode(list(req._messages)[0].message),
                          u"The container cannot be deleted "
-                         u"since it's not empty.")
+                         u"since it is not empty.")
 
     def test_create_container_get(self):
         res = self.client.get(reverse('horizon:project:containers:create'))
@@ -181,8 +181,10 @@ class SwiftTests(test.TestCase):
                                     prefix=None).AndReturn(ret)
         self.mox.ReplayAll()
 
-        res = self.client.get(reverse('horizon:project:containers:index',
-            args=[tables.wrap_delimiter(self.containers.first().name)]))
+        container_name = self.containers.first().name
+        res = self.client.get(
+            reverse('horizon:project:containers:index',
+                    args=[tables.wrap_delimiter(container_name)]))
         self.assertTemplateUsed(res, 'project/containers/index.html')
         # UTF8 encoding here to ensure there aren't problems with Nose output.
         expected = [obj.name.encode('utf8') for obj in self.objects.list()]
@@ -268,8 +270,8 @@ class SwiftTests(test.TestCase):
         obj = self.objects.first()
 
         api.swift.swift_create_pseudo_folder(IsA(http.HttpRequest),
-                                      container.name,
-                                      obj.name + "/").AndReturn(obj)
+                                             container.name,
+                                             obj.name + "/").AndReturn(obj)
         self.mox.ReplayAll()
 
         create_pseudo_folder_url = reverse('horizon:project:containers:'
