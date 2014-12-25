@@ -1,3 +1,9 @@
+horizon (2015.1~b1-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 25 Dec 2014 17:36:23 +0800
+
 horizon (2014.2.1-1) experimental; urgency=medium
 
   * New upstream release.
