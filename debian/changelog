@@ -2,6 +2,7 @@ horizon (2015.1~b1-1) UNRELEASED; urgency=medium
 
   * New upstream release.
   * Fixed (build-)depends for this release.
+  * Removed upstream-applied patches.
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 25 Dec 2014 17:36:23 +0800
 
