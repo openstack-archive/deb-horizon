@@ -7,3 +7,4 @@
 disable-failed-django-1.7-test.patch
 Update_WSGI_app_creation_to_be_compatible_with_Django_1.7.patch
 CVE-2014-8124_Horizon_login_page_contains_DOS_attack_mechanism_icehouse_.patch
+fix-moscow-tz-test.patch
