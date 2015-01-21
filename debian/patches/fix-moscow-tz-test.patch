@@ -1,0 +1,22 @@
+Description: Fix Moscow tz check
+ Apparently, Moscow timezone changed from UTC+4 to UTC+3, so the test fails.
+ This patch removes the +04 check, and stops testing before that, so that the
+ check will work whatever Moscow timezone is.
+Author: Thomas Goirand <zigo@debian.org>
+Bug-Debian: https://bugs.debian.org/775636
+Forwarded: no
+Last-Update: 2014-01-21
+
+Index: horizon/openstack_dashboard/dashboards/settings/user/tests.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/settings/user/tests.py	2015-01-21 15:58:13.000000000 +0100
++++ horizon/openstack_dashboard/dashboards/settings/user/tests.py	2015-01-21 15:58:31.000000000 +0100
+@@ -27,7 +27,7 @@
+         res = self.client.get(INDEX_URL)
+ 
+         self.assertContains(res, "Australia/Melbourne (UTC +11:00)")
+-        self.assertContains(res, "Europe/Moscow (UTC +04:00)")
++        self.assertContains(res, "Europe/Moscow (UTC +0")
+         self.assertContains(res, "Atlantic/Stanley (UTC -03:00)")
+         self.assertContains(res, "Pacific/Honolulu (UTC -10:00)")
+ 
