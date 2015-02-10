@@ -182,6 +182,15 @@ def get_external_network(router):
         return _("-")
 
 
+class RoutersFilterAction(tables.FilterAction):
+
+    def filter(self, table, routers, filter_string):
+        """Naive case-insensitive search."""
+        query = filter_string.lower()
+        return [router for router in routers
+                if query in router.name.lower()]
+
+
 class RoutersTable(tables.DataTable):
     name = tables.Column("name",
                          verbose_name=_("Name"),
@@ -214,10 +223,11 @@ class RoutersTable(tables.DataTable):
     def get_object_display(self, obj):
         return obj.name
 
-    class Meta:
+    class Meta(object):
         name = "Routers"
         verbose_name = _("Routers")
         status_columns = ["status"]
         row_class = UpdateRow
-        table_actions = (CreateRouter, DeleteRouter)
+        table_actions = (CreateRouter, DeleteRouter,
+                         RoutersFilterAction)
         row_actions = (SetGateway, ClearGateway, EditRouter, DeleteRouter)

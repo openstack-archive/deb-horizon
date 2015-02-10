@@ -74,7 +74,7 @@ class CreateNetworkInfoAction(workflows.Action):
     # TODO(absubram): Add ability to view network profile information
     # in the network detail if a profile is used.
 
-    class Meta:
+    class Meta(object):
         name = _("Network")
         help_text = _("Create a new network. "
                       "In addition a subnet associated with the network "
@@ -154,7 +154,7 @@ class CreateSubnetInfoAction(workflows.Action):
     msg = _('Specify "Network Address" or '
             'clear "Create Subnet" checkbox.')
 
-    class Meta:
+    class Meta(object):
         name = _("Subnet")
         help_text = _('Create a subnet associated with the new network, '
                       'in which case "Network Address" must be specified. '
@@ -251,9 +251,16 @@ class CreateSubnetDetailAction(workflows.Action):
                     "and one entry per line."),
         required=False)
 
-    class Meta:
+    class Meta(object):
         name = _("Subnet Details")
         help_text = _('Specify additional attributes for the subnet.')
+
+    def __init__(self, request, context, *args, **kwargs):
+        super(CreateSubnetDetailAction, self).__init__(request, context,
+                                                       *args, **kwargs)
+        if not getattr(settings, 'OPENSTACK_NEUTRON_NETWORK',
+                       {}).get('enable_ipv6', True):
+            self.fields['ipv6_modes'].widget = forms.HiddenInput()
 
     def populate_ipv6_modes_choices(self, request, context):
         return [(value, _("%s (Default)") % label)
@@ -357,9 +364,9 @@ class CreateNetwork(workflows.Workflow):
             if api.neutron.is_port_profiles_supported():
                 params['net_profile_id'] = data['net_profile_id']
             network = api.neutron.network_create(request, **params)
-            network.set_id_as_name_if_empty()
             self.context['net_id'] = network.id
-            msg = _('Network "%s" was successfully created.') % network.name
+            msg = (_('Network "%s" was successfully created.') %
+                   network.name_or_id)
             LOG.debug(msg)
             return network
         except Exception as e:

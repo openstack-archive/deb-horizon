@@ -1033,7 +1033,8 @@ class VolumeViewTests(test.TestCase):
         self.assertContains(res, expected_string, html=True,
                             msg_prefix="The create button is not disabled")
 
-    @test.create_stubs({cinder: ('volume_get', 'tenant_absolute_limits'),
+    @test.create_stubs({cinder: ('tenant_absolute_limits',
+                                 'volume_get',),
                         api.nova: ('server_get',)})
     def test_detail_view(self):
         volume = self.cinder_volumes.first()
@@ -1063,6 +1064,59 @@ class VolumeViewTests(test.TestCase):
                              % server.name),
                             1,
                             200)
+
+        self.assertNoMessages()
+
+    @test.create_stubs({cinder: ('volume_get',
+                                 'volume_get_encryption_metadata'), })
+    def test_encryption_detail_view_encrypted(self):
+        enc_meta = self.cinder_volume_encryption.first()
+        volume = self.cinder_volumes.get(name='my_volume2')
+
+        cinder.volume_get_encryption_metadata(
+            IsA(http.HttpRequest), volume.id).AndReturn(enc_meta)
+        cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
+
+        self.mox.ReplayAll()
+
+        url = reverse('horizon:project:volumes:volumes:encryption_detail',
+                      args=[volume.id])
+        res = self.client.get(url)
+
+        self.assertContains(res,
+                            "<h1>Volume Encryption Details: "
+                            "%s</h1>" % volume.name,
+                            1, 200)
+        self.assertContains(res, "<dd>%s</dd>" % volume.volume_type, 1, 200)
+        self.assertContains(res, "<dd>%s</dd>" % enc_meta.provider, 1, 200)
+        self.assertContains(res, "<dd>%s</dd>" % enc_meta.control_location, 1,
+                            200)
+        self.assertContains(res, "<dd>%s</dd>" % enc_meta.cipher, 1, 200)
+        self.assertContains(res, "<dd>%s</dd>" % enc_meta.key_size, 1, 200)
+
+        self.assertNoMessages()
+
+    @test.create_stubs({cinder: ('volume_get',
+                                 'volume_get_encryption_metadata'), })
+    def test_encryption_detail_view_unencrypted(self):
+        enc_meta = self.cinder_volume_encryption.list()[1]
+        volume = self.cinder_volumes.get(name='my_volume2')
+
+        cinder.volume_get_encryption_metadata(
+            IsA(http.HttpRequest), volume.id).AndReturn(enc_meta)
+        cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
+
+        self.mox.ReplayAll()
+
+        url = reverse('horizon:project:volumes:volumes:encryption_detail',
+                      args=[volume.id])
+        res = self.client.get(url)
+
+        self.assertContains(res,
+                            "<h1>Volume Encryption Details: "
+                            "%s</h1>" % volume.name,
+                            1, 200)
+        self.assertContains(res, "<h3>Volume is Unencrypted</h3>", 1, 200)
 
         self.assertNoMessages()
 
@@ -1107,6 +1161,7 @@ class VolumeViewTests(test.TestCase):
         self.assertRedirectsNoFollow(res, VOLUME_INDEX_URL)
 
     @test.create_stubs({cinder: ('volume_update',
+                                 'volume_set_bootable',
                                  'volume_get',)})
     def test_update_volume(self):
         volume = self.cinder_volumes.get(name="my_volume")
@@ -1116,12 +1171,16 @@ class VolumeViewTests(test.TestCase):
                              volume.id,
                              volume.name,
                              volume.description)
+        cinder.volume_set_bootable(IsA(http.HttpRequest),
+                                   volume.id,
+                                   False)
 
         self.mox.ReplayAll()
 
         formData = {'method': 'UpdateForm',
                     'name': volume.name,
-                    'description': volume.description}
+                    'description': volume.description,
+                    'bootable': False}
 
         url = reverse('horizon:project:volumes:volumes:update',
                       args=[volume.id])
@@ -1129,6 +1188,7 @@ class VolumeViewTests(test.TestCase):
         self.assertRedirectsNoFollow(res, VOLUME_INDEX_URL)
 
     @test.create_stubs({cinder: ('volume_update',
+                                 'volume_set_bootable',
                                  'volume_get',)})
     def test_update_volume_without_name(self):
         volume = self.cinder_volumes.get(name="my_volume")
@@ -1138,12 +1198,43 @@ class VolumeViewTests(test.TestCase):
                              volume.id,
                              '',
                              volume.description)
+        cinder.volume_set_bootable(IsA(http.HttpRequest),
+                                   volume.id,
+                                   False)
 
         self.mox.ReplayAll()
 
         formData = {'method': 'UpdateForm',
                     'name': '',
-                    'description': volume.description}
+                    'description': volume.description,
+                    'bootable': False}
+
+        url = reverse('horizon:project:volumes:volumes:update',
+                      args=[volume.id])
+        res = self.client.post(url, formData)
+        self.assertRedirectsNoFollow(res, VOLUME_INDEX_URL)
+
+    @test.create_stubs({cinder: ('volume_update',
+                                 'volume_set_bootable',
+                                 'volume_get',)})
+    def test_update_volume_bootable_flag(self):
+        volume = self.cinder_bootable_volumes.get(name="my_volume")
+
+        cinder.volume_get(IsA(http.HttpRequest), volume.id).AndReturn(volume)
+        cinder.volume_update(IsA(http.HttpRequest),
+                             volume.id,
+                             volume.name,
+                             'update bootable flag')
+        cinder.volume_set_bootable(IsA(http.HttpRequest),
+                                   volume.id,
+                                   True)
+
+        self.mox.ReplayAll()
+
+        formData = {'method': 'UpdateForm',
+                    'name': volume.name,
+                    'description': 'update bootable flag',
+                    'bootable': True}
 
         url = reverse('horizon:project:volumes:volumes:update',
                       args=[volume.id])
@@ -1398,3 +1489,100 @@ class VolumeViewTests(test.TestCase):
         self.assertFormError(res, "form", "new_size",
                              "Volume cannot be extended to 1000GB as you only "
                              "have 80GB of your quota available.")
+
+    @test.create_stubs({cinder: ('volume_backup_supported',
+                                 'volume_list',
+                                 'tenant_absolute_limits'),
+                        api.nova: ('server_list',)})
+    def test_create_transfer_availability(self):
+        limits = self.cinder_limits['absolute']
+
+        cinder.volume_backup_supported(IsA(http.HttpRequest))\
+            .MultipleTimes().AndReturn(False)
+        cinder.volume_list(IsA(http.HttpRequest), search_opts=None)\
+            .AndReturn(self.volumes.list())
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=None)\
+                .AndReturn([self.servers.list(), False])
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest))\
+              .MultipleTimes().AndReturn(limits)
+
+        self.mox.ReplayAll()
+
+        res = self.client.get(VOLUME_INDEX_URL)
+        table = res.context['volumes_table']
+
+        # Verify that the create transfer action is present if and only if
+        # the volume is available
+        for vol in table.data:
+            actions = [a.name for a in table.get_row_actions(vol)]
+            self.assertEqual('create_transfer' in actions,
+                             vol.status == 'available')
+
+    @test.create_stubs({cinder: ('transfer_create',)})
+    def test_create_transfer(self):
+        volumes = self.volumes.list()
+        volToTransfer = [v for v in volumes if v.status == 'available'][0]
+        formData = {'volume_id': volToTransfer.id,
+                    'name': u'any transfer name'}
+
+        cinder.transfer_create(IsA(http.HttpRequest),
+                               formData['volume_id'],
+                               formData['name']).AndReturn(
+                                   self.cinder_volume_transfers.first())
+
+        self.mox.ReplayAll()
+
+        # Create a transfer for the first available volume
+        url = reverse('horizon:project:volumes:volumes:create_transfer',
+                      args=[volToTransfer.id])
+        res = self.client.post(url, formData)
+        self.assertNoFormErrors(res)
+
+    @test.create_stubs({cinder: ('volume_backup_supported',
+                                 'volume_list',
+                                 'transfer_delete',
+                                 'tenant_absolute_limits'),
+                        api.nova: ('server_list',)})
+    def test_delete_transfer(self):
+        transfer = self.cinder_volume_transfers.first()
+        volumes = []
+        # Attach the volume transfer to the relevant volume
+        for v in self.cinder_volumes.list():
+            if v.id == transfer.volume_id:
+                v.status = 'awaiting-transfer'
+                v.transfer = transfer
+            volumes.append(v)
+
+        formData = {'action':
+                    'volumes__delete_transfer__%s' % transfer.volume_id}
+
+        cinder.volume_backup_supported(IsA(http.HttpRequest))\
+            .MultipleTimes().AndReturn(False)
+        cinder.volume_list(IsA(http.HttpRequest), search_opts=None)\
+            .AndReturn(volumes)
+        cinder.transfer_delete(IsA(http.HttpRequest), transfer.id)
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=None).\
+            AndReturn([self.servers.list(), False])
+        cinder.tenant_absolute_limits(IsA(http.HttpRequest)).MultipleTimes().\
+            AndReturn(self.cinder_limits['absolute'])
+
+        self.mox.ReplayAll()
+
+        url = VOLUME_INDEX_URL
+        res = self.client.post(url, formData, follow=True)
+        self.assertNoFormErrors(res)
+        self.assertIn('Successfully deleted volume transfer "test transfer"',
+                      [m.message for m in res.context['messages']])
+
+    @test.create_stubs({cinder: ('transfer_accept',)})
+    def test_accept_transfer(self):
+        transfer = self.cinder_volume_transfers.first()
+
+        cinder.transfer_accept(IsA(http.HttpRequest), transfer.id,
+                               transfer.auth_key)
+        self.mox.ReplayAll()
+
+        formData = {'transfer_id': transfer.id, 'auth_key': transfer.auth_key}
+        url = reverse('horizon:project:volumes:volumes:accept_transfer')
+        res = self.client.post(url, formData, follow=True)
+        self.assertNoFormErrors(res)

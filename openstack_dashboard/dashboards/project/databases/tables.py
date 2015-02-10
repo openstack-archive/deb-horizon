@@ -173,6 +173,21 @@ class ResizeVolume(tables.LinkAction):
         return urlresolvers.reverse(self.url, args=[instance_id])
 
 
+class ResizeInstance(tables.LinkAction):
+    name = "resize_instance"
+    verbose_name = _("Resize Instance")
+    url = "horizon:project:databases:resize_instance"
+    classes = ("ajax-modal", "btn-resize")
+
+    def allowed(self, request, instance=None):
+        return ((instance.status in ACTIVE_STATES
+                 or instance.status == 'SHUTOFF'))
+
+    def get_link_url(self, datum):
+        instance_id = self.table.get_object_id(datum)
+        return urlresolvers.reverse(self.url, args=[instance_id])
+
+
 class UpdateRow(tables.Row):
     ajax = True
 
@@ -211,7 +226,7 @@ def get_size(instance):
     if hasattr(instance, "full_flavor"):
         size_string = _("%(name)s | %(RAM)s RAM")
         vals = {'name': instance.full_flavor.name,
-                'RAM': sizeformat.mbformat(instance.full_flavor.ram)}
+                'RAM': sizeformat.mb_float_format(instance.full_flavor.ram)}
         return size_string % vals
     return _("Not available")
 
@@ -234,7 +249,7 @@ class InstancesTable(tables.DataTable):
     STATUS_CHOICES = (
         ("ACTIVE", True),
         ("BLOCKED", True),
-        ("BUILD", True),
+        ("BUILD", None),
         ("FAILED", False),
         ("REBOOT", None),
         ("RESIZE", None),
@@ -264,7 +279,7 @@ class InstancesTable(tables.DataTable):
                            status=True,
                            status_choices=STATUS_CHOICES)
 
-    class Meta:
+    class Meta(object):
         name = "databases"
         verbose_name = _("Instances")
         status_columns = ["status"]
@@ -272,6 +287,7 @@ class InstancesTable(tables.DataTable):
         table_actions = (LaunchLink, TerminateInstance)
         row_actions = (CreateBackup,
                        ResizeVolume,
+                       ResizeInstance,
                        RestartInstance,
                        TerminateInstance)
 
@@ -281,7 +297,7 @@ class UsersTable(tables.DataTable):
     host = tables.Column("host", verbose_name=_("Allowed Host"))
     databases = tables.Column(get_databases, verbose_name=_("Databases"))
 
-    class Meta:
+    class Meta(object):
         name = "users"
         verbose_name = _("Users")
         table_actions = [DeleteUser]
@@ -294,7 +310,7 @@ class UsersTable(tables.DataTable):
 class DatabaseTable(tables.DataTable):
     name = tables.Column("name", verbose_name=_("Database Name"))
 
-    class Meta:
+    class Meta(object):
         name = "databases"
         verbose_name = _("Databases")
         table_actions = [DeleteDatabase]
@@ -328,7 +344,7 @@ class InstanceBackupsTable(tables.DataTable):
                            status=True,
                            status_choices=backup_tables.STATUS_CHOICES)
 
-    class Meta:
+    class Meta(object):
         name = "backups"
         verbose_name = _("Backups")
         status_columns = ["status"]

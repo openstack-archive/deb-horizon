@@ -13,7 +13,6 @@
 from django.core import urlresolvers
 from django.http import Http404  # noqa
 from django.template.defaultfilters import title  # noqa
-from django.utils.http import urlencode  # noqa
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
@@ -34,6 +33,81 @@ class LaunchStack(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
     policy_rules = (("orchestration", "cloudformation:CreateStack"),)
+
+
+class CheckStack(tables.BatchAction):
+    name = "check"
+    verbose_name = _("Check Stack")
+    policy_rules = (("orchestration", "cloudformation:CheckStack"),)
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Check Stack",
+            u"Check Stacks",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Checked Stack",
+            u"Checked Stacks",
+            count
+        )
+
+    def action(self, request, stack_id):
+        api.heat.action_check(request, stack_id)
+
+
+class SuspendStack(tables.BatchAction):
+    name = "suspend"
+    verbose_name = _("Suspend Stack")
+    policy_rules = (("orchestration", "cloudformation:SuspendStack"),)
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Suspend Stack",
+            u"Suspend Stacks",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Suspended Stack",
+            u"Suspended Stacks",
+            count
+        )
+
+    def action(self, request, stack_id):
+        api.heat.action_suspend(request, stack_id)
+
+
+class ResumeStack(tables.BatchAction):
+    name = "resume"
+    verbose_name = _("Resume Stack")
+    policy_rules = (("orchestration", "cloudformation:ResumeStack"),)
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Resume Stack",
+            u"Resume Stacks",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Resumed Stack",
+            u"Resumed Stacks",
+            count
+        )
+
+    def action(self, request, stack_id):
+        api.heat.action_resume(request, stack_id)
 
 
 class ChangeStackTemplate(tables.LinkAction):
@@ -113,23 +187,33 @@ class StacksTable(tables.DataTable):
                             filters=(filters.parse_isotime,
                                      filters.timesince_or_never))
     status = tables.Column("status",
-                           filters=(title, filters.replace_underscores),
-                           verbose_name=_("Status"),
+                           hidden=True,
                            status=True,
                            status_choices=STATUS_CHOICES)
+
+    stack_status = tables.Column("stack_status",
+                                 filters=(title, filters.replace_underscores),
+                                 verbose_name=_("Status"))
 
     def get_object_display(self, stack):
         return stack.stack_name
 
-    class Meta:
+    class Meta(object):
         name = "stacks"
         verbose_name = _("Stacks")
         pagination_param = 'stack_marker'
         status_columns = ["status", ]
         row_class = StacksUpdateRow
-        table_actions = (LaunchStack, DeleteStack,)
-        row_actions = (DeleteStack,
-                       ChangeStackTemplate)
+        table_actions = (LaunchStack,
+                         CheckStack,
+                         SuspendStack,
+                         ResumeStack,
+                         DeleteStack,)
+        row_actions = (CheckStack,
+                       SuspendStack,
+                       ResumeStack,
+                       ChangeStackTemplate,
+                       DeleteStack,)
 
 
 def get_resource_url(obj):
@@ -156,7 +240,7 @@ class EventsTable(tables.DataTable):
     statusreason = tables.Column("resource_status_reason",
                                  verbose_name=_("Status Reason"),)
 
-    class Meta:
+    class Meta(object):
         name = "events"
         verbose_name = _("Stack Events")
 
@@ -214,7 +298,7 @@ class ResourcesTable(tables.DataTable):
     def get_object_id(self, datum):
         return datum.resource_name
 
-    class Meta:
+    class Meta(object):
         name = "resources"
         verbose_name = _("Stack Resources")
         status_columns = ["status", ]

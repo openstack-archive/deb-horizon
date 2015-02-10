@@ -132,6 +132,13 @@ class MyBatchAction(tables.BatchAction):
         pass
 
 
+class MyBatchActionWithHelpText(MyBatchAction):
+    name = "batch_help"
+    help_text = "this is help."
+    action_present = "BatchHelp"
+    action_past = "BatchedHelp"
+
+
 class MyToggleAction(tables.BatchAction):
     name = "toggle"
     action_present = ("Down", "Up")
@@ -230,19 +237,21 @@ class MyTable(tables.DataTable):
     optional = tables.Column('optional', empty_value='N/A')
     excluded = tables.Column('excluded')
 
-    class Meta:
+    class Meta(object):
         name = "my_table"
         verbose_name = "My Table"
         status_columns = ["status"]
         columns = ('id', 'name', 'value', 'optional', 'status')
         row_class = MyRow
         column_class = MyColumn
-        table_actions = (MyFilterAction, MyAction, MyBatchAction)
-        row_actions = (MyAction, MyLinkAction, MyBatchAction, MyToggleAction)
+        table_actions = (MyFilterAction, MyAction, MyBatchAction,
+                         MyBatchActionWithHelpText)
+        row_actions = (MyAction, MyLinkAction, MyBatchAction, MyToggleAction,
+                       MyBatchActionWithHelpText)
 
 
 class MyServerFilterTable(MyTable):
-    class Meta:
+    class Meta(object):
         name = "my_table"
         verbose_name = "My Table"
         status_columns = ["status"]
@@ -250,11 +259,12 @@ class MyServerFilterTable(MyTable):
         row_class = MyRow
         column_class = MyColumn
         table_actions = (MyServerFilterAction, MyAction, MyBatchAction)
-        row_actions = (MyAction, MyLinkAction, MyBatchAction, MyToggleAction)
+        row_actions = (MyAction, MyLinkAction, MyBatchAction, MyToggleAction,
+                       MyBatchActionWithHelpText)
 
 
 class MyTableSelectable(MyTable):
-    class Meta:
+    class Meta(object):
         name = "my_table"
         columns = ('id', 'name', 'value', 'status')
         row_class = MyRowSelectable
@@ -270,7 +280,7 @@ class MyTableNotAllowedInlineEdit(MyTable):
                          form_field_attributes={'class': 'test'},
                          update_action=MyUpdateActionNotAllowed)
 
-    class Meta:
+    class Meta(object):
         name = "my_table"
         columns = ('id', 'name', 'value', 'optional', 'status')
         row_class = MyRow
@@ -292,7 +302,7 @@ class MyTableWrapList(MyTable):
 class NoActionsTable(tables.DataTable):
     id = tables.Column('id')
 
-    class Meta:
+    class Meta(object):
         name = "no_actions_table"
         verbose_name = "No Actions Table"
         table_actions = ()
@@ -302,7 +312,7 @@ class NoActionsTable(tables.DataTable):
 class DisabledActionsTable(tables.DataTable):
     id = tables.Column('id')
 
-    class Meta:
+    class Meta(object):
         name = "disabled_actions_table"
         verbose_name = "Disabled Actions Table"
         table_actions = (MyDisabledAction,)
@@ -338,6 +348,7 @@ class DataTableTests(test.TestCase):
         # Actions (these also test ordering)
         self.assertQuerysetEqual(self.table.base_actions.values(),
                                  ['<MyBatchAction: batch>',
+                                  '<MyBatchActionWithHelpText: batch_help>',
                                   '<MyAction: delete>',
                                   '<MyFilterAction: filter>',
                                   '<MyLinkAction: login>',
@@ -345,12 +356,14 @@ class DataTableTests(test.TestCase):
         self.assertQuerysetEqual(self.table.get_table_actions(),
                                  ['<MyFilterAction: filter>',
                                   '<MyAction: delete>',
-                                  '<MyBatchAction: batch>'])
+                                  '<MyBatchAction: batch>',
+                                  '<MyBatchActionWithHelpText: batch_help>'])
         self.assertQuerysetEqual(self.table.get_row_actions(TEST_DATA[0]),
                                  ['<MyAction: delete>',
                                   '<MyLinkAction: login>',
                                   '<MyBatchAction: batch>',
-                                  '<MyToggleAction: toggle>'])
+                                  '<MyToggleAction: toggle>',
+                                  '<MyBatchActionWithHelpText: batch_help>'])
         # Auto-generated columns
         multi_select = self.table.columns['multi_select']
         self.assertEqual("multi_select", multi_select.auto)
@@ -368,7 +381,7 @@ class DataTableTests(test.TestCase):
 
     def test_table_force_no_multiselect(self):
         class TempTable(MyTable):
-            class Meta:
+            class Meta(object):
                 columns = ('id',)
                 table_actions = (MyFilterAction, MyAction,)
                 row_actions = (MyAction, MyLinkAction,)
@@ -380,7 +393,7 @@ class DataTableTests(test.TestCase):
 
     def test_table_force_no_actions_column(self):
         class TempTable(MyTable):
-            class Meta:
+            class Meta(object):
                 columns = ('id',)
                 table_actions = (MyFilterAction, MyAction,)
                 row_actions = (MyAction, MyLinkAction,)
@@ -396,7 +409,7 @@ class DataTableTests(test.TestCase):
                                  verbose_name="Verbose Name",
                                  sortable=True)
 
-            class Meta:
+            class Meta(object):
                 name = "my_table"
                 columns = ('id', 'name', 'value', 'optional', 'status')
 
@@ -408,7 +421,7 @@ class DataTableTests(test.TestCase):
 
     def test_table_natural_no_actions_column(self):
         class TempTable(MyTable):
-            class Meta:
+            class Meta(object):
                 columns = ('id',)
                 table_actions = (MyFilterAction, MyAction,)
         self.table = TempTable(self.request, TEST_DATA)
@@ -418,7 +431,7 @@ class DataTableTests(test.TestCase):
 
     def test_table_natural_no_multiselect(self):
         class TempTable(MyTable):
-            class Meta:
+            class Meta(object):
                 columns = ('id',)
                 row_actions = (MyAction, MyLinkAction,)
         self.table = TempTable(self.request, TEST_DATA)
@@ -430,7 +443,7 @@ class DataTableTests(test.TestCase):
         class TempTable(MyTable):
             extra = tables.Column('extra')
 
-            class Meta:
+            class Meta(object):
                 name = "temp_table"
                 table_actions = (MyFilterAction, MyAction,)
                 row_actions = (MyAction, MyLinkAction,)
@@ -561,15 +574,30 @@ class DataTableTests(test.TestCase):
         self.assertContains(resp, "my_table__filter__q", 1)
         self.assertContains(resp, "my_table__delete", 1)
         self.assertContains(resp, 'id="my_table__action_delete"', 1)
+
+        # Table BatchActions
+        self.assertContains(resp, 'id="my_table__action_batch_help"', 1)
+        self.assertContains(resp, 'help_text="this is help."', 1)
+        self.assertContains(resp, 'BatchHelp Item', 1)
+
         # Row actions
         row_actions = self.table.render_row_actions(TEST_DATA[0])
         resp = http.HttpResponse(row_actions)
-        self.assertContains(resp, "<li", 3)
+        self.assertContains(resp, "<li", 4)
         self.assertContains(resp, "my_table__delete__1", 1)
         self.assertContains(resp, "my_table__toggle__1", 1)
         self.assertContains(resp, "/auth/login/", 1)
         self.assertContains(resp, "ajax-modal", 1)
         self.assertContains(resp, 'id="my_table__row_1__action_delete"', 1)
+
+        # Row BatchActions
+        row_actions = self.table.render_row_actions(TEST_DATA[0])
+        resp = http.HttpResponse(row_actions)
+        self.assertContains(resp, 'id="my_table__row_1__action_batch_help"', 1)
+        self.assertContains(resp, 'help_text="this is help."', 1)
+        self.assertContains(resp, 'value="my_table__batch_help__1"', 1)
+        self.assertContains(resp, 'BatchHelp Item', 1)
+
         # Whole table
         resp = http.HttpResponse(self.table.render())
         self.assertContains(resp, '<table id="my_table"', 1)
@@ -726,7 +754,7 @@ class DataTableTests(test.TestCase):
                                  form_field_attributes={'class': 'test'},
                                  update_action=MyUpdateAction)
 
-            class Meta:
+            class Meta(object):
                 name = "my_table"
                 columns = ('id', 'name', 'value', 'optional', 'status')
 
@@ -763,7 +791,7 @@ class DataTableTests(test.TestCase):
                                  form_field_attributes={'class': 'test'},
                                  update_action=MyUpdateAction)
 
-            class Meta:
+            class Meta(object):
                 name = "my_table"
                 columns = ('id', 'name', 'value', 'optional', 'status')
 
@@ -802,11 +830,17 @@ class DataTableTests(test.TestCase):
         toggle_action = self.table.get_row_actions(TEST_DATA_3[0])[2]
         self.assertEqual("Batch Item", unicode(toggle_action.verbose_name))
 
+        # Batch action with custom help text
+        req = self.factory.get('/my_url/')
+        self.table = MyTable(req, TEST_DATA_3)
+        toggle_action = self.table.get_row_actions(TEST_DATA_3[0])[4]
+        self.assertEqual("BatchHelp Item", unicode(toggle_action.verbose_name))
+
         # Single object toggle action
         # GET page - 'up' to 'down'
         req = self.factory.get('/my_url/')
         self.table = MyTable(req, TEST_DATA_3)
-        self.assertEqual(4, len(self.table.get_row_actions(TEST_DATA_3[0])))
+        self.assertEqual(5, len(self.table.get_row_actions(TEST_DATA_3[0])))
         toggle_action = self.table.get_row_actions(TEST_DATA_3[0])[3]
         self.assertEqual("Down Item", unicode(toggle_action.verbose_name))
 
@@ -827,7 +861,7 @@ class DataTableTests(test.TestCase):
         # GET page - 'down' to 'up'
         req = self.factory.get('/my_url/')
         self.table = MyTable(req, TEST_DATA_2)
-        self.assertEqual(3, len(self.table.get_row_actions(TEST_DATA_2[0])))
+        self.assertEqual(4, len(self.table.get_row_actions(TEST_DATA_2[0])))
         toggle_action = self.table.get_row_actions(TEST_DATA_2[0])[2]
         self.assertEqual("Up Item", unicode(toggle_action.verbose_name))
 
@@ -883,7 +917,8 @@ class DataTableTests(test.TestCase):
         self.assertQuerysetEqual(self.table.get_table_actions(),
                                  ['<MyFilterAction: filter>',
                                   '<MyAction: delete>',
-                                  '<MyBatchAction: batch>'])
+                                  '<MyBatchAction: batch>',
+                                  '<MyBatchActionWithHelpText: batch_help>'])
 
         # Zero objects in table
         # BatchAction not available
@@ -1287,7 +1322,7 @@ class APIFilterTableView(SingleTableView):
 class TableWithPermissions(tables.DataTable):
     id = tables.Column('id')
 
-    class Meta:
+    class Meta(object):
         name = "table_with_permissions"
         permissions = ('horizon.test',)
 
@@ -1427,7 +1462,7 @@ class FormsetTableTests(test.TestCase):
             name = tables.Column('name')
             value = tables.Column('value')
 
-            class Meta:
+            class Meta(object):
                 name = 'table'
 
         table = Table(self.request)

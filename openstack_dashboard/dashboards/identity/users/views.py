@@ -23,6 +23,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator  # noqa
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters  # noqa
+from django.views import generic
 
 from horizon import exceptions
 from horizon import forms
@@ -70,8 +71,12 @@ class IndexView(tables.DataTableView):
 
 
 class UpdateView(forms.ModalFormView):
-    form_class = project_forms.UpdateUserForm
     template_name = 'identity/users/update.html'
+    modal_header = _("Update User")
+    form_id = "update_user_form"
+    form_class = project_forms.UpdateUserForm
+    submit_label = _("Update User")
+    submit_url = "horizon:identity:users:update"
     success_url = reverse_lazy('horizon:identity:users:index')
 
     @method_decorator(sensitive_post_parameters('password',
@@ -92,7 +97,8 @@ class UpdateView(forms.ModalFormView):
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
-        context['user'] = self.get_object()
+        args = (self.kwargs['user_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):
@@ -117,8 +123,13 @@ class UpdateView(forms.ModalFormView):
 
 
 class CreateView(forms.ModalFormView):
+    template_name = 'identity/users/create.html'
+    modal_header = _("Create User")
+    form_id = "create_user_form"
     form_class = project_forms.CreateUserForm
     template_name = 'identity/users/create.html'
+    submit_label = _("Create User")
+    submit_url = reverse_lazy("horizon:identity:users:create")
     success_url = reverse_lazy('horizon:identity:users:index')
 
     @method_decorator(sensitive_post_parameters('password',
@@ -146,3 +157,44 @@ class CreateView(forms.ModalFormView):
         return {'domain_id': domain.id,
                 'domain_name': domain.name,
                 'role_id': getattr(default_role, "id", None)}
+
+
+class DetailView(generic.TemplateView):
+    template_name = 'identity/users/detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailView, self).get_context_data(**kwargs)
+        user = self.get_data()
+        table = project_tables.UsersTable(self.request)
+        domain_id = getattr(user, "domain_id", None)
+        domain_name = ''
+        if api.keystone.VERSIONS.active >= 3:
+            try:
+                domain = api.keystone.domain_get(self.request, domain_id)
+                domain_name = domain.name
+            except Exception:
+                exceptions.handle(self.request,
+                                  _('Unable to retrieve project domain.'))
+
+        context["user"] = user
+        context["domain_id"] = domain_id
+        context["domain_name"] = domain_name
+        context["page_title"] = _("User Details: %s") % user.name
+        context["url"] = self.get_redirect_url()
+        context["actions"] = table.render_row_actions(user)
+        return context
+
+    @memoized.memoized_method
+    def get_data(self):
+        try:
+            user_id = self.kwargs['user_id']
+            user = api.keystone.user_get(self.request, user_id)
+        except Exception:
+            redirect = self.get_redirect_url()
+            exceptions.handle(self.request,
+                              _('Unable to retrieve user details.'),
+                              redirect=redirect)
+        return user
+
+    def get_redirect_url(self):
+        return reverse('horizon:identity:users:index')

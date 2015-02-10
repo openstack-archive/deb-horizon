@@ -79,7 +79,7 @@ class Volume(BaseCinderAPIResourceWrapper):
               'volume_type', 'availability_zone', 'imageRef', 'bootable',
               'snapshot_id', 'source_volid', 'attachments', 'tenant_name',
               'os-vol-host-attr:host', 'os-vol-tenant-attr:tenant_id',
-              'metadata', 'volume_image_metadata', 'encrypted']
+              'metadata', 'volume_image_metadata', 'encrypted', 'transfer']
 
     @property
     def is_bootable(self):
@@ -127,6 +127,11 @@ class QosSpec(object):
         self.id = id
         self.key = key
         self.value = val
+
+
+class VolumeTransfer(base.APIResourceWrapper):
+
+    _attrs = ['id', 'name', 'created_at', 'volume_id', 'auth_key']
 
 
 @memoized
@@ -181,7 +186,17 @@ def volume_list(request, search_opts=None):
     c_client = cinderclient(request)
     if c_client is None:
         return []
-    return [Volume(v) for v in c_client.volumes.list(search_opts=search_opts)]
+
+    # build a dictionary of volume_id -> transfer
+    transfers = {t.volume_id: t
+                 for t in transfer_list(request, search_opts=search_opts)}
+
+    volumes = []
+    for v in c_client.volumes.list(search_opts=search_opts):
+        v.transfer = transfers.get(v.id)
+        volumes.append(Volume(v))
+
+    return volumes
 
 
 def volume_get(request, volume_id):
@@ -196,6 +211,14 @@ def volume_get(request, volume_id):
             # the lack a server_id property; to work around that we'll
             # give the attached instance a generic name.
             attachment['instance_name'] = _("Unknown instance")
+
+    volume_data.transfer = None
+    if volume_data.status == 'awaiting-transfer':
+        for transfer in transfer_list(request):
+            if transfer.volume_id == volume_id:
+                volume_data.transfer = transfer
+                break
+
     return Volume(volume_data)
 
 
@@ -230,6 +253,11 @@ def volume_retype(request, volume_id, new_type, migration_policy):
                                                 migration_policy)
 
 
+def volume_set_bootable(request, volume_id, bootable):
+    return cinderclient(request).volumes.set_bootable(volume_id,
+                                                      bootable)
+
+
 def volume_update(request, volume_id, name, description):
     vol_data = {'name': name,
                 'description': description}
@@ -249,6 +277,10 @@ def volume_upload_to_image(request, volume_id, force, image_name,
                                                          image_name,
                                                          container_format,
                                                          disk_format)
+
+
+def volume_get_encryption_metadata(request, volume_id):
+    return cinderclient(request).volumes.get_encryption_metadata(volume_id)
 
 
 def volume_snapshot_get(request, snapshot_id):
@@ -338,6 +370,32 @@ def volume_backup_restore(request, backup_id, volume_id):
                                                   volume_id=volume_id)
 
 
+def volume_manage(request,
+                  host,
+                  identifier,
+                  id_type,
+                  name,
+                  description,
+                  volume_type,
+                  availability_zone,
+                  metadata,
+                  bootable):
+    source = {id_type: identifier}
+    return cinderclient(request).volumes.manage(
+        host=host,
+        ref=source,
+        name=name,
+        description=description,
+        volume_type=volume_type,
+        availability_zone=availability_zone,
+        metadata=metadata,
+        bootable=bootable)
+
+
+def volume_unmanage(request, volume_id):
+    return cinderclient(request).volumes.unmanage(volume=volume_id)
+
+
 def tenant_quota_get(request, tenant_id):
     c_client = cinderclient(request)
     if c_client is None:
@@ -398,6 +456,10 @@ def volume_type_get(request, volume_type_id):
 def volume_encryption_type_create(request, volume_type_id, data):
     return cinderclient(request).volume_encryption_types.create(volume_type_id,
                                                                 specs=data)
+
+
+def volume_encryption_type_delete(request, volume_type_id):
+    return cinderclient(request).volume_encryption_types.delete(volume_type_id)
 
 
 def volume_encryption_type_get(request, volume_type_id):
@@ -517,3 +579,30 @@ def extension_supported(request, extension_name):
         if extension.name == extension_name:
             return True
     return False
+
+
+def transfer_list(request, detailed=True, search_opts=None):
+    """To see all volumes transfers as an admin pass in a special
+    search option: {'all_tenants': 1}
+    """
+    c_client = cinderclient(request)
+    return [VolumeTransfer(v) for v in c_client.transfers.list(
+        detailed=detailed, search_opts=search_opts)]
+
+
+def transfer_get(request, transfer_id):
+    transfer_data = cinderclient(request).transfers.get(transfer_id)
+    return VolumeTransfer(transfer_data)
+
+
+def transfer_create(request, transfer_id, name):
+    volume = cinderclient(request).transfers.create(transfer_id, name)
+    return VolumeTransfer(volume)
+
+
+def transfer_accept(request, transfer_id, auth_key):
+    return cinderclient(request).transfers.accept(transfer_id, auth_key)
+
+
+def transfer_delete(request, transfer_id):
+    return cinderclient(request).transfers.delete(transfer_id)

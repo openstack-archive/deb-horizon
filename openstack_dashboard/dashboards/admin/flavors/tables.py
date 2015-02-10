@@ -23,6 +23,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
 from horizon import tables
+from horizon.templatetags import sizeformat
 
 from openstack_dashboard import api
 
@@ -98,7 +99,7 @@ class FlavorFilterAction(tables.FilterAction):
 
 
 def get_size(flavor):
-    return _("%sMB") % flavor.ram
+    return sizeformat.mb_float_format(flavor.ram)
 
 
 def get_swap_size(flavor):
@@ -144,7 +145,7 @@ class FlavorsTable(tables.DataTable):
                                 empty_value=False,
                                 filters=(filters.yesno, filters.capfirst))
 
-    class Meta:
+    class Meta(object):
         name = "flavors"
         verbose_name = _("Flavors")
         table_actions = (FlavorFilterAction, CreateFlavor, DeleteFlavor)

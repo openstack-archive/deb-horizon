@@ -2,6 +2,8 @@
 
 horizon.network_topology = {
   model: null,
+  fa_globe_glyph: '\uf0ac',
+  fa_globe_glyph_width: 15,
   svg:'#topology_canvas',
   svg_container:'#topologyCanvasContainer',
   post_messages:'#topologyMessages',
@@ -146,8 +148,10 @@ horizon.network_topology = {
     }
     $('.toggleView > .btn').each(function(){
       var $this = $(this);
-      if($this.hasClass(self.draw_mode)) {
+      if($this.data('value') === self.draw_mode) {
         $this.addClass('active');
+      } else {
+        $this.removeClass('active');
       }
     });
   },
@@ -261,7 +265,9 @@ horizon.network_topology = {
     network
       .select('.network-cidr')
       .attr('x', function(d) {
-        return self.network_height - self.element_properties.cidr_margin;
+        var padding = isExternalNetwork(d) ? self.fa_globe_glyph_width : 0;
+        return self.network_height - self.element_properties.cidr_margin -
+          padding;
       })
       .text(function(d) {
         var cidr = $.map(d.subnets,function(n, i){
@@ -269,6 +275,19 @@ horizon.network_topology = {
         });
         return cidr.join(', ');
       });
+    function isExternalNetwork(d) {
+      return d['router:external'];
+    }
+    network
+      .select('.network-type')
+      .text(function(d) {
+        return isExternalNetwork(d) ? self.fa_globe_glyph : '';
+      })
+      .attr('x', function(d) {
+        return self.network_height - self.element_properties.cidr_margin;
+      });
+
+    $('[data-toggle="tooltip"]').tooltip({container: 'body'});
 
     network.exit().remove();
 

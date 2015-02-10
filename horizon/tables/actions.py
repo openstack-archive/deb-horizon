@@ -422,13 +422,13 @@ class FilterAction(BaseAction):
         A string representing the name of the request parameter used for the
         search term. Default: ``"q"``.
 
-    .. attribute: filter_type
+    .. attribute:: filter_type
 
         A string representing the type of this filter. If this is set to
         ``"server"`` then ``filter_choices`` must also be provided.
         Default: ``"query"``.
 
-    .. attribute: filter_choices
+    .. attribute:: filter_choices
 
         Required for server type filters. A tuple of tuples representing the
         filter options. Tuple composition should evaluate to (string, string,
@@ -439,7 +439,7 @@ class FilterAction(BaseAction):
         type filters in general will need to be performed in the filter method.
         By default this attribute is not provided.
 
-    .. attribute: needs_preloading
+    .. attribute:: needs_preloading
 
         If True, the filter function will be called for the initial
         GET request with an empty ``filter_string``, regardless of the
@@ -635,7 +635,14 @@ class BatchAction(Action):
 
        Optional location to redirect after completion of the delete
        action. Defaults to the current page.
+
+    .. attribute:: help_text
+
+       Optional message for providing an appropriate help text for
+       the horizon user.
     """
+
+    help_text = _("This action cannot be undone.")
 
     def __init__(self, **kwargs):
         super(BatchAction, self).__init__(**kwargs)
@@ -695,6 +702,8 @@ class BatchAction(Action):
         self.current_past_action = 0
         # Keep record of successfully handled objects
         self.success_ids = []
+
+        self.help_text = kwargs.get('help_text', self.help_text)
 
     def _allowed(self, request, datum=None):
         # Override the default internal action method to prevent batch

@@ -182,6 +182,16 @@ element, do not close the modal after clicking outside of it) and ``"static"``
 (show backdrop element outside the modal, do not close the modal after
 clicking on backdrop).
 
+``disable_password_reveal``
+---------------------------
+
+.. versionadded:: 2015.1(Kilo)
+
+Default: ``False``
+
+Setting this to True will disable the reveal button for password fields,
+including on the login form.
+
 ``password_validator``
 ----------------------
 
@@ -291,7 +301,7 @@ to be shown per page if API pagination support for this exists.
 Default: ``None``
 
 A tuple of tuples which define multiple regions. The tuple format is
-``('http://{{keystone_host}}:5000/v2.0', '{{region_name}}')``. If any regions
+``('http://{{ keystone_host }}:5000/v2.0', '{{ region_name }}')``. If any regions
 are specified the login form will have a dropdown selector for authenticating
 to the appropriate region, and there will be a region switcher dropdown in
 the site header when logged in.
@@ -312,6 +322,18 @@ VMs.
 Valid values are  ``"AUTO"``(default), ``"VNC"``, ``"SPICE"``, ``"RDP"``
 and ``None`` (this latest value is available in version 2014.2(Juno) to allow
 deactivating the in-browser console).
+
+
+``INSTANCE_LOG_LENGTH``
+-----------------------
+
+.. versionadded:: 2015.1(Kilo)
+
+Default:  ``35``
+
+This setting enables you to change the default number of lines displayed for
+the log of an instance.
+Valid value must be a positive integer.
 
 
 ``CREATE_INSTANCE_FLAVOR_SORT``
@@ -353,8 +375,8 @@ the entire list.
 
 Default: ``None``
 
-A list of dictionaries to add optional categories to the image filters
-in the Images & Snapshots panel, based on project ownership.
+A list of dictionaries to add optional categories to the image fixed filters
+in the Images panel, based on project ownership.
 
 Each dictionary should contain a `tenant` attribute with the project
 id, and optionally a `text` attribute specifying the category name, and
@@ -362,6 +384,12 @@ an `icon` attribute that displays an icon in the filter button. The
 icon names are based on the default icon theme provided by Bootstrap.
 
 Example: ``[{'text': 'Official', 'tenant': '27d0058849da47c896d205e2fc25a5e8', 'icon': 'icon-ok'}]``
+
+.. note::
+
+    Since the Kilo release, the Bootstrap icon library (e.g. 'icon-ok') has
+    been replaced with Font Awesome (e.g. 'fa-check').
+
 
 ``IMAGE_RESERVED_CUSTOM_PROPERTIES``
 ------------------------------------
@@ -1023,7 +1051,7 @@ The following keys are specific to registering a dashboard:
 
 .. versionadded:: 2014.1(Icehouse)
 
-The name of the dashboard to be added to ``HORIZON['dashboards']``. Required.
+The slug of the dashboard to be added to ``HORIZON['dashboards']``. Required.
 
 ``DEFAULT``
 -----------
@@ -1071,14 +1099,14 @@ The following keys are specific to registering or removing a panel:
 
 .. versionadded:: 2014.1(Icehouse)
 
-The name of the panel to be added to ``HORIZON_CONFIG``. Required.
+The slug of the panel to be added to ``HORIZON_CONFIG``. Required.
 
 ``PANEL_DASHBOARD``
 -------------------
 
 .. versionadded:: 2014.1(Icehouse)
 
-The name of the dashboard the ``PANEL`` associated with. Required.
+The slug of the dashboard the ``PANEL`` associated with. Required.
 
 
 ``PANEL_GROUP``
@@ -1086,8 +1114,8 @@ The name of the dashboard the ``PANEL`` associated with. Required.
 
 .. versionadded:: 2014.1(Icehouse)
 
-The name of the panel group the ``PANEL`` is associated with. If you want the panel to show up
-without a panel group, use the panel group "default".
+The slug of the panel group the ``PANEL`` is associated with. If you want the
+panel to show up without a panel group, use the panel group "default".
 
 ``DEFAULT_PANEL``
 -----------------
@@ -1154,7 +1182,7 @@ The following keys are specific to registering a panel group:
 
 .. versionadded:: 2014.1(Icehouse)
 
-The name of the panel group to be added to ``HORIZON_CONFIG``. Required.
+The slug of the panel group to be added to ``HORIZON_CONFIG``. Required.
 
 ``PANEL_GROUP_NAME``
 --------------------
@@ -1168,7 +1196,7 @@ The display name of the PANEL_GROUP. Required.
 
 .. versionadded:: 2014.1(Icehouse)
 
-The name of the dashboard the ``PANEL_GROUP`` associated with. Required.
+The slug of the dashboard the ``PANEL_GROUP`` associated with. Required.
 
 
 

@@ -128,7 +128,7 @@ class UpdateRuleView(forms.ModalFormView):
         obj = self._get_object()
         context['page_title'] = _("Edit Rule")
         if obj:
-            context['name'] = obj.name
+            context['name'] = obj.name_or_id
             context['page_title'] = _("Edit Rule "
                                       "%(rule_name)s") % {'rule_name':
                                                           obj.name}
@@ -139,7 +139,6 @@ class UpdateRuleView(forms.ModalFormView):
         rule_id = self.kwargs['rule_id']
         try:
             rule = api.fwaas.rule_get(self.request, rule_id)
-            rule.set_id_as_name_if_empty()
             return rule
         except Exception:
             redirect = self.success_url
@@ -167,21 +166,20 @@ class UpdatePolicyView(forms.ModalFormView):
         obj = self._get_object()
         context['page_title'] = _("Edit Policy")
         if obj:
-            context['name'] = obj.name
+            context['name'] = obj.name_or_id
             context['page_title'] = _("Edit Policy %s") % obj.name
         return context
 
     @memoized.memoized_method
     def _get_object(self, *args, **kwargs):
-            policy_id = self.kwargs['policy_id']
-            try:
-                policy = api.fwaas.policy_get(self.request, policy_id)
-                policy.set_id_as_name_if_empty()
-                return policy
-            except Exception:
-                redirect = self.success_url
-                msg = _('Unable to retrieve policy details.')
-                exceptions.handle(self.request, msg, redirect=redirect)
+        policy_id = self.kwargs['policy_id']
+        try:
+            policy = api.fwaas.policy_get(self.request, policy_id)
+            return policy
+        except Exception:
+            redirect = self.success_url
+            msg = _('Unable to retrieve policy details.')
+            exceptions.handle(self.request, msg, redirect=redirect)
 
     def get_initial(self):
         policy = self._get_object()
@@ -211,7 +209,6 @@ class UpdateFirewallView(forms.ModalFormView):
         try:
             firewall = api.fwaas.firewall_get(self.request,
                                               firewall_id)
-            firewall.set_id_as_name_if_empty()
             return firewall
         except Exception:
             redirect = self.success_url
@@ -236,7 +233,7 @@ class InsertRuleToPolicyView(forms.ModalFormView):
         context["policy_id"] = self.kwargs['policy_id']
         obj = self._get_object()
         if obj:
-            context['name'] = obj.name
+            context['name'] = obj.name_or_id
         return context
 
     @memoized.memoized_method
@@ -244,7 +241,6 @@ class InsertRuleToPolicyView(forms.ModalFormView):
         policy_id = self.kwargs['policy_id']
         try:
             policy = api.fwaas.policy_get(self.request, policy_id)
-            policy.set_id_as_name_if_empty()
             return policy
         except Exception:
             redirect = self.success_url
@@ -270,7 +266,7 @@ class RemoveRuleFromPolicyView(forms.ModalFormView):
         context["policy_id"] = self.kwargs['policy_id']
         obj = self._get_object()
         if obj:
-            context['name'] = obj.name
+            context['name'] = obj.name_or_id
         return context
 
     @memoized.memoized_method
@@ -278,7 +274,6 @@ class RemoveRuleFromPolicyView(forms.ModalFormView):
         policy_id = self.kwargs['policy_id']
         try:
             policy = api.fwaas.policy_get(self.request, policy_id)
-            policy.set_id_as_name_if_empty()
             return policy
         except Exception:
             redirect = self.success_url

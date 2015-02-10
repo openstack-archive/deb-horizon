@@ -126,7 +126,7 @@ class UpdateSubnet(SubnetPolicyTargetMixin, CheckNetworkEditable,
 
 
 class SubnetsTable(tables.DataTable):
-    name = tables.Column("name", verbose_name=_("Name"),
+    name = tables.Column("name_or_id", verbose_name=_("Name"),
                          link='horizon:project:networks:subnets:detail')
     cidr = tables.Column("cidr", verbose_name=_("Network Address"))
     ip_version = tables.Column("ipver_str", verbose_name=_("IP Version"))
@@ -145,7 +145,7 @@ class SubnetsTable(tables.DataTable):
             exceptions.handle(self.request, msg, redirect=self.failure_url)
         return network
 
-    class Meta:
+    class Meta(object):
         name = "subnets"
         verbose_name = _("Subnets")
         table_actions = (CreateSubnet, DeleteSubnet)

@@ -781,7 +781,23 @@ class UnlockInstance(policy.PolicyTargetMixin, tables.BatchAction):
 
 def get_ips(instance):
     template_name = 'project/instances/_instance_ips.html'
-    context = {"instance": instance}
+    ip_groups = {}
+
+    for ip_group, addresses in instance.addresses.iteritems():
+        ip_groups[ip_group] = {}
+        ip_groups[ip_group]["floating"] = []
+        ip_groups[ip_group]["non_floating"] = []
+
+        for address in addresses:
+            if ('OS-EXT-IPS:type' in address and
+               address['OS-EXT-IPS:type'] == "floating"):
+                ip_groups[ip_group]["floating"].append(address)
+            else:
+                ip_groups[ip_group]["non_floating"].append(address)
+
+    context = {
+        "ip_groups": ip_groups,
+    }
     return template.loader.render_to_string(template_name, context)
 
 
@@ -798,7 +814,8 @@ def get_size(instance):
             "id": instance.id,
             "size_disk": size_disk,
             "size_ram": size_ram,
-            "vcpus": instance.full_flavor.vcpus
+            "vcpus": instance.full_flavor.vcpus,
+            "flavor_id": instance.full_flavor.id
         }
         return template.loader.render_to_string(template_name, context)
     return _("Not available")
@@ -960,6 +977,7 @@ class InstancesTable(tables.DataTable):
         ("paused", True),
         ("error", False),
         ("rescue", True),
+        ("shelved", True),
         ("shelved_offloaded", True),
     )
     name = tables.Column("name",
@@ -998,7 +1016,7 @@ class InstancesTable(tables.DataTable):
                                      filters.timesince_sortable),
                             attrs={'data-type': 'timesince'})
 
-    class Meta:
+    class Meta(object):
         name = "instances"
         verbose_name = _("Instances")
         status_columns = ["status", "task"]

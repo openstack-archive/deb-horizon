@@ -47,11 +47,6 @@ class SubServiceFilterAction(ServiceFilterAction):
     filter_field = 'binary'
 
 
-def get_stats(service):
-    return template.loader.render_to_string('admin/services/_stats.html',
-                                            {'service': service})
-
-
 def get_status(service):
     # if not configured in this region, neither option makes sense
     if service.host:
@@ -69,7 +64,7 @@ class ServicesTable(tables.DataTable):
                            status=True,
                            display_choices=SERVICE_STATUS_DISPLAY_CHOICES)
 
-    class Meta:
+    class Meta(object):
         name = "services"
         verbose_name = _("Services")
         table_actions = (ServiceFilterAction,)
@@ -107,7 +102,7 @@ class NovaServicesTable(tables.DataTable):
     def get_object_id(self, obj):
         return "%s-%s-%s" % (obj.binary, obj.host, obj.zone)
 
-    class Meta:
+    class Meta(object):
         name = "nova_services"
         verbose_name = _("Compute Services")
         table_actions = (SubServiceFilterAction,)
@@ -132,7 +127,7 @@ class CinderServicesTable(tables.DataTable):
     def get_object_id(self, obj):
         return "%s-%s-%s" % (obj.binary, obj.host, obj.zone)
 
-    class Meta:
+    class Meta(object):
         name = "cinder_services"
         verbose_name = _("Block Storage Services")
         table_actions = (SubServiceFilterAction,)
@@ -181,7 +176,7 @@ class NetworkAgentsTable(tables.DataTable):
     def get_object_id(self, obj):
         return "%s-%s" % (obj.binary, obj.host)
 
-    class Meta:
+    class Meta(object):
         name = "network_agents"
         verbose_name = _("Network Agents")
         table_actions = (NetworkAgentsFilterAction,)

@@ -35,7 +35,7 @@ Second, you'll need to take care of a couple administrative tasks:
 #. Follow the `instructions for setting up git-review`_ in your
    development environment.
 
-Whew! Got that all that? Okay! You're good to go.
+Whew! Got all that? Okay! You're good to go.
 
 Ways To Contribute
 ------------------
@@ -54,9 +54,13 @@ plunging in head-first:
   mailing list on the project page, or on IRC.
 * Write documentation!
 * Write unit tests for untested code!
+* Help improve the `User Experience Design`_ or contribute to the `Persona Working Group`_.
 
 .. _`bug tracker`: https://bugs.launchpad.net/horizon
 .. _`Launchpad Blueprints`: https://blueprints.launchpad.net/horizon
+.. _`User Experience Design`: https://wiki.openstack.org/wiki/UX#Getting_Started
+.. _`Persona Working Group`: https://wiki.openstack.org/wiki/Personas
+
 
 Choosing Issues To Work On
 --------------------------
@@ -84,6 +88,7 @@ Once you've made your changes, there are a few things to do:
 
 * Make sure the unit tests pass: ``./run_tests.sh``
 * Make sure PEP8 is clean: ``./run_tests.sh --pep8``
+* Make sure your code is ready for translation: ``./run_tests.sh --pseudo de`` See the Translatability section below for details.
 * Make sure your code is up-to-date with the latest master: ``git pull --rebase``
 * Finally, run ``git review`` to upload your changes to Gerrit for review.
 
@@ -119,6 +124,42 @@ The community's guidelines for etiquette are fairly simple:
 * Give credit where credit is due; if someone helps you substantially with
   a piece of code, it's polite (though not required) to thank them in your
   commit message.
+
+Translatability
+===============
+Horizon gets translated into multiple languages. The pseudo translation tool
+can be used to verify that code is ready to be translated. The pseudo tool
+replaces a language's translation with a complete, fake translation. Then
+you can verify that your code properly displays fake translations to validate
+that your code is ready for translation.
+
+Running the pseudo translation tool
+-----------------------------------
+
+#. Make sure your English po file is up to date: ``./run_tests.sh --makemessages``
+#. Run the pseudo tool to create pseudo translations. For example, to replace the German translation with a pseudo translation: ``./run_tests.sh --pseudo de``
+#. Compile the catalog: ``./run_tests.sh --compilemessages``
+#. Run your development server.
+#. Log in and change to the language you pseudo translated.
+
+It should look weird. More specifically, the translatable segments are going
+to start and end with a bracket and they are going to have some added
+characters. For example, "Log In" will become "[~Log In~您好яшçあ]"
+This is useful because you can inspect for the following, and consider if your
+code is working like it should:
+
+* If you see a string in English it's not translatable. Should it be?
+* If you see brackets next to each other that might be concatenation. Concatenation
+  can make quality translations difficult or impossible. See
+  https://wiki.openstack.org/wiki/I18n/TranslatableStrings#Use_string_formating_variables.2C_never_perform_string_concatenation
+  for additional information.
+* If there is unexpected wrapping/truncation there might not be enough
+  space for translations.
+* If you see a string in the proper translated language, it comes from an
+  external source. (That's not bad, just sometimes useful to know)
+* If you get new crashes, there is probably a bug.
+
+Don't forget to cleanup any pseudo translated po files. Those don't get merged!
 
 Code Style
 ==========
@@ -176,7 +217,7 @@ Required
   fragment and then append the fragment to the DOM in one pass instead of doing
   multiple smaller DOM updates.
 * Use “strict”, enclosing each JavaScript file inside a self-executing
-  function.  The self-executing function keeps the strict scoped to the file,
+  function. The self-executing function keeps the strict scoped to the file,
   so its variables and methods are not exposed to other JavaScript files in
   the product.
 
@@ -252,7 +293,7 @@ Required
        elements if dynamic content is required.
 
     3. Avoid using classes for detection purposes only, instead, defer to
-       attributes.  For example to find a div:
+       attributes. For example to find a div:
       .. code ::
 
        <div class="something"></div>
@@ -268,6 +309,28 @@ Required
 * Avoid commented-out code.
 * Avoid dead code.
 
+**Performance**
+
+* Avoid creating instances of the same object repeatedly within the same scope.
+  Instead, assign the object to a variable and re-use the existing object. For
+  example:
+
+  .. code ::
+
+     $(document).on('click', function() { /* do something. */ });
+     $(document).on('mouseover', function() { /* do something. */ });
+
+  A better approach:
+
+  .. code ::
+
+     var $document = $(document);
+     $document.on('click', function() { /* do something. */ });
+     $document.on('mouseover', function() { /* do something. */ });
+
+  In the first approach a jQuery object for ``document`` is created each time.
+  The second approach creates only one jQuery object and reuses it. Each object
+  needs to be created, uses memory, and needs to be garbage collected.
 
 Recommended
 ~~~~~~~~~~~
@@ -318,20 +381,35 @@ Required
   * Controllers and Services should not contain DOM references. Directives
     should.
   * Services are singletons and contain logic independent of view.
-* Scope is not the model (model is your JavaScript Objects).  The scope
+* Scope is not the model (model is your JavaScript Objects). The scope
   references the model.
 
   * Read-only in templates.
   * Write-only in controllers.
 * Since Django already uses ``{{ }}``, use ``{$ $}`` or ``{% verbatim %}``
   instead.
+* For localization in JavaScript files use either ``gettext`` or ``ngettext``.
+  Only those two methods are recognized by our tools and will be included in
+  the .po file after running ``./run_tests --makemessages``.
+
+  .. code ::
+
+    // recognized
+    gettext("translatable text");
+    ngettext("translatable text");
+
+    // not recognized
+    var _ = gettext;
+    _('translatable text');
+
+    $window.gettext('translatable text');
+
 * For localization of AngularJS templates in Horizon, there are a couple of
   ways to do it.
 
   * Using ``gettext`` or ``ngettext`` function that is passed from server to
-    client.  However, this depends on the catalog object that is also passed
-    from server to client. If you're only translating a few things, this
-    methodology is ok to use.
+    client. If you're only translating a few things, this methodology is ok
+    to use.
 
   * Use an Angular directive that will fetch a django template instead of a
     static HTML file. The advantage here is that you can now use

@@ -144,7 +144,7 @@ def keystoneclient(request, admin=False):
     """
     user = request.user
     if admin:
-        if not policy.check(("identity", "admin_required"), request):
+        if not policy.check((("identity", "admin_required"),), request):
             raise exceptions.NotAuthorized
         endpoint_type = 'adminURL'
     else:
@@ -300,12 +300,16 @@ def user_list(request, project=None, domain=None, group=None):
 def user_create(request, name=None, email=None, password=None, project=None,
                 enabled=None, domain=None):
     manager = keystoneclient(request, admin=True).users
-    if VERSIONS.active < 3:
-        user = manager.create(name, password, email, project, enabled)
-        return VERSIONS.upgrade_v2_user(user)
-    else:
-        return manager.create(name, password=password, email=email,
-                              project=project, enabled=enabled, domain=domain)
+    try:
+        if VERSIONS.active < 3:
+            user = manager.create(name, password, email, project, enabled)
+            return VERSIONS.upgrade_v2_user(user)
+        else:
+            return manager.create(name, password=password, email=email,
+                                  project=project, enabled=enabled,
+                                  domain=domain)
+    except keystone_exceptions.Conflict:
+        raise exceptions.Conflict()
 
 
 def user_delete(request, user_id):
@@ -362,7 +366,9 @@ def user_update(request, user, **data):
                 if user.id == request.user.id:
                     return utils.logout_with_message(
                         request,
-                        _("Password changed. Please log in again to continue.")
+                        _("Password changed. Please log in again to "
+                          "continue."),
+                        redirect=False
                     )
             except Exception:
                 error = exceptions.handle(request, ignore=True)
@@ -381,7 +387,8 @@ def user_update(request, user, **data):
         if data.get('password') and user.id == request.user.id:
             return utils.logout_with_message(
                 request,
-                _("Password changed. Please log in again to continue.")
+                _("Password changed. Please log in again to continue."),
+                redirect=False
             )
 
 

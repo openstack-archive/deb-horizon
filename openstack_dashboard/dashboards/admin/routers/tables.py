@@ -41,11 +41,11 @@ class RoutersTable(r_tables.RoutersTable):
                          verbose_name=_("Name"),
                          link="horizon:admin:routers:detail")
 
-    class Meta:
+    class Meta(object):
         name = "Routers"
         verbose_name = _("Routers")
         status_columns = ["status"]
         row_class = UpdateRow
-        table_actions = (DeleteRouter,)
+        table_actions = (DeleteRouter, r_tables.RoutersFilterAction)
         row_actions = (EditRouter, DeleteRouter,)
         Columns = ('tenant', 'name', 'status', 'distributed', 'ext_net')

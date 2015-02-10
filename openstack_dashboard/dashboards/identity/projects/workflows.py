@@ -108,14 +108,14 @@ class UpdateProjectQuotaAction(ProjectQuotaAction):
             raise forms.ValidationError(msg)
         return cleaned_data
 
-    class Meta:
+    class Meta(object):
         name = _("Quota")
         slug = 'update_quotas'
         help_text = _("Set maximum quotas for the project.")
 
 
 class CreateProjectQuotaAction(ProjectQuotaAction):
-    class Meta:
+    class Meta(object):
         name = _("Quota")
         slug = 'create_quotas'
         help_text = _("Set maximum quotas for the project.")
@@ -161,7 +161,7 @@ class CreateProjectInfoAction(workflows.Action):
             self.fields["domain_id"].widget = readonlyInput
             self.fields["domain_name"].widget = readonlyInput
 
-    class Meta:
+    class Meta(object):
         name = _("Project Information")
         help_text = _("Create a project to organize users.")
 
@@ -247,7 +247,7 @@ class UpdateProjectMembersAction(workflows.MembershipAction):
                     field_name = self.get_member_field_name(role_id)
                     self.fields[field_name].initial.append(user_id)
 
-    class Meta:
+    class Meta(object):
         name = _("Project Members")
         slug = PROJECT_USER_MEMBER_SLUG
 
@@ -345,7 +345,7 @@ class UpdateProjectGroupsAction(workflows.MembershipAction):
                     field_name = self.get_member_field_name(role_id)
                     self.fields[field_name].initial.append(group_id)
 
-    class Meta:
+    class Meta(object):
         name = _("Project Groups")
         slug = PROJECT_GROUP_MEMBER_SLUG
 
@@ -404,11 +404,12 @@ class CreateProject(workflows.Workflow):
         domain_id = data['domain_id']
         try:
             desc = data['description']
-            return api.keystone.tenant_create(request,
-                                              name=data['name'],
-                                              description=desc,
-                                              enabled=data['enabled'],
-                                              domain=domain_id)
+            self.object = api.keystone.tenant_create(request,
+                                                     name=data['name'],
+                                                     description=desc,
+                                                     enabled=data['enabled'],
+                                                     domain=domain_id)
+            return self.object
         except Exception:
             exceptions.handle(request, ignore=True)
             return
@@ -521,7 +522,27 @@ class CreateProject(workflows.Workflow):
 class UpdateProjectInfoAction(CreateProjectInfoAction):
     enabled = forms.BooleanField(required=False, label=_("Enabled"))
 
-    class Meta:
+    def __init__(self, request, initial, *args, **kwargs):
+        super(UpdateProjectInfoAction, self).__init__(
+            request, initial, *args, **kwargs)
+        if initial['project_id'] == request.user.token.project['id']:
+            self.fields['enabled'].widget.attrs['disabled'] = True
+            self.fields['enabled'].help_text = _(
+                'You cannot disable your current project')
+
+    def clean(self):
+        cleaned_data = super(UpdateProjectInfoAction, self).clean()
+        # NOTE(tsufiev): in case the current project is being edited, its
+        # 'enabled' field is disabled to prevent changing the field value
+        # which is always `True` for the current project (because the user
+        # logged in it). Since Django treats disabled checkbox as providing
+        # `False` value even if its initial value is `True`, we need to
+        # restore the original `True` value of 'enabled' field here.
+        if self.fields['enabled'].widget.attrs.get('disabled', False):
+            cleaned_data['enabled'] = True
+        return cleaned_data
+
+    class Meta(object):
         name = _("Project Information")
         slug = 'update_info'
         help_text = _("Edit the project details.")

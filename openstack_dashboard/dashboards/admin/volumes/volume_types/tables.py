@@ -84,6 +84,36 @@ class CreateVolumeTypeEncryption(tables.LinkAction):
             return False
 
 
+class DeleteVolumeTypeEncryption(tables.DeleteAction):
+    name = "delete_encryption"
+    policy_rules = (("volume", "volume_extension:volume_type_encryption"),)
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Encryption",
+            u"Delete Encryptions",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Encryption",
+            u"Deleted Encryptions",
+            count
+        )
+
+    def delete(self, request, volume_type_id):
+        cinder.volume_encryption_type_delete(request,
+                                             volume_type_id)
+
+    def allowed(self, request, volume_type=None):
+        return (_is_vol_type_enc_possible(request) and
+                hasattr(volume_type, 'encryption') and
+                hasattr(volume_type.encryption, 'provider'))
+
+
 def _is_vol_type_enc_possible(request):
     try:
         supported = cinder.extension_supported(request,
@@ -103,6 +133,15 @@ def get_volume_type_encryption(volume_type):
     return provider
 
 
+class VolumeTypesFilterAction(tables.FilterAction):
+
+    def filter(self, table, volume_types, filter_string):
+        """Naive case-insensitive search."""
+        query = filter_string.lower()
+        return [volume_type for volume_type in volume_types
+                if query in volume_type.name.lower()]
+
+
 class VolumeTypesTable(tables.DataTable):
     name = tables.Column("name", verbose_name=_("Name"))
     assoc_qos_spec = tables.Column("associated_qos_spec",
@@ -118,14 +157,16 @@ class VolumeTypesTable(tables.DataTable):
     def get_object_id(self, vol_type):
         return str(vol_type.id)
 
-    class Meta:
+    class Meta(object):
         name = "volume_types"
         hidden_title = False
         verbose_name = _("Volume Types")
-        table_actions = (CreateVolumeType, DeleteVolumeType,)
+        table_actions = (VolumeTypesFilterAction, CreateVolumeType,
+                         DeleteVolumeType,)
         row_actions = (CreateVolumeTypeEncryption,
                        ViewVolumeTypeExtras,
                        ManageQosSpecAssociation,
+                       DeleteVolumeTypeEncryption,
                        DeleteVolumeType,)
 
 
@@ -198,7 +239,7 @@ class QosSpecsTable(tables.DataTable):
     def get_object_id(self, qos_specs):
         return qos_specs.id
 
-    class Meta:
+    class Meta(object):
         name = "qos_specs"
         hidden_title = False
         verbose_name = _("QoS Specs")

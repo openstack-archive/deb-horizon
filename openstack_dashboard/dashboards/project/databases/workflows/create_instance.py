@@ -43,7 +43,7 @@ class SetInstanceDetailsAction(workflows.Action):
                                   help_text=_(
                                       "Type and version of datastore."))
 
-    class Meta:
+    class Meta(object):
         name = _("Details")
         help_text_template = "project/databases/_launch_details_help.html"
 
@@ -143,7 +143,7 @@ class SetNetworkAction(workflows.Action):
         if len(network_list) == 1:
             self.fields['network'].initial = [network_list[0][0]]
 
-    class Meta:
+    class Meta(object):
         name = _("Networking")
         permissions = ('openstack.services.network',)
         help_text = _("Select networks for your instance.")
@@ -152,9 +152,8 @@ class SetNetworkAction(workflows.Action):
         try:
             tenant_id = self.request.user.tenant_id
             networks = api.neutron.network_list_for_tenant(request, tenant_id)
-            for n in networks:
-                n.set_id_as_name_if_empty()
-            network_list = [(network.id, network.name) for network in networks]
+            network_list = [(network.id, network.name_or_id)
+                            for network in networks]
         except Exception:
             network_list = []
             exceptions.handle(request,
@@ -201,7 +200,7 @@ class AddDatabasesAction(workflows.Action):
                            help_text=_("Host or IP that the user is allowed "
                                        "to connect through."))
 
-    class Meta:
+    class Meta(object):
         name = _("Initialize Databases")
         permissions = TROVE_ADD_PERMS
         help_text_template = "project/databases/_launch_initialize_help.html"
@@ -229,7 +228,7 @@ class RestoreAction(workflows.Action):
                                required=False,
                                help_text=_('Select a backup to restore'))
 
-    class Meta:
+    class Meta(object):
         name = _("Restore From Backup")
         permissions = ('openstack.services.object-store',)
         help_text_template = "project/databases/_launch_restore_help.html"

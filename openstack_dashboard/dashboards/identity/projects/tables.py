@@ -12,6 +12,7 @@
 
 from django.core.exceptions import ValidationError  # noqa
 from django.core.urlresolvers import reverse
+from django.template import defaultfilters as filters
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
@@ -189,9 +190,12 @@ class UpdateRow(tables.Row):
 
 class UpdateCell(tables.UpdateAction):
     def allowed(self, request, project, cell):
-        return api.keystone.keystone_can_edit_project() and \
-            policy.check((("identity", "identity:update_project"),),
-                         request)
+        policy_rule = (("identity", "identity:update_project"),)
+        return (
+            (cell.column.name != 'enabled' or
+             request.user.token.project['id'] != cell.datum.id) and
+            api.keystone.keystone_can_edit_project() and
+            policy.check(policy_rule, request))
 
     def update_cell(self, request, datum, project_id,
                     cell_name, new_cell_value):
@@ -220,6 +224,7 @@ class UpdateCell(tables.UpdateAction):
 
 class TenantsTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_('Name'),
+                         link=("horizon:identity:projects:detail"),
                          form_field=forms.CharField(max_length=64),
                          update_action=UpdateCell)
     description = tables.Column(lambda obj: getattr(obj, 'description', None),
@@ -230,12 +235,13 @@ class TenantsTable(tables.DataTable):
                                 update_action=UpdateCell)
     id = tables.Column('id', verbose_name=_('Project ID'))
     enabled = tables.Column('enabled', verbose_name=_('Enabled'), status=True,
+                            filters=(filters.yesno, filters.capfirst),
                             form_field=forms.BooleanField(
                                 label=_('Enabled'),
                                 required=False),
                             update_action=UpdateCell)
 
-    class Meta:
+    class Meta(object):
         name = "tenants"
         verbose_name = _("Projects")
         row_class = UpdateRow

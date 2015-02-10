@@ -133,6 +133,15 @@ class SnapshotVolumeNameColumn(tables.Column):
             return reverse(self.link, args=(volume_id,))
 
 
+class VolumeSnapshotsFilterAction(tables.FilterAction):
+
+    def filter(self, table, snapshots, filter_string):
+        """Naive case-insensitive search."""
+        query = filter_string.lower()
+        return [snapshot for snapshot in snapshots
+                if query in snapshot.name.lower()]
+
+
 class VolumeSnapshotsTable(volume_tables.VolumesTableBase):
     name = tables.Column("name",
                          verbose_name=_("Name"),
@@ -142,10 +151,10 @@ class VolumeSnapshotsTable(volume_tables.VolumesTableBase):
         verbose_name=_("Volume Name"),
         link="horizon:project:volumes:volumes:detail")
 
-    class Meta:
+    class Meta(object):
         name = "volume_snapshots"
         verbose_name = _("Volume Snapshots")
-        table_actions = (DeleteVolumeSnapshot,)
+        table_actions = (VolumeSnapshotsFilterAction, DeleteVolumeSnapshot,)
         row_actions = (CreateVolumeFromSnapshot, LaunchSnapshot,
                        EditVolumeSnapshot, DeleteVolumeSnapshot)
         row_class = UpdateRow

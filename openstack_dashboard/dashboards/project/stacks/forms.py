@@ -16,7 +16,7 @@ import logging
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_variables  # noqa
 
-from oslo.utils import strutils
+from oslo_utils import strutils
 import six
 
 from horizon import exceptions
@@ -48,7 +48,7 @@ def create_upload_form_attributes(prefix, input_type, name):
 
 class TemplateForm(forms.SelfHandlingForm):
 
-    class Meta:
+    class Meta(object):
         name = _('Select Template')
         help_text = _('Select a template to launch a stack.')
 
@@ -223,7 +223,7 @@ class TemplateForm(forms.SelfHandlingForm):
 
 
 class ChangeTemplateForm(TemplateForm):
-    class Meta:
+    class Meta(object):
         name = _('Edit Template')
         help_text = _('Select a new template to re-launch a stack.')
     stack_id = forms.CharField(
@@ -238,7 +238,7 @@ class CreateStackForm(forms.SelfHandlingForm):
 
     param_prefix = '__param_'
 
-    class Meta:
+    class Meta(object):
         name = _('Create Stack')
 
     template_data = forms.CharField(
@@ -372,7 +372,7 @@ class CreateStackForm(forms.SelfHandlingForm):
 
 class EditStackForm(CreateStackForm):
 
-    class Meta:
+    class Meta(object):
         name = _('Update Stack Parameters')
 
     stack_id = forms.CharField(

@@ -34,7 +34,7 @@ class PageObject(basewebobject.BaseWebObject):
         return True
 
     def get_url_current_page(self):
-        return self.driver.current_url()
+        return self.driver.current_url
 
     def close_window(self):
         return self.driver.close()
@@ -64,8 +64,14 @@ class PageObject(basewebobject.BaseWebObject):
         else:
             self.driver.switch_to.window(self.driver.window_handles[-1])
 
-    def return_to_previous_page(self):
+    def go_to_previous_page(self):
         self.driver.back()
+
+    def go_to_next_page(self):
+        self.driver.forward()
+
+    def refresh_page(self):
+        self.driver.refresh()
 
     def go_to_login_page(self):
         self.driver.get(self.login_url)

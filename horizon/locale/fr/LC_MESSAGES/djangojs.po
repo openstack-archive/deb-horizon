@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Frédéric <frosmont@free.fr>, 2014
+# Maxime COQUEREL <max.coquerel@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-24 13:00-0500\n"
-"PO-Revision-Date: 2014-10-24 08:10+0000\n"
-"Last-Translator: Frédéric <frosmont@free.fr>\n"
+"POT-Creation-Date: 2015-02-04 17:16-0600\n"
+"PO-Revision-Date: 2015-02-04 21:29+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/horizon/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,8 +19,8 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: static/horizon/js/horizon.accordion_nav.js:83
-#: static/horizon/js/horizon.modals.js:309
+#: static/horizon/js/horizon.accordion_nav.js:84
+#: static/horizon/js/horizon.modals.js:313
 #: static/horizon/js/horizon.tabs.js:21
 msgid "Loading"
 msgstr "Chargement..."
@@ -30,9 +31,9 @@ msgid "No data available."
 msgstr "Pas de données disponibles."
 
 #: static/horizon/js/horizon.d3linechart.js:410
-#: static/horizon/js/horizon.modals.js:328
+#: static/horizon/js/horizon.modals.js:332
 #: static/horizon/js/horizon.tables_inline_edit.js:94
-#: static/horizon/js/horizon.tables_inline_edit.js:175
+#: static/horizon/js/horizon.tables_inline_edit.js:158
 msgid "An error occurred. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer ultérieurement."
 
@@ -45,12 +46,12 @@ msgstr "Problème de communication avec le serveur, veuillez réessayer."
 msgid "Filter"
 msgstr "Filtrer"
 
-#: static/horizon/js/horizon.instances.js:264
+#: static/horizon/js/horizon.instances.js:272
 msgid "Could not read the file"
 msgstr "Le fichier n'a pu être lu"
 
-#: static/horizon/js/horizon.instances.js:270
-#: static/horizon/js/horizon.instances.js:297
+#: static/horizon/js/horizon.instances.js:278
+#: static/horizon/js/horizon.instances.js:307
 msgid "Could not decrypt the password"
 msgstr "Le mot de passe n'a pu être déchiffré"
 
@@ -86,70 +87,70 @@ msgstr "Erreur :"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: static/horizon/js/horizon.modals.js:225
-#: static/horizon/js/horizon.tables.js:226
+#: static/horizon/js/horizon.modals.js:227
+#: static/horizon/js/horizon.tables.js:218
 msgid "Working"
 msgstr "Traitement en cours..."
 
-#: static/horizon/js/horizon.modals.js:259
+#: static/horizon/js/horizon.modals.js:261
 msgid "There was an error submitting the form. Please try again."
 msgstr "Erreur lors de la soumission du formulaire. Veuillez réessayer. "
 
-#: static/horizon/js/horizon.networktopology.js:511
-#: static/horizon/js/horizon.networktopology.js:517
+#: static/horizon/js/horizon.networktopology.js:530
+#: static/horizon/js/horizon.networktopology.js:536
 msgid "None"
 msgstr "Aucun"
 
-#: static/horizon/js/horizon.networktopology.js:530
+#: static/horizon/js/horizon.networktopology.js:549
 msgid "Delete"
 msgstr "Supprimer"
 
-#: static/horizon/js/horizon.networktopology.js:533
+#: static/horizon/js/horizon.networktopology.js:552
 msgid "STATUS"
 msgstr "STATUT"
 
-#: static/horizon/js/horizon.networktopology.js:534
+#: static/horizon/js/horizon.networktopology.js:553
 msgid "ID"
 msgstr "ID"
 
-#: static/horizon/js/horizon.networktopology.js:535
+#: static/horizon/js/horizon.networktopology.js:554
 msgid "Interfaces"
 msgstr "Interfaces"
 
-#: static/horizon/js/horizon.networktopology.js:536
+#: static/horizon/js/horizon.networktopology.js:555
 msgid "Delete Interface"
 msgstr "Supprimer l'Interface"
 
-#: static/horizon/js/horizon.networktopology.js:537
+#: static/horizon/js/horizon.networktopology.js:556
 msgid "Open Console"
 msgstr "Ouvrir une Console"
 
-#: static/horizon/js/horizon.networktopology.js:538
+#: static/horizon/js/horizon.networktopology.js:557
 msgid "View Details"
 msgstr "Voir les détails"
 
-#: static/horizon/js/horizon.networktopology.js:541
+#: static/horizon/js/horizon.networktopology.js:560
 msgid "Delete Router"
 msgstr "Supprimer un Routeur"
 
-#: static/horizon/js/horizon.networktopology.js:542
+#: static/horizon/js/horizon.networktopology.js:561
 msgid "View Router Details"
 msgstr "Voir les Détails du Routeur"
 
-#: static/horizon/js/horizon.networktopology.js:545
+#: static/horizon/js/horizon.networktopology.js:564
 msgid "Add Interface"
 msgstr "Ajouter une interface"
 
-#: static/horizon/js/horizon.networktopology.js:551
+#: static/horizon/js/horizon.networktopology.js:570
 msgid "Terminate Instance"
 msgstr "Terminer l'Instance"
 
-#: static/horizon/js/horizon.networktopology.js:552
+#: static/horizon/js/horizon.networktopology.js:571
 msgid "View Instance Details"
 msgstr "Voir les Détails de l'Instance"
 
 #: static/horizon/js/horizon.tables.js:39
-#: static/horizon/js/horizon.tables.js:382
+#: static/horizon/js/horizon.tables.js:374
 msgid "No items to display."
 msgstr "Aucun élément à afficher."
 
@@ -158,21 +159,21 @@ msgstr "Aucun élément à afficher."
 msgid "An error occurred while updating."
 msgstr "Une erreur s'est produite durant la mise à jour."
 
-#: static/horizon/js/horizon.tables.js:209
+#: static/horizon/js/horizon.tables.js:200
 #, c-format
 msgid "You have selected %s. "
 msgstr "Vous avez sélectionné %s."
 
-#: static/horizon/js/horizon.tables.js:211
+#: static/horizon/js/horizon.tables.js:203
 #, c-format
 msgid "Confirm %s"
 msgstr "Confirmez %s"
 
-#: static/horizon/js/horizon.tables.js:212
-msgid "Please confirm your selection. This action cannot be undone."
-msgstr "Confirmez votre sélection. Cette action ne peut pas être annulée."
+#: static/horizon/js/horizon.tables.js:204
+msgid "Please confirm your selection. "
+msgstr "Merci de confirmer votre sélection."
 
-#: static/horizon/js/horizon.tables.js:369
+#: static/horizon/js/horizon.tables.js:361
 #, c-format
 msgid "Displaying %s item"
 msgid_plural "Displaying %s items"
@@ -180,10 +181,110 @@ msgstr[0] "Affichage de l'item %s"
 msgstr[1] "Affichage des items %s"
 
 #: static/horizon/js/horizon.tables_inline_edit.js:88
-#: static/horizon/js/horizon.tables_inline_edit.js:169
+#: static/horizon/js/horizon.tables_inline_edit.js:152
 msgid "Not authorized to do this operation."
 msgstr "Vous n'êtes pas autorisé à effectuer cette opération."
 
 #: static/horizon/js/horizon.users.js:18
 msgid "Passwords do not match."
 msgstr "Les mots de passe ne correspondent pas."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:24
+msgid "Unable to retrieve users"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:31
+msgid "Unable to create the user."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:38
+msgid "Unable to delete the users."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:45
+msgid "Unable to retrieve the user"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:53
+msgid "Unable to edit the user."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:60
+msgid "Unable to delete the user."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:68
+msgid "Unable to retrieve role"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:75
+msgid "Unable to create the role."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:82
+msgid "Unable to delete the roles."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:89
+msgid "Unable to retrieve the role"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:97
+msgid "Unable to edit the role."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:104
+msgid "Unable to delete the role."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:112
+msgid "Unable to retrieve domains"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:119
+msgid "Unable to create the domain."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:126
+msgid "Unable to delete the domains."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:133
+msgid "Unable to retrieve the domain"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:141
+msgid "Unable to edit the domain."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:148
+msgid "Unable to delete the domain."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:156
+msgid "Unable to retrieve projects"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:163
+msgid "Unable to create the project."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:170
+msgid "Unable to delete the projects."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:177
+msgid "Unable to retrieve the project"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:185
+msgid "Unable to edit the project."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:192
+msgid "Unable to delete the project."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:200
+msgid "Unable to grant the role."
+msgstr ""

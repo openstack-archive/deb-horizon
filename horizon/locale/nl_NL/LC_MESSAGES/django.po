@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-03 20:48-0600\n"
-"PO-Revision-Date: 2014-12-04 03:01+0000\n"
+"POT-Creation-Date: 2015-02-02 15:13-0600\n"
+"PO-Revision-Date: 2015-02-02 19:18+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/horizon/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
@@ -35,16 +35,16 @@ msgstr "U bent niet gemachtigd voor toegang tot %s"
 msgid "A %(resource)s with the name \"%(name)s\" already exists."
 msgstr ""
 
-#: exceptions.py:287
+#: exceptions.py:230
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "Onbevoegd: %s"
 
-#: exceptions.py:290
+#: exceptions.py:233
 msgid "Unauthorized. Please try logging in again."
 msgstr "Onbevoegd. Meldt u zich opnieuw aan."
 
-#: middleware.py:97
+#: middleware.py:103
 msgid "Session timed out."
 msgstr "Sessie verlopen."
 
@@ -73,70 +73,74 @@ msgstr "Ongeldige versie voor IP adres"
 msgid "Invalid subnet mask"
 msgstr "Ongeldig subnet masker"
 
-#: forms/views.py:102 templates/horizon/common/_usage_summary.html:16
+#: forms/views.py:132 templates/horizon/common/_usage_summary.html:16
 msgid "Submit"
 msgstr "Indienen"
 
-#: forms/views.py:103
-#: templates/horizon/common/_modal_form_update_metadata.html:236
+#: forms/views.py:133
+#: templates/horizon/common/_modal_form_update_metadata.html:235
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "Annuleren"
 
 #: tables/actions.py:460
-#: templates/horizon/common/_data_table_table_actions.html:16
-#: templates/horizon/common/_data_table_table_actions.html:26
+#: templates/horizon/common/_data_table_table_actions.html:21
+#: templates/horizon/common/_data_table_table_actions.html:33
 #: templates/horizon/common/_modal_form_update_metadata.html:28
-#: templates/horizon/common/_modal_form_update_metadata.html:98
-#: templates/horizon/common/_workflow_step_update_members.html:12
-#: templates/horizon/common/_workflow_step_update_members.html:21
+#: templates/horizon/common/_modal_form_update_metadata.html:97
+#: templates/horizon/common/_workflow_step_update_members.html:14
+#: templates/horizon/common/_workflow_step_update_members.html:23
 msgid "Filter"
 msgstr "Filter"
 
-#: tables/actions.py:758
+#: tables/actions.py:645
+msgid "This action cannot be undone."
+msgstr ""
+
+#: tables/actions.py:767
 #, python-format
 msgctxt "past"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:760
+#: tables/actions.py:769
 #, python-format
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:794 tables/base.py:1565
+#: tables/actions.py:803 tables/base.py:1570
 msgid "N/A"
 msgstr "n.v.t."
 
-#: tables/actions.py:823
+#: tables/actions.py:832
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
 msgstr "Het is u niet toegestaan om %(action)s: %(objs)s"
 
-#: tables/actions.py:830
+#: tables/actions.py:839
 #, python-format
 msgid "Unable to %(action)s: %(objs)s"
 msgstr "Niet in staat om %(action)s: %(objs)s"
 
-#: tables/actions.py:836
+#: tables/actions.py:845
 #, python-format
 msgid "%(action)s: %(objs)s"
 msgstr "%(action)s: %(objs)s"
 
-#: tables/actions.py:906
+#: tables/actions.py:915
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: tables/actions.py:908
+#: tables/actions.py:917
 msgid "Deleted"
 msgstr "Verwijderd"
 
-#: tables/actions.py:939
+#: tables/actions.py:948
 msgid "Update"
 msgstr "Bijwerken"
 
-#: tables/actions.py:940
+#: tables/actions.py:949
 msgid "Updated"
 msgstr "Bijgewerkt"
 
@@ -149,21 +153,21 @@ msgstr "-"
 msgid "The attribute %(attr)s doesn't exist on %(obj)s."
 msgstr "Het attribuut %(attr)s bestaat niet op %(obj)s."
 
-#: tables/base.py:985
+#: tables/base.py:990
 msgid "No items to display."
 msgstr "Geen artikelen om weer te geven."
 
-#: tables/base.py:1094
-#: templates/horizon/common/_data_table_table_actions.html:40
+#: tables/base.py:1099
+#: templates/horizon/common/_data_table_table_actions.html:47
 msgid "Actions"
 msgstr "Acties"
 
-#: tables/base.py:1324
+#: tables/base.py:1329
 #, python-format
 msgid "No match returned for the id \"%s\"."
 msgstr "Geen overeenkomsten gevonden voor de id \"%s\"."
 
-#: tables/base.py:1481
+#: tables/base.py:1486
 msgid "Please select a row before taking that action."
 msgstr "Selecteer alstublieft een rij voor het uitvoeren van die actie."
 
@@ -179,10 +183,6 @@ msgstr "Help"
 #: templates/_header.html:9
 msgid "Sign Out"
 msgstr "Afmelden"
-
-#: templates/splash.html:8 templates/auth/login.html:4
-msgid "Login"
-msgstr "Aanmelden"
 
 #: templates/auth/_login.html:5
 msgid "Log In"
@@ -201,6 +201,10 @@ msgstr "Meldt u zich aan als een andere gebruiker of ga terug naar <a href=\"%(h
 
 #: templates/auth/_login.html:32
 msgid "Sign In"
+msgstr "Aanmelden"
+
+#: templates/auth/login.html:4
+msgid "Login"
 msgstr "Aanmelden"
 
 #: templates/horizon/_messages.html:7
@@ -238,7 +242,7 @@ msgstr ""
 msgid "Next&nbsp;&raquo;"
 msgstr ""
 
-#: templates/horizon/common/_data_table_table_actions.html:38
+#: templates/horizon/common/_data_table_table_actions.html:45
 msgid "More Actions"
 msgstr ""
 
@@ -267,7 +271,6 @@ msgstr "Exemplaren"
 #: templates/horizon/common/_limit_summary.html:8
 #: templates/horizon/common/_limit_summary.html:15
 #: templates/horizon/common/_limit_summary.html:22
-#: templates/horizon/common/_limit_summary.html:29
 #: templates/horizon/common/_limit_summary.html:36
 #: templates/horizon/common/_limit_summary.html:43
 #: templates/horizon/common/_limit_summary.html:50
@@ -286,6 +289,11 @@ msgstr "Werkgeheugen"
 #: templates/horizon/common/_limit_summary.html:28
 msgid "Floating IPs"
 msgstr "Vlottende IPs"
+
+#: templates/horizon/common/_limit_summary.html:29
+#, python-format
+msgid "Allocated <span> %(used)s </span> of <span> %(available)s </span>"
+msgstr ""
 
 #: templates/horizon/common/_limit_summary.html:35
 msgid "Security Groups"
@@ -317,16 +325,16 @@ msgstr ""
 msgid "Duplicate keys are not allowed"
 msgstr ""
 
-#: templates/horizon/common/_modal_form_update_metadata.html:85
-#: templates/horizon/common/_modal_form_update_metadata.html:197
+#: templates/horizon/common/_modal_form_update_metadata.html:84
+#: templates/horizon/common/_modal_form_update_metadata.html:196
 msgid "No available metadata"
 msgstr ""
 
-#: templates/horizon/common/_modal_form_update_metadata.html:96
+#: templates/horizon/common/_modal_form_update_metadata.html:95
 msgid "Existing Metadata"
 msgstr ""
 
-#: templates/horizon/common/_modal_form_update_metadata.html:213
+#: templates/horizon/common/_modal_form_update_metadata.html:212
 msgid ""
 "\n"
 "          You can specify resource metadata by moving items from the left\n"
@@ -336,7 +344,7 @@ msgid ""
 "        "
 msgstr ""
 
-#: templates/horizon/common/_modal_form_update_metadata.html:235
+#: templates/horizon/common/_modal_form_update_metadata.html:234
 #: workflows/base.py:594
 msgid "Save"
 msgstr "Opslaan"
@@ -395,6 +403,10 @@ msgstr ""
 
 #: templates/horizon/common/_usage_summary.html:23
 msgid "This Period's GB-Hours:"
+msgstr ""
+
+#: templates/horizon/common/_usage_summary.html:24
+msgid "This Period's RAM-Hours:"
 msgstr ""
 
 #: templates/horizon/common/_workflow.html:40

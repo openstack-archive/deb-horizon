@@ -12,7 +12,7 @@
 
 import os
 
-from oslo.config import cfg
+from oslo_config import cfg
 
 
 DashboardGroup = [
@@ -43,6 +43,13 @@ IdentityGroup = [
                default='pass',
                help="API key to use when authenticating as admin.",
                secret=True),
+]
+
+ImageGroup = [
+    cfg.StrOpt('http_image',
+               default='http://download.cirros-cloud.net/0.3.1/'
+                       'cirros-0.3.1-x86_64-uec.tar.gz',
+               help='http accessible image'),
 ]
 
 AvailableServiceGroup = [
@@ -79,5 +86,6 @@ def get_config():
     cfg.CONF.register_opts(IdentityGroup, group="identity")
     cfg.CONF.register_opts(AvailableServiceGroup, group="service_available")
     cfg.CONF.register_opts(SeleniumGroup, group="selenium")
+    cfg.CONF.register_opts(ImageGroup, group="image")
 
     return cfg.CONF

@@ -34,7 +34,7 @@ class CreateSubnetInfoAction(network_workflows.CreateSubnetInfoAction):
                                      widget=forms.HiddenInput())
     msg = _('Specify "Network Address"')
 
-    class Meta:
+    class Meta(object):
         name = _("Subnet")
         help_text = _('Create a subnet associated with the network. '
                       'Advanced configuration is available by clicking on the '
@@ -112,7 +112,7 @@ class UpdateSubnetInfoAction(CreateSubnetInfoAction):
     no_gateway = forms.BooleanField(label=_("Disable Gateway"),
                                     initial=False, required=False)
 
-    class Meta:
+    class Meta(object):
         name = _("Subnet")
         help_text = _('Update a subnet associated with the network. '
                       'Advanced configuration are available at '
@@ -130,8 +130,6 @@ class UpdateSubnetInfo(CreateSubnetInfo):
 
 
 class UpdateSubnetDetailAction(network_workflows.CreateSubnetDetailAction):
-    allocation_pools = forms.CharField(widget=forms.HiddenInput(),
-                                       required=False)
 
     def __init__(self, request, context, *args, **kwargs):
         super(UpdateSubnetDetailAction, self).__init__(request, context,
@@ -146,7 +144,7 @@ class UpdateSubnetDetailAction(network_workflows.CreateSubnetDetailAction):
         self.fields['ipv6_modes'].widget = forms.HiddenInput()
         self.fields['ipv6_modes'].required = False
 
-    class Meta:
+    class Meta(object):
         name = _("Subnet Details")
         help_text = _('Specify additional attributes for the subnet.')
 

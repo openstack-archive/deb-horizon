@@ -51,11 +51,11 @@ class MappingsTests(test.TestCase):
 
         assertMappingUrl(
             '/project/networks/subnets/aaa/detail',
-            'OS::Quantum::Subnet',
+            'OS::Neutron::Subnet',
             'aaa')
         assertMappingUrl(
             None,
-            'OS::Quantum::Subnet',
+            'OS::Neutron::Subnet',
             None)
         assertMappingUrl(
             None,
@@ -670,6 +670,30 @@ class StackTests(test.TestCase):
 
         self.assertFormErrors(res, 1)
         self.assertFormError(res, "form", 'stack_name', error)
+
+    def test_check_stack(self):
+        stack = self.stacks.first()
+        form_data = {"action": "stacks__check__%s" % stack.id}
+        res = self.client.post(INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    def test_suspend_stack(self):
+        stack = self.stacks.first()
+        form_data = {"action": "stacks__suspend__%s" % stack.id}
+        res = self.client.post(INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    def test_resume_stack(self):
+        stack = self.stacks.first()
+        form_data = {"action": "stacks__resume__%s" % stack.id}
+        res = self.client.post(INDEX_URL, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
 
 
 class TemplateFormTests(test.TestCase):

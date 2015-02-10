@@ -11,6 +11,7 @@
 # under the License.
 
 import json
+import logging
 
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse  # noqa
@@ -21,7 +22,6 @@ from horizon import exceptions
 from horizon import forms
 from horizon import tabs
 from horizon.utils import csvbase
-from horizon.utils import units
 
 from openstack_dashboard.api import ceilometer
 
@@ -29,7 +29,10 @@ from openstack_dashboard.dashboards.admin.metering import forms as \
     metering_forms
 from openstack_dashboard.dashboards.admin.metering import tabs as \
     metering_tabs
-from openstack_dashboard.utils import metering as utils_metering
+from openstack_dashboard.utils import metering as metering_utils
+
+
+LOG = logging.getLogger(__name__)
 
 
 class IndexView(tabs.TabbedTableView):
@@ -44,61 +47,6 @@ class CreateUsageReport(forms.ModalFormView):
 
 
 class SamplesView(django.views.generic.TemplateView):
-    template_name = "admin/metering/samples.csv"
-
-    @staticmethod
-    def series_for_meter(aggregates,
-                         resource_name,
-                         meter_name,
-                         stats_name,
-                         unit):
-        """Construct datapoint series for a meter from resource aggregates."""
-        series = []
-        for resource in aggregates:
-            if resource.get_meter(meter_name):
-                point = {'unit': unit,
-                         'name': getattr(resource, resource_name),
-                         'data': []}
-                for statistic in resource.get_meter(meter_name):
-                    date = statistic.duration_end[:19]
-                    value = float(getattr(statistic, stats_name))
-                    point['data'].append({'x': date, 'y': value})
-                series.append(point)
-        return series
-
-    @staticmethod
-    def normalize_series_by_unit(series):
-        """Transform series' values into a more human readable form:
-        1) Determine the data point with the maximum value
-        2) Decide the unit appropriate for this value (normalize it)
-        3) Convert other values to this new unit, if necessary
-        """
-        if not series:
-            return series
-
-        source_unit = target_unit = series[0]['unit']
-
-        if not units.is_supported(source_unit):
-            return series
-
-        # Find the data point with the largest value and normalize it to
-        # determine its unit - that will be the new unit
-        maximum = max([d['y'] for point in series for d in point['data']])
-        unit = units.normalize(maximum, source_unit)[1]
-
-        # If unit needs to be changed, set the new unit for all data points
-        # and convert all values to that unit
-        if units.is_larger(unit, target_unit):
-            target_unit = unit
-            for i, point in enumerate(series[:]):
-                if point['unit'] != target_unit:
-                    series[i]['unit'] = target_unit
-                    for j, d in enumerate(point['data'][:]):
-                        series[i]['data'][j]['y'] = units.convert(
-                            d['y'], source_unit, target_unit, fmt=True)[0]
-
-        return series
-
     def get(self, request, *args, **kwargs):
         meter = request.GET.get('meter', None)
         if not meter:
@@ -113,32 +61,28 @@ class SamplesView(django.views.generic.TemplateView):
         group_by = request.GET.get('group_by', None)
 
         try:
-            date_from, date_to = utils_metering.calc_date_args(date_from,
+            date_from, date_to = metering_utils.calc_date_args(date_from,
                                                                date_to,
                                                                date_options)
         except Exception:
             exceptions.handle(self.request, _('Dates cannot be recognized.'))
 
         if group_by == 'project':
-            query = utils_metering.ProjectAggregatesQuery(request,
+            query = metering_utils.ProjectAggregatesQuery(request,
                                                           date_from,
                                                           date_to,
                                                           3600 * 24)
         else:
-            query = utils_metering.MeterQuery(request, date_from,
+            query = metering_utils.MeterQuery(request, date_from,
                                               date_to, 3600 * 24)
 
         resources, unit = query.query(meter)
-        resource_name = 'id' if group_by == "project" else 'resource_id'
-        series = self.series_for_meter(resources,
-                                       resource_name,
-                                       meter_name,
-                                       stats_attr,
-                                       unit)
+        series = metering_utils.series_for_meter(request, resources,
+                                                 group_by, meter,
+                                                 meter_name, stats_attr, unit)
 
-        series = self.normalize_series_by_unit(series)
+        series = metering_utils.normalize_series_by_unit(series)
         ret = {'series': series, 'settings': {}}
-
         return HttpResponse(json.dumps(ret), content_type='application/json')
 
 
@@ -158,7 +102,7 @@ class CsvReportView(django.views.generic.View):
 class ReportCsvRenderer(csvbase.BaseCsvResponse):
 
     columns = [_("Project Name"), _("Meter"), _("Description"),
-               _("Service"), _("Time"), _("Value (Avg)")]
+               _("Service"), _("Time"), _("Value (Avg)"), _("Unit")]
 
     def get_row_data(self):
 
@@ -169,7 +113,8 @@ class ReportCsvRenderer(csvbase.BaseCsvResponse):
                        u["description"],
                        u["service"],
                        u["time"],
-                       u["value"])
+                       u["value"],
+                       u["unit"])
 
 
 def load_report_data(request):
@@ -181,19 +126,20 @@ def load_report_data(request):
         _('Cinder'): meters.list_cinder(),
         _('Swift_meters'): meters.list_swift(),
         _('Kwapi'): meters.list_kwapi(),
+        _('IPMI'): meters.list_ipmi(),
     }
     project_rows = {}
     date_options = request.GET.get('date_options', 7)
     date_from = request.GET.get('date_from')
     date_to = request.GET.get('date_to')
     try:
-        date_from, date_to = utils_metering.calc_date_args(date_from,
+        date_from, date_to = metering_utils.calc_date_args(date_from,
                                                            date_to,
                                                            date_options)
     except Exception:
-        exceptions.handle(request, _('Dates cannot be recognised.'))
+        exceptions.handle(request, _('Dates cannot be recognized.'))
     try:
-        project_aggregates = utils_metering.ProjectAggregatesQuery(request,
+        project_aggregates = metering_utils.ProjectAggregatesQuery(request,
                                                                    date_from,
                                                                    date_to,
                                                                    3600 * 24)
@@ -207,19 +153,20 @@ def load_report_data(request):
                 service = name
                 break
         res, unit = project_aggregates.query(meter.name)
-        for re in res:
-            values = re.get_meter(meter.name.replace(".", "_"))
+        for r in res:
+            values = r.get_meter(meter.name.replace(".", "_"))
             if values:
                 for value in values:
                     row = {"name": 'none',
-                           "project": re.id,
+                           "project": r.id,
                            "meter": meter.name,
                            "description": meter.description,
                            "service": service,
                            "time": value._apiresource.period_end,
-                           "value": value._apiresource.avg}
-                    if re.id not in project_rows:
-                        project_rows[re.id] = [row]
+                           "value": value._apiresource.avg,
+                           "unit": meter.unit}
+                    if r.id not in project_rows:
+                        project_rows[r.id] = [row]
                     else:
-                        project_rows[re.id].append(row)
+                        project_rows[r.id].append(row)
     return project_rows

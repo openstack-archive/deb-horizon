@@ -69,7 +69,7 @@ class AddRuleAction(workflows.Action):
     def __init__(self, request, *args, **kwargs):
         super(AddRuleAction, self).__init__(request, *args, **kwargs)
 
-    class Meta:
+    class Meta(object):
         name = _("AddRule")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall rule.\n\n"
@@ -133,7 +133,7 @@ class SelectRulesAction(workflows.Action):
         widget=forms.CheckboxSelectMultiple(),
         help_text=_("Create a policy with selected rules."))
 
-    class Meta:
+    class Meta(object):
         name = _("Rules")
         permissions = ('openstack.services.network',)
         help_text = _("Select rules for your policy.")
@@ -142,11 +142,9 @@ class SelectRulesAction(workflows.Action):
         try:
             tenant_id = self.request.user.tenant_id
             rules = api.fwaas.rule_list(request, tenant_id=tenant_id)
-            for r in rules:
-                r.set_id_as_name_if_empty()
             rules = sorted(rules,
-                           key=lambda rule: rule.name)
-            rule_list = [(rule.id, rule.name) for rule in rules
+                           key=lambda rule: rule.name_or_id)
+            rule_list = [(rule.id, rule.name_or_id) for rule in rules
                          if not rule.firewall_policy_id]
         except Exception as e:
             rule_list = []
@@ -186,7 +184,7 @@ class AddPolicyAction(workflows.Action):
     def __init__(self, request, *args, **kwargs):
         super(AddPolicyAction, self).__init__(request, *args, **kwargs)
 
-    class Meta:
+    class Meta(object):
         name = _("AddPolicy")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall policy with an ordered list "
@@ -257,14 +255,13 @@ class AddFirewallAction(workflows.Action):
                     'error': str(e)})
             policies = []
         for p in policies:
-            p.set_id_as_name_if_empty()
-            firewall_policy_id_choices.append((p.id, p.name))
+            firewall_policy_id_choices.append((p.id, p.name_or_id))
         self.fields['firewall_policy_id'].choices = firewall_policy_id_choices
         # only admin can set 'shared' attribute to True
         if not request.user.is_superuser:
             self.fields['shared'].widget.attrs['disabled'] = 'disabled'
 
-    class Meta:
+    class Meta(object):
         name = _("AddFirewall")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall based on a policy.\n\n"

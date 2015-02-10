@@ -79,13 +79,16 @@ class CreateKeyPair(tables.LinkAction):
 
 
 class KeypairsTable(tables.DataTable):
-    name = tables.Column("name", verbose_name=_("Key Pair Name"))
+    detail_link = "horizon:project:access_and_security:keypairs:detail"
+
+    name = tables.Column("name", verbose_name=_("Key Pair Name"),
+                         link=detail_link)
     fingerprint = tables.Column("fingerprint", verbose_name=_("Fingerprint"))
 
     def get_object_id(self, keypair):
         return keypair.name
 
-    class Meta:
+    class Meta(object):
         name = "keypairs"
         verbose_name = _("Key Pairs")
         table_actions = (CreateKeyPair, ImportKeyPair, DeleteKeyPairs,)

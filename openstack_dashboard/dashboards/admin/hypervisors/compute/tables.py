@@ -103,7 +103,10 @@ class ComputeHostTable(tables.DataTable):
     def get_object_id(self, obj):
         return obj.host
 
-    class Meta:
+    def get_object_display(self, obj):
+        return obj.host
+
+    class Meta(object):
         name = "compute_host"
         verbose_name = _("Compute Host")
         table_actions = (ComputeHostFilterAction,)

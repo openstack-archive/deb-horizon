@@ -124,3 +124,23 @@ def resource_metadata_get(request, stack_id, resource_name):
 
 def template_validate(request, **kwargs):
     return heatclient(request).stacks.validate(**kwargs)
+
+
+def action_check(request, stack_id):
+    return heatclient(request).actions.check(stack_id)
+
+
+def action_suspend(request, stack_id):
+    return heatclient(request).actions.suspend(stack_id)
+
+
+def action_resume(request, stack_id):
+    return heatclient(request).actions.resume(stack_id)
+
+
+def resource_types_list(request):
+    return heatclient(request).resource_types.list()
+
+
+def resource_type_get(request, resource_type):
+    return heatclient(request).resource_types.get(resource_type)

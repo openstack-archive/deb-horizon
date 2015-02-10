@@ -1,13 +1,24 @@
-@import "variables";
-@import "/horizon/lib/font-awesome/scss/font-awesome"; // Configured in _variables.scss.
-@import "/bootstrap/scss/bootstrap"; // Configured in _variables.scss.
-@import "/horizon/lib/bootstrap_datepicker/datepicker.css";
-@import "accordion_nav";
-@import "inline_edit";
+// Pure CSS Vendor
+@import "/horizon/lib/bootstrap_datepicker/datepicker3.css";
+@import "/horizon/lib/rickshaw.css";
 
-// Components
+// Horizon Variables
+@import "variables";
+
+// Vendor Components
+@import "/bootstrap/scss/bootstrap";
+@import "/horizon/lib/font-awesome/scss/font-awesome.scss";
+
+// Dashboard Components
 @import "components/resource_browser";
 @import "components/topbar";
+@import "components/accordion_nav";
+@import "components/inline_edit";
+@import "components/charts";
+@import "components/workflow";
+@import "components/network_topology";
+@import "/angular/styles";
+
 
 /* new clearfix */
 .clearfix:after {
@@ -189,72 +200,6 @@ a.current_item:hover h4 {
   color: $link-hover-color;
   border-radius: 4px;
 }
-
-.sidebar .switcher_bar {
-  width: 190px;
-  height: 38px;
-  padding: 5px 0;
-  margin-left: 14px;
-  margin-bottom: 15px;
-}
-
-.sidebar .switcher_bar a.dropdown-toggle {
-  display: block;
-  padding: 5px 0;
-  background-image: url(../img/drop_arrow.png);
-  border: 1px solid #c0d9e4;
-  background-color: #e9f5fa;
-  background-repeat: no-repeat;
-  background-position: 167px 23px;
-}
-
-.sidebar .switcher_bar a.dropdown-toggle:hover {
-  text-decoration: none;
-  background-color: #cde8f4;
-}
-
-.sidebar .switcher_bar:focus {
-  outline: none;
-}
-
-.sidebar .switcher_bar {
-  h3 {
-    color: #4790ae;
-    font-size: 16px;
-    margin: -6px 0 0 14px;
-    padding: 0;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space: nowrap;
-  }
-  h3:hover {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: none;
-    padding-right: 1em;
-    word-wrap: break-word;
-  }
-}
-
-.sidebar .switcher_bar h4 {
-  color: #6fabc4;
-  font-size: 10px;
-  text-transform: uppercase;
-  font-weight: normal;
-  padding: 0;
-}
-
-
-.sidebar .switcher_bar ul {
-  border: 1px solid #c0d9e4;
-  margin-left: -1px;
-  width: 190px;
-}
-
-.sidebar .switcher_bar li a:hover{
-  background: #92d6f1;
-}
-
 
 #usage {
   margin-bottom: 25px;
@@ -968,9 +913,6 @@ tr:hover .actions_column ul.row_actions.single,
 
 th.multi_select_column, td.multi_select_column {
   width: 41px;
-}
-
-th.multi_select_column, td.multi_select_column {
   text-align: center;
 }
 
@@ -980,6 +922,7 @@ th.multi_select_column, td.multi_select_column {
 
 .table input[type="checkbox"] {
   display: inline;
+  vertical-align: middle;
 }
 
 div.input input[type="checkbox"] {
@@ -1021,48 +964,58 @@ tr.terminated {
   margin-bottom: -5px;
 }
 
-#main_content .nav-tabs {
-  border-top: 1px solid $nav-tabs-border-color;
-  border-bottom: none;
-  > li {
-    margin-bottom: 0;
-    margin-top: -1px;
-    > a {
-      margin-right: 0;
-      border-radius: 0;
-      padding-top: 4px;
-      padding-bottom: 4px;
-      &:hover {
-        border-color: $nav-tabs-border-color $nav-tabs-link-hover-border-color $nav-tabs-link-hover-border-color;
+#main_content {
+  .nav-tabs {
+    border-top: 1px solid $nav-tabs-border-color;
+    border-bottom: none;
+    > li {
+      margin-bottom: 0;
+      margin-top: -1px;
+      > a {
+        margin-right: 0;
+        border-radius: 0;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        &:hover {
+          border-color: $nav-tabs-border-color $nav-tabs-link-hover-border-color $nav-tabs-link-hover-border-color;
+        }
+      }
+      &.active > a {
+        &,
+        &:hover,
+        &:focus {
+          font-weight: bold;
+          background-color: $gray;
+          border-color: $gray;
+          color: #fff;
+        }
       }
     }
-    &.active > a {
-      &,
-      &:hover,
-      &:focus {
-        font-weight: bold;
-        background-color: #555;
-        border-color: #555;
-        color: #fff;
-      }
+  }
+
+  .tab-content {
+    padding: 10px;
+  }
+
+  .workflow .modal-body {
+    padding-left: 0;
+    padding-right: 0;
+
+    .tab-content {
+      border-left: 0 none;
+      border-right: 0 none;
+      border-bottom: 0 none;
+      padding-top: 10px;
     }
   }
 }
 
-#main_content .tab-content {
-  padding: 10px;
-}
-
-#main_content .workflow .modal-body {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-#main_content .workflow .modal-body .tab-content {
-  border-left: 0 none;
-  border-right: 0 none;
-  border-bottom: 0 none;
-  padding-top: 10px;
+.javascript_disabled_alert {
+  @extend .alert-danger;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  padding: 8px;
+  text-align: center;
 }
 
 #content_body {
@@ -1081,7 +1034,7 @@ tr.terminated {
 
 .volume_boot_disclosure {
   font-weight: bold;
-  color: #555;
+  color: $gray;
   cursor: pointer;
   background-image: url(../img/right_droparrow.png);
   background-repeat: no-repeat;
@@ -1469,6 +1422,11 @@ label.log-length {
   }
 
   /* Member lists */
+  .update_members_filterable {
+    overflow-y: auto;
+    height: 500px;
+  }
+
   .members, .available_members {
     padding: 0;
     // reset nav-pills display to block
@@ -1698,224 +1656,6 @@ label.log-length {
 
 }
 
-/**** Network Topology CSS ****/
-#topologyCanvasContainer {
-  @include box-sizing(border-box);
-  width: 100%;
-  height: auto;
-  padding: 25px;
-  padding-left: 50px;
-  background: #efefef;
-  min-height: 400px;
-  div.nodata {
-    font-size: 150%;
-    text-align: center;
-    padding-top: 150px;
-    display: none;
-  }
-  &.noinfo {
-    div.nodata {
-      display: block;
-    }
-    #topology_canvas {
-      display: none;
-    }
-  }
-}
-
-.topologyNavi {
-  overflow: hidden;
-  i {
-    margin-right: 3px;
-  }
-  margin: 10px 0 20px;
-  .toggleView {
-    float: left;
-  }
-  .launchButtons {
-    float: right;
-    text-align: right;
-    a.btn {
-      margin-left: 10px;
-    }
-  }
-}
-
-.topologyBalloon {
-  display: none;
-  background: $body-bg;
-  position: absolute;
-  left:100px;
-  top:20px;
-  z-index: 600;
-  border-radius: 5px;
-  color:#333;
-  min-width: 200px;
-  &.on {
-    display: block;
-  }
-  line-height: 1.2;
-  .vnc_window {
-    margin-left: 10px;
-  }
-  .closeTopologyBalloon {
-    font-size: 16px;
-    line-height: 1;
-    display: block;
-    position: absolute;
-    font-weight: bold;
-    right: 6px;
-    top: 0px;
-    cursor: pointer;
-    padding: 3px;
-    color:#aaa;
-    &:hover {
-      color:#777;
-      text-decoration: none;
-    }
-  }
-  .contentBody {
-    padding: 8px 8px 0;
-  }
-  span.active, span.down {
-    &:before {
-      content: "";
-      width: 9px;
-      height: 9px;
-      display: inline-block;
-      background: $brand-success;
-      margin-right: 3px;
-      border-radius: 10px;
-      vertical-align: middle;
-    }
-  }
-  span.down {
-    &:before {
-      background: $brand-danger;
-    }
-  }
-  .footer {
-    background: #efefef;
-    border-top: 1px solid $border-color;
-    padding: 8px;
-    border-radius: 0px 0px 7px 7px;
-    .footerInner {
-      display: table;
-      width: 100%;
-    }
-    .cell {
-      display: table-cell;
-      padding-right: 10px;
-    }
-    .link {
-      font-size: 12px;
-    }
-    .delete {
-      padding-right: 0;
-      text-align: right;
-    }
-  }
-  table.detailInfoTable {
-    margin-bottom: 5px;
-    caption {
-      text-align: left;
-      font-size: 12px;
-      font-weight: bold;
-      margin-bottom: 0px;
-    }
-    th,td {
-      text-align: left;
-      vertical-align: middle;
-      padding-bottom: 3px;
-      background: transparent;
-    }
-    th {
-      color: $gray-light;
-      padding-right: 8px;
-      width: 80px;
-      span {
-        vertical-align: middle;
-        width:80px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: inline-block;
-      }
-      &.device {
-        text-align: right;
-      }
-    }
-    td {
-      padding-right: 5px;
-      white-space: nowrap;
-    }
-    td.delete {
-      padding-right: 0;
-      text-align: right;
-    }
-    .btn {
-      line-height: 1.4;
-    }
-  }
-  font-size: 11px;
-  @include box-shadow(0px 1px 6px #777);
-  &:before {
-    border-top: 7px solid transparent;
-    border-bottom: 7px solid transparent;
-    border-right: 9px solid $border-color;
-    display: block;
-    position: absolute;
-    top: 30px;
-    left: -9px;
-    width: 0;
-    height: 0;
-    content: "";
-  }
-  &:after {
-    border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;
-    border-right: 8px solid $body-bg;
-    display: block;
-    position: absolute;
-    top: 31px;
-    left: -8px;
-    width: 0;
-    height: 0;
-    content: "";
-  }
-  &.leftPosition {
-    &:before {
-      border-right: none;
-      border-left: 9px solid $border-color;
-      right: -9px;
-      top: 30px;
-      left:auto;
-    }
-    &:after {
-      border-right: none;
-      border-left: 8px solid $body-bg;
-      right: -8px;
-      top: 31px;
-      left:auto;
-    }
-  }
-}
-
-#topologyMessages {
-  width:1px;
-  height:1px;
-  visibility: hidden;
-  position: absolute;
-  top: -100px;
-}
-
-.quota-heading {
-  font-family: anivers;
-  font-weight: normal;
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
 /**** Resource Topology CSS ****/
 .link {
   stroke: #999;
@@ -2130,4 +1870,25 @@ a:hover.link-popover { text-decoration: none; }
 }
 .has-feedback .form-control-feedback {
   top: 0;
+}
+
+/**** Details Override ****/
+.detail ul {
+  padding-left: 0;
+}
+
+.detail dt {
+  text-align: left;
+}
+
+input::-ms-clear, input::-ms-reveal{
+  display: none;
+}
+
+/* public key text area */
+textarea.key_text {
+  width: 55em;
+  height: 11em;
+  resize: none;
+  border: none;
 }

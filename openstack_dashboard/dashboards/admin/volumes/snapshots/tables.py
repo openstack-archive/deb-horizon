@@ -64,10 +64,11 @@ class VolumeSnapshotsTable(volumes_tables.VolumesTableBase):
     host = tables.Column("host_name", verbose_name=_("Host"))
     tenant = tables.Column("tenant_name", verbose_name=_("Project"))
 
-    class Meta:
+    class Meta(object):
         name = "volume_snapshots"
         verbose_name = _("Volume Snapshots")
-        table_actions = (snapshots_tables.DeleteVolumeSnapshot,)
+        table_actions = (snapshots_tables.VolumeSnapshotsFilterAction,
+                         snapshots_tables.DeleteVolumeSnapshot,)
         row_actions = (snapshots_tables.DeleteVolumeSnapshot,
                        UpdateVolumeSnapshotStatus,)
         row_class = UpdateRow

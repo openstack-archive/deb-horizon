@@ -63,7 +63,7 @@ class SelectProjectUserAction(workflows.Action):
         users = [(request.user.id, request.user.username)]
         self.fields['user_id'].choices = users
 
-    class Meta:
+    class Meta(object):
         name = _("Project & User")
         # Unusable permission so this is always hidden. However, we
         # keep this step in the workflow for validation/verification purposes.
@@ -132,7 +132,7 @@ class SetInstanceDetailsAction(workflows.Action):
                                              help_text=_("Delete volume on "
                                                          "instance terminate"))
 
-    class Meta:
+    class Meta(object):
         name = _("Details")
         help_text_template = ("project/instances/"
                               "_launch_details_help.html")
@@ -393,7 +393,8 @@ class SetInstanceDetailsAction(workflows.Action):
             if images is not None:
                 attrs = [{'id': i.id,
                           'min_disk': getattr(i, 'min_disk', 0),
-                          'min_ram': getattr(i, 'min_ram', 0)}
+                          'min_ram': getattr(i, 'min_ram', 0),
+                          'size': functions.bytes_to_gigabytes(i.size)}
                          for i in images]
                 extra['images'] = json.dumps(attrs)
 
@@ -542,12 +543,13 @@ class SetAccessControlsAction(workflows.Action):
         required=False,
         widget=forms.PasswordInput(render_value=False))
     groups = forms.MultipleChoiceField(label=_("Security Groups"),
+                                       required=False,
                                        initial=["default"],
                                        widget=forms.CheckboxSelectMultiple(),
                                        help_text=_("Launch instance in these "
                                                    "security groups."))
 
-    class Meta:
+    class Meta(object):
         name = _("Access & Security")
         help_text = _("Control access to your instance via key pairs, "
                       "security groups, and other mechanisms.")
@@ -611,7 +613,7 @@ class SetAccessControls(workflows.Step):
 
 
 class CustomizeAction(workflows.Action):
-    class Meta:
+    class Meta(object):
         name = _("Post-Creation")
         help_text_template = ("project/instances/"
                               "_launch_customize_help.html")
@@ -721,7 +723,7 @@ class SetNetworkAction(workflows.Action):
             self.fields['profile'].choices = (
                 self.get_policy_profile_choices(request))
 
-    class Meta:
+    class Meta(object):
         name = _("Networking")
         permissions = ('openstack.services.network',)
         help_text = _("Select networks for your instance.")
@@ -732,8 +734,7 @@ class SetNetworkAction(workflows.Action):
             tenant_id = self.request.user.tenant_id
             networks = api.neutron.network_list_for_tenant(request, tenant_id)
             for n in networks:
-                n.set_id_as_name_if_empty()
-                network_list.append((n.id, n.name))
+                network_list.append((n.id, n.name_or_id))
             sorted(network_list, key=lambda obj: obj[1])
         except Exception:
             exceptions.handle(request,
@@ -814,7 +815,7 @@ class SetAdvancedAction(workflows.Action):
             exceptions.handle(request, _('Unable to retrieve extensions '
                                          'information.'))
 
-    class Meta:
+    class Meta(object):
         name = _("Advanced Options")
         help_text_template = ("project/instances/"
                               "_launch_advanced_help.html")
@@ -899,26 +900,10 @@ class LaunchInstance(workflows.Workflow):
 
         avail_zone = context.get('availability_zone', None)
 
-        # Create port with Network Name and Port Profile
-        # for the use with the plugin supporting port profiles.
-        # neutron port-create <Network name> --n1kv:profile <Port Profile ID>
-        # for net_id in context['network_id']:
-        # HACK for now use first network.
         if api.neutron.is_port_profiles_supported():
-            net_id = context['network_id'][0]
-            LOG.debug("Horizon->Create Port with %(netid)s %(profile_id)s",
-                      {'netid': net_id, 'profile_id': context['profile_id']})
-            port = None
-            try:
-                port = api.neutron.port_create(
-                    request, net_id, policy_profile_id=context['profile_id'])
-            except Exception:
-                msg = (_('Port not created for profile-id (%s).') %
-                       context['profile_id'])
-                exceptions.handle(request, msg)
-
-            if port and port.id:
-                nics = [{"port-id": port.id}]
+            nics = self.set_network_port_profiles(request,
+                                                  context['network_id'],
+                                                  context['profile_id'])
 
         try:
             api.nova.server_create(request,
@@ -940,3 +925,40 @@ class LaunchInstance(workflows.Workflow):
         except Exception:
             exceptions.handle(request)
             return False
+
+    def set_network_port_profiles(self, request, net_ids, profile_id):
+        # Create port with Network ID and Port Profile
+        # for the use with the plugin supporting port profiles.
+        nics = []
+        for net_id in net_ids:
+            try:
+                port = api.neutron.port_create(
+                    request,
+                    net_id,
+                    policy_profile_id=profile_id,
+                )
+            except Exception as e:
+                msg = (_('Unable to create port for profile '
+                         '"%(profile_id)s": %(reason)s'),
+                       {'profile_id': profile_id,
+                        'reason': e})
+                for nic in nics:
+                    try:
+                        port_id = nic['port-id']
+                        api.neutron.port_delete(request, port_id)
+                    except Exception:
+                        msg = (msg +
+                               _(' Also failed to delete port %s') % port_id)
+                redirect = self.success_url
+                exceptions.handle(request, msg, redirect=redirect)
+
+            if port:
+                nics.append({"port-id": port.id})
+                LOG.debug("Created Port %(portid)s with "
+                          "network %(netid)s "
+                          "policy profile %(profile_id)s",
+                          {'portid': port.id,
+                           'netid': net_id,
+                           'profile_id': profile_id})
+
+        return nics

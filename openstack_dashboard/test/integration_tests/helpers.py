@@ -12,7 +12,6 @@
 
 import os
 
-from selenium.webdriver.support import ui
 import testtools
 import xvfbwrapper
 
@@ -28,6 +27,11 @@ class BaseTestCase(testtools.TestCase):
             # Start a virtual display server for running the tests headless.
             if os.environ.get('SELENIUM_HEADLESS', False):
                 self.vdisplay = xvfbwrapper.Xvfb(width=1280, height=720)
+                # workaround for memory leak in Xvfb taken from: http://blog.
+                # jeffterrace.com/2012/07/xvfb-memory-leak-workaround.html
+                self.vdisplay.xvfb_cmd.append("-noreset")
+                # disables X access control
+                self.vdisplay.xvfb_cmd.append("-ac")
                 self.vdisplay.start()
             # Start the Selenium webdriver and setup configuration.
             self.driver = webdriver.WebDriverWrapper()
@@ -42,15 +46,10 @@ class BaseTestCase(testtools.TestCase):
 
     def tearDown(self):
         if os.environ.get('INTEGRATION_TESTS', False):
-            self.driver.close()
+            self.driver.quit()
         if hasattr(self, 'vdisplay'):
             self.vdisplay.stop()
         super(BaseTestCase, self).tearDown()
-
-    def wait_for_title(self):
-        timeout = self.conf.dashboard.page_timeout
-        ui.WebDriverWait(self.driver, timeout).until(lambda d:
-                                                     self.driver.title)
 
 
 class TestCase(BaseTestCase):
@@ -62,9 +61,12 @@ class TestCase(BaseTestCase):
         self.home_pg = self.login_pg.login()
 
     def tearDown(self):
-        self.home_pg.go_to_home_page()
-        self.home_pg.log_out()
-        super(TestCase, self).tearDown()
+        try:
+            if self.home_pg.is_logged_in:
+                self.home_pg.go_to_home_page()
+                self.home_pg.log_out()
+        finally:
+            super(TestCase, self).tearDown()
 
 
 class AdminTestCase(BaseTestCase):
@@ -77,5 +79,8 @@ class AdminTestCase(BaseTestCase):
             password=self.conf.identity.admin_password)
 
     def tearDown(self):
-        self.home_pg.log_out()
-        super(AdminTestCase, self).tearDown()
+        try:
+            if self.home_pg.is_logged_in:
+                self.home_pg.log_out()
+        finally:
+            super(AdminTestCase, self).tearDown()

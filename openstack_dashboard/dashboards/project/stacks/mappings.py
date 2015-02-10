@@ -42,13 +42,15 @@ resource_urls = {
         'link': 'horizon:project:containers:index'},
     "OS::Nova::Server": {
         'link': 'horizon:project:instances:detail'},
-    "OS::Quantum::Net": {
+    "OS::Cinder::Volume": {
+        'link': 'horizon:project:volumes:volumes:detail'},
+    "OS::Neutron::Net": {
         'link': 'horizon:project:networks:detail'},
-    "OS::Quantum::Port": {
+    "OS::Neutron::Port": {
         'link': 'horizon:project:networks:ports:detail'},
-    "OS::Quantum::Router": {
+    "OS::Neutron::Router": {
         'link': 'horizon:project:routers:detail'},
-    "OS::Quantum::Subnet": {
+    "OS::Neutron::Subnet": {
         'link': 'horizon:project:networks:subnets:detail'},
     "OS::Swift::Container": {
         'link': 'horizon:project:containers:index',

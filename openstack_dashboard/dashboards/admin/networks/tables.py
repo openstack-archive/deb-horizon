@@ -91,7 +91,7 @@ DISPLAY_CHOICES = (
 
 class NetworksTable(tables.DataTable):
     tenant = tables.Column("tenant_name", verbose_name=_("Project"))
-    name = tables.Column("name", verbose_name=_("Network Name"),
+    name = tables.Column("name_or_id", verbose_name=_("Network Name"),
                          link='horizon:admin:networks:detail')
     subnets = tables.Column(project_tables.get_subnets,
                             verbose_name=_("Subnets Associated"),)
@@ -104,10 +104,11 @@ class NetworksTable(tables.DataTable):
                                 verbose_name=_("Admin State"),
                                 display_choices=DISPLAY_CHOICES)
 
-    class Meta:
+    class Meta(object):
         name = "networks"
         verbose_name = _("Networks")
-        table_actions = (CreateNetwork, DeleteNetwork)
+        table_actions = (CreateNetwork, DeleteNetwork,
+                         project_tables.NetworksFilterAction)
         row_actions = (EditNetwork, DeleteNetwork)
 
     def __init__(self, request, data=None, needs_form_wrapper=None, **kwargs):

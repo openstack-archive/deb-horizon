@@ -53,3 +53,41 @@ class ResizeVolumeForm(forms.SelfHandlingForm):
             exceptions.handle(request, _('Unable to resize volume. %s') %
                               e.message, redirect=redirect)
         return True
+
+
+class ResizeInstanceForm(forms.SelfHandlingForm):
+    instance_id = forms.CharField(widget=forms.HiddenInput())
+    old_flavor_name = forms.CharField(label=_("Old Flavor"),
+                                      required=False,
+                                      widget=forms.TextInput(
+                                      attrs={'readonly': 'readonly'}))
+    new_flavor = forms.ChoiceField(label=_("New Flavor"),
+                                   help_text=_("Choose a new instance "
+                                               "flavor."))
+
+    def __init__(self, request, *args, **kwargs):
+        super(ResizeInstanceForm, self).__init__(request, *args, **kwargs)
+
+        old_flavor_id = kwargs.get('initial', {}).get('old_flavor_id')
+        choices = kwargs.get('initial', {}).get('flavors')
+        # Remove current flavor from the list of flavor choices
+        choices = [(flavor_id, name) for (flavor_id, name) in choices
+                   if flavor_id != old_flavor_id]
+        if choices:
+            choices.insert(0, ("", _("Select a new flavor")))
+        else:
+            choices.insert(0, ("", _("No flavors available")))
+        self.fields['new_flavor'].choices = choices
+
+    def handle(self, request, data):
+        instance = data.get('instance_id')
+        flavor = data.get('new_flavor')
+        try:
+            api.trove.instance_resize(request, instance, flavor)
+
+            messages.success(request, _('Resizing instance "%s"') % instance)
+        except Exception as e:
+            redirect = reverse("horizon:project:databases:index")
+            exceptions.handle(request, _('Unable to resize instance. %s') %
+                              e.message, redirect=redirect)
+        return True

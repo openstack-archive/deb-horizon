@@ -112,6 +112,7 @@ class AdminInstancesTable(tables.DataTable):
         ("paused", True),
         ("error", False),
         ("rescue", True),
+        ("shelved", True),
         ("shelved_offloaded", True),
     )
     tenant = tables.Column("tenant_name", verbose_name=_("Project"))
@@ -158,7 +159,7 @@ class AdminInstancesTable(tables.DataTable):
                                      filters.timesince_sortable),
                             attrs={'data-type': 'timesince'})
 
-    class Meta:
+    class Meta(object):
         name = "instances"
         verbose_name = _("Instances")
         status_columns = ["status", "task"]

@@ -194,7 +194,7 @@ def get_policy_link(datum):
 
 
 class RulesTable(tables.DataTable):
-    name = tables.Column("name",
+    name = tables.Column("name_or_id",
                          verbose_name=_("Name"),
                          link="horizon:project:firewalls:ruledetails")
     protocol = tables.Column("protocol",
@@ -218,7 +218,7 @@ class RulesTable(tables.DataTable):
                                        link=get_policy_link,
                                        verbose_name=_("In Policy"))
 
-    class Meta:
+    class Meta(object):
         name = "rulestable"
         verbose_name = _("Rules")
         table_actions = (AddRuleLink, DeleteRuleLink)
@@ -226,7 +226,7 @@ class RulesTable(tables.DataTable):
 
 
 class PoliciesTable(tables.DataTable):
-    name = tables.Column("name",
+    name = tables.Column("name_or_id",
                          verbose_name=_("Name"),
                          link="horizon:project:firewalls:policydetails")
     firewall_rules = tables.Column(get_rules_name,
@@ -234,7 +234,7 @@ class PoliciesTable(tables.DataTable):
     audited = tables.Column("audited",
                             verbose_name=_("Audited"))
 
-    class Meta:
+    class Meta(object):
         name = "policiestable"
         verbose_name = _("Policies")
         table_actions = (AddPolicyLink, DeletePolicyLink)
@@ -243,7 +243,7 @@ class PoliciesTable(tables.DataTable):
 
 
 class FirewallsTable(tables.DataTable):
-    name = tables.Column("name",
+    name = tables.Column("name_or_id",
                          verbose_name=_("Name"),
                          link="horizon:project:firewalls:firewalldetails")
     firewall_policy_id = tables.Column(get_policy_name,
@@ -252,7 +252,7 @@ class FirewallsTable(tables.DataTable):
     status = tables.Column("status",
                            verbose_name=_("Status"))
 
-    class Meta:
+    class Meta(object):
         name = "firewallstable"
         verbose_name = _("Firewalls")
         table_actions = (AddFirewallLink, DeleteFirewallLink)

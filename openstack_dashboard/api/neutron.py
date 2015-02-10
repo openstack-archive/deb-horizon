@@ -45,6 +45,11 @@ IP_VERSION_DICT = {4: 'IPv4', 6: 'IPv6'}
 OFF_STATE = 'OFF'
 ON_STATE = 'ON'
 
+ROUTER_INTERFACE_OWNERS = (
+    'network:router_interface',
+    'network:router_interface_distributed'
+)
+
 
 class NeutronAPIDictWrapper(base.APIDictWrapper):
 
@@ -412,9 +417,9 @@ class FloatingIpManager(network_base.FloatingIpManager):
                           r.external_gateway_info.get('network_id')
                           in ext_net_ids)]
         reachable_subnets = set([p.fixed_ips[0]['subnet_id'] for p in ports
-                                 if ((p.device_owner ==
-                                      'network:router_interface')
-                                     and (p.device_id in gw_routers))])
+                                if ((p.device_owner in
+                                     ROUTER_INTERFACE_OWNERS)
+                                    and (p.device_id in gw_routers))])
         return reachable_subnets
 
     def list_targets(self):
@@ -423,6 +428,14 @@ class FloatingIpManager(network_base.FloatingIpManager):
         servers, has_more = nova.server_list(self.request)
         server_dict = SortedDict([(s.id, s.name) for s in servers])
         reachable_subnets = self._get_reachable_subnets(ports)
+        if is_service_enabled(self.request,
+                              config_name='enable_lb',
+                              ext_name='lbaas'):
+            # Also get the loadbalancer VIPs
+            vip_dict = {v['port_id']: v['name']
+                        for v in self.client.list_vips().get('vips', [])}
+        else:
+            vip_dict = {}
 
         targets = []
         for p in ports:
@@ -430,7 +443,8 @@ class FloatingIpManager(network_base.FloatingIpManager):
             if p.device_owner.startswith('network:'):
                 continue
             port_id = p.id
-            server_name = server_dict.get(p.device_id)
+            server_name = server_dict.get(p.device_id) or vip_dict.get(port_id)
+
             for ip in p.fixed_ips:
                 if ip['subnet_id'] not in reachable_subnets:
                     continue
