@@ -8,9 +8,9 @@ Last-Update: 2014-09-21
 
 Index: horizon/openstack_dashboard/dashboards/identity/projects/tests.py
 ===================================================================
---- horizon.orig/openstack_dashboard/dashboards/identity/projects/tests.py	2014-12-25 17:37:13.000000000 +0800
-+++ horizon/openstack_dashboard/dashboards/identity/projects/tests.py	2014-12-25 18:35:42.000000000 +0800
-@@ -1535,43 +1535,6 @@
+--- horizon.orig/openstack_dashboard/dashboards/identity/projects/tests.py	2015-02-10 16:15:18.000000000 +0100
++++ horizon/openstack_dashboard/dashboards/identity/projects/tests.py	2015-02-10 16:45:44.000000000 +0100
+@@ -1536,43 +1536,6 @@
          self.assertMessageCount(error=2, warning=0)
          self.assertRedirectsNoFollow(res, INDEX_URL)
  

@@ -2,4 +2,3 @@ fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 disable-failed-django-1.7-test.patch
-fix-moscow-tz-check.patch
