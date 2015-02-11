@@ -39,9 +39,9 @@ override_dh_auto_install:
 		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/local/local_settings.py
 
 override_dh_link:
-	mkdir -p $(CURDIR)/debian/openstack-dashboard/var/lib/openstack-dashboard/static/css
-	mv $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css/* $(CURDIR)/debian/openstack-dashboard/var/lib/openstack-dashboard/static/css
-	rmdir $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
+	mkdir -p $(CURDIR)/debian/openstack-dashboard/var/lib/openstack-dashboard/static/scss
+	mv $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss/* $(CURDIR)/debian/openstack-dashboard/var/lib/openstack-dashboard/static/scss
+	rmdir $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss
 	dh_link
 
 override_dh_auto_clean:
