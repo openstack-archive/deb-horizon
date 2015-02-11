@@ -2,5 +2,5 @@
 
 /usr/share/openstack-dashboard/openstack_dashboard/static /usr/share/openstack-dashboard/static
 /usr/share/pyshared/horizon/static/horizon		/usr/share/openstack-dashboard/openstack_dashboard/static/horizon
-/var/lib/openstack-dashboard/static/css /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
+/var/lib/openstack-dashboard/static/scss /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss
 /var/lib/openstack-dashboard/static/js /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
