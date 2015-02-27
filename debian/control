@@ -163,7 +163,7 @@ Depends: adduser,
          ${python:Depends},
          ${shlibs:Depends}
 Recommends: memcached, openstack-dashboard-apache
-Description: OpenStack Dashboard
+Description: web application to control an OpenStack cloud
  The OpenStack Dashboard is a web application to control an OpenStack
  cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
  using the OpenStack REST API just as you would with the command line
