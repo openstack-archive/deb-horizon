@@ -15,3 +15,5 @@ interest /usr/share/javascript/rickshaw
 interest /usr/share/javascript/spin.js
 interest /usr/share/javascript/underscore
 interest /usr/share/twitter-bootstrap/files
+interest /usr/share/javascript/term.js
+interest /usr/share/javascript/lrDragNDrop
