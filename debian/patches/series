@@ -1,3 +1,4 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
+fix-using-lrdnd-instead-of-irdnd.patch
