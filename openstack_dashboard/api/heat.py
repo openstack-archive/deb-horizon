@@ -102,6 +102,10 @@ def stack_create(request, password=None, **kwargs):
     return heatclient(request, password).stacks.create(**kwargs)
 
 
+def stack_preview(request, password=None, **kwargs):
+    return heatclient(request, password).stacks.preview(**kwargs)
+
+
 def stack_update(request, stack_id, password=None, **kwargs):
     return heatclient(request, password).stacks.update(stack_id, **kwargs)
 
@@ -144,3 +148,7 @@ def resource_types_list(request):
 
 def resource_type_get(request, resource_type):
     return heatclient(request).resource_types.get(resource_type)
+
+
+def service_list(request):
+    return heatclient(request).services.list()

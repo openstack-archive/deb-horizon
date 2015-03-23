@@ -12,29 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import mock
-import unittest2
 
 from django.conf import settings
 
+from oslo_serialization import jsonutils
+
 from openstack_dashboard.api.rest import keystone
+from openstack_dashboard.test import helpers as test
 
-from rest_test_utils import construct_request   # noqa
 
-
-class KeystoneRestTestCase(unittest2.TestCase):
-    def assertStatusCode(self, response, expected_code):
-        if response.status_code == expected_code:
-            return
-        self.fail('status code %r != %r: %s' % (response.status_code,
-                                                expected_code,
-                                                response.content))
-
+class KeystoneRestTestCase(test.TestCase):
     #
     # Users
     #
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_get(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         kc.user_get.return_value.to_dict.return_value = {'name': 'Ni!'}
         response = keystone.User().get(request, 'the_id')
         self.assertStatusCode(response, 200)
@@ -43,7 +36,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_get_current(self, kc):
-        request = construct_request(**{'user.id': 'current_id'})
+        request = self.mock_rest_request(**{'user.id': 'current_id'})
         kc.user_get.return_value.to_dict.return_value = {'name': 'Ni!'}
         response = keystone.User().get(request, 'current')
         self.assertStatusCode(response, 200)
@@ -53,7 +46,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_get_list(self, kc):
-        request = construct_request(**{
+        request = self.mock_rest_request(**{
             'session.get': mock.Mock(return_value='the_domain'),
             'GET': {},
         })
@@ -66,7 +59,27 @@ class KeystoneRestTestCase(unittest2.TestCase):
         self.assertEqual(response.content,
                          '{"items": [{"name": "Ni!"}, {"name": "Ptang!"}]}')
         kc.user_list.assert_called_once_with(request, project=None,
-                                             domain='the_domain', group=None)
+                                             domain='the_domain', group=None,
+                                             filters=None)
+
+    @mock.patch.object(keystone.api, 'keystone')
+    def test_user_get_list_with_filters(self, kc):
+        filters = {'enabled': True}
+        request = self.mock_rest_request(**{
+            'session.get': mock.Mock(return_value='the_domain'),
+            'GET': dict(**filters),
+        })
+        kc.user_list.return_value = [
+            mock.Mock(**{'to_dict.return_value': {'name': 'Ni!'}}),
+            mock.Mock(**{'to_dict.return_value': {'name': 'Ptang!'}})
+        ]
+        response = keystone.Users().get(request)
+        self.assertStatusCode(response, 200)
+        self.assertEqual(response.content,
+                         '{"items": [{"name": "Ni!"}, {"name": "Ptang!"}]}')
+        kc.user_list.assert_called_once_with(request, project=None,
+                                             domain='the_domain', group=None,
+                                             filters=filters)
 
     def test_user_create_full(self):
         self._test_user_create(
@@ -113,7 +126,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def _test_user_create(self, supplied_body, expected_call, kc):
-        request = construct_request(body=supplied_body)
+        request = self.mock_rest_request(body=supplied_body)
         kc.get_default_domain.return_value = mock.Mock(**{'id': 'the_domain'})
         kc.user_create.return_value.id = 'user123'
         kc.user_create.return_value = mock.Mock(**{
@@ -131,7 +144,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_delete_many(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             ["id1", "id2", "id3"]
         ''')
 
@@ -146,7 +159,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_delete(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         response = keystone.User().delete(request, 'the_id')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
@@ -154,7 +167,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_patch_password(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             {"password": "sekrit"}
         ''')
         response = keystone.User().patch(request, 'user123')
@@ -166,7 +179,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_patch_enabled(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             {"enabled": false}
         ''')
         response = keystone.User().patch(request, 'user123')
@@ -178,7 +191,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_patch_project(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             {"project_id": "other123"}
         ''')
         response = keystone.User().patch(request, 'user123')
@@ -190,7 +203,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_patch_multiple(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             {"project_id": "other123", "enabled": false}
         ''')
         response = keystone.User().patch(request, 'user123')
@@ -207,7 +220,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
     #
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_get(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         kc.role_get.return_value.to_dict.return_value = {'name': 'Ni!'}
         response = keystone.Role().get(request, 'the_id')
         self.assertStatusCode(response, 200)
@@ -216,7 +229,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_get_default(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         kc.get_default_role.return_value.to_dict.return_value = {'name': 'Ni!'}
         response = keystone.Role().get(request, 'default')
         self.assertStatusCode(response, 200)
@@ -226,7 +239,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_get_list(self, kc):
-        request = construct_request(**{'GET': {}})
+        request = self.mock_rest_request(**{'GET': {}})
         kc.role_list.return_value = [
             mock.Mock(**{'to_dict.return_value': {'name': 'Ni!'}}),
             mock.Mock(**{'to_dict.return_value': {'name': 'Ptang!'}})
@@ -239,8 +252,8 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_get_for_user(self, kc):
-        request = construct_request(**{'GET': {'user_id': 'user123',
-                                    'project_id': 'project123'}})
+        request = self.mock_rest_request(**{'GET': {'user_id': 'user123',
+                                         'project_id': 'project123'}})
         kc.roles_for_user.return_value = [
             mock.Mock(**{'to_dict.return_value': {'name': 'Ni!'}}),
             mock.Mock(**{'to_dict.return_value': {'name': 'Ptang!'}})
@@ -254,7 +267,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_create(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             {"name": "bob"}
         ''')
         kc.role_create.return_value.id = 'role123'
@@ -271,7 +284,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_grant(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             {"action": "grant", "data": {"user_id": "user123",
             "role_id": "role123", "project_id": "project123"}}
         ''')
@@ -284,7 +297,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_delete_many(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             ["id1", "id2", "id3"]
         ''')
 
@@ -299,7 +312,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_delete(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         response = keystone.Role().delete(request, 'the_id')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
@@ -307,7 +320,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_role_patch(self, kc):
-        request = construct_request(body='{"name": "spam"}')
+        request = self.mock_rest_request(body='{"name": "spam"}')
         response = keystone.Role().patch(request, 'the_id')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
@@ -320,7 +333,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
     #
     @mock.patch.object(keystone.api, 'keystone')
     def test_domain_get(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         kc.domain_get.return_value.to_dict.return_value = {'name': 'Ni!'}
         response = keystone.Domain().get(request, 'the_id')
         self.assertStatusCode(response, 200)
@@ -329,7 +342,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_domain_get_default(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         kc.get_default_domain.return_value.to_dict.return_value = {
             'name': 'Ni!'
         }
@@ -341,7 +354,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_domain_get_list(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         kc.domain_list.return_value = [
             mock.Mock(**{'to_dict.return_value': {'name': 'Ni!'}}),
             mock.Mock(**{'to_dict.return_value': {'name': 'Ptang!'}})
@@ -373,7 +386,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def _test_domain_create(self, supplied_body, expected_call, kc):
-        request = construct_request(body=supplied_body)
+        request = self.mock_rest_request(body=supplied_body)
         kc.domain_create.return_value.id = 'domain123'
         kc.domain_create.return_value.to_dict.return_value = {
             'id': 'domain123', 'name': 'bob'
@@ -390,7 +403,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_domain_delete_many(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             ["id1", "id2", "id3"]
         ''')
 
@@ -405,7 +418,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_domain_delete(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         response = keystone.Domain().delete(request, 'the_id')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
@@ -413,7 +426,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_domain_patch(self, kc):
-        request = construct_request(body='{"name": "spam"}')
+        request = self.mock_rest_request(body='{"name": "spam"}')
         response = keystone.Domain().patch(request, 'the_id')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
@@ -428,7 +441,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
     #
     @mock.patch.object(keystone.api, 'keystone')
     def test_project_get(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         kc.tenant_get.return_value.to_dict.return_value = {'name': 'Ni!'}
         response = keystone.Project().get(request, 'the_id')
         self.assertStatusCode(response, 200)
@@ -437,7 +450,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_project_get_list(self, kc):
-        request = construct_request(**{'GET': {}})
+        request = self.mock_rest_request(**{'GET': {}})
         kc.tenant_list.return_value = ([
             mock.Mock(**{'to_dict.return_value': {'name': 'Ni!'}}),
             mock.Mock(**{'to_dict.return_value': {'name': 'Ptang!'}})
@@ -449,7 +462,26 @@ class KeystoneRestTestCase(unittest2.TestCase):
                          '"items": [{"name": "Ni!"}, {"name": "Ptang!"}]}')
         kc.tenant_list.assert_called_once_with(request, paginate=False,
                                                marker=None, domain=None,
-                                               user=None, admin=True)
+                                               user=None, admin=True,
+                                               filters=None)
+
+    @mock.patch.object(keystone.api, 'keystone')
+    def test_project_get_list_with_filters(self, kc):
+        filters = {'name': 'Ni!'}
+        request = self.mock_rest_request(**{'GET': dict(**filters)})
+        kc.tenant_list.return_value = ([
+            mock.Mock(**{'to_dict.return_value': {'name': 'Ni!'}}),
+            mock.Mock(**{'to_dict.return_value': {'name': 'Ni!'}})
+        ], False)
+        with mock.patch.object(settings, 'DEBUG', True):
+            response = keystone.Projects().get(request)
+        self.assertStatusCode(response, 200)
+        self.assertEqual(response.content, '{"has_more": false, '
+                         '"items": [{"name": "Ni!"}, {"name": "Ni!"}]}')
+        kc.tenant_list.assert_called_once_with(request, paginate=False,
+                                               marker=None, domain=None,
+                                               user=None, admin=True,
+                                               filters=filters)
 
     def test_project_create_full(self):
         self._test_project_create(
@@ -475,7 +507,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def _test_project_create(self, supplied_body, expected_call, kc):
-        request = construct_request(body=supplied_body)
+        request = self.mock_rest_request(body=supplied_body)
         kc.tenant_create.return_value.id = 'project123'
         kc.tenant_create.return_value.to_dict.return_value = {
             'id': 'project123', 'name': 'bob'
@@ -492,7 +524,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_project_delete_many(self, kc):
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             ["id1", "id2", "id3"]
         ''')
 
@@ -507,7 +539,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_project_delete(self, kc):
-        request = construct_request()
+        request = self.mock_rest_request()
         response = keystone.Project().delete(request, 'the_id')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
@@ -517,7 +549,7 @@ class KeystoneRestTestCase(unittest2.TestCase):
     def test_project_patch(self, kc):
         # nothing in the Horizon code documents what additional parameters are
         # allowed, so we'll just assume GIGO
-        request = construct_request(body='''
+        request = self.mock_rest_request(body='''
             {"name": "spam", "domain_id": "domain123", "foo": "bar"}
         ''')
         response = keystone.Project().patch(request, 'spam123')
@@ -529,3 +561,15 @@ class KeystoneRestTestCase(unittest2.TestCase):
                                                  description=None,
                                                  domain='domain123',
                                                  enabled=None)
+
+    #
+    # Service Catalog
+    #
+    @mock.patch.object(keystone.api, 'keystone')
+    def test_service_catalog_get(self, kc):
+        request = self.mock_rest_request()
+        response = keystone.ServiceCatalog().get(request)
+        self.assertStatusCode(response, 200)
+        content = jsonutils.dumps(request.user.service_catalog,
+                                  sort_keys=settings.DEBUG)
+        self.assertEqual(content, response.content)

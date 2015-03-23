@@ -27,6 +27,7 @@ class EvacuateHostView(forms.ModalFormView):
     template_name = 'admin/hypervisors/compute/evacuate_host.html'
     context_object_name = 'compute_host'
     success_url = reverse_lazy("horizon:admin:hypervisors:index")
+    page_title = _("Evacuate Host")
 
     def get_context_data(self, **kwargs):
         context = super(EvacuateHostView, self).get_context_data(**kwargs)
@@ -58,6 +59,7 @@ class DisableServiceView(forms.ModalFormView):
     template_name = 'admin/hypervisors/compute/disable_service.html'
     context_object_name = 'compute_host'
     success_url = reverse_lazy("horizon:admin:hypervisors:index")
+    page_title = _("Disable Service")
 
     def get_context_data(self, **kwargs):
         context = super(DisableServiceView, self).get_context_data(**kwargs)
@@ -68,3 +70,27 @@ class DisableServiceView(forms.ModalFormView):
         initial = super(DisableServiceView, self).get_initial()
         initial.update({'host': self.kwargs['compute_host']})
         return initial
+
+
+class MigrateHostView(forms.ModalFormView):
+        form_class = project_forms.MigrateHostForm
+        template_name = 'admin/hypervisors/compute/migrate_host.html'
+        context_object_name = 'compute_host'
+        success_url = reverse_lazy("horizon:admin:hypervisors:index")
+
+        def get_context_data(self, **kwargs):
+            context = super(MigrateHostView, self).get_context_data(**kwargs)
+            context["compute_host"] = self.kwargs['compute_host']
+            return context
+
+        def get_initial(self):
+            initial = super(MigrateHostView, self).get_initial()
+            current_host = self.kwargs['compute_host']
+
+            initial.update({
+                'current_host': current_host,
+                'live_migrate': True,
+                'block_migration': False,
+                'disk_over_commit': False
+            })
+            return initial

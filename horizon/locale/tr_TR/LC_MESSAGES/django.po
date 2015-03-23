@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Mücahit Büyükyılmaz <mucahit@konya.edu.tr>, 2015
 # sercanaydogan <sercanaydogan@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 15:13-0600\n"
-"PO-Revision-Date: 2015-02-02 19:18+0000\n"
+"POT-Creation-Date: 2015-03-16 22:31-0500\n"
+"PO-Revision-Date: 2015-03-17 03:17+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/horizon/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Language: tr_TR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: base.py:483 templates/horizon/common/_modal_form_update_metadata.html:38
+#: base.py:475
 msgid "Other"
 msgstr "Diğer"
 
@@ -36,18 +37,18 @@ msgstr "%s e erişim yetkiniz bulunmuyor"
 msgid "A %(resource)s with the name \"%(name)s\" already exists."
 msgstr "\"%(name)s\" isimli bir %(resource)s zaten var."
 
-#: exceptions.py:230
+#: exceptions.py:235
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "Yetkisiz: %s"
 
-#: exceptions.py:233
+#: exceptions.py:238
 msgid "Unauthorized. Please try logging in again."
 msgstr "Yetkisiz Giriş. Lütfen tekrar giriş yapın. "
 
 #: middleware.py:103
 msgid "Session timed out."
-msgstr "Oturum sona erdi"
+msgstr "Oturum sona erdi."
 
 #: browsers/base.py:88
 msgid "Navigation Item"
@@ -60,15 +61,15 @@ msgstr "Göz atmak için bir %s seçin."
 
 #: conf/default.py:41
 msgid "Password is not accepted"
-msgstr "Parola kabul edilmedi"
+msgstr "Şifre kabul edilmedi"
 
 #: forms/fields.py:64
 msgid "Incorrect format for IP address"
-msgstr "Hatalı IP adres biçemi"
+msgstr "Hatalı IP adres formatı"
 
 #: forms/fields.py:65
 msgid "Invalid version for IP address"
-msgstr "Geçersiz IP adres sürümü"
+msgstr "Geçersiz IP adres versiyonu"
 
 #: forms/fields.py:66
 msgid "Invalid subnet mask"
@@ -79,7 +80,7 @@ msgid "Submit"
 msgstr "Gönder"
 
 #: forms/views.py:133
-#: templates/horizon/common/_modal_form_update_metadata.html:235
+#: templates/horizon/common/_modal_form_update_metadata.html:25
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "İptal"
@@ -87,8 +88,6 @@ msgstr "İptal"
 #: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:21
 #: templates/horizon/common/_data_table_table_actions.html:33
-#: templates/horizon/common/_modal_form_update_metadata.html:28
-#: templates/horizon/common/_modal_form_update_metadata.html:97
 #: templates/horizon/common/_workflow_step_update_members.html:14
 #: templates/horizon/common/_workflow_step_update_members.html:23
 msgid "Filter"
@@ -96,7 +95,7 @@ msgstr "Filtre"
 
 #: tables/actions.py:645
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "Bu işlem geri alınamaz."
 
 #: tables/actions.py:767
 #, python-format
@@ -143,11 +142,11 @@ msgstr "Güncelle"
 
 #: tables/actions.py:949
 msgid "Updated"
-msgstr "Güncellenmiş"
+msgstr "Güncellendi"
 
 #: tables/base.py:305
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: tables/base.py:361
 #, python-format
@@ -161,7 +160,7 @@ msgstr "Görüntülenecek öğe yok."
 #: tables/base.py:1099
 #: templates/horizon/common/_data_table_table_actions.html:47
 msgid "Actions"
-msgstr "Eylemler"
+msgstr "İşlemler"
 
 #: tables/base.py:1329
 #, python-format
@@ -202,11 +201,11 @@ msgstr "Başka bir kullanıcı ile giriş yapın veya  <a href=\"%(home_url)s\">
 
 #: templates/auth/_login.html:32
 msgid "Sign In"
-msgstr "Kaydol"
+msgstr "Oturum Aç"
 
 #: templates/auth/login.html:4
 msgid "Login"
-msgstr "Bağlan"
+msgstr "Giriş"
 
 #: templates/horizon/_messages.html:7
 msgid "Info: "
@@ -218,7 +217,7 @@ msgstr "Uyarı:"
 
 #: templates/horizon/_messages.html:19
 msgid "Success: "
-msgstr "Sonuç:"
+msgstr "Başarılı:"
 
 #: templates/horizon/_messages.html:25
 msgid "Error: "
@@ -232,24 +231,24 @@ msgstr "Özet"
 #, python-format
 msgid "Displaying %(counter)s item"
 msgid_plural "Displaying %(counter)s items"
-msgstr[0] ""
+msgstr[0] "%(counter)s öge görüntüleniyor"
 
 #: templates/horizon/common/_data_table.html:77
 msgid "&laquo;&nbsp;Prev"
-msgstr ""
+msgstr "&laquo;&nbsp;Geri"
 
 #: templates/horizon/common/_data_table.html:80
 msgid "Next&nbsp;&raquo;"
-msgstr ""
+msgstr "İleri&nbsp;&raquo;"
 
 #: templates/horizon/common/_data_table_table_actions.html:45
 msgid "More Actions"
-msgstr ""
+msgstr "Diğer İşlemler"
 
 #: templates/horizon/common/_domain_page_header.html:6
 #, python-format
 msgid "%(context_name)s:"
-msgstr ""
+msgstr "%(context_name)s:"
 
 #: templates/horizon/common/_formset_table.html:35
 msgid "Add a row"
@@ -258,7 +257,7 @@ msgstr "Yeni bir satır ekle"
 #: templates/horizon/common/_formset_table_row.html:15
 #, python-format
 msgid "%(name)s: %(error)s"
-msgstr ""
+msgstr "%(name)s: %(error)s"
 
 #: templates/horizon/common/_limit_summary.html:4
 msgid "Limit Summary"
@@ -307,44 +306,7 @@ msgstr "Diskler"
 msgid "Volume Storage"
 msgstr "Disk Depolama Birimi"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:12
-msgid ""
-"\n"
-"        You can specify metadata by adding items from the left column to\n"
-"        the right column. You may select the metadata added to glance\n"
-"        dictionary or you can use the \"Other\" option using a key of\n"
-"        your choice.\n"
-"      "
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:26
-msgid "Available Metadata"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:56
-msgid "Duplicate keys are not allowed"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:84
-#: templates/horizon/common/_modal_form_update_metadata.html:196
-msgid "No available metadata"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:95
-msgid "Existing Metadata"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:212
-msgid ""
-"\n"
-"          You can specify resource metadata by moving items from the left\n"
-"          column to the right column. In the left columns there are metadata\n"
-"          definitions from the Glance Metadata Catalog. Use the \"Other\" option\n"
-"          to add metadata with the key of your choice.\n"
-"        "
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:234
+#: templates/horizon/common/_modal_form_update_metadata.html:24
 #: workflows/base.py:594
 msgid "Save"
 msgstr "Kaydet"
@@ -353,13 +315,13 @@ msgstr "Kaydet"
 #, python-format
 msgid "Displaying %(nav_items)s item"
 msgid_plural "Displaying %(nav_items)s items"
-msgstr[0] ""
+msgstr[0] "%(nav_items)s öge görüntüleniyor"
 
 #: templates/horizon/common/_resource_browser.html:11
 #, python-format
 msgid "Displaying %(content_items)s item"
 msgid_plural "Displaying %(content_items)s items"
-msgstr[0] ""
+msgstr[0] "%(content_items)s öge görüntüleniyor"
 
 #: templates/horizon/common/_usage_summary.html:3
 msgid "Usage Summary"
@@ -374,14 +336,14 @@ msgstr ""
 msgid ""
 "\n"
 "      <label>From:</label> %(start)s"
-msgstr ""
+msgstr "\n<label>Başlangıç:</label> %(start)s"
 
 #: templates/horizon/common/_usage_summary.html:13
 #, python-format
 msgid ""
 "\n"
 "      <label>To:</label>%(end)s"
-msgstr ""
+msgstr "\n<label>Bitiş:</label>%(end)s"
 
 #: templates/horizon/common/_usage_summary.html:17
 msgid "The date should be in YYYY-mm-dd format."
@@ -419,26 +381,26 @@ msgstr "İleri"
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:133 templatetags/horizon.py:144
+#: templatetags/horizon.py:137 templatetags/horizon.py:148
 msgid "No Limit"
 msgstr "Limitsiz"
 
-#: templatetags/horizon.py:136 templatetags/horizon.py:138
+#: templatetags/horizon.py:140 templatetags/horizon.py:142
 msgid "Available"
 msgstr "Uygun"
 
-#: templatetags/sizeformat.py:49 templatetags/sizeformat.py:54
+#: templatetags/sizeformat.py:51 templatetags/sizeformat.py:56
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
-msgstr[0] ""
+msgstr[0] "%(size)d Byte"
 
-#: templatetags/sizeformat.py:57
+#: templatetags/sizeformat.py:59
 #, python-format
 msgid "%s KB"
 msgstr "%s KB"
 
-#: templatetags/sizeformat.py:60
+#: templatetags/sizeformat.py:61
 #, python-format
 msgid "%s MB"
 msgstr "%s MB"
@@ -448,19 +410,19 @@ msgstr "%s MB"
 msgid "%s GB"
 msgstr "%s GB"
 
-#: templatetags/sizeformat.py:66
+#: templatetags/sizeformat.py:65
 #, python-format
 msgid "%s TB"
 msgstr "%s TB"
 
-#: templatetags/sizeformat.py:68
+#: templatetags/sizeformat.py:66
 #, python-format
 msgid "%s PB"
 msgstr "%s PB"
 
-#: templatetags/sizeformat.py:77
+#: templatetags/sizeformat.py:74
 msgid "0 Bytes"
-msgstr ""
+msgstr "0 Byte"
 
 #. Translators: test code, don't really have to translate
 #: test/test_dashboards/dogs/puppies/tables.py:31
@@ -474,25 +436,33 @@ msgid "Sold Puppy"
 msgid_plural "Sold Puppies"
 msgstr[0] ""
 
+#: test/tests/views.py:59
+msgid "Fake"
+msgstr "Sahte"
+
 #: utils/filters.py:49
 msgid "Never"
 msgstr "Asla"
 
-#: utils/validators.py:23 utils/validators.py:47
+#: utils/validators.py:26 utils/validators.py:50
 msgid "Not a valid port number"
 msgstr "Geçersiz port numarası"
 
-#: utils/validators.py:28
+#: utils/validators.py:31
 msgid "Not a valid IP protocol number"
 msgstr "Geçersiz IP Protokol numarası"
 
-#: utils/validators.py:42
+#: utils/validators.py:45
 msgid "One colon allowed in port range"
 msgstr "Port aralığında tek bir kolon girilebilir"
 
-#: utils/validators.py:49
+#: utils/validators.py:52
 msgid "Port number must be integer"
 msgstr "Port numarası bir tam sayı olmalıdır"
+
+#: utils/validators.py:59
+msgid "The string may only contain ASCII printable characters."
+msgstr ""
 
 #: workflows/base.py:71
 msgid "Processing..."

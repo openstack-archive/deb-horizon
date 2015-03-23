@@ -43,12 +43,14 @@ class CreateView(forms.ModalFormView):
     template_name = 'project/images/images/create.html'
     context_object_name = 'image'
     success_url = reverse_lazy("horizon:project:images:index")
+    page_title = _("Create An Image")
 
 
 class UpdateView(forms.ModalFormView):
     form_class = project_forms.UpdateImageForm
     template_name = 'project/images/images/update.html'
     success_url = reverse_lazy("horizon:project:images:index")
+    page_title = _("Update Image")
 
     @memoized.memoized_method
     def get_object(self):
@@ -83,6 +85,7 @@ class UpdateView(forms.ModalFormView):
 class DetailView(tabs.TabView):
     tab_group_class = project_tabs.ImageDetailTabs
     template_name = 'project/images/images/detail.html'
+    page_title = _("Image Details: {{ image.name }}")
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
@@ -91,9 +94,6 @@ class DetailView(tabs.TabView):
         context["image"] = image
         context["url"] = self.get_redirect_url()
         context["actions"] = table.render_row_actions(image)
-        context["page_title"] = _("Image Details: "
-                                  "%(image_name)s") % {'image_name':
-                                                       image.name}
         return context
 
     @staticmethod

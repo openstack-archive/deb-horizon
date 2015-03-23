@@ -77,7 +77,7 @@ horizon.forms = {
         $filename = $filename.substring(1);
       }
 
-      if (typeof($obj_name.val()) === 'undefined' || $(this).attr("filename").localeCompare($obj_name.val()) === 0) {
+      if (typeof($obj_name.val()) === 'undefined' || $obj_name.val().length < 1 || $(this).attr("filename").localeCompare($obj_name.val()) === 0) {
         $obj_name.val($filename);
         $(this).attr("filename", $filename);
         $obj_name.trigger('input');
@@ -204,15 +204,19 @@ horizon.addInitFunction(horizon.forms.init = function () {
   }
 
   // Bind event handlers to confirm dangerous actions.
-  $("body").on("click", "form button.btn-danger", function (evt) {
+  // Stops angular form buttons from triggering this event
+  $("body").on("click", "form button:not([ng-click]).btn-danger", function (evt) {
     horizon.datatables.confirm(this);
     evt.preventDefault();
   });
 
   /* Switchable Fields (See Horizon's Forms docs for more information) */
 
+  // Single reference
+  var $document = $(document);
+
   // Bind handler for swapping labels on "switchable" select fields.
-  $(document).on("change", 'select.switchable', function (evt) {
+  $document.on("change", 'select.switchable', function (evt) {
     var $fieldset = $(evt.target).closest('fieldset'),
       $switchables = $fieldset.find('select.switchable');
 
@@ -247,7 +251,7 @@ horizon.addInitFunction(horizon.forms.init = function () {
   });
 
   // Bind handler for swapping labels on "switchable" checkbox input fields.
-  $(document).on("change", 'input.switchable', function (evt) {
+  $document.on("change", 'input.switchable', function (evt) {
     var $fieldset = $(evt.target).closest('fieldset'),
       $switchables = $fieldset.find('input.switchable');
 
@@ -320,7 +324,7 @@ horizon.addInitFunction(horizon.forms.init = function () {
     });
   }
 
-  $(document).on('change', '#id_volume_source_type', function (evt) {
+  $document.on('change', '#id_volume_source_type', function (evt) {
     update_volume_source_displayed_fields(this);
   });
 
@@ -332,7 +336,7 @@ horizon.addInitFunction(horizon.forms.init = function () {
   /* Help tooltips */
 
   // Apply standard handler for everything but checkboxes.
-  $(document).tooltip({
+  $document.tooltip({
     selector: "div.form-group .help-icon",
     placement: function (tip, input) {
       // Position to the right unless this is a "split" for in which case put
@@ -345,11 +349,11 @@ horizon.addInitFunction(horizon.forms.init = function () {
   });
   // Hide the tooltip upon interaction with the field for select boxes.
   // We use mousedown and keydown since those "open" the select dropdown.
-  $(document).on('mousedown keydown', '.form-group select', function (evt) {
+  $document.on('mousedown keydown', '.form-group select', function (evt) {
     $(this).tooltip('hide');
   });
   // Hide the tooltip after escape button pressed
-  $(document).on('keydown.esc_btn', function (evt) {
+  $document.on('keydown.esc_btn', function (evt) {
     if (evt.keyCode === 27) {
       $('.tooltip').hide();
     }

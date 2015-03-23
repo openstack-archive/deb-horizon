@@ -14,7 +14,7 @@ import collections
 import functools
 import inspect
 
-import nose
+import testtools
 
 from openstack_dashboard.test.integration_tests import config
 
@@ -23,25 +23,30 @@ def _is_test_method_name(method):
     return method.startswith('test_')
 
 
+def _is_test_fixture(method):
+    return method in ['setUp', 'tearDown']
+
+
 def _is_test_cls(cls):
     return cls.__name__.startswith('Test')
 
 
 def _mark_method_skipped(meth, reason):
     """Mark method as skipped by replacing the actual method with wrapper
-    that raises the nose.SkipTest exception.
+    that raises the testtools.testcase.TestSkipped exception.
     """
 
     @functools.wraps(meth)
     def wrapper(*args, **kwargs):
-        raise nose.SkipTest(reason)
+        raise testtools.testcase.TestSkipped(reason)
 
     return wrapper
 
 
 def _mark_class_skipped(cls, reason):
     """Mark every test method of the class as skipped."""
-    tests = [attr for attr in dir(cls) if _is_test_method_name(attr)]
+    tests = [attr for attr in dir(cls) if _is_test_method_name(attr) or
+             _is_test_fixture(attr)]
     for test in tests:
         method = getattr(cls, test)
         if callable(method):
@@ -128,7 +133,7 @@ def skip_because(**kwargs):
             for bug in bugs:
                 if not bug.isdigit():
                     raise ValueError("bug must be a valid bug number")
-            obj = skip_method(obj, "Skipped until Bugs: %s are resolved."
+            obj = skip_method(obj, "Skipped until Bugs: %s are resolved." %
                               ", ".join([bug for bug in bugs]))
         return obj
     return actual_decoration

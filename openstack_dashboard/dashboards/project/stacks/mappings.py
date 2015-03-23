@@ -28,10 +28,14 @@ LOG = logging.getLogger(__name__)
 resource_urls = {
     "AWS::EC2::Instance": {
         'link': 'horizon:project:instances:detail'},
+    "AWS::EC2::InternetGateway": {
+        'link': 'horizon:project:networks:ports:detail'},
     "AWS::EC2::NetworkInterface": {
         'link': 'horizon:project:networks:ports:detail'},
     "AWS::EC2::RouteTable": {
         'link': 'horizon:project:routers:detail'},
+    "AWS::EC2::SecurityGroup": {
+        'link': 'horizon:project:access_and_security:index'},
     "AWS::EC2::Subnet": {
         'link': 'horizon:project:networks:subnets:detail'},
     "AWS::EC2::Volume": {
@@ -40,10 +44,32 @@ resource_urls = {
         'link': 'horizon:project:networks:detail'},
     "AWS::S3::Bucket": {
         'link': 'horizon:project:containers:index'},
-    "OS::Nova::Server": {
-        'link': 'horizon:project:instances:detail'},
     "OS::Cinder::Volume": {
         'link': 'horizon:project:volumes:volumes:detail'},
+    "OS::Heat::AccessPolicy": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::AutoScalingGroup": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::CloudConfig": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::HARestarter": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::InstanceGroup": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::MultipartMime": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::ResourceGroup": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::SoftwareConfig": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::StructuredConfig": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::StructuredDeployment": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::WaitCondition": {
+        'link': 'horizon:project:stacks:detail'},
+    "OS::Heat::WaitConditionHandle": {
+        'link': 'horizon:project:stacks:detail'},
     "OS::Neutron::Net": {
         'link': 'horizon:project:networks:detail'},
     "OS::Neutron::Port": {
@@ -52,6 +78,10 @@ resource_urls = {
         'link': 'horizon:project:routers:detail'},
     "OS::Neutron::Subnet": {
         'link': 'horizon:project:networks:subnets:detail'},
+    "OS::Nova::KeyPair": {
+        'link': 'horizon:project:access_and_security:index'},
+    "OS::Nova::Server": {
+        'link': 'horizon:project:instances:detail'},
     "OS::Swift::Container": {
         'link': 'horizon:project:containers:index',
         'format_pattern': '%s' + swift.FOLDER_DELIMITER},

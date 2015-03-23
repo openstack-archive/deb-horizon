@@ -55,7 +55,13 @@ class CopyNodegroupTemplate(create_flow.ConfigureNodegroupTemplate):
         g_fields["nodegroup_name"].initial = template.name + "-copy"
         g_fields["description"].initial = template.description
         g_fields["flavor"].initial = template.flavor_id
-        g_fields["availability_zone"].initial = template.availability_zone
+
+        if hasattr(template, "availability_zone"):
+            g_fields["availability_zone"].initial = template.availability_zone
+
+        if hasattr(template, "volumes_availability_zone"):
+            g_fields["volumes_availability_zone"].initial = \
+                template.volumes_availability_zone
 
         storage = "cinder_volume" if template.volumes_per_node > 0 \
             else "ephemeral_drive"
@@ -70,8 +76,9 @@ class CopyNodegroupTemplate(create_flow.ConfigureNodegroupTemplate):
 
         s_fields["security_autogroup"].initial = template.auto_security_group
 
-        s_fields["security_groups"].initial = dict(
-            [(sg, sg) for sg in template.security_groups])
+        if template.security_groups:
+            s_fields["security_groups"].initial = dict(
+                [(sg, sg) for sg in template.security_groups])
 
         processes_dict = dict()
         try:

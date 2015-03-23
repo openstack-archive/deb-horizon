@@ -38,10 +38,16 @@ class NodegroupTemplatesView(tables.DataTableView):
     table_class = _tables.NodegroupTemplatesTable
     template_name = (
         'project/data_processing.nodegroup_templates/nodegroup_templates.html')
+    page_title = _("Node Group Templates")
 
     def get_data(self):
         try:
-            data = saharaclient.nodegroup_template_list(self.request)
+            search_opts = {}
+            filter = self.get_server_filter_info(self.request)
+            if filter['value'] and filter['field']:
+                search_opts = {filter['field']: filter['value']}
+            data = saharaclient.nodegroup_template_list(self.request,
+                                                        search_opts)
         except Exception:
             data = []
             exceptions.handle(self.request,
@@ -52,6 +58,7 @@ class NodegroupTemplatesView(tables.DataTableView):
 class NodegroupTemplateDetailsView(tabs.TabView):
     tab_group_class = _tabs.NodegroupTemplateDetailsTabs
     template_name = 'project/data_processing.nodegroup_templates/details.html'
+    page_title = _("Node Group Template Details")
 
     def get_context_data(self, **kwargs):
         context = super(NodegroupTemplateDetailsView, self)\
@@ -67,8 +74,9 @@ class CreateNodegroupTemplateView(workflows.WorkflowView):
     success_url = (
         "horizon:project:data_processing.nodegroup_templates:"
         "create-nodegroup-template")
-    classes = ("ajax-modal")
+    classes = ("ajax-modal",)
     template_name = "project/data_processing.nodegroup_templates/create.html"
+    page_title = _("Create Node Group Template")
 
 
 class ConfigureNodegroupTemplateView(workflows.WorkflowView):
@@ -76,6 +84,12 @@ class ConfigureNodegroupTemplateView(workflows.WorkflowView):
     success_url = "horizon:project:data_processing.nodegroup_templates"
     template_name = (
         "project/data_processing.nodegroup_templates/configure.html")
+    page_title = _("Create Node Group Template")
+
+    def get_initial(self):
+        initial = super(ConfigureNodegroupTemplateView, self).get_initial()
+        initial.update(self.kwargs)
+        return initial
 
 
 class CopyNodegroupTemplateView(workflows.WorkflowView):

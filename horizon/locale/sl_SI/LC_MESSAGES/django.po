@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 15:13-0600\n"
-"PO-Revision-Date: 2015-02-02 19:18+0000\n"
+"POT-Creation-Date: 2015-03-16 22:31-0500\n"
+"PO-Revision-Date: 2015-03-17 03:17+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Slovenian (Slovenia) (http://www.transifex.com/projects/p/horizon/language/sl_SI/)\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Language: sl_SI\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
-#: base.py:483 templates/horizon/common/_modal_form_update_metadata.html:38
+#: base.py:475
 msgid "Other"
 msgstr "Ostalo"
 
@@ -35,12 +35,12 @@ msgstr "Nimate pravic za dostop do %s"
 msgid "A %(resource)s with the name \"%(name)s\" already exists."
 msgstr ""
 
-#: exceptions.py:230
+#: exceptions.py:235
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "Niste avtorizirani: %s"
 
-#: exceptions.py:233
+#: exceptions.py:238
 msgid "Unauthorized. Please try logging in again."
 msgstr "Neavtoriziran dostop. Poskusite se prijaviti in poskusite znova."
 
@@ -78,7 +78,7 @@ msgid "Submit"
 msgstr "Potrdi"
 
 #: forms/views.py:133
-#: templates/horizon/common/_modal_form_update_metadata.html:235
+#: templates/horizon/common/_modal_form_update_metadata.html:25
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "Prekliči"
@@ -86,8 +86,6 @@ msgstr "Prekliči"
 #: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:21
 #: templates/horizon/common/_data_table_table_actions.html:33
-#: templates/horizon/common/_modal_form_update_metadata.html:28
-#: templates/horizon/common/_modal_form_update_metadata.html:97
 #: templates/horizon/common/_workflow_step_update_members.html:14
 #: templates/horizon/common/_workflow_step_update_members.html:23
 msgid "Filter"
@@ -309,44 +307,7 @@ msgstr "Nosilci"
 msgid "Volume Storage"
 msgstr "Diskovni prostor nosilca"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:12
-msgid ""
-"\n"
-"        You can specify metadata by adding items from the left column to\n"
-"        the right column. You may select the metadata added to glance\n"
-"        dictionary or you can use the \"Other\" option using a key of\n"
-"        your choice.\n"
-"      "
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:26
-msgid "Available Metadata"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:56
-msgid "Duplicate keys are not allowed"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:84
-#: templates/horizon/common/_modal_form_update_metadata.html:196
-msgid "No available metadata"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:95
-msgid "Existing Metadata"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:212
-msgid ""
-"\n"
-"          You can specify resource metadata by moving items from the left\n"
-"          column to the right column. In the left columns there are metadata\n"
-"          definitions from the Glance Metadata Catalog. Use the \"Other\" option\n"
-"          to add metadata with the key of your choice.\n"
-"        "
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:234
+#: templates/horizon/common/_modal_form_update_metadata.html:24
 #: workflows/base.py:594
 msgid "Save"
 msgstr "Shrani"
@@ -427,15 +388,15 @@ msgstr "Naprej"
 msgid "Horizon"
 msgstr "Horizon"
 
-#: templatetags/horizon.py:133 templatetags/horizon.py:144
+#: templatetags/horizon.py:137 templatetags/horizon.py:148
 msgid "No Limit"
 msgstr "Ni omejitve"
 
-#: templatetags/horizon.py:136 templatetags/horizon.py:138
+#: templatetags/horizon.py:140 templatetags/horizon.py:142
 msgid "Available"
 msgstr "Na voljo"
 
-#: templatetags/sizeformat.py:49 templatetags/sizeformat.py:54
+#: templatetags/sizeformat.py:51 templatetags/sizeformat.py:56
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
@@ -444,12 +405,12 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: templatetags/sizeformat.py:57
+#: templatetags/sizeformat.py:59
 #, python-format
 msgid "%s KB"
 msgstr "%s KB"
 
-#: templatetags/sizeformat.py:60
+#: templatetags/sizeformat.py:61
 #, python-format
 msgid "%s MB"
 msgstr "%s MB"
@@ -459,17 +420,17 @@ msgstr "%s MB"
 msgid "%s GB"
 msgstr "%s GB"
 
-#: templatetags/sizeformat.py:66
+#: templatetags/sizeformat.py:65
 #, python-format
 msgid "%s TB"
 msgstr "%s TB"
 
-#: templatetags/sizeformat.py:68
+#: templatetags/sizeformat.py:66
 #, python-format
 msgid "%s PB"
 msgstr "%s PB"
 
-#: templatetags/sizeformat.py:77
+#: templatetags/sizeformat.py:74
 msgid "0 Bytes"
 msgstr ""
 
@@ -491,25 +452,33 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
+#: test/tests/views.py:59
+msgid "Fake"
+msgstr ""
+
 #: utils/filters.py:49
 msgid "Never"
 msgstr "Nikoli"
 
-#: utils/validators.py:23 utils/validators.py:47
+#: utils/validators.py:26 utils/validators.py:50
 msgid "Not a valid port number"
 msgstr "Številka vrat ni veljavna"
 
-#: utils/validators.py:28
+#: utils/validators.py:31
 msgid "Not a valid IP protocol number"
 msgstr "Številka protokola IP ni veljavna."
 
-#: utils/validators.py:42
+#: utils/validators.py:45
 msgid "One colon allowed in port range"
 msgstr "Ena kolona je dovoljena v razponu vrat"
 
-#: utils/validators.py:49
+#: utils/validators.py:52
 msgid "Port number must be integer"
 msgstr "Vrata navedite s številko."
+
+#: utils/validators.py:59
+msgid "The string may only contain ASCII printable characters."
+msgstr ""
 
 #: workflows/base.py:71
 msgid "Processing..."

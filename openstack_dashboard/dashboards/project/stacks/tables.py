@@ -13,6 +13,7 @@
 from django.core import urlresolvers
 from django.http import Http404  # noqa
 from django.template.defaultfilters import title  # noqa
+from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
@@ -33,6 +34,14 @@ class LaunchStack(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
     policy_rules = (("orchestration", "cloudformation:CreateStack"),)
+
+
+class PreviewStack(tables.LinkAction):
+    name = "preview"
+    verbose_name = _("Preview Stack")
+    url = "horizon:project:stacks:preview_template"
+    classes = ("ajax-modal",)
+    policy_rules = (("orchestration", "cloudformation:PreviewStack"),)
 
 
 class CheckStack(tables.BatchAction):
@@ -170,10 +179,81 @@ class StacksUpdateRow(tables.Row):
             raise
 
 
+class StacksFilterAction(tables.FilterAction):
+
+    def filter(self, table, stacks, filter_string):
+        """Naive case-insensitive search."""
+        query = filter_string.lower()
+        return [stack for stack in stacks
+                if query in stack.name.lower()]
+
+
 class StacksTable(tables.DataTable):
     STATUS_CHOICES = (
         ("Complete", True),
         ("Failed", False),
+    )
+    STACK_STATUS_DISPLAY_CHOICES = (
+        ("init_in_progress", pgettext_lazy("current status of stack",
+                                           u"Init In Progress")),
+        ("init_complete", pgettext_lazy("current status of stack",
+                                        u"Init Complete")),
+        ("init_failed", pgettext_lazy("current status of stack",
+                                      u"Init Failed")),
+        ("create_in_progress", pgettext_lazy("current status of stack",
+                                             u"Create In Progress")),
+        ("create_complete", pgettext_lazy("current status of stack",
+                                          u"Create Complete")),
+        ("create_failed", pgettext_lazy("current status of stack",
+                                        u"Create Failed")),
+        ("delete_in_progress", pgettext_lazy("current status of stack",
+                                             u"Delete In Progress")),
+        ("delete_complete", pgettext_lazy("current status of stack",
+                                          u"Delete Complete")),
+        ("delete_failed", pgettext_lazy("current status of stack",
+                                        u"Delete Failed")),
+        ("update_in_progress", pgettext_lazy("current status of stack",
+                                             u"Update In Progress")),
+        ("update_complete", pgettext_lazy("current status of stack",
+                                          u"Update Complete")),
+        ("update_failed", pgettext_lazy("current status of stack",
+                                        u"Update Failed")),
+        ("rollback_in_progress", pgettext_lazy("current status of stack",
+                                               u"Rollback In Progress")),
+        ("rollback_complete", pgettext_lazy("current status of stack",
+                                            u"Rollback Complete")),
+        ("rollback_failed", pgettext_lazy("current status of stack",
+                                          u"Rollback Failed")),
+        ("suspend_in_progress", pgettext_lazy("current status of stack",
+                                              u"Suspend In Progress")),
+        ("suspend_complete", pgettext_lazy("current status of stack",
+                                           u"Suspend Complete")),
+        ("suspend_failed", pgettext_lazy("current status of stack",
+                                         u"Suspend Failed")),
+        ("resume_in_progress", pgettext_lazy("current status of stack",
+                                             u"Resume In Progress")),
+        ("resume_complete", pgettext_lazy("current status of stack",
+                                          u"Resume Complete")),
+        ("resume_failed", pgettext_lazy("current status of stack",
+                                        u"Resume Failed")),
+        ("adopt_in_progress", pgettext_lazy("current status of stack",
+                                            u"Adopt In Progress")),
+        ("adopt_complete", pgettext_lazy("current status of stack",
+                                         u"Adopt Complete")),
+        ("adopt_failed", pgettext_lazy("current status of stack",
+                                       u"Adopt Failed")),
+        ("snapshot_in_progress", pgettext_lazy("current status of stack",
+                                               u"Snapshot In Progress")),
+        ("snapshot_complete", pgettext_lazy("current status of stack",
+                                            u"Snapshot Complete")),
+        ("snapshot_failed", pgettext_lazy("current status of stack",
+                                          u"Snapshot Failed")),
+        ("check_in_progress", pgettext_lazy("current status of stack",
+                                            u"Check In Progress")),
+        ("check_complete", pgettext_lazy("current status of stack",
+                                         u"Check Complete")),
+        ("check_failed", pgettext_lazy("current status of stack",
+                                       u"Check Failed")),
     )
     name = tables.Column("stack_name",
                          verbose_name=_("Stack Name"),
@@ -192,8 +272,8 @@ class StacksTable(tables.DataTable):
                            status_choices=STATUS_CHOICES)
 
     stack_status = tables.Column("stack_status",
-                                 filters=(title, filters.replace_underscores),
-                                 verbose_name=_("Status"))
+                                 verbose_name=_("Status"),
+                                 display_choices=STACK_STATUS_DISPLAY_CHOICES)
 
     def get_object_display(self, stack):
         return stack.stack_name
@@ -205,10 +285,12 @@ class StacksTable(tables.DataTable):
         status_columns = ["status", ]
         row_class = StacksUpdateRow
         table_actions = (LaunchStack,
+                         PreviewStack,
                          CheckStack,
                          SuspendStack,
                          ResumeStack,
-                         DeleteStack,)
+                         DeleteStack,
+                         StacksFilterAction,)
         row_actions = (CheckStack,
                        SuspendStack,
                        ResumeStack,
@@ -263,10 +345,15 @@ class ResourcesUpdateRow(tables.Row):
 
 
 class ResourcesTable(tables.DataTable):
+    class StatusColumn(tables.Column):
+        def get_raw_data(self, datum):
+            return datum.resource_status.partition("_")[2]
+
     STATUS_CHOICES = (
-        ("Create Complete", True),
-        ("Create Failed", False),
+        ("Complete", True),
+        ("Failed", False),
     )
+    STATUS_DISPLAY_CHOICES = StacksTable.STACK_STATUS_DISPLAY_CHOICES
 
     logical_resource = tables.Column('resource_name',
                                      verbose_name=_("Stack Resource"),
@@ -281,13 +368,16 @@ class ResourcesTable(tables.DataTable):
                                  filters=(filters.parse_isotime,
                                           filters.timesince_or_never))
     status = tables.Column("resource_status",
-                           filters=(title, filters.replace_underscores),
                            verbose_name=_("Status"),
-                           status=True,
-                           status_choices=STATUS_CHOICES)
+                           display_choices=STATUS_DISPLAY_CHOICES)
 
     statusreason = tables.Column("resource_status_reason",
                                  verbose_name=_("Status Reason"),)
+
+    status_hidden = StatusColumn("status",
+                                 hidden=True,
+                                 status=True,
+                                 status_choices=STATUS_CHOICES)
 
     def __init__(self, request, data=None,
                  needs_form_wrapper=None, **kwargs):
@@ -301,5 +391,5 @@ class ResourcesTable(tables.DataTable):
     class Meta(object):
         name = "resources"
         verbose_name = _("Stack Resources")
-        status_columns = ["status", ]
+        status_columns = ["status_hidden", ]
         row_class = ResourcesUpdateRow

@@ -52,7 +52,7 @@ class BaseActionMetaClass(type):
     initialized clean way. Similar principle is used in DataTableMetaclass.
     """
     def __new__(mcs, name, bases, attrs):
-        # Options of action are set ass class attributes, loading them.
+        # Options of action are set as class attributes, loading them.
         options = {}
         if attrs:
             options = attrs
@@ -800,7 +800,7 @@ class BatchAction(Action):
         action_not_allowed = []
         for datum_id in obj_ids:
             datum = table.get_object_by_id(datum_id)
-            datum_display = table.get_object_display(datum) or _("N/A")
+            datum_display = table.get_object_display(datum) or datum_id
             if not table._filter_action(self, request, datum):
                 action_not_allowed.append(datum_display)
                 LOG.info('Permission denied to %s: "%s"' %

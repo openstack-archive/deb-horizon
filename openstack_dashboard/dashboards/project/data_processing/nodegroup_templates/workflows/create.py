@@ -13,7 +13,9 @@
 
 import logging
 
+from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
+
 from saharaclient.api import base as api_base
 
 from horizon import exceptions
@@ -28,6 +30,8 @@ from openstack_dashboard.dashboards.project.data_processing.utils \
     import workflow_helpers
 from openstack_dashboard.dashboards.project.instances \
     import utils as nova_utils
+from openstack_dashboard.dashboards.project.volumes \
+    import utils as cinder_utils
 
 
 LOG = logging.getLogger(__name__)
@@ -54,20 +58,42 @@ class GeneralConfigAction(workflows.Action):
         help_text=_("Choose a storage location"),
         choices=[("ephemeral_drive", "Ephemeral Drive"),
                  ("cinder_volume", "Cinder Volume")],
-        widget=forms.Select(attrs={"class": "storage_field"}))
+        widget=forms.Select(attrs={
+            "class": "storage_field switchable",
+            'data-slug': 'storage_loc'
+        }))
 
     volumes_per_node = forms.IntegerField(
         label=_("Volumes per node"),
         required=False,
         initial=1,
-        widget=forms.TextInput(attrs={"class": "volume_per_node_field"})
+        widget=forms.TextInput(attrs={
+            "class": "volume_per_node_field switched",
+            "data-switch-on": "storage_loc",
+            "data-storage_loc-cinder_volume": _('Volumes per node')
+        })
     )
 
     volumes_size = forms.IntegerField(
         label=_("Volumes size (GB)"),
         required=False,
         initial=10,
-        widget=forms.TextInput(attrs={"class": "volume_size_field"})
+        widget=forms.TextInput(attrs={
+            "class": "volume_size_field switched",
+            "data-switch-on": "storage_loc",
+            "data-storage_loc-cinder_volume": _('Volumes size (GB)')
+        })
+    )
+
+    volumes_availability_zone = forms.ChoiceField(
+        label=_("Volumes Availability Zone"),
+        help_text=_("Create volumes in this availability zone."),
+        required=False,
+        widget=forms.Select(attrs={
+            "class": "volumes_availability_zone_field switched",
+            "data-switch-on": "storage_loc",
+            "data-storage_loc-cinder_volume": _('Volumes Availability Zone')
+        })
     )
 
     hidden_configure_field = forms.CharField(
@@ -123,6 +149,13 @@ class GeneralConfigAction(workflows.Action):
         for param in node_parameters:
             self.fields[param.name] = workflow_helpers.build_control(param)
 
+        resolver_match = urlresolvers.resolve(request.path)
+        if "guide_template_type" in resolver_match.kwargs:
+            self.fields["guide_template_type"] = forms.CharField(
+                required=False,
+                widget=forms.HiddenInput(),
+                initial=resolver_match.kwargs["guide_template_type"])
+
     def populate_flavor_choices(self, request, context):
         flavors = nova_utils.flavor_list(request)
         if flavors:
@@ -134,6 +167,13 @@ class GeneralConfigAction(workflows.Action):
         az_list = [(None, _('No availability zone specified'))]
         az_list.extend([(az.zoneName, az.zoneName)
                         for az in nova_utils.availability_zone_list(request)
+                        if az.zoneState['available']])
+        return az_list
+
+    def populate_volumes_availability_zone_choices(self, request, context):
+        az_list = [(None, _('No availability zone specified'))]
+        az_list.extend([(az.zoneName, az.zoneName)
+                        for az in cinder_utils.availability_zone_list(request)
                         if az.zoneState['available']])
         return az_list
 
@@ -275,12 +315,15 @@ class ConfigureNodegroupTemplate(workflow_helpers.ServiceParametersWorkflow,
 
             volumes_per_node = None
             volumes_size = None
+            volumes_availability_zone = None
 
             if context["general_storage"] == "cinder_volume":
                 volumes_per_node = context["general_volumes_per_node"]
                 volumes_size = context["general_volumes_size"]
+                volumes_availability_zone = \
+                    context["general_volumes_availability_zone"]
 
-            saharaclient.nodegroup_template_create(
+            ngt = saharaclient.nodegroup_template_create(
                 request,
                 name=context["general_nodegroup_name"],
                 plugin_name=plugin,
@@ -289,12 +332,23 @@ class ConfigureNodegroupTemplate(workflow_helpers.ServiceParametersWorkflow,
                 flavor_id=context["general_flavor"],
                 volumes_per_node=volumes_per_node,
                 volumes_size=volumes_size,
+                volumes_availability_zone=volumes_availability_zone,
                 node_processes=processes,
                 node_configs=configs_dict,
                 floating_ip_pool=context.get("general_floating_ip_pool"),
                 security_groups=context["security_groups"],
                 auto_security_group=context["security_autogroup"],
                 availability_zone=context["general_availability_zone"])
+
+            hlps = helpers.Helpers(request)
+            if hlps.is_from_guide():
+                guide_type = context["general_guide_template_type"]
+                request.session[guide_type + "_name"] = (
+                    context["general_nodegroup_name"])
+                request.session[guide_type + "_id"] = ngt.id
+                self.success_url = (
+                    "horizon:project:data_processing.wizard:cluster_guide")
+
             return True
         except api_base.APIException as e:
             self.error_description = str(e)
@@ -336,7 +390,7 @@ class SelectPlugin(workflows.Step):
 class CreateNodegroupTemplate(workflows.Workflow):
     slug = "create_nodegroup_template"
     name = _("Create Node Group Template")
-    finalize_button_name = _("Create")
+    finalize_button_name = _("Next")
     success_message = _("Created")
     failure_message = _("Could not create")
     success_url = "horizon:project:data_processing.nodegroup_templates:index"

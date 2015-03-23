@@ -26,7 +26,7 @@ class ImagesPage(basepage.BaseNavigationPage):
     IMAGES_TABLE_NAME_COLUMN_INDEX = 0
     IMAGES_TABLE_STATUS_COLUMN_INDEX = 2
 
-    _images_table_locator = (by.By.CSS_SELECTOR, 'table#images')
+    _images_table_locator = (by.By.ID, 'images')
 
     IMAGES_TABLE_ACTIONS = ("create_image", "delete_images")
     IMAGES_TABLE_ROW_ACTIONS = {
@@ -105,3 +105,6 @@ class ImagesPage(basepage.BaseNavigationPage):
         row = self._get_row_with_image_name(name)
         return row.cells[self.IMAGES_TABLE_STATUS_COLUMN_INDEX].text == \
             'Active'
+
+    def wait_until_image_active(self, name):
+        self._wait_until(lambda x: self.is_image_active(name))

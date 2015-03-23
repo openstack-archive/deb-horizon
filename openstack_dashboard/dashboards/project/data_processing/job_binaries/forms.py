@@ -36,7 +36,7 @@ class LabeledInput(widgets.Input):
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
         output = "<span id='%s'>%s</span>%s" %\
             ("id_%s_label" % name,
-             "internal-db://",
+             "swift://",
              ('<input%s />' % util.flatatt(final_attrs)))
         return mark_safe(output)
 
@@ -170,14 +170,14 @@ class JobBinaryCreateForm(forms.SelfHandlingForm):
             elif(context["job_binary_type"] == "swift"):
                 extra = self.handle_swift(request, context)
 
-            saharaclient.job_binary_create(
+            bin_object = saharaclient.job_binary_create(
                 request,
                 context["job_binary_name"],
                 bin_url,
                 context["job_binary_description"],
                 extra)
             messages.success(request, "Successfully created job binary")
-            return True
+            return bin_object
         except Exception:
             exceptions.handle(request,
                               _("Unable to create job binary"))
@@ -210,6 +210,7 @@ class JobBinaryCreateForm(forms.SelfHandlingForm):
                     self.get_unique_binary_name(
                         request, request.FILES["job_binary_file"].name),
                     request.FILES["job_binary_file"].read())
+                bin_id = result.id
             except Exception:
                 exceptions.handle(request,
                                   _("Unable to upload job binary"))
@@ -221,12 +222,12 @@ class JobBinaryCreateForm(forms.SelfHandlingForm):
                     self.get_unique_binary_name(
                         request, context["job_binary_script_name"]),
                     context["job_binary_script"])
+                bin_id = result.id
             except Exception:
                 exceptions.handle(request,
                                   _("Unable to create job binary"))
                 return None
 
-        bin_id = result.id
         return "internal-db://%s" % bin_id
 
     def handle_swift(self, request, context):

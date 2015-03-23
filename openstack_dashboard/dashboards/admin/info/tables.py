@@ -27,6 +27,11 @@ SERVICE_STATUS_DISPLAY_CHOICES = (
     (SERVICE_DISABLED, _("Disabled")),
 )
 
+SERVICE_STATE_DISPLAY_CHOICES = (
+    ('up', _("Up")),
+    ('down', _("Down")),
+)
+
 
 class ServiceFilterAction(tables.FilterAction):
     filter_field = 'type'
@@ -76,7 +81,7 @@ def get_available(zone):
     return zone.zoneState['available']
 
 
-def get_nova_agent_status(agent):
+def get_agent_status(agent):
     template_name = 'admin/info/_cell_status.html'
     context = {
         'status': agent.status,
@@ -89,9 +94,9 @@ class NovaServicesTable(tables.DataTable):
     binary = tables.Column("binary", verbose_name=_('Name'))
     host = tables.Column('host', verbose_name=_('Host'))
     zone = tables.Column('zone', verbose_name=_('Zone'))
-    status = tables.Column(get_nova_agent_status, verbose_name=_('Status'))
+    status = tables.Column(get_agent_status, verbose_name=_('Status'))
     state = tables.Column('state', verbose_name=_('State'),
-                          filters=(filters.title,))
+                          display_choices=SERVICE_STATE_DISPLAY_CHOICES)
     updated_at = tables.Column('updated_at',
                                verbose_name=pgettext_lazy(
                                    'Time since the last update',
@@ -113,10 +118,9 @@ class CinderServicesTable(tables.DataTable):
     binary = tables.Column("binary", verbose_name=_('Name'))
     host = tables.Column('host', verbose_name=_('Host'))
     zone = tables.Column('zone', verbose_name=_('Zone'))
-    status = tables.Column('status', verbose_name=_('Status'),
-                           filters=(filters.title, ))
+    status = tables.Column(get_agent_status, verbose_name=_('Status'))
     state = tables.Column('state', verbose_name=_('State'),
-                          filters=(filters.title, ))
+                          display_choices=SERVICE_STATE_DISPLAY_CHOICES)
     updated_at = tables.Column('updated_at',
                                verbose_name=pgettext_lazy(
                                    'Time since the last update',
@@ -180,4 +184,44 @@ class NetworkAgentsTable(tables.DataTable):
         name = "network_agents"
         verbose_name = _("Network Agents")
         table_actions = (NetworkAgentsFilterAction,)
+        multi_select = False
+
+
+class HeatServiceFilterAction(tables.FilterAction):
+    filter_field = 'type'
+
+    def filter(self, table, services, filter_string):
+        q = filter_string.lower()
+
+        def comp(service):
+            attr = getattr(service, self.filter_field, '')
+            if attr is not None and q in attr.lower():
+                return True
+            return False
+
+        return filter(comp, services)
+
+
+class HeatServiceTable(tables.DataTable):
+    hostname = tables.Column('hostname', verbose_name=_('Hostname'))
+    binary = tables.Column("binary", verbose_name=_('Name'))
+    engine_id = tables.Column('engine_id', verbose_name=_('Engine Id'))
+    host = tables.Column('host', verbose_name=_('Host'))
+    topic = tables.Column('topic', verbose_name=_('Topic'))
+    updated_at = tables.Column('updated_at',
+                               verbose_name=pgettext_lazy(
+                                   'Time since the last update',
+                                   u'Last Updated'),
+                               filters=(utils_filters.parse_isotime,
+                                        filters.timesince))
+    status = tables.Column('status', verbose_name=_('Status'),
+                           display_choices=SERVICE_STATE_DISPLAY_CHOICES)
+
+    def get_object_id(self, obj):
+        return "%s" % obj.engine_id
+
+    class Meta(object):
+        name = "heat_services"
+        verbose_name = _("Orchestration Services")
+        table_actions = (HeatServiceFilterAction,)
         multi_select = False

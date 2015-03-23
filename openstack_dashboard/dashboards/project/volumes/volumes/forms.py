@@ -17,6 +17,8 @@
 Views for managing volumes.
 """
 
+from oslo_utils import units
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.forms import ValidationError  # noqa
@@ -105,7 +107,7 @@ class CreateForm(forms.SelfHandlingForm):
             attrs={'class': 'image-selector'},
             data_attrs=('size', 'name'),
             transform=lambda x: "%s (%s)" % (
-                x.name, filesizeformat(x.size * 1024 * 1024 * 1024))),
+                x.name, filesizeformat(x.size * units.Gi))),
         required=False)
     type = forms.ChoiceField(
         label=_("Type"),
@@ -394,9 +396,10 @@ class CreateForm(forms.SelfHandlingForm):
             self.api_error(e.messages[0])
             return False
         except Exception:
-            exceptions.handle(request, ignore=True)
-            self.api_error(_("Unable to create volume."))
-            return False
+            redirect = reverse("horizon:project:volumes:index")
+            exceptions.handle(request,
+                              _("Unable to create volume."),
+                              redirect=redirect)
 
     @memoized
     def get_snapshot(self, request, id):
@@ -515,10 +518,13 @@ class CreateSnapshotForm(forms.SelfHandlingForm):
 
             messages.info(request, message)
             return snapshot
-        except Exception:
+        except Exception as e:
             redirect = reverse("horizon:project:volumes:index")
+            msg = _('Unable to create volume snapshot.')
+            if e.code == 413:
+                msg = _('Requested snapshot would exceed the allowed quota.')
             exceptions.handle(request,
-                              _('Unable to create volume snapshot.'),
+                              msg,
                               redirect=redirect)
 
 
@@ -541,7 +547,9 @@ class CreateTransferForm(forms.SelfHandlingForm):
                         args=(transfer.id, transfer.auth_key)))
             return response
         except Exception:
-            exceptions.handle(request, _('Unable to create volume transfer.'))
+            redirect = reverse("horizon:project:volumes:index")
+            exceptions.handle(request, _('Unable to create volume transfer.'),
+                              redirect=redirect)
 
 
 class AcceptTransferForm(forms.SelfHandlingForm):
@@ -560,7 +568,9 @@ class AcceptTransferForm(forms.SelfHandlingForm):
             messages.success(request, msg)
             return transfer
         except Exception:
-            exceptions.handle(request, _('Unable to accept volume transfer.'))
+            redirect = reverse("horizon:project:volumes:index")
+            exceptions.handle(request, _('Unable to accept volume transfer.'),
+                              redirect=redirect)
 
 
 class ShowTransferForm(forms.SelfHandlingForm):
@@ -672,12 +682,11 @@ class UploadToImageForm(forms.SelfHandlingForm):
 
             return True
         except Exception:
+            redirect = reverse("horizon:project:volumes:index")
             error_message = _(
                 'Unable to upload volume to image for volume: "%s"') \
                 % data['name']
-            exceptions.handle(request, error_message)
-
-            return False
+            exceptions.handle(request, error_message, redirect=redirect)
 
 
 class ExtendForm(forms.SelfHandlingForm):
@@ -786,9 +795,8 @@ class RetypeForm(forms.SelfHandlingForm):
 
             return True
         except Exception:
+            redirect = reverse("horizon:project:volumes:index")
             error_message = _(
                 'Unable to change the volume type for volume: "%s"') \
                 % data['name']
-            exceptions.handle(request, error_message)
-
-            return False
+            exceptions.handle(request, error_message, redirect=redirect)

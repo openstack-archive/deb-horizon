@@ -14,21 +14,30 @@
 import json
 import logging
 
+from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
 from horizon import forms
+from horizon.forms import fields
 from horizon import workflows
 
+from openstack_dashboard.dashboards.project.data_processing \
+    .utils import helpers
 from openstack_dashboard.api import sahara as saharaclient
 
 
 LOG = logging.getLogger(__name__)
 
+JOB_BINARY_CREATE_URL = ("horizon:project:data_processing.job_binaries"
+                         ":create-job-binary")
+
 
 class AdditionalLibsAction(workflows.Action):
-    lib_binaries = forms.ChoiceField(label=_("Choose libraries"),
-                                     required=False)
+    lib_binaries = forms.DynamicChoiceField(
+        label=_("Choose libraries"),
+        required=False,
+        add_item_link=JOB_BINARY_CREATE_URL)
 
     lib_ids = forms.CharField(
         required=False,
@@ -58,12 +67,13 @@ class GeneralConfigAction(workflows.Action):
                                      'data-slug': 'jobtype'
                                  }))
 
-    main_binary = forms.ChoiceField(
+    main_binary = forms.DynamicChoiceField(
         label=_("Choose a main binary"),
         required=False,
         help_text=_("Choose the binary which "
                     "should be used in this Job."),
-        widget=forms.Select(
+        add_item_link=JOB_BINARY_CREATE_URL,
+        widget=fields.DynamicSelectWidget(
             attrs={
                 'class': 'switched',
                 'data-switch-on': 'jobtype',
@@ -76,6 +86,14 @@ class GeneralConfigAction(workflows.Action):
     job_description = forms.CharField(label=_("Description"),
                                       required=False,
                                       widget=forms.Textarea(attrs={'rows': 4}))
+
+    def __init__(self, request, context, *args, **kwargs):
+        super(GeneralConfigAction,
+              self).__init__(request, context, *args, **kwargs)
+        resolver_match = urlresolvers.resolve(request.path)
+        if "guide_job_type" in resolver_match.kwargs:
+            self.fields["job_type"].initial = (
+                resolver_match.kwargs["guide_job_type"].lower())
 
     def populate_job_type_choices(self, request, context):
         choices = [("pig", _("Pig")), ("hive", _("Hive")),
@@ -103,7 +121,7 @@ class GeneralConfigAction(workflows.Action):
         return cleaned_data
 
     class Meta(object):
-        name = _("Create Job")
+        name = _("Create Job Template")
         help_text_template = (
             "project/data_processing.jobs/_create_job_help.html")
 
@@ -111,19 +129,11 @@ class GeneralConfigAction(workflows.Action):
 class GeneralConfig(workflows.Step):
     action_class = GeneralConfigAction
     contributes = ("job_name", "job_type", "job_description", "main_binary")
-    # Map needed because switchable fields need lower case
-    # and our server is expecting upper case
-    JOB_TYPE_MAP = {"pig": "Pig",
-                    "hive": "Hive",
-                    "spark": "Spark",
-                    "mapreduce": "MapReduce",
-                    "mapreduce.streaming": "MapReduce.Streaming",
-                    "java": "Java"}
 
     def contribute(self, data, context):
         for k, v in data.items():
             if k == "job_type":
-                context[k] = self.JOB_TYPE_MAP[v]
+                context[k] = helpers.JOB_TYPE_MAP[v][1]
             else:
                 context[k] = v
         return context
@@ -142,10 +152,10 @@ class ConfigureLibs(workflows.Step):
 
 class CreateJob(workflows.Workflow):
     slug = "create_job"
-    name = _("Create Job")
+    name = _("Create Job Template")
     finalize_button_name = _("Create")
     success_message = _("Job created")
-    failure_message = _("Could not create job")
+    failure_message = _("Could not create job template")
     success_url = "horizon:project:data_processing.jobs:index"
     default_steps = (GeneralConfig, ConfigureLibs)
 
@@ -161,13 +171,21 @@ class CreateJob(workflows.Workflow):
             main_locations.append(context["main_binary"])
 
         try:
-            saharaclient.job_create(
+            job = saharaclient.job_create(
                 request,
                 context["job_name"],
                 context["job_type"],
                 main_locations,
                 lib_locations,
                 context["job_description"])
+
+            hlps = helpers.Helpers(request)
+            if hlps.is_from_guide():
+                request.session["guide_job_id"] = job.id
+                request.session["guide_job_type"] = context["job_type"]
+                request.session["guide_job_name"] = context["job_name"]
+                self.success_url = (
+                    "horizon:project:data_processing.wizard:jobex_guide")
             return True
         except Exception:
             exceptions.handle(request)

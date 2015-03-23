@@ -36,6 +36,7 @@ STATUS_DICT = dict(project_tables.STATUS_DISPLAY_CHOICES)
 class DetailView(tabs.TabView):
     tab_group_class = project_tabs.PortDetailTabs
     template_name = 'project/networks/ports/detail.html'
+    page_title = _("Port Details")
 
     @memoized.memoized_method
     def get_data(self):
@@ -80,9 +81,14 @@ class DetailView(tabs.TabView):
 
 class UpdateView(forms.ModalFormView):
     form_class = project_forms.UpdatePort
+    form_id = "update_port_form"
+    modal_header = _("Edit Port")
     template_name = 'project/networks/ports/update.html'
     context_object_name = 'port'
+    submit_label = _("Save Changes")
+    submit_url = "horizon:project:networks:editport"
     success_url = 'horizon:project:networks:detail'
+    page_title = _("Update Port")
 
     def get_success_url(self):
         return reverse(self.success_url,
@@ -94,8 +100,7 @@ class UpdateView(forms.ModalFormView):
         try:
             return api.neutron.port_get(self.request, port_id)
         except Exception:
-            redirect = reverse("horizon:project:networks:detail",
-                               args=(self.kwargs['network_id'],))
+            redirect = self.get_success_url()
             msg = _('Unable to retrieve port details')
             exceptions.handle(self.request, msg, redirect=redirect)
 
@@ -104,6 +109,8 @@ class UpdateView(forms.ModalFormView):
         port = self._get_object()
         context['port_id'] = port['id']
         context['network_id'] = port['network_id']
+        args = (self.kwargs['network_id'], self.kwargs['port_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):
@@ -112,9 +119,9 @@ class UpdateView(forms.ModalFormView):
                    'network_id': port['network_id'],
                    'tenant_id': port['tenant_id'],
                    'name': port['name'],
-                   'admin_state': port['admin_state_up'],
-                   'device_id': port['device_id'],
-                   'device_owner': port['device_owner']}
+                   'admin_state': port['admin_state_up']}
+        if port['binding__vnic_type']:
+            initial['binding__vnic_type'] = port['binding__vnic_type']
         try:
             initial['mac_state'] = port['mac_learning_enabled']
         except Exception:

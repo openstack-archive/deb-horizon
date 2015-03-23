@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Bineet kumar gaur <bineetkumar@live.in>, 2015
 # Chandan kumar <chandankumar.093047@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 15:13-0600\n"
-"PO-Revision-Date: 2015-02-02 19:18+0000\n"
+"POT-Creation-Date: 2015-03-16 22:31-0500\n"
+"PO-Revision-Date: 2015-03-17 03:17+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Hindi (http://www.transifex.com/projects/p/horizon/language/hi/)\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base.py:483 templates/horizon/common/_modal_form_update_metadata.html:38
+#: base.py:475
 msgid "Other"
 msgstr "अन्य"
 
@@ -36,12 +37,12 @@ msgstr "आप %sका उपयोग करने के लिए अधि�
 msgid "A %(resource)s with the name \"%(name)s\" already exists."
 msgstr "एक %(resource)s , \"%(name)s\" से पहले से ही मौजूद है "
 
-#: exceptions.py:230
+#: exceptions.py:235
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "अनधिकृत: %s"
 
-#: exceptions.py:233
+#: exceptions.py:238
 msgid "Unauthorized. Please try logging in again."
 msgstr "अनधिकृत. फिर लॉग इन करने का प्रयास करें."
 
@@ -79,7 +80,7 @@ msgid "Submit"
 msgstr "जमा करें"
 
 #: forms/views.py:133
-#: templates/horizon/common/_modal_form_update_metadata.html:235
+#: templates/horizon/common/_modal_form_update_metadata.html:25
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "रद्द करें"
@@ -87,8 +88,6 @@ msgstr "रद्द करें"
 #: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:21
 #: templates/horizon/common/_data_table_table_actions.html:33
-#: templates/horizon/common/_modal_form_update_metadata.html:28
-#: templates/horizon/common/_modal_form_update_metadata.html:97
 #: templates/horizon/common/_workflow_step_update_members.html:14
 #: templates/horizon/common/_workflow_step_update_members.html:23
 msgid "Filter"
@@ -96,7 +95,7 @@ msgstr "छानना शुरू..."
 
 #: tables/actions.py:645
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "यह क्रिया पूर्ववत नहीं किया जा सकता।"
 
 #: tables/actions.py:767
 #, python-format
@@ -250,7 +249,7 @@ msgstr "अधिक क्रिया"
 #: templates/horizon/common/_domain_page_header.html:6
 #, python-format
 msgid "%(context_name)s:"
-msgstr ""
+msgstr "%(context_name)s:"
 
 #: templates/horizon/common/_formset_table.html:35
 msgid "Add a row"
@@ -259,7 +258,7 @@ msgstr "पंक्ति जोड़ें"
 #: templates/horizon/common/_formset_table_row.html:15
 #, python-format
 msgid "%(name)s: %(error)s"
-msgstr ""
+msgstr "%(name)s: %(error)s"
 
 #: templates/horizon/common/_limit_summary.html:4
 msgid "Limit Summary"
@@ -294,7 +293,7 @@ msgstr " उत्प्लावित IP"
 #: templates/horizon/common/_limit_summary.html:29
 #, python-format
 msgid "Allocated <span> %(used)s </span> of <span> %(available)s </span>"
-msgstr ""
+msgstr "<span> %(available)s </span> का <span> %(used)s </span> आवंटित"
 
 #: templates/horizon/common/_limit_summary.html:35
 msgid "Security Groups"
@@ -308,44 +307,7 @@ msgstr "वॉल्यूम"
 msgid "Volume Storage"
 msgstr "खंड भंडारण"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:12
-msgid ""
-"\n"
-"        You can specify metadata by adding items from the left column to\n"
-"        the right column. You may select the metadata added to glance\n"
-"        dictionary or you can use the \"Other\" option using a key of\n"
-"        your choice.\n"
-"      "
-msgstr "\n        आप दाएँ स्तंभ से बाएँ स्तंभ तक आइटम जोड़कर मेटाडाटा निर्दिष्ट कर सकते हैं.\n        आप ग्लांस शब्दकोश में जोड़ा मेटाडाटा को चुन सकते हैं या आप अपनी\n        पसंद का एक कुंजी का उपयोग करने के लिए \"अन्य\" विकल्प का उपयोग\n       कर सकते हैं.\n     "
-
-#: templates/horizon/common/_modal_form_update_metadata.html:26
-msgid "Available Metadata"
-msgstr "उपलब्ध मेटाडाटा"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:56
-msgid "Duplicate keys are not allowed"
-msgstr "एक जैसे कुंजी की अनुमति नहीं है"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:84
-#: templates/horizon/common/_modal_form_update_metadata.html:196
-msgid "No available metadata"
-msgstr ""
-
-#: templates/horizon/common/_modal_form_update_metadata.html:95
-msgid "Existing Metadata"
-msgstr "मौजूदा मेटाडाटा "
-
-#: templates/horizon/common/_modal_form_update_metadata.html:212
-msgid ""
-"\n"
-"          You can specify resource metadata by moving items from the left\n"
-"          column to the right column. In the left columns there are metadata\n"
-"          definitions from the Glance Metadata Catalog. Use the \"Other\" option\n"
-"          to add metadata with the key of your choice.\n"
-"        "
-msgstr "\n        आप दाएँ स्तंभ से बाएँ स्तंभ तक आइटम जोड़कर स्रोत मेटाडाटा निर्दिष्ट कर सकते हैं.\n        आप ग्लांस शब्दकोश में जोड़ा मेटाडाटा को चुन सकते हैं या आप अपनी\n        पसंद का एक कुंजी का उपयोग करने के लिए \"अन्य\" विकल्प का उपयोग\n       कर सकते हैं.\n     "
-
-#: templates/horizon/common/_modal_form_update_metadata.html:234
+#: templates/horizon/common/_modal_form_update_metadata.html:24
 #: workflows/base.py:594
 msgid "Save"
 msgstr "सहेजें"
@@ -370,7 +332,7 @@ msgstr "प्रयोग सार"
 
 #: templates/horizon/common/_usage_summary.html:7
 msgid "Select a period of time to query its usage:"
-msgstr ""
+msgstr "इसके उपयोग की पूछताछ करने के लिए समय की अवधि का चयन करें:"
 
 #: templates/horizon/common/_usage_summary.html:9
 #, python-format
@@ -392,23 +354,23 @@ msgstr "तिथि को  YYYY-mm-dd प्रारूप में हो�
 
 #: templates/horizon/common/_usage_summary.html:20
 msgid "Active Instances:"
-msgstr ""
+msgstr "सक्रिय इंस्टेंसेस:"
 
 #: templates/horizon/common/_usage_summary.html:21
 msgid "Active RAM:"
-msgstr ""
+msgstr "सक्रिय रैम"
 
 #: templates/horizon/common/_usage_summary.html:22
 msgid "This Period's VCPU-Hours:"
-msgstr ""
+msgstr "इस अवधि के VCPU-घंटे"
 
 #: templates/horizon/common/_usage_summary.html:23
 msgid "This Period's GB-Hours:"
-msgstr ""
+msgstr "इस अवधि के गीगाबाइट-घंटे"
 
 #: templates/horizon/common/_usage_summary.html:24
 msgid "This Period's RAM-Hours:"
-msgstr ""
+msgstr "इस अवधि के रैम-घंटे "
 
 #: templates/horizon/common/_workflow.html:40
 msgid "Back"
@@ -422,27 +384,27 @@ msgstr "अगला"
 msgid "Horizon"
 msgstr "होरिजन"
 
-#: templatetags/horizon.py:133 templatetags/horizon.py:144
+#: templatetags/horizon.py:137 templatetags/horizon.py:148
 msgid "No Limit"
 msgstr "कोई सीमा नहीं"
 
-#: templatetags/horizon.py:136 templatetags/horizon.py:138
+#: templatetags/horizon.py:140 templatetags/horizon.py:142
 msgid "Available"
 msgstr "उपलब्ध"
 
-#: templatetags/sizeformat.py:49 templatetags/sizeformat.py:54
+#: templatetags/sizeformat.py:51 templatetags/sizeformat.py:56
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
 msgstr[0] "%(size)d बाइट"
 msgstr[1] "%(size)d बाइट"
 
-#: templatetags/sizeformat.py:57
+#: templatetags/sizeformat.py:59
 #, python-format
 msgid "%s KB"
 msgstr "%s केबी"
 
-#: templatetags/sizeformat.py:60
+#: templatetags/sizeformat.py:61
 #, python-format
 msgid "%s MB"
 msgstr "%s MB"
@@ -452,19 +414,19 @@ msgstr "%s MB"
 msgid "%s GB"
 msgstr "%s GB"
 
-#: templatetags/sizeformat.py:66
+#: templatetags/sizeformat.py:65
 #, python-format
 msgid "%s TB"
 msgstr "%s TB"
 
-#: templatetags/sizeformat.py:68
+#: templatetags/sizeformat.py:66
 #, python-format
 msgid "%s PB"
 msgstr "%s PB"
 
-#: templatetags/sizeformat.py:77
+#: templatetags/sizeformat.py:74
 msgid "0 Bytes"
-msgstr ""
+msgstr "0 बाइट"
 
 #. Translators: test code, don't really have to translate
 #: test/test_dashboards/dogs/puppies/tables.py:31
@@ -480,25 +442,33 @@ msgid_plural "Sold Puppies"
 msgstr[0] "बेचा हुआ Puppy"
 msgstr[1] "बेचा हुआ Puppy"
 
+#: test/tests/views.py:59
+msgid "Fake"
+msgstr "जाली"
+
 #: utils/filters.py:49
 msgid "Never"
 msgstr "कभी नहीं"
 
-#: utils/validators.py:23 utils/validators.py:47
+#: utils/validators.py:26 utils/validators.py:50
 msgid "Not a valid port number"
 msgstr "वैध पोर्ट संख्या नहीं है"
 
-#: utils/validators.py:28
+#: utils/validators.py:31
 msgid "Not a valid IP protocol number"
 msgstr "वैध IP प्रोटोकॉल संख्या नहीं है"
 
-#: utils/validators.py:42
+#: utils/validators.py:45
 msgid "One colon allowed in port range"
 msgstr "पोर्ट श्रेणी में एक कॉलन की अनुमति "
 
-#: utils/validators.py:49
+#: utils/validators.py:52
 msgid "Port number must be integer"
 msgstr "पोर्ट संख्या में एक पूर्णांक होना चाहिये"
+
+#: utils/validators.py:59
+msgid "The string may only contain ASCII printable characters."
+msgstr ""
 
 #: workflows/base.py:71
 msgid "Processing..."

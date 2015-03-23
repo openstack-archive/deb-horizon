@@ -34,6 +34,7 @@ class MigrateInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "migrate"
     classes = ("btn-migrate", "btn-danger")
     policy_rules = (("compute", "compute_extension:admin_actions:migrate"),)
+    help_text = _("Migrating instances may cause some unrecoverable results.")
 
     @staticmethod
     def action_present(count):
@@ -90,7 +91,7 @@ class AdminInstanceFilterAction(tables.FilterAction):
     # session property used for persisting the filter.
     name = "filter_admin_instances"
     filter_type = "server"
-    filter_choices = (('project', _("Project"), True),
+    filter_choices = (('project', _("Project ="), True),
                       ('host', _("Host ="), True),
                       ('name', _("Name"), True),
                       ('ip', _("IPv4 Address ="), True),
@@ -125,7 +126,7 @@ class AdminInstancesTable(tables.DataTable):
                          verbose_name=_("Host"),
                          classes=('nowrap-col',))
     name = tables.Column("name",
-                         link=("horizon:admin:instances:detail"),
+                         link="horizon:admin:instances:detail",
                          verbose_name=_("Name"))
     image_name = tables.Column("image_name",
                                verbose_name=_("Image Name"))
@@ -134,7 +135,6 @@ class AdminInstancesTable(tables.DataTable):
                        attrs={'data-type': "ip"})
     size = tables.Column(project_tables.get_size,
                          verbose_name=_("Size"),
-                         classes=('nowrap-col',),
                          attrs={'data-type': 'size'})
     status = tables.Column(
         "status",

@@ -39,6 +39,7 @@ from openstack_dashboard.dashboards.admin.networks \
 class IndexView(tables.DataTableView):
     table_class = networks_tables.NetworksTable
     template_name = 'admin/networks/index.html'
+    page_title = _("Networks")
 
     @memoized.memoized_method
     def _get_tenant_list(self):
@@ -46,7 +47,8 @@ class IndexView(tables.DataTableView):
             tenants, has_more = api.keystone.tenant_list(self.request)
         except Exception:
             tenants = []
-            msg = _('Unable to retrieve instance project information.')
+            msg = _("Unable to retrieve information about the "
+                    "networks' projects.")
             exceptions.handle(self.request, msg)
 
         tenant_dict = SortedDict([(t.id, t) for t in tenants])
@@ -94,6 +96,7 @@ class CreateView(forms.ModalFormView):
     form_class = project_forms.CreateNetwork
     template_name = 'admin/networks/create.html'
     success_url = reverse_lazy('horizon:admin:networks:index')
+    page_title = _("Create Network")
 
 
 class DetailView(tables.MultiTableView):
@@ -101,6 +104,7 @@ class DetailView(tables.MultiTableView):
                      ports_tables.PortsTable,
                      agents_tables.DHCPAgentsTable)
     template_name = 'project/networks/detail.html'
+    page_title = _("Network Details: {{ network.name }}")
 
     def get_subnets_data(self):
         try:
@@ -175,6 +179,7 @@ class UpdateView(user_views.UpdateView):
     form_class = project_forms.UpdateNetwork
     template_name = 'admin/networks/update.html'
     success_url = reverse_lazy('horizon:admin:networks:index')
+    submit_url = "horizon:admin:networks:update"
 
     def get_initial(self):
         network = self._get_object()

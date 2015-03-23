@@ -32,8 +32,13 @@ from openstack_dashboard.dashboards.admin.volumes.volumes \
 
 class CreateVolumeTypeView(forms.ModalFormView):
     form_class = volumes_forms.CreateVolumeType
+    modal_header = _("Create Volume Type")
+    modal_id = "create_volume_type_modal"
     template_name = 'admin/volumes/volume_types/create_volume_type.html'
+    submit_label = _("Create Volume Type")
+    submit_url = reverse_lazy("horizon:admin:volumes:volume_types:create_type")
     success_url = 'horizon:admin:volumes:volume_types_tab'
+    page_title = _("Create a Volume Type")
 
     def get_success_url(self):
         return reverse(self.success_url)
@@ -42,6 +47,7 @@ class CreateVolumeTypeView(forms.ModalFormView):
 class VolumeTypeEncryptionDetailView(generic.TemplateView):
     template_name = ("admin/volumes/volume_types"
                      "/volume_encryption_type_detail.html")
+    page_title = _("Volume Type Encryption Details")
 
     def get_context_data(self, **kwargs):
         context = super(VolumeTypeEncryptionDetailView, self).\
@@ -73,9 +79,15 @@ class VolumeTypeEncryptionDetailView(generic.TemplateView):
 
 class CreateVolumeTypeEncryptionView(forms.ModalFormView):
     form_class = volume_types_forms.CreateVolumeTypeEncryption
+    form_id = "create_volume_form"
+    modal_header = _("Create Volume Type Encryption")
+    modal_id = "create_volume_type_modal"
     template_name = ("admin/volumes/volume_types/"
                      "create_volume_type_encryption.html")
+    submit_label = _("Create Volume Type Encryption")
+    submit_url = "horizon:admin:volumes:volume_types:create_type_encryption"
     success_url = reverse_lazy('horizon:admin:volumes:index')
+    page_title = _("Create an Encrypted Volume Type")
 
     @memoized.memoized_method
     def get_name(self):
@@ -94,6 +106,8 @@ class CreateVolumeTypeEncryptionView(forms.ModalFormView):
         context = super(CreateVolumeTypeEncryptionView, self).\
             get_context_data(**kwargs)
         context['volume_type_id'] = self.kwargs['volume_type_id']
+        args = (self.kwargs['volume_type_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):
@@ -104,8 +118,14 @@ class CreateVolumeTypeEncryptionView(forms.ModalFormView):
 
 class CreateQosSpecView(forms.ModalFormView):
     form_class = volumes_forms.CreateQosSpec
+    modal_header = _("Create QoS Spec")
+    modal_id = "create_volume_type_modal"
     template_name = 'admin/volumes/volume_types/create_qos_spec.html'
     success_url = 'horizon:admin:volumes:volume_types_tab'
+    page_title = _("Create a QoS Spec")
+    submit_label = _("Create")
+    submit_url = reverse_lazy(
+        "horizon:admin:volumes:volume_types:create_qos_spec")
 
     def get_success_url(self):
         return reverse(self.success_url)
@@ -113,8 +133,13 @@ class CreateQosSpecView(forms.ModalFormView):
 
 class EditQosSpecConsumerView(forms.ModalFormView):
     form_class = volume_types_forms.EditQosSpecConsumer
+    modal_header = _("Edit Consumer of QoS Spec")
+    modal_id = "edit_qos_spec_modal"
     template_name = 'admin/volumes/volume_types/edit_qos_spec_consumer.html'
+    submit_label = _("Modify Consumer")
+    submit_url = "horizon:admin:volumes:volume_types:edit_qos_spec_consumer"
     success_url = 'horizon:admin:volumes:volume_types_tab'
+    page_title = _("Edit QoS Spec Consumer")
 
     def get_success_url(self):
         return reverse(self.success_url)
@@ -123,6 +148,8 @@ class EditQosSpecConsumerView(forms.ModalFormView):
         context = super(EditQosSpecConsumerView, self).\
             get_context_data(**kwargs)
         context['qos_spec_id'] = self.kwargs["qos_spec_id"]
+        args = (self.kwargs['qos_spec_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method
@@ -145,8 +172,14 @@ class EditQosSpecConsumerView(forms.ModalFormView):
 
 class ManageQosSpecAssociationView(forms.ModalFormView):
     form_class = volume_types_forms.ManageQosSpecAssociation
+    modal_header = _("Associate QoS Spec with Volume Type")
+    modal_id = "associate_qos_spec_modal"
     template_name = 'admin/volumes/volume_types/associate_qos_spec.html'
+    submit_label = _("Associate")
+    submit_url = "horizon:admin:volumes:volume_types:"\
+        "manage_qos_spec_association"
     success_url = 'horizon:admin:volumes:volume_types_tab'
+    page_title = _("Associate QoS Spec with Volume Type")
 
     def get_success_url(self):
         return reverse(self.success_url)
@@ -155,6 +188,8 @@ class ManageQosSpecAssociationView(forms.ModalFormView):
         context = super(ManageQosSpecAssociationView, self).\
             get_context_data(**kwargs)
         context['type_id'] = self.kwargs["type_id"]
+        args = (self.kwargs['type_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method

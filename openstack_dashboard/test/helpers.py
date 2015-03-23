@@ -19,7 +19,9 @@
 import collections
 import copy
 from functools import wraps  # noqa
+import json
 import os
+
 
 from ceilometerclient.v2 import client as ceilometer_client
 from cinderclient import client as cinder_client
@@ -266,6 +268,32 @@ class TestCase(horizon_helpers.TestCase):
                              (key, field_errors) in errors.items()])
         else:
             assert len(errors) > 0, "No errors were found on the form"
+
+    def assertStatusCode(self, response, expected_code):
+        """Validates an expected status code.
+
+        Matches camel case of other assert functions
+        """
+        if response.status_code == expected_code:
+            return
+        self.fail('status code %r != %r: %s' % (response.status_code,
+                                                expected_code,
+                                                response.content))
+
+    def assertItemsCollectionEqual(self, response, items_list):
+        self.assertEqual(response.content,
+                         '{"items": ' + json.dumps(items_list) + "}")
+
+    @staticmethod
+    def mock_rest_request(**args):
+        mock_args = {
+            'user.is_authenticated.return_value': True,
+            'is_ajax.return_value': True,
+            'policy.check.return_value': True,
+            'body': ''
+        }
+        mock_args.update(args)
+        return mock.Mock(**mock_args)
 
 
 class BaseAdminViewTests(TestCase):

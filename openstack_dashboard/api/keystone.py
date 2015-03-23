@@ -255,7 +255,7 @@ def tenant_delete(request, project):
 
 
 def tenant_list(request, paginate=False, marker=None, domain=None, user=None,
-                admin=True):
+                admin=True, filters=None):
     manager = VERSIONS.get_project_manager(request, admin=admin)
     page_size = utils.get_page_size(request)
 
@@ -270,7 +270,13 @@ def tenant_list(request, paginate=False, marker=None, domain=None, user=None,
             tenants.pop(-1)
             has_more_data = True
     else:
-        tenants = manager.list(domain=domain, user=user)
+        kwargs = {
+            "domain": domain,
+            "user": user
+        }
+        if filters is not None:
+            kwargs.update(filters)
+        tenants = manager.list(**kwargs)
     return (tenants, has_more_data)
 
 
@@ -284,7 +290,7 @@ def tenant_update(request, project, name=None, description=None,
                               enabled=enabled, domain=domain, **kwargs)
 
 
-def user_list(request, project=None, domain=None, group=None):
+def user_list(request, project=None, domain=None, group=None, filters=None):
     if VERSIONS.active < 3:
         kwargs = {"tenant_id": project}
     else:
@@ -293,6 +299,8 @@ def user_list(request, project=None, domain=None, group=None):
             "domain": domain,
             "group": group
         }
+        if filters is not None:
+            kwargs.update(filters)
     users = keystoneclient(request, admin=True).users.list(**kwargs)
     return [VERSIONS.upgrade_v2_user(user) for user in users]
 
@@ -329,9 +337,8 @@ def user_update(request, user, **data):
         raise keystone_exceptions.ClientException(
             405, _("Identity service does not allow editing user data."))
 
-    # The v2 API updates user model, password and default project separately
+    # The v2 API updates user model and default project separately
     if VERSIONS.active < 3:
-        password = data.pop('password')
         project = data.pop('project')
 
         # Update user details
@@ -358,38 +365,15 @@ def user_update(request, user, **data):
                                'that project.')
                              % data.get('name', None))
 
-        # If present, update password
-        # FIXME(gabriel): password change should be its own form + view
-        if password:
-            try:
-                user_update_password(request, user, password)
-                if user.id == request.user.id:
-                    return utils.logout_with_message(
-                        request,
-                        _("Password changed. Please log in again to "
-                          "continue."),
-                        redirect=False
-                    )
-            except Exception:
-                error = exceptions.handle(request, ignore=True)
-
         if error is not None:
             raise error
 
     # v3 API is so much simpler...
     else:
-        if not data['password']:
-            data.pop('password')
         try:
             user = manager.update(user, **data)
         except keystone_exceptions.Conflict:
             raise exceptions.Conflict()
-        if data.get('password') and user.id == request.user.id:
-            return utils.logout_with_message(
-                request,
-                _("Password changed. Please log in again to continue."),
-                redirect=False
-            )
 
 
 def user_update_enabled(request, user, enabled):
@@ -401,11 +385,37 @@ def user_update_enabled(request, user, enabled):
 
 
 def user_update_password(request, user, password, admin=True):
+
+    if not keystone_can_edit_user():
+        raise keystone_exceptions.ClientException(
+            405, _("Identity service does not allow editing user password."))
+
     manager = keystoneclient(request, admin=admin).users
     if VERSIONS.active < 3:
         return manager.update_password(user, password)
     else:
         return manager.update(user, password=password)
+
+
+def user_verify_admin_password(request, admin_password):
+    # attempt to create a new client instance with admin password to
+    # verify if it's correct.
+    client = keystone_client_v2 if VERSIONS.active < 3 else keystone_client_v3
+    try:
+        endpoint = _get_endpoint_url(request, 'internalURL')
+        insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+        cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
+        client.Client(
+            username=request.user.username,
+            password=admin_password,
+            insecure=insecure,
+            cacert=cacert,
+            auth_url=endpoint
+        )
+        return True
+    except Exception:
+        exceptions.handle(request, ignore=True)
+        return False
 
 
 def user_update_own_password(request, origpassword, password):

@@ -20,6 +20,8 @@ from horizon import forms
 from horizon import workflows
 
 from openstack_dashboard.api import sahara as saharaclient
+from openstack_dashboard.dashboards.project.data_processing \
+    .utils import helpers
 
 LOG = logging.getLogger(__name__)
 
@@ -29,16 +31,30 @@ class GeneralConfigAction(workflows.Action):
 
     data_source_type = forms.ChoiceField(
         label=_("Data Source Type"),
-        choices=[("swift", "Swift"), ("hdfs", "HDFS")],
-        widget=forms.Select(attrs={"class": "data_source_type_choice"}))
+        choices=[("swift", "Swift"), ("hdfs", "HDFS"), ("maprfs", "MapR FS")],
+        widget=forms.Select(attrs={
+            "class": "switchable",
+            "data-slug": "ds_type"
+        }))
 
     data_source_url = forms.CharField(label=_("URL"))
 
-    data_source_credential_user = forms.CharField(label=_("Source username"),
-                                                  required=False)
+    data_source_credential_user = forms.CharField(
+        label=_("Source username"),
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "switched",
+            "data-switch-on": "ds_type",
+            "data-ds_type-swift": _("Source username")
+        }))
 
     data_source_credential_pass = forms.CharField(
-        widget=forms.PasswordInput(attrs={'autocomplete': 'off'}),
+        widget=forms.PasswordInput(attrs={
+            'class': 'switched',
+            'data-switch-on': 'ds_type',
+            'data-ds_type-swift': _("Source password"),
+            'autocomplete': 'off'
+        }),
         label=_("Source password"),
         required=False)
 
@@ -92,6 +108,13 @@ class CreateDataSource(workflows.Workflow):
                 context["source_url"],
                 context.get("general_data_source_credential_user", None),
                 context.get("general_data_source_credential_pass", None))
+
+            hlps = helpers.Helpers(request)
+            if hlps.is_from_guide():
+                request.session["guide_datasource_id"] = self.object.id
+                request.session["guide_datasource_name"] = self.object.name
+                self.success_url = (
+                    "horizon:project:data_processing.wizard:jobex_guide")
             return True
         except Exception:
             exceptions.handle(request)

@@ -25,6 +25,7 @@ from django import http
 from django import shortcuts
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
+from django.views import generic
 
 from horizon import exceptions
 from horizon import forms
@@ -51,6 +52,7 @@ from openstack_dashboard.dashboards.project.instances \
 class IndexView(tables.DataTableView):
     table_class = project_tables.InstancesTable
     template_name = 'project/instances/index.html'
+    page_title = _("Instances")
 
     def has_more_data(self, table):
         return self._more
@@ -161,7 +163,7 @@ def console(request, instance_id):
 def vnc(request, instance_id):
     try:
         instance = api.nova.server_get(request, instance_id)
-        console_url = project_console.get_console(request, 'VNC', instance)
+        console_url = project_console.get_console(request, 'VNC', instance)[1]
         return shortcuts.redirect(console_url)
     except Exception:
         redirect = reverse("horizon:project:instances:index")
@@ -172,7 +174,8 @@ def vnc(request, instance_id):
 def spice(request, instance_id):
     try:
         instance = api.nova.server_get(request, instance_id)
-        console_url = project_console.get_console(request, 'SPICE', instance)
+        console_url = project_console.get_console(request, 'SPICE',
+                                                  instance)[1]
         return shortcuts.redirect(console_url)
     except Exception:
         redirect = reverse("horizon:project:instances:index")
@@ -183,12 +186,41 @@ def spice(request, instance_id):
 def rdp(request, instance_id):
     try:
         instance = api.nova.server_get(request, instance_id)
-        console_url = project_console.get_console(request, 'RDP', instance)
+        console_url = project_console.get_console(request, 'RDP', instance)[1]
         return shortcuts.redirect(console_url)
     except Exception:
         redirect = reverse("horizon:project:instances:index")
         msg = _('Unable to get RDP console for instance "%s".') % instance_id
         exceptions.handle(request, msg, redirect=redirect)
+
+
+class SerialConsoleView(generic.TemplateView):
+    template_name = 'project/instances/serial_console.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SerialConsoleView, self).get_context_data(**kwargs)
+        context['instance_id'] = self.kwargs['instance_id']
+        instance = None
+        try:
+            instance = api.nova.server_get(self.request,
+                                           self.kwargs['instance_id'])
+        except Exception:
+            context["error_message"] = _(
+                "Cannot find instance %s.") % self.kwargs['instance_id']
+            # name is unknown, so leave it blank for the window title
+            # in full-screen mode, so only the instance id is shown.
+            context['instance_name'] = ''
+            return context
+        context['instance_name'] = instance.name
+        try:
+            console_url = project_console.get_console(self.request,
+                                                      "SERIAL", instance)[1]
+            context["console_url"] = console_url
+        except exceptions.NotAvailable:
+            context["error_message"] = _(
+                "Cannot get console for instance %s.") % self.kwargs[
+                'instance_id']
+        return context
 
 
 class UpdateView(workflows.WorkflowView):
@@ -221,6 +253,7 @@ class RebuildView(forms.ModalFormView):
     form_class = project_forms.RebuildInstanceForm
     template_name = 'project/instances/rebuild.html'
     success_url = reverse_lazy('horizon:project:instances:index')
+    page_title = _("Rebuild Instance")
 
     def get_context_data(self, **kwargs):
         context = super(RebuildView, self).get_context_data(**kwargs)
@@ -236,6 +269,7 @@ class DecryptPasswordView(forms.ModalFormView):
     form_class = project_forms.DecryptPasswordInstanceForm
     template_name = 'project/instances/decryptpassword.html'
     success_url = reverse_lazy('horizon:project:instances:index')
+    page_title = _("Retrieve Instance Password")
 
     def get_context_data(self, **kwargs):
         context = super(DecryptPasswordView, self).get_context_data(**kwargs)
@@ -252,6 +286,7 @@ class DetailView(tabs.TabView):
     tab_group_class = project_tabs.InstanceDetailTabs
     template_name = 'project/instances/detail.html'
     redirect_url = 'horizon:project:instances:index'
+    page_title = _("Instance Details: {{ instance.name }}")
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
@@ -260,9 +295,6 @@ class DetailView(tabs.TabView):
         table = project_tables.InstancesTable(self.request)
         context["url"] = reverse(self.redirect_url)
         context["actions"] = table.render_row_actions(instance)
-        context["page_title"] = _("Instance Details: "
-                                  "%(instance_name)s") % {'instance_name':
-                                                          instance.name}
         return context
 
     @memoized.memoized_method

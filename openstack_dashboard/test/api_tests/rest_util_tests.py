@@ -11,35 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import mock
-import unittest2
-
 from openstack_dashboard.api.rest import utils
+from openstack_dashboard.test import helpers as test
 
 
-class RestUtilsTestCase(unittest2.TestCase):
-    def assertStatusCode(self, response, expected_code):
-        if response.status_code == expected_code:
-            return
-        self.fail('status code %r != %r: %s' % (response.status_code,
-                                                expected_code,
-                                                response.content))
-
-    def _construct_request(self, **args):
-        mock_args = {
-            'user.is_authenticated.return_value': True,
-            'is_ajax.return_value': True,
-            'policy.check.return_value': True,
-            'body': ''
-        }
-        mock_args.update(args)
-        return mock.Mock(**mock_args)
-
+class RestUtilsTestCase(test.TestCase):
     def test_api_success(self):
         @utils.ajax()
         def f(self, request):
             return 'ok'
-        request = self._construct_request()
+        request = self.mock_rest_request()
         response = f(None, request)
         request.is_authenticated.assert_called_once()
         self.assertStatusCode(response, 200)
@@ -49,7 +30,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax(authenticated=False)
         def f(self, request):
             return 'ok'
-        request = self._construct_request()
+        request = self.mock_rest_request()
         response = f(None, request)
         request.is_authenticated.assert_not_called_once()
         self.assertStatusCode(response, 200)
@@ -59,7 +40,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax()
         def f(self, request):
             return 'ok'
-        request = self._construct_request(**{
+        request = self.mock_rest_request(**{
             'user.is_authenticated.return_value': False
         })
         response = f(None, request)
@@ -71,7 +52,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax()
         def f(self, request):
             pass
-        request = self._construct_request()
+        request = self.mock_rest_request()
         response = f(None, request)
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
@@ -80,7 +61,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax()
         def f(self, request):
             raise utils.AjaxError(500, 'b0rk')
-        request = self._construct_request()
+        request = self.mock_rest_request()
         response = f(None, request)
         self.assertStatusCode(response, 500)
         self.assertEqual(response.content, '"b0rk"')
@@ -89,7 +70,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax()
         def f(self, request):
             assert False, "don't get here"
-        request = self._construct_request(**{'body': 'spam'})
+        request = self.mock_rest_request(**{'body': 'spam'})
         response = f(None, request)
         self.assertStatusCode(response, 400)
         self.assertEqual(response.content, '"malformed JSON request: No JSON '
@@ -99,7 +80,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax()
         def f(self, request):
             raise utils.AjaxError(404, 'b0rk')
-        request = self._construct_request()
+        request = self.mock_rest_request()
         response = f(None, request)
         self.assertStatusCode(response, 404)
         self.assertEqual(response.content, '"b0rk"')
@@ -108,7 +89,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax(data_required=True)
         def f(self, request):
             assert False, "don't get here"
-        request = self._construct_request()
+        request = self.mock_rest_request()
         response = f(None, request)
         self.assertStatusCode(response, 400)
         self.assertEqual(response.content, '"request requires JSON body"')
@@ -117,7 +98,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax(data_required=True)
         def f(self, request):
             return 'OK'
-        request = self._construct_request(**{'body': '''
+        request = self.mock_rest_request(**{'body': '''
             {"current": true, "update": true}
         '''})
         response = f(None, request)
@@ -128,7 +109,7 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax()
         def f(self, request):
             return utils.CreatedResponse('/api/spam/spam123')
-        request = self._construct_request()
+        request = self.mock_rest_request()
         response = f(None, request)
         request.is_authenticated.assert_called_once()
         self.assertStatusCode(response, 201)
@@ -139,9 +120,49 @@ class RestUtilsTestCase(unittest2.TestCase):
         @utils.ajax()
         def f(self, request):
             return utils.CreatedResponse('/api/spam/spam123', 'spam!')
-        request = self._construct_request()
+        request = self.mock_rest_request()
         response = f(None, request)
         request.is_authenticated.assert_called_once()
         self.assertStatusCode(response, 201)
         self.assertEqual(response['location'], '/api/spam/spam123')
         self.assertEqual(response.content, '"spam!"')
+
+    def test_parse_filters_keywords(self):
+        kwargs = {
+            'sort_dir': '1',
+            'sort_key': '2',
+        }
+        filters = {
+            'filter1': '1',
+            'filter2': '2',
+        }
+
+        # Combined
+        request_params = dict(kwargs)
+        request_params.update(filters)
+        request = self.mock_rest_request(**{'GET': dict(request_params)})
+        output_filters, output_kwargs = utils.parse_filters_kwargs(
+            request, kwargs)
+        self.assertDictEqual(kwargs, output_kwargs)
+        self.assertDictEqual(filters, output_filters)
+
+        # Empty Filters
+        request = self.mock_rest_request(**{'GET': dict(kwargs)})
+        output_filters, output_kwargs = utils.parse_filters_kwargs(
+            request, kwargs)
+        self.assertDictEqual(kwargs, output_kwargs)
+        self.assertDictEqual({}, output_filters)
+
+        # Empty keywords
+        request = self.mock_rest_request(**{'GET': dict(filters)})
+        output_filters, output_kwargs = utils.parse_filters_kwargs(
+            request)
+        self.assertDictEqual({}, output_kwargs)
+        self.assertDictEqual(filters, output_filters)
+
+        # Empty both
+        request = self.mock_rest_request(**{'GET': dict()})
+        output_filters, output_kwargs = utils.parse_filters_kwargs(
+            request)
+        self.assertDictEqual({}, output_kwargs)
+        self.assertDictEqual({}, output_filters)

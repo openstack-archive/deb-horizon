@@ -40,6 +40,8 @@ from openstack_dashboard.dashboards.project.access_and_security.\
 class DetailView(tables.DataTableView):
     table_class = project_tables.RulesTable
     template_name = 'project/access_and_security/security_groups/detail.html'
+    page_title = _("Manage Security Group Rules: "
+                   "{{ security_group.name }} ({{ security_group.id }})")
 
     @memoized.memoized_method
     def _get_data(self):
@@ -61,20 +63,20 @@ class DetailView(tables.DataTableView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-        security_group = self._get_data()
-        security_group_name_id = "%s (%s)" % (security_group.name,
-                                              security_group.id)
-        context["security_group"] = security_group
-        context["page_title"] = _(
-            "Manage Security Group Rules: %(security_group)s") % {
-            'security_group': security_group_name_id}
+        context["security_group"] = self._get_data()
         return context
 
 
 class UpdateView(forms.ModalFormView):
     form_class = project_forms.UpdateGroup
+    form_id = "update_security_group_form"
+    modal_header = _("Edit Security Group")
+    modal_id = "update_security_group_modal"
     template_name = 'project/access_and_security/security_groups/update.html'
+    submit_label = _("Edit Security Group")
+    submit_url = "horizon:project:access_and_security:security_groups:update"
     success_url = reverse_lazy('horizon:project:access_and_security:index')
+    page_title = _("Edit Security Group")
 
     @memoized.memoized_method
     def get_object(self):
@@ -89,6 +91,8 @@ class UpdateView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
         context["security_group"] = self.get_object()
+        args = (self.kwargs['security_group_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):
@@ -100,7 +104,13 @@ class UpdateView(forms.ModalFormView):
 
 class AddRuleView(forms.ModalFormView):
     form_class = project_forms.AddRule
+    form_id = "create_security_group_rule_form"
+    modal_header = _("Add Rule")
+    modal_id = "create_security_group_rule_modal"
     template_name = 'project/access_and_security/security_groups/add_rule.html'
+    submit_label = _("Add")
+    submit_url = "horizon:project:access_and_security:security_groups:add_rule"
+    page_title = _("Add Rule")
 
     def get_success_url(self):
         sg_id = self.kwargs['security_group_id']
@@ -110,6 +120,8 @@ class AddRuleView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(AddRuleView, self).get_context_data(**kwargs)
         context["security_group_id"] = self.kwargs['security_group_id']
+        args = (self.kwargs['security_group_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):
@@ -139,5 +151,12 @@ class AddRuleView(forms.ModalFormView):
 
 class CreateView(forms.ModalFormView):
     form_class = project_forms.CreateGroup
+    form_id = "create_security_group_form"
+    modal_header = _("Create Security Group")
+    modal_id = "create_security_group_modal"
     template_name = 'project/access_and_security/security_groups/create.html'
+    submit_label = _("Create Security Group")
+    submit_url = reverse_lazy(
+        "horizon:project:access_and_security:security_groups:create")
     success_url = reverse_lazy('horizon:project:access_and_security:index')
+    page_title = _("Create Security Group")

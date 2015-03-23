@@ -15,6 +15,7 @@
 """
 Views for managing Neutron Networks.
 """
+from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
@@ -41,6 +42,7 @@ from openstack_dashboard.dashboards.project.networks \
 class IndexView(tables.DataTableView):
     table_class = project_tables.NetworksTable
     template_name = 'project/networks/index.html'
+    page_title = _("Networks")
 
     def get_data(self):
         try:
@@ -58,19 +60,23 @@ class CreateView(workflows.WorkflowView):
     workflow_class = project_workflows.CreateNetwork
     ajax_template_name = 'project/networks/create.html'
 
-    def get_initial(self):
-        pass
-
 
 class UpdateView(forms.ModalFormView):
-    form_class = project_forms.UpdateNetwork
-    template_name = 'project/networks/update.html'
     context_object_name = 'network'
+    form_class = project_forms.UpdateNetwork
+    form_id = "update_network_form"
+    modal_header = _("Edit Network")
+    submit_label = _("Save Changes")
+    submit_url = "horizon:project:networks:update"
     success_url = reverse_lazy("horizon:project:networks:index")
+    template_name = 'project/networks/update.html'
+    page_title = _("Update Network")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
+        args = (self.kwargs['network_id'],)
         context["network_id"] = self.kwargs['network_id']
+        context["submit_url"] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method
@@ -94,6 +100,7 @@ class UpdateView(forms.ModalFormView):
 class DetailView(tables.MultiTableView):
     table_classes = (subnet_tables.SubnetsTable, port_tables.PortsTable)
     template_name = 'project/networks/detail.html'
+    page_title = _("Network Details: {{ network.name }}")
 
     def get_subnets_data(self):
         try:
@@ -136,9 +143,6 @@ class DetailView(tables.MultiTableView):
         table = project_tables.NetworksTable(self.request)
         context["url"] = self.get_redirect_url()
         context["actions"] = table.render_row_actions(network)
-        context["page_title"] = _("Network Details: "
-                                  "%(network_name)s") % {'network_name':
-                                                         network.name}
         return context
 
     @staticmethod

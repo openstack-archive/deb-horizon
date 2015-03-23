@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
@@ -36,9 +37,10 @@ from openstack_dashboard.dashboards.project.loadbalancers \
 import re
 
 
-class IndexView(tabs.TabView):
+class IndexView(tabs.TabbedTableView):
     tab_group_class = (project_tabs.LoadBalancerTabs)
     template_name = 'project/loadbalancers/details_tabs.html'
+    page_title = _("Load Balancer")
 
     def post(self, request, *args, **kwargs):
         obj_ids = request.POST.getlist('object_ids')
@@ -225,13 +227,20 @@ class MonitorDetailsView(tabs.TabView):
 
 class UpdatePoolView(forms.ModalFormView):
     form_class = project_forms.UpdatePool
+    form_id = "update_pool_form"
+    modal_header = _("Edit Pool")
     template_name = "project/loadbalancers/updatepool.html"
     context_object_name = 'pool'
+    submit_label = _("Save Changes")
+    submit_url = "horizon:project:loadbalancers:updatepool"
     success_url = reverse_lazy("horizon:project:loadbalancers:index")
+    page_title = _("Edit Pool")
 
     def get_context_data(self, **kwargs):
         context = super(UpdatePoolView, self).get_context_data(**kwargs)
         context["pool_id"] = self.kwargs['pool_id']
+        args = (self.kwargs['pool_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method
@@ -255,13 +264,20 @@ class UpdatePoolView(forms.ModalFormView):
 
 class UpdateVipView(forms.ModalFormView):
     form_class = project_forms.UpdateVip
+    form_id = "update_vip_form"
+    modal_header = _("Edit VIP")
     template_name = "project/loadbalancers/updatevip.html"
     context_object_name = 'vip'
+    submit_label = _("Save Changes")
+    submit_url = "horizon:project:loadbalancers:updatevip"
     success_url = reverse_lazy("horizon:project:loadbalancers:index")
+    page_title = _("Edit VIP")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateVipView, self).get_context_data(**kwargs)
         context["vip_id"] = self.kwargs['vip_id']
+        args = (self.kwargs['vip_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method
@@ -299,13 +315,20 @@ class UpdateVipView(forms.ModalFormView):
 
 class UpdateMemberView(forms.ModalFormView):
     form_class = project_forms.UpdateMember
+    form_id = "update_pool_form"
+    modal_header = _("Edit Member")
     template_name = "project/loadbalancers/updatemember.html"
     context_object_name = 'member'
+    submit_label = _("Save Changes")
+    submit_url = "horizon:project:loadbalancers:updatemember"
     success_url = reverse_lazy("horizon:project:loadbalancers:index")
+    page_title = _("Edit Member")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateMemberView, self).get_context_data(**kwargs)
         context["member_id"] = self.kwargs['member_id']
+        args = (self.kwargs['member_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method
@@ -328,13 +351,20 @@ class UpdateMemberView(forms.ModalFormView):
 
 class UpdateMonitorView(forms.ModalFormView):
     form_class = project_forms.UpdateMonitor
+    form_id = "update_monitor_form"
+    modal_header = _("Edit Monitor")
     template_name = "project/loadbalancers/updatemonitor.html"
     context_object_name = 'monitor'
+    submit_label = _("Save Changes")
+    submit_url = "horizon:project:loadbalancers:updatemonitor"
     success_url = reverse_lazy("horizon:project:loadbalancers:index")
+    page_title = _("Edit Monitor")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateMonitorView, self).get_context_data(**kwargs)
         context["monitor_id"] = self.kwargs['monitor_id']
+        args = (self.kwargs['monitor_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method

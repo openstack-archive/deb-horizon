@@ -133,7 +133,7 @@ class Instance(object):
 
 class InstancesTable(tables.DataTable):
     name = tables.Column("name",
-                         link=("horizon:project:instances:detail"),
+                         link="horizon:project:instances:detail",
                          verbose_name=_("Name"))
 
     internal_ip = tables.Column("internal_ip",
@@ -144,8 +144,7 @@ class InstancesTable(tables.DataTable):
 
     class Meta(object):
         name = "cluster_instances"
-        # Just ignoring the name.
-        verbose_name = _(" ")
+        verbose_name = _("Cluster Instances")
 
 
 class InstancesTab(tabs.TableTab):

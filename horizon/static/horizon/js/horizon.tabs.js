@@ -44,9 +44,12 @@ horizon.addInitFunction(horizon.tabs.init = function () {
     $(el).find(".js-tab-pane").addClass("tab-pane");
   });
 
-  $(document).on("show.bs.tab", ".ajax-tabs a[data-loaded='false']", horizon.tabs.load_tab);
 
-  $(document).on("shown.bs.tab", ".nav-tabs a[data-toggle='tab']", function (evt) {
+  var $document = $(document);
+
+  $document.on("show.bs.tab", ".ajax-tabs a[data-loaded='false']", horizon.tabs.load_tab);
+
+  $document.on("shown.bs.tab", ".nav-tabs a[data-toggle='tab']", function (evt) {
     var $tab = $(evt.target),
       $content = $($(evt.target).attr('data-target'));
     $content.find("table.datatable").each(function () {
@@ -68,7 +71,7 @@ horizon.addInitFunction(horizon.tabs.init = function () {
   });
 
   // Enable keyboard navigation between tabs in a form.
-  $(document).on("keydown", ".tab-pane :input:visible:last", function (evt) {
+  $(".tab-content").on("keydown", ".tab-pane :input:visible:last", function (evt) {
     var $this = $(this),
       next_pane = $this.closest(".tab-pane").next(".tab-pane");
     // Capture the forward-tab keypress if we have a next tab to go to.
@@ -77,7 +80,7 @@ horizon.addInitFunction(horizon.tabs.init = function () {
       $(".nav-tabs a[data-target='#" + next_pane.attr("id") + "']").tab('show');
     }
   });
-  $(document).on("keydown", ".tab-pane :input:visible:first", function (evt) {
+  $(".tab-content").on("keydown", ".tab-pane :input:visible:first", function (evt) {
     var $this = $(this),
       prev_pane = $this.closest(".tab-pane").prev(".tab-pane");
     // Capture the forward-tab keypress if we have a next tab to go to.
@@ -88,7 +91,7 @@ horizon.addInitFunction(horizon.tabs.init = function () {
     }
   });
 
-  $(document).on("focus", ".tab-content :input", function () {
+  $document.on("focus", ".tab-content :input", function () {
     var $this = $(this),
       tab_pane = $this.closest(".tab-pane"),
       tab_id = tab_pane.attr('id');

@@ -20,7 +20,7 @@ from horizon.templatetags import sizeformat
 
 class AdminHypervisorsTable(tables.DataTable):
     hostname = tables.Column("hypervisor_hostname",
-                             link=("horizon:admin:hypervisors:detail"),
+                             link="horizon:admin:hypervisors:detail",
                              attrs={'data-type': 'naturalSort'},
                              verbose_name=_("Hostname"))
 
@@ -57,7 +57,8 @@ class AdminHypervisorsTable(tables.DataTable):
                                 verbose_name=_("Instances"))
 
     def get_object_id(self, hypervisor):
-        return hypervisor.hypervisor_hostname
+        return "%s_%s" % (hypervisor.id,
+                          hypervisor.hypervisor_hostname)
 
     class Meta(object):
         name = "hypervisors"
@@ -66,7 +67,7 @@ class AdminHypervisorsTable(tables.DataTable):
 
 class AdminHypervisorInstancesTable(tables.DataTable):
     name = tables.Column("name",
-                         link=("horizon:admin:instances:detail"),
+                         link="horizon:admin:instances:detail",
                          verbose_name=_("Instance Name"))
 
     instance_id = tables.Column("uuid",

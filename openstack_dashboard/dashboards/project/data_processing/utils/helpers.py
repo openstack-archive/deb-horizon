@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from django.utils.translation import ugettext_lazy as _
+
 import openstack_dashboard.dashboards.project.data_processing. \
     utils.workflow_helpers as work_helpers
 
@@ -84,3 +86,47 @@ class Helpers(object):
                                                            'cluster', service)
 
         return parameters
+
+    def is_from_guide(self):
+        referer = self.request.environ.get("HTTP_REFERER")
+        if referer and "/wizard/" in referer:
+            return True
+        return False
+
+    def reset_guide(self):
+        try:
+            self.request.session.update(
+                {"plugin_name": None,
+                 "plugin_version": None,
+                 "master_name": None,
+                 "master_id": None,
+                 "worker_name": None,
+                 "worker_id": None,
+                 "guide_cluster_template_name": None})
+        except Exception:
+            return False
+        return True
+
+    def reset_job_guide(self):
+        try:
+            self.request.session.update(
+                {"guide_job_type": None,
+                 "guide_job_name": None,
+                 "guide_job_id": None,
+                 "guide_datasource_id": None,
+                 "guide_datasource_name": None, })
+        except Exception:
+            return False
+        return True
+
+# Map needed because switchable fields need lower case
+# and our server is expecting upper case.  We will be
+# using the 0 index as the display name and the 1 index
+# as the value to pass to the server.
+JOB_TYPE_MAP = {"pig": [_("Pig"), "Pig"],
+                "hive": [_("Hive"), "Hive"],
+                "spark": [_("Spark"), "Spark"],
+                "mapreduce": [_("MapReduce"), "MapReduce"],
+                "mapreduce.streaming": [_("Streaming MapReduce"),
+                                        "MapReduce.Streaming"],
+                "java": [_("Java"), "Java"]}

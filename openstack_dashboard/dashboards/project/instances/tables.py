@@ -81,8 +81,9 @@ def is_deleting(instance):
 class TerminateInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "terminate"
     classes = ("btn-danger",)
-    icon = "off"
+    icon = "remove"
     policy_rules = (("compute", "compute:delete"),)
+    help_text = _("Terminated instances are not recoverable.")
 
     @staticmethod
     def action_present(count):
@@ -112,6 +113,8 @@ class RebootInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "reboot"
     classes = ('btn-danger', 'btn-reboot')
     policy_rules = (("compute", "compute:reboot"),)
+    help_text = _("Restarted instances will lose any data"
+                  " not saved in persistent storage.")
 
     @staticmethod
     def action_present(count):
@@ -342,6 +345,25 @@ class LaunchLink(tables.LinkAction):
     def single(self, table, request, object_id=None):
         self.allowed(request, None)
         return HttpResponse(self.render())
+
+
+class LaunchLinkNG(LaunchLink):
+    name = "launch-ng"
+    verbose_name = _("Launch Instance NG")
+    ajax = False
+    classes = ("btn-launch")
+
+    def __init__(self,
+                 attrs={
+                     "ng-controller": "LaunchInstanceModalCtrl",
+                     "ng-click": "openLaunchInstanceWizard()"
+                 },
+                 **kwargs):
+        kwargs['preempt'] = True
+        super(LaunchLink, self).__init__(attrs, **kwargs)
+
+    def get_link_url(self, datum=None):
+        return "javascript:void(0);"
 
 
 class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
@@ -631,8 +653,8 @@ def get_instance_error(instance):
     if instance.status.lower() != 'error':
         return None
     message = instance_fault_to_friendly_message(instance)
-    preamble = _('Failed to launch instance "%s"'
-                 ) % instance.name or instance.id
+    preamble = _('Failed to perform requested operation on instance "%s", the '
+                 'instance has an error status') % instance.name or instance.id
     message = string_concat(preamble, ': ', message)
     return message
 
@@ -689,6 +711,7 @@ class StopInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "stop"
     classes = ('btn-danger',)
     policy_rules = (("compute", "compute:stop"),)
+    help_text = _("To power off a specific instance.")
 
     @staticmethod
     def action_present(count):
@@ -981,7 +1004,7 @@ class InstancesTable(tables.DataTable):
         ("shelved_offloaded", True),
     )
     name = tables.Column("name",
-                         link=("horizon:project:instances:detail"),
+                         link="horizon:project:instances:detail",
                          verbose_name=_("Instance Name"))
     image_name = tables.Column("image_name",
                                verbose_name=_("Image Name"))
@@ -1022,7 +1045,13 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
-        table_actions = (LaunchLink, TerminateInstance, InstancesFilterAction)
+        launch_actions = ()
+        if getattr(settings, 'LAUNCH_INSTANCE_LEGACY_ENABLED', True):
+            launch_actions = (LaunchLink,) + launch_actions
+        if getattr(settings, 'LAUNCH_INSTANCE_NG_ENABLED', False):
+            launch_actions = (LaunchLinkNG,) + launch_actions
+        table_actions = launch_actions + (TerminateInstance,
+                                          InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,
                        CreateSnapshot, SimpleAssociateIP, AssociateIP,
                        SimpleDisassociateIP, EditInstance,

@@ -12,7 +12,8 @@
 
 import logging
 
-from django.core import urlresolvers
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils import datastructures
 from django.utils.translation import ugettext_lazy as _
 
@@ -67,6 +68,7 @@ def _get_profiles(request, type_p):
 class NetworkProfileIndexView(tables.DataTableView):
     table_class = profiletables.NetworkProfile
     template_name = 'router/nexus1000v/network_profile/index.html'
+    page_title = _("Cisco Nexus 1000V")
 
     def get_data(self):
         return _get_profiles(self.request, 'network')
@@ -75,6 +77,7 @@ class NetworkProfileIndexView(tables.DataTableView):
 class PolicyProfileIndexView(tables.DataTableView):
     table_class = profiletables.PolicyProfile
     template_name = 'router/nexus1000v/policy_profile/index.html'
+    page_title = _("Cisco Nexus 1000V")
 
     def get_data(self):
         return _get_profiles(self.request, 'policy')
@@ -89,6 +92,7 @@ class IndexView(tables.MultiTableView):
     table_classes = (profiletables.NetworkProfile,
                      profiletables.PolicyProfile,)
     template_name = 'router/nexus1000v/index.html'
+    page_title = _("Cisco Nexus 1000V")
 
     def get_network_profile_data(self):
         return _get_profiles(self.request, 'network')
@@ -99,20 +103,33 @@ class IndexView(tables.MultiTableView):
 
 class CreateNetworkProfileView(forms.ModalFormView):
     form_class = profileforms.CreateNetworkProfile
+    form_id = "create_network_profile_form"
+    modal_header = _("Create Network Profile")
     template_name = 'router/nexus1000v/create_network_profile.html'
-    success_url = urlresolvers.reverse_lazy('horizon:router:nexus1000v:index')
+    submit_label = _("Create Network Profile")
+    submit_url = reverse_lazy(
+        "horizon:router:nexus1000v:create_network_profile")
+    success_url = reverse_lazy('horizon:router:nexus1000v:index')
+    page_title = _("Create Network Profile")
 
 
 class UpdateNetworkProfileView(forms.ModalFormView):
     form_class = profileforms.UpdateNetworkProfile
+    form_id = "update_network_profile_form"
+    modal_header = _("Edit Network Profile")
     template_name = 'router/nexus1000v/update_network_profile.html'
     context_object_name = 'network_profile'
-    success_url = urlresolvers.reverse_lazy('horizon:router:nexus1000v:index')
+    submit_label = _("Save Changes")
+    submit_url = "horizon:router:nexus1000v:update_network_profile"
+    success_url = reverse_lazy('horizon:router:nexus1000v:index')
+    page_title = _("Update Network Profile")
 
     def get_context_data(self, **kwargs):
         context = super(UpdateNetworkProfileView,
                         self).get_context_data(**kwargs)
         context["profile_id"] = self.kwargs['profile_id']
+        args = (self.kwargs['profile_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     @memoized.memoized_method

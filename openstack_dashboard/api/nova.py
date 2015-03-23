@@ -75,6 +75,14 @@ class RDPConsole(base.APIDictWrapper):
     _attrs = ['url', 'type']
 
 
+class SerialConsole(base.APIDictWrapper):
+    """Wrapper for the "console" dictionary.
+
+    Returned by the novaclient.servers.get_serial_console method.
+    """
+    _attrs = ['url', 'type']
+
+
 class Server(base.APIResourceWrapper):
     """Simple wrapper around novaclient.server.Server.
 
@@ -205,6 +213,9 @@ class SecurityGroup(base.APIResourceWrapper):
         rule_objs = [nova_rules.SecurityGroupRule(manager, rule)
                      for rule in self._apiresource.rules]
         return [SecurityGroupRule(rule) for rule in rule_objs]
+
+    def to_dict(self):
+        return self._apiresource.to_dict()
 
 
 class SecurityGroupRule(base.APIResourceWrapper):
@@ -455,6 +466,11 @@ def server_rdp_console(request, instance_id, console_type='rdp-html5'):
         instance_id, console_type)['console'])
 
 
+def server_serial_console(request, instance_id, console_type='serial'):
+    return SerialConsole(novaclient(request).servers.get_serial_console(
+        instance_id, console_type)['console'])
+
+
 def flavor_create(request, name, memory, vcpu, disk, flavorid='auto',
                   ephemeral=0, swap=0, metadata=None, is_public=True):
     flavor = novaclient(request).flavors.create(name, memory, vcpu, disk,
@@ -470,14 +486,21 @@ def flavor_delete(request, flavor_id):
     novaclient(request).flavors.delete(flavor_id)
 
 
-def flavor_get(request, flavor_id):
-    return novaclient(request).flavors.get(flavor_id)
+def flavor_get(request, flavor_id, get_extras=False):
+    flavor = novaclient(request).flavors.get(flavor_id)
+    if get_extras:
+        flavor.extras = flavor_get_extras(request, flavor.id, True, flavor)
+    return flavor
 
 
 @memoized
-def flavor_list(request, is_public=True):
+def flavor_list(request, is_public=True, get_extras=False):
     """Get the list of available instance sizes (flavors)."""
-    return novaclient(request).flavors.list(is_public=is_public)
+    flavors = novaclient(request).flavors.list(is_public=is_public)
+    if get_extras:
+        for flavor in flavors:
+            flavor.extras = flavor_get_extras(request, flavor.id, True, flavor)
+    return flavors
 
 
 @memoized
@@ -498,9 +521,10 @@ def remove_tenant_from_flavor(request, flavor, tenant):
         flavor=flavor, tenant=tenant)
 
 
-def flavor_get_extras(request, flavor_id, raw=False):
+def flavor_get_extras(request, flavor_id, raw=False, flavor=None):
     """Get flavor extra specs."""
-    flavor = novaclient(request).flavors.get(flavor_id)
+    if flavor is None:
+        flavor = novaclient(request).flavors.get(flavor_id)
     extras = flavor.get_keys()
     if raw:
         return extras
@@ -774,6 +798,42 @@ def evacuate_host(request, host, target=None, on_shared_storage=False):
 
     if err_code:
         msg = _('Failed to evacuate instances: %s') % ', '.join(response)
+        raise nova_exceptions.ClientException(err_code, msg)
+
+    return True
+
+
+def migrate_host(request, host, live_migrate=False, disk_over_commit=False,
+                 block_migration=False):
+    hypervisors = novaclient(request).hypervisors.search(host, True)
+    response = []
+    err_code = None
+    for hyper in hypervisors:
+        for server in getattr(hyper, "servers", []):
+            try:
+                if live_migrate:
+                    instance = server_get(request, server['uuid'])
+
+                    # Checking that instance can be live-migrated
+                    if instance.status in ["ACTIVE", "PAUSED"]:
+                        novaclient(request).servers.live_migrate(
+                            server['uuid'],
+                            None,
+                            block_migration,
+                            disk_over_commit
+                        )
+                    else:
+                        novaclient(request).servers.migrate(server['uuid'])
+                else:
+                    novaclient(request).servers.migrate(server['uuid'])
+            except nova_exceptions.ClientException as err:
+                err_code = err.code
+                msg = _("Name: %(name)s ID: %(uuid)s")
+                msg = msg % {'name': server['name'], 'uuid': server['uuid']}
+                response.append(msg)
+
+    if err_code:
+        msg = _('Failed to migrate instances: %s') % ', '.join(response)
         raise nova_exceptions.ClientException(err_code, msg)
 
     return True

@@ -21,6 +21,7 @@ import os
 import sys
 import warnings
 
+import django
 from django.utils.translation import ugettext_lazy as _
 
 from openstack_dashboard import exceptions
@@ -41,12 +42,11 @@ TEMPLATE_DEBUG = DEBUG
 
 SITE_BRANDING = 'OpenStack Dashboard'
 
-LOGIN_URL = '/auth/login/'
-LOGOUT_URL = '/auth/logout/'
-# LOGIN_REDIRECT_URL can be used as an alternative for
-# HORIZON_CONFIG.user_home, if user_home is not set.
-# Do not set it to '/home/', as this will cause circular redirect loop
-LOGIN_REDIRECT_URL = '/'
+WEBROOT = '/'
+LOGIN_URL = None
+LOGOUT_URL = None
+LOGIN_REDIRECT_URL = None
+
 
 MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'media'))
 MEDIA_URL = '/media/'
@@ -69,6 +69,7 @@ HORIZON_CONFIG = {
                    'unauthorized': exceptions.UNAUTHORIZED},
     'angular_modules': [],
     'js_files': [],
+    'js_spec_files': [],
 }
 
 # Set to True to allow users to upload images to glance via Horizon server.
@@ -91,7 +92,7 @@ OPENSTACK_IMAGE_BACKEND = {
         ('raw', _('Raw')),
         ('vdi', _('VDI - Virtual Disk Image')),
         ('vhd', _('VHD - Virtual Hard Disk')),
-        ('vmdk', _('VMDK - Virtual Machine Disk'))
+        ('vmdk', _('VMDK - Virtual Machine Disk')),
     ]
 }
 
@@ -101,8 +102,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+)
+if django.VERSION >= (1, 8, 0):
+    MIDDLEWARE_CLASSES += (
+        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',)
+else:
+    MIDDLEWARE_CLASSES += ('django.middleware.doc.XViewMiddleware',)
+MIDDLEWARE_CLASSES += (
     'horizon.middleware.HorizonMiddleware',
-    'django.middleware.doc.XViewMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -121,7 +128,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-    'horizon.loaders.TemplateLoader'
+    'horizon.loaders.TemplateLoader',
 )
 
 TEMPLATE_DIRS = (
@@ -164,6 +171,7 @@ INSTALLED_APPS = [
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
+AUTHENTICATION_URLS = ['openstack_auth.urls']
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
@@ -223,6 +231,7 @@ POLICY_FILES = {
     'image': 'glance_policy.json',
     'orchestration': 'heat_policy.json',
     'network': 'neutron_policy.json',
+    'telemetry': 'ceilometer_policy.json',
 }
 
 SECRET_KEY = None
@@ -249,10 +258,21 @@ SECURITY_GROUP_RULES = {
     },
 }
 
+ADD_INSTALLED_APPS = []
 try:
     from local.local_settings import *  # noqa
 except ImportError:
     logging.warning("No local_settings file found.")
+
+if not WEBROOT.endswith('/'):
+    WEBROOT += '/'
+if LOGIN_URL is None:
+    LOGIN_URL = WEBROOT + 'auth/login/'
+if LOGOUT_URL is None:
+    LOGOUT_URL = WEBROOT + 'auth/logout/'
+if LOGIN_REDIRECT_URL is None:
+    LOGIN_REDIRECT_URL = WEBROOT
+
 
 # Load the pluggable dashboard settings
 import openstack_dashboard.enabled
@@ -260,10 +280,15 @@ import openstack_dashboard.local.enabled
 from openstack_dashboard.utils import settings
 
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
-settings.update_dashboards([
-    openstack_dashboard.enabled,
-    openstack_dashboard.local.enabled,
-], HORIZON_CONFIG, INSTALLED_APPS)
+settings.update_dashboards(
+    [
+        openstack_dashboard.enabled,
+        openstack_dashboard.local.enabled,
+    ],
+    HORIZON_CONFIG,
+    INSTALLED_APPS,
+)
+INSTALLED_APPS[0:0] = ADD_INSTALLED_APPS
 
 # Ensure that we always have a SECRET_KEY set, even when no local_settings.py
 # file is present. See local_settings.py.example for full documentation on the
@@ -277,13 +302,13 @@ if not SECRET_KEY:
     SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
                                                        '.secret_key_store'))
 
-from openstack_dashboard import policy
-POLICY_CHECK_FUNCTION = policy.check
+from openstack_dashboard import policy_backend
+POLICY_CHECK_FUNCTION = policy_backend.check
 
 # Add HORIZON_CONFIG to the context information for offline compression
 COMPRESS_OFFLINE_CONTEXT = {
     'STATIC_URL': STATIC_URL,
-    'HORIZON_CONFIG': HORIZON_CONFIG
+    'HORIZON_CONFIG': HORIZON_CONFIG,
 }
 
 if DEBUG:

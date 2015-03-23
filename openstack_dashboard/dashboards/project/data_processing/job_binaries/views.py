@@ -25,6 +25,8 @@ from horizon import tables
 from horizon import tabs
 
 from openstack_dashboard.api import sahara as saharaclient
+from openstack_dashboard.dashboards.project.data_processing.utils \
+    import helpers
 
 import openstack_dashboard.dashboards.project.data_processing. \
     job_binaries.forms as job_binary_forms
@@ -40,6 +42,7 @@ LOG = logging.getLogger(__name__)
 class JobBinariesView(tables.DataTableView):
     table_class = jb_tables.JobBinariesTable
     template_name = 'project/data_processing.job_binaries/job_binaries.html'
+    page_title = _("Job Binaries")
 
     def get_data(self):
         try:
@@ -55,13 +58,22 @@ class CreateJobBinaryView(forms.ModalFormView):
     form_class = job_binary_forms.JobBinaryCreateForm
     success_url = reverse_lazy(
         'horizon:project:data_processing.job_binaries:index')
-    classes = ("ajax-modal")
+    classes = ("ajax-modal",)
     template_name = "project/data_processing.job_binaries/create.html"
+    page_title = _("Create Job Binary")
+
+    def get_success_url(self):
+        hlps = helpers.Helpers(self.request)
+        if hlps.is_from_guide():
+            self.success_url = reverse_lazy(
+                "horizon:project:data_processing.wizard:jobex_guide")
+        return self.success_url
 
 
 class JobBinaryDetailsView(tabs.TabView):
     tab_group_class = _tabs.JobBinaryDetailsTabs
     template_name = 'project/data_processing.job_binaries/details.html'
+    page_title = _("Job Binary Details")
 
     def get_context_data(self, **kwargs):
         context = super(JobBinaryDetailsView, self)\

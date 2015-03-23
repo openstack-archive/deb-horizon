@@ -121,8 +121,11 @@ def ajax(authenticated=True, data_required=False):
                 # exception was raised with a specific HTTP status
                 if hasattr(e, 'http_status'):
                     http_status = e.http_status
-                else:
+                elif hasattr(e, 'code'):
                     http_status = e.code
+                else:
+                    log.exception('HTTP exception with no status/code')
+                    return JSONResponse(str(e), 500)
                 return JSONResponse(str(e), http_status)
             except Exception as e:
                 log.exception('error invoking apiclient')
@@ -130,3 +133,20 @@ def ajax(authenticated=True, data_required=False):
 
         return _wrapped
     return decorator
+
+
+def parse_filters_kwargs(request, client_keywords={}):
+    """Extract REST filter parameters from the request GET args.
+
+    Client processes some keywords separately from filters and takes
+    them as separate inputs. This will ignore those keys to avoid
+    potential conflicts.
+    """
+    filters = {}
+    kwargs = {}
+    for param in request.GET:
+        if param in client_keywords:
+            kwargs[param] = request.GET[param]
+        else:
+            filters[param] = request.GET[param]
+    return filters, kwargs

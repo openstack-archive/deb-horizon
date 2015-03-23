@@ -14,11 +14,13 @@
 import logging
 
 from django.http import Http404  # noqa
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
 from horizon import messages
 from horizon import tables
+from horizon.tables import base as tables_base
 
 from openstack_dashboard.api import sahara as saharaclient
 
@@ -26,6 +28,18 @@ from saharaclient.api import base as api_base
 
 
 LOG = logging.getLogger(__name__)
+
+
+class ClustersFilterAction(tables.FilterAction):
+    filter_type = "server"
+    filter_choices = (('name', _("Name"), True),
+                      ('status', _("Status"), True))
+
+
+class ClusterGuide(tables.LinkAction):
+    name = "cluster_guide"
+    verbose_name = _("Cluster Creation Guide")
+    url = "horizon:project:data_processing.wizard:cluster_guide"
 
 
 class CreateCluster(tables.LinkAction):
@@ -86,6 +100,37 @@ def get_instances_count(cluster):
                 for ng in cluster.node_groups])
 
 
+class RichErrorCell(tables_base.Cell):
+    @property
+    def status(self):
+        # The error cell values becomes quite complex and cannot be handled
+        # correctly with STATUS_CHOICES. Handling that explicitly.
+        status = self.datum.status.lower()
+        if status == "error":
+            return False
+        elif status == "active":
+            return True
+
+        return None
+
+
+def get_rich_status_info(cluster):
+    return {
+        "status": cluster.status,
+        "status_description": cluster.status_description
+    }
+
+
+def rich_status_filter(status_dict):
+    # Render the status "as is" if no description is provided.
+    if not status_dict["status_description"]:
+        return status_dict["status"]
+
+    # Error is rendered with a template containing an error description.
+    return render_to_string(
+        "project/data_processing.clusters/_rich_status.html", status_dict)
+
+
 class ConfigureCluster(tables.LinkAction):
     name = "configure"
     verbose_name = _("Configure Cluster")
@@ -96,19 +141,18 @@ class ConfigureCluster(tables.LinkAction):
 
 
 class ClustersTable(tables.DataTable):
-    STATUS_CHOICES = (
-        ("active", True),
-        ("error", False)
-    )
 
     name = tables.Column("name",
                          verbose_name=_("Name"),
                          link=("horizon:project:data_processing."
                                "clusters:details"))
-    status = tables.Column("status",
+
+    # Status field need the whole cluster object to build the rich status.
+    status = tables.Column(get_rich_status_info,
                            verbose_name=_("Status"),
                            status=True,
-                           status_choices=STATUS_CHOICES)
+                           filters=(rich_status_filter,))
+
     instances_count = tables.Column(get_instances_count,
                                     verbose_name=_("Instances Count"))
 
@@ -116,9 +160,12 @@ class ClustersTable(tables.DataTable):
         name = "clusters"
         verbose_name = _("Clusters")
         row_class = UpdateRow
+        cell_class = RichErrorCell
         status_columns = ["status"]
-        table_actions = (CreateCluster,
+        table_actions = (ClusterGuide,
+                         CreateCluster,
                          ConfigureCluster,
-                         DeleteCluster)
+                         DeleteCluster,
+                         ClustersFilterAction)
         row_actions = (ScaleCluster,
                        DeleteCluster,)

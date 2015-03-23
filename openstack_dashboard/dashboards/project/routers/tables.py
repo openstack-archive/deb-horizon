@@ -16,6 +16,7 @@ import logging
 
 from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
+from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 from neutronclient.common import exceptions as q_ext
@@ -124,6 +125,9 @@ class SetGateway(policy.PolicyTargetMixin, tables.LinkAction):
 
 
 class ClearGateway(policy.PolicyTargetMixin, tables.BatchAction):
+    help_text = _("You may reset the gateway later by using the"
+                  " set gateway action, but the gateway IP may change.")
+
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -192,13 +196,22 @@ class RoutersFilterAction(tables.FilterAction):
 
 
 class RoutersTable(tables.DataTable):
+    STATUS_DISPLAY_CHOICES = (
+        ("active", pgettext_lazy("current status of router", u"Active")),
+        ("error", pgettext_lazy("current status of router", u"Error")),
+    )
+    ADMIN_STATE_DISPLAY_CHOICES = (
+        ("UP", pgettext_lazy("Admin state of a Router", u"UP")),
+        ("DOWN", pgettext_lazy("Admin state of a Router", u"DOWN")),
+    )
+
     name = tables.Column("name",
                          verbose_name=_("Name"),
                          link="horizon:project:routers:detail")
     status = tables.Column("status",
-                           filters=(filters.title,),
                            verbose_name=_("Status"),
-                           status=True)
+                           status=True,
+                           display_choices=STATUS_DISPLAY_CHOICES)
     distributed = tables.Column("distributed",
                                 filters=(filters.yesno, filters.capfirst),
                                 verbose_name=_("Distributed"))
@@ -208,6 +221,9 @@ class RoutersTable(tables.DataTable):
                        verbose_name=_("HA mode"))
     ext_net = tables.Column(get_external_network,
                             verbose_name=_("External Network"))
+    admin_state = tables.Column("admin_state",
+                                verbose_name=_("Admin State"),
+                                display_choices=ADMIN_STATE_DISPLAY_CHOICES)
 
     def __init__(self, request, data=None, needs_form_wrapper=None, **kwargs):
         super(RoutersTable, self).__init__(

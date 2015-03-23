@@ -4,14 +4,14 @@
 # 
 # Translators:
 # ChangBo Guo(gcb) <glongwave@gmail.com>, 2014
-# LIU Yulong <dragon889@163.com>, 2014
+# LIU Yulong <dragon889@163.com>, 2014-2015
 # Xiao Xi LIU <liuxx@cn.ibm.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 15:13-0600\n"
-"PO-Revision-Date: 2015-02-02 19:18+0000\n"
+"POT-Creation-Date: 2015-03-16 22:31-0500\n"
+"PO-Revision-Date: 2015-03-17 03:17+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/horizon/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: base.py:483 templates/horizon/common/_modal_form_update_metadata.html:38
+#: base.py:475
 msgid "Other"
 msgstr "其它"
 
@@ -38,12 +38,12 @@ msgstr "您无权访问 %s"
 msgid "A %(resource)s with the name \"%(name)s\" already exists."
 msgstr "已经存在一个资源%(resource)s名称为\"%(name)s\"。"
 
-#: exceptions.py:230
+#: exceptions.py:235
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "无权: %s"
 
-#: exceptions.py:233
+#: exceptions.py:238
 msgid "Unauthorized. Please try logging in again."
 msgstr "未授权。请尝试重新登录。"
 
@@ -81,7 +81,7 @@ msgid "Submit"
 msgstr "提交"
 
 #: forms/views.py:133
-#: templates/horizon/common/_modal_form_update_metadata.html:235
+#: templates/horizon/common/_modal_form_update_metadata.html:25
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "取消"
@@ -89,8 +89,6 @@ msgstr "取消"
 #: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:21
 #: templates/horizon/common/_data_table_table_actions.html:33
-#: templates/horizon/common/_modal_form_update_metadata.html:28
-#: templates/horizon/common/_modal_form_update_metadata.html:97
 #: templates/horizon/common/_workflow_step_update_members.html:14
 #: templates/horizon/common/_workflow_step_update_members.html:23
 msgid "Filter"
@@ -98,7 +96,7 @@ msgstr "筛选"
 
 #: tables/actions.py:645
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "这个动作不能撤消。"
 
 #: tables/actions.py:767
 #, python-format
@@ -295,7 +293,7 @@ msgstr "浮动IP"
 #: templates/horizon/common/_limit_summary.html:29
 #, python-format
 msgid "Allocated <span> %(used)s </span> of <span> %(available)s </span>"
-msgstr ""
+msgstr "已分配 <span> %(used)s </span> 于 <span> %(available)s </span>"
 
 #: templates/horizon/common/_limit_summary.html:35
 msgid "Security Groups"
@@ -309,44 +307,7 @@ msgstr "云硬盘"
 msgid "Volume Storage"
 msgstr "卷存储"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:12
-msgid ""
-"\n"
-"        You can specify metadata by adding items from the left column to\n"
-"        the right column. You may select the metadata added to glance\n"
-"        dictionary or you can use the \"Other\" option using a key of\n"
-"        your choice.\n"
-"      "
-msgstr "\n你可以通过从左边栏目目录中选取并移至右边栏目\n来指定元数据。你可以选择已添加至glance目录字典\n中的现成元数据，也可以使用\"其他\"选项来自定义\n元数据。"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:26
-msgid "Available Metadata"
-msgstr "可用的元数据"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:56
-msgid "Duplicate keys are not allowed"
-msgstr "复制密钥是不允许的"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:84
-#: templates/horizon/common/_modal_form_update_metadata.html:196
-msgid "No available metadata"
-msgstr "没有可用的元数据"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:95
-msgid "Existing Metadata"
-msgstr "已存在的元数据"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:212
-msgid ""
-"\n"
-"          You can specify resource metadata by moving items from the left\n"
-"          column to the right column. In the left columns there are metadata\n"
-"          definitions from the Glance Metadata Catalog. Use the \"Other\" option\n"
-"          to add metadata with the key of your choice.\n"
-"        "
-msgstr "\n你可以通过从左边栏目目录中选取并移至右边栏目\n来指定资源的元数据。在左边栏目中是来自\nGlance元数据目录的元数据定义。使用\"其他\"选项\n来增加你自定的元数据。"
-
-#: templates/horizon/common/_modal_form_update_metadata.html:234
+#: templates/horizon/common/_modal_form_update_metadata.html:24
 #: workflows/base.py:594
 msgid "Save"
 msgstr "保存"
@@ -407,7 +368,7 @@ msgstr "这一时期的GB-小时数:"
 
 #: templates/horizon/common/_usage_summary.html:24
 msgid "This Period's RAM-Hours:"
-msgstr ""
+msgstr "这一时期的内存-小时数"
 
 #: templates/horizon/common/_workflow.html:40
 msgid "Back"
@@ -421,26 +382,26 @@ msgstr "下一步"
 msgid "Horizon"
 msgstr "控制面板"
 
-#: templatetags/horizon.py:133 templatetags/horizon.py:144
+#: templatetags/horizon.py:137 templatetags/horizon.py:148
 msgid "No Limit"
 msgstr "无限制"
 
-#: templatetags/horizon.py:136 templatetags/horizon.py:138
+#: templatetags/horizon.py:140 templatetags/horizon.py:142
 msgid "Available"
 msgstr "可用配额"
 
-#: templatetags/sizeformat.py:49 templatetags/sizeformat.py:54
+#: templatetags/sizeformat.py:51 templatetags/sizeformat.py:56
 #, python-format
 msgid "%(size)d Byte"
 msgid_plural "%(size)d Bytes"
 msgstr[0] "%(size)d 字节"
 
-#: templatetags/sizeformat.py:57
+#: templatetags/sizeformat.py:59
 #, python-format
 msgid "%s KB"
 msgstr "%s KB"
 
-#: templatetags/sizeformat.py:60
+#: templatetags/sizeformat.py:61
 #, python-format
 msgid "%s MB"
 msgstr "%s MB"
@@ -450,17 +411,17 @@ msgstr "%s MB"
 msgid "%s GB"
 msgstr "%s GB"
 
-#: templatetags/sizeformat.py:66
+#: templatetags/sizeformat.py:65
 #, python-format
 msgid "%s TB"
 msgstr "%s TB"
 
-#: templatetags/sizeformat.py:68
+#: templatetags/sizeformat.py:66
 #, python-format
 msgid "%s PB"
 msgstr "%s PB"
 
-#: templatetags/sizeformat.py:77
+#: templatetags/sizeformat.py:74
 msgid "0 Bytes"
 msgstr "0字节"
 
@@ -476,25 +437,33 @@ msgid "Sold Puppy"
 msgid_plural "Sold Puppies"
 msgstr[0] "已售出的小狗"
 
+#: test/tests/views.py:59
+msgid "Fake"
+msgstr "伪"
+
 #: utils/filters.py:49
 msgid "Never"
 msgstr "从不"
 
-#: utils/validators.py:23 utils/validators.py:47
+#: utils/validators.py:26 utils/validators.py:50
 msgid "Not a valid port number"
 msgstr "不是一个有效的端口号"
 
-#: utils/validators.py:28
+#: utils/validators.py:31
 msgid "Not a valid IP protocol number"
 msgstr "不是一个有效的IP协议号"
 
-#: utils/validators.py:42
+#: utils/validators.py:45
 msgid "One colon allowed in port range"
 msgstr "用冒号分隔端口区间"
 
-#: utils/validators.py:49
+#: utils/validators.py:52
 msgid "Port number must be integer"
 msgstr "端口号必须为整数"
+
+#: utils/validators.py:59
+msgid "The string may only contain ASCII printable characters."
+msgstr ""
 
 #: workflows/base.py:71
 msgid "Processing..."

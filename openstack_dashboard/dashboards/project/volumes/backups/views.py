@@ -30,12 +30,17 @@ from openstack_dashboard.dashboards.project.volumes.backups \
 
 class CreateBackupView(forms.ModalFormView):
     form_class = backup_forms.CreateBackupForm
+    modal_header = _("Create Volume Backup")
     template_name = 'project/volumes/backups/create_backup.html'
+    submit_label = _("Create Volume Backup")
+    submit_url = "horizon:project:volumes:volumes:create_backup"
     success_url = reverse_lazy("horizon:project:volumes:backups_tab")
 
     def get_context_data(self, **kwargs):
         context = super(CreateBackupView, self).get_context_data(**kwargs)
         context['volume_id'] = self.kwargs['volume_id']
+        args = (self.kwargs['volume_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):
@@ -45,6 +50,7 @@ class CreateBackupView(forms.ModalFormView):
 class BackupDetailView(tabs.TabView):
     tab_group_class = backup_tabs.BackupDetailTabs
     template_name = 'project/volumes/backups/detail.html'
+    page_title = _("Volume Backup Details: {{ backup.name }}")
 
     def get_context_data(self, **kwargs):
         context = super(BackupDetailView, self).get_context_data(**kwargs)
@@ -53,10 +59,6 @@ class BackupDetailView(tabs.TabView):
         context["backup"] = backup
         context["url"] = self.get_redirect_url()
         context["actions"] = table.render_row_actions(backup)
-        context["page_title"] = _("Volume Backup Details: "
-                                  "%(backup_name)s") % {'backup_name':
-                                                        backup.name}
-
         return context
 
     @memoized.memoized_method
@@ -82,12 +84,17 @@ class BackupDetailView(tabs.TabView):
 
 class RestoreBackupView(forms.ModalFormView):
     form_class = backup_forms.RestoreBackupForm
+    modal_header = _("Restore Volume Backup")
     template_name = 'project/volumes/backups/restore_backup.html'
+    submit_label = _("Restore Backup to Volume")
+    submit_url = "horizon:project:volumes:volumes:create_backup"
     success_url = reverse_lazy('horizon:project:volumes:index')
 
     def get_context_data(self, **kwargs):
         context = super(RestoreBackupView, self).get_context_data(**kwargs)
         context['backup_id'] = self.kwargs['backup_id']
+        args = (self.kwargs['backup_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):

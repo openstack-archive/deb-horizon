@@ -10,6 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common import by
 
 from openstack_dashboard.test.integration_tests.pages import navigation
@@ -24,6 +25,7 @@ class BasePage(pageobject.PageObject):
 
     _heading_locator = (by.By.CSS_SELECTOR, 'div.page-header > h2')
     _error_msg_locator = (by.By.CSS_SELECTOR, 'div.alert-danger.alert')
+    _spinner_locator = (by.By.CSS_SELECTOR, 'div.modal-backdrop')
 
     @property
     def heading(self):
@@ -61,6 +63,16 @@ class BasePage(pageobject.PageObject):
 
     def go_to_help_page(self):
         self.topbar.user_dropdown_menu.click_on_help()
+
+    def _wait_till_spinner_disappears(self):
+        try:
+            spinner = self._get_element(*self._spinner_locator)
+            self._wait_till_element_disappears(spinner)
+        except NoSuchElementException:
+            # NOTE(mpavlase): This is valid state. When request completes
+            # even before Selenium get a chance to get the spinner element,
+            # it will raise the NoSuchElementException exception.
+            pass
 
 
 class BaseNavigationPage(BasePage, navigation.Navigation):

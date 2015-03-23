@@ -19,6 +19,8 @@
 import json
 import logging
 
+from oslo_utils import units
+
 from django import conf
 from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
@@ -42,6 +44,7 @@ LOG = logging.getLogger(__name__)
 class IndexView(tables.DataTableView):
     table_class = project_tables.AdminImagesTable
     template_name = 'admin/images/index.html'
+    page_title = _("Images")
 
     def has_prev_data(self, table):
         return self._prev
@@ -92,7 +95,7 @@ class IndexView(tables.DataTableView):
                 invalid_msg = ('API query is not valid and is ignored: %s=%s'
                                % (filter_field, filter_string))
                 try:
-                    filter_string = long(float(filter_string) * (1024 ** 2))
+                    filter_string = long(float(filter_string) * (units.Mi))
                     if filter_string >= 0:
                         filters[filter_field] = filter_string
                     else:
@@ -108,12 +111,14 @@ class CreateView(views.CreateView):
     template_name = 'admin/images/create.html'
     form_class = project_forms.AdminCreateImageForm
     success_url = reverse_lazy('horizon:admin:images:index')
+    page_title = _("Create An Image")
 
 
 class UpdateView(views.UpdateView):
     template_name = 'admin/images/update.html'
     form_class = project_forms.AdminUpdateImageForm
     success_url = reverse_lazy('horizon:admin:images:index')
+    page_title = _("Update Image")
 
 
 class DetailView(views.DetailView):
@@ -125,6 +130,7 @@ class UpdateMetadataView(forms.ModalFormView):
     template_name = "admin/images/update_metadata.html"
     form_class = project_forms.UpdateMetadataForm
     success_url = reverse_lazy('horizon:admin:images:index')
+    page_title = _("Update Image Metadata")
 
     def get_initial(self):
         image = self.get_object()

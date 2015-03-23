@@ -18,6 +18,7 @@
 
 import logging
 
+from django.conf import settings
 from django.forms import ValidationError  # noqa
 from django import http
 from django.utils.translation import ugettext_lazy as _
@@ -26,6 +27,7 @@ from django.views.decorators.debug import sensitive_variables  # noqa
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
+from horizon.utils import functions as utils
 from horizon.utils import validators
 
 from openstack_dashboard import api
@@ -33,6 +35,26 @@ from openstack_dashboard import api
 
 LOG = logging.getLogger(__name__)
 PROJECT_REQUIRED = api.keystone.VERSIONS.active < 3
+
+
+class PasswordMixin(forms.SelfHandlingForm):
+    password = forms.RegexField(
+        label=_("Password"),
+        widget=forms.PasswordInput(render_value=False),
+        regex=validators.password_validator(),
+        error_messages={'invalid': validators.password_validator_msg()})
+    confirm_password = forms.CharField(
+        label=_("Confirm Password"),
+        widget=forms.PasswordInput(render_value=False))
+    no_autocomplete = True
+
+    def clean(self):
+        '''Check to make sure password fields match.'''
+        data = super(forms.Form, self).clean()
+        if 'password' in data:
+            if data['password'] != data.get('confirm_password', None):
+                raise ValidationError(_('Passwords do not match.'))
+        return data
 
 
 class BaseUserForm(forms.SelfHandlingForm):
@@ -58,19 +80,11 @@ class BaseUserForm(forms.SelfHandlingForm):
             project_choices.insert(0, ('', _("Select a project")))
         self.fields['project'].choices = project_choices
 
-    def clean(self):
-        '''Check to make sure password fields match.'''
-        data = super(forms.Form, self).clean()
-        if 'password' in data:
-            if data['password'] != data.get('confirm_password', None):
-                raise ValidationError(_('Passwords do not match.'))
-        return data
-
 
 ADD_PROJECT_URL = "horizon:identity:projects:create"
 
 
-class CreateUserForm(BaseUserForm):
+class CreateUserForm(PasswordMixin, BaseUserForm):
     # Hide the domain_id and domain_name by default
     domain_id = forms.CharField(label=_("Domain ID"),
                                 required=False,
@@ -82,24 +96,19 @@ class CreateUserForm(BaseUserForm):
     email = forms.EmailField(
         label=_("Email"),
         required=False)
-    password = forms.RegexField(
-        label=_("Password"),
-        widget=forms.PasswordInput(render_value=False),
-        regex=validators.password_validator(),
-        error_messages={'invalid': validators.password_validator_msg()})
-    confirm_password = forms.CharField(
-        label=_("Confirm Password"),
-        widget=forms.PasswordInput(render_value=False))
     project = forms.DynamicChoiceField(label=_("Primary Project"),
                                        required=PROJECT_REQUIRED,
                                        add_item_link=ADD_PROJECT_URL)
     role_id = forms.ChoiceField(label=_("Role"),
                                 required=PROJECT_REQUIRED)
-    no_autocomplete = True
 
     def __init__(self, *args, **kwargs):
         roles = kwargs.pop('roles')
         super(CreateUserForm, self).__init__(*args, **kwargs)
+        # Reorder form fields from multiple inheritance
+        self.fields.keyOrder = ["domain_id", "domain_name", "name",
+                                "email", "password", "confirm_password",
+                                "project", "role_id"]
         role_choices = [(role.id, role.name) for role in roles]
         self.fields['role_id'].choices = role_choices
 
@@ -165,40 +174,23 @@ class UpdateUserForm(BaseUserForm):
     email = forms.EmailField(
         label=_("Email"),
         required=False)
-    password = forms.RegexField(
-        label=_("Password"),
-        widget=forms.PasswordInput(render_value=False),
-        regex=validators.password_validator(),
-        required=False,
-        error_messages={'invalid': validators.password_validator_msg()})
-    confirm_password = forms.CharField(
-        label=_("Confirm Password"),
-        widget=forms.PasswordInput(render_value=False),
-        required=False)
     project = forms.ChoiceField(label=_("Primary Project"),
                                 required=PROJECT_REQUIRED)
-    no_autocomplete = True
 
     def __init__(self, request, *args, **kwargs):
         super(UpdateUserForm, self).__init__(request, *args, **kwargs)
 
         if api.keystone.keystone_can_edit_user() is False:
-            for field in ('name', 'email', 'password', 'confirm_password'):
+            for field in ('name', 'email'):
                 self.fields.pop(field)
-                # For keystone V3, display the two fields in read-only
+        # For keystone V3, display the two fields in read-only
         if api.keystone.VERSIONS.active >= 3:
             readonlyInput = forms.TextInput(attrs={'readonly': 'readonly'})
             self.fields["domain_id"].widget = readonlyInput
             self.fields["domain_name"].widget = readonlyInput
 
-    # We have to protect the entire "data" dict because it contains the
-    # password and confirm_password strings.
-    @sensitive_variables('data', 'password')
     def handle(self, request, data):
         user = data.pop('id')
-
-        # Throw away the password confirmation, we're done with it.
-        data.pop('confirm_password', None)
 
         data.pop('domain_id')
         data.pop('domain_name')
@@ -215,6 +207,61 @@ class UpdateUserForm(BaseUserForm):
         except Exception:
             response = exceptions.handle(request, ignore=True)
             messages.error(request, _('Unable to update the user.'))
+
+        if isinstance(response, http.HttpResponse):
+            return response
+        else:
+            return True
+
+
+class ChangePasswordForm(PasswordMixin, forms.SelfHandlingForm):
+    id = forms.CharField(widget=forms.HiddenInput)
+    name = forms.CharField(
+        label=_("User Name"),
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        required=False)
+
+    def __init__(self, request, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(request, *args, **kwargs)
+
+        if getattr(settings, 'ENFORCE_PASSWORD_CHECK', False):
+            self.fields["admin_password"] = forms.CharField(
+                label=_("Admin Password"),
+                widget=forms.PasswordInput(render_value=False))
+            # Reorder form fields from multiple inheritance
+            self.fields.keyOrder = ["id", "name", "admin_password",
+                                    "password", "confirm_password"]
+
+    @sensitive_variables('data', 'password', 'admin_password')
+    def handle(self, request, data):
+        user_id = data.pop('id')
+        password = data.pop('password')
+        admin_password = None
+
+        # Throw away the password confirmation, we're done with it.
+        data.pop('confirm_password', None)
+
+        # Verify admin password before changing user password
+        if getattr(settings, 'ENFORCE_PASSWORD_CHECK', False):
+            admin_password = data.pop('admin_password')
+            if not api.keystone.user_verify_admin_password(request,
+                                                           admin_password):
+                self.api_error(_('The admin password is incorrect.'))
+                return False
+
+        try:
+            response = api.keystone.user_update_password(
+                request, user_id, password)
+            if user_id == request.user.id:
+                return utils.logout_with_message(
+                    request,
+                    _('Password changed. Please log in to continue.'),
+                    redirect=False)
+            messages.success(request,
+                             _('User password has been updated successfully.'))
+        except Exception:
+            response = exceptions.handle(request, ignore=True)
+            messages.error(request, _('Unable to update the user password.'))
 
         if isinstance(response, http.HttpResponse):
             return response
