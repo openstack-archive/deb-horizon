@@ -1,9 +1,28 @@
-Description: Upstream was using the wrong package name.
- Upstream was using i instead of l, this fixes it.
-Author: Thomas Goirand <zigo@debian.org>
-Forwarded: no
-Last-Update: 2015-03-23
+Subject: Updated incorrect name for angular lrdragndrop
+ Updated incorrect name for angular lrdragndrop
+ .
+ Updated incorrect package name.
+ Currently blocking packager from uploading due to incorrect name.
+Author: Thai Tran <tqtran@us.ibm.com>
+Date: Tue, 31 Mar 2015 01:41:47 +0000 (-0700)
+X-Git-Url: https://review.openstack.org/gitweb?p=openstack%2Fhorizon.git;a=commitdiff_plain;h=4623b448559c814711de3aa814db09540994da63
+Depends-On: I808b34a9d13a16d82968904dd44515f3d67f0fde
+Bug-Ubuntu: https://launchpad.net/bugs/1438543
+Change-Id: Iecf00771f42b2eb76a9ff790b2ad857cf3cdc809
+Origin: Upstream, https://review.openstack.org/#/c/169133
+Last-Update: 2015-03-31
 
+--- horizon-2015.1~b3.orig/requirements.txt
++++ horizon-2015.1~b3/requirements.txt
+@@ -42,7 +42,7 @@ six>=1.9.0
+ XStatic>=1.0.0  # MIT License
+ XStatic-Angular>=1.3.7  # MIT License
+ XStatic-Angular-Bootstrap>=0.11.0.2  # MIT License
+-XStatic-Angular-Irdragndrop>=1.0.2.1  # MIT License
++XStatic-Angular-lrdragndrop>=1.0.2.1  # MIT License
+ XStatic-Bootstrap-Datepicker>=1.3.1.0  # Apache 2.0 License
+ XStatic-Bootstrap-SCSS>=3  # Apache 2.0 License
+ XStatic-D3>=3.1.6.2  # BSD License (3 clause)
 --- horizon-2015.1~b3.orig/horizon/templates/horizon/_scripts.html
 +++ horizon-2015.1~b3/horizon/templates/horizon/_scripts.html
 @@ -11,7 +11,7 @@
@@ -46,14 +65,3 @@ Last-Update: 2015-03-23
      ('horizon/lib/angular',
          xstatic.main.XStatic(xstatic.pkg.angular_smart_table).base_dir),
      ('horizon/lib/bootstrap_datepicker',
---- horizon-2015.1~b3.orig/requirements.txt
-+++ horizon-2015.1~b3/requirements.txt
-@@ -42,7 +42,7 @@ six>=1.9.0
- XStatic>=1.0.0  # MIT License
- XStatic-Angular>=1.3.7  # MIT License
- XStatic-Angular-Bootstrap>=0.11.0.2  # MIT License
--XStatic-Angular-Irdragndrop>=1.0.2.1  # MIT License
-+XStatic-Angular-Lrdragndrop>=1.0.2.1  # MIT License
- XStatic-Bootstrap-Datepicker>=1.3.1.0  # Apache 2.0 License
- XStatic-Bootstrap-SCSS>=3  # Apache 2.0 License
- XStatic-D3>=3.1.6.2  # BSD License (3 clause)
