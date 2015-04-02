@@ -1,11 +1,10 @@
-horizon (2015.1~b3-1~bpo80+1) UNRELEASED; urgency=medium
+horizon (2015.1~b3-1) UNRELEASED; urgency=medium
 
   * New upstream release.
   * Fixed (build-)depends for this release.
   * Removed upstream-applied patches.
-  * Rebuilt by bop.
 
- -- Thomas Goirand <zigo@debian.org>  Thu, 02 Apr 2015 16:22:38 +0200
+ -- Thomas Goirand <zigo@debian.org>  Thu, 25 Dec 2014 17:36:23 +0800
 
 horizon (2014.2.1-1) experimental; urgency=medium
 
