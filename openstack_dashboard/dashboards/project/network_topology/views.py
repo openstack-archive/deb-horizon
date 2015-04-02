@@ -170,7 +170,7 @@ class JSONView(View):
                     request, console_type, server)[0].lower()
             except exceptions.NotAvailable:
                 console = None
-                exceptions.handle(request, _('No console available.'))
+
             server_data = {'name': server.name,
                            'status': server.status,
                            'task': getattr(server, 'OS-EXT-STS:task_state'),
@@ -259,7 +259,8 @@ class JSONView(View):
                   'fixed_ips': port.fixed_ips,
                   'device_owner': port.device_owner,
                   'status': port.status}
-                 for port in neutron_ports]
+                 for port in neutron_ports
+                 if port.device_owner != 'network:router_ha_interface']
         self.add_resource_url('horizon:project:networks:ports:detail',
                               ports)
         return ports

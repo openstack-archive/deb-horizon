@@ -19,11 +19,11 @@ from horizon import exceptions
 from horizon.utils.memoized import memoized  # noqa
 from openstack_dashboard.api import base
 
+from saharaclient.api.base import APIException
 from saharaclient import client as api_client
 
 
 LOG = logging.getLogger(__name__)
-
 
 # "type" of Sahara service registered in keystone
 SAHARA_SERVICE = 'data-processing'
@@ -43,6 +43,23 @@ VERSIONS.load_supported_version(1.1, {"client": api_client,
                                       "version": 1.1})
 
 
+def safe_call(func, *args, **kwargs):
+    """Call a function ignoring Not Found error
+
+    This method is supposed to be used only for safe retrieving Sahara
+    objects. If the object is no longer available the None should be
+    returned.
+
+    """
+
+    try:
+        return func(*args, **kwargs)
+    except APIException as e:
+        if e.error_code == 404:
+            return None  # Not found. Exiting with None
+        raise  # Other errors are not expected here
+
+
 @memoized
 def client(request):
     try:
@@ -53,11 +70,15 @@ def client(request):
         service_type = SAHARA_SERVICE_FALLBACK
         sahara_url = base.url_for(request, service_type)
 
+    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+    cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
     return api_client.Client(VERSIONS.get_active_version()["version"],
                              sahara_url=sahara_url,
                              service_type=service_type,
                              project_id=request.user.project_id,
-                             input_auth_token=request.user.token.id)
+                             input_auth_token=request.user.token.id,
+                             insecure=insecure,
+                             cacert=cacert)
 
 
 def image_list(request, search_opts=None):
@@ -108,7 +129,8 @@ def nodegroup_template_create(request, name, plugin_name, hadoop_version,
                               floating_ip_pool=None, security_groups=None,
                               auto_security_group=False,
                               availability_zone=False,
-                              volumes_availability_zone=False):
+                              volumes_availability_zone=False,
+                              is_proxy_gateway=False):
     return client(request).node_group_templates.create(
         name,
         plugin_name,
@@ -123,7 +145,8 @@ def nodegroup_template_create(request, name, plugin_name, hadoop_version,
         security_groups,
         auto_security_group,
         availability_zone,
-        volumes_availability_zone)
+        volumes_availability_zone,
+        is_proxy_gateway)
 
 
 def nodegroup_template_list(request, search_opts=None):
@@ -149,7 +172,8 @@ def nodegroup_template_update(request, ngt_id, name, plugin_name,
                               node_configs=None, floating_ip_pool=None,
                               security_groups=None, auto_security_group=False,
                               availability_zone=False,
-                              volumes_availability_zone=False):
+                              volumes_availability_zone=False,
+                              is_proxy_gateway=False):
     return client(request).node_group_templates.update(
         ngt_id,
         name,
@@ -165,7 +189,8 @@ def nodegroup_template_update(request, ngt_id, name, plugin_name,
         security_groups,
         auto_security_group,
         availability_zone,
-        volumes_availability_zone)
+        volumes_availability_zone,
+        is_proxy_gateway)
 
 
 def cluster_template_create(request, name, plugin_name, hadoop_version,
@@ -319,18 +344,42 @@ def job_execution_create(request, job_id, cluster_id,
                                                  configs)
 
 
+def _resolve_job_execution_names(job_execution, cluster=None,
+                                 job=None):
+
+    job_execution.cluster_name = None
+    if cluster:
+        job_execution.cluster_name = cluster.name
+
+    job_execution.job_name = None
+    if job:
+        job_execution.job_name = job.name
+
+    return job_execution
+
+
 def job_execution_list(request, search_opts=None):
-    jex_list = client(request).job_executions.list(search_opts)
+    job_execution_list = client(request).job_executions.list(search_opts)
     job_dict = dict((j.id, j) for j in job_list(request))
     cluster_dict = dict((c.id, c) for c in cluster_list(request))
-    for jex in jex_list:
-        setattr(jex, 'job_name', job_dict.get(jex.job_id).name)
-        setattr(jex, 'cluster_name', cluster_dict.get(jex.cluster_id).name)
-    return jex_list
+
+    resolved_job_execution_list = [
+        _resolve_job_execution_names(
+            job_execution,
+            cluster_dict.get(job_execution.cluster_id),
+            job_dict.get(job_execution.job_id))
+        for job_execution in job_execution_list
+    ]
+
+    return resolved_job_execution_list
 
 
 def job_execution_get(request, jex_id):
-    return client(request).job_executions.get(jex_id)
+    jex = client(request).job_executions.get(jex_id)
+    cluster = safe_call(client(request).clusters.get, jex.cluster_id)
+    job = safe_call(client(request).jobs.get, jex.job_id)
+
+    return _resolve_job_execution_names(jex, cluster, job)
 
 
 def job_execution_delete(request, jex_id):

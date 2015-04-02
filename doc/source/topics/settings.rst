@@ -347,6 +347,19 @@ Valid values are  ``"AUTO"``(default), ``"VNC"``, ``"SPICE"``, ``"RDP"``,
 ``"SERIAL"`` is available since 2005.1(Kilo).
 
 
+``SWIFT_FILE_TRANSFER_CHUNK_SIZE``
+----------------------------------
+
+.. versionadded:: 2015.1(Kilo)
+
+Default: ``512 * 1024``
+
+This setting specifies the size of the chunk (in bytes) for downloading objects
+from Swift. Do not make it very large (higher than several dozens of Megabytes,
+exact number depends on your connection speed), otherwise you may encounter
+socket timeout. The default value is 524288 bytes (or 512 Kilobytes).
+
+
 ``INSTANCE_LOG_LENGTH``
 -----------------------
 
@@ -379,6 +392,19 @@ This example sorts flavors by vcpus in descending order::
          'key':'vcpus',
          'reverse': True,
     }
+
+``CUSTOM_THEME_PATH``
+---------------------
+
+.. versionadded:: 2015.1(Kilo)
+
+Default: ``"static/themes/default"``
+
+This setting allows Horizon to use a custom theme. The theme folder
+should contains one _variables.scss file and one _styles.scss file.
+_variables.scss contains all the bootstrap and horizon specific variables
+which are used to style the GUI. Whereas _styles.scss contains extra styling.
+For example themes, see: /horizon/openstack_dashboard/static/themes/
 
 ``DROPDOWN_MAX_ITEMS``
 ----------------------
@@ -648,6 +674,49 @@ Default: ``"http://%s:5000/v2.0" % OPENSTACK_HOST``
 The full URL for the Keystone endpoint used for authentication. Unless you
 are using HTTPS, running your Keystone server on a nonstandard port, or using
 a nonstandard URL scheme you shouldn't need to touch this setting.
+
+
+``WEBSSO_ENABLED``
+------------------
+
+.. versionadded:: 2015.1(Kilo)
+
+Default: ``False``
+
+Enables keystone web single-sign-on if set to True. For this feature to work,
+make sure that you are using Keystone V3 and Django OpenStack Auth V1.2.0 or
+later.
+
+
+``WEBSSO_INITIAL_CHOICE``
+-------------------------
+
+.. versionadded:: 2015.1(Kilo)
+
+Default: ``"credentials"``
+
+Determines the default authentication mechanism. When user lands on the login
+page, this is the first choice they will see.
+
+
+``WEBSSO_CHOICES``
+------------------
+
+.. versionadded:: 2015.1(Kilo)
+
+Default::
+
+        (
+          ("credentials", _("Keystone Credentials")),
+          ("oidc", _("OpenID Connect")),
+          ("saml2", _("Security Assertion Markup Language"))
+        )
+
+This is the list of authentication mechanisms available to the user. It includes
+Keystone federation protocols such as OpenID Connect and SAML. The list of
+choices is completely configurable, so as long as the id remains intact. Do not
+remove the credentials mechanism unless you are sure. Once removed, even admins
+will have no way to log into the system via the dashboard.
 
 
 ``OPENSTACK_CINDER_FEATURES``
@@ -938,9 +1007,27 @@ Specifies the location where the access to the dashboard is configured in
 the web server.
 
 For example, if you're accessing the Dashboard via
-https://<your server>/horizon, you'd set this to ``"/horizon"``.
+https://<your server>/dashboard, you would set this to ``"/dashboard/"``.
 
+Additionally, setting the ``"$webroot"`` SCSS variable is required. You
+can change this directly in
+``"openstack_dasbboard/static/dashboard/scss/_variables.scss"`` or in the
+``"_variables.scss"`` file in your custom theme. For more information on
+custom themes, see: ``"CUSTOM_THEME_PATH"``.
 
+For your convenience, a custom theme for only setting the web root has been
+provided see: ``"/horizon/openstack_dashboard/static/themes/webroot"``
+
+.. note::
+
+    Additional settings may be required in the config files of your webserver
+    of choice. For example to make ``"/dashboard/"`` the web root in apache,
+    the ``"sites-available/horizon.conf"`` requires a couple of additional
+    aliases set::
+
+        Alias /dashboard/static %HORIZON_DIR%/static
+
+        Alias /dashboard/media %HORIZON_DIR%/openstack_dashboard/static
 
 
 Django Settings (Partial)

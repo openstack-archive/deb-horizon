@@ -180,6 +180,7 @@ horizon.datatables.confirm = function (action) {
     return;
   }
   action_string = $action.text();
+  help_text = $action.attr("help_text") || "";
   name_string = "";
   // Add the display name defined by table.get_object_display(datum)
   closest_table_id = $(action).closest("table").attr("id");
@@ -199,7 +200,6 @@ horizon.datatables.confirm = function (action) {
     }
     name_string = interpolate(gettext("You have selected %s. "), [name_string]);
   }
-  help_text = $(action).attr("help_text");
   title = interpolate(gettext("Confirm %s"), [action_string]);
   body = name_string + gettext("Please confirm your selection. ") + help_text;
   modal = horizon.modals.create(title, body, action_string);
@@ -351,6 +351,30 @@ horizon.datatables.disable_buttons = function() {
   });
 };
 
+$.tablesorter.addParser({
+  id: 'uuid',
+  is: function(s) {
+    return false;
+  },
+  format: function(s) {
+    // Calculate a float that is based on the strings alphabetical position.
+    //
+    // Each character in the string has some significance in the
+    // overall calculation, starting at 1.0 and is divided down by 2 decimal
+    // places according to the chars position in the string.
+    // For example the string "SO" would become 83.79 which is then
+    // numerically comparable to other strings.
+    s = s.toUpperCase();
+    value = 0.0;
+    for(i = 0; i < s.length; i++) {
+      char_offset = 1.0 / Math.pow(100, i);
+      value = value + (s.charCodeAt(i) * char_offset);
+    }
+    return value;
+  },
+  type: 'numeric'
+});
+
 horizon.datatables.update_footer_count = function (el, modifier) {
   var $el = $(el),
     $browser, $footer, row_count, footer_text_template, footer_text;
@@ -417,6 +441,8 @@ horizon.datatables.set_table_sorting = function (parent) {
           header_options[i] = {sorter: 'timestampSorter'};
         } else if ($th.data('type') == 'naturalSort'){
           header_options[i] = {sorter: 'naturalSort'};
+        } else if ($th.data('type') == 'uuid'){
+          header_options[i] = {sorter: 'uuid'};
         }
       });
       $table.tablesorter({

@@ -274,6 +274,7 @@ class DeleteTransfer(VolumePolicyTargetMixin, tables.Action):
     verbose_name = _("Cancel Transfer")
     policy_rules = (("volume", "volume:delete_transfer"),)
     classes = ('btn-danger',)
+    help_text = _("This action cannot be undone.")
 
     def allowed(self, request, volume):
         return (volume.status == "awaiting-transfer" and
@@ -321,7 +322,7 @@ def get_attachment_name(request, attachment):
         url = reverse("horizon:project:instances:detail", args=(server_id,))
         instance = '<a href="%s">%s</a>' % (url, html.escape(name))
     except NoReverseMatch:
-        instance = name
+        instance = html.escape(name)
     return instance
 
 

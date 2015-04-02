@@ -1,7 +1,8 @@
 (function () {
   'use strict';
 
-  var push = Array.prototype.push;
+  var push = Array.prototype.push,
+      noop = angular.noop;
 
   /**
    * @ngdoc overview
@@ -50,7 +51,8 @@
           allNamespacesPromise;
 
       // Constants (const in ES6)
-      var SOURCE_TYPE_IMAGE = 'image',
+      var NON_BOOTABLE_IMAGE_TYPES = ['aki', 'ari'],
+          SOURCE_TYPE_IMAGE = 'image',
           SOURCE_TYPE_SNAPSHOT = 'snapshot',
           SOURCE_TYPE_VOLUME = 'volume',
           SOURCE_TYPE_VOLUME_SNAPSHOT = 'volume_snapshot';
@@ -130,25 +132,24 @@
 
       // Local function.
       function initializeNewInstanceSpec(){
-        // This might be a bad idea, but hopefully it will help step developers.
 
         model.newInstanceSpec = {
           availability_zone: null,
           admin_pass: null,
           config_drive: false,
-          user_data: '', // REQUIRED Server Key.  Null allowed.
+          user_data: '',                  // REQUIRED Server Key.  Null allowed.
           disk_config: 'AUTO',
-          flavor: [], // REQUIRED
+          flavor: null,                   // REQUIRED
           instance_count: 1,
-          key_pair: [], // REQUIRED Server Key
-          name: null, // REQUIRED
+          key_pair: [],                   // REQUIRED Server Key
+          name: null,                     // REQUIRED
           networks: [],
           profile: {},
-          security_groups: [], // REQUIRED Server Key. May be empty.
-          source_type: null, // REQUIRED for JS logic (image | snapshot | volume | volume_snapshot)
+          security_groups: [],            // REQUIRED Server Key. May be empty.
+          source_type: null,              // REQUIRED for JS logic (image | snapshot | volume | volume_snapshot)
           source: [],
-          vol_create: false, // REQUIRED for JS logic
-          vol_device_name: 'vda', // May be null
+          vol_create: false,              // REQUIRED for JS logic
+          vol_device_name: 'vda',         // May be null
           vol_delete_on_terminate: false,
           vol_size: 1
         };
@@ -183,22 +184,27 @@
 
           model.allowedBootSources.length = 0;
 
-          promise = $q.all(
-            glanceAPI.getImages().then(onGetImages),
-            neutronAPI.getNetworks().then(onGetNetworks),
-            novaAPI.getAvailabilityZones().then(onGetAvailabilityZones),
-            novaAPI.getFlavors().then(onGetFlavors),
-            novaAPI.getKeypairs().then(onGetKeypairs),
-            novaAPI.getLimits().then(onGetNovaLimits),
-            securityGroup.query().then(onGetSecurityGroups),
-            serviceCatalog.ifTypeEnabled('volume', onLoadVolumes)
-          );
+          promise = $q.all([
+            getImages(),
+            novaAPI.getAvailabilityZones().then(onGetAvailabilityZones, noop),
+            novaAPI.getFlavors().then(onGetFlavors, noop),
+            novaAPI.getKeypairs().then(onGetKeypairs, noop),
+            novaAPI.getLimits().then(onGetNovaLimits, noop),
+            securityGroup.query().then(onGetSecurityGroups, noop),
+            serviceCatalog.ifTypeEnabled('network').then(getNetworks, noop),
+            serviceCatalog.ifTypeEnabled('volume').then(getVolumes, noop)
+          ]);
 
-          promise.then(function() {
-            model.initializing = false;
-            model.initialized = true;
-            initPromise = null;
-          });
+          promise.then(
+            function() {
+              model.initializing = false;
+              model.initialized = true;
+            },
+            function () {
+              model.initializing = false;
+              model.initialized = false;
+            }
+          );
         }
 
         return promise;
@@ -264,8 +270,10 @@
       }
 
       function setFinalSpecFlavor(finalSpec) {
-        if(!finalSpec.flavor_id && finalSpec.flavor && (finalSpec.flavor.length === 1)){
-          finalSpec.flavor_id = finalSpec.flavor[0].id;
+        if ( finalSpec.flavor ) {
+          finalSpec.flavor_id = finalSpec.flavor.id;
+        } else {
+          delete finalSpec.flavor_id;
         }
 
         delete finalSpec.flavor;
@@ -320,6 +328,10 @@
 
       // Networks
 
+      function getNetworks() {
+        return neutronAPI.getNetworks().then(onGetNetworks, noop);
+      }
+
       function onGetNetworks(data) {
         model.networks.length = 0;
         push.apply(model.networks, data.data.items);
@@ -339,36 +351,49 @@
 
       // Boot Source
 
+      function getImages(){
+        return glanceAPI.getImages({status:'active'}).then(onGetImages);
+      }
+
+      function isBootableImageType(image){
+        // This is a blacklist of images that can not be booted.
+        // If the image container type is in the blacklist
+        // The evaluation will result in a 0 or greater index.
+        return NON_BOOTABLE_IMAGE_TYPES.indexOf(image.container_format) < 0;
+      }
+
       function onGetImages(data) {
         model.images.length = 0;
         push.apply(model.images, data.data.items.filter(function (image) {
-          return !image.properties || image.properties.image_type !== 'snapshot';
+          return isBootableImageType(image) &&
+            (!image.properties || image.properties.image_type !== 'snapshot');
         }));
         addAllowedBootSource(model.images, SOURCE_TYPE_IMAGE, gettext('Image'));
 
         model.imageSnapshots.length = 0;
-        push.apply(model.imageSnapshots, data.data.items.filter(function (image) {
-          return image.properties && image.properties.image_type === 'snapshot';
+        push.apply(model.imageSnapshots,data.data.items.filter(function (image) {
+          return isBootableImageType(image) &&
+            (image.properties && image.properties.image_type === 'snapshot');
         }));
 
         addAllowedBootSource(model.imageSnapshots, SOURCE_TYPE_SNAPSHOT, gettext('Instance Snapshot'));
       }
 
-      function onLoadVolumes(){
-        var volumeLoadPromises = [];
+      function getVolumes(){
+        var volumePromises = [];
         // Need to check if Volume service is enabled before getting volumes
         model.volumeBootable = true;
-        addAllowedBootSource(model.volumes, SOURCE_TYPE_VOLUME, 'Volume');
+        addAllowedBootSource(model.volumes, SOURCE_TYPE_VOLUME, gettext('Volume'));
         addAllowedBootSource(model.volumeSnapshots, SOURCE_TYPE_VOLUME_SNAPSHOT, gettext('Volume Snapshot'));
-        volumeLoadPromises.push(cinderAPI.getVolumes({ status: 'available',  bootable: 1 }).then(onGetVolumes));
-        volumeLoadPromises.push(cinderAPI.getVolumeSnapshots({ status: 'available' }).then(onGetVolumeSnapshots));
+        volumePromises.push(cinderAPI.getVolumes({ status: 'available',  bootable: 1 }).then(onGetVolumes));
+        volumePromises.push(cinderAPI.getVolumeSnapshots({ status: 'available' }).then(onGetVolumeSnapshots));
 
         // Can only boot image to volume if the Nova extension is enabled.
         novaExtensions.ifNameEnabled('BlockDeviceMappingV2Boot', function(){
           model.allowCreateVolumeFromImage = true;
         });
 
-        return $q.all(volumeLoadPromises);
+        return $q.all(volumePromises);
       }
 
       function onGetVolumes(data) {

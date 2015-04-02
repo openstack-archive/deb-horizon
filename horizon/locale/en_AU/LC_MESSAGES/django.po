@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Tom Fifield <tom@openstack.org>, 2014
+# Tom Fifield <tom@openstack.org>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-16 22:31-0500\n"
-"PO-Revision-Date: 2015-03-17 03:17+0000\n"
+"POT-Creation-Date: 2015-03-31 23:04-0500\n"
+"PO-Revision-Date: 2015-04-01 02:20+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: English (Australia) (http://www.transifex.com/projects/p/horizon/language/en_AU/)\n"
 "MIME-Version: 1.0\n"
@@ -79,7 +79,7 @@ msgid "Submit"
 msgstr "Submit"
 
 #: forms/views.py:133
-#: templates/horizon/common/_modal_form_update_metadata.html:25
+#: templates/horizon/common/_modal_form_update_metadata.html:27
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "Cancel"
@@ -94,7 +94,7 @@ msgstr "Filter"
 
 #: tables/actions.py:645
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "This action cannot be undone."
 
 #: tables/actions.py:767
 #, python-format
@@ -107,10 +107,6 @@ msgstr "%(action)s %(data_type)s"
 msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
-
-#: tables/actions.py:803 tables/base.py:1570
-msgid "N/A"
-msgstr "N/A"
 
 #: tables/actions.py:832
 #, python-format
@@ -170,6 +166,10 @@ msgstr "No match returned for the id \"%s\"."
 msgid "Please select a row before taking that action."
 msgstr "Please select a row before taking that action."
 
+#: tables/base.py:1570
+msgid "N/A"
+msgstr "N/A"
+
 #: templates/_header.html:5
 #, python-format
 msgid "Logged in as: %(username)s"
@@ -183,24 +183,35 @@ msgstr "Help"
 msgid "Sign Out"
 msgstr "Sign Out"
 
+#: templates/auth/_description.html:9
+msgid ""
+"\n"
+"      If you are not sure which authentication method to use, contact your administrator.\n"
+"    "
+msgstr ""
+
 #: templates/auth/_login.html:5
 msgid "Log In"
 msgstr "Log In"
 
-#: templates/auth/_login.html:15
+#: templates/auth/_login.html:27
 msgid "You do not have permission to access the resource:"
 msgstr "You do not have permission to access the resource:"
 
-#: templates/auth/_login.html:17
+#: templates/auth/_login.html:29
 #, python-format
 msgid ""
 "Login as different user or go back to <a href=\"%(home_url)s\"> home "
 "page</a>"
 msgstr "Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
 
-#: templates/auth/_login.html:32
+#: templates/auth/_login.html:45
 msgid "Sign In"
 msgstr "Sign In"
+
+#: templates/auth/_login.html:46
+msgid "Connect"
+msgstr ""
 
 #: templates/auth/login.html:4
 msgid "Login"
@@ -292,7 +303,7 @@ msgstr "Floating IPs"
 #: templates/horizon/common/_limit_summary.html:29
 #, python-format
 msgid "Allocated <span> %(used)s </span> of <span> %(available)s </span>"
-msgstr ""
+msgstr "Allocated <span> %(used)s </span> of <span> %(available)s </span>"
 
 #: templates/horizon/common/_limit_summary.html:35
 msgid "Security Groups"
@@ -306,7 +317,7 @@ msgstr "Volumes"
 msgid "Volume Storage"
 msgstr "Volume Storage"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:24
+#: templates/horizon/common/_modal_form_update_metadata.html:26
 #: workflows/base.py:594
 msgid "Save"
 msgstr "Save"
@@ -369,7 +380,7 @@ msgstr "This Period's GB-Hours:"
 
 #: templates/horizon/common/_usage_summary.html:24
 msgid "This Period's RAM-Hours:"
-msgstr ""
+msgstr "This Period's RAM-Hours:"
 
 #: templates/horizon/common/_workflow.html:40
 msgid "Back"
@@ -443,7 +454,7 @@ msgstr[1] "Sold Puppies"
 
 #: test/tests/views.py:59
 msgid "Fake"
-msgstr ""
+msgstr "Fake"
 
 #: utils/filters.py:49
 msgid "Never"
@@ -467,7 +478,7 @@ msgstr "Port number must be integer"
 
 #: utils/validators.py:59
 msgid "The string may only contain ASCII printable characters."
-msgstr ""
+msgstr "The string may only contain ASCII printable characters."
 
 #: workflows/base.py:71
 msgid "Processing..."

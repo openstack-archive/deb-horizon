@@ -2,14 +2,21 @@
 @import "/horizon/lib/bootstrap_datepicker/datepicker3.css";
 @import "/horizon/lib/rickshaw.css";
 
+// Custom Theme Variables
+@import "/custom/variables";
+
 // Horizon Variables
 @import "variables";
+
+// Horizon Mixins
+@import "mixins";
 
 // Vendor Components
 @import "/bootstrap/scss/bootstrap";
 @import "/horizon/lib/font-awesome/scss/font-awesome.scss";
 
 // Dashboard Components
+@import "splash";
 @import "components/resource_browser";
 @import "components/topbar";
 @import "components/accordion_nav";
@@ -19,6 +26,7 @@
 @import "components/network_topology";
 @import "/angular/styles";
 
+@import "/horizon/lib/magic_search/magic_search.scss";
 
 /* new clearfix */
 .clearfix:after {
@@ -50,7 +58,6 @@
   font-weight: normal;
   font-style: normal;
 }
-
 
 body {
   background-color: $body-bg;
@@ -116,45 +123,9 @@ h2 {
   font-weight: normal;
 }
 
-
-
-/* Login Splash Page */
-
-#splash .login {
-  background: url(../img/logo-splash.png) no-repeat center 35px;
-  position: absolute;
-  top: 80px;
-  left: 50%;
-  margin: 0 0 0 -195px;
-  padding-top: 170px;
-  width: 390px;
-  border: 1px solid $border-color;
-  max-height: none;
-  border-radius: 6px;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  background-clip: padding-box;
-
-  form {
-    .error {
-      width: 100%;
-    }
-    input {
-      width: 100%;
-    }
-    select {
-      width: 360px;
-    }
-  }
-}
-
-#splash p.help-block {
-  display: none;
-}
-
 #create_container_form .modal-footer{
   margin-top: 190px;
 }
-
 
 .sidebar {
   background-color: $sidebar-background-color;
@@ -1768,6 +1739,116 @@ label.log-length {
 
 }
 
+/* Styling for draged firewall router object */
+#routerListSortContainer {
+  display: none;
+}
+.routerlist {
+  padding: 6px;
+  background: #eee;
+  border: 1px solid $border-color;
+  min-height: 2em;
+  width: auto !important;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  li {
+    width: 226px;
+    list-style-type: none;
+    margin: 6px auto;
+    padding: 3px;
+    background: $body-bg;
+    border: 1px solid $border-color;
+    line-height: 18px;
+    border-radius: 3px;
+    cursor: move;
+    padding-left: 23px;
+    background: $body-bg url(../img/drag.png) no-repeat 11px 50%;
+    em {
+      font-size: 0.5em;
+      line-height: 1em;
+      color:#999;
+      font-style: normal;
+      margin-left: 0.8em;
+    }
+    i {
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    a.btn {
+      @include box-sizing(border-box);
+      font-size: 11px;
+      line-height: 12px;
+      padding: 2px 5px 3px;
+      margin-right: 1px;
+      width: 18px;
+      text-align: center;
+      //position: absolute;
+      right:5px;
+      vertical-align: middle;
+      float: right;
+      &:before {
+        content: "+";
+      }
+    }
+  }
+  li.ui-sortable-helper {
+    background-color: #def;
+  }
+  li.ui-state-highlight {
+    border: 1px dotted $border-color;
+    background: #efefef;
+    height: 0.5em;
+  }
+  li:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+#selected_router {
+  margin-bottom: 1.5em;
+  counter-reset:v1 0;
+  background: #edf9ff;
+  border:1px solid $border-color;
+  li {
+    position: relative;
+    a.btn {
+      &:before {
+        content: "-";
+      }
+    }
+  }
+  li:before {
+    content:"router:"counter(v1);
+    counter-increment:v1;
+    display: inline-block;
+    margin-right: 5px;
+    background: $gray;
+    color:$body-bg;
+    font-size: 90%;
+    padding: 0px 4px;
+    vertical-align: middle;
+    border-radius: 2px;
+    position: absolute;
+    left: -2em;
+  }
+  &.dragging {
+    li:before {
+      content:"router:";
+      background-color:rgba(102,102,102,0.5);
+      padding-right: 10px;
+    }
+    li.ui-state-highlight:before {
+      content:"";
+      background:transparent;
+    }
+  }
+
+}
 /**** Sort Indicator ****/
 .tablesorter thead tr th
 {
@@ -1836,3 +1917,4 @@ textarea.key_text {
     right: 0px !important;
   }
 }
+

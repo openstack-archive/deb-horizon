@@ -32,7 +32,7 @@
    */
   app.constant('expandSettings', {
     expandIconClasses: 'fa-chevron-right fa-chevron-down',
-    duration: 400
+    duration: 100
   });
 
   /**
@@ -84,12 +84,11 @@
 
         $scope.updateSelectCount = function(row) {
           if ($scope.selected.hasOwnProperty(row.id)) {
-            var checkedState = $scope.selected[row.id].checked;
-
-            if (checkedState) {
-              $scope.numSelected += 1;
-            } else {
-              $scope.numSelected -= 1;
+            if ($scope.selected[row.id].checked){
+              $scope.numSelected++;
+            }
+            else {
+              $scope.numSelected--;
             }
           }
         };
@@ -105,10 +104,15 @@
           };
 
           if (checkedState && !oldCheckedState) {
-            $scope.numSelected += 1;
+            $scope.numSelected++;
           } else if (!checkedState && oldCheckedState) {
-            $scope.numSelected -= 1;
+            $scope.numSelected--;
           }
+        };
+
+        this.isSelected = function(row) {
+          var rowState = $scope.selected[row.id];
+          return rowState && rowState.checked;
         };
       },
       link: function(scope, element, attrs, stTableCtrl) {
@@ -127,36 +131,66 @@
    * @description
    * The `hzSelectAll` directive updates the checkbox selection state of
    * every row in the table. Assign this as an attribute to a checkbox
-   * input element, passing in the row collection data.
+   * input element, passing in the displayed row collection data.
+   *
+   * Required: Use `st-table` attribute to pass in the displayed
+   * row collection and `st-safe-src` attribute to pass in the
+   * safe row collection.
    *
    * @restrict A
    * @scope rows: '=hzSelectAll'
    * @example
    *
    * ```
-   * <input type='checkbox' hz-select-all='rowCollection'/>
+   * <input type='checkbox' hz-select-all='displayedCollection'/>
    * ```
    *
    */
-  app.directive('hzSelectAll', function() {
+  app.directive('hzSelectAll', [ '$timeout', function($timeout) {
     return {
       restrict: 'A',
-      require: '^hzTable',
+      require: [ '^hzTable', '^stTable' ],
       scope: {
         rows: '=hzSelectAll'
       },
-      link: function(scope, element, attrs, hzTableCtrl) {
-        element.on('click', function() {
-          scope.$apply(function() {
+      link: function(scope, element, attrs, ctrls) {
+        var hzTableCtrl = ctrls[0];
+        var stTableCtrl = ctrls[1];
+
+        // select or unselect all
+        function clickHandler() {
+          $timeout(function() {
             var checkedState = element.prop('checked');
             angular.forEach(scope.rows, function(row) {
               hzTableCtrl.select(row, checkedState);
             });
           });
-        });
+        }
+
+        // update the select all checkbox when table
+        // state changes (sort, filter, paginate)
+        function updateSelectAll() {
+          var visibleRows = scope.rows;
+          var checkedCnt = visibleRows.filter(hzTableCtrl.isSelected).length;
+          element.prop('checked', visibleRows.length === checkedCnt);
+        }
+
+        element.click(clickHandler);
+
+        // watch the table state for changes
+        // on sort, filter and pagination
+        scope.$watch(function() {
+            return stTableCtrl.tableState();
+          },
+          updateSelectAll,
+          true
+        );
+
+        // watch the row length for add/removed rows
+        scope.$watch('rows.length', updateSelectAll);
       }
     };
-  });
+  }]);
 
   /**
    * @ngdoc directive

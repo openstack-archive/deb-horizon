@@ -21,12 +21,21 @@ from horizon.utils import memoized
 from openstack_dashboard.api import cinder
 from openstack_dashboard.dashboards.admin.volumes.volumes \
     import forms as volumes_forms
+from openstack_dashboard.dashboards.admin.volumes.volumes \
+    import tables as volumes_tables
 from openstack_dashboard.dashboards.project.volumes.volumes \
     import views as volumes_views
 
 
 class DetailView(volumes_views.DetailView):
     template_name = "admin/volumes/volumes/detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailView, self).get_context_data(**kwargs)
+        table = volumes_tables.VolumesTable(self.request)
+        context["url"] = self.get_redirect_url()
+        context["actions"] = table.render_row_actions(context["volume"])
+        return context
 
     def get_redirect_url(self):
         return reverse('horizon:admin:volumes:index')
@@ -41,6 +50,7 @@ class ManageVolumeView(forms.ModalFormView):
     success_url = reverse_lazy('horizon:admin:volumes:volumes_tab')
     submit_url = reverse_lazy('horizon:admin:volumes:volumes:manage')
     cancel_url = reverse_lazy("horizon:admin:volumes:index")
+    page_title = _("Manage a Volume")
 
     def get_context_data(self, **kwargs):
         context = super(ManageVolumeView, self).get_context_data(**kwargs)
@@ -56,6 +66,7 @@ class UnmanageVolumeView(forms.ModalFormView):
     success_url = reverse_lazy('horizon:admin:volumes:volumes_tab')
     submit_url = 'horizon:admin:volumes:volumes:unmanage'
     cancel_url = reverse_lazy("horizon:admin:volumes:index")
+    page_title = _("Unmanage a Volume")
 
     def get_context_data(self, **kwargs):
         context = super(UnmanageVolumeView, self).get_context_data(**kwargs)

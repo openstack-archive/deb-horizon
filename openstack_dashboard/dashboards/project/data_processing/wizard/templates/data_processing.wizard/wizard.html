@@ -3,10 +3,6 @@
 {% load url from future %}
 {% block title %}{% trans "Data Processing" %}{% endblock %}
 
-{% block page_header %}
-    {% include "horizon/common/_page_header.html" with title=_("Data Processing Guides") %}
-{% endblock page_header %}
-
 {% block main %}
 
     <div class="guide">
@@ -49,7 +45,7 @@
                 <a id="jobex_guide_btn"
                    class=" btn btn-default btn-small btn-create btn-inline"
                    title="{% trans "Job Execution Guide" %}"
-                   href="/project/data_processing/wizard/jobex_guide">
+                   href="{% url 'horizon:project:data_processing.wizard:jobex_guide' %}">
                     {% trans "Job Execution Guide" %}
                  </a>
              </div>

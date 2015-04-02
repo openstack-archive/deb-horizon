@@ -45,32 +45,32 @@ class ObjectStorePanels(horizon.PanelGroup):
 
 
 class OrchestrationPanels(horizon.PanelGroup):
-    name = _("Orchestration")
     slug = "orchestration"
+    name = _("Orchestration")
     panels = ('stacks',
               'stacks.resource_types',)
 
 
 class DatabasePanels(horizon.PanelGroup):
-    name = _("Database")
     slug = "database"
+    name = _("Database")
     panels = ('databases',
               'database_backups',)
 
 
 class DataProcessingPanels(horizon.PanelGroup):
-    name = _("Data Processing")
     slug = "data_processing"
-    panels = ('data_processing.clusters',
+    name = _("Data Processing")
+    panels = ('data_processing.wizard',
+              'data_processing.clusters',
+              'data_processing.job_executions',
               'data_processing.cluster_templates',
               'data_processing.nodegroup_templates',
-              'data_processing.job_executions',
               'data_processing.jobs',
               'data_processing.job_binaries',
               'data_processing.data_sources',
               'data_processing.data_image_registry',
-              'data_processing.data_plugins',
-              'data_processing.wizard',)
+              'data_processing.data_plugins',)
 
 
 class Project(horizon.Dashboard):

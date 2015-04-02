@@ -99,16 +99,16 @@ class ImagesAndSnapshotsTests(test.TestCase):
 
         # first instance - status active, owned
         self.assertEqual(len(row_actions), 4)
-        self.assertEqual(row_actions[0].verbose_name, u"Launch")
+        self.assertEqual(row_actions[0].verbose_name, u"Launch Instance")
         self.assertEqual(row_actions[1].verbose_name, u"Create Volume")
-        self.assertEqual(row_actions[2].verbose_name, u"Edit")
+        self.assertEqual(row_actions[2].verbose_name, u"Edit Image")
         self.assertEqual(row_actions[3].verbose_name, u"Delete Image")
 
         row_actions = snaps.get_row_actions(snaps.data[1])
 
         # second instance - status active, not owned
         self.assertEqual(len(row_actions), 2)
-        self.assertEqual(row_actions[0].verbose_name, u"Launch")
+        self.assertEqual(row_actions[0].verbose_name, u"Launch Instance")
         self.assertEqual(row_actions[1].verbose_name, u"Create Volume")
 
         row_actions = snaps.get_row_actions(snaps.data[2])
@@ -330,7 +330,7 @@ class SeleniumTests(test.SeleniumTestCase):
 
         srctypes = self.ui.Select(driver.find_element_by_id("id_source_type"))
         srctypes.select_by_value("url")
-        copyfrom = driver.find_element_by_id("id_copy_from")
+        copyfrom = driver.find_element_by_id("id_image_url")
         copyfrom.send_keys("http://www.test.com/test.iso")
         formats = self.ui.Select(driver.find_element_by_id("id_disk_format"))
         body = formats.first_selected_option
@@ -371,7 +371,7 @@ class SeleniumTests(test.SeleniumTestCase):
 
         srctypes = self.ui.Select(driver.find_element_by_id("id_source_type"))
         srctypes.select_by_value("url")
-        copyfrom = driver.find_element_by_id("id_copy_from")
+        copyfrom = driver.find_element_by_id("id_image_url")
         copyfrom.send_keys("http://www.test.com/test.iso")
         formats = self.ui.Select(driver.find_element_by_id("id_disk_format"))
         body = formats.first_selected_option

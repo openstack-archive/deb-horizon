@@ -1,29 +1,86 @@
 (function () {
   'use strict';
 
+  /**
+   * @ngdoc overview
+   * @name hz.dashboard.launch-instance
+   * @description
+   *
+   * # hz.dashboard.launch-instance
+   *
+   * The `hz.dashboard.launch-instance` module allows a user
+   * to launch an instance via the multi-step wizard framework
+   *
+   */
   var module = angular.module('hz.dashboard.launch-instance');
 
+  /**
+   * @name bootSourceTypes
+   * @description Boot source types
+   */
+  module.constant('bootSourceTypes', {
+    IMAGE: 'image',
+    INSTANCE_SNAPSHOT: 'snapshot',
+    VOLUME: 'volume',
+    VOLUME_SNAPSHOT: 'volume_snapshot'
+  });
+
+  /**
+   * @ngdoc filter
+   * @name diskFormat
+   * @description
+   * Expects object and returns disk_format property value.
+   * Returns empty string if input is null or not an object.
+   * Uniquely required for the source step implementation of transfer tables
+   */
+  module.filter('diskFormat', function() {
+    return function(input) {
+      if (input === null || !angular.isObject(input) ||
+        !angular.isDefined(input.disk_format) || input.disk_format === null) {
+        return '';
+      } else {
+        return input.disk_format.toUpperCase();
+      }
+    };
+  });
+
+  /**
+   * @ngdoc controller
+   * @name LaunchInstanceSourceCtrl
+   * @description
+   * The `LaunchInstanceSourceCtrl` controller provides functions for
+   * configuring the source step of the Launch Instance Wizard.
+   *
+   */
   module.controller('LaunchInstanceSourceCtrl', [
     '$scope',
+    'bootSourceTypes',
     'bytesFilter',
+    'dateFilter',
+    'decodeFilter',
+    'diskFormatFilter',
+    'gbFilter',
+    'yesnoFilter',
     LaunchInstanceSourceCtrl
   ]);
 
-  module.controller('LaunchInstanceSourceHelpCtrl', [
-    '$scope',
-    LaunchInstanceSourceHelpCtrl
-  ]);
-
-  function LaunchInstanceSourceCtrl($scope, bytesFilter) {
+  function LaunchInstanceSourceCtrl($scope,
+                                    bootSourceTypes,
+                                    bytesFilter,
+                                    dateFilter,
+                                    decodeFilter,
+                                    diskFormatFilter,
+                                    gbFilter,
+                                    yesnoFilter) {
 
     $scope.label = {
       title: gettext('Instance Details'),
-      subtitle: gettext(''),
+      subtitle: gettext('Please provide the initial host name for the instance, the availability zone where it will be deployed, and the instance count. Increase the Count to create multiple instances with the same settings.'),
       instanceName: gettext('Instance Name'),
       availabilityZone: gettext('Availability Zone'),
       instance_count: gettext('Count'),
       instanceSourceTitle: gettext('Instance Source'),
-      instanceSourceSubTitle: gettext(''),
+      instanceSourceSubTitle: gettext('Instance source is the template used to create an instance. You can use a snapshot of an existing instance, an image, or a volume (if enabled). You can also choose to use persistent storage by creating a new volume.'),
       bootSource: gettext('Select Boot Source'),
       deviceSize: gettext('Device Size (GB)'),
       volumeSize: gettext('Volume Size (GB)'),
@@ -32,6 +89,12 @@
       id: gettext('ID')
     };
 
+
+    // Error text for invalid fields
+    $scope.bootSourceTypeError = gettext('Volumes can only be attached to 1 active instance at a time. Please either set your instance count to 1 or select a different source type.');
+    $scope.instanceNameError = gettext('A name is required for your instance.');
+    $scope.instanceCountError = gettext('Instance count is required and must be an integer of at least 1');
+    $scope.volumeSizeError = gettext('Volume size is required and must be an integer');
 
     //
     // Boot Sources
@@ -49,6 +112,7 @@
       $scope.model.newInstanceSpec.vol_create = false;
       $scope.model.newInstanceSpec.vol_delete_on_terminate = false;
       changeBootSource(selectedSource.type);
+      validateBootSourceType();
     };
 
     //
@@ -59,6 +123,7 @@
     $scope.tableBodyCells= [];
     $scope.tableData = {};
     $scope.helpText = {};
+    $scope.maxInstanceCount = 1;
 
     var selection = $scope.model.newInstanceSpec.source;
 
@@ -69,14 +134,14 @@
         displayedAvailable: $scope.model.images,
         displayedAllocated: selection
       },
-      volume: {
-        available: $scope.model.volumes,
+      snapshot: {
+        available: $scope.model.imageSnapshots,
         allocated: selection,
         displayedAvailable: [],
         displayedAllocated: selection
       },
-      snapshot: {
-        available: $scope.model.imageSnapshots,
+      volume: {
+        available: $scope.model.volumes,
         allocated: selection,
         displayedAvailable: [],
         displayedAllocated: selection
@@ -89,60 +154,84 @@
       }
     };
 
+    // mapping for dynamic table headers
     var tableHeadCellsMap = {
       image: [
-        { text: gettext('Name'), style: { width: '25%' }, sortable: true, sortDefault: true },
-        { text: gettext('Updated'), style: { width: '20%' }, sortable: true },
+        { text: gettext('Name'), style: { width: '30%' }, sortable: true, sortDefault: true },
+        { text: gettext('Updated'), style: { width: '15%' }, sortable: true },
         { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
-        { text: gettext('Type'), sortable: true }
+        { text: gettext('Type'), sortable: true },
+        { text: gettext('Visibility'), sortable: true }
+      ],
+      snapshot: [
+        { text: gettext('Name'), style: { width: '30%' }, sortable: true, sortDefault: true },
+        { text: gettext('Updated'), style: { width: '15%' }, sortable: true },
+        { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
+        { text: gettext('Type'), sortable: true },
+        { text: gettext('Visibility'), sortable: true }
       ],
       volume: [
         { text: gettext('Name'), style: { width: '25%' }, sortable: true, sortDefault: true },
-        { text: gettext('Type'), style: { width: '20%' } },
-        { text: gettext('Size'), classList: ['number'], sortable: true }
-      ],
-      snapshot: [
-        { text: gettext('Name'), style: { width: '25%' }, sortable: true, sortDefault: true },
-        { text: gettext('Type'), style: { width: '20%' } },
-        { text: gettext('Size'), classList: ['number'], sortable: true }
+        { text: gettext('Description'), style: { width: '20%' }, sortable: true },
+        { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
+        { text: gettext('Type'), style: { width: '20%' }, sortable: true },
+        { text: gettext('Encrypted'), style: { width: '20%' }, sortable: true }
       ],
       volume_snapshot: [
         { text: gettext('Name'), style: { width: '25%' }, sortable: true, sortDefault: true },
-        { text: gettext('Type'), style: { width: '20%' } },
-        { text: gettext('Size'), classList: ['number'], sortable: true }
+        { text: gettext('Description'), style: { width: '20%' }, sortable: true },
+        { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
+        { text: gettext('Created'), style: { width: '15%' }, sortable: true },
+        { text: gettext('Status'), style: { width: '20%' }, sortable: true }
       ]
     };
 
+    // map Visibility data so we can decode true/false to Public/Private
+    var _visibilitymap = { true: gettext('Public'), false: gettext('Private') };
+
+    // mapping for dynamic table data
     var tableBodyCellsMap = {
       image: [
         { key: 'name', classList: ['hi-light'] },
-        { key: 'updated_at' },
+        { key: 'updated_at', filter: dateFilter, filterArg: 'short' },
         { key: 'size', filter: bytesFilter, classList: ['number'] },
-        { key: 'disk_format', style: { 'text-transform': 'uppercase' } }
-      ],
-      volume: [
-        { key: 'name', classList: ['hi-light'] },
         { key: 'disk_format', style: { 'text-transform': 'uppercase' } },
-        { key: 'size', filter: bytesFilter, classList: ['number'] }
+        { key: 'is_public', filter: decodeFilter, filterArg: _visibilitymap,
+          style: { 'text-transform': 'capitalize' } }
       ],
       snapshot: [
         { key: 'name', classList: ['hi-light'] },
+        { key: 'updated_at', filter: dateFilter, filterArg: 'short' },
+        { key: 'size', filter: bytesFilter, classList: ['number'] },
         { key: 'disk_format', style: { 'text-transform': 'uppercase' } },
-        { key: 'size', filter: bytesFilter, classList: ['number'] }
+        { key: 'is_public', filter: decodeFilter, filterArg: _visibilitymap,
+          style: { 'text-transform': 'capitalize' } }
+      ],
+      volume: [
+        { key: 'name', classList: ['hi-light'] },
+        { key: 'description' },
+        { key: 'size', filter: gbFilter, classList: ['number'] },
+        { key: 'volume_image_metadata', filter: diskFormatFilter,
+          style: { 'text-transform': 'uppercase' } },
+        { key: 'encrypted', filter: yesnoFilter }
       ],
       volume_snapshot: [
         { key: 'name', classList: ['hi-light'] },
-        { key: 'disk_format', style: { 'text-transform': 'uppercase' } },
-        { key: 'size', filter: bytesFilter, classList: ['number'] }
+        { key: 'description' },
+        { key: 'size', filter: gbFilter, classList: ['number'] },
+        { key: 'created_at', filter: dateFilter, filterArg: 'short' },
+        { key: 'status', style: { 'text-transform': 'capitalize' } }
       ]
     };
 
+    // dynamically update page based on boot source selection
     function changeBootSource(key) {
       updateDataSource(key);
       updateHelpText(key);
       updateTableHeadCells(key);
       updateTableBodyCells(key);
       updateChart();
+      updateMaxInstanceCount();
     }
 
     function updateDataSource(key) {
@@ -169,7 +258,6 @@
       arrayToRefill.length = 0;
       Array.prototype.push.apply(arrayToRefill, contentArray);
     }
-
 
     //
     // Donut chart
@@ -216,6 +304,7 @@
       function (newValue, oldValue) {
         if (newValue !== oldValue) {
           updateChart();
+          validateBootSourceType();
         }
       }
     );
@@ -228,6 +317,7 @@
         if (newValue !== oldValue) {
           maxTotalInstances = Math.max(1, newValue);
           updateChart();
+          updateMaxInstanceCount();
         }
       }
     );
@@ -240,6 +330,7 @@
         if (newValue !== oldValue) {
           totalInstancesUsed = newValue;
           updateChart();
+          updateMaxInstanceCount();
         }
       }
     );
@@ -252,6 +343,7 @@
         if (newValue !== oldValue) {
           updateChart();
         }
+        checkVolumeForImage(newValue);
       }
     );
 
@@ -264,20 +356,63 @@
 
       var data = $scope.instanceStats.data;
       var remaining = Math.max(0, maxTotalInstances - totalInstancesUsed - selection.length * instance_count);
-      // If a user has entered a count that will result in them exceeding their
-      // quota, automatically decrease the count so that it stays within quota
-      if (instance_count + totalInstancesUsed > maxTotalInstances) {
-        $scope.model.newInstanceSpec.instance_count = maxTotalInstances - totalInstancesUsed;
-      }
 
       data[0].value = totalInstancesUsed;
       data[1].value = selection.length * instance_count;
       data[2].value = remaining;
       $scope.instanceStats.label =
-        (maxTotalInstances - remaining) * 100 / maxTotalInstances + '%';
+        Math.ceil((maxTotalInstances - remaining) * 100 / maxTotalInstances) + '%';
       $scope.instanceStats = angular.extend({}, $scope.instanceStats);
     }
 
+    //
+    // Validations
+    //
+
+    // If boot source type is 'image' and 'Create New Volume'
+    // is checked, set the minimum volume size for validating
+    // vol_size field
+    function checkVolumeForImage(newLength) {
+      var source = selection ? selection[0] : undefined;
+
+      if (source && $scope.currentBootSource === bootSourceTypes.IMAGE) {
+        var imageGb = source.size * 1e-9;
+        var imageDisk = source.min_disk;
+        $scope.minVolumeSize = Math.ceil(Math.max(imageGb, imageDisk));
+
+        var volumeSizeText = gettext('The volume size must be at least %(minVolumeSize)s GB');
+        var volumeSizeObj = { minVolumeSize: $scope.minVolumeSize };
+        $scope.minVolumeSizeError = interpolate(volumeSizeText, volumeSizeObj, true);
+      } else {
+        $scope.minVolumeSize = undefined;
+      }
+    }
+
+    // Update the maximum instance count based on nova limits
+    function updateMaxInstanceCount() {
+      $scope.maxInstanceCount = maxTotalInstances - totalInstancesUsed;
+
+      var instanceCountText = gettext('The instance count must not exceed your quota available of %(maxInstanceCount)s instances');
+      var instanceCountObj = { maxInstanceCount: $scope.maxInstanceCount };
+      $scope.instanceCountMaxError = interpolate(instanceCountText, instanceCountObj, true);
+    }
+
+    // Validator for boot source type.
+    // Instance count must to be 1 if volume selected
+    function validateBootSourceType() {
+      var bootSourceType = $scope.currentBootSource;
+      var instanceCount = $scope.model.newInstanceSpec.instance_count;
+
+      // Field is valid if boot source type is not volume,
+      // instance count is blank/undefined (this is an error with instance count)
+      // or instance count is 1
+      var isValid = bootSourceType !== bootSourceTypes.VOLUME ||
+                    !instanceCount ||
+                    instanceCount === 1;
+
+      $scope.launchInstanceSourceForm['boot-source-type']
+            .$setValidity('bootSourceType', isValid);
+    }
 
     //
     // initialize
@@ -291,9 +426,40 @@
     }
   }
 
-  function LaunchInstanceSourceHelpCtrl($scope) {
-    $scope.title = gettext('Instance Details Help');
-    $scope.content = gettext('This is the help text.');
+  /**
+   * @ngdoc controller
+   * @name LaunchInstanceSourceHelpCtrl
+   * @description
+   * The `LaunchInstanceSourceHelpCtrl` controller provides functions for
+   * configuring the help text used within the source step of the
+   * Launch Instance Wizard.
+   *
+   */
+  module.controller('LaunchInstanceSourceHelpCtrl', [
+    LaunchInstanceSourceHelpCtrl
+  ]);
+
+  function LaunchInstanceSourceHelpCtrl() {
+    var ctrl = this;
+
+    ctrl.title = gettext('Select Source Help');
+
+    ctrl.instanceDetailsTitle = gettext('Instance Details');
+    ctrl.instanceDetailsParagraphs = [
+      gettext('An instance name is required and used to help you uniquely identify your instance in the dashboard.'),
+      gettext('If you select an availability zone and plan to use the boot from volume option, make sure that the availability zone you select for the instance is the same availability zone where your bootable volume resides.')
+    ];
+
+    ctrl.instanceSourceTitle = gettext('Instance Source');
+    ctrl.instanceSourceParagraphs = [
+      gettext('If you want to create an instance that uses ephemeral storage, meaning the instance data is lost when the instance is deleted, then choose one of the following boot sources:'),
+      gettext('<li><b>Image</b>: This option uses an image to boot the instance.</li>'),
+      gettext('<li><b>Instance Snapshot</b>: This option uses an instance snapshot to boot the instance.</li>'),
+      gettext('If you want to create an instance that uses persistent storage, meaning the instance data is saved when the instance is deleted, then select one of the following boot options:'),
+      gettext('<li><b>Image (with Create New Volume checked)</b>: This options uses an image to boot the instance, and creates a new volume to persist instance data. You can specify volume size and whether to delete the volume on termination of the instance.</li>'),
+      gettext('<li><b>Volume</b>: This option uses a volume that already exists. It does not create a new volume. You can choose to delete the volume on termination of the instance. <em>Note: when selecting Volume, you can only launch one instance.</em></li>'),
+      gettext('<li><b>Volume Snapshot</b>: This option uses a volume snapshot to boot the instance, and creates a new volume to persist instance data. You can choose to delete the volume on termination of the instance.</li>')
+    ];
   }
 
 })();

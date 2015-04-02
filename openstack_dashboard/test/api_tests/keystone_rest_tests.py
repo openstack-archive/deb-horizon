@@ -170,50 +170,58 @@ class KeystoneRestTestCase(test.TestCase):
         request = self.mock_rest_request(body='''
             {"password": "sekrit"}
         ''')
-        response = keystone.User().patch(request, 'user123')
+        user = keystone.User()
+        kc.user_get = mock.MagicMock(return_value=user)
+        response = user.patch(request, 'user123')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
         kc.user_update_password.assert_called_once_with(request,
-                                                        'user123',
-                                                        password='sekrit')
+                                                        user,
+                                                        'sekrit')
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_patch_enabled(self, kc):
         request = self.mock_rest_request(body='''
             {"enabled": false}
         ''')
-        response = keystone.User().patch(request, 'user123')
+        user = keystone.User()
+        kc.user_get = mock.MagicMock(return_value=user)
+        response = user.patch(request, 'user123')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
+        kc.user_get.assert_called_once_with(request, 'user123')
         kc.user_update_enabled.assert_called_once_with(request,
-                                                       'user123',
-                                                       enabled=False)
+                                                       user,
+                                                       False)
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_patch_project(self, kc):
         request = self.mock_rest_request(body='''
-            {"project_id": "other123"}
+            {"project": "other123"}
         ''')
-        response = keystone.User().patch(request, 'user123')
+        user = keystone.User()
+        kc.user_get = mock.MagicMock(return_value=user)
+        response = user.patch(request, 'user123')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
-        kc.user_update_tenant.assert_called_once_with(request,
-                                                      'user123',
-                                                      project='other123')
+        kc.user_update.assert_called_once_with(request,
+                                               user,
+                                               project='other123')
 
     @mock.patch.object(keystone.api, 'keystone')
     def test_user_patch_multiple(self, kc):
         request = self.mock_rest_request(body='''
-            {"project_id": "other123", "enabled": false}
+            {"project": "other123", "name": "something"}
         ''')
-        response = keystone.User().patch(request, 'user123')
+        user = keystone.User()
+        kc.user_get = mock.MagicMock(return_value=user)
+        response = user.patch(request, 'user123')
         self.assertStatusCode(response, 204)
         self.assertEqual(response.content, '')
         kc.user_update.assert_called_once_with(request,
-                                               'user123',
-                                               enabled=False,
-                                               password=None,
-                                               project='other123')
+                                               user,
+                                               project='other123',
+                                               name='something')
 
     #
     # Roles
@@ -573,3 +581,21 @@ class KeystoneRestTestCase(test.TestCase):
         content = jsonutils.dumps(request.user.service_catalog,
                                   sort_keys=settings.DEBUG)
         self.assertEqual(content, response.content)
+
+    #
+    # User Session
+    #
+    @mock.patch.object(keystone.api, 'keystone')
+    def test_user_session_get(self, kc):
+        request = self.mock_rest_request()
+        request.user = mock.Mock(
+            services_region='some region',
+            super_secret_thing='not here',
+            is_authenticated=lambda: True,
+            spec=['services_region', 'super_secret_thing']
+        )
+        response = keystone.UserSession().get(request)
+        self.assertStatusCode(response, 200)
+        content = jsonutils.loads(response.content)
+        self.assertEqual(content['services_region'], 'some region')
+        self.assertNotIn('super_secret_thing', content)

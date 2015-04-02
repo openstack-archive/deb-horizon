@@ -1,55 +1,67 @@
 (function () {
   'use strict';
 
-  var module = angular.module('hz.dashboard.launch-instance', []);
+  var module = angular.module('hz.dashboard.launch-instance', [ 'ngSanitize' ]);
 
-  module.factory('launchInstanceWorkflow', ['dashboardBasePath', function (path) {
+  module.factory('launchInstanceWorkflow', [
+    'dashboardBasePath',
+    'dashboardWorkflow',
 
-    return {
-      title: gettext('Launch Instance'),
+    function (path, dashboardWorkflow) {
 
-      steps: [
-        {
-          title: gettext('Select Source'),
-          templateUrl: path + 'launch-instance/source/source.html',
-          helpUrl: path + 'launch-instance/source/source.help.html',
-          formName: 'launchInstanceSourceForm'
+      return dashboardWorkflow({
+        title: gettext('Launch Instance'),
+
+        steps: [
+          {
+            title: gettext('Select Source'),
+            templateUrl: path + 'launch-instance/source/source.html',
+            helpUrl: path + 'launch-instance/source/source.help.html',
+            formName: 'launchInstanceSourceForm'
+          },
+          {
+            title: gettext('Flavor'),
+            templateUrl: path + 'launch-instance/flavor/flavor.html',
+            helpUrl: path + 'launch-instance/flavor/flavor.help.html',
+            formName: 'launchInstanceFlavorForm'
+          },
+          {
+            title: gettext('Networks'),
+            templateUrl: path + 'launch-instance/network/network.html',
+            helpUrl: path + 'launch-instance/network/network.help.html',
+            formName: 'launchInstanceNetworkForm',
+            requiredServiceTypes: ['network']
+          },
+          {
+            title: gettext('Security Groups'),
+            templateUrl: path + 'launch-instance/security-groups/security-groups.html',
+            helpUrl: path + 'launch-instance/security-groups/security-groups.help.html',
+            formName: 'launchInstanceAccessAndSecurityForm'
+          },
+          {
+            title: gettext('Key Pair'),
+            templateUrl: path + 'launch-instance/keypair/keypair.html',
+            helpUrl: path + 'launch-instance/keypair/keypair.help.html',
+            formName: 'launchInstanceKeypairForm'
+          },
+          {
+            title: gettext('Configuration'),
+            templateUrl: path + 'launch-instance/configuration/configuration.html',
+            helpUrl: path + 'launch-instance/configuration/configuration.help.html',
+            formName: 'launchInstanceConfigurationForm'
+          }
+        ],
+
+        btnText: {
+          finish: gettext('Launch Instance')
         },
-        {
-          title: gettext('Flavor'),
-          templateUrl: path + 'launch-instance/flavor/flavor.html',
-          helpUrl: path + 'launch-instance/flavor/flavor.help.html',
-          formName: 'launchInstanceFlavorForm'
-        },
-        {
-          title: gettext('Network'),
-          templateUrl: path + 'launch-instance/network/network.html',
-          helpUrl: path + 'launch-instance/network/network.help.html',
-          formName: 'launchInstanceNetworkForm'
-        },
-        {
-          title: gettext('Access and Security'),
-          templateUrl: path + 'launch-instance/access-and-security/access-and-security.html',
-          helpUrl: path + 'launch-instance/access-and-security/access-and-security.help.html',
-          formName: 'launchInstanceAccessAndSecurityForm'
-        },
-        {
-          title: gettext('Configuration'),
-          templateUrl: path + 'launch-instance/configuration/configuration.html',
-          helpUrl: path + 'launch-instance/configuration/configuration.help.html',
-          formName: 'launchInstanceConfigurationForm'
+
+        btnIcon: {
+          finish: 'fa fa-cloud-download'
         }
-      ],
-
-      btnText: {
-        finish: gettext('Launch Instance')
-      },
-
-      btnIcon: {
-        finish: 'fa fa-cloud-download'
-      }
-    };
-  }]);
+      });
+    }
+  ]);
 
   // Using bootstrap-ui modal widget
   module.constant('launchInstanceWizardModalSpec', {
@@ -69,6 +81,7 @@
   module.controller('LaunchInstanceModalCtrl', [
     '$scope',
     '$modal',
+    '$window',
     'launchInstanceWizardModalSpec',
     LaunchInstanceModalCtrl
   ]);
@@ -80,9 +93,24 @@
     $scope.submit = $scope.model.createInstance;
   }
 
-  function LaunchInstanceModalCtrl($scope, $modal, modalSpec) {
-    $scope.openLaunchInstanceWizard = function () {
-      $modal.open(modalSpec);
+  function LaunchInstanceModalCtrl($scope, $modal, $window, modalSpec) {
+    $scope.openLaunchInstanceWizard = function (launchContext) {
+     var localSpec = {
+        resolve: {
+          launchContext: function() { return launchContext; }
+        }
+      };
+
+      angular.extend(localSpec, modalSpec);
+
+      var launchInstanceModal = $modal.open(localSpec);
+
+      launchInstanceModal.result.then(function () {
+        if (launchContext && launchContext.successUrl) {
+          $window.location.href = launchContext.successUrl;
+        }
+      });
+
     };
   }
 

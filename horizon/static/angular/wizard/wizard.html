@@ -5,7 +5,9 @@
     <button class="btn nav-item"
       ng-class="{'current': currentIndex===$index}"
       ng-click="switchTo($index)"
-      ng-repeat="step in steps">
+      ng-if="step.ready"
+      ng-repeat="step in steps"
+      ng-show="ready">
       <span ng-bind="::step.title"></span>
       <span class="status-indicator fa fa-lg fa-warning"
         ng-show="wizardForm[steps[$index].formName].$invalid"></span>
@@ -13,11 +15,12 @@
   </div>
 
   <div class="step"
+    ng-if="step.ready"
     ng-repeat="step in steps"
     ng-show="currentIndex===$index">
     <ng-include
       ng-form="{$ step.formName $}"
-      ng-if="step.templateUrl" src="step.templateUrl">
+      src="step.templateUrl">
     </ng-include>
   </div>
 
@@ -48,7 +51,7 @@
       <span class="separator"></span>
 
       <button class="finish btn btn-sm btn-success"
-        ng-click="showSpinner=true; submit().then(close, showError);"
+        ng-click="onClickFinishBtn()"
         ng-disabled="wizardForm.$invalid">
         <span ng-class="btnIcon.finish||'fa fa-check'"></span>
         <span ng-bind="::btnText.finish"></span>
@@ -60,6 +63,7 @@
 
   <help-panel>
     <ng-include src="step.helpUrl"
+      ng-if="step.ready"
       ng-repeat="step in steps"
       ng-show="currentIndex===$index"></ng-include>
   </help-panel>

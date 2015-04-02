@@ -49,13 +49,20 @@ $em-per-priority: floor($table-col-avg-width / $font-size-base) * 3;
       width: 1%;
     }
 
-    .search-bar {
+    .basic-search-bar {
       margin-bottom: 0.2em;
       width: 100%;
 
       .input-group-sm .form-control:not(:first-child):not(:last-child) {
         border-top-right-radius: 3px;
         border-bottom-right-radius: 3px;
+      }
+
+      input[type="text"] {
+       @include search-placeholder {
+         font-weight: normal;
+         color: $placeholder-text-color;
+       }
       }
     }
 

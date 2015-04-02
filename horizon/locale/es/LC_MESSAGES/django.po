@@ -5,14 +5,15 @@
 # Translators:
 # Alberto Molina Coballes <alb.molina@gmail.com>, 2015
 # cametiope <aldohcasa@hotmail.com>, 2014
+# Orizhial <contact@prunier.es>, 2015
 # Marian Tort <marian.tort@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-18 20:07-0500\n"
-"PO-Revision-Date: 2015-03-18 11:32+0000\n"
-"Last-Translator: Marian Tort <marian.tort@gmail.com>\n"
+"POT-Creation-Date: 2015-03-31 23:04-0500\n"
+"PO-Revision-Date: 2015-04-01 02:20+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/horizon/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -110,10 +111,6 @@ msgctxt "present"
 msgid "%(action)s %(data_type)s"
 msgstr "%(action)s %(data_type)s"
 
-#: tables/actions.py:803 tables/base.py:1570
-msgid "N/A"
-msgstr "N/A"
-
 #: tables/actions.py:832
 #, python-format
 msgid "You are not allowed to %(action)s: %(objs)s"
@@ -172,6 +169,10 @@ msgstr "Ninguna coincidencia para el id \"%s\"."
 msgid "Please select a row before taking that action."
 msgstr "Seleccione una fila antes de realizar la acción."
 
+#: tables/base.py:1570
+msgid "N/A"
+msgstr "N/A"
+
 #: templates/_header.html:5
 #, python-format
 msgid "Logged in as: %(username)s"
@@ -185,24 +186,35 @@ msgstr "Ayuda"
 msgid "Sign Out"
 msgstr "Salir"
 
+#: templates/auth/_description.html:9
+msgid ""
+"\n"
+"      If you are not sure which authentication method to use, contact your administrator.\n"
+"    "
+msgstr ""
+
 #: templates/auth/_login.html:5
 msgid "Log In"
 msgstr "Iniciar sesión"
 
-#: templates/auth/_login.html:15
+#: templates/auth/_login.html:27
 msgid "You do not have permission to access the resource:"
 msgstr "No tiene permisos para acceder al recurso:"
 
-#: templates/auth/_login.html:17
+#: templates/auth/_login.html:29
 #, python-format
 msgid ""
 "Login as different user or go back to <a href=\"%(home_url)s\"> home "
 "page</a>"
 msgstr "Inicie sesión con otro usuario o volver a la <a href=\"%(home_url)s\"> página de inicio</a>"
 
-#: templates/auth/_login.html:32
+#: templates/auth/_login.html:45
 msgid "Sign In"
 msgstr "Iniciar sesión"
+
+#: templates/auth/_login.html:46
+msgid "Connect"
+msgstr ""
 
 #: templates/auth/login.html:4
 msgid "Login"
@@ -445,7 +457,7 @@ msgstr[1] "Mascotas Vendidas"
 
 #: test/tests/views.py:59
 msgid "Fake"
-msgstr ""
+msgstr "Falso"
 
 #: utils/filters.py:49
 msgid "Never"

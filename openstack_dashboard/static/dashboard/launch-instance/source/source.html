@@ -11,10 +11,16 @@
         <div class="col-xs-12 col-sm-8">
           <div class="row form-group">
             <div class="col-sm-12 col-md-5">
-              <div class="form-field required instance-name">
+              <div class="form-field required instance-name"
+                ng-class="{ 'has-warning': launchInstanceSourceForm['instance-name'].$invalid && launchInstanceSourceForm['instance-name'].$dirty }">
                 <label class="on-top">{$ ::label.instanceName $}</label>
-                <input type="text" class="form-control input-sm" ng-required="true"
-                       ng-model="model.newInstanceSpec.name">
+                <span class="fa fa-exclamation-triangle invalid"
+                    ng-show="launchInstanceSourceForm['instance-name'].$invalid && launchInstanceSourceForm.$dirty"
+                    popover="{$ instanceNameError $}"
+                    popover-placement="top" popover-append-to-body="true"
+                    popover-trigger="hover"></span>
+                <input name="instance-name" type="text" class="form-control input-sm"
+                       ng-model="model.newInstanceSpec.name" ng-required="true">
               </div>
             </div>
 
@@ -29,10 +35,19 @@
             </div>
 
             <div class="col-sm-6 col-md-2">
-              <div class="form-field instance_count">
+              <div class="form-field instance_count"
+                ng-class="{ 'has-warning': launchInstanceSourceForm['instance-count'].$invalid }">
                 <label class="on-top">{$ ::label.instance_count $}</label>
-                <input type="number" class="form-control input-sm"
-                       ng-model="model.newInstanceSpec.instance_count">
+                <span class="fa fa-exclamation-triangle invalid"
+                    ng-show="launchInstanceSourceForm['instance-count'].$invalid"
+                    popover="{$ launchInstanceSourceForm['instance-count'].$error.validateNumberMax ? instanceCountMaxError : instanceCountError $}"
+                    popover-placement="top" popover-append-to-body="true"
+                    popover-trigger="hover"></span>
+                <input name="instance-count" type="number" class="form-control input-sm"
+                       ng-model="model.newInstanceSpec.instance_count"
+                       ng-required="true" ng-pattern="/^[0-9]+$/"
+                       validate-number-min="1"
+                       validate-number-max="{$ maxInstanceCount $}">
               </div>
             </div>
           </div>
@@ -58,11 +73,15 @@
       <div class="form-horizontal">
         <div class="row">
           <div class="col-xs-12 col-sm-3">
-            <div class="form-field image">
+            <div class="form-field image"
+              ng-class="{ 'has-warning': launchInstanceSourceForm['boot-source-type'].$invalid }">
               <label class="on-top">{$ ::label.bootSource $}</label>
-              <!-- TODO: here we are pulling from allowedBootSourcesDebug for dev work -->
-              <!-- TODO: we will need to change this to model.allowedBootSources -->
-              <select class="form-control input-sm"
+              <span class="fa fa-exclamation-triangle invalid"
+                    ng-show="launchInstanceSourceForm['boot-source-type'].$invalid"
+                    popover="{$ bootSourceTypeError $}"
+                    popover-placement="top" popover-append-to-body="true"
+                    popover-trigger="hover"></span>
+              <select name="boot-source-type" class="form-control input-sm"
                       ng-options="src.label for src in bootSourcesOptions track by src.type"
                       ng-change="updateBootSourceSelection(model.newInstanceSpec.source_type)"
                       ng-model="model.newInstanceSpec.source_type">
@@ -84,24 +103,30 @@
               </div>
             </div>
 
-            <div class="col-xs-12 col-sm-9 volume-create" ng-if="model.newInstanceSpec.vol_create == true">
-
-              <div class="col-xs-12 col-sm-5 volume-size-wrapper">
-                <div class="form-field volume-size">
-                  <label class="on-top">{$ ::label.volumeSize $}</label>
-                  <input type="number" class="form-control input-sm volume-size"
-                         ng-model="model.newInstanceSpec.vol_size">
-                </div>
+            <div class="col-xs-12 col-sm-4 volume-size-wrapper" ng-if="model.newInstanceSpec.vol_create == true">
+              <div class="form-field volume-size"
+                ng-class="{ 'has-warning': launchInstanceSourceForm['volume-size'].$invalid }">
+                <label class="on-top">{$ ::label.volumeSize $}</label>
+                <span class="fa fa-exclamation-triangle invalid"
+                    ng-show="launchInstanceSourceForm['volume-size'].$invalid"
+                    popover="{$ launchInstanceSourceForm['volume-size'].$error.validateNumberMin ? minVolumeSizeError : volumeSizeError $}"
+                    popover-placement="top" popover-append-to-body="true"
+                    popover-trigger="hover"></span>
+                <input name="volume-size" type="number"
+                       class="form-control input-sm volume-size"
+                       ng-model="model.newInstanceSpec.vol_size"
+                       ng-pattern="/^[0-9]+$/" ng-required="true"
+                       validate-number-min="{$ minVolumeSize $}">
               </div>
+            </div>
 
-              <div class="col-xs-12 col-sm-6">
-                <div class="form-group delete-volume">
-                  <div class="checkbox">
-                    <label class="on-top">
-                      <input type="checkbox"
-                             ng-model="model.newInstanceSpec.vol_delete_on_terminate">
-                      {$ ::label.deleteVolumeOnTerminate $}</label>
-                  </div>
+            <div class="col-xs-12 col-sm-4" ng-if="model.newInstanceSpec.vol_create == true">
+              <div class="form-group delete-volume">
+                <div class="checkbox">
+                  <label class="on-top">
+                    <input type="checkbox"
+                           ng-model="model.newInstanceSpec.vol_delete_on_terminate">
+                    {$ ::label.deleteVolumeOnTerminate $}</label>
                 </div>
               </div>
             </div>
@@ -129,7 +154,7 @@
 
     <transfer-table help-text="helpText"
                     tr-model="tableData">
-      <allocated>
+      <allocated validate-number-min="1" ng-model="tableData.allocated.length">
         <table class="table-striped table-rsp table-detail modern"
                hz-table
                st-safe-src="tableData.allocated"
@@ -155,6 +180,10 @@
                   ng-style="tableHeadCells[3].style">
                 {$ tableHeadCells[3].text $}
               </th>
+              <th ng-class="tableHeadCells[4].classList"
+                  ng-style="tableHeadCells[4].style">
+                {$ tableHeadCells[4].text $}
+              </th>
               <th class="action"></th>
             </tr>
           </thead><!-- /transfer table, allocated table head -->
@@ -178,19 +207,23 @@
               </td>
               <td ng-class="tableBodyCells[0].classList"
                   ng-style="tableBodyCells[0].style">
-                {$ tableBodyCells[0].filter ? tableBodyCells[0].filter(row[tableBodyCells[0].key]) : row[tableBodyCells[0].key] $}
+                {$ tableBodyCells[0].filter ? tableBodyCells[0].filter(row[tableBodyCells[0].key], tableBodyCells[0].filterArg) : row[tableBodyCells[0].key] $}
               </td>
               <td ng-class="tableBodyCells[1].classList"
                   ng-style="tableBodyCells[1].style">
-                {$ tableBodyCells[1].filter ? tableBodyCells[1].filter(row[tableBodyCells[1].key]) : row[tableBodyCells[1].key] $}
+                {$ tableBodyCells[1].filter ? tableBodyCells[1].filter(row[tableBodyCells[1].key], tableBodyCells[1].filterArg) : row[tableBodyCells[1].key] $}
               </td>
               <td ng-class="tableBodyCells[2].classList"
                   ng-style="tableBodyCells[2].style">
-                {$ tableBodyCells[2].filter ? tableBodyCells[2].filter(row[tableBodyCells[2].key]) : row[tableBodyCells[2].key] $}
+                {$ tableBodyCells[2].filter ? tableBodyCells[2].filter(row[tableBodyCells[2].key], tableBodyCells[2].filterArg) : row[tableBodyCells[2].key] $}
               </td>
               <td ng-class="tableBodyCells[3].classList"
                   ng-style="tableBodyCells[3].style">
-                {$ tableBodyCells[3].filter ? tableBodyCells[3].filter(row[tableBodyCells[3].key]) : row[tableBodyCells[3].key] $}
+                {$ tableBodyCells[3].filter ? tableBodyCells[3].filter(row[tableBodyCells[3].key], tableBodyCells[3].filterArg) : row[tableBodyCells[3].key] $}
+              </td>
+              <td ng-class="tableBodyCells[4].classList"
+                  ng-style="tableBodyCells[4].style">
+                {$ tableBodyCells[4].filter ? tableBodyCells[4].filter(row[tableBodyCells[4].key], tableBodyCells[4].filterArg) : row[tableBodyCells[4].key] $}
               </td>
               <td class="action-col">
                 <action-list>
@@ -204,13 +237,14 @@
             </tr>
             <tr class="detail-row"
                 ng-repeat-end>
-              <td colspan="2"></td>
+              <td></td>
               <td colspan="{$ tableHeadCells.length $}" class="detail">
                 <dl class="dl-horizontal">
                   <dt>{$ ::label.id $}</dt>
                   <dd>{$ row.id $}</dd>
                 </dl>
               </td>
+              <td></td>
             </tr>
           </tbody><!-- /transfer table, allocated table body -->
         </table>
@@ -258,6 +292,12 @@
                   st-sort="{$ tableHeadCells[3].sortable && tableBodyCells[3].key $}">
                 {$ tableHeadCells[3].text $}
               </th>
+              <th ng-attr-st-sort-default="{$ tableHeadCells[4].sortDefault $}"
+                  ng-class="tableHeadCells[4].classList"
+                  ng-style="tableHeadCells[4].style"
+                  st-sort="{$ tableHeadCells[4].sortable && tableBodyCells[4].key $}">
+                {$ tableHeadCells[4].text $}
+              </th>
               <th class="action"></th>
             </tr>
           </thead><!-- /allocatable table, allocated table head -->
@@ -265,7 +305,7 @@
           <tbody>
 
             <tr ng-if="trCtrl.numDisplayedAvailable() === 0">
-              <td colspan="6">
+              <td colspan="{$ tableHeadCells.length + 2 $}">
                 <div class="no-rows-help">
                   {$ ::trCtrl.helpText.noneAvailText $}
                 </div>
@@ -282,33 +322,28 @@
               </td>
               <td ng-class="tableBodyCells[0].classList"
                   ng-style="tableBodyCells[0].style">
-                {$ tableBodyCells[0].filter ? tableBodyCells[0].filter(row[tableBodyCells[0].key]) : row[tableBodyCells[0].key] $}
+                {$ tableBodyCells[0].filter ? tableBodyCells[0].filter(row[tableBodyCells[0].key], tableBodyCells[0].filterArg) : row[tableBodyCells[0].key] $}
               </td>
               <td ng-class="tableBodyCells[1].classList"
                   ng-style="tableBodyCells[1].style">
-                {$ tableBodyCells[1].filter ? tableBodyCells[1].filter(row[tableBodyCells[1].key]) : row[tableBodyCells[1].key] $}
+                {$ tableBodyCells[1].filter ? tableBodyCells[1].filter(row[tableBodyCells[1].key], tableBodyCells[1].filterArg) : row[tableBodyCells[1].key] $}
               </td>
               <td ng-class="tableBodyCells[2].classList"
                   ng-style="tableBodyCells[2].style">
-                {$ tableBodyCells[2].filter ? tableBodyCells[2].filter(row[tableBodyCells[2].key]) : row[tableBodyCells[2].key] $}
+                {$ tableBodyCells[2].filter ? tableBodyCells[2].filter(row[tableBodyCells[2].key], tableBodyCells[2].filterArg) : row[tableBodyCells[2].key] $}
               </td>
               <td ng-class="tableBodyCells[3].classList"
                   ng-style="tableBodyCells[3].style">
-                {$ tableBodyCells[3].filter ? tableBodyCells[3].filter(row[tableBodyCells[3].key]) : row[tableBodyCells[3].key] $}
+                {$ tableBodyCells[3].filter ? tableBodyCells[3].filter(row[tableBodyCells[3].key], tableBodyCells[3].filterArg) : row[tableBodyCells[3].key] $}
+              </td>
+              <td ng-class="tableBodyCells[4].classList"
+                  ng-style="tableBodyCells[4].style">
+                {$ tableBodyCells[4].filter ? tableBodyCells[4].filter(row[tableBodyCells[4].key], tableBodyCells[4].filterArg) : row[tableBodyCells[4].key] $}
               </td>
               <td class="action-col">
-                <action-list button-tooltip="row.warningMessage"
-                             bt-disabled="!row.disabled"
-                             bt-model="trCtrl.tooltipModel"
-                             warning-classes="'invalid'">
-                  <notifications>
-                    <span class="fa fa-exclamation-circle invalid"
-                          ng-show="row.disabled">
-                    </span>
-                  </notifications>
+                <action-list>
                   <action action-classes="'btn btn-sm btn-default'"
                           callback="trCtrl.allocate"
-                          disabled="row.disabled"
                           item="row">
                     <span class="fa fa-plus"></span>
                   </action>
@@ -317,13 +352,14 @@
             </tr>
             <tr class="detail-row"
                 ng-repeat-end>
-              <td colspan="2"></td>
+              <td></td>
               <td colspan="{$ tableHeadCells.length $}" class="detail">
                 <dl class="dl-horizontal">
                   <dt>{$ ::label.id $}</dt>
                   <dd>{$ row.id $}</dd>
                 </dl>
               </td>
+              <td></td>
             </tr>
           </tbody>
         </table>

@@ -153,6 +153,22 @@ OPENSTACK_HOST = "127.0.0.1"
 OPENSTACK_KEYSTONE_URL = "http://%s:5000/v2.0" % OPENSTACK_HOST
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "_member_"
 
+# Enables keystone web single-sign-on if set to True.
+#WEBSSO_ENABLED = False
+
+# Determines which authentication choice to show as default.
+#WEBSSO_INITIAL_CHOICE = "credentials"
+
+# The list of authentication mechanisms
+# which include keystone federation protocols.
+# Current supported protocol IDs are 'saml2' and 'oidc'
+# which represent SAML 2.0, OpenID Connect respectively.
+# Do not remove the mandatory credentials mechanism.
+#WEBSSO_CHOICES = (
+#    ("credentials", _("Keystone Credentials")),
+#    ("oidc", _("OpenID Connect")),
+#    ("saml2", _("Security Assertion Markup Language")))
+
 # Disable SSL certificate checks (useful for self-signed certificates):
 #OPENSTACK_SSL_NO_VERIFY = True
 
@@ -177,6 +193,20 @@ OPENSTACK_KEYSTONE_BACKEND = {
 # Setting this to True, will add a new "Retrieve Password" action on instance,
 # allowing Admin session password retrieval/decryption.
 #OPENSTACK_ENABLE_PASSWORD_RETRIEVE = False
+
+# The Launch Instance user experience has been significantly enhanced.
+# You can choose whether to enable the new launch instance experience,
+# the legacy experience, or both. The legacy experience will be removed
+# in a future release, but is available as a temporary backup setting to ensure
+# compatibility with existing deployments. Further development will not be
+# done on the legacy experience. Please report any problems with the new
+# experience via the Launchpad tracking system.
+#
+# Toggle LAUNCH_INSTANCE_LEGACY_ENABLED and LAUNCH_INSTANCE_NG_ENABLED to
+# determine the experience to enable.  Set them both to true to enable
+# both.
+LAUNCH_INSTANCE_LEGACY_ENABLED = False
+LAUNCH_INSTANCE_NG_ENABLED = True
 
 # The Xen Hypervisor has the ability to set the mount point for volumes
 # attached to instances (other Hypervisors currently do not). Setting
@@ -277,6 +307,9 @@ IMAGE_RESERVED_CUSTOM_PROPERTIES = []
 API_RESULT_LIMIT = 1000
 API_RESULT_PAGE_SIZE = 20
 
+# The size of chunk in bytes for downloading objects from Swift
+SWIFT_FILE_TRANSFER_CHUNK_SIZE = 512 * 1024
+
 # Specify a maximum number of items to display in a dropdown.
 DROPDOWN_MAX_ITEMS = 30
 
@@ -332,6 +365,10 @@ TIME_ZONE = "UTC"
 # unusable such as ["!"].
 # TROVE_ADD_USER_PERMS = []
 # TROVE_ADD_DATABASE_PERMS = []
+
+# Change this patch to the appropriate static directory containing
+# two files: _variables.scss and _styles.scss
+#CUSTOM_THEME_PATH = 'static/themes/default'
 
 LOGGING = {
     'version': 1,
