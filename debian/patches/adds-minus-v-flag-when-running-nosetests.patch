@@ -1,0 +1,20 @@
+Description: Adds -v flag when running nosetests
+ This patch is to make it more verbose when building under Jenkins.
+Author: Thomas Goirand (zigo)
+Forwarded: not-needed
+Last-Update: 2015-04-04
+
+--- horizon-2015.1~b3+git20150402+b2fc84d7f6.orig/run_tests.sh
++++ horizon-2015.1~b3+git20150402+b2fc84d7f6/run_tests.sh
+@@ -405,9 +405,9 @@ function run_integration_tests {
+ 
+   echo "Running Horizon integration tests..."
+   if [ -z "$testargs" ]; then
+-      ${command_wrapper} nosetests openstack_dashboard/test/integration_tests/tests
++      ${command_wrapper} nosetests -v openstack_dashboard/test/integration_tests/tests
+   else
+-      ${command_wrapper} nosetests $testargs
++      ${command_wrapper} nosetests -v $testargs
+   fi
+   exit 0
+ }
