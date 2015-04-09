@@ -38,6 +38,9 @@ override_dh_auto_install:
 	ln -fs /etc/openstack-dashboard/local_settings.py \
 		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/local/local_settings.py
 
+	# Copy the missing angular folder
+	cp -auxf horizon/static/angular $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/openstack_dashboard/static
+
 override_dh_link:
 	mkdir -p $(CURDIR)/debian/openstack-dashboard/var/lib/openstack-dashboard/static/scss
 	mv $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss/* $(CURDIR)/debian/openstack-dashboard/var/lib/openstack-dashboard/static/scss
