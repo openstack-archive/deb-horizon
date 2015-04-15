@@ -1,6 +1,9 @@
 (function () {
   'use strict';
 
+  var push = [].push,
+      forEach = angular.forEach;
+
   /**
    * @ngdoc overview
    * @name hz.dashboard.launch-instance
@@ -60,7 +63,6 @@
     'decodeFilter',
     'diskFormatFilter',
     'gbFilter',
-    'yesnoFilter',
     LaunchInstanceSourceCtrl
   ]);
 
@@ -70,8 +72,7 @@
                                     dateFilter,
                                     decodeFilter,
                                     diskFormatFilter,
-                                    gbFilter,
-                                    yesnoFilter) {
+                                    gbFilter) {
 
     $scope.label = {
       title: gettext('Instance Details'),
@@ -82,11 +83,13 @@
       instanceSourceTitle: gettext('Instance Source'),
       instanceSourceSubTitle: gettext('Instance source is the template used to create an instance. You can use a snapshot of an existing instance, an image, or a volume (if enabled). You can also choose to use persistent storage by creating a new volume.'),
       bootSource: gettext('Select Boot Source'),
-      deviceSize: gettext('Device Size (GB)'),
-      volumeSize: gettext('Volume Size (GB)'),
+      volumeSize: gettext('Size (GB)'),
       volumeCreate: gettext('Create New Volume'),
+      volumeDeviceName: gettext('Device Name'),
       deleteVolumeOnTerminate: gettext('Delete Volume on Terminate'),
-      id: gettext('ID')
+      id: gettext('ID'),
+      min_ram: gettext('Min Ram'),
+      min_disk: gettext('Min Disk')
     };
 
 
@@ -96,22 +99,29 @@
     $scope.instanceCountError = gettext('Instance count is required and must be an integer of at least 1');
     $scope.volumeSizeError = gettext('Volume size is required and must be an integer');
 
+
+    // toggle button label/value defaults
+    $scope.toggleButtonOptions = [
+      { label: gettext('Yes'), value: true },
+      { label: gettext('No'), value: false }
+    ];
+
     //
     // Boot Sources
     //
 
     $scope.bootSourcesOptions = [
-      { type: 'image', label: gettext('Image') },
-      { type: 'snapshot', label: gettext('Instance Snapshot') },
-      { type: 'volume', label: gettext('Volume') },
-      { type: 'volume_snapshot', label: gettext('Volume Snapshot') }
+      { type: bootSourceTypes.IMAGE, label: gettext('Image') },
+      { type: bootSourceTypes.INSTANCE_SNAPSHOT, label: gettext('Instance Snapshot') },
+      { type: bootSourceTypes.VOLUME, label: gettext('Volume') },
+      { type: bootSourceTypes.VOLUME_SNAPSHOT, label: gettext('Volume Snapshot') }
     ];
 
     $scope.updateBootSourceSelection = function (selectedSource) {
-      $scope.currentBootSource = selectedSource.type;
+      $scope.currentBootSource = selectedSource;
       $scope.model.newInstanceSpec.vol_create = false;
       $scope.model.newInstanceSpec.vol_delete_on_terminate = false;
-      changeBootSource(selectedSource.type);
+      changeBootSource(selectedSource);
       validateBootSourceType();
     };
 
@@ -124,8 +134,10 @@
     $scope.tableData = {};
     $scope.helpText = {};
     $scope.maxInstanceCount = 1;
+    $scope.sourceDetails =
+        '/static/dashboard/launch-instance/source/source-details.html';
 
-    var selection = $scope.model.newInstanceSpec.source;
+    var selection = $scope.selection = $scope.model.newInstanceSpec.source;
 
     var bootSources = {
       image: {
@@ -175,7 +187,7 @@
         { text: gettext('Description'), style: { width: '20%' }, sortable: true },
         { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
         { text: gettext('Type'), style: { width: '20%' }, sortable: true },
-        { text: gettext('Encrypted'), style: { width: '20%' }, sortable: true }
+        { text: gettext('Availability Zone'), style: { width: '20%' }, sortable: true }
       ],
       volume_snapshot: [
         { text: gettext('Name'), style: { width: '25%' }, sortable: true, sortDefault: true },
@@ -213,7 +225,7 @@
         { key: 'size', filter: gbFilter, classList: ['number'] },
         { key: 'volume_image_metadata', filter: diskFormatFilter,
           style: { 'text-transform': 'uppercase' } },
-        { key: 'encrypted', filter: yesnoFilter }
+        { key: 'availability_zone' }
       ],
       volume_snapshot: [
         { key: 'name', classList: ['hi-light'] },
@@ -225,8 +237,8 @@
     };
 
     // dynamically update page based on boot source selection
-    function changeBootSource(key) {
-      updateDataSource(key);
+    function changeBootSource(key, preSelection) {
+      updateDataSource(key, preSelection);
       updateHelpText(key);
       updateTableHeadCells(key);
       updateTableBodyCells(key);
@@ -234,15 +246,19 @@
       updateMaxInstanceCount();
     }
 
-    function updateDataSource(key) {
-      angular.extend($scope.tableData, bootSources[key]);
+    function updateDataSource(key, preSelection) {
       selection.length = 0;
+      if (preSelection) {
+        push.apply(selection, preSelection);
+      }
+      angular.extend($scope.tableData, bootSources[key]);
     }
 
     function updateHelpText(key) {
       angular.extend($scope.helpText, {
         noneAllocText: gettext('Select a source from those listed below.'),
-        availHelpText: gettext('Select one')
+        availHelpText: gettext('Select one'),
+        volumeAZHelpText: gettext("When selecting volume as boot source, please ensure the instance's availability zone is compatible with your volume's availability zone.")
       });
     }
 
@@ -413,6 +429,40 @@
       $scope.launchInstanceSourceForm['boot-source-type']
             .$setValidity('bootSourceType', isValid);
     }
+
+    function findSourceById(sources, id) {
+      var i = 0, len = sources.length, source;
+      for (; i < len; i++) {
+        source = sources[i];
+        if (source.id === id) {
+          return source;
+        }
+      }
+    }
+
+    function setSourceImageWithId(id) {
+      var pre = findSourceById($scope.model.images, id);
+      if (pre) {
+        changeBootSource(bootSourceTypes.IMAGE, [pre]);
+        $scope.model.newInstanceSpec.source_type = $scope.bootSourcesOptions[0];
+        $scope.currentBootSource = $scope.bootSourcesOptions[0].type;
+      }
+    }
+
+    $scope.$watchCollection(
+      function () {
+        return $scope.model.images;
+      },
+      function (newValue, oldValue) {
+        $scope.initPromise.then(function () {
+          $scope.$applyAsync(function () {
+            if ($scope.launchContext.imageId) {
+              setSourceImageWithId($scope.launchContext.imageId);
+            }
+          });
+        });
+      }
+    );
 
     //
     // initialize

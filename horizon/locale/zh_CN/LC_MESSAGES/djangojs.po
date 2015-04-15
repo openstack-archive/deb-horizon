@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Alfred <alfredhuang211@qq.com>, 2015
 # johnwoo_lee <lijiangsheng1@gmail.com>, 2015
 # LIU Yulong <dragon889@163.com>, 2014-2015
 # Tom Fifield <tom@openstack.org>, 2015
@@ -12,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-01 22:59-0500\n"
-"PO-Revision-Date: 2015-04-02 00:44+0000\n"
+"POT-Creation-Date: 2015-04-11 11:47-0500\n"
+"PO-Revision-Date: 2015-04-11 00:07+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/horizon/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -171,6 +172,301 @@ msgstr "下一步"
 msgid "Finish"
 msgstr "结束"
 
+#: static/horizon/js/angular/directives/serialConsole.js:23
+msgid "Connecting"
+msgstr "连接中"
+
+#: static/horizon/js/angular/directives/serialConsole.js:23
+msgid "Open"
+msgstr "打开"
+
+#: static/horizon/js/angular/directives/serialConsole.js:23
+msgid "Closing"
+msgstr "关闭中"
+
+#: static/horizon/js/angular/directives/serialConsole.js:23
+msgid "Closed"
+msgstr "已关闭"
+
+#: static/horizon/js/angular/directives/serialConsole.js:85
+#, c-format
+msgid "Status: %s"
+msgstr "状态: %s"
+
+#: static/horizon/js/angular/filters/filters.js:37
+msgid "Yes"
+msgstr "是"
+
+#: static/horizon/js/angular/filters/filters.js:37
+msgid "No"
+msgstr "不"
+
+#: static/horizon/js/angular/filters/filters.js:53
+#: static/horizon/js/angular/filters/filters.js:140
+#, c-format
+msgid "%s GB"
+msgstr "%s GB"
+
+#: static/horizon/js/angular/filters/filters.js:70
+#: static/horizon/js/angular/filters/filters.js:142
+#, c-format
+msgid "%s MB"
+msgstr "%s MB"
+
+#: static/horizon/js/angular/filters/filters.js:138
+#, c-format
+msgid "%s TB"
+msgstr "%s TB"
+
+#: static/horizon/js/angular/filters/filters.js:144
+#, c-format
+msgid "%s KB"
+msgstr "%s KB"
+
+#: static/horizon/js/angular/filters/filters.js:146
+#, c-format
+msgid "%s bytes"
+msgstr ""
+
+#: static/horizon/js/angular/filters/filters.js:163
+#: static/horizon/js/horizon.tables.js:393
+#, c-format
+msgid "Displaying %s item"
+msgid_plural "Displaying %s items"
+msgstr[0] "正在显示 %s 项"
+
+#: static/horizon/js/angular/services/hz.api.cinder.js:47
+msgid "Unable to retrieve volumes."
+msgstr "无法获取云硬盘"
+
+#: static/horizon/js/angular/services/hz.api.cinder.js:74
+msgid "Unable to retrieve volume snapshots."
+msgstr "找不到云硬盘快照。"
+
+#: static/horizon/js/angular/services/hz.api.config.js:43
+msgid "Unable to retrieve user configuration."
+msgstr "无法获取用户配置"
+
+#: static/horizon/js/angular/services/hz.api.config.js:62
+msgid "Unable to retrieve admin configuration."
+msgstr "无法获取管理员配置"
+
+#: static/horizon/js/angular/services/hz.api.config.js:105
+msgid "Unable to retrieve settings."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.config.js:289
+msgid "Setting is not enabled: %(setting)s"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.glance.js:38
+msgid "Unable to retrieve image."
+msgstr "无法检索到镜像。"
+
+#: static/horizon/js/angular/services/hz.api.glance.js:81
+msgid "Unable to retrieve images."
+msgstr "找不到镜像。"
+
+#: static/horizon/js/angular/services/hz.api.glance.js:144
+msgid "Unable to retrieve namespaces."
+msgstr "无法获取命名空间"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:24
+msgid "Unable to retrieve users"
+msgstr "无法获取用户"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:31
+msgid "Unable to create the user."
+msgstr "无法创建用户。"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:38
+msgid "Unable to delete the users."
+msgstr "无法删除用户"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:73
+msgid "Unable to retrieve the current user session."
+msgstr "无法获取当前用户会话。"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:80
+msgid "Unable to retrieve the user"
+msgstr "无法获取用户"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:88
+msgid "Unable to edit the user."
+msgstr "无法编辑用户"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:95
+msgid "Unable to delete the user."
+msgstr "无法删除用户"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:103
+msgid "Unable to retrieve role"
+msgstr "无法获取角色"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:110
+msgid "Unable to create the role."
+msgstr "无法创建角色。"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:117
+msgid "Unable to delete the roles."
+msgstr "无法删除角色"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:124
+msgid "Unable to retrieve the role"
+msgstr "无法获取角色"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:132
+msgid "Unable to edit the role."
+msgstr "无法编辑角色"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:139
+msgid "Unable to delete the role."
+msgstr "无法删除角色"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:147
+msgid "Unable to retrieve domains"
+msgstr "无法获取域"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:154
+msgid "Unable to create the domain."
+msgstr "无法创建域"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:161
+msgid "Unable to delete the domains."
+msgstr "无法删除域"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:168
+msgid "Unable to retrieve the domain"
+msgstr "无法获取域"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:176
+msgid "Unable to edit the domain."
+msgstr "无法编辑域"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:183
+msgid "Unable to delete the domain."
+msgstr "无法删除域"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:192
+msgid "Unable to retrieve projects"
+msgstr "无法获取项目"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:199
+msgid "Unable to create the project."
+msgstr "无法创建项目"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:206
+msgid "Unable to delete the projects."
+msgstr "无法删除项目"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:213
+msgid "Unable to retrieve the project"
+msgstr "无法获取项目"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:221
+msgid "Unable to edit the project."
+msgstr "无法编辑项目"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:228
+msgid "Unable to delete the project."
+msgstr "无法删除项目"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:236
+msgid "Unable to grant the role."
+msgstr "无法授予角色"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:250
+msgid "Unable to fetch the service catalog."
+msgstr "无法取得服务目录"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:385
+msgid "Service type is not enabled: %(desiredType)s"
+msgstr "服务类型未激活：%(desiredType)s"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:392
+msgid "Cannot get service catalog from keystone."
+msgstr "无法由keystone获取服务目录。"
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:39
+msgid "Unable to retrieve networks."
+msgstr "无法获取网络"
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:88
+msgid "Unable to create the network."
+msgstr "无法创建网络"
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:108
+msgid "Unable to retrieve subnets."
+msgstr "无法获取子网"
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:172
+msgid "Unable to create the subnet."
+msgstr "无法创建子网"
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:192
+msgid "Unable to retrieve ports."
+msgstr "无法获取端口"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:40
+msgid "Unable to retrieve keypairs."
+msgstr "无法获取密钥对"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:62
+msgid "Unable to import the keypair."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.nova.js:64
+msgid "Unable to create the keypair."
+msgstr "无法创建密匙对"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:83
+msgid "Unable to retrieve availability zones."
+msgstr "无法获取可用域。"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:121
+msgid "Unable to retrieve limits."
+msgstr "无法获取界限"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:148
+msgid "Unable to create the server."
+msgstr "无法创建服务器"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:162
+msgid "Unable to retrieve server."
+msgstr "无法获取服务器"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:192
+msgid "Unable to retrieve extensions."
+msgstr "无法获取扩展"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:237
+msgid "Unable to retrieve flavors."
+msgstr "无法获取云主机类型列表。"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:255
+msgid "Unable to retrieve flavor."
+msgstr "无法获取云主机类型"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:269
+msgid "Unable to retrieve flavor extra specs."
+msgstr "无法获取云主机类型特别设定"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:311
+msgid "Extension is not enabled: %(extension)s"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.nova.js:318
+msgid "Cannot get nova extension list."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.policy.js:65
+msgid "Policy check failed."
+msgstr "策略检查失败"
+
+#: static/horizon/js/angular/services/hz.api.security-group.js:64
+msgid "Unable to retrieve security groups."
+msgstr "无法获取安全组。"
+
 #: static/horizon/js/horizon.accordion_nav.js:78
 #: static/horizon/js/horizon.modals.js:315
 #: static/horizon/js/horizon.tabs.js:21
@@ -294,7 +590,7 @@ msgid "View Instance Details"
 msgstr "查看实例详情"
 
 #: static/horizon/js/horizon.tables.js:39
-#: static/horizon/js/horizon.tables.js:382
+#: static/horizon/js/horizon.tables.js:406
 msgid "No items to display."
 msgstr "没有条目显示。"
 
@@ -317,13 +613,6 @@ msgstr "确认 %s"
 msgid "Please confirm your selection. "
 msgstr "请确认您的选择。"
 
-#: static/horizon/js/horizon.tables.js:369
-#: static/horizon/js/angular/filters/filters.js:163
-#, c-format
-msgid "Displaying %s item"
-msgid_plural "Displaying %s items"
-msgstr[0] "正在显示 %s 项"
-
 #: static/horizon/js/horizon.tables_inline_edit.js:88
 #: static/horizon/js/horizon.tables_inline_edit.js:151
 msgid "Not authorized to do this operation."
@@ -332,270 +621,3 @@ msgstr "未授权不能进行此操作。"
 #: static/horizon/js/horizon.users.js:18
 msgid "Passwords do not match."
 msgstr "密码不匹配。"
-
-#: static/horizon/js/angular/directives/serialConsole.js:23
-msgid "Connecting"
-msgstr "连接中"
-
-#: static/horizon/js/angular/directives/serialConsole.js:23
-msgid "Open"
-msgstr "打开"
-
-#: static/horizon/js/angular/directives/serialConsole.js:23
-msgid "Closing"
-msgstr "关闭中"
-
-#: static/horizon/js/angular/directives/serialConsole.js:23
-msgid "Closed"
-msgstr "已关闭"
-
-#: static/horizon/js/angular/directives/serialConsole.js:85
-#, c-format
-msgid "Status: %s"
-msgstr "状态: %s"
-
-#: static/horizon/js/angular/filters/filters.js:37
-msgid "Yes"
-msgstr "是"
-
-#: static/horizon/js/angular/filters/filters.js:37
-msgid "No"
-msgstr "不"
-
-#: static/horizon/js/angular/filters/filters.js:53
-#: static/horizon/js/angular/filters/filters.js:140
-msgid "GB"
-msgstr "GB"
-
-#: static/horizon/js/angular/filters/filters.js:70
-#: static/horizon/js/angular/filters/filters.js:142
-msgid "MB"
-msgstr "MB"
-
-#: static/horizon/js/angular/filters/filters.js:138
-msgid "TB"
-msgstr "TB"
-
-#: static/horizon/js/angular/filters/filters.js:144
-msgid "KB"
-msgstr "KB"
-
-#: static/horizon/js/angular/filters/filters.js:146
-msgid "bytes"
-msgstr "字节数"
-
-#: static/horizon/js/angular/services/hz.api.cinder.js:47
-msgid "Unable to retrieve volumes."
-msgstr "无法获取云硬盘"
-
-#: static/horizon/js/angular/services/hz.api.cinder.js:74
-msgid "Unable to retrieve volume snapshots."
-msgstr "找不到云硬盘快照。"
-
-#: static/horizon/js/angular/services/hz.api.config.js:42
-msgid "Unable to retrieve user configuration."
-msgstr "无法获取用户配置"
-
-#: static/horizon/js/angular/services/hz.api.config.js:61
-msgid "Unable to retrieve admin configuration."
-msgstr "无法获取管理员配置"
-
-#: static/horizon/js/angular/services/hz.api.glance.js:38
-msgid "Unable to retrieve image."
-msgstr "无法检索到镜像。"
-
-#: static/horizon/js/angular/services/hz.api.glance.js:81
-msgid "Unable to retrieve images."
-msgstr "找不到镜像。"
-
-#: static/horizon/js/angular/services/hz.api.glance.js:133
-msgid "Unable to retrieve namespaces."
-msgstr "无法获取命名空间"
-
-#: static/horizon/js/angular/services/hz.api.glance.js:147
-msgid "Unable to retrieve namespace."
-msgstr "无法获取命名空间"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:24
-msgid "Unable to retrieve users"
-msgstr "无法获取用户"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:31
-msgid "Unable to create the user."
-msgstr "无法创建用户。"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:38
-msgid "Unable to delete the users."
-msgstr "无法删除用户"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:73
-msgid "Unable to retrieve the current user session."
-msgstr ""
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:80
-msgid "Unable to retrieve the user"
-msgstr "无法获取用户"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:88
-msgid "Unable to edit the user."
-msgstr "无法编辑用户"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:95
-msgid "Unable to delete the user."
-msgstr "无法删除用户"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:103
-msgid "Unable to retrieve role"
-msgstr "无法获取角色"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:110
-msgid "Unable to create the role."
-msgstr "无法创建角色。"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:117
-msgid "Unable to delete the roles."
-msgstr "无法删除角色"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:124
-msgid "Unable to retrieve the role"
-msgstr "无法获取角色"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:132
-msgid "Unable to edit the role."
-msgstr "无法编辑角色"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:139
-msgid "Unable to delete the role."
-msgstr "无法删除角色"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:147
-msgid "Unable to retrieve domains"
-msgstr "无法获取域"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:154
-msgid "Unable to create the domain."
-msgstr "无法创建域"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:161
-msgid "Unable to delete the domains."
-msgstr "无法删除域"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:168
-msgid "Unable to retrieve the domain"
-msgstr "无法获取域"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:176
-msgid "Unable to edit the domain."
-msgstr "无法编辑域"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:183
-msgid "Unable to delete the domain."
-msgstr "无法删除域"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:192
-msgid "Unable to retrieve projects"
-msgstr "无法获取项目"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:199
-msgid "Unable to create the project."
-msgstr "无法创建项目"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:206
-msgid "Unable to delete the projects."
-msgstr "无法删除项目"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:213
-msgid "Unable to retrieve the project"
-msgstr "无法获取项目"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:221
-msgid "Unable to edit the project."
-msgstr "无法编辑项目"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:228
-msgid "Unable to delete the project."
-msgstr "无法删除项目"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:236
-msgid "Unable to grant the role."
-msgstr "无法授予角色"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:250
-msgid "Unable to fetch the service catalog."
-msgstr "无法取得服务目录"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:385
-msgid "Service type is not enabled: %(desiredType)s"
-msgstr ""
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:392
-msgid "Cannot get service catalog from keystone."
-msgstr ""
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:39
-msgid "Unable to retrieve networks."
-msgstr "无法获取网络"
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:88
-msgid "Unable to create the network."
-msgstr "无法创建网络"
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:108
-msgid "Unable to retrieve subnets."
-msgstr "无法获取子网"
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:172
-msgid "Unable to create the subnet."
-msgstr "无法创建子网"
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:192
-msgid "Unable to retrieve ports."
-msgstr "无法获取端口"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:40
-msgid "Unable to retrieve keypairs."
-msgstr "无法获取密钥对"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:61
-msgid "Unable to create the keypair."
-msgstr "无法创建密匙对"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:79
-msgid "Unable to retrieve availability zones."
-msgstr "无法获取可用域。"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:117
-msgid "Unable to retrieve limits."
-msgstr "无法获取界限"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:144
-msgid "Unable to create the server."
-msgstr "无法创建服务器"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:158
-msgid "Unable to retrieve server."
-msgstr "无法获取服务器"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:188
-msgid "Unable to retrieve extensions."
-msgstr "无法获取扩展"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:233
-msgid "Unable to retrieve flavors."
-msgstr "无法获取云主机类型列表。"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:251
-msgid "Unable to retrieve flavor."
-msgstr "无法获取云主机类型"
-
-#: static/horizon/js/angular/services/hz.api.nova.js:265
-msgid "Unable to retrieve flavor extra specs."
-msgstr "无法获取云主机类型特别设定"
-
-#: static/horizon/js/angular/services/hz.api.policy.js:65
-msgid "Policy check failed."
-msgstr "策略检查失败"
-
-#: static/horizon/js/angular/services/hz.api.security-group.js:64
-msgid "Unable to retrieve security groups."
-msgstr "无法获取安全组。"

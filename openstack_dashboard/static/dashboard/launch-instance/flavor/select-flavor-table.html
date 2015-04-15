@@ -19,17 +19,6 @@ limitations under the License.
   <tr ng-show="showSearchBar">
     <th class="search-header" colspan="9">
       <search-bar group-classes="input-group-sm" icon-classes="fa-search">
-        <div class="form-group search-bar">
-          <div class="input-group input-group-sm">
-            <span class="input-group-addon">
-              <span class="fa fa-search"></span>
-            </span>
-            <input
-                type="text"
-                st-search=""
-                class="form-control ng-isolate-scope">
-          </div>
-        </div>
       </search-bar>
     </th>
   </tr>
@@ -117,6 +106,17 @@ limitations under the License.
                  chart-settings="donutSettings"></pie-chart>
       <pie-chart chart-data="item.ramChartData"
                  chart-settings="donutSettings"></pie-chart>
+      <div ng-if="metadataDefs.flavor">
+        <hr>
+        <div class="row" ng-if="item.extras">
+          <div class="col-sm-12">
+            <hz-metadata-display
+              available="::metadataDefs.flavor"
+              existing="::item.extras">
+            </hz-metadata-display>
+          </div>
+        </div>
+      </div>
     </td>
     <td></td>
   </tr>

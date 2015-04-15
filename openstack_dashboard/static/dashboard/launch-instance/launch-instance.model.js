@@ -98,22 +98,16 @@
         availabilityZones: [],
         flavors: [],
         allowedBootSources: [],
-        allowedDiskConfigOptions:[
-          {
-            id:'AUTO',
-            label: gettext('Automatic')
-          },
-          {
-            id:'MANUAL',
-            label: gettext('Manual')
-          }
-        ],
         images: [],
         allowCreateVolumeFromImage: false,
         arePortProfilesSupported: false,
         imageSnapshots: [],
         keypairs: [],
-        metadataDefs: [],
+        metadataDefs: {
+          flavor: null,
+          image: null,
+          volume: null
+        },
         networks: [],
         novaLimits: {},
         profiles: [],
@@ -187,7 +181,7 @@
           promise = $q.all([
             getImages(),
             novaAPI.getAvailabilityZones().then(onGetAvailabilityZones, noop),
-            novaAPI.getFlavors().then(onGetFlavors, noop),
+            novaAPI.getFlavors(true, true).then(onGetFlavors, noop),
             novaAPI.getKeypairs().then(onGetKeypairs, noop),
             novaAPI.getLimits().then(onGetNovaLimits, noop),
             securityGroup.query().then(onGetSecurityGroups, noop),
@@ -199,6 +193,10 @@
             function() {
               model.initializing = false;
               model.initialized = true;
+              // This provides supplemental data non-critical to launching
+              // an instance.  Therefore we load it only if the critical data
+              // all loads successfully.
+              getMetadataDefinitions();
             },
             function () {
               model.initializing = false;
@@ -389,9 +387,8 @@
         volumePromises.push(cinderAPI.getVolumeSnapshots({ status: 'available' }).then(onGetVolumeSnapshots));
 
         // Can only boot image to volume if the Nova extension is enabled.
-        novaExtensions.ifNameEnabled('BlockDeviceMappingV2Boot', function(){
-          model.allowCreateVolumeFromImage = true;
-        });
+        novaExtensions.ifNameEnabled('BlockDeviceMappingV2Boot')
+          .then(function(){ model.allowCreateVolumeFromImage = true; });
 
         return $q.all(volumePromises);
       }
@@ -488,21 +485,37 @@
 
       // Metadata Definitions
 
-      function onGetNamespaces(data) {
-        var promises = [];
+      /**
+       * Metadata definitions provide supplemental information in detail
+       * rows and should not slow down any of the other load processes.
+       * All code should be written to treat metadata definitions as
+       * optional, because they are never guaranteed to exist.
+       */
+      function getMetadataDefinitions() {
+        // Metadata definitions often apply to multiple
+        // resource types. It is optimal to make a single
+        // request for all desired resource types.
+        var resourceTypes = {
+          flavor: 'OS::Nova::Flavor',
+          image: 'OS::Glance::Image',
+          volume: 'OS::Cinder::Volumes'
+        };
 
-        data.data.items.forEach(function (ns) {
-          var promise = glanceAPI.getNamespace(ns.namespace);
-          promise.then(onGetNamespace);
-          promises.push(promise);
+        angular.forEach(resourceTypes, function (resourceType, key) {
+          glanceAPI.getNamespaces({
+            'resource_type': resourceType
+          }, true)
+          .then(function (data) {
+            var namespaces = data.data.items;
+            // This will ensure that the metaDefs model object remains
+            // unchanged until metadefs are fully loaded. Otherwise,
+            // partial results are loaded and can result in some odd
+            // display behavior.
+            if(namespaces.length) {
+              model.metadataDefs[key] = namespaces;
+            }
+          });
         });
-
-        allNamespacesPromise = $q.all(promises);
-      }
-
-      function onGetNamespace(data) {
-        model.metadataDefs.length = 0;
-        push.apply(model.metadataDefs, data.data);
       }
 
       return model;

@@ -83,7 +83,7 @@
                     popover-trigger="hover"></span>
               <select name="boot-source-type" class="form-control input-sm"
                       ng-options="src.label for src in bootSourcesOptions track by src.type"
-                      ng-change="updateBootSourceSelection(model.newInstanceSpec.source_type)"
+                      ng-change="updateBootSourceSelection(model.newInstanceSpec.source_type.type)"
                       ng-model="model.newInstanceSpec.source_type">
               </select>
             </div>
@@ -95,15 +95,31 @@
 
             <div class="col-xs-12 col-sm-3">
               <div class="form-group create-volume">
-                <div class="checkbox">
-                  <label class="on-top">
-                    <input type="checkbox" ng-model="model.newInstanceSpec.vol_create">
-                    {$ ::label.volumeCreate $}</label>
+                <label class="on-top">{$ ::label.volumeCreate $}</label>
+                <div class="form-field">
+                  <div class="btn-group">
+                    <label class="btn btn-toggle"
+                      ng-repeat="option in toggleButtonOptions"
+                      ng-model="model.newInstanceSpec.vol_create"
+                      btn-radio="option.value">{$ ::option.label $}</label>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="col-xs-12 col-sm-4 volume-size-wrapper" ng-if="model.newInstanceSpec.vol_create == true">
+            <settings-service required-settings='["OPENSTACK_HYPERVISOR_FEATURES.can_set_mount_point"]'
+              ng-if="model.newInstanceSpec.vol_create === true">
+              <div class="col-xs-12 col-sm-3">
+                <div class="form-field">
+                  <label>{$ ::label.volumeDeviceName $}</label>
+                  <input class="form-control input-sm"
+                         ng-model="model.newInstanceSpec.vol_device_name"
+                         type="text">
+                </div>
+              </div>
+            </settings-service>
+
+            <div class="col-xs-12 col-sm-2 volume-size-wrapper" ng-if="model.newInstanceSpec.vol_create == true">
               <div class="form-field volume-size"
                 ng-class="{ 'has-warning': launchInstanceSourceForm['volume-size'].$invalid }">
                 <label class="on-top">{$ ::label.volumeSize $}</label>
@@ -122,11 +138,14 @@
 
             <div class="col-xs-12 col-sm-4" ng-if="model.newInstanceSpec.vol_create == true">
               <div class="form-group delete-volume">
-                <div class="checkbox">
-                  <label class="on-top">
-                    <input type="checkbox"
-                           ng-model="model.newInstanceSpec.vol_delete_on_terminate">
-                    {$ ::label.deleteVolumeOnTerminate $}</label>
+                <label class="on-top">{$ ::label.deleteVolumeOnTerminate $}</label>
+                <div class="form-field">
+                  <div class="btn-group">
+                    <label class="btn btn-toggle"
+                      ng-repeat="option in toggleButtonOptions"
+                      ng-model="model.newInstanceSpec.vol_delete_on_terminate"
+                      btn-radio="option.value">{$ ::option.label $}</label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -136,14 +155,19 @@
           <div class="col-xs-12 col-sm-9"
                ng-if="model.newInstanceSpec.source_type.type == 'volume' || model.newInstanceSpec.source_type.type == 'volume_snapshot'">
             <div class="col-xs-12 col-sm-6">
+
               <div class="form-group delete-volume">
-                <div class="checkbox">
-                  <label class="on-top">
-                    <input type="checkbox"
-                           ng-model="model.newInstanceSpec.vol_delete_on_terminate">
-                    {$ ::label.deleteVolumeOnTerminate $}</label>
+                <label class="on-top">{$ ::label.deleteVolumeOnTerminate $}</label>
+                <div class="form-field">
+                  <div class="btn-group">
+                    <label class="btn btn-toggle"
+                      ng-repeat="option in toggleButtonOptions"
+                      ng-model="model.newInstanceSpec.vol_delete_on_terminate"
+                      btn-radio="option.value">{$ ::option.label $}</label>
+                  </div>
                 </div>
               </div>
+
             </div>
           </div><!-- end volume select options -->
 
@@ -162,7 +186,7 @@
 
           <!-- transfer table, allocated table head -->
           <thead>
-            <tr ng-show="tableData.allocated.length > 0">
+            <tr>
               <th class="expander"></th>
               <th ng-class="tableHeadCells[0].classList"
                   ng-style="tableHeadCells[0].style">
@@ -199,7 +223,7 @@
               </td>
             </tr>
 
-            <tr ng-repeat-start="row in tableData.displayAllocated track by row.id">
+            <tr ng-repeat-start="row in selection">
               <td class="expander">
                 <span class="fa fa-chevron-right"
                       hz-expand-detail
@@ -223,6 +247,12 @@
               </td>
               <td ng-class="tableBodyCells[4].classList"
                   ng-style="tableBodyCells[4].style">
+                <span ng-if="model.newInstanceSpec.source_type.type === 'volume' && row.availability_zone !== model.newInstanceSpec.availability_zone"
+                      class="invalid fa fa-exclamation-triangle"
+                      popover="{$ ::trCtrl.helpText.volumeAZHelpText $}"
+                      popover-trigger="mouseenter mouseleave"
+                      popover-append-to-body="true"
+                      popover-placement="top"></span>
                 {$ tableBodyCells[4].filter ? tableBodyCells[4].filter(row[tableBodyCells[4].key], tableBodyCells[4].filterArg) : row[tableBodyCells[4].key] $}
               </td>
               <td class="action-col">
@@ -236,15 +266,8 @@
               </td>
             </tr>
             <tr class="detail-row"
-                ng-repeat-end>
-              <td></td>
-              <td colspan="{$ tableHeadCells.length $}" class="detail">
-                <dl class="dl-horizontal">
-                  <dt>{$ ::label.id $}</dt>
-                  <dd>{$ row.id $}</dd>
-                </dl>
-              </td>
-              <td></td>
+                ng-repeat-end
+                ng-include="sourceDetails">
             </tr>
           </tbody><!-- /transfer table, allocated table body -->
         </table>
@@ -256,7 +279,7 @@
                hz-table
                class="table-striped table-rsp table-detail modern">
 
-          <!-- transfer table, allocatable table head -->
+          <!-- transfer table, available table head -->
           <thead>
           <tr>
             <th class="search-header"
@@ -300,7 +323,7 @@
               </th>
               <th class="action"></th>
             </tr>
-          </thead><!-- /allocatable table, allocated table head -->
+          </thead><!-- /transfer table, available table head -->
 
           <tbody>
 
@@ -338,6 +361,12 @@
               </td>
               <td ng-class="tableBodyCells[4].classList"
                   ng-style="tableBodyCells[4].style">
+                <span ng-if="model.newInstanceSpec.source_type.type === 'volume' && row.availability_zone !== model.newInstanceSpec.availability_zone"
+                      class="invalid fa fa-exclamation-triangle"
+                      popover="{$ ::trCtrl.helpText.volumeAZHelpText $}"
+                      popover-trigger="mouseenter mouseleave"
+                      popover-append-to-body="true"
+                      popover-placement="top"></span>
                 {$ tableBodyCells[4].filter ? tableBodyCells[4].filter(row[tableBodyCells[4].key], tableBodyCells[4].filterArg) : row[tableBodyCells[4].key] $}
               </td>
               <td class="action-col">
@@ -351,15 +380,8 @@
               </td>
             </tr>
             <tr class="detail-row"
-                ng-repeat-end>
-              <td></td>
-              <td colspan="{$ tableHeadCells.length $}" class="detail">
-                <dl class="dl-horizontal">
-                  <dt>{$ ::label.id $}</dt>
-                  <dd>{$ row.id $}</dd>
-                </dl>
-              </td>
-              <td></td>
+                ng-repeat-end
+                ng-include="sourceDetails">
             </tr>
           </tbody>
         </table>

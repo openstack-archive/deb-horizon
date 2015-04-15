@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-01 22:59-0500\n"
-"PO-Revision-Date: 2015-04-02 00:44+0000\n"
+"POT-Creation-Date: 2015-04-11 11:47-0500\n"
+"PO-Revision-Date: 2015-04-11 00:07+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/projects/p/horizon/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -167,169 +167,6 @@ msgstr "Edellinen"
 msgid "Finish"
 msgstr ""
 
-#: static/horizon/js/horizon.accordion_nav.js:78
-#: static/horizon/js/horizon.modals.js:315
-#: static/horizon/js/horizon.tabs.js:21
-msgid "Loading"
-msgstr "Ladataan"
-
-#: static/horizon/js/horizon.d3linechart.js:394
-#: static/horizon/js/horizon.d3linechart.js:404
-msgid "No data available."
-msgstr "Ei dataa saatavilla."
-
-#: static/horizon/js/horizon.d3linechart.js:410
-#: static/horizon/js/horizon.modals.js:334
-#: static/horizon/js/horizon.tables_inline_edit.js:94
-#: static/horizon/js/horizon.tables_inline_edit.js:157
-msgid "An error occurred. Please try again later."
-msgstr "Tapahtui virhe. Yritä myöhemmin uudelleen."
-
-#: static/horizon/js/horizon.firewalls.js:32
-#: static/horizon/js/horizon.instances.js:31
-msgid "There was a problem communicating with the server, please try again."
-msgstr "Palvelinyhteydessä tapahtui virhe, yritä myöhemmin uudelleen."
-
-#: static/horizon/js/horizon.instances.js:273
-msgid "Could not read the file"
-msgstr "Tiedostoa ei voitu lukea"
-
-#: static/horizon/js/horizon.instances.js:279
-#: static/horizon/js/horizon.instances.js:308
-msgid "Could not decrypt the password"
-msgstr "Salasanaa ei voitu purkaa"
-
-#: static/horizon/js/horizon.membership.js:190
-msgid "No roles"
-msgstr "Ei rooleja"
-
-#: static/horizon/js/horizon.membership.js:222
-msgid "Roles"
-msgstr "Roolit"
-
-#: static/horizon/js/horizon.messages.js:9
-msgid "Danger: "
-msgstr "Vaara:"
-
-#: static/horizon/js/horizon.messages.js:10
-msgid "Warning: "
-msgstr "Varoitus:"
-
-#: static/horizon/js/horizon.messages.js:11
-msgid "Notice: "
-msgstr "Huomautus:"
-
-#: static/horizon/js/horizon.messages.js:12
-msgid "Success: "
-msgstr "Onnistui:"
-
-#: static/horizon/js/horizon.messages.js:13
-msgid "Error: "
-msgstr "Virhe:"
-
-#: static/horizon/js/horizon.modals.js:229
-#: static/horizon/js/horizon.tables.js:218
-msgid "Working"
-msgstr "Käsitellään"
-
-#: static/horizon/js/horizon.modals.js:263
-msgid "There was an error submitting the form. Please try again."
-msgstr "Lomakkeen lähetys epäonnistui. Yritä uudelleen."
-
-#: static/horizon/js/horizon.networktopology.js:530
-#: static/horizon/js/horizon.networktopology.js:536
-msgid "None"
-msgstr "Tyhjä"
-
-#: static/horizon/js/horizon.networktopology.js:549
-msgid "Delete"
-msgstr "Poista"
-
-#: static/horizon/js/horizon.networktopology.js:552
-msgid "STATUS"
-msgstr "TILA"
-
-#: static/horizon/js/horizon.networktopology.js:553
-msgid "ID"
-msgstr "ID"
-
-#: static/horizon/js/horizon.networktopology.js:554
-msgid "Interfaces"
-msgstr "Verkkosovitin"
-
-#: static/horizon/js/horizon.networktopology.js:555
-msgid "Delete Interface"
-msgstr "Poista verkkosovitin"
-
-#: static/horizon/js/horizon.networktopology.js:556
-msgid "Open Console"
-msgstr "Avaa konsoli"
-
-#: static/horizon/js/horizon.networktopology.js:557
-msgid "View Details"
-msgstr "Näytä tiedot"
-
-#: static/horizon/js/horizon.networktopology.js:560
-msgid "Delete Router"
-msgstr "Poista reititin"
-
-#: static/horizon/js/horizon.networktopology.js:561
-msgid "View Router Details"
-msgstr "Näytä reitittimen tiedot"
-
-#: static/horizon/js/horizon.networktopology.js:564
-msgid "Add Interface"
-msgstr "lisää Portti"
-
-#: static/horizon/js/horizon.networktopology.js:570
-msgid "Terminate Instance"
-msgstr "Tuhoa instanssi"
-
-#: static/horizon/js/horizon.networktopology.js:571
-msgid "View Instance Details"
-msgstr "Näytä instanssin tiedot"
-
-#: static/horizon/js/horizon.tables.js:39
-#: static/horizon/js/horizon.tables.js:382
-msgid "No items to display."
-msgstr "Ei näytettävää."
-
-#: static/horizon/js/horizon.tables.js:52
-#: static/horizon/js/horizon.tables.js:120
-msgid "An error occurred while updating."
-msgstr "Päivitys epäonnistui."
-
-#: static/horizon/js/horizon.tables.js:201
-#, c-format
-msgid "You have selected %s. "
-msgstr "Olet valinnut %s."
-
-#: static/horizon/js/horizon.tables.js:203
-#, c-format
-msgid "Confirm %s"
-msgstr "Vahvista %s"
-
-#: static/horizon/js/horizon.tables.js:204
-msgid "Please confirm your selection. "
-msgstr ""
-
-#: static/horizon/js/horizon.tables.js:369
-#: static/horizon/js/angular/filters/filters.js:163
-#, c-format
-msgid "Displaying %s item"
-msgid_plural "Displaying %s items"
-msgstr[0] "Näytetään %s kohde"
-msgstr[1] "Näytetään %s kohdetta"
-
-#: static/horizon/js/horizon.tables_inline_edit.js:88
-#: static/horizon/js/horizon.tables_inline_edit.js:151
-msgid "Not authorized to do this operation."
-msgstr "Sinulla ei ole oikeutta tähän toimintoon."
-
-#: static/horizon/js/horizon.users.js:18
-msgid "Passwords do not match."
-msgstr "Salasana ei täsmää"
-
 #: static/horizon/js/angular/directives/serialConsole.js:23
 msgid "Connecting"
 msgstr ""
@@ -361,25 +198,38 @@ msgstr ""
 
 #: static/horizon/js/angular/filters/filters.js:53
 #: static/horizon/js/angular/filters/filters.js:140
-msgid "GB"
-msgstr "GB"
+#, c-format
+msgid "%s GB"
+msgstr "%s GB"
 
 #: static/horizon/js/angular/filters/filters.js:70
 #: static/horizon/js/angular/filters/filters.js:142
-msgid "MB"
-msgstr "MB"
+#, c-format
+msgid "%s MB"
+msgstr "%s MB"
 
 #: static/horizon/js/angular/filters/filters.js:138
-msgid "TB"
-msgstr ""
+#, c-format
+msgid "%s TB"
+msgstr "%s TB"
 
 #: static/horizon/js/angular/filters/filters.js:144
-msgid "KB"
-msgstr ""
+#, c-format
+msgid "%s KB"
+msgstr "%s KB"
 
 #: static/horizon/js/angular/filters/filters.js:146
-msgid "bytes"
+#, c-format
+msgid "%s bytes"
 msgstr ""
+
+#: static/horizon/js/angular/filters/filters.js:163
+#: static/horizon/js/horizon.tables.js:393
+#, c-format
+msgid "Displaying %s item"
+msgid_plural "Displaying %s items"
+msgstr[0] "Näytetään %s kohde"
+msgstr[1] "Näytetään %s kohdetta"
 
 #: static/horizon/js/angular/services/hz.api.cinder.js:47
 msgid "Unable to retrieve volumes."
@@ -389,12 +239,20 @@ msgstr ""
 msgid "Unable to retrieve volume snapshots."
 msgstr "Ei voida hakea levyjaon varmuusvedosta."
 
-#: static/horizon/js/angular/services/hz.api.config.js:42
+#: static/horizon/js/angular/services/hz.api.config.js:43
 msgid "Unable to retrieve user configuration."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.config.js:61
+#: static/horizon/js/angular/services/hz.api.config.js:62
 msgid "Unable to retrieve admin configuration."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.config.js:105
+msgid "Unable to retrieve settings."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.config.js:289
+msgid "Setting is not enabled: %(setting)s"
 msgstr ""
 
 #: static/horizon/js/angular/services/hz.api.glance.js:38
@@ -405,12 +263,8 @@ msgstr "Ei voida hakea levykuvaa."
 msgid "Unable to retrieve images."
 msgstr "Ei voida hakea levykuvia."
 
-#: static/horizon/js/angular/services/hz.api.glance.js:133
+#: static/horizon/js/angular/services/hz.api.glance.js:144
 msgid "Unable to retrieve namespaces."
-msgstr ""
-
-#: static/horizon/js/angular/services/hz.api.glance.js:147
-msgid "Unable to retrieve namespace."
 msgstr ""
 
 #: static/horizon/js/angular/services/hz.api.keystone.js:24
@@ -553,40 +407,52 @@ msgstr ""
 msgid "Unable to retrieve keypairs."
 msgstr "Ei voida hakea avainpareja. "
 
-#: static/horizon/js/angular/services/hz.api.nova.js:61
+#: static/horizon/js/angular/services/hz.api.nova.js:62
+msgid "Unable to import the keypair."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.nova.js:64
 msgid "Unable to create the keypair."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.nova.js:79
+#: static/horizon/js/angular/services/hz.api.nova.js:83
 msgid "Unable to retrieve availability zones."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.nova.js:117
+#: static/horizon/js/angular/services/hz.api.nova.js:121
 msgid "Unable to retrieve limits."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.nova.js:144
+#: static/horizon/js/angular/services/hz.api.nova.js:148
 msgid "Unable to create the server."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.nova.js:158
+#: static/horizon/js/angular/services/hz.api.nova.js:162
 msgid "Unable to retrieve server."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.nova.js:188
+#: static/horizon/js/angular/services/hz.api.nova.js:192
 msgid "Unable to retrieve extensions."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.nova.js:233
+#: static/horizon/js/angular/services/hz.api.nova.js:237
 msgid "Unable to retrieve flavors."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.nova.js:251
+#: static/horizon/js/angular/services/hz.api.nova.js:255
 msgid "Unable to retrieve flavor."
 msgstr ""
 
-#: static/horizon/js/angular/services/hz.api.nova.js:265
+#: static/horizon/js/angular/services/hz.api.nova.js:269
 msgid "Unable to retrieve flavor extra specs."
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.nova.js:311
+msgid "Extension is not enabled: %(extension)s"
+msgstr ""
+
+#: static/horizon/js/angular/services/hz.api.nova.js:318
+msgid "Cannot get nova extension list."
 msgstr ""
 
 #: static/horizon/js/angular/services/hz.api.policy.js:65
@@ -596,3 +462,158 @@ msgstr ""
 #: static/horizon/js/angular/services/hz.api.security-group.js:64
 msgid "Unable to retrieve security groups."
 msgstr "Ei voida hakea turvaryhmiä."
+
+#: static/horizon/js/horizon.accordion_nav.js:78
+#: static/horizon/js/horizon.modals.js:315
+#: static/horizon/js/horizon.tabs.js:21
+msgid "Loading"
+msgstr "Ladataan"
+
+#: static/horizon/js/horizon.d3linechart.js:394
+#: static/horizon/js/horizon.d3linechart.js:404
+msgid "No data available."
+msgstr "Ei dataa saatavilla."
+
+#: static/horizon/js/horizon.d3linechart.js:410
+#: static/horizon/js/horizon.modals.js:334
+#: static/horizon/js/horizon.tables_inline_edit.js:94
+#: static/horizon/js/horizon.tables_inline_edit.js:157
+msgid "An error occurred. Please try again later."
+msgstr "Tapahtui virhe. Yritä myöhemmin uudelleen."
+
+#: static/horizon/js/horizon.firewalls.js:32
+#: static/horizon/js/horizon.instances.js:31
+msgid "There was a problem communicating with the server, please try again."
+msgstr "Palvelinyhteydessä tapahtui virhe, yritä myöhemmin uudelleen."
+
+#: static/horizon/js/horizon.instances.js:273
+msgid "Could not read the file"
+msgstr "Tiedostoa ei voitu lukea"
+
+#: static/horizon/js/horizon.instances.js:279
+#: static/horizon/js/horizon.instances.js:308
+msgid "Could not decrypt the password"
+msgstr "Salasanaa ei voitu purkaa"
+
+#: static/horizon/js/horizon.membership.js:190
+msgid "No roles"
+msgstr "Ei rooleja"
+
+#: static/horizon/js/horizon.membership.js:222
+msgid "Roles"
+msgstr "Roolit"
+
+#: static/horizon/js/horizon.messages.js:9
+msgid "Danger: "
+msgstr "Vaara:"
+
+#: static/horizon/js/horizon.messages.js:10
+msgid "Warning: "
+msgstr "Varoitus:"
+
+#: static/horizon/js/horizon.messages.js:11
+msgid "Notice: "
+msgstr "Huomautus:"
+
+#: static/horizon/js/horizon.messages.js:12
+msgid "Success: "
+msgstr "Onnistui:"
+
+#: static/horizon/js/horizon.messages.js:13
+msgid "Error: "
+msgstr "Virhe:"
+
+#: static/horizon/js/horizon.modals.js:229
+#: static/horizon/js/horizon.tables.js:218
+msgid "Working"
+msgstr "Käsitellään"
+
+#: static/horizon/js/horizon.modals.js:263
+msgid "There was an error submitting the form. Please try again."
+msgstr "Lomakkeen lähetys epäonnistui. Yritä uudelleen."
+
+#: static/horizon/js/horizon.networktopology.js:530
+#: static/horizon/js/horizon.networktopology.js:536
+msgid "None"
+msgstr "Tyhjä"
+
+#: static/horizon/js/horizon.networktopology.js:549
+msgid "Delete"
+msgstr "Poista"
+
+#: static/horizon/js/horizon.networktopology.js:552
+msgid "STATUS"
+msgstr "TILA"
+
+#: static/horizon/js/horizon.networktopology.js:553
+msgid "ID"
+msgstr "ID"
+
+#: static/horizon/js/horizon.networktopology.js:554
+msgid "Interfaces"
+msgstr "Verkkosovitin"
+
+#: static/horizon/js/horizon.networktopology.js:555
+msgid "Delete Interface"
+msgstr "Poista verkkosovitin"
+
+#: static/horizon/js/horizon.networktopology.js:556
+msgid "Open Console"
+msgstr "Avaa konsoli"
+
+#: static/horizon/js/horizon.networktopology.js:557
+msgid "View Details"
+msgstr "Näytä tiedot"
+
+#: static/horizon/js/horizon.networktopology.js:560
+msgid "Delete Router"
+msgstr "Poista reititin"
+
+#: static/horizon/js/horizon.networktopology.js:561
+msgid "View Router Details"
+msgstr "Näytä reitittimen tiedot"
+
+#: static/horizon/js/horizon.networktopology.js:564
+msgid "Add Interface"
+msgstr "lisää Portti"
+
+#: static/horizon/js/horizon.networktopology.js:570
+msgid "Terminate Instance"
+msgstr "Tuhoa instanssi"
+
+#: static/horizon/js/horizon.networktopology.js:571
+msgid "View Instance Details"
+msgstr "Näytä instanssin tiedot"
+
+#: static/horizon/js/horizon.tables.js:39
+#: static/horizon/js/horizon.tables.js:406
+msgid "No items to display."
+msgstr "Ei näytettävää."
+
+#: static/horizon/js/horizon.tables.js:52
+#: static/horizon/js/horizon.tables.js:120
+msgid "An error occurred while updating."
+msgstr "Päivitys epäonnistui."
+
+#: static/horizon/js/horizon.tables.js:201
+#, c-format
+msgid "You have selected %s. "
+msgstr "Olet valinnut %s."
+
+#: static/horizon/js/horizon.tables.js:203
+#, c-format
+msgid "Confirm %s"
+msgstr "Vahvista %s"
+
+#: static/horizon/js/horizon.tables.js:204
+msgid "Please confirm your selection. "
+msgstr ""
+
+#: static/horizon/js/horizon.tables_inline_edit.js:88
+#: static/horizon/js/horizon.tables_inline_edit.js:151
+msgid "Not authorized to do this operation."
+msgstr "Sinulla ei ole oikeutta tähän toimintoon."
+
+#: static/horizon/js/horizon.users.js:18
+msgid "Passwords do not match."
+msgstr "Salasana ei täsmää"

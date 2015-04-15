@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Andreas Jaeger <jaegerandi@gmail.com>, 2015
+# Ettore Atalan <atalanttore@googlemail.com>, 2015
 # Robert Simai, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-01 22:59-0500\n"
-"PO-Revision-Date: 2015-04-02 00:44+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"POT-Creation-Date: 2015-04-11 11:47-0500\n"
+"PO-Revision-Date: 2015-04-12 03:25+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/horizon/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -168,6 +169,302 @@ msgstr "Weiter"
 msgid "Finish"
 msgstr "Beenden"
 
+#: static/horizon/js/angular/directives/serialConsole.js:23
+msgid "Connecting"
+msgstr "Verbinde"
+
+#: static/horizon/js/angular/directives/serialConsole.js:23
+msgid "Open"
+msgstr "Öffnen"
+
+#: static/horizon/js/angular/directives/serialConsole.js:23
+msgid "Closing"
+msgstr "Schließen"
+
+#: static/horizon/js/angular/directives/serialConsole.js:23
+msgid "Closed"
+msgstr "Geschlossen"
+
+#: static/horizon/js/angular/directives/serialConsole.js:85
+#, c-format
+msgid "Status: %s"
+msgstr "Status: %s"
+
+#: static/horizon/js/angular/filters/filters.js:37
+msgid "Yes"
+msgstr "Ja"
+
+#: static/horizon/js/angular/filters/filters.js:37
+msgid "No"
+msgstr "Nein"
+
+#: static/horizon/js/angular/filters/filters.js:53
+#: static/horizon/js/angular/filters/filters.js:140
+#, c-format
+msgid "%s GB"
+msgstr "%s GB"
+
+#: static/horizon/js/angular/filters/filters.js:70
+#: static/horizon/js/angular/filters/filters.js:142
+#, c-format
+msgid "%s MB"
+msgstr "%s MB"
+
+#: static/horizon/js/angular/filters/filters.js:138
+#, c-format
+msgid "%s TB"
+msgstr "%s TB"
+
+#: static/horizon/js/angular/filters/filters.js:144
+#, c-format
+msgid "%s KB"
+msgstr "%s KB"
+
+#: static/horizon/js/angular/filters/filters.js:146
+#, c-format
+msgid "%s bytes"
+msgstr "%s Bytes"
+
+#: static/horizon/js/angular/filters/filters.js:163
+#: static/horizon/js/horizon.tables.js:393
+#, c-format
+msgid "Displaying %s item"
+msgid_plural "Displaying %s items"
+msgstr[0] "Zeige %s Eintrag"
+msgstr[1] "Zeige %s Einträge"
+
+#: static/horizon/js/angular/services/hz.api.cinder.js:47
+msgid "Unable to retrieve volumes."
+msgstr "Datenträger können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.cinder.js:74
+msgid "Unable to retrieve volume snapshots."
+msgstr "Datenträger-Schattenkopien können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.config.js:43
+msgid "Unable to retrieve user configuration."
+msgstr "Benutzerkonfiguration kann nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.config.js:62
+msgid "Unable to retrieve admin configuration."
+msgstr "Admin-Konfiguration kann nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.config.js:105
+msgid "Unable to retrieve settings."
+msgstr "Einstellungen können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.config.js:289
+msgid "Setting is not enabled: %(setting)s"
+msgstr "Einstellung ist nicht aktiviert: %(setting)s"
+
+#: static/horizon/js/angular/services/hz.api.glance.js:38
+msgid "Unable to retrieve image."
+msgstr "Abbild kann nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.glance.js:81
+msgid "Unable to retrieve images."
+msgstr "Abbilder können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.glance.js:144
+msgid "Unable to retrieve namespaces."
+msgstr "Namensräume können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:24
+msgid "Unable to retrieve users"
+msgstr "Benutzer können nicht abgerufen werden"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:31
+msgid "Unable to create the user."
+msgstr "Benutzer kann nicht angelegt werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:38
+msgid "Unable to delete the users."
+msgstr "Benutzer können nicht gelöscht werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:73
+msgid "Unable to retrieve the current user session."
+msgstr "Aktuelle Benutzersitzung kann nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:80
+msgid "Unable to retrieve the user"
+msgstr "Benutzer kann nicht abgerufen werden"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:88
+msgid "Unable to edit the user."
+msgstr "Benutzer kann nicht bearbeitet werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:95
+msgid "Unable to delete the user."
+msgstr "Benutzer kann nicht gelöscht werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:103
+msgid "Unable to retrieve role"
+msgstr "Rolle kann nicht abgerufen werden"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:110
+msgid "Unable to create the role."
+msgstr "Die Rolle kann nicht erstellt werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:117
+msgid "Unable to delete the roles."
+msgstr "Die Rollen können nicht gelöscht werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:124
+msgid "Unable to retrieve the role"
+msgstr "Die Rolle kann nicht abgerufen werden"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:132
+msgid "Unable to edit the role."
+msgstr "Die Rolle kann nicht bearbeitet werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:139
+msgid "Unable to delete the role."
+msgstr "Die Rolle kann nicht gelöscht werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:147
+msgid "Unable to retrieve domains"
+msgstr "Domänen können nicht abgerufen werden"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:154
+msgid "Unable to create the domain."
+msgstr "Die Domäne kann nicht erstellt werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:161
+msgid "Unable to delete the domains."
+msgstr "Die Domänen können nicht gelöscht werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:168
+msgid "Unable to retrieve the domain"
+msgstr "Die Domäne kann nicht abgerufen werden"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:176
+msgid "Unable to edit the domain."
+msgstr "Die Domäne kann nicht bearbeitet werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:183
+msgid "Unable to delete the domain."
+msgstr "Die Domäne kann nicht gelöscht werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:192
+msgid "Unable to retrieve projects"
+msgstr "Projekte können nicht abgerufen werden"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:199
+msgid "Unable to create the project."
+msgstr "Das Projekt kann nicht erstellt werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:206
+msgid "Unable to delete the projects."
+msgstr "Die Projekte können nicht gelöscht werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:213
+msgid "Unable to retrieve the project"
+msgstr "Das Projekt kann nicht abgerufen werden"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:221
+msgid "Unable to edit the project."
+msgstr "Das Projekt kann nicht bearbeitet werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:228
+msgid "Unable to delete the project."
+msgstr "Das Projekt kann nicht gelöscht werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:236
+msgid "Unable to grant the role."
+msgstr "Die Rolle kann nicht gewährt werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:250
+msgid "Unable to fetch the service catalog."
+msgstr "Die Dienstekatalog kann nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:385
+msgid "Service type is not enabled: %(desiredType)s"
+msgstr "Dienst-Typ ist nicht aktiviert:  %(desiredType)s"
+
+#: static/horizon/js/angular/services/hz.api.keystone.js:392
+msgid "Cannot get service catalog from keystone."
+msgstr "Dienstekatalog kann nicht von Keystone abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:39
+msgid "Unable to retrieve networks."
+msgstr "Netzwerke können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:88
+msgid "Unable to create the network."
+msgstr "Netzwerk kann nicht angelegt werden."
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:108
+msgid "Unable to retrieve subnets."
+msgstr "Subnetze können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:172
+msgid "Unable to create the subnet."
+msgstr "Subnetz kann nicht erzeugt werden."
+
+#: static/horizon/js/angular/services/hz.api.neutron.js:192
+msgid "Unable to retrieve ports."
+msgstr "Ports können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:40
+msgid "Unable to retrieve keypairs."
+msgstr "Schlüsselpaare können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:62
+msgid "Unable to import the keypair."
+msgstr "Das Schlüsselpaar kann nicht importiert werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:64
+msgid "Unable to create the keypair."
+msgstr "Das Schlüsselpaar kann nicht erstellt werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:83
+msgid "Unable to retrieve availability zones."
+msgstr "Verfügbarkeitszonen können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:121
+msgid "Unable to retrieve limits."
+msgstr "Begrenzungen können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:148
+msgid "Unable to create the server."
+msgstr "Der Server kann nicht erstellt werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:162
+msgid "Unable to retrieve server."
+msgstr "Server kann nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:192
+msgid "Unable to retrieve extensions."
+msgstr "Erweiterungen können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:237
+msgid "Unable to retrieve flavors."
+msgstr "Varianten können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:255
+msgid "Unable to retrieve flavor."
+msgstr "Variante kann nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:269
+msgid "Unable to retrieve flavor extra specs."
+msgstr "Extraspezifikationen zur Variante können nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.nova.js:311
+msgid "Extension is not enabled: %(extension)s"
+msgstr "Nicht aktivierte Erweiterung: %(extension)s"
+
+#: static/horizon/js/angular/services/hz.api.nova.js:318
+msgid "Cannot get nova extension list."
+msgstr "Liste der Nova-Erweiterungen kann nicht abgerufen werden."
+
+#: static/horizon/js/angular/services/hz.api.policy.js:65
+msgid "Policy check failed."
+msgstr "Richtlinienüberprüfung fehlgeschlagen."
+
+#: static/horizon/js/angular/services/hz.api.security-group.js:64
+msgid "Unable to retrieve security groups."
+msgstr "Sicherheitsgruppen können nicht abgerufen werden."
+
 #: static/horizon/js/horizon.accordion_nav.js:78
 #: static/horizon/js/horizon.modals.js:315
 #: static/horizon/js/horizon.tabs.js:21
@@ -291,7 +588,7 @@ msgid "View Instance Details"
 msgstr "Instanz-Details anzeigen"
 
 #: static/horizon/js/horizon.tables.js:39
-#: static/horizon/js/horizon.tables.js:382
+#: static/horizon/js/horizon.tables.js:406
 msgid "No items to display."
 msgstr "Kein Eintrag zum anzeigen."
 
@@ -314,14 +611,6 @@ msgstr "%s bestätigen"
 msgid "Please confirm your selection. "
 msgstr "Bitte bestätigen Sie Ihre Auswahl."
 
-#: static/horizon/js/horizon.tables.js:369
-#: static/horizon/js/angular/filters/filters.js:163
-#, c-format
-msgid "Displaying %s item"
-msgid_plural "Displaying %s items"
-msgstr[0] "Zeige %s Eintrag"
-msgstr[1] "Zeige %s Einträge"
-
 #: static/horizon/js/horizon.tables_inline_edit.js:88
 #: static/horizon/js/horizon.tables_inline_edit.js:151
 msgid "Not authorized to do this operation."
@@ -330,270 +619,3 @@ msgstr "Keine Berechtigung für diese Aktion."
 #: static/horizon/js/horizon.users.js:18
 msgid "Passwords do not match."
 msgstr "Die Passwörter stimmen nicht überein."
-
-#: static/horizon/js/angular/directives/serialConsole.js:23
-msgid "Connecting"
-msgstr "Verbinde"
-
-#: static/horizon/js/angular/directives/serialConsole.js:23
-msgid "Open"
-msgstr "Öffnen"
-
-#: static/horizon/js/angular/directives/serialConsole.js:23
-msgid "Closing"
-msgstr "Schließen"
-
-#: static/horizon/js/angular/directives/serialConsole.js:23
-msgid "Closed"
-msgstr "Geschlossen"
-
-#: static/horizon/js/angular/directives/serialConsole.js:85
-#, c-format
-msgid "Status: %s"
-msgstr "Status: %s"
-
-#: static/horizon/js/angular/filters/filters.js:37
-msgid "Yes"
-msgstr "Ja"
-
-#: static/horizon/js/angular/filters/filters.js:37
-msgid "No"
-msgstr "Nein"
-
-#: static/horizon/js/angular/filters/filters.js:53
-#: static/horizon/js/angular/filters/filters.js:140
-msgid "GB"
-msgstr "GB"
-
-#: static/horizon/js/angular/filters/filters.js:70
-#: static/horizon/js/angular/filters/filters.js:142
-msgid "MB"
-msgstr "MB"
-
-#: static/horizon/js/angular/filters/filters.js:138
-msgid "TB"
-msgstr "TB"
-
-#: static/horizon/js/angular/filters/filters.js:144
-msgid "KB"
-msgstr "KB"
-
-#: static/horizon/js/angular/filters/filters.js:146
-msgid "bytes"
-msgstr "Bytes"
-
-#: static/horizon/js/angular/services/hz.api.cinder.js:47
-msgid "Unable to retrieve volumes."
-msgstr "Datenträger können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.cinder.js:74
-msgid "Unable to retrieve volume snapshots."
-msgstr "Datenträger-Schattenkopien können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.config.js:42
-msgid "Unable to retrieve user configuration."
-msgstr "Benutzerkonfiguration kann nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.config.js:61
-msgid "Unable to retrieve admin configuration."
-msgstr "Admin-Konfiguration kann nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.glance.js:38
-msgid "Unable to retrieve image."
-msgstr "Abbild kann nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.glance.js:81
-msgid "Unable to retrieve images."
-msgstr "Abbilder können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.glance.js:133
-msgid "Unable to retrieve namespaces."
-msgstr "Namensräume können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.glance.js:147
-msgid "Unable to retrieve namespace."
-msgstr "Namensraum kann nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:24
-msgid "Unable to retrieve users"
-msgstr "Benutzer können nicht abgerufen werden"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:31
-msgid "Unable to create the user."
-msgstr "Benutzer kann nicht angelegt werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:38
-msgid "Unable to delete the users."
-msgstr "Benutzer können nicht gelöscht werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:73
-msgid "Unable to retrieve the current user session."
-msgstr ""
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:80
-msgid "Unable to retrieve the user"
-msgstr "Benutzer kann nicht abgerufen werden"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:88
-msgid "Unable to edit the user."
-msgstr "Benutzer kann nicht bearbeitet werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:95
-msgid "Unable to delete the user."
-msgstr "Benutzer kann nicht gelöscht werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:103
-msgid "Unable to retrieve role"
-msgstr "Rolle kann nicht abgerufen werden"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:110
-msgid "Unable to create the role."
-msgstr "Die Rolle kann nicht erstellt werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:117
-msgid "Unable to delete the roles."
-msgstr "Die Rollen können nicht gelöscht werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:124
-msgid "Unable to retrieve the role"
-msgstr "Die Rolle kann nicht abgerufen werden"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:132
-msgid "Unable to edit the role."
-msgstr "Die Rolle kann nicht bearbeitet werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:139
-msgid "Unable to delete the role."
-msgstr "Die Rolle kann nicht gelöscht werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:147
-msgid "Unable to retrieve domains"
-msgstr "Domänen können nicht abgerufen werden"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:154
-msgid "Unable to create the domain."
-msgstr "Die Domäne kann nicht erstellt werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:161
-msgid "Unable to delete the domains."
-msgstr "Die Domänen können nicht gelöscht werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:168
-msgid "Unable to retrieve the domain"
-msgstr "Die Domäne kann nicht abgerufen werden"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:176
-msgid "Unable to edit the domain."
-msgstr "Die Domäne kann nicht bearbeitet werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:183
-msgid "Unable to delete the domain."
-msgstr "Die Domäne kann nicht gelöscht werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:192
-msgid "Unable to retrieve projects"
-msgstr "Projekte können nicht abgerufen werden"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:199
-msgid "Unable to create the project."
-msgstr "Das Projekt kann nicht erstellt werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:206
-msgid "Unable to delete the projects."
-msgstr "Die Projekte können nicht gelöscht werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:213
-msgid "Unable to retrieve the project"
-msgstr "Das Projekt kann nicht abgerufen werden"
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:221
-msgid "Unable to edit the project."
-msgstr "Das Projekt kann nicht bearbeitet werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:228
-msgid "Unable to delete the project."
-msgstr "Das Projekt kann nicht gelöscht werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:236
-msgid "Unable to grant the role."
-msgstr "Die Rolle kann nicht gewährt werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:250
-msgid "Unable to fetch the service catalog."
-msgstr "Die Dienstekatalog kann nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:385
-msgid "Service type is not enabled: %(desiredType)s"
-msgstr ""
-
-#: static/horizon/js/angular/services/hz.api.keystone.js:392
-msgid "Cannot get service catalog from keystone."
-msgstr ""
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:39
-msgid "Unable to retrieve networks."
-msgstr "Netzwerke können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:88
-msgid "Unable to create the network."
-msgstr "Netzwerk kann nicht angelegt werden."
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:108
-msgid "Unable to retrieve subnets."
-msgstr "Subnetze können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:172
-msgid "Unable to create the subnet."
-msgstr "Subnetz kann nicht erzeugt werden."
-
-#: static/horizon/js/angular/services/hz.api.neutron.js:192
-msgid "Unable to retrieve ports."
-msgstr "Ports können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:40
-msgid "Unable to retrieve keypairs."
-msgstr "Schlüsselpaare können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:61
-msgid "Unable to create the keypair."
-msgstr "Das Schlüsselpaar kann nicht erstellt werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:79
-msgid "Unable to retrieve availability zones."
-msgstr "Verfügbarkeitszonen können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:117
-msgid "Unable to retrieve limits."
-msgstr "Begrenzungen können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:144
-msgid "Unable to create the server."
-msgstr "Der Server kann nicht erstellt werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:158
-msgid "Unable to retrieve server."
-msgstr "Server kann nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:188
-msgid "Unable to retrieve extensions."
-msgstr "Erweiterungen können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:233
-msgid "Unable to retrieve flavors."
-msgstr "Varianten können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:251
-msgid "Unable to retrieve flavor."
-msgstr "Variante kann nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.nova.js:265
-msgid "Unable to retrieve flavor extra specs."
-msgstr "Extraspezifikationen zur Variante können nicht abgerufen werden."
-
-#: static/horizon/js/angular/services/hz.api.policy.js:65
-msgid "Policy check failed."
-msgstr "Richtlinienüberprüfung fehlgeschlagen."
-
-#: static/horizon/js/angular/services/hz.api.security-group.js:64
-msgid "Unable to retrieve security groups."
-msgstr "Sicherheitsgruppen können nicht abgerufen werden."

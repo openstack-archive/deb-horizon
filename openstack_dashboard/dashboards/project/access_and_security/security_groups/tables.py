@@ -79,7 +79,7 @@ class CreateGroup(tables.LinkAction):
             policy = (("compute", "compute_extension:security_groups"),)
 
         usages = quotas.tenant_quota_usages(request)
-        if usages['security_groups']['available'] <= 0:
+        if usages['security_groups'].get('available', 1) <= 0:
             if "disabled" not in self.classes:
                 self.classes = [c for c in self.classes] + ["disabled"]
                 self.verbose_name = _("Create Security Group (Quota exceeded)")
@@ -210,7 +210,7 @@ def get_remote_ip_prefix(rule):
             range = '::/0' if rule.ethertype == 'IPv6' else '0.0.0.0/0'
         else:
             range = rule.ip_range['cidr']
-        return range + ' (CIDR)'
+        return range
     else:
         return None
 
@@ -220,6 +220,10 @@ def get_remote_security_group(rule):
 
 
 def get_port_range(rule):
+    # There is no case where from_port is None and to_port has a value,
+    # so it is enough to check only from_port.
+    if rule.from_port is None:
+        return _('Any')
     ip_proto = rule.ip_protocol
     if rule.from_port == rule.to_port:
         return check_rule_template(rule.from_port, ip_proto)

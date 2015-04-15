@@ -28,6 +28,7 @@ LAUNCH_INST = 'dashboard/launch-instance/'
 ADD_JS_FILES = [
     'dashboard/dashboard.module.js',
     'dashboard/workflow/workflow.js',
+    'dashboard/cloud-services/cloud-services.js',
     LAUNCH_INST + 'launch-instance.js',
     LAUNCH_INST + 'launch-instance.model.js',
     LAUNCH_INST + 'source/source.js',
@@ -37,11 +38,13 @@ ADD_JS_FILES = [
     LAUNCH_INST + 'security-groups/security-groups.js',
     LAUNCH_INST + 'keypair/keypair.js',
     LAUNCH_INST + 'configuration/configuration.js',
+    LAUNCH_INST + 'configuration/load-edit.js',
 ]
 
 ADD_JS_SPEC_FILES = [
     'dashboard/dashboard.module.spec.js',
     'dashboard/workflow/workflow.spec.js',
+    'dashboard/cloud-services/cloud-services.spec.js',
     LAUNCH_INST + 'launch-instance.spec.js',
     LAUNCH_INST + 'launch-instance.model.spec.js',
     LAUNCH_INST + 'source/source.spec.js',

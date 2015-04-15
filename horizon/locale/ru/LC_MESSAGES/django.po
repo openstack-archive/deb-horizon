@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Ilya Alekseyev <ilyaalekseyev@acm.org>, 2015
+# Nikita Burtsev, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-31 23:04-0500\n"
-"PO-Revision-Date: 2015-04-01 02:20+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"POT-Creation-Date: 2015-04-12 16:36-0500\n"
+"PO-Revision-Date: 2015-04-13 12:42+0000\n"
+"Last-Translator: Ilya Alekseyev <ilyaalekseyev@acm.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/horizon/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,6 +22,19 @@ msgstr ""
 #: base.py:475
 msgid "Other"
 msgstr "Другое"
+
+#: browsers/base.py:88
+msgid "Navigation Item"
+msgstr "Элемент навигации"
+
+#: browsers/views.py:41
+#, python-format
+msgid "Select a %s to browse."
+msgstr "Выберите %s для просмотра"
+
+#: conf/default.py:41
+msgid "Password is not accepted"
+msgstr "Пароль не принят"
 
 #: decorators.py:53
 msgid "Please log in to continue."
@@ -45,23 +59,6 @@ msgstr "Не авторизован: %s"
 msgid "Unauthorized. Please try logging in again."
 msgstr "Вы не авторизованы. Попробуйте войти в систему еще раз."
 
-#: middleware.py:103
-msgid "Session timed out."
-msgstr "Время сеанса истекло."
-
-#: browsers/base.py:88
-msgid "Navigation Item"
-msgstr "Элемент навигации"
-
-#: browsers/views.py:41
-#, python-format
-msgid "Select a %s to browse."
-msgstr "Выберите %s для просмотра"
-
-#: conf/default.py:41
-msgid "Password is not accepted"
-msgstr "Пароль не принят"
-
 #: forms/fields.py:64
 msgid "Incorrect format for IP address"
 msgstr "Неправильный формат IP-адреса"
@@ -79,10 +76,14 @@ msgid "Submit"
 msgstr "Отправить"
 
 #: forms/views.py:133
-#: templates/horizon/common/_modal_form_update_metadata.html:27
+#: templates/horizon/common/_modal_form_update_metadata.html:25
 #: templates/horizon/common/_workflow.html:49
 msgid "Cancel"
 msgstr "Отмена"
+
+#: middleware.py:103
+msgid "Session timed out."
+msgstr "Время сеанса истекло."
 
 #: tables/actions.py:460
 #: templates/horizon/common/_data_table_table_actions.html:21
@@ -188,7 +189,7 @@ msgid ""
 "\n"
 "      If you are not sure which authentication method to use, contact your administrator.\n"
 "    "
-msgstr ""
+msgstr "\n      Если вы не уверены какой метод аутентификации выбрать, свяжитесь с вашим системным администратором.\n    "
 
 #: templates/auth/_login.html:5
 msgid "Log In"
@@ -196,14 +197,14 @@ msgstr "Войти"
 
 #: templates/auth/_login.html:27
 msgid "You do not have permission to access the resource:"
-msgstr "Вы не имеете права доступа к ресурсу:"
+msgstr "Вы не имеете права на доступ к ресурсу:"
 
 #: templates/auth/_login.html:29
 #, python-format
 msgid ""
 "Login as different user or go back to <a href=\"%(home_url)s\"> home "
 "page</a>"
-msgstr "Войдите под другим пользователем или вернитесь на домашнюю страницу <a href=\"%(home_url)s\"> </a>"
+msgstr "Войдите под другим пользователем или вернитесь на<a href=\"%(home_url)s\"> домашнюю страницу</a>"
 
 #: templates/auth/_login.html:45
 msgid "Sign In"
@@ -211,7 +212,7 @@ msgstr "Вход"
 
 #: templates/auth/_login.html:46
 msgid "Connect"
-msgstr ""
+msgstr "Подключиться"
 
 #: templates/auth/login.html:4
 msgid "Login"
@@ -273,7 +274,7 @@ msgstr "%(name)s: %(error)s"
 
 #: templates/horizon/common/_limit_summary.html:4
 msgid "Limit Summary"
-msgstr "Краткая сводка"
+msgstr "Сводка лимитов"
 
 #: templates/horizon/common/_limit_summary.html:7
 msgid "Instances"
@@ -291,11 +292,11 @@ msgstr "Использовано <span> %(used)s </span> из <span> %(available
 
 #: templates/horizon/common/_limit_summary.html:14
 msgid "VCPUs"
-msgstr "ВЦПУ"
+msgstr "VCPU"
 
 #: templates/horizon/common/_limit_summary.html:21
 msgid "RAM"
-msgstr "ОЗУ"
+msgstr "RAM"
 
 #: templates/horizon/common/_limit_summary.html:28
 msgid "Floating IPs"
@@ -318,7 +319,7 @@ msgstr "Диски"
 msgid "Volume Storage"
 msgstr "Хранилище"
 
-#: templates/horizon/common/_modal_form_update_metadata.html:26
+#: templates/horizon/common/_modal_form_update_metadata.html:24
 #: workflows/base.py:594
 msgid "Save"
 msgstr "Сохранить"
@@ -367,7 +368,7 @@ msgstr "Дата должна иметь формат YYYY-mm-dd."
 
 #: templates/horizon/common/_usage_summary.html:20
 msgid "Active Instances:"
-msgstr "Активные инстансы:"
+msgstr "Активные машины:"
 
 #: templates/horizon/common/_usage_summary.html:21
 msgid "Active RAM:"
@@ -460,7 +461,7 @@ msgstr[2] "Sold Puppies"
 
 #: test/tests/views.py:59
 msgid "Fake"
-msgstr ""
+msgstr "Fake"
 
 #: utils/filters.py:49
 msgid "Never"
@@ -484,7 +485,7 @@ msgstr "Номер порта должен быть целым числом"
 
 #: utils/validators.py:59
 msgid "The string may only contain ASCII printable characters."
-msgstr ""
+msgstr "Строка может содержать только печатные ASCII символы."
 
 #: workflows/base.py:71
 msgid "Processing..."
