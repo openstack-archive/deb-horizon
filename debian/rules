@@ -62,5 +62,5 @@ override_dh_auto_clean:
 ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
 override_dh_auto_test:
 	# We should add --compilemessages when the .mo are removed.
-	./run_tests.sh --no-virtual-env --no-pep8 || true
+	./run_tests.sh --no-virtual-env --no-pep8
 endif
