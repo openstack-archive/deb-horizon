@@ -1,6 +1,7 @@
-horizon (2015.1~rc1-1) UNRELEASED; urgency=medium
+horizon (2015.1~rc2-1) unstable; urgency=medium
 
   * New upstream release.
+  * Uploading to unstable.
   * Fixed (build-)depends for this release.
   * Removed upstream-applied patches.
 
