@@ -1,3 +1,9 @@
+horizon (2015.1.0-2) UNRELEASED; urgency=medium
+
+  * Added update for the sv.po debconf translations (Closes: #781680).
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 12 May 2015 23:23:46 +0200
+
 horizon (2015.1.0-1) unstable; urgency=medium
 
   * New upstream release.

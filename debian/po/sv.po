@@ -1,21 +1,21 @@
 # Translation of horizon debconf template to Swedish
-# Copyright (C) 2013 Martin Bagge <brother@bsnet.se>
+# Copyright (C) 2015 Martin Bagge <brother@bsnet.se>
 # This file is distributed under the same license as the horizon package.
 #
-# Martin Bagge <brother@bsnet.se>, 2013
+# Martin Bagge <brother@bsnet.se>, 2013, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
 "POT-Creation-Date: 2014-03-07 10:34+0100\n"
-"PO-Revision-Date: 2013-09-18 10:18+0100\n"
+"PO-Revision-Date: 2015-04-01 16:51+0100\n"
 "Last-Translator: Martin Bagge / brother <brother@bsnet.se>\n"
 "Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
-"Language: Swedish\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.10\n"
 
 #. Type: boolean
 #. Description
@@ -27,20 +27,12 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../openstack-dashboard-apache.templates:2001
-#, fuzzy
-#| msgid ""
-#| "In Debian, Apache comes with a default website and a default page, "
-#| "configured in /etc/apache2/sites-available/default. Select if this "
-#| "configuration should be disabled and replaced by the Openstack Dashboard "
-#| "configuration."
 msgid ""
 "The Apache package sets up a default web site and a default page, configured "
 "in /etc/apache2/sites-available/default."
 msgstr ""
-"I Debian levereras Apache med en standard webbplats och en standard sida. "
-"Dess inställningar finns i /etc/apache2/sites-available/default. Välj detta "
-"alternativ om detta ska stängas av och ersättas av Openstacks Dashboard för "
-"inställningar."
+"Apache-paketet levereras med en standard webbplats och en standard sida, "
+"dessa inställningar finns i /etc/apache2/sites-available/default."
 
 #. Type: boolean
 #. Description
@@ -49,25 +41,20 @@ msgid ""
 "Choose this option to replace that default with the OpenStack Dashboard "
 "configuration."
 msgstr ""
+"Välj denna väg för att ersätta standard-Dashboard i OpenStack med Horizon."
 
 #. Type: boolean
 #. Description
 #: ../openstack-dashboard-apache.templates:3001
-#, fuzzy
-#| msgid "Should the Dashboard be installed on HTTPS?"
 msgid "Should the Dashboard use HTTPS?"
-msgstr "Ska Dashboard installeras på HTTPS?"
+msgstr "Ska Dashboard använda HTTPS?"
 
 #. Type: boolean
 #. Description
 #: ../openstack-dashboard-apache.templates:3001
-#, fuzzy
-#| msgid ""
-#| "Please choose if you would like Horizon to be installed on HTTPS only, "
-#| "with a redirection to HTTPS if HTTP is in use."
 msgid ""
 "Select this option if you would like Horizon to be served over HTTPS only, "
 "with a redirection to HTTPS if HTTP is in use."
 msgstr ""
-"Välj om du bara vill ha Horizon installerad på HTTPS, då omdirigeras HTTP "
-"till HTTPS om den används."
+"Välj detta om du vill att Horizon endast ska levereras på HTTPS, en "
+"omdirigering av HTTP till HTTPS kommer att aktiveras."
