@@ -1,3 +1,9 @@
+horizon (2015.1.0-1~bpo8+1) jessie-backports; urgency=medium
+
+  * Rebuild for jessie-backports.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 14 May 2015 16:28:44 +0200
+
 horizon (2015.1.0-1) unstable; urgency=medium
 
   * New upstream release.
