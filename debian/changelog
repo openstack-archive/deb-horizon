@@ -1,6 +1,8 @@
-horizon (2015.1.0-2) UNRELEASED; urgency=medium
+horizon (2015.1.0-2) unstable; urgency=high
 
   * Added update for the sv.po debconf translations (Closes: #781680).
+  * Added upstream patch for CVE-2015-3988 (Closes: #786741):
+    Persistent_XSS_in_Horizon_metadata_dashboard.patch
 
  -- Thomas Goirand <zigo@debian.org>  Tue, 12 May 2015 23:23:46 +0200
 
