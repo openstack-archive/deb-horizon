@@ -1,4 +1,4 @@
-horizon (2015.1.0-3) unstable; urgency=medium
+horizon (2015.1.0+2015.06.09.git15.e63af6c598-1) unstable; urgency=medium
 
   * New upstream release (packaging 15th commit since 2015.1.0: e63af6c598):
     - CVE-2015-3219: Fixes XSS in Horizon Heat stack creation (Closes: #788306)
