@@ -1,3 +1,9 @@
+horizon (2015.1.0+2015.06.09.git15.e63af6c598-1~bpo8+1) jessie-backports; urgency=medium
+
+  * Rebuild for jessie-backports.
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 10 Jun 2015 16:45:04 +0200
+
 horizon (2015.1.0+2015.06.09.git15.e63af6c598-1) unstable; urgency=medium
 
   * New upstream release (packaging 15th commit since 2015.1.0: e63af6c598):
