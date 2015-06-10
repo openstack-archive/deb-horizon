@@ -11,6 +11,8 @@ horizon (2015.1.0+2015.06.09.git15.e63af6c598-1) unstable; urgency=medium
   * Fixed double entry in openstack-dashboard.triggers.
   * Dropped patch applied upstream:
     - Persistent_XSS_in_Horizon_metadata_dashboard.patch
+  * Added Build-Conflicts: python-rednose.
+  * Standards-Version is now 3.9.6 (no change).
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 08 Jun 2015 16:26:13 +0200
 
