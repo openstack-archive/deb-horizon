@@ -1,5 +1,7 @@
-horizon (2015.1.0-3) UNRELEASED; urgency=medium
+horizon (2015.1.0-3) unstable; urgency=medium
 
+  * New upstream release (packaging 15th commit since 2015.1.0: e63af6c598):
+    - CVE-2015-3219: Fixes XSS in Horizon Heat stack creation (Closes: #788306)
   * Fixed double entry in openstack-dashboard.triggers.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 08 Jun 2015 16:26:13 +0200
