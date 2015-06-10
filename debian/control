@@ -2,10 +2,7 @@ Source: horizon
 Section: net
 Priority: extra
 Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
-Uploaders: Julien Danjou <acid@debian.org>,
-           Thomas Goirand <zigo@debian.org>,
-           Mehdi Abaakouk <sileht@sileht.net>,
-           Gonéri Le Bouder <goneri@debian.org>
+Uploaders: Thomas Goirand <zigo@debian.org>,
 Build-Depends: debhelper (>= 9),
                dh-python,
                openstack-pkg-tools,
@@ -80,8 +77,9 @@ Build-Depends-Indep: gettext,
                      python-xstatic-term.js,
                      python-xvfbwrapper,
                      python-yaml,
-Build-Conflicts: python-unittest2
-Standards-Version: 3.9.5
+Build-Conflicts: python-rednose,
+                 python-unittest2,
+Standards-Version: 3.9.6
 Homepage: http://horizon.openstack.org
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
 Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
@@ -89,7 +87,7 @@ Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
 Package: python-django-horizon
 Section: python
 Architecture: all
-Pre-Depends: dpkg (>= 1.15.6~)
+Pre-Depends: dpkg (>= 1.15.6~),
 Depends: python-babel,
          python-ceilometerclient (>= 1.0.13),
          python-cinderclient (>= 1:1.1.0),
@@ -145,7 +143,7 @@ Depends: python-babel,
          python-yaml,
          ${misc:Depends},
          ${python:Depends},
-Recommends: memcached
+Recommends: memcached,
 Description: Django module providing web interaction with OpenStack
  The OpenStack Dashboard is a web application to control an OpenStack
  cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
@@ -157,15 +155,16 @@ Description: Django module providing web interaction with OpenStack
 
 Package: openstack-dashboard
 Architecture: all
-Pre-Depends: dpkg (>= 1.15.6~)
+Pre-Depends: dpkg (>= 1.15.6~),
 Depends: adduser,
          libjs-jquery,
          libjs-jquery-cookie,
          python-django-horizon (= ${source:Version}),
          ${misc:Depends},
          ${python:Depends},
-         ${shlibs:Depends}
-Recommends: memcached, openstack-dashboard-apache
+         ${shlibs:Depends},
+Recommends: memcached,
+            openstack-dashboard-apache,
 Description: web application to control an OpenStack cloud
  The OpenStack Dashboard is a web application to control an OpenStack
  cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
@@ -174,11 +173,11 @@ Description: web application to control an OpenStack cloud
 
 Package: openstack-dashboard-apache
 Architecture: all
-Pre-Depends: dpkg (>= 1.15.6~)
+Pre-Depends: dpkg (>= 1.15.6~),
 Depends: debconf,
          libapache2-mod-wsgi (>= 2.3),
          openstack-dashboard,
-         ${misc:Depends}
+         ${misc:Depends},
 Description: OpenStack Dashboard - Apache support
  The OpenStack Dashboard is a web application to control an OpenStack
  cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
