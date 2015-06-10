@@ -1,14 +1,20 @@
 /* Namespace for core functionality related to DataTables. */
 horizon.datatables = {
   update: function () {
-    var $rows_to_update = $('tr.status_unknown.ajax-update');
-    if ($rows_to_update.length) {
+    var $rows_to_update = $('tr.status_unknown.ajax-update'),
+      rows_to_update = $rows_to_update.length;
+    if ( rows_to_update > 0 ) {
       var interval = $rows_to_update.attr('data-update-interval'),
         $table = $rows_to_update.closest('table'),
+        submit_in_progress = $table.closest('form').attr('data-submitted'),
         decay_constant = $table.attr('decay_constant');
 
-      // Do not update this row if the action column is expanded
-      if ($rows_to_update.find('.actions_column .btn-group.open').length) {
+      // Do not update this row if the action column is expanded or the form
+      // is in the process of being submitted. If we update the row while the
+      // form is still submitting any disabled action buttons would potentially
+      // be enabled again, allowing for multiple form submits.
+      if ($rows_to_update.find('.actions_column .btn-group.open').length ||
+          submit_in_progress) {
         // Wait and try to update again in next interval instead
         setTimeout(horizon.datatables.update, interval);
         // Remove interval decay, since this will not hit server
@@ -91,19 +97,22 @@ horizon.datatables = {
           complete: function (jqXHR, textStatus) {
             // Revalidate the button check for the updated table
             horizon.datatables.validate_button();
-
-            // Set interval decay to this table, and increase if it already exist
-            if(decay_constant === undefined) {
-              decay_constant = 1;
-            } else {
-              decay_constant++;
+            rows_to_update--;
+            // Schedule next poll when all the rows are updated
+            if ( rows_to_update === 0 ) {
+              // Set interval decay to this table, and increase if it already exist
+              if(decay_constant === undefined) {
+                decay_constant = 1;
+              } else {
+                decay_constant++;
+              }
+              $table.attr('decay_constant', decay_constant);
+              // Poll until there are no rows in an "unknown" state on the page.
+              var next_poll = interval * decay_constant;
+              // Limit the interval to 30 secs
+              if(next_poll > 30 * 1000) { next_poll = 30 * 1000; }
+              setTimeout(horizon.datatables.update, next_poll);
             }
-            $table.attr('decay_constant', decay_constant);
-            // Poll until there are no rows in an "unknown" state on the page.
-            next_poll = interval * decay_constant;
-            // Limit the interval to 30 secs
-            if(next_poll > 30 * 1000) { next_poll = 30 * 1000; }
-            setTimeout(horizon.datatables.update, next_poll);
           }
         });
       });
@@ -165,6 +174,24 @@ horizon.datatables = {
 
   initialize_table_tooltips: function() {
     $('div.table_wrapper').tooltip({selector: '[data-toggle="tooltip"]', container: 'body'});
+  },
+
+  disable_actions_on_submit: function($form) {
+    // This applies changes to the table form when a user takes an action that
+    // submits the form. It relies on the form being re-rendered after the
+    // submit is completed to remove these changes.
+    $form = $form || $(".table_wrapper > form");
+    $form.on("submit", function () {
+      // Add the 'submitted' flag to the form so the row update interval knows
+      // not to update the row and therefore re-enable the actions that we are
+      // disabling here.
+      $(this).attr('data-submitted', 'true');
+      // Disable row action buttons. This prevents multiple form submission.
+      $(this).find('td.actions_column button[type="submit"]').addClass("disabled");
+      // Use CSS to update the cursor so it's very clear that an action is
+      // in progress.
+      $(this).addClass('wait');
+    });
   }
 };
 
@@ -556,6 +583,7 @@ horizon.addInitFunction(horizon.datatables.init = function() {
   horizon.datatables.set_table_sorting($('body'));
   horizon.datatables.set_table_query_filter($('body'));
   horizon.datatables.set_table_fixed_filter($('body'));
+  horizon.datatables.disable_actions_on_submit();
 
   // Also apply on tables in modal views.
   horizon.modals.addModalInitFunction(horizon.datatables.add_table_checkboxes);
@@ -563,6 +591,9 @@ horizon.addInitFunction(horizon.datatables.init = function() {
   horizon.modals.addModalInitFunction(horizon.datatables.set_table_query_filter);
   horizon.modals.addModalInitFunction(horizon.datatables.set_table_fixed_filter);
   horizon.modals.addModalInitFunction(horizon.datatables.initialize_table_tooltips);
+  horizon.modals.addModalInitFunction(function modalInitActionDisable(modal) {
+    horizon.datatables.disable_actions_on_submit($(modal).find(".table_wrapper > form"));
+  });
 
   // Also apply on tables in tabs views for lazy-loaded data.
   horizon.tabs.addTabLoadFunction(horizon.datatables.add_table_checkboxes);
@@ -573,6 +604,7 @@ horizon.addInitFunction(horizon.datatables.init = function() {
   horizon.tabs.addTabLoadFunction(horizon.datatables.initialize_table_tooltips);
   horizon.tabs.addTabLoadFunction(function(tab) {
     horizon.datatables.validate_button($(tab).find(".table_wrapper > form"));
+    horizon.datatables.disable_actions_on_submit($(tab).find(".table_wrapper > form"));
   });
 
   horizon.datatables.update();
