@@ -2,4 +2,3 @@ fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 adds-minus-v-flag-when-running-nosetests.patch
-CVE-2015-3988_Persistent_XSS_in_Horizon_metadata_dashboard.patch
