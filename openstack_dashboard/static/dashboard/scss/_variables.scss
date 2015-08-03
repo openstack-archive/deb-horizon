@@ -1,17 +1,11 @@
-/* This import is required for using bootstrap variables as value
+/* This import is required for using the current theme variables as value
 to our variables */
-@import "/bootstrap/scss/bootstrap/variables";
+@import "/custom/variables";
+
 
 /* This variable can be used to change the web root of horizon
 default value is already '/' */
 $webroot: "" !default;
-
-/* Bootstrap variables overrides */
-
-$icon-font-path: "../../bootstrap/fonts/bootstrap/";
-$font-size-base: 13px;
-$modal-md: 732px;
-$gray-light: #cccccc;
 
 
 /* Horizon Custom Variables */
@@ -21,7 +15,7 @@ $body-min-width: 900px !default;
 $sidebar-background-color: #f9f9f9 !default;
 $sidebar-width: 220px !default;
 $border-color: #dddddd !default;
-$table-bg-odd: #f9f9f9 !default;
+$table-bg-odd: $table-bg-accent !default;
 $content-body-padding: 15px !default;
 
 
@@ -165,6 +159,7 @@ $tooltip-bg-color: #fefefe !default;
 $tooltip-border: solid 1px #bcbcbc !default;
 $tooltip-box-shadow: 1px 1px 8px -3px #cccccc !default;
 $tooltip-key-color: #000000 !default;
+$tooltip-value-color: inherit !default;
 $tooltip-key-padding: 0 0.2em !default;
 $tooltip-key-weight: 600 !default;
 $tooltip-padding: 0.3em 0.8em !default;
@@ -180,15 +175,41 @@ $transfer-disabled-btn-border-color: #cecece !default;
 $transfer-header-bottom-border: 1px solid #eeeeee !default;
 $placeholder-text-color: #b8b8b8 !default;
 
-/* Pie Chart */
-$chart-title-font-size: 1.1em !default;
-$chart-title-padding: 0.5em 0 !default;
+/* Pie/Donut Charts */
+$chart-label-font-size: 16px !default;
+$chart-label-color: #1f83c6 !default;
+$chart-legend-font-size: .9em !default;
+$chart-legend-padding: 0.2em 0.75em !default;
+$chart-quota-usage-color: #1f83c6 !default;
+$chart-quota-added-color: #81c1e7 !default;
+$chart-quota-remaining-color: #d1d3d4 !default;
+$chart-quota-danger-color: $brand-danger !default;
+$chart-slice-legend-padding: 0.2em 0 !default;
+$chart-title-font-color: #555 !default;
+$chart-title-font-size: .9em !default;
+$chart-title-font-size-large: 1.1em !default;
+$chart-title-padding: 0 0 0.5em !default;
 $chart-title-weight: 600 !default;
-$chart-legend-font-size: 1em !default;
-$chart-legend-padding: 0.2em 1.5em !default;
 
 /* Metadata Display */
 $metadata-display-selector-color: $link-color !default;
 $metadata-display-selector-hover-color: $link-hover-color !default;
 $metadata-display-selector-active-color: #666 !default;
 $metadata-display-separator-color: #ccc !default;
+
+/* Magic Search */
+$magic-search-min-width: 40em !default;
+$magic-search-border-color: #cccccc !default;
+$magic-search-margin-bottom: 0 !default;
+$magic-search-border-radius: 3px !default;
+$magic-search-margin-padding: 2px !default;
+
+/* Member lists */
+$members-list-padding: 3px !default;
+$members-list-border: 1px solid $gray-light !default;
+// TODO: These values are hardcoded lengths but they are actually
+// very dependant on the modal size set in the theme.  We need
+// to eventually readdress these and calculate them dynamically
+$members-list-item-width: 130px !default;
+$members-list-item-max-width: 327px !default;
+$members-list-roles-width: 125px !default;

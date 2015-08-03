@@ -61,7 +61,7 @@ def calc_date_args(date_from, date_to, date_options):
         try:
             if date_from:
                 date_from = pytz.utc.localize(
-                    datetime.datetime.strptime(date_from, "%Y-%m-%d"))
+                    datetime.datetime.strptime(str(date_from), "%Y-%m-%d"))
             else:
                 # TODO(lsmola) there should be probably the date
                 # of the first sample as default, so it correctly
@@ -70,7 +70,7 @@ def calc_date_args(date_from, date_to, date_options):
                 pass
             if date_to:
                 date_to = pytz.utc.localize(
-                    datetime.datetime.strptime(date_to, "%Y-%m-%d"))
+                    datetime.datetime.strptime(str(date_to), "%Y-%m-%d"))
                 # It returns the beginning of the day, I want the end of
                 # the day, so I add one day without a second.
                 date_to = (date_to + datetime.timedelta(days=1) -
@@ -165,6 +165,14 @@ def normalize_series_by_unit(series):
     return series
 
 
+def get_unit(meter, request):
+    sample_list = api.ceilometer.sample_list(request, meter, limit=1)
+    unit = ""
+    if sample_list:
+        unit = sample_list[0].counter_unit
+    return unit
+
+
 class ProjectAggregatesQuery(object):
     def __init__(self, request, date_from, date_to,
                  period=None, additional_query=[]):
@@ -196,11 +204,7 @@ class ProjectAggregatesQuery(object):
             self.queries[tenant.name] = tenant_query
 
     def query(self, meter):
-        meter_list = [m for m in api.ceilometer.meter_list(self.request)
-                      if m.name == meter]
-        unit = ""
-        if len(meter_list) > 0:
-            unit = meter_list[0].unit
+        unit = get_unit(meter, self.request)
         ceilometer_usage = api.ceilometer.CeilometerUsage(self.request)
         resources = ceilometer_usage.resource_aggregates_with_statistics(
             self.queries, [meter], period=self.period,
@@ -231,12 +235,7 @@ class MeterQuery(ProjectAggregatesQuery):
                     return True
             return False
 
-        meter_list = [m for m in api.ceilometer.meter_list(self.request)
-                      if m.name == meter]
-
-        unit = ""
-        if len(meter_list) > 0:
-            unit = meter_list[0].unit
+        unit = get_unit(meter, self.request)
 
         ceilometer_usage = api.ceilometer.CeilometerUsage(self.request)
         resources = ceilometer_usage.resources_with_statistics(

@@ -20,6 +20,7 @@ import json
 import logging
 
 from oslo_utils import units
+import six
 
 from django import conf
 from django.core.urlresolvers import reverse
@@ -37,6 +38,7 @@ from openstack_dashboard.dashboards.project.images.images import views
 from openstack_dashboard.dashboards.admin.images import forms as project_forms
 from openstack_dashboard.dashboards.admin.images \
     import tables as project_tables
+
 
 LOG = logging.getLogger(__name__)
 
@@ -82,6 +84,18 @@ class IndexView(tables.DataTableView):
             self._more = False
             msg = _('Unable to retrieve image list.')
             exceptions.handle(self.request, msg)
+        if images:
+            try:
+                tenants, more = api.keystone.tenant_list(self.request)
+            except Exception:
+                tenants = []
+                msg = _('Unable to retrieve project list.')
+                exceptions.handle(self.request, msg)
+
+            tenant_dict = dict([(t.id, t.name) for t in tenants])
+
+            for image in images:
+                image.tenant_name = tenant_dict.get(image.owner)
         return images
 
     def get_filters(self):
@@ -102,6 +116,10 @@ class IndexView(tables.DataTableView):
                         LOG.warning(invalid_msg)
                 except ValueError:
                     LOG.warning(invalid_msg)
+            elif (filter_field == 'disk_format' and
+                  filter_string.lower() == 'docker'):
+                filters['disk_format'] = 'raw'
+                filters['container_format'] = 'docker'
             else:
                 filters[filter_field] = filter_string
         return filters
@@ -110,6 +128,7 @@ class IndexView(tables.DataTableView):
 class CreateView(views.CreateView):
     template_name = 'admin/images/create.html'
     form_class = project_forms.AdminCreateImageForm
+    submit_url = reverse_lazy('horizon:admin:images:create')
     success_url = reverse_lazy('horizon:admin:images:index')
     page_title = _("Create An Image")
 
@@ -117,6 +136,7 @@ class CreateView(views.CreateView):
 class UpdateView(views.UpdateView):
     template_name = 'admin/images/update.html'
     form_class = project_forms.AdminUpdateImageForm
+    submit_url = "horizon:admin:images:update"
     success_url = reverse_lazy('horizon:admin:images:index')
     page_title = _("Update Image")
 
@@ -133,7 +153,10 @@ class DetailView(views.DetailView):
 
 class UpdateMetadataView(forms.ModalFormView):
     template_name = "admin/images/update_metadata.html"
+    modal_header = _("Update Image")
+    form_id = "update_image_form"
     form_class = project_forms.UpdateMetadataForm
+    submit_url = "horizon:admin:images:update_metadata"
     success_url = reverse_lazy('horizon:admin:images:index')
     page_title = _("Update Image Metadata")
 
@@ -148,9 +171,11 @@ class UpdateMetadataView(forms.ModalFormView):
         reserved_props = getattr(conf.settings,
                                  'IMAGE_RESERVED_CUSTOM_PROPERTIES', [])
         image.properties = dict((k, v)
-                                for (k, v) in image.properties.iteritems()
+                                for (k, v) in six.iteritems(image.properties)
                                 if k not in reserved_props)
         context['existing_metadata'] = json.dumps(image.properties)
+        args = (self.kwargs['id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
 
         resource_type = 'OS::Glance::Image'
         namespaces = []
@@ -171,7 +196,7 @@ class UpdateMetadataView(forms.ModalFormView):
                     if hasattr(details, 'properties'):
                         details.properties = dict(
                             (k, v)
-                            for (k, v) in details.properties.iteritems()
+                            for (k, v) in six.iteritems(details.properties)
                             if k not in reserved_props
                         )
 
@@ -179,7 +204,7 @@ class UpdateMetadataView(forms.ModalFormView):
                         for obj in details.objects:
                             obj['properties'] = dict(
                                 (k, v)
-                                for (k, v) in obj['properties'].iteritems()
+                                for (k, v) in six.iteritems(obj['properties'])
                                 if k not in reserved_props
                             )
 

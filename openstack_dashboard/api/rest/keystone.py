@@ -24,6 +24,19 @@ from openstack_dashboard.api.rest import urls
 
 
 @urls.register
+class Version(generic.View):
+    """API for active keystone version.
+    """
+    url_regex = r'keystone/version/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get active keystone version.
+        """
+        return {'version': api.keystone.get_version()}
+
+
+@urls.register
 class Users(generic.View):
     """API for keystone users.
     """
@@ -78,14 +91,6 @@ class Users(generic.View):
             project=request.DATA.get('project_id'),
             enabled=True,
             domain=domain.id
-        )
-
-        # assign role to user
-        api.keystone.add_tenant_user_role(
-            request,
-            project=request.DATA.get('project_id'),
-            user=new_user.id,
-            role=request.DATA.get('role_id')
         )
 
         return rest_utils.CreatedResponse(

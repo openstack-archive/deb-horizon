@@ -13,6 +13,7 @@
 #    under the License.
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -33,7 +34,8 @@ class OverviewTab(tabs.Tab):
                      "_detail_overview.html")
 
     def get_context_data(self, request):
-        return {"instance": self.tab_group.kwargs['instance']}
+        return {"instance": self.tab_group.kwargs['instance'],
+                "is_superuser": request.user.is_superuser}
 
 
 class LogTab(tabs.Tab):
@@ -73,7 +75,8 @@ class ConsoleTab(tabs.Tab):
             # For serial console, the url is different from VNC, etc.
             # because it does not include parms for title and token
             if console_type == "SERIAL":
-                console_url = "/project/instances/%s/serial" % (instance.id)
+                console_url = reverse('horizon:project:instances:serial',
+                                      args=[instance.id])
         except exceptions.NotAvailable:
             exceptions.handle(request, ignore=True, force_log=True)
 

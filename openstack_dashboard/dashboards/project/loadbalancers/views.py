@@ -43,9 +43,17 @@ class IndexView(tabs.TabbedTableView):
     page_title = _("Load Balancer")
 
     def post(self, request, *args, **kwargs):
+        """This method is messy because table actions
+        were not implemented correctly.  ideally,
+        this code can be refactored to move items into
+        table actions
+        """
         obj_ids = request.POST.getlist('object_ids')
         action = request.POST['action']
-        m = re.search('.delete([a-z]+)', action).group(1)
+        results = re.search('.delete([a-z]+)', action)
+        if not results:
+            return super(IndexView, self).post(request, *args, **kwargs)
+        m = results.group(1)
         if obj_ids == []:
             obj_ids.append(re.search('([0-9a-z-]+)$', action).group(1))
         if m == 'monitor':
@@ -122,6 +130,7 @@ class AddMonitorView(workflows.WorkflowView):
 class PoolDetailsView(tabs.TabView):
     tab_group_class = project_tabs.PoolDetailsTabs
     template_name = 'project/loadbalancers/details_tabs.html'
+    page_title = _("Pool Details")
 
     @memoized.memoized_method
     def get_data(self):
@@ -161,11 +170,13 @@ class PoolDetailsView(tabs.TabView):
 class VipDetailsView(tabs.TabView):
     tab_group_class = project_tabs.VipDetailsTabs
     template_name = 'project/loadbalancers/details_tabs.html'
+    page_title = _("VIP Details")
 
 
 class MemberDetailsView(tabs.TabView):
     tab_group_class = project_tabs.MemberDetailsTabs
     template_name = 'project/loadbalancers/details_tabs.html'
+    page_title = _("Member Details")
 
     @memoized.memoized_method
     def get_data(self):
@@ -197,6 +208,7 @@ class MemberDetailsView(tabs.TabView):
 class MonitorDetailsView(tabs.TabView):
     tab_group_class = project_tabs.MonitorDetailsTabs
     template_name = 'project/loadbalancers/details_tabs.html'
+    page_title = _("Monitor Details")
 
     @memoized.memoized_method
     def get_data(self):

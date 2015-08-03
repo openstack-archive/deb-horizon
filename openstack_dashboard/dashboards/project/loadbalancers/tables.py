@@ -14,16 +14,23 @@
 
 
 from django.core.urlresolvers import reverse
+from django import shortcuts
+from django import template
 from django.template import defaultfilters as filters
 from django.utils import http
+from django.utils.http import urlencode
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
+from horizon import conf
 from horizon import exceptions
+from horizon import messages
 from horizon import tables
 
 from openstack_dashboard import api
+from openstack_dashboard.dashboards.project.access_and_security.floating_ips \
+    import workflows
 from openstack_dashboard import policy
 
 
@@ -220,14 +227,6 @@ class UpdateMonitorLink(policy.PolicyTargetMixin, tables.LinkAction):
         return base_url
 
 
-def get_vip_link(pool):
-    if pool.vip_id:
-        return reverse("horizon:project:loadbalancers:vipdetails",
-                       args=(http.urlquote(pool.vip_id),))
-    else:
-        return None
-
-
 class AddPMAssociationLink(policy.PolicyTargetMixin,
                            tables.LinkAction):
     name = "addassociation"
@@ -266,6 +265,85 @@ class DeletePMAssociationLink(policy.PolicyTargetMixin,
         return True
 
 
+class AddVIPFloatingIP(policy.PolicyTargetMixin, tables.LinkAction):
+    """Add floating ip to VIP
+
+    This class is extremely similar to AssociateIP from
+    the instances page
+    """
+    name = "associate"
+    verbose_name = _("Associate Floating IP")
+    url = "horizon:project:access_and_security:floating_ips:associate"
+    classes = ("ajax-modal",)
+    icon = "link"
+    policy_rules = (("compute", "network:associate_floating_ip"),)
+
+    def allowed(self, request, pool):
+        if not api.network.floating_ip_supported(request):
+            return False
+        if api.network.floating_ip_simple_associate_supported(request):
+            return False
+        if hasattr(pool, "vip") and pool.vip:
+            vip = pool.vip
+            return not (hasattr(vip, "fip") and vip.fip)
+        return True
+
+    def get_link_url(self, datum):
+        base_url = reverse(self.url)
+        next_url = self.table.get_full_url()
+        params = {
+            workflows.IPAssociationWorkflow.redirect_param_name: next_url}
+        if hasattr(datum, "vip") and datum.vip:
+            vip = datum.vip
+            params['port_id'] = vip.port_id
+        params = urlencode(params)
+        return "?".join([base_url, params])
+
+
+class RemoveVIPFloatingIP(policy.PolicyTargetMixin, tables.Action):
+    """Remove floating IP from VIP
+
+    This class is extremely similar to the project instance table
+    SimpleDisassociateIP feature, but just different enough to not
+    be able to share much code
+    """
+    name = "disassociate"
+    preempt = True
+    icon = "unlink"
+    verbose_name = _("Disassociate Floating IP")
+    classes = ("btn-danger", "btn-disassociate",)
+    policy_rules = (("compute", "network:disassociate_floating_ip"),)
+
+    def allowed(self, request, pool):
+        if not api.network.floating_ip_supported(request):
+            return False
+        if not conf.HORIZON_CONFIG["simple_ip_management"]:
+            return False
+        if hasattr(pool, "vip") and pool.vip:
+            vip = pool.vip
+            return (hasattr(vip, "fip") and vip.fip)
+        return False
+
+    def single(self, table, request, pool_id):
+        try:
+            pool = api.lbaas.pool_get(request, pool_id)
+            fips = api.network.tenant_floating_ip_list(request)
+            vip_fips = [fip for fip in fips
+                        if fip.port_id == pool.vip.port_id]
+            if not vip_fips:
+                messages.info(request, _("No floating IPs to disassociate."))
+            else:
+                api.network.floating_ip_disassociate(request,
+                                                     vip_fips[0].id)
+                messages.success(request,
+                                 _("Successfully disassociated "
+                                   "floating IP: %s") % fip.ip)
+        except Exception:
+            exceptions.handle(request,
+                              _("Unable to disassociate floating IP."))
+        return shortcuts.redirect(request.get_full_path())
+
+
 class UpdatePoolsRow(tables.Row):
     ajax = True
 
@@ -273,9 +351,9 @@ class UpdatePoolsRow(tables.Row):
         pool = api.lbaas.pool_get(request, pool_id)
         try:
             vip = api.lbaas.vip_get(request, pool.vip_id)
-            pool.vip_name = vip.name
+            pool.vip = vip
         except Exception:
-            pool.vip_name = pool.vip_id
+            pass
         try:
             subnet = api.neutron.subnet_get(request, pool.subnet_id)
             pool.subnet_name = subnet.cidr
@@ -311,7 +389,31 @@ STATUS_DISPLAY_CHOICES = (
 )
 
 
+ADMIN_STATE_DISPLAY_CHOICES = (
+    ("UP", pgettext_lazy("Admin state of a Load balancer", u"UP")),
+    ("DOWN", pgettext_lazy("Admin state of a Load balancer", u"DOWN")),
+)
+
+
+def get_vip_name(pool):
+    if hasattr(pool, "vip") and pool.vip:
+        template_name = 'project/loadbalancers/_pool_table_vip_cell.html'
+        context = {"vip": pool.vip, }
+        return template.loader.render_to_string(template_name, context)
+    else:
+        return None
+
+
 class PoolsTable(tables.DataTable):
+    METHOD_DISPLAY_CHOICES = (
+        ("round_robin", pgettext_lazy("load balancing method",
+                                      u"Round Robin")),
+        ("least_connections", pgettext_lazy("load balancing method",
+                                            u"Least Connections")),
+        ("source_ip", pgettext_lazy("load balancing method",
+                                    u"Source IP")),
+    )
+
     name = tables.Column("name_or_id",
                          verbose_name=_("Name"),
                          link="horizon:project:loadbalancers:pooldetails")
@@ -320,13 +422,18 @@ class PoolsTable(tables.DataTable):
                              filters=(lambda v: filters.default(v, _('N/A')),))
     subnet_name = tables.Column('subnet_name', verbose_name=_("Subnet"))
     protocol = tables.Column('protocol', verbose_name=_("Protocol"))
+    method = tables.Column('lb_method',
+                           verbose_name=_("LB Method"),
+                           display_choices=METHOD_DISPLAY_CHOICES)
     status = tables.Column('status',
                            verbose_name=_("Status"),
                            status=True,
                            status_choices=STATUS_CHOICES,
                            display_choices=STATUS_DISPLAY_CHOICES)
-    vip_name = tables.Column('vip_name', verbose_name=_("VIP"),
-                             link=get_vip_link)
+    vip_name = tables.Column(get_vip_name, verbose_name=_("VIP"))
+    admin_state = tables.Column("admin_state",
+                                verbose_name=_("Admin State"),
+                                display_choices=ADMIN_STATE_DISPLAY_CHOICES)
 
     class Meta(object):
         name = "poolstable"
@@ -336,7 +443,8 @@ class PoolsTable(tables.DataTable):
         table_actions = (AddPoolLink, DeletePoolLink)
         row_actions = (UpdatePoolLink, AddVipLink, UpdateVipLink,
                        DeleteVipLink, AddPMAssociationLink,
-                       DeletePMAssociationLink, DeletePoolLink)
+                       DeletePMAssociationLink, DeletePoolLink,
+                       AddVIPFloatingIP, RemoveVIPFloatingIP)
 
 
 def get_pool_link(member):
@@ -378,6 +486,9 @@ class MembersTable(tables.DataTable):
                            status=True,
                            status_choices=STATUS_CHOICES,
                            display_choices=STATUS_DISPLAY_CHOICES)
+    admin_state = tables.Column("admin_state",
+                                verbose_name=_("Admin State"),
+                                display_choices=ADMIN_STATE_DISPLAY_CHOICES)
 
     class Meta(object):
         name = "memberstable"
@@ -406,6 +517,9 @@ class MonitorsTable(tables.DataTable):
     timeout = tables.Column("timeout", verbose_name=_("Timeout"))
     max_retries = tables.Column("max_retries", verbose_name=_("Max Retries"))
     details = tables.Column(get_monitor_details, verbose_name=_("Details"))
+    admin_state = tables.Column("admin_state",
+                                verbose_name=_("Admin State"),
+                                display_choices=ADMIN_STATE_DISPLAY_CHOICES)
 
     class Meta(object):
         name = "monitorstable"

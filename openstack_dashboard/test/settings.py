@@ -34,6 +34,8 @@ TEMPLATE_CONTEXT_PROCESSORS += (
     'openstack_dashboard.context_processors.openstack',
 )
 
+COMPRESS_OFFLINE = False
+
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.auth',
@@ -46,10 +48,8 @@ INSTALLED_APPS = (
     'compressor',
     'horizon',
     'openstack_dashboard',
-    'openstack_dashboard.dashboards.project',
-    'openstack_dashboard.dashboards.admin',
-    'openstack_dashboard.dashboards.identity',
-    'openstack_dashboard.dashboards.settings',
+    # TODO(david-lyle) remove this in later patch, issue with enabled vs
+    # non-enabled panels/dashs for testing.
     'openstack_dashboard.dashboards.router',
 )
 
@@ -58,8 +58,6 @@ AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 SITE_BRANDING = 'OpenStack'
 
 HORIZON_CONFIG = {
-    'dashboards': ('project', 'admin', 'identity', 'settings', 'router',),
-    'default_dashboard': 'project',
     "password_validator": {
         "regex": '^.{8,18}$',
         "help_text": "Password must be between 8 and 18 characters."
@@ -72,6 +70,22 @@ HORIZON_CONFIG = {
     'angular_modules': [],
     'js_files': [],
 }
+
+# Load the pluggable dashboard settings
+import openstack_dashboard.enabled
+import openstack_dashboard.local.enabled
+from openstack_dashboard.utils import settings
+
+INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
+settings.update_dashboards(
+    [
+        openstack_dashboard.enabled,
+        openstack_dashboard.local.enabled,
+    ],
+    HORIZON_CONFIG,
+    INSTALLED_APPS,
+)
+INSTALLED_APPS[0:0] = []
 
 # Set to True to allow users to upload images to glance via Horizon server.
 # When enabled, a file form field will appear on the create image form.

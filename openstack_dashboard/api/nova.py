@@ -160,7 +160,7 @@ class NovaUsage(base.APIResourceWrapper):
     def get_summary(self):
         return {'instances': self.total_active_instances,
                 'memory_mb': self.memory_mb,
-                'vcpus': getattr(self, "total_vcpus_usage", 0),
+                'vcpus': self.vcpus,
                 'vcpu_hours': self.vcpu_hours,
                 'local_gb': self.local_gb,
                 'disk_gb_hours': self.disk_gb_hours,
@@ -177,7 +177,7 @@ class NovaUsage(base.APIResourceWrapper):
 
     @property
     def vcpu_hours(self):
-        return getattr(self, "total_hours", 0)
+        return getattr(self, "total_vcpus_usage", 0)
 
     @property
     def local_gb(self):
@@ -227,13 +227,17 @@ class SecurityGroupRule(base.APIResourceWrapper):
         if 'name' in self.group:
             vals = {'from': self.from_port,
                     'to': self.to_port,
+                    'ip_protocol': self.ip_protocol,
                     'group': self.group['name']}
-            return _('ALLOW %(from)s:%(to)s from %(group)s') % vals
+            return (_('ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(group)s') %
+                    vals)
         else:
             vals = {'from': self.from_port,
                     'to': self.to_port,
+                    'ip_protocol': self.ip_protocol,
                     'cidr': self.ip_range['cidr']}
-            return _('ALLOW %(from)s:%(to)s from %(cidr)s') % vals
+            return (_('ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(cidr)s') %
+                    vals)
 
     # The following attributes are defined to keep compatibility with Neutron
     @property
@@ -917,9 +921,29 @@ def remove_host_from_aggregate(request, aggregate_id, host):
     return novaclient(request).aggregates.remove_host(aggregate_id, host)
 
 
+def interface_attach(request,
+                     server, port_id=None, net_id=None, fixed_ip=None):
+    return novaclient(request).servers.interface_attach(server,
+                                                        port_id,
+                                                        net_id,
+                                                        fixed_ip)
+
+
+def interface_detach(request, server, port_id):
+    return novaclient(request).servers.interface_detach(server, port_id)
+
+
 @memoized
 def list_extensions(request):
-    return nova_list_extensions.ListExtManager(novaclient(request)).show_all()
+    """List all nova extensions, except the ones in the blacklist."""
+
+    blacklist = set(getattr(settings,
+                            'OPENSTACK_NOVA_EXTENSIONS_BLACKLIST', []))
+    return [
+        extension for extension in
+        nova_list_extensions.ListExtManager(novaclient(request)).show_all()
+        if extension.name not in blacklist
+    ]
 
 
 @memoized

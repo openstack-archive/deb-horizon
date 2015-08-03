@@ -111,6 +111,8 @@ class UpdateView(forms.ModalFormView):
         context['network_id'] = port['network_id']
         args = (self.kwargs['network_id'], self.kwargs['port_id'],)
         context['submit_url'] = reverse(self.submit_url, args=args)
+        context['cancel_url'] = reverse(self.success_url,
+                                        args=(self.kwargs['network_id'],))
         return context
 
     def get_initial(self):
@@ -120,7 +122,7 @@ class UpdateView(forms.ModalFormView):
                    'tenant_id': port['tenant_id'],
                    'name': port['name'],
                    'admin_state': port['admin_state_up']}
-        if port['binding__vnic_type']:
+        if port.get('binding__vnic_type'):
             initial['binding__vnic_type'] = port['binding__vnic_type']
         try:
             initial['mac_state'] = port['mac_learning_enabled']

@@ -1,0 +1,244 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Horizon\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-07-19 22:22+0000\n"
+"PO-Revision-Date: 2015-06-15 15:01+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Filipino (http://www.transifex.com/projects/p/horizon/"
+"language/fil/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Language: fil\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#, python-format
+msgctxt "past"
+msgid "%(action)s %(data_type)s"
+msgstr "%(action)s %(data_type)s"
+
+#, python-format
+msgctxt "present"
+msgid "%(action)s %(data_type)s"
+msgstr "%(action)s %(data_type)s"
+
+#, python-format
+msgid "%(action)s: %(objs)s"
+msgstr "%(action)s: %(objs)s"
+
+#, python-format
+msgid "%s GB"
+msgstr "%s GB"
+
+#, python-format
+msgid "%s KB"
+msgstr "%s KB"
+
+#, python-format
+msgid "%s MB"
+msgstr "%s MB"
+
+#, python-format
+msgid "%s PB"
+msgstr "%s PB"
+
+#, python-format
+msgid "%s TB"
+msgstr "%s TB"
+
+#, python-format
+msgid "%s completed successfully."
+msgstr "%s ay tagumpay na nakumpleto."
+
+#, python-format
+msgid "%s did not complete."
+msgstr "%s ay hindi nakumpleto."
+
+msgid "&laquo;&nbsp;Prev"
+msgstr "&laquo;&nbsp;Nakaraan"
+
+msgid "Actions"
+msgstr "Mga Aksyon"
+
+msgid "Add a row"
+msgstr "Magdagdag ng hilera"
+
+msgid "All available"
+msgstr "Lahat magagamit"
+
+msgid "Available"
+msgstr "Magagamit"
+
+msgid "Back"
+msgstr "Balik"
+
+msgid "Cancel"
+msgstr "Ikansela"
+
+msgid "Delete"
+msgstr "Alisin"
+
+msgid "Deleted"
+msgstr "Naalis na"
+
+msgid "Error: "
+msgstr "May Pagkakamali:"
+
+msgid "Filter"
+msgstr "Salain"
+
+msgid "Horizon"
+msgstr "Horizon"
+
+msgid "Incorrect format for IP address"
+msgstr "Maling format para sa mga IP address"
+
+msgid "Info: "
+msgstr "Info:"
+
+msgid "Invalid subnet mask"
+msgstr "Maling subnet mask"
+
+msgid "Invalid version for IP address"
+msgstr "Maling bersyon para sa IP address"
+
+msgid "Limit Summary"
+msgstr "Buod ng Limitasyon"
+
+msgid "Log In"
+msgstr "Long In"
+
+msgid "Login"
+msgstr "Login"
+
+#, python-format
+msgid ""
+"Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
+msgstr ""
+"Mag-login bilang ibang user o bumalik sa <a href=\"%(home_url)s\"> home "
+"page</a>"
+
+msgid "Members"
+msgstr "Mga Miyembro"
+
+msgid "N/A"
+msgstr "N/A"
+
+msgid "Navigation Item"
+msgstr "Navigation Item"
+
+msgid "Never"
+msgstr "Hindi kailanman"
+
+msgid "Next"
+msgstr "Susunod"
+
+msgid "No items to display."
+msgstr "Walang mga items na ipapakita."
+
+#, python-format
+msgid "No match returned for the id \"%s\"."
+msgstr "Walang tugma para sa id na \"%s\"."
+
+msgid "No members."
+msgstr "Walang miyembro."
+
+msgid "None available."
+msgstr "Walang magagamit"
+
+msgid "Not a valid IP protocol number"
+msgstr "Hindi wasto ang numero ng IP protocol"
+
+msgid "Not a valid port number"
+msgstr "Hindi wasto ang numero ng port"
+
+msgid "One colon allowed in port range"
+msgstr "Isang tutuldok o \"colon\" ang pinapayagan sa port range"
+
+msgid "Other"
+msgstr "Iba"
+
+msgid "Password is not accepted"
+msgstr "Ang Password ay hindi tinanggap"
+
+msgid "Please log in to continue."
+msgstr "Mangyaring mag-log in upang magpatuloy."
+
+msgid "Please select a row before taking that action."
+msgstr "Mangyaring pumili ng isang hilera bago simulan ang aksiyon."
+
+msgid "Port number must be integer"
+msgstr "Ang Port number ay dapat isang integer"
+
+msgid "Processing..."
+msgstr "Nagpoproseso..."
+
+msgid "Save"
+msgstr "I-Save"
+
+#, python-format
+msgid "Select a %s to browse."
+msgstr "Pumili ng %s upang mag browse."
+
+msgid "Session timed out."
+msgstr "Ang sesyon ay nag time out."
+
+msgid "Sign In"
+msgstr "Mag Sign In"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Success: "
+msgstr "Tagumpay:"
+
+msgid "Summary"
+msgstr "Buod"
+
+#, python-format
+msgid "The attribute %(attr)s doesn't exist on %(obj)s."
+msgstr "Ang katangian %(attr)s ay hindi umiiral sa %(obj)s."
+
+msgid "The date should be in YYYY-mm-dd format."
+msgstr "Ang petsa ay dapat nasa YYYY-mm-dd format."
+
+#, python-format
+msgid "Unable to %(action)s: %(objs)s"
+msgstr "Hindi magawa ang %(action)s: %(objs)s"
+
+msgid "Unauthorized. Please try logging in again."
+msgstr "Di-awtorisado. Mangyaring subukang mag-log in muli."
+
+#, python-format
+msgid "Unauthorized: %s"
+msgstr "Di-awtorisado: %s"
+
+msgid "Update"
+msgstr "I-update"
+
+msgid "Updated"
+msgstr "Nai-update"
+
+msgid "Usage Summary"
+msgstr "Buod ng Paggamit"
+
+msgid "Warning: "
+msgstr "Babala:"
+
+#, python-format
+msgid "You are not allowed to %(action)s: %(objs)s"
+msgstr "Wala kang pahintulot sa %(action)s: %(objs)s"
+
+#, python-format
+msgid "You are not authorized to access %s"
+msgstr "Wala kang pahintulot upang ma-access ang %s"
+
+msgid "You do not have permission to access the resource:"
+msgstr "Wala kang pahintulot upang ma-access ang pagkukunan:"

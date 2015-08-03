@@ -204,7 +204,6 @@ def swift_delete_container(request, name):
         error_msg = _("The container cannot be deleted "
                       "since it is not empty.")
         exc = exceptions.Conflict(error_msg)
-        exc._safe_message = error_msg
         raise exc
     swift_api(request).delete_container(name)
     return True
@@ -278,6 +277,8 @@ def swift_copy_object(request, orig_container_name, orig_object_name,
 
 def swift_upload_object(request, container_name, object_name,
                         object_file=None):
+    if swift_object_exists(request, container_name, object_name):
+        raise exceptions.AlreadyExists(object_name, 'object')
     headers = {}
     size = 0
     if object_file:
@@ -287,6 +288,7 @@ def swift_upload_object(request, container_name, object_name,
     etag = swift_api(request).put_object(container_name,
                                          object_name,
                                          object_file,
+                                         content_length=size,
                                          headers=headers)
 
     obj_info = {'name': object_name, 'bytes': size, 'etag': etag}
@@ -294,6 +296,10 @@ def swift_upload_object(request, container_name, object_name,
 
 
 def swift_create_pseudo_folder(request, container_name, pseudo_folder_name):
+    # Make sure the folder name doesn't already exist.
+    if swift_object_exists(request, container_name, pseudo_folder_name):
+        name = pseudo_folder_name.strip('/')
+        raise exceptions.AlreadyExists(name, 'pseudo-folder')
     headers = {}
     etag = swift_api(request).put_object(container_name,
                                          pseudo_folder_name,
@@ -321,7 +327,6 @@ def swift_delete_object(request, container_name, object_name):
         error_msg = _("The pseudo folder cannot be deleted "
                       "since it is not empty.")
         exc = exceptions.Conflict(error_msg)
-        exc._safe_message = error_msg
         raise exc
     swift_api(request).delete_object(container_name, object_name)
     return True

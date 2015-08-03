@@ -18,6 +18,8 @@ import pkgutil
 from django.utils import importlib
 import six
 
+from horizon.utils import file_discovery as fd
+
 
 def import_submodules(module):
     """Import all submodules and make them available in a dict."""
@@ -103,6 +105,7 @@ def update_dashboards(modules, horizon_config, installed_apps):
     angular_modules = []
     js_files = []
     js_spec_files = []
+    scss_files = []
     panel_customization = []
     update_horizon_config = {}
     for key, config in import_dashboard_config(modules):
@@ -110,14 +113,28 @@ def update_dashboards(modules, horizon_config, installed_apps):
             if config.get('DASHBOARD'):
                 disabled_dashboards.append(config.get('DASHBOARD'))
             continue
-        apps.extend(config.get('ADD_INSTALLED_APPS', []))
-        for category, exc_list in config.get('ADD_EXCEPTIONS', {}).iteritems():
+
+        _apps = config.get('ADD_INSTALLED_APPS', [])
+        apps.extend(_apps)
+
+        if config.get('AUTO_DISCOVER_STATIC_FILES', False):
+            for _app in _apps:
+                module = importlib.import_module(_app)
+                base_path = os.path.join(module.__path__[0], 'static/')
+                fd.populate_horizon_config(horizon_config, base_path)
+
+        add_exceptions = six.iteritems(config.get('ADD_EXCEPTIONS', {}))
+        for category, exc_list in add_exceptions:
             exceptions[category] = tuple(set(exceptions.get(category, ())
                                              + exc_list))
 
         angular_modules.extend(config.get('ADD_ANGULAR_MODULES', []))
-        js_files.extend(config.get('ADD_JS_FILES', []))
+        # avoid pulling in dashboard javascript dependencies multiple times
+        existing = set(js_files)
+        js_files.extend([f for f in config.get('ADD_JS_FILES', [])
+                         if f not in existing])
         js_spec_files.extend(config.get('ADD_JS_SPEC_FILES', []))
+        scss_files.extend(config.get('ADD_SCSS_FILES', []))
         update_horizon_config.update(
             config.get('UPDATE_HORIZON_CONFIG', {}))
         if config.get('DASHBOARD'):
@@ -141,4 +158,5 @@ def update_dashboards(modules, horizon_config, installed_apps):
     horizon_config.setdefault('angular_modules', []).extend(angular_modules)
     horizon_config.setdefault('js_files', []).extend(js_files)
     horizon_config.setdefault('js_spec_files', []).extend(js_spec_files)
+    horizon_config.setdefault('scss_files', []).extend(scss_files)
     installed_apps[0:0] = apps

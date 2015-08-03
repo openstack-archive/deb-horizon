@@ -25,7 +25,7 @@ from django.forms.widgets import HiddenInput  # noqa
 from django import http
 from django.test.utils import override_settings
 
-from mox import IsA  # noqa
+from mox3.mox import IsA  # noqa
 
 from horizon import tables as horizon_tables
 from openstack_dashboard import api
@@ -39,10 +39,17 @@ IMAGES_INDEX_URL = reverse('horizon:project:images:index')
 
 
 class CreateImageFormTests(test.TestCase):
+    @test.create_stubs({api.glance: ('image_list_detailed',)})
     def test_no_location_or_file(self):
-        """The form will not be valid if both image_url and image_file are not
-        provided.
-        """
+        filters = {'disk_format': 'aki'}
+        api.glance.image_list_detailed(
+            IsA({}), filters=filters).AndReturn(
+            [self.images.list(), False, False])
+        filters = {'disk_format': 'ari'}
+        api.glance.image_list_detailed(
+            IsA({}), filters=filters).AndReturn(
+            [self.images.list(), False, False])
+        self.mox.ReplayAll()
         post = {
             'name': u'Ubuntu 11.10',
             'source_type': u'file',
@@ -57,15 +64,47 @@ class CreateImageFormTests(test.TestCase):
         self.assertEqual(form.is_valid(), False)
 
     @override_settings(HORIZON_IMAGES_ALLOW_UPLOAD=False)
+    @test.create_stubs({api.glance: ('image_list_detailed',)})
     def test_image_upload_disabled(self):
-        """If HORIZON_IMAGES_ALLOW_UPLOAD is false, the image_file field widget
-        will be a HiddenInput widget instead of a FileInput widget.
-        """
+        filters = {'disk_format': 'aki'}
+        api.glance.image_list_detailed(
+            IsA({}), filters=filters).AndReturn(
+            [self.images.list(), False, False])
+        filters = {'disk_format': 'ari'}
+        api.glance.image_list_detailed(
+            IsA({}), filters=filters).AndReturn(
+            [self.images.list(), False, False])
+        self.mox.ReplayAll()
         form = forms.CreateImageForm({})
         self.assertEqual(
             isinstance(form.fields['image_file'].widget, HiddenInput), True)
         source_type_dict = dict(form.fields['source_type'].choices)
         self.assertNotIn('file', source_type_dict)
+
+    def test_create_image_metadata_docker(self):
+        form_data = {
+            'name': u'Docker image',
+            'description': u'Docker image test',
+            'source_type': u'url',
+            'image_url': u'/',
+            'disk_format': u'docker',
+            'architecture': u'x86-64',
+            'minimum_disk': 15,
+            'minimum_ram': 512,
+            'is_public': False,
+            'protected': False,
+            'is_copying': False
+        }
+        meta = forms.create_image_metadata(form_data)
+        self.assertEqual(meta['disk_format'], 'raw')
+        self.assertEqual(meta['container_format'], 'docker')
+        self.assertIn('properties', meta)
+        self.assertNotIn('description', meta)
+        self.assertNotIn('architecture', meta)
+        self.assertEqual(meta['properties']['description'],
+                         form_data['description'])
+        self.assertEqual(meta['properties']['architecture'],
+                         form_data['architecture'])
 
 
 class UpdateImageFormTests(test.TestCase):
@@ -130,7 +169,18 @@ class UpdateImageFormTests(test.TestCase):
 
 
 class ImageViewTests(test.TestCase):
+    @test.create_stubs({api.glance: ('image_list_detailed',)})
     def test_image_create_get(self):
+        filters = {'disk_format': 'aki'}
+        api.glance.image_list_detailed(
+            IsA(http.HttpRequest), filters=filters).AndReturn(
+            [self.images.list(), False, False])
+        filters = {'disk_format': 'ari'}
+        api.glance.image_list_detailed(
+            IsA(http.HttpRequest), filters=filters).AndReturn(
+            [self.images.list(), False, False])
+        self.mox.ReplayAll()
+
         url = reverse('horizon:project:images:images:create')
         res = self.client.get(url)
         self.assertTemplateUsed(res,
@@ -173,6 +223,24 @@ class ImageViewTests(test.TestCase):
         api_data = {'data': IsA(InMemoryUploadedFile)}
         self._test_image_create(data, api_data)
 
+    @test.create_stubs({api.glance: ('image_create',)})
+    def test_image_create_post_with_kernel_ramdisk(self):
+        temp_file = tempfile.TemporaryFile()
+        temp_file.write('123')
+        temp_file.flush()
+        temp_file.seek(0)
+
+        data = {
+            'source_type': u'file',
+            'image_file': temp_file,
+            'kernel_id': '007e7d55-fe1e-4c5c-bf08-44b4a496482e',
+            'ramdisk_id': '007e7d55-fe1e-4c5c-bf08-44b4a496482a'
+        }
+
+        api_data = {'data': IsA(InMemoryUploadedFile)}
+        self._test_image_create(data, api_data)
+
+    @test.create_stubs({api.glance: ('image_list_detailed',)})
     def _test_image_create(self, extra_form_data, extra_api_data):
         data = {
             'name': u'Ubuntu 11.10',
@@ -197,6 +265,15 @@ class ImageViewTests(test.TestCase):
                         'architecture': data['architecture']},
                     'name': data['name']}
         api_data.update(extra_api_data)
+
+        filters = {'disk_format': 'aki'}
+        api.glance.image_list_detailed(
+            IsA(http.HttpRequest), filters=filters).AndReturn(
+            [self.images.list(), False, False])
+        filters = {'disk_format': 'ari'}
+        api.glance.image_list_detailed(
+            IsA(http.HttpRequest), filters=filters).AndReturn(
+            [self.images.list(), False, False])
 
         api.glance.image_create(
             IsA(http.HttpRequest),

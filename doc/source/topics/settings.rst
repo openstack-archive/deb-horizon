@@ -401,10 +401,14 @@ This example sorts flavors by vcpus in descending order::
 Default: ``"static/themes/default"``
 
 This setting allows Horizon to use a custom theme. The theme folder
-should contains one _variables.scss file and one _styles.scss file.
+should contain one _variables.scss file and one _styles.scss file.
 _variables.scss contains all the bootstrap and horizon specific variables
 which are used to style the GUI. Whereas _styles.scss contains extra styling.
 For example themes, see: /horizon/openstack_dashboard/static/themes/
+
+If the static theme folder also contains a sub-folder 'templates', then
+the path to that sub-folder will be prepended to TEMPLATE_DIRS tuple
+to allow for theme specific template customizations.
 
 ``DROPDOWN_MAX_ITEMS``
 ----------------------
@@ -493,7 +497,6 @@ OpenStack dashboard to use a specific API version for a given service API.
         "volume": 2
     }
 
-
 ``OPENSTACK_ENABLE_PASSWORD_RETRIEVE``
 --------------------------------------
 
@@ -566,6 +569,7 @@ Default::
             ('aki', _('AKI - Amazon Kernel Image')),
             ('ami', _('AMI - Amazon Machine Image')),
             ('ari', _('ARI - Amazon Ramdisk Image')),
+            ('docker', _('Docker')),
             ('iso', _('ISO - Optical Disk Image')),
             ('qcow2', _('QCOW2 - QEMU Emulator')),
             ('raw', _('Raw')),
@@ -650,7 +654,8 @@ with Keystone V3. All entities will be created in the default domain.
 Default: ``"_member_"``
 
 The name of the role which will be assigned to a user when added to a project.
-This name must correspond to a role name in Keystone.
+This value must correspond to an existing role name in Keystone. In general,
+the value should match the ``member_role_name`` defined in ``keystone.conf``.
 
 
 ``OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT``
@@ -748,7 +753,8 @@ Default::
             'profile_support': None,
             'supported_provider_types': ["*"],
             'supported_vnic_types': ["*"],
-            'segmentation_id_range': {}
+            'segmentation_id_range': {},
+            'enable_fip_topology_check': True,
         }
 
 A dictionary of settings which can be used to enable optional services provided
@@ -886,6 +892,8 @@ types will be available to choose from.
 
 Example ``['normal', 'direct']``
 
+To disable VNIC type selection, set an empty list or None.
+
 ``segmentation_id_range``:
 
 .. versionadded:: 2014.2(Juno)
@@ -901,6 +909,21 @@ and maximum value will be the default for the provider network type.
 
 Example: ``{'vlan': [1024, 2048], 'gre': [4094, 65536]}``
 
+``enable_fip_topology_check``:
+
+Default: ``True``
+
+The Default Neutron implementation needs a router with a gateway to associate a
+FIP. So by default a topology check will be performed by horizon to list only
+VM ports attached to a network which is itself attached to a router with an
+external gateway. This is to prevent from setting a FIP to a port which will
+fail with an error.
+Some Neutron vendors do not require it. Some can even attach a FIP to any port
+(e.g.: OpenContrail) owned by a tenant.
+Set to False if you want to be able to associate a FIP to an instance on a
+subnet with no router if your Neutron backend allows it.
+
+.. versionadded:: 2015.2(Liberty)
 
 ``OPENSTACK_SSL_CACERT``
 ------------------------
@@ -1011,9 +1034,12 @@ https://<your server>/dashboard, you would set this to ``"/dashboard/"``.
 
 Additionally, setting the ``"$webroot"`` SCSS variable is required. You
 can change this directly in
-``"openstack_dasbboard/static/dashboard/scss/_variables.scss"`` or in the
+``"openstack_dashboard/static/dashboard/scss/_variables.scss"`` or in the
 ``"_variables.scss"`` file in your custom theme. For more information on
 custom themes, see: ``"CUSTOM_THEME_PATH"``.
+
+Make sure you run ``python manage.py collectstatic`` and
+``python manage.py compress`` after you change the ``_variables.scss`` file.
 
 For your convenience, a custom theme for only setting the web root has been
 provided see: ``"/horizon/openstack_dashboard/static/themes/webroot"``
@@ -1021,13 +1047,86 @@ provided see: ``"/horizon/openstack_dashboard/static/themes/webroot"``
 .. note::
 
     Additional settings may be required in the config files of your webserver
-    of choice. For example to make ``"/dashboard/"`` the web root in apache,
+    of choice. For example to make ``"/dashboard/"`` the web root in Apache,
     the ``"sites-available/horizon.conf"`` requires a couple of additional
     aliases set::
 
         Alias /dashboard/static %HORIZON_DIR%/static
 
         Alias /dashboard/media %HORIZON_DIR%/openstack_dashboard/static
+
+    Apache also requires changing your WSGIScriptAlias to reflect the desired
+    path.  For example, you'd replace ``/`` with ``/dashboard`` for the
+    alias.
+
+``STATIC_ROOT``
+--------------
+
+.. versionadded:: 8.0.0(Liberty)
+
+Default: ``<path_to_horizon>/static``
+
+The absolute path to the directory where static files are collected when
+collectstatic is run.
+
+For more information see:
+https://docs.djangoproject.com/en/1.7/ref/settings/#static-root
+
+``STATIC_URL``
+--------------
+
+.. versionadded:: 8.0.0(Liberty)
+
+Default: ``/static/``
+
+URL that refers to files in STATIC_ROOT.
+
+By default this value is ``WEBROOT/static/``.
+
+This value can be changed from the default. When changed, the alias in your
+webserver configuration should be updated to match.
+
+.. note::
+
+    The value for STATIC_URL must end in '/'.
+
+For more information see:
+https://docs.djangoproject.com/en/1.7/ref/settings/#static-url
+
+
+``DISALLOW_IFRAME_EMBED``
+-------------------------
+
+.. versionadded:: 8.0.0(Liberty)
+
+Default: ``True``
+
+This setting can be used to defend against Clickjacking and prevent Horizon from
+being embedded within an iframe. Legacy browsers are still vulnerable to a
+Cross-Frame Scripting (XFS) vulnerability, so this option allows extra security
+hardening where iframes are not used in deployment. When set to true, a
+``"frame-buster"`` script is inserted into the template header that prevents the
+web page from being framed and therefore defends against clickjacking.
+
+For more information see:
+http://tinyurl.com/anticlickjack
+
+.. note::
+
+  If your deployment requires the use of iframes, you can set this setting to
+  ``False`` to exclude the frame-busting code and allow iframe embedding.
+
+
+``OPENSTACK_NOVA_EXTENSIONS_BLACKLIST``
+---------------------------------------
+
+.. versionadded:: 8.0.0(Liberty)
+
+Default: ``[]``
+
+Ignore all listed Nova extensions, and behave as if they were unsupported.
+Can be used to selectively disable certain costly extensions for performance
+reasons.
 
 
 Django Settings (Partial)
@@ -1192,6 +1291,33 @@ loaded on every page. This is needed for AngularJS modules that are referenced i
 A list of javascript spec files to include for integration with the Jasmine spec runner.
 Jasmine is a behavior-driven development framework for testing JavaScript code.
 
+``ADD_SCSS_FILES``
+----------------------
+
+.. versionadded:: 2015.2(Liberty)
+
+A list of scss files to be included in the compressed set of files that are
+loaded on every page. We recommend one scss file per dashboard, use @import if
+you need to include additional scss files for panels.
+
+.. _auto_discover_static_files:
+
+``AUTO_DISCOVER_STATIC_FILES``
+------------------------------
+
+.. versionadded:: 2015.2(Liberty)
+
+If set to ``True``, JavaScript files and static angular html template files will be
+automatically discovered from the `static` folder in each apps listed in ADD_INSTALLED_APPS.
+
+JavaScript source files will be ordered based on naming convention: files with extension
+`.module.js` listed first, followed by other JavaScript source files.
+
+JavaScript files for testing will also be ordered based on naming convention: files with extension
+`.mock.js` listed first, followed by files with extension `.spec.js`.
+
+If ADD_JS_FILES and/or ADD_JS_SPEC_FILES are also specified, files manually listed there will be
+appended to the auto-discovered files.
 
 ``DISABLED``
 ------------

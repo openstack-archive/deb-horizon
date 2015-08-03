@@ -1,0 +1,279 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Horizon\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-07-19 22:22+0000\n"
+"PO-Revision-Date: 2015-07-11 05:32+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Slovenian (Slovenia) (http://www.transifex.com/projects/p/"
+"horizon/language/sl_SI/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Language: sl_SI\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+msgid ""
+"\n"
+"      If you are not sure which authentication method to use, contact your "
+"administrator.\n"
+"    "
+msgstr ""
+"\n"
+"Če niste prepričani, katero metodo uporabiti za avtentikacijo, se obrnite na "
+"skrbnika storitve."
+
+#, python-format
+msgctxt "past"
+msgid "%(action)s %(data_type)s"
+msgstr "%(action)s %(data_type)s"
+
+#, python-format
+msgctxt "present"
+msgid "%(action)s %(data_type)s"
+msgstr "%(action)s %(data_type)s"
+
+#, python-format
+msgid "%(action)s: %(objs)s"
+msgstr "%(action)s: %(objs)s"
+
+#, python-format
+msgid "%s GB"
+msgstr "%s GB"
+
+#, python-format
+msgid "%s KB"
+msgstr "%s KB"
+
+#, python-format
+msgid "%s MB"
+msgstr "%s MB"
+
+#, python-format
+msgid "%s PB"
+msgstr "%s PB"
+
+#, python-format
+msgid "%s TB"
+msgstr "%s TB"
+
+#, python-format
+msgid "%s completed successfully."
+msgstr "%s se je uspešno izvedel/a."
+
+#, python-format
+msgid "%s did not complete."
+msgstr "%s ni bil/a uspešno dokončan/a"
+
+msgid "-"
+msgstr "-"
+
+msgid "0 Bytes"
+msgstr "0 bajtov"
+
+msgid "Actions"
+msgstr "Operacije"
+
+msgid "Active Instances:"
+msgstr "Aktivne instance:"
+
+msgid "Active RAM:"
+msgstr "Uporabljen RAM"
+
+msgid "Add a row"
+msgstr "Dodaj vrstico"
+
+msgid "All available"
+msgstr "Vsi na voljo"
+
+msgid "Available"
+msgstr "Na voljo"
+
+msgid "Back"
+msgstr "Nazaj"
+
+msgid "Cancel"
+msgstr "Prekliči"
+
+msgid "Connect"
+msgstr "Poveži"
+
+msgid "Delete"
+msgstr "Izbriši"
+
+msgid "Deleted"
+msgstr "Izbrisano"
+
+msgid "Error: "
+msgstr "Napaka:"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Horizon"
+msgstr "Horizon"
+
+msgid "Incorrect format for IP address"
+msgstr "Neveljaven zapis IP-naslova"
+
+msgid "Info: "
+msgstr "Informacije:"
+
+msgid "Invalid subnet mask"
+msgstr "Neveljavna maska podomrežja"
+
+msgid "Invalid version for IP address"
+msgstr "Neveljavna različica IP-naslova"
+
+msgid "Limit Summary"
+msgstr "Povzetek omejitev"
+
+msgid "Log In"
+msgstr "Prijava"
+
+msgid "Login"
+msgstr "Prijava"
+
+#, python-format
+msgid ""
+"Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
+msgstr ""
+"Prijavite se kot drug uporabnik ali pojdite nazaj na <a href=\"%(home_url)s"
+"\"> domačo stran</a>"
+
+msgid "Members"
+msgstr "Člani"
+
+msgid "More Actions"
+msgstr "Več operacij"
+
+msgid "N/A"
+msgstr "N/A"
+
+msgid "Navigation Item"
+msgstr "Navigacijska postavka"
+
+msgid "Never"
+msgstr "Nikoli"
+
+msgid "Next"
+msgstr "Naprej"
+
+msgid "No items to display."
+msgstr "Ni zadetkov"
+
+#, python-format
+msgid "No match returned for the id \"%s\"."
+msgstr "Za iskanje id-ja \"%s\" ni zadetkov"
+
+msgid "No members."
+msgstr "Ni članov."
+
+msgid "None available."
+msgstr "Noben na voljo."
+
+msgid "Not a valid IP protocol number"
+msgstr "Številka protokola IP ni veljavna."
+
+msgid "Not a valid port number"
+msgstr "Številka vrat ni veljavna"
+
+msgid "One colon allowed in port range"
+msgstr "Ena kolona je dovoljena v razponu vrat"
+
+msgid "Other"
+msgstr "Ostalo"
+
+msgid "Password is not accepted"
+msgstr "Geslo ni bilo sprejeto"
+
+msgid "Please log in to continue."
+msgstr "Za nadaljevanje se prijavite."
+
+msgid "Please select a row before taking that action."
+msgstr "Izberite vrstico preden izberte opravilo."
+
+msgid "Port number must be integer"
+msgstr "Vrata navedite s številko."
+
+msgid "Processing..."
+msgstr "Obdelava..."
+
+msgid "Save"
+msgstr "Shrani"
+
+#, python-format
+msgid "Select a %s to browse."
+msgstr "Izberite %s za iskanje"
+
+msgid "Session timed out."
+msgstr "Seja je potekla."
+
+msgid "Sign In"
+msgstr "Prijava"
+
+msgid "Submit"
+msgstr "Potrdi"
+
+msgid "Success: "
+msgstr "Uspešno:"
+
+msgid "Summary"
+msgstr "Povzetek"
+
+#, python-format
+msgid "The attribute %(attr)s doesn't exist on %(obj)s."
+msgstr "Atribut  %(attr)s za %(obj)s ne obstaja."
+
+msgid "The date should be in YYYY-mm-dd format."
+msgstr "Datum mora biti v obliki YYYY-mm-dd"
+
+msgid "This Period's RAM-Hours:"
+msgstr "RAM-ure za to obdobje"
+
+msgid "This Period's VCPU-Hours:"
+msgstr "VCPU-ure za to obdobje"
+
+msgid "This action cannot be undone."
+msgstr "Te operacije ni mogoče preklicati."
+
+#, python-format
+msgid "Unable to %(action)s: %(objs)s"
+msgstr "Operacije ni mogoče izvršiti: %(action)s: %(objs)s"
+
+msgid "Unauthorized. Please try logging in again."
+msgstr "Neavtoriziran dostop. Poskusite se prijaviti in poskusite znova."
+
+#, python-format
+msgid "Unauthorized: %s"
+msgstr "Niste avtorizirani: %s"
+
+msgid "Update"
+msgstr "Posodobi"
+
+msgid "Updated"
+msgstr "Posodobljeno"
+
+msgid "Usage Summary"
+msgstr "Povzetek porabe"
+
+msgid "Warning: "
+msgstr "Opozorilo:"
+
+#, python-format
+msgid "You are not allowed to %(action)s: %(objs)s"
+msgstr "Za to akcijo nimate ustreznih pravic:  %(action)s: %(objs)s"
+
+#, python-format
+msgid "You are not authorized to access %s"
+msgstr "Nimate pravic za dostop do %s"
+
+msgid "You do not have permission to access the resource:"
+msgstr "Nimate pravic za dostop do teh virov:"

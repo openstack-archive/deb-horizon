@@ -292,15 +292,24 @@ class DetailView(tabs.TabView):
     template_name = 'project/instances/detail.html'
     redirect_url = 'horizon:project:instances:index'
     page_title = _("Instance Details: {{ instance.name }}")
+    image_url = 'horizon:project:images:images:detail'
+    volume_url = 'horizon:project:volumes:volumes:detail'
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
         instance = self.get_data()
+        if instance.image:
+            instance.image_url = reverse(self.image_url,
+                                         args=[instance.image['id']])
+        instance.volume_url = self.volume_url
         context["instance"] = instance
-        table = project_tables.InstancesTable(self.request)
         context["url"] = reverse(self.redirect_url)
-        context["actions"] = table.render_row_actions(instance)
+        context["actions"] = self._get_actions(instance)
         return context
+
+    def _get_actions(self, instance):
+        table = project_tables.InstancesTable(self.request)
+        return table.render_row_actions(instance)
 
     @memoized.memoized_method
     def get_data(self):
@@ -425,3 +434,43 @@ class ResizeView(workflows.WorkflowView):
                  'old_flavor_name': getattr(_object, 'flavor_name', ''),
                  'flavors': self.get_flavors()})
         return initial
+
+
+class AttachInterfaceView(forms.ModalFormView):
+    form_class = project_forms.AttachInterface
+    template_name = 'project/instances/attach_interface.html'
+    modal_header = _("Attach Interface")
+    form_id = "attach_interface_form"
+    submit_label = _("Attach Interface")
+    submit_url = "horizon:project:instances:attach_interface"
+    success_url = reverse_lazy('horizon:project:instances:index')
+
+    def get_context_data(self, **kwargs):
+        context = super(AttachInterfaceView, self).get_context_data(**kwargs)
+        context['instance_id'] = self.kwargs['instance_id']
+        args = (self.kwargs['instance_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
+        return context
+
+    def get_initial(self):
+        return {'instance_id': self.kwargs['instance_id']}
+
+
+class DetachInterfaceView(forms.ModalFormView):
+    form_class = project_forms.DetachInterface
+    template_name = 'project/instances/detach_interface.html'
+    modal_header = _("Detach Interface")
+    form_id = "detach_interface_form"
+    submit_label = _("Detach Interface")
+    submit_url = "horizon:project:instances:detach_interface"
+    success_url = reverse_lazy('horizon:project:instances:index')
+
+    def get_context_data(self, **kwargs):
+        context = super(DetachInterfaceView, self).get_context_data(**kwargs)
+        context['instance_id'] = self.kwargs['instance_id']
+        args = (self.kwargs['instance_id'],)
+        context['submit_url'] = reverse(self.submit_url, args=args)
+        return context
+
+    def get_initial(self):
+        return {'instance_id': self.kwargs['instance_id']}

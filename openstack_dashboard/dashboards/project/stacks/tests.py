@@ -21,7 +21,7 @@ from django import http
 from django.test.utils import override_settings  # noqa
 from django.utils import html
 
-from mox import IsA  # noqa
+from mox3.mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
@@ -87,7 +87,7 @@ class MappingsTests(test.TestCase):
             'aaa')
 
     def test_stack_output(self):
-        self.assertEqual(u'foo', mappings.stack_output('foo'))
+        self.assertEqual(u'<pre>foo</pre>', mappings.stack_output('foo'))
         self.assertEqual(u'', mappings.stack_output(None))
 
         outputs = ['one', 'two', 'three']

@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from mox import IsA  # noqa
+from mox3.mox import IsA  # noqa
 
 from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
@@ -548,7 +548,7 @@ class VPNTests(test.TestCase):
 
         res = self.client.post(reverse(self.ADDVPNCONNECTION_PATH), form_data)
 
-        self.assertFormErrors(res, 8)
+        self.assertFormErrors(res, 7)
 
     @test.create_stubs({api.vpn: ('vpnservice_get', )})
     def test_update_vpnservice_get(self):

@@ -23,23 +23,11 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
+from horizon.utils import validators as utils_validators
 
 from openstack_dashboard.api import cinder
 from openstack_dashboard.dashboards.project.volumes.volumes \
     import forms as project_forms
-
-
-def validate_metadata(value):
-    error_msg = _('Invalid metadata entry. Use comma-separated'
-                  ' key=value pairs')
-
-    if value:
-        specs = value.split(",")
-        for spec in specs:
-            keyval = spec.split("=")
-            # ensure both sides of "=" exist, but allow blank value
-            if not len(keyval) == 2 or not keyval[0]:
-                raise ValidationError(error_msg)
 
 
 class ManageVolume(forms.SelfHandlingForm):
@@ -67,7 +55,7 @@ class ManageVolume(forms.SelfHandlingForm):
         attrs={'class': 'modal-body-fixed-width', 'rows': 2}),
         label=_("Metadata"), required=False,
         help_text=_("Comma-separated key=value pairs"),
-        validators=[validate_metadata])
+        validators=[utils_validators.validate_metadata])
     volume_type = forms.ChoiceField(
         label=_("Volume Type"),
         required=False)
@@ -148,9 +136,6 @@ class UnmanageVolume(forms.SelfHandlingForm):
                                 widget=forms.TextInput(
                                     attrs={'readonly': 'readonly'}))
 
-    def __init__(self, request, *args, **kwargs):
-        super(UnmanageVolume, self).__init__(request, *args, **kwargs)
-
     def handle(self, request, data):
         try:
             cinder.volume_unmanage(request, self.initial['volume_id'])
@@ -167,6 +152,13 @@ class UnmanageVolume(forms.SelfHandlingForm):
 
 class CreateVolumeType(forms.SelfHandlingForm):
     name = forms.CharField(max_length=255, label=_("Name"))
+
+    def clean_name(self):
+        cleaned_name = self.cleaned_data['name']
+        if len(cleaned_name.strip()) == 0:
+            raise ValidationError(_('Volume type name can not be empty.'))
+
+        return cleaned_name
 
     def handle(self, request, data):
         try:
@@ -187,7 +179,7 @@ class UpdateStatus(forms.SelfHandlingForm):
     status = forms.ChoiceField(label=_("Status"))
 
     def __init__(self, request, *args, **kwargs):
-        super(forms.SelfHandlingForm, self).__init__(request, *args, **kwargs)
+        super(UpdateStatus, self).__init__(request, *args, **kwargs)
 
         # This set of states was culled from cinder's admin_actions.py
         self.fields['status'].choices = (

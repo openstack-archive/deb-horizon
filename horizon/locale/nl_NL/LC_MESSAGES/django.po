@@ -1,0 +1,244 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Horizon\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-07-19 22:22+0000\n"
+"PO-Revision-Date: 2015-06-15 15:01+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/"
+"horizon/language/nl_NL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgctxt "past"
+msgid "%(action)s %(data_type)s"
+msgstr "%(action)s %(data_type)s"
+
+#, python-format
+msgctxt "present"
+msgid "%(action)s %(data_type)s"
+msgstr "%(action)s %(data_type)s"
+
+#, python-format
+msgid "%(action)s: %(objs)s"
+msgstr "%(action)s: %(objs)s"
+
+#, python-format
+msgid "%s GB"
+msgstr "%s GB"
+
+#, python-format
+msgid "%s KB"
+msgstr "%s KB"
+
+#, python-format
+msgid "%s MB"
+msgstr "%s MB"
+
+#, python-format
+msgid "%s PB"
+msgstr "%s PB"
+
+#, python-format
+msgid "%s TB"
+msgstr "%s TB"
+
+#, python-format
+msgid "%s completed successfully."
+msgstr "%s succesvol afgerond."
+
+#, python-format
+msgid "%s did not complete."
+msgstr "%s was niet voltooid."
+
+msgid "-"
+msgstr "-"
+
+msgid "Actions"
+msgstr "Acties"
+
+msgid "Add a row"
+msgstr "Rij toevoegen"
+
+msgid "All available"
+msgstr "Alle beschikbare"
+
+msgid "Available"
+msgstr "Beschikbaar"
+
+msgid "Back"
+msgstr "Terug"
+
+msgid "Cancel"
+msgstr "Annuleren"
+
+msgid "Delete"
+msgstr "Verwijderen"
+
+msgid "Deleted"
+msgstr "Verwijderd"
+
+msgid "Error: "
+msgstr "Fout: "
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Horizon"
+msgstr "Horizon"
+
+msgid "Incorrect format for IP address"
+msgstr "Onjuist formaat voor IP adres"
+
+msgid "Info: "
+msgstr "Informatie: "
+
+msgid "Invalid subnet mask"
+msgstr "Ongeldig subnet masker"
+
+msgid "Invalid version for IP address"
+msgstr "Ongeldige versie voor IP adres"
+
+msgid "Limit Summary"
+msgstr "Beperk samenvatting"
+
+msgid "Log In"
+msgstr "Aanmelden"
+
+msgid "Login"
+msgstr "Aanmelden"
+
+#, python-format
+msgid ""
+"Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
+msgstr ""
+"Meldt u zich aan als een andere gebruiker of ga terug naar <a href="
+"\"%(home_url)s\">thuis</a>"
+
+msgid "Members"
+msgstr "Leden"
+
+msgid "N/A"
+msgstr "n.v.t."
+
+msgid "Navigation Item"
+msgstr "Navigatie Artikel"
+
+msgid "Never"
+msgstr "Nooit"
+
+msgid "Next"
+msgstr "Volgende"
+
+msgid "No items to display."
+msgstr "Geen artikelen om weer te geven."
+
+#, python-format
+msgid "No match returned for the id \"%s\"."
+msgstr "Geen overeenkomsten gevonden voor de id \"%s\"."
+
+msgid "No members."
+msgstr "Geen leden."
+
+msgid "None available."
+msgstr "Geen beschikbaar."
+
+msgid "Not a valid IP protocol number"
+msgstr "Geen geldig IP protocolnummer"
+
+msgid "Not a valid port number"
+msgstr "Geen geldig poortnummer"
+
+msgid "One colon allowed in port range"
+msgstr "Een dubbele punt is toegestaan in het poortbereik"
+
+msgid "Other"
+msgstr "Overig"
+
+msgid "Password is not accepted"
+msgstr "Wachtwoord is niet geaccepteerd"
+
+msgid "Please log in to continue."
+msgstr "Meldt u zich aan om door te gaan."
+
+msgid "Please select a row before taking that action."
+msgstr "Selecteer alstublieft een rij voor het uitvoeren van die actie."
+
+msgid "Port number must be integer"
+msgstr "Poortnummer moet een geheel getal zijn"
+
+msgid "Processing..."
+msgstr "Bezig met verwerken..."
+
+msgid "Save"
+msgstr "Opslaan"
+
+#, python-format
+msgid "Select a %s to browse."
+msgstr "Selecteer een %s om te bladeren."
+
+msgid "Session timed out."
+msgstr "Sessie verlopen."
+
+msgid "Sign In"
+msgstr "Aanmelden"
+
+msgid "Submit"
+msgstr "Indienen"
+
+msgid "Success: "
+msgstr "Gelukt: "
+
+msgid "Summary"
+msgstr "Samenvatting"
+
+#, python-format
+msgid "The attribute %(attr)s doesn't exist on %(obj)s."
+msgstr "Het attribuut %(attr)s bestaat niet op %(obj)s."
+
+msgid "The date should be in YYYY-mm-dd format."
+msgstr "De datum dient in het JJJJ-mm-dd formaat te zijn."
+
+#, python-format
+msgid "Unable to %(action)s: %(objs)s"
+msgstr "Niet in staat om %(action)s: %(objs)s"
+
+msgid "Unauthorized. Please try logging in again."
+msgstr "Onbevoegd. Meldt u zich opnieuw aan."
+
+#, python-format
+msgid "Unauthorized: %s"
+msgstr "Onbevoegd: %s"
+
+msgid "Update"
+msgstr "Bijwerken"
+
+msgid "Updated"
+msgstr "Bijgewerkt"
+
+msgid "Usage Summary"
+msgstr "Samenvatting van verbruik"
+
+msgid "Warning: "
+msgstr "Waarschuwing: "
+
+#, python-format
+msgid "You are not allowed to %(action)s: %(objs)s"
+msgstr "Het is u niet toegestaan om %(action)s: %(objs)s"
+
+#, python-format
+msgid "You are not authorized to access %s"
+msgstr "U bent niet gemachtigd voor toegang tot %s"
+
+msgid "You do not have permission to access the resource:"
+msgstr "U ben niet gemachtigd voor toegang tot de bron:"

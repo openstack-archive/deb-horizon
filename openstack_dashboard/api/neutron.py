@@ -21,7 +21,6 @@ from __future__ import absolute_import
 
 import collections
 import logging
-import warnings
 
 import netaddr
 
@@ -140,6 +139,15 @@ class Router(NeutronAPIDictWrapper):
         apiresource['admin_state'] = \
             'UP' if apiresource['admin_state_up'] else 'DOWN'
         super(Router, self).__init__(apiresource)
+
+
+class RouterStaticRoute(NeutronAPIDictWrapper):
+    """Wrapper for neutron routes extra route."""
+
+    def __init__(self, route):
+        super(RouterStaticRoute, self).__init__(route)
+        # Horizon references id property for table operations
+        self.id = route['nexthop'] + ":" + route['destination']
 
 
 class SecurityGroup(NeutronAPIDictWrapper):
@@ -423,6 +431,11 @@ class FloatingIpManager(network_base.FloatingIpManager):
                                       {'floatingip': update_dict})
 
     def _get_reachable_subnets(self, ports):
+        if not is_enabled_by_config('enable_fip_topology_check', True):
+            # All subnets are reachable from external network
+            return set(
+                p.fixed_ips[0]['subnet_id'] for p in ports if p.fixed_ips
+            )
         # Retrieve subnet list reachable from external network
         ext_net_ids = [ext_net.id for ext_net in self.list_pools()]
         gw_routers = [r.id for r in router_list(self.request)
@@ -467,6 +480,7 @@ class FloatingIpManager(network_base.FloatingIpManager):
                     continue
                 target = {'name': '%s: %s' % (server_name, ip['ip_address']),
                           'id': '%s_%s' % (port_id, ip['ip_address']),
+                          'port_id': port_id,
                           'instance_id': p.device_id}
                 targets.append(FloatingIpTarget(target))
         return targets
@@ -649,7 +663,7 @@ def network_create(request, **kwargs):
     LOG.debug("network_create(): kwargs = %s" % kwargs)
     # In the case network profiles are being used, profile id is needed.
     if 'net_profile_id' in kwargs:
-        kwargs['n1kv:profile_id'] = kwargs.pop('net_profile_id')
+        kwargs['n1kv:profile'] = kwargs.pop('net_profile_id')
     if 'tenant_id' not in kwargs:
         kwargs['tenant_id'] = request.user.project_id
     body = {'network': kwargs}
@@ -753,7 +767,7 @@ def port_create(request, network_id, **kwargs):
     LOG.debug("port_create(): netid=%s, kwargs=%s" % (network_id, kwargs))
     # In the case policy profiles are being used, profile id is needed.
     if 'policy_profile_id' in kwargs:
-        kwargs['n1kv:profile_id'] = kwargs.pop('policy_profile_id')
+        kwargs['n1kv:profile'] = kwargs.pop('policy_profile_id')
     kwargs = unescape_port_kwargs(**kwargs)
     body = {'port': {'network_id': network_id}}
     if 'tenant_id' not in kwargs:
@@ -894,6 +908,39 @@ def router_add_gateway(request, router_id, network_id):
 
 def router_remove_gateway(request, router_id):
     neutronclient(request).remove_gateway_router(router_id)
+
+
+def router_static_route_list(request, router_id=None):
+    router = router_get(request, router_id)
+    try:
+        routes = [RouterStaticRoute(r) for r in router.routes]
+    except AttributeError:
+        LOG.debug("router_static_route_list(): router_id=%s, "
+                  "router=%s", (router_id, router))
+        return []
+    return routes
+
+
+def router_static_route_remove(request, router_id, route_ids):
+    currentroutes = router_static_route_list(request, router_id=router_id)
+    newroutes = []
+    for oldroute in currentroutes:
+        if oldroute.id not in route_ids:
+            newroutes.append({'nexthop': oldroute.nexthop,
+                              'destination': oldroute.destination})
+    body = {'routes': newroutes}
+    new = router_update(request, router_id, **body)
+    return new
+
+
+def router_static_route_add(request, router_id, newroute):
+    body = {}
+    currentroutes = router_static_route_list(request, router_id=router_id)
+    body['routes'] = [newroute] + [{'nexthop': r.nexthop,
+                                    'destination': r.destination}
+                                   for r in currentroutes]
+    new = router_update(request, router_id, **body)
+    return new
 
 
 def tenant_quota_get(request, tenant_id):
@@ -1041,14 +1088,7 @@ def is_extension_supported(request, extension_alias):
 
 
 def is_enabled_by_config(name, default=True):
-    if hasattr(settings, 'OPENSTACK_QUANTUM_NETWORK'):
-        warnings.warn(
-            'OPENSTACK_QUANTUM_NETWORK setting is deprecated and will be '
-            'removed in the near future. '
-            'Please use OPENSTACK_NEUTRON_NETWORK instead.',
-            DeprecationWarning)
-    network_config = (getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {}) or
-                      getattr(settings, 'OPENSTACK_QUANTUM_NETWORK', {}))
+    network_config = getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {})
     return network_config.get(name, default)
 
 
@@ -1060,11 +1100,8 @@ def is_service_enabled(request, config_name, ext_name):
 
 @memoized
 def is_quotas_extension_supported(request):
-    if (is_enabled_by_config('enable_quotas', False) and
-            is_extension_supported(request, 'quotas')):
-        return True
-    else:
-        return False
+    return (is_enabled_by_config('enable_quotas', False) and
+            is_extension_supported(request, 'quotas'))
 
 
 # Using this mechanism till a better plugin/sub-plugin detection

@@ -16,8 +16,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import collections
 import logging
 
+import django
 from django.conf import settings
 from django.forms import ValidationError  # noqa
 from django import http
@@ -31,7 +33,6 @@ from horizon.utils import functions as utils
 from horizon.utils import validators
 
 from openstack_dashboard import api
-
 
 LOG = logging.getLogger(__name__)
 PROJECT_REQUIRED = api.keystone.VERSIONS.active < 3
@@ -51,8 +52,8 @@ class PasswordMixin(forms.SelfHandlingForm):
     def clean(self):
         '''Check to make sure password fields match.'''
         data = super(forms.Form, self).clean()
-        if 'password' in data:
-            if data['password'] != data.get('confirm_password', None):
+        if 'password' in data and 'confirm_password' in data:
+            if data['password'] != data['confirm_password']:
                 raise ValidationError(_('Passwords do not match.'))
         return data
 
@@ -93,6 +94,10 @@ class CreateUserForm(PasswordMixin, BaseUserForm):
                                   required=False,
                                   widget=forms.HiddenInput())
     name = forms.CharField(max_length=255, label=_("User Name"))
+    description = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 4}),
+                                  label=_("Description"),
+                                  required=False)
     email = forms.EmailField(
         label=_("Email"),
         required=False)
@@ -101,14 +106,25 @@ class CreateUserForm(PasswordMixin, BaseUserForm):
                                        add_item_link=ADD_PROJECT_URL)
     role_id = forms.ChoiceField(label=_("Role"),
                                 required=PROJECT_REQUIRED)
+    enabled = forms.BooleanField(label=_("Enabled"),
+                                 required=False,
+                                 initial=True)
 
     def __init__(self, *args, **kwargs):
         roles = kwargs.pop('roles')
         super(CreateUserForm, self).__init__(*args, **kwargs)
         # Reorder form fields from multiple inheritance
-        self.fields.keyOrder = ["domain_id", "domain_name", "name",
-                                "email", "password", "confirm_password",
-                                "project", "role_id"]
+        ordering = ["domain_id", "domain_name", "name",
+                    "description", "email", "password",
+                    "confirm_password", "project", "role_id",
+                    "enabled"]
+        # Starting from 1.7 Django uses OrderedDict for fields and keyOrder
+        # no longer works for it
+        if django.VERSION >= (1, 7):
+            self.fields = collections.OrderedDict(
+                (key, self.fields[key]) for key in ordering)
+        else:
+            self.fields.keyOrder = ordering
         role_choices = [(role.id, role.name) for role in roles]
         self.fields['role_id'].choices = role_choices
 
@@ -117,6 +133,9 @@ class CreateUserForm(PasswordMixin, BaseUserForm):
             readonlyInput = forms.TextInput(attrs={'readonly': 'readonly'})
             self.fields["domain_id"].widget = readonlyInput
             self.fields["domain_name"].widget = readonlyInput
+        # For keystone V2.0, hide description field
+        else:
+            self.fields["description"].widget = forms.HiddenInput()
 
     # We have to protect the entire "data" dict because it contains the
     # password and confirm_password strings.
@@ -125,14 +144,16 @@ class CreateUserForm(PasswordMixin, BaseUserForm):
         domain = api.keystone.get_default_domain(self.request)
         try:
             LOG.info('Creating user with name "%s"' % data['name'])
+            desc = data["description"]
             if "email" in data:
                 data['email'] = data['email'] or None
             new_user = api.keystone.user_create(request,
                                                 name=data['name'],
                                                 email=data['email'],
+                                                description=desc,
                                                 password=data['password'],
                                                 project=data['project'],
-                                                enabled=True,
+                                                enabled=data['enabled'],
                                                 domain=domain.id)
             messages.success(request,
                              _('User "%s" was successfully created.')
@@ -171,6 +192,10 @@ class UpdateUserForm(BaseUserForm):
                                   widget=forms.HiddenInput())
     id = forms.CharField(label=_("ID"), widget=forms.HiddenInput)
     name = forms.CharField(max_length=255, label=_("User Name"))
+    description = forms.CharField(widget=forms.widgets.Textarea(
+                                  attrs={'rows': 4}),
+                                  label=_("Description"),
+                                  required=False)
     email = forms.EmailField(
         label=_("Email"),
         required=False)
@@ -188,6 +213,9 @@ class UpdateUserForm(BaseUserForm):
             readonlyInput = forms.TextInput(attrs={'readonly': 'readonly'})
             self.fields["domain_id"].widget = readonlyInput
             self.fields["domain_name"].widget = readonlyInput
+        # For keystone V2.0, hide description field
+        else:
+            self.fields["description"].widget = forms.HiddenInput()
 
     def handle(self, request, data):
         user = data.pop('id')

@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from mox import IsA  # noqa
+from mox3.mox import IsA  # noqa
 
 from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
@@ -350,7 +350,6 @@ class FirewallTests(test.TestCase):
         form_data = {'name': firewall.name,
                      'description': firewall.description,
                      'firewall_policy_id': firewall.firewall_policy_id,
-                     'shared': firewall.shared,
                      'admin_state_up': firewall.admin_state_up
                      }
         if router_extension:
@@ -403,7 +402,6 @@ class FirewallTests(test.TestCase):
         form_data = {'name': firewall.name,
                      'description': firewall.description,
                      'firewall_policy_id': None,
-                     'shared': firewall.shared,
                      'admin_state_up': firewall.admin_state_up
                      }
         api.neutron.is_extension_supported(

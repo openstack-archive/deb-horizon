@@ -19,7 +19,6 @@ WEBROOT = '/'
 # Do not set it to '/home/', as this will cause circular redirect loop
 # LOGIN_REDIRECT_URL = WEBROOT
 
-
 # Required for Django 1.5.
 # If horizon is running in production (DEBUG is False), set this
 # with the list of host/domain names that the application can serve.
@@ -33,6 +32,8 @@ WEBROOT = '/'
 # For more information see:
 # https://docs.djangoproject.com/en/1.4/ref/settings/#secure-proxy-ssl-header
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+# https://docs.djangoproject.com/en/1.5/ref/settings/#secure-proxy-ssl-header
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # If Horizon is being served through SSL, then uncomment the following two
 # settings to better secure the cookies from security exploits
@@ -60,7 +61,7 @@ WEBROOT = '/'
 #OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
 
 # Set Console type:
-# valid options would be "AUTO"(default), "VNC", "SPICE", "RDP", "SERIAL" or None
+# valid options are "AUTO"(default), "VNC", "SPICE", "RDP", "SERIAL" or None
 # Set to None explicitly if you want to deactivate the console.
 #CONSOLE_TYPE = "AUTO"
 
@@ -106,12 +107,12 @@ LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 # Set custom secret key:
 # You can either set it to a specific value or you can let horizon generate a
 # default secret key that is unique on this machine, e.i. regardless of the
-# amount of Python WSGI workers (if used behind Apache+mod_wsgi): However, there
-# may be situations where you would want to set this explicitly, e.g. when
-# multiple dashboard instances are distributed on different machines (usually
-# behind a load-balancer). Either you have to make sure that a session gets all
-# requests routed to the same dashboard instance or you set the same SECRET_KEY
-# for all of them.
+# amount of Python WSGI workers (if used behind Apache+mod_wsgi): However,
+# there may be situations where you would want to set this explicitly, e.g.
+# when multiple dashboard instances are distributed on different machines
+# (usually behind a load-balancer). Either you have to make sure that a session
+# gets all requests routed to the same dashboard instance or you set the same
+# SECRET_KEY for all of them.
 from horizon.utils import secret_key
 SECRET_KEY = secret_key.generate_or_read_from_file(
     os.path.join(LOCAL_PATH, '.secret_key_store'))
@@ -235,6 +236,7 @@ OPENSTACK_NEUTRON_NETWORK = {
     'enable_lb': True,
     'enable_firewall': True,
     'enable_vpn': True,
+    'enable_fip_topology_check': True,
 
     # The profile_support option is used to detect if an external router can be
     # configured via the dashboard. When using specific plugins the
@@ -263,6 +265,7 @@ OPENSTACK_NEUTRON_NETWORK = {
 #        ('aki', _('AKI - Amazon Kernel Image')),
 #        ('ami', _('AMI - Amazon Machine Image')),
 #        ('ari', _('ARI - Amazon Ramdisk Image')),
+#        ('docker', _('Docker')),
 #        ('iso', _('ISO - Optical Disk Image')),
 #        ('ova', _('OVA - Open Virtual Appliance')),
 #        ('qcow2', _('QCOW2 - QEMU Emulator')),
@@ -636,3 +639,11 @@ REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES']
 # and are not encrypted on the browser. This is an experimental API and
 # may be deprecated in the future without notice.
 #REST_API_ADDITIONAL_SETTINGS = []
+
+# DISALLOW_IFRAME_EMBED can be used to prevent Horizon from being embedded
+# within an iframe. Legacy browsers are still vulnerable to a Cross-Frame
+# Scripting (XFS) vulnerability, so this option allows extra security hardening
+# where iframes are not used in deployment. Default setting is True.
+# For more information see:
+# http://tinyurl.com/anticlickjack
+# DISALLOW_IFRAME_EMBED = True

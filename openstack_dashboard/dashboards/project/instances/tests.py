@@ -27,8 +27,8 @@ import django.test
 from django.utils.datastructures import SortedDict
 from django.utils import encoding
 from django.utils.http import urlencode
-from mox import IgnoreArg  # noqa
-from mox import IsA  # noqa
+from mox3.mox import IgnoreArg  # noqa
+from mox3.mox import IsA  # noqa
 
 from horizon import exceptions
 from horizon import forms
@@ -1938,8 +1938,11 @@ class InstanceTests(helpers.TestCase):
                            cinder: ('volume_list',
                                     'volume_snapshot_list',),
                            quotas: ('tenant_quota_usages',)})
-    def test_launch_instance_post_boot_from_volume(self,
-                                                   test_with_profile=False):
+    def test_launch_instance_post_boot_from_volume(
+        self,
+        test_with_profile=False,
+        test_with_bdmv2=False
+    ):
         flavor = self.flavors.first()
         keypair = self.keypairs.first()
         server = self.servers.first()
@@ -1949,13 +1952,29 @@ class InstanceTests(helpers.TestCase):
         customization_script = 'user data'
         device_name = u'vda'
         volume_choice = "%s:vol" % volume.id
-        block_device_mapping = {device_name: u"%s::0" % volume_choice}
+        if test_with_bdmv2:
+            volume_source_id = volume.id.split(':')[0]
+            block_device_mapping = None
+            block_device_mapping_2 = [
+                {'device_name': u'vda',
+                 'source_type': 'volume',
+                 'destination_type': 'volume',
+                 'delete_on_termination': 0,
+                 'uuid': volume_source_id,
+                 'boot_index': '0',
+                 'volume_size': 1
+                 }
+            ]
+        else:
+            block_device_mapping = {device_name: u"%s::0" % volume_choice}
+            block_device_mapping_2 = None
+
         nics = [{"net-id": self.networks.first().id, "v4-fixed-ip": ''}]
         quota_usages = self.quota_usages.first()
 
         api.nova.extension_supported('BlockDeviceMappingV2Boot',
                                      IsA(http.HttpRequest)) \
-            .AndReturn(True)
+            .AndReturn(test_with_bdmv2)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         api.nova.keypair_list(IsA(http.HttpRequest)) \
@@ -2007,6 +2026,10 @@ class InstanceTests(helpers.TestCase):
         cinder.volume_snapshot_list(IsA(http.HttpRequest),
                                     search_opts=SNAPSHOT_SEARCH_OPTS) \
             .AndReturn([])
+        api.nova.extension_supported('BlockDeviceMappingV2Boot',
+                                     IsA(http.HttpRequest)) \
+            .AndReturn(test_with_bdmv2)
+
         api.nova.server_create(IsA(http.HttpRequest),
                                server.name,
                                '',
@@ -2015,7 +2038,7 @@ class InstanceTests(helpers.TestCase):
                                customization_script,
                                [sec_group.name],
                                block_device_mapping=block_device_mapping,
-                               block_device_mapping_v2=None,
+                               block_device_mapping_v2=block_device_mapping_2,
                                nics=nics,
                                availability_zone=avail_zone.zoneName,
                                instance_count=IsA(int),
@@ -2052,6 +2075,9 @@ class InstanceTests(helpers.TestCase):
 
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    def test_launch_instance_post_boot_from_volume_with_bdmv2(self):
+        self.test_launch_instance_post_boot_from_volume(test_with_bdmv2=True)
 
     @helpers.update_settings(
         OPENSTACK_NEUTRON_NETWORK={'profile_support': 'cisco'})
@@ -2146,6 +2172,9 @@ class InstanceTests(helpers.TestCase):
         quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
             .AndReturn(quota_usages)
 
+        api.nova.extension_supported('BlockDeviceMappingV2Boot',
+                                     IsA(http.HttpRequest)) \
+            .AndReturn(False)
         api.nova.server_create(IsA(http.HttpRequest),
                                server.name,
                                '',
@@ -3094,7 +3123,8 @@ class InstanceTests(helpers.TestCase):
                                     'volume_snapshot_list',),
                            quotas: ('tenant_quota_usages',)})
     def _test_launch_form_instance_volume_size(self, image, volume_size, msg,
-                                               test_with_profile=False):
+                                               test_with_profile=False,
+                                               volumes=None):
         flavor = self.flavors.get(name='m1.massive')
         keypair = self.keypairs.first()
         server = self.servers.first()
@@ -3104,12 +3134,15 @@ class InstanceTests(helpers.TestCase):
         device_name = u'vda'
         quota_usages = self.quota_usages.first()
         quota_usages['cores']['available'] = 2000
+        if volumes is not None:
+            quota_usages['volumes']['available'] = volumes
+        else:
+            api.nova.flavor_list(IsA(http.HttpRequest)) \
+                .AndReturn(self.flavors.list())
 
         api.nova.extension_supported('BlockDeviceMappingV2Boot',
                                      IsA(http.HttpRequest)) \
             .AndReturn(True)
-        api.nova.flavor_list(IsA(http.HttpRequest)) \
-            .AndReturn(self.flavors.list())
         api.nova.keypair_list(IsA(http.HttpRequest)) \
             .AndReturn(self.keypairs.list())
         api.network.security_group_list(IsA(http.HttpRequest)) \
@@ -3197,6 +3230,12 @@ class InstanceTests(helpers.TestCase):
         msg = "Enter a whole number."
         self._test_launch_form_instance_volume_size(image, 1.5, msg,
                                                     test_with_profile)
+
+    def test_launch_form_instance_volume_exceed_quota(self):
+        image = self.images.get(name='protected_images')
+        msg = "Requested volume exceeds quota: Available: 0, Requested: 1"
+        self._test_launch_form_instance_volume_size(image, image.min_disk,
+                                                    msg, False, 0)
 
     @helpers.update_settings(
         OPENSTACK_NEUTRON_NETWORK={'profile_support': 'cisco'})
@@ -4334,3 +4373,79 @@ class ConsoleManagerTests(helpers.TestCase):
     def test_invalid_console_type_raise_value_error(self):
         self.assertRaises(exceptions.NotAvailable,
                           console.get_console, None, 'FAKE', None)
+
+    @helpers.create_stubs({api.neutron: ('network_list_for_tenant',)})
+    def test_interface_attach_get(self):
+        server = self.servers.first()
+        api.neutron.network_list_for_tenant(IsA(http.HttpRequest),
+                                            self.tenant.id) \
+            .AndReturn(self.networks.list()[:1])
+
+        self.mox.ReplayAll()
+
+        url = reverse('horizon:project:instances:attach_interface',
+                      args=[server.id])
+        res = self.client.get(url)
+
+        self.assertTemplateUsed(res,
+                                'project/instances/attach_interface.html')
+
+    @helpers.create_stubs({api.neutron: ('network_list_for_tenant',),
+                           api.nova: ('interface_attach',)})
+    def test_interface_attach_post(self):
+        server = self.servers.first()
+        network = api.neutron.network_list_for_tenant(IsA(http.HttpRequest),
+                                                      self.tenant.id) \
+            .AndReturn(self.networks.list()[:1])
+        api.nova.interface_attach(IsA(http.HttpRequest), server.id,
+                                  net_id=network[0].id)
+
+        self.mox.ReplayAll()
+
+        form_data = {'instance_id': server.id,
+                     'network': network[0].id}
+
+        url = reverse('horizon:project:instances:attach_interface',
+                      args=[server.id])
+        res = self.client.post(url, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @helpers.create_stubs({api.neutron: ('port_list',)})
+    def test_interface_detach_get(self):
+        server = self.servers.first()
+        api.neutron.port_list(IsA(http.HttpRequest),
+                              device_id=server.id)\
+            .AndReturn([self.ports.first()])
+
+        self.mox.ReplayAll()
+
+        url = reverse('horizon:project:instances:detach_interface',
+                      args=[server.id])
+        res = self.client.get(url)
+
+        self.assertTemplateUsed(res,
+                                'project/instances/detach_interface.html')
+
+    @helpers.create_stubs({api.neutron: ('port_list',),
+                           api.nova: ('interface_detach',)})
+    def test_interface_detach_post(self):
+        server = self.servers.first()
+        port = self.ports.first()
+        api.neutron.port_list(IsA(http.HttpRequest),
+                              device_id=server.id)\
+            .AndReturn([port])
+        api.nova.interface_detach(IsA(http.HttpRequest), server.id, port.id)
+
+        self.mox.ReplayAll()
+
+        form_data = {'instance_id': server.id,
+                     'port': port.id}
+
+        url = reverse('horizon:project:instances:detach_interface',
+                      args=[server.id])
+        res = self.client.post(url, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)

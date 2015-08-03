@@ -17,9 +17,12 @@ distributions can edit or replace this file, in order to change the paths
 to match their distribution's standards.
 """
 
+import os
+
 import xstatic.main
 import xstatic.pkg.angular
 import xstatic.pkg.angular_bootstrap
+import xstatic.pkg.angular_gettext
 import xstatic.pkg.angular_lrdragndrop
 import xstatic.pkg.angular_smart_table
 import xstatic.pkg.bootstrap_datepicker
@@ -40,6 +43,8 @@ import xstatic.pkg.rickshaw
 import xstatic.pkg.spin
 import xstatic.pkg.termjs
 
+from horizon.utils import file_discovery
+
 
 def get_staticfiles_dirs(webroot='/'):
     STATICFILES_DIRS = [
@@ -48,6 +53,9 @@ def get_staticfiles_dirs(webroot='/'):
                                  root_url=webroot).base_dir),
         ('horizon/lib/angular',
             xstatic.main.XStatic(xstatic.pkg.angular_bootstrap,
+                                 root_url=webroot).base_dir),
+        ('horizon/lib/angular',
+            xstatic.main.XStatic(xstatic.pkg.angular_gettext,
                                  root_url=webroot).base_dir),
         ('horizon/lib/angular',
             xstatic.main.XStatic(xstatic.pkg.angular_lrdragndrop,
@@ -121,3 +129,29 @@ def get_staticfiles_dirs(webroot='/'):
                                   root_url=webroot).base_dir))
 
     return STATICFILES_DIRS
+
+
+def find_static_files(ROOT_PATH, HORIZON_CONFIG):
+    # note the path must end in a '/' or the resultant file paths will have a
+    # leading "/"
+    file_discovery.populate_horizon_config(
+        HORIZON_CONFIG,
+        os.path.join(ROOT_PATH, '..', 'horizon', 'static/')
+    )
+
+    # filter out non-angular javascript code and lib
+    HORIZON_CONFIG['js_files'] = ([f for f in HORIZON_CONFIG['js_files']
+                                   if not f.startswith('horizon/')])
+
+    # note the path must end in a '/' or the resultant file paths will have a
+    # leading "/"
+    file_discovery.populate_horizon_config(
+        HORIZON_CONFIG,
+        os.path.join(ROOT_PATH, 'static/'),
+        sub_path='openstack-service-api/'
+    )
+    file_discovery.populate_horizon_config(
+        HORIZON_CONFIG,
+        os.path.join(ROOT_PATH, 'static/'),
+        sub_path='app/core/'
+    )

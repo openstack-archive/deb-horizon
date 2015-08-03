@@ -27,6 +27,7 @@ from django.utils.translation import pgettext_lazy
 from django.utils.translation import string_concat  # noqa
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
+import six
 
 from horizon import conf
 from horizon import exceptions
@@ -349,19 +350,16 @@ class LaunchLink(tables.LinkAction):
 
 class LaunchLinkNG(LaunchLink):
     name = "launch-ng"
-    verbose_name = _("Launch Instance NG")
+    url = "horizon:project:instances:index"
     ajax = False
     classes = ("btn-launch")
 
-    def __init__(self,
-                 attrs={
-                     "ng-controller": "LaunchInstanceModalCtrl",
-                     "ng-click": "openLaunchInstanceWizard(" +
-                                 "{successUrl: '/project/instances/'})"
-                 },
-                 **kwargs):
-        kwargs['preempt'] = True
-        super(LaunchLink, self).__init__(attrs, **kwargs)
+    def get_default_attrs(self):
+        url = urlresolvers.reverse(self.url)
+        ngclick = "openLaunchInstanceWizard({ successUrl: '%s' })" % url
+        self.attrs.update({'ng-controller': 'LaunchInstanceModalController',
+                           'ng-click': ngclick})
+        return super(LaunchLinkNG, self).get_default_attrs()
 
     def get_link_url(self, datum=None):
         return "javascript:void(0);"
@@ -558,6 +556,10 @@ class AssociateIP(policy.PolicyTargetMixin, tables.LinkAction):
             return False
         if instance.status == "ERROR":
             return False
+        for addresses in instance.addresses.values():
+            for address in addresses:
+                if address.get('OS-EXT-IPS:type') == "floating":
+                    return False
         return not is_deleting(instance)
 
     def get_link_url(self, datum):
@@ -612,7 +614,11 @@ class SimpleDisassociateIP(policy.PolicyTargetMixin, tables.Action):
             return False
         if not conf.HORIZON_CONFIG["simple_ip_management"]:
             return False
-        return not is_deleting(instance)
+        for addresses in instance.addresses.values():
+            for address in addresses:
+                if address.get('OS-EXT-IPS:type') == "floating":
+                    return not is_deleting(instance)
+        return False
 
     def single(self, table, request, instance_id):
         try:
@@ -807,11 +813,48 @@ class UnlockInstance(policy.PolicyTargetMixin, tables.BatchAction):
         api.nova.server_unlock(request, obj_id)
 
 
+class AttachInterface(policy.PolicyTargetMixin, tables.LinkAction):
+    name = "attach_interface"
+    verbose_name = _("Attach Interface")
+    classes = ("btn-confirm", "ajax-modal")
+    url = "horizon:project:instances:attach_interface"
+    policy_rules = (("compute", "compute_extension:attach_interfaces"),)
+
+    def allowed(self, request, instance):
+        return ((instance.status in ACTIVE_STATES
+                 or instance.status == 'SHUTOFF')
+                and not is_deleting(instance)
+                and api.base.is_service_enabled(request, 'network'))
+
+    def get_link_url(self, datum):
+        instance_id = self.table.get_object_id(datum)
+        return urlresolvers.reverse(self.url, args=[instance_id])
+
+
+# TODO(lyj): the policy for detach interface not exists in nova.json,
+#            once it's added, it should be added here.
+class DetachInterface(policy.PolicyTargetMixin, tables.LinkAction):
+    name = "detach_interface"
+    verbose_name = _("Detach Interface")
+    classes = ("btn-confirm", "ajax-modal")
+    url = "horizon:project:instances:detach_interface"
+
+    def allowed(self, request, instance):
+        return ((instance.status in ACTIVE_STATES
+                 or instance.status == 'SHUTOFF')
+                and not is_deleting(instance)
+                and api.base.is_service_enabled(request, 'network'))
+
+    def get_link_url(self, datum):
+        instance_id = self.table.get_object_id(datum)
+        return urlresolvers.reverse(self.url, args=[instance_id])
+
+
 def get_ips(instance):
     template_name = 'project/instances/_instance_ips.html'
     ip_groups = {}
 
-    for ip_group, addresses in instance.addresses.iteritems():
+    for ip_group, addresses in six.iteritems(instance.addresses):
         ip_groups[ip_group] = {}
         ip_groups[ip_group]["floating"] = []
         ip_groups[ip_group]["non_floating"] = []
@@ -1059,7 +1102,8 @@ class InstancesTable(tables.DataTable):
                                           InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,
                        CreateSnapshot, SimpleAssociateIP, AssociateIP,
-                       SimpleDisassociateIP, EditInstance,
+                       SimpleDisassociateIP, AttachInterface,
+                       DetachInterface, EditInstance,
                        DecryptInstancePassword, EditInstanceSecurityGroups,
                        ConsoleLink, LogLink, TogglePause, ToggleSuspend,
                        ResizeLink, LockInstance, UnlockInstance,

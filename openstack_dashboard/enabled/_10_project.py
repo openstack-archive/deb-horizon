@@ -21,36 +21,54 @@ ADD_EXCEPTIONS = {}
 # A list of applications to be added to INSTALLED_APPS.
 ADD_INSTALLED_APPS = ['openstack_dashboard.dashboards.project']
 
-ADD_ANGULAR_MODULES = ['hz.dashboard']
+ADD_ANGULAR_MODULES = [
+    'hz.dashboard.project',
+]
+
+AUTO_DISCOVER_STATIC_FILES = True
 
 LAUNCH_INST = 'dashboard/launch-instance/'
 
 ADD_JS_FILES = [
     'dashboard/dashboard.module.js',
-    'dashboard/workflow/workflow.js',
-    'dashboard/cloud-services/cloud-services.js',
-    LAUNCH_INST + 'launch-instance.js',
-    LAUNCH_INST + 'launch-instance.model.js',
-    LAUNCH_INST + 'source/source.js',
-    LAUNCH_INST + 'flavor/flavor.js',
-    LAUNCH_INST + 'flavor/select-flavor-table.js',
-    LAUNCH_INST + 'network/network.js',
-    LAUNCH_INST + 'security-groups/security-groups.js',
+    LAUNCH_INST + 'launch-instance.module.js',
+    LAUNCH_INST + 'launch-instance-workflow.service.js',
+    LAUNCH_INST + 'launch-instance-modal.controller.js',
+    LAUNCH_INST + 'launch-instance-wizard.controller.js',
+    LAUNCH_INST + 'launch-instance-model.js',
+    LAUNCH_INST + 'source/source.controller.js',
+    LAUNCH_INST + 'source/source-help.controller.js',
+    LAUNCH_INST + 'flavor/flavor.controller.js',
+    LAUNCH_INST + 'flavor/select-flavor-table.directive.js',
+    LAUNCH_INST + 'flavor/flavor-help.controller.js',
+    LAUNCH_INST + 'network/network.controller.js',
+    LAUNCH_INST + 'network/network-help.controller.js',
+    LAUNCH_INST + 'security-groups/security-groups.controller.js',
+    LAUNCH_INST + 'security-groups/security-groups-help.controller.js',
     LAUNCH_INST + 'keypair/keypair.js',
-    LAUNCH_INST + 'configuration/configuration.js',
-    LAUNCH_INST + 'configuration/load-edit.js',
+    LAUNCH_INST + 'configuration/configuration.controller.js',
+    LAUNCH_INST + 'configuration/configuration-help.controller.js',
+    LAUNCH_INST + 'configuration/load-edit.directive.js',
+
+    'dashboard/tech-debt/tech-debt.module.js',
+    'dashboard/tech-debt/image-form-ctrl.js',
 ]
 
 ADD_JS_SPEC_FILES = [
     'dashboard/dashboard.module.spec.js',
-    'dashboard/workflow/workflow.spec.js',
-    'dashboard/cloud-services/cloud-services.spec.js',
-    LAUNCH_INST + 'launch-instance.spec.js',
-    LAUNCH_INST + 'launch-instance.model.spec.js',
+    LAUNCH_INST + 'launch-instance.module.spec.js',
+    LAUNCH_INST + 'launch-instance-workflow.service.spec.js',
+    LAUNCH_INST + 'launch-instance-modal.controller.spec.js',
+    LAUNCH_INST + 'launch-instance-wizard.controller.spec.js',
+    LAUNCH_INST + 'launch-instance-model.spec.js',
     LAUNCH_INST + 'source/source.spec.js',
     LAUNCH_INST + 'flavor/flavor.spec.js',
     LAUNCH_INST + 'network/network.spec.js',
     LAUNCH_INST + 'security-groups/security-groups.spec.js',
     LAUNCH_INST + 'keypair/keypair.spec.js',
     LAUNCH_INST + 'configuration/configuration.spec.js',
+]
+
+ADD_SCSS_FILES = [
+    'dashboard/project/project.scss'
 ]

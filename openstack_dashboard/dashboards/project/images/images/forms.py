@@ -22,6 +22,7 @@ Views for managing images.
 from django.conf import settings
 from django.forms import ValidationError  # noqa
 from django.forms.widgets import HiddenInput  # noqa
+from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -36,11 +37,53 @@ IMAGE_BACKEND_SETTINGS = getattr(settings, 'OPENSTACK_IMAGE_BACKEND', {})
 IMAGE_FORMAT_CHOICES = IMAGE_BACKEND_SETTINGS.get('image_formats', [])
 
 
+def create_image_metadata(data):
+    """Use the given dict of image form data to generate the metadata used for
+    creating the image in glance.
+    """
+    # Glance does not really do anything with container_format at the
+    # moment. It requires it is set to the same disk_format for the three
+    # Amazon image types, otherwise it just treats them as 'bare.' As such
+    # we will just set that to be that here instead of bothering the user
+    # with asking them for information we can already determine.
+    disk_format = data['disk_format']
+    if disk_format in ('ami', 'aki', 'ari',):
+        container_format = disk_format
+    elif disk_format == 'docker':
+        # To support docker containers we allow the user to specify
+        # 'docker' as the format. In that case we really want to use
+        # 'raw' as the disk format and 'docker' as the container format.
+        disk_format = 'raw'
+        container_format = 'docker'
+    else:
+        container_format = 'bare'
+
+    # The Create form uses 'is_public' but the Update form uses 'public'. Just
+    # being tolerant here so we don't break anything else.
+    meta = {'is_public': data.get('is_public', data.get('public', False)),
+            'protected': data['protected'],
+            'disk_format': disk_format,
+            'container_format': container_format,
+            'min_disk': (data['minimum_disk'] or 0),
+            'min_ram': (data['minimum_ram'] or 0),
+            'name': data['name'],
+            'properties': {}}
+
+    if data['description']:
+        meta['properties']['description'] = data['description']
+    if data.get('kernel'):
+        meta['properties']['kernel_id'] = data['kernel']
+    if data.get('ramdisk'):
+        meta['properties']['ramdisk_id'] = data['ramdisk']
+    if data.get('architecture'):
+        meta['properties']['architecture'] = data['architecture']
+    return meta
+
+
 class CreateImageForm(forms.SelfHandlingForm):
     name = forms.CharField(max_length=255, label=_("Name"))
     description = forms.CharField(max_length=255, label=_("Description"),
                                   required=False)
-
     source_type = forms.ChoiceField(
         label=_('Image Source'),
         required=False,
@@ -49,19 +92,17 @@ class CreateImageForm(forms.SelfHandlingForm):
         widget=forms.Select(attrs={
             'class': 'switchable',
             'data-slug': 'source'}))
-
-    image_url = forms.CharField(max_length=255,
-                                label=_("Image Location"),
-                                help_text=_("An external (HTTP) URL to load "
-                                            "the image from."),
-                                widget=forms.TextInput(attrs={
-                                    'class': 'switched',
-                                    'data-switch-on': 'source',
-                                    'data-source-url': _('Image Location'),
-                                    'ng-model': 'copyFrom',
-                                    'ng-change':
-                                    'selectImageFormat(copyFrom)'}),
-                                required=False)
+    image_url = forms.URLField(label=_("Image Location"),
+                               help_text=_("An external (HTTP) URL to load "
+                                           "the image from."),
+                               widget=forms.TextInput(attrs={
+                                   'class': 'switched',
+                                   'data-switch-on': 'source',
+                                   'data-source-url': _('Image Location'),
+                                   'ng-model': 'copyFrom',
+                                   'ng-change':
+                                   'selectImageFormat(copyFrom)'}),
+                               required=False)
     image_file = forms.FileField(label=_("Image File"),
                                  help_text=_("A local image to upload."),
                                  widget=forms.FileInput(attrs={
@@ -73,6 +114,18 @@ class CreateImageForm(forms.SelfHandlingForm):
                                      'selectImageFormat(imageFile.name)',
                                      'image-file-on-change': None}),
                                  required=False)
+    kernel = forms.ChoiceField(
+        label=_('Kernel'),
+        required=False,
+        widget=forms.SelectWidget(
+            transform=lambda x: "%s (%s)" % (
+                x.name, defaultfilters.filesizeformat(x.size))))
+    ramdisk = forms.ChoiceField(
+        label=_('Ramdisk'),
+        required=False,
+        widget=forms.SelectWidget(
+            transform=lambda x: "%s (%s)" % (
+                x.name, defaultfilters.filesizeformat(x.size))))
     disk_format = forms.ChoiceField(label=_('Format'),
                                     choices=[],
                                     widget=forms.Select(attrs={
@@ -106,6 +159,7 @@ class CreateImageForm(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         super(CreateImageForm, self).__init__(request, *args, **kwargs)
+
         if (not settings.HORIZON_IMAGES_ALLOW_UPLOAD or
                 not policy.check((("image", "upload_image"),), request)):
             self._hide_file_source_type()
@@ -113,7 +167,40 @@ class CreateImageForm(forms.SelfHandlingForm):
             self._hide_url_source_type()
         if not policy.check((("image", "publicize_image"),), request):
             self._hide_is_public()
+
         self.fields['disk_format'].choices = IMAGE_FORMAT_CHOICES
+
+        try:
+            kernel_images = api.glance.image_list_detailed(
+                request, filters={'disk_format': 'aki'})[0]
+        except Exception:
+            kernel_images = []
+            msg = _('Unable to retrieve image list.')
+            messages.error(request, msg)
+
+        if kernel_images:
+            choices = [('', _("Choose an image"))]
+            for image in kernel_images:
+                choices.append((image.id, image))
+            self.fields['kernel'].choices = choices
+        else:
+            del self.fields['kernel']
+
+        try:
+            ramdisk_images = api.glance.image_list_detailed(
+                request, filters={'disk_format': 'ari'})[0]
+        except Exception:
+            ramdisk_images = []
+            msg = _('Unable to retrieve image list.')
+            messages.error(request, msg)
+
+        if ramdisk_images:
+            choices = [('', _("Choose an image"))]
+            for image in ramdisk_images:
+                choices.append((image.id, image))
+            self.fields['ramdisk'].choices = choices
+        else:
+            del self.fields['ramdisk']
 
     def _hide_file_source_type(self):
         self.fields['image_file'].widget = HiddenInput()
@@ -153,29 +240,9 @@ class CreateImageForm(forms.SelfHandlingForm):
             return data
 
     def handle(self, request, data):
-        # Glance does not really do anything with container_format at the
-        # moment. It requires it is set to the same disk_format for the three
-        # Amazon image types, otherwise it just treats them as 'bare.' As such
-        # we will just set that to be that here instead of bothering the user
-        # with asking them for information we can already determine.
-        if data['disk_format'] in ('ami', 'aki', 'ari',):
-            container_format = data['disk_format']
-        else:
-            container_format = 'bare'
+        meta = create_image_metadata(data)
 
-        meta = {'is_public': data['is_public'],
-                'protected': data['protected'],
-                'disk_format': data['disk_format'],
-                'container_format': container_format,
-                'min_disk': (data['minimum_disk'] or 0),
-                'min_ram': (data['minimum_ram'] or 0),
-                'name': data['name'],
-                'properties': {}}
-
-        if data['description']:
-            meta['properties']['description'] = data['description']
-        if data['architecture']:
-            meta['properties']['architecture'] = data['architecture']
+        # Add image source file or URL to metadata
         if (settings.HORIZON_IMAGES_ALLOW_UPLOAD and
                 policy.check((("image", "upload_image"),), request) and
                 data.get('image_file', None)):
@@ -189,7 +256,7 @@ class CreateImageForm(forms.SelfHandlingForm):
             image = api.glance.image_create(request, **meta)
             messages.success(request,
                              _('Your image %s has been queued for creation.') %
-                             data['name'])
+                             meta['name'])
             return image
         except Exception as e:
             msg = _('Unable to create new image')
@@ -197,7 +264,7 @@ class CreateImageForm(forms.SelfHandlingForm):
             if hasattr(e, 'code') and e.code == 400:
                 if "Invalid disk format" in e.details:
                     msg = _('Unable to create new image: Invalid disk format '
-                            '%s for image.') % data['disk_format']
+                            '%s for image.') % meta['disk_format']
                 elif "Image name too long" in e.details:
                     msg = _('Unable to create new image: Image name too long.')
 
@@ -262,26 +329,7 @@ class UpdateImageForm(forms.SelfHandlingForm):
     def handle(self, request, data):
         image_id = data['image_id']
         error_updating = _('Unable to update image "%s".')
-
-        if data['disk_format'] in ['aki', 'ari', 'ami']:
-            container_format = data['disk_format']
-        else:
-            container_format = 'bare'
-
-        meta = {'is_public': data['public'],
-                'protected': data['protected'],
-                'disk_format': data['disk_format'],
-                'container_format': container_format,
-                'name': data['name'],
-                'min_ram': (data['minimum_ram'] or 0),
-                'min_disk': (data['minimum_disk'] or 0),
-                'properties': {'description': data['description']}}
-        if data['kernel']:
-            meta['properties']['kernel_id'] = data['kernel']
-        if data['ramdisk']:
-            meta['properties']['ramdisk_id'] = data['ramdisk']
-        if data['architecture']:
-            meta['properties']['architecture'] = data['architecture']
+        meta = create_image_metadata(data)
         # Ensure we do not delete properties that have already been
         # set on an image.
         meta['purge_props'] = False

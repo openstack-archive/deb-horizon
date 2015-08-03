@@ -164,6 +164,27 @@ class CreateProjectInfoAction(workflows.Action):
             self.fields["domain_id"].widget = readonlyInput
             self.fields["domain_name"].widget = readonlyInput
 
+    def clean_name(self):
+        project_name = self.cleaned_data['name']
+        domain_id = self.cleaned_data['domain_id']
+
+        # Due to potential performance issues project name validation
+        # for the keystone.v2 is omitted
+        try:
+            if keystone.VERSIONS.active >= 3:
+                tenant = api.keystone.tenant_list(
+                    self.request,
+                    domain=domain_id,
+                    filters={'name': project_name})
+
+                if tenant:
+                    msg = _('Project name is already in use. Please use a '
+                            'different name.')
+                    raise forms.ValidationError(msg)
+        except Exception:
+            exceptions.handle(self.request, ignore=True)
+        return project_name
+
     class Meta(object):
         name = _("Project Information")
         help_text = _("Create a project to organize users.")
@@ -376,7 +397,33 @@ class UpdateProjectGroups(workflows.UpdateMembersStep):
         return context
 
 
-class CreateProject(workflows.Workflow):
+class CommonQuotaWorkflow(workflows.Workflow):
+    def _update_project_quota(self, request, data, project_id):
+        # Update the project quota.
+        nova_data = dict(
+            [(key, data[key]) for key in quotas.NOVA_QUOTA_FIELDS])
+        nova.tenant_quota_update(request, project_id, **nova_data)
+
+        if base.is_service_enabled(request, 'volume'):
+            cinder_data = dict([(key, data[key]) for key in
+                                quotas.CINDER_QUOTA_FIELDS])
+            cinder.tenant_quota_update(request,
+                                       project_id,
+                                       **cinder_data)
+
+        if api.base.is_service_enabled(request, 'network') and \
+                api.neutron.is_quotas_extension_supported(request):
+            neutron_data = {}
+            disabled_quotas = quotas.get_disabled_quotas(request)
+            for key in quotas.NEUTRON_QUOTA_FIELDS:
+                if key not in disabled_quotas:
+                    neutron_data[key] = data[key]
+            api.neutron.tenant_quota_update(request,
+                                            project_id,
+                                            **neutron_data)
+
+
+class CreateProject(CommonQuotaWorkflow):
     slug = "create_project"
     name = _("Create Project")
     finalize_button_name = _("Create Project")
@@ -452,7 +499,7 @@ class CreateProject(workflows.Workflow):
                               % {'users_to_add': users_to_add,
                                  'group_msg': group_msg})
         finally:
-            auth_utils.remove_project_cache(request.user.token.id)
+            auth_utils.remove_project_cache(request.user.token.unscoped_token)
 
     def _update_project_groups(self, request, data, project_id):
         # update project groups
@@ -485,29 +532,9 @@ class CreateProject(workflows.Workflow):
                               % groups_to_add)
 
     def _update_project_quota(self, request, data, project_id):
-        # Update the project quota.
-        nova_data = dict(
-            [(key, data[key]) for key in quotas.NOVA_QUOTA_FIELDS])
         try:
-            nova.tenant_quota_update(request, project_id, **nova_data)
-
-            if base.is_service_enabled(request, 'volume'):
-                cinder_data = dict([(key, data[key]) for key in
-                                    quotas.CINDER_QUOTA_FIELDS])
-                cinder.tenant_quota_update(request,
-                                           project_id,
-                                           **cinder_data)
-
-            if api.base.is_service_enabled(request, 'network') and \
-                    api.neutron.is_quotas_extension_supported(request):
-                neutron_data = {}
-                disabled_quotas = quotas.get_disabled_quotas(request)
-                for key in quotas.NEUTRON_QUOTA_FIELDS:
-                    if key not in disabled_quotas:
-                        neutron_data[key] = data[key]
-                api.neutron.tenant_quota_update(request,
-                                                project_id,
-                                                **neutron_data)
+            super(CreateProject, self)._update_project_quota(
+                request, data, project_id)
         except Exception:
             exceptions.handle(request, _('Unable to set project quotas.'))
 
@@ -529,7 +556,7 @@ class UpdateProjectInfoAction(CreateProjectInfoAction):
     def __init__(self, request, initial, *args, **kwargs):
         super(UpdateProjectInfoAction, self).__init__(
             request, initial, *args, **kwargs)
-        if initial['project_id'] == request.user.token.project['id']:
+        if initial['project_id'] == request.user.project_id:
             self.fields['enabled'].widget.attrs['disabled'] = True
             self.fields['enabled'].help_text = _(
                 'You cannot disable your current project')
@@ -545,6 +572,12 @@ class UpdateProjectInfoAction(CreateProjectInfoAction):
         if self.fields['enabled'].widget.attrs.get('disabled', False):
             cleaned_data['enabled'] = True
         return cleaned_data
+
+    def clean_name(self):
+        project_name = self.cleaned_data['name']
+        if self.initial['name'] == project_name:
+            return project_name
+        return super(UpdateProjectInfoAction, self).clean_name()
 
     class Meta(object):
         name = _("Project Information")
@@ -563,7 +596,7 @@ class UpdateProjectInfo(workflows.Step):
                    "enabled")
 
 
-class UpdateProject(workflows.Workflow):
+class UpdateProject(CommonQuotaWorkflow):
     slug = "update_project"
     name = _("Edit Project")
     finalize_button_name = _("Save")
@@ -729,7 +762,7 @@ class UpdateProject(workflows.Workflow):
                                  'group_msg': group_msg})
             return False
         finally:
-            auth_utils.remove_project_cache(request.user.token.id)
+            auth_utils.remove_project_cache(request.user.token.unscoped_token)
 
     def _update_project_groups(self, request, data, project_id, domain_id):
         # update project groups
@@ -806,31 +839,9 @@ class UpdateProject(workflows.Workflow):
             return False
 
     def _update_project_quota(self, request, data, project_id):
-        # update the project quota
-        nova_data = dict(
-            [(key, data[key]) for key in quotas.NOVA_QUOTA_FIELDS])
         try:
-            nova.tenant_quota_update(request,
-                                     project_id,
-                                     **nova_data)
-
-            if base.is_service_enabled(request, 'volume'):
-                cinder_data = dict([(key, data[key]) for key in
-                                    quotas.CINDER_QUOTA_FIELDS])
-                cinder.tenant_quota_update(request,
-                                           project_id,
-                                           **cinder_data)
-
-            if api.base.is_service_enabled(request, 'network') and \
-                    api.neutron.is_quotas_extension_supported(request):
-                neutron_data = {}
-                disabled_quotas = quotas.get_disabled_quotas(request)
-                for key in quotas.NEUTRON_QUOTA_FIELDS:
-                    if key not in disabled_quotas:
-                        neutron_data[key] = data[key]
-                api.neutron.tenant_quota_update(request,
-                                                project_id,
-                                                **neutron_data)
+            super(UpdateProject, self)._update_project_quota(
+                request, data, project_id)
             return True
         except Exception:
             exceptions.handle(request, _('Modified project information and '

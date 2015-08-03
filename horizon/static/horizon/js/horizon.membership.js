@@ -73,7 +73,7 @@ horizon.membership = {
     horizon.membership.current_membership[step_slug] = [];
     var members_list = [];
     var role_name, role_id, selected_members;
-    angular.forEach(this.get_role_element(step_slug, ''), function(value, key) {
+    angular.forEach(this.get_role_element(step_slug, ''), function(value) {
       role_id = horizon.membership.get_field_id($(value).attr('id'));
       role_name = $('label[for="id_' + step_slug + '_role_' + role_id + '"]').text();
 
@@ -179,13 +179,9 @@ horizon.membership = {
     var $roles_display = $dropdown.children('.dropdown-toggle').children('.roles_display');
     var roles_to_display = [];
     for (var i = 0; i < role_ids.length; i++) {
-      if (i === 2) {
-        roles_to_display.push('...');
-        break;
-      }
       roles_to_display.push(horizon.membership.roles[step_slug][role_ids[i]]);
     }
-    text = roles_to_display.join(', ');
+    var text = roles_to_display.join(', ');
     if (text.length === 0) {
       text = gettext('No roles');
     }
@@ -333,7 +329,7 @@ horizon.membership = {
    * Triggers on the addition of a new member via the inline object creation field.
    **/
   add_new_member: function(step_slug) {
-    $("select[id='id_new_" + step_slug + "']").on('change', function (evt) {
+    $("select[id='id_new_" + step_slug + "']").on('change', function () {
       // add the member to the visible list
       var display_name = $(this).find("option").text();
       var data_id = $(this).find("option").attr("value");

@@ -61,7 +61,8 @@ class AddPoolAction(workflows.Action):
             networks = []
         for n in networks:
             for s in n['subnets']:
-                subnet_id_choices.append((s.id, s.cidr))
+                name = "%s (%s)" % (s.name, s.cidr)
+                subnet_id_choices.append((s.id, name))
         self.fields['subnet_id'].choices = subnet_id_choices
 
         protocol_choices = [('', _("Select a Protocol"))]
@@ -109,13 +110,7 @@ class AddPoolAction(workflows.Action):
     class Meta(object):
         name = _("Add New Pool")
         permissions = ('openstack.services.network',)
-        help_text = _("Create Pool for current project.\n\n"
-                      "Assign a name and description for the pool. "
-                      "Choose one subnet where all members of this "
-                      "pool must be on. "
-                      "Select the protocol and load balancing method "
-                      "for this pool. "
-                      "Admin State is UP (checked) by default.")
+        help_text_template = 'project/loadbalancers/_create_pool_help.html'
 
 
 class AddPoolStep(workflows.Step):
@@ -206,7 +201,8 @@ class AddVipAction(workflows.Action):
             networks = []
         for n in networks:
             for s in n['subnets']:
-                subnet_id_choices.append((s.id, s.cidr))
+                name = "%s (%s)" % (s.name, s.cidr)
+                subnet_id_choices.append((s.id, name))
         self.fields['subnet_id'].choices = subnet_id_choices
         protocol_choices = [('', _("Select a Protocol"))]
         [protocol_choices.append((p, p)) for p in AVAILABLE_PROTOCOLS]
@@ -496,12 +492,13 @@ class AddMonitorAction(workflows.Action):
         min_value=1,
         label=_("Delay"),
         help_text=_("The minimum time in seconds between regular checks "
-                    "of a member"))
+                    "of a member. It must be greater than or equal to "
+                    "timeout"))
     timeout = forms.IntegerField(
         min_value=1,
         label=_("Timeout"),
         help_text=_("The maximum time in seconds for a monitor to wait "
-                    "for a reply"))
+                    "for a reply. It must be less than or equal to delay"))
     max_retries = forms.IntegerField(
         max_value=10, min_value=1,
         label=_("Max Retries (1~10)"),

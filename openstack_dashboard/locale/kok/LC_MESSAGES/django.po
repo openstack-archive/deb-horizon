@@ -1,0 +1,7066 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Horizon\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-07-19 22:22+0000\n"
+"PO-Revision-Date: 2015-07-02 07:07+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Konkani (http://www.transifex.com/projects/p/horizon/language/"
+"kok/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Language: kok\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
+msgstr "%(field_name)s: अमान्य IP नामो (value=%(ip)s)"
+
+#, python-format
+msgid "%(field_name)s: Invalid IP address (value=%(network)s)"
+msgstr "%(field_name)s: अमान्य IP नामो (value=%(network)s)"
+
+#, python-format
+msgid "%(instance_name)s %(fixed_ip)s"
+msgstr "%(instance_name)s %(fixed_ip)s"
+
+#, python-format
+msgid "%(name)s - %(size)s GB (%(label)s)"
+msgstr "%(name)s - %(size)s GB (%(label)s)"
+
+#, python-format
+msgid "%(name)s | %(RAM)s RAM"
+msgstr "%(name)s | %(RAM)s RAM"
+
+#, python-format
+msgid "%(offset)s: %(label)s"
+msgstr "%(offset)s: %(label)s"
+
+#, python-format
+msgid "%(type)s (%(backend)s backend)"
+msgstr "%(type)s (%(backend)s backend)"
+
+#, python-format
+msgid "%(type)s delay:%(delay)d retries:%(max_retries)d timeout:%(timeout)d"
+msgstr "%(type)s कळाव:%(delay)d परतून यत्न:%(max_retries)d टायमआवट:%(timeout)d"
+
+#, python-format
+msgid ""
+"%(type)s: url:%(url_path)s method:%(http_method)s codes:%(expected_codes)s "
+"delay:%(delay)d retries:%(max_retries)d timeout:%(timeout)d"
+msgstr ""
+"%(type)s: यूआरएल:%(url_path)s पद्दत:%(http_method)s संकेत:%(expected_codes)s "
+"कळाव:%(delay)d परतून यत्न:%(max_retries)d टायमआवट:%(timeout)d"
+
+#, python-format
+msgid "%(used)s %(key)s used"
+msgstr "%(used)s %(key)s वापरल्यो"
+
+#, python-format
+msgid "%s (Default)"
+msgstr "%s (मुळावे)"
+
+#, python-format
+msgctxt "External network not found"
+msgid "%s (Not Found)"
+msgstr "%s (मेळू ना)"
+
+#, python-format
+msgid "%s (current)"
+msgstr "%s (सद्याचो)"
+
+#, python-format
+msgid "%s (default)"
+msgstr "%s (मुळावे)"
+
+#, python-format
+msgid "%s GB"
+msgstr "%s GB"
+
+#, python-format
+msgid "%s instances"
+msgstr "%s इंस्टंसिस"
+
+#, python-format
+msgid "%sGB"
+msgstr "%sGB"
+
+#, python-format
+msgid "%sMB"
+msgstr "%sMB"
+
+msgid "(Quota exceeded)"
+msgstr "(कोटा वाडला)"
+
+msgid ", add project groups"
+msgstr ", प्रकल्प गट जोडात"
+
+msgid ", update project groups"
+msgstr ", प्रकल्प गट सुदारात"
+
+msgid "-"
+msgstr "-"
+
+msgid "-- not selected --"
+msgstr "--निवडिल्ले ना--"
+
+msgid "1-4093 for VLAN; 5000 and above for Overlay"
+msgstr "VLAN खातीर 1-4093; ओव्हरले खातीर 5000 आनी वयर"
+
+msgid "3des"
+msgstr "3des"
+
+msgid "A image or external image location must be specified."
+msgstr "प्रतिमा वो भायले प्रतिमेचे थळ स्पश्ट करपाकूच जाय."
+
+msgid "A local environment to upload."
+msgstr "अपलोड करपाक थळावे वातावरण"
+
+msgid "A local image to upload."
+msgstr "अपलोड करपाक थळावी प्रतिमा"
+
+msgid "A local template to upload."
+msgstr "अपलोड करपाक थळावे टेंप्लेट"
+
+msgid ""
+"A script or set of commands to be executed after the instance has been built "
+"(max 16kb)."
+msgstr ""
+"इन्स्टन्स बांदल्या उपरांत कार्यवाहींत हाडपाची लिपी वो आदेशांचो संच (चडांत चड 16kb)."
+
+#, python-format
+msgid ""
+"A volume of %(req)iGB cannot be created as you only have %(avail)iGB of your "
+"quota available."
+msgstr ""
+"%(req)iGB चे आकारमान तयार करपाक जायना कारण तुमचेकडेन फकत तुमचो %(avail)iGB कोटा "
+"आसा."
+
+msgid "AKI - Amazon Kernel Image"
+msgstr "AKI - एमेझॉन कर्नल प्रतिमा"
+
+msgid "ALLOW"
+msgstr "ALLOW"
+
+msgctxt "Action Name of a Firewall Rule"
+msgid "ALLOW"
+msgstr "ALLOW"
+
+#, python-format
+msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
+msgstr "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
+
+msgid "AMI - Amazon Machine Image"
+msgstr "AMI - एमेझॉन मशिन प्रतिमा"
+
+msgid "ANY"
+msgstr "ANY"
+
+msgid "API Access"
+msgstr "API प्रवेश"
+
+msgid "API Endpoints"
+msgstr "API एंडपॉयंट"
+
+msgid "ARI - Amazon Ramdisk Image"
+msgstr "ARI - एमेझॉन रॅमडिस्क प्रतिमा"
+
+msgid "Access & Security"
+msgstr "प्रवेश आनी सुरक्षा"
+
+msgid "Action"
+msgstr "कारवाय"
+
+msgid "Action Log"
+msgstr "कारवाय लॉग"
+
+msgid "Action for the firewall rule"
+msgstr "फायरवॉल नियमाखातीर कारवाय"
+
+msgctxt "Current status of a Database Instance"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "Current status of a Firewall"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "Current status of a Floating IP"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "Current status of a Network"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "Current status of a Pool"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "Current status of a VPN Service"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "Current status of an IPSec Site Connection"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "Current status of an Image"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "Current status of an Instance"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "current status of port"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "current status of router"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgctxt "status of a network port"
+msgid "Active"
+msgstr "सक्रिय"
+
+msgid ""
+"Actual device name may differ due to hypervisor settings. If not specified, "
+"then hypervisor will select a device name."
+msgstr ""
+"हायपरव्हायझर स्थापितांक लागून प्रत्यक्ष उपकरण नाव वेगळे आसू येता. जर स्पश्ट करूना, जाल्यार "
+"हायपरव्हायसर उपकरण नाव निवडटले."
+
+msgid "Add"
+msgstr "जोडात"
+
+msgid "Add DHCP Agent"
+msgstr "DHCP एजंट जोडात"
+
+msgid "Add Firewall"
+msgstr "फायरवॉल जोडात"
+
+msgid "Add IKE Policy"
+msgstr "IKE धोरण जोडात"
+
+msgid "Add IPSec Policy"
+msgstr " IPSec धोरण जोडात"
+
+msgid "Add IPSec Site Connection"
+msgstr " IPSec सायट जोडणी जोडात"
+
+msgid "Add Interface"
+msgstr "इंटरफेस जोडात"
+
+msgid "Add Member"
+msgstr "सदस्य जोडात"
+
+msgid "Add Monitor"
+msgstr "निरीक्षक जोडात"
+
+msgid "Add New Firewall"
+msgstr "नवे फायरवॉल जोडात"
+
+msgid "Add New IKE Policy"
+msgstr "नवे IKE धोरण जोडात"
+
+msgid "Add New IPSec Policy"
+msgstr "नवे IPSec  धोरण जोडात"
+
+msgid "Add New IPSec Site Connection"
+msgstr "नवी IPSec सायट जोडणी जोडात"
+
+msgid "Add New Member"
+msgstr "नवो सदस्य जोडात"
+
+msgid "Add New Monitor"
+msgstr "नवो निरीक्षक जोडात"
+
+msgid "Add New Policy"
+msgstr "नवे धोरण जोडात"
+
+msgid "Add New Pool"
+msgstr "नवो पूल जोडात"
+
+msgid "Add New Rule"
+msgstr "नवो  नियम जोडात"
+
+msgid "Add New VPN Service"
+msgstr "नवी VPN सेवा जोडात"
+
+msgid "Add Policy"
+msgstr "धोरण जोडात"
+
+msgid "Add Pool"
+msgstr "पूल जोडात"
+
+msgid "Add Router Rule"
+msgstr "राऊटर नेम जोडात"
+
+msgid "Add Rule"
+msgstr "नियम जोडात"
+
+msgid "Add Subnet"
+msgstr "उपनेट जोडात"
+
+msgid "Add Subnet (Quota exceeded)"
+msgstr "उपनेट जोडात (कोटा वाडला)"
+
+msgid "Add Users"
+msgstr "वापरपी जोडात"
+
+msgid "Add VIP"
+msgstr "VIP जोडात"
+
+msgid "Add VPN Service"
+msgstr "VPN सेवा जोडात"
+
+msgid ""
+"Add and remove security groups to this project from the list of available "
+"security groups."
+msgstr ""
+"उपलब्ध आशिल्ल्या सुरक्षा गटांच्या वळेरेतल्यान ह्या प्रकल्पाक सुरक्षा गट जोडात आणि काडात"
+
+msgid ""
+"Add hosts to this aggregate or remove hosts from it. Hosts can be in "
+"multiple aggregates."
+msgstr ""
+"ह्या एग्रिगेटान येजमान जोडात वो तातल्यान येजमान काडात. येजमान भौएग्रिगेटान आसू येता."
+
+msgid "Add hosts to this aggregate. Hosts can be in multiple aggregates."
+msgstr "ह्या एग्रिगेटान येजमान जोडात. येजमान भौएग्रिगेटान आसू येता."
+
+msgid ""
+"Add member(s) to the selected pool.\n"
+"\n"
+"Choose one or more listed instances to be added to the pool as member(s). "
+"Assign a numeric weight and port number for the selected member(s) to "
+"operate(s) on; e.g., 80. \n"
+"\n"
+"Only one port can be associated with each instance."
+msgstr ""
+"निवडिल्ल्या पुलांत सदस्य जोडात.\n"
+"\n"
+"पुलाक सदस्य म्हण जोडपाचो एक वो चड वळेरेतलो इन्स्टन्स निवडात. निवडिल्ल्या सदस्याक काम "
+"करपाक सांख्यिकी वजन नेमून दियात.; देखीक., 80. \n"
+"\n"
+"प्रत्येक इन्स्टन्साकडेन फकत एक पोर्ट संबंदित आसू येता."
+
+msgid "Add/Remove Hosts to Aggregate"
+msgstr "एग्रिगेटाक येजमान जोडात/काडात"
+
+msgid "AddFirewall"
+msgstr "फायरवॉल जोडात"
+
+msgid "AddPolicy"
+msgstr "धोरणजोडात"
+
+msgid "AddRule"
+msgstr "नियमजोडात"
+
+#, python-format
+msgid "Added Firewall \"%s\"."
+msgstr "जोडिल्ले फायरवॉल  \"%s\""
+
+#, python-format
+msgid "Added IKE Policy \"%s\"."
+msgstr "जोडिल्ले IKE धोरण \"%s\"."
+
+#, python-format
+msgid "Added IPSec Policy \"%s\"."
+msgstr "जोडिल्ले IPSec धोरण \"%s\"."
+
+#, python-format
+msgid "Added IPSec Site Connection \"%s\"."
+msgstr "जोडील्ली IPSec सायट जोडणी \"%s\"."
+
+#, python-format
+msgid "Added Policy \"%s\"."
+msgstr "\"%s\" धोरण जोडला."
+
+#, python-format
+msgid "Added Rule \"%s\"."
+msgstr " \"%s\"नियम जोडात."
+
+#, python-format
+msgid "Added VIP \"%s\"."
+msgstr " VIP \"%s\" जोडला."
+
+#, python-format
+msgid "Added VPN Service \"%s\"."
+msgstr "जोडिल्ली  VPN सेवा \"%s\"."
+
+msgid "Added member(s)."
+msgstr "जोडील्लो(ल्ले) सदस्य"
+
+msgid "Added monitor"
+msgstr "जोडील्लो निरीक्षक "
+
+#, python-format
+msgid "Added pool \"%s\"."
+msgstr " \"%s\" पूल जोडला."
+
+msgid ""
+"Additional routes announced to the hosts. Each entry is: destination_cidr,"
+"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
+msgstr ""
+"येजमानांक अतिरिक्त वाटो घोषित केल्या. प्रत्येक नोंद आसा : लक्ष्य_cidr,nexthop (देखीक, "
+"192.168.200.0/24,10.56.1.254) आणि प्रत्येक ओळीर एक नोंद."
+
+msgid "Admin"
+msgstr "एडमिन"
+
+msgid "Admin Password"
+msgstr "एडमिन पासवर्ड"
+
+msgid "Admin State"
+msgstr "एडमिन स्थिती"
+
+msgid "Advanced Options"
+msgstr "अद्ययावत विकल्प"
+
+msgid "After"
+msgstr "मागीर"
+
+#, python-format
+msgid "Agent %s was successfully added."
+msgstr "%s एजंट यशस्विपणान जोडला."
+
+msgid "All Available Hosts"
+msgstr "सगळे उपलब्ध येजमान"
+
+msgid "All Groups"
+msgstr "सगळे गट"
+
+msgid "All Hypervisors"
+msgstr "सगळे हायपरवायजर्स"
+
+msgid "All ICMP"
+msgstr "सगळे CMP"
+
+msgid "All Projects"
+msgstr "सगळे प्रकल्प"
+
+msgid "All Security Groups"
+msgstr "सगळे सुरक्षा गट"
+
+msgid "All TCP"
+msgstr "सगळे TCP"
+
+msgid "All UDP"
+msgstr "सगळे UDP"
+
+msgid "All Users"
+msgstr "सगळे वापरपी"
+
+msgid "All available hosts"
+msgstr "सगळे उपलब्ध येजमान"
+
+msgid "Allocate Floating IP"
+msgstr "फ्लोटिंग IP दियात"
+
+msgid "Allocate IP"
+msgstr "IP दियात"
+
+msgid "Allocate IP To Project"
+msgstr "प्रकल्पाक IP दियात"
+
+#, python-format
+msgid "Allocated Floating IP %(ip)s."
+msgstr "वाटिल्ले फ्लोटिंग IP %(ip)s"
+
+msgid "Allocation Pools"
+msgstr "नेमणूक पूल्स"
+
+msgid "Allowed Host"
+msgstr "परवानगी आशिल्लो येजमान"
+
+msgid "Allowed Host (optional)"
+msgstr "परवानगी आशिल्ले येजमान (वैकल्पिक)"
+
+msgid "Amount of energy"
+msgstr "ऊर्जेचे प्रमाण"
+
+msgid "An external (HTTP) URL to load the image from."
+msgstr "प्रतिमा लोड करपाक भायले  (HTTP) URL ."
+
+msgid "An external (HTTP) URL to load the template from."
+msgstr "टेंप्लेट लोड करपाक भायले (HTTP) URL."
+
+msgid ""
+"An unexpected error has occurred. Try refreshing the page. If that doesn't "
+"help, contact your local administrator."
+msgstr ""
+"अनपेक्षित एरर आयलो. पान रिफ्रेश करून पळयात. नाजाल्यार, तुमच्या थळाव्या प्रशासकाक संपर्क "
+"करात."
+
+msgid "Any"
+msgstr "खंयचेय"
+
+msgid "Any Availability Zone"
+msgstr "खंयचोय उपलब्धताय विभाग"
+
+msgid "Architecture"
+msgstr "स्थापत्यशास्त्र"
+
+msgid "Associate"
+msgstr "जोडात"
+
+msgid "Associate Floating IP"
+msgstr "सहयोगी फ्लोटिंग IP"
+
+msgid "Associate Monitor"
+msgstr "सहयोगी निरीक्षक"
+
+msgid "Associate QoS Spec with Volume Type"
+msgstr "QoS Spec  आकार प्रकारासंयत जोडात"
+
+msgid "Associate a health monitor with target pool."
+msgstr "आरोग्य निरीक्षक लक्ष्य पूलासंयत जोडात."
+
+msgid "Associated QoS Spec"
+msgstr "संबंधित QoS Spec"
+
+msgid "Associated monitor."
+msgstr "जोडिल्लो निरीक्षक "
+
+msgid "Association Details"
+msgstr "जोडणेचो तपशील"
+
+msgid "At least one member must be specified"
+msgstr "किमान एक सदस्य स्पश्ट करपाक जाय"
+
+msgid "At least one network must be specified."
+msgstr "किमान एक नेटवर्क स्पश्ट करपाक जाय."
+
+msgid "Attach to Instance"
+msgstr "इंस्टंसाक जोडात"
+
+msgid "Attached"
+msgstr "जोडला"
+
+msgid "Attached Device"
+msgstr "जोडील्ले उपकरण"
+
+msgid "Attached To"
+msgstr "क जोडला"
+
+#, python-format
+msgid "Attached to %(instance)s on %(dev)s"
+msgstr "%(dev)s चेर %(instance)s क जोडला"
+
+msgid "Attaching"
+msgstr "जोडटा"
+
+msgctxt "Current status of a Volume"
+msgid "Attaching"
+msgstr "जोडटा"
+
+#, python-format
+msgid "Attaching volume %(vol)s to instance %(inst)s on %(dev)s."
+msgstr "%(dev)s चेर आकारमान %(vol)s इंस्टंस %(inst)s क जोडटा."
+
+msgid "Attachments"
+msgstr "जोडण्यो"
+
+msgid "Audited"
+msgstr "लेखापरिक्षीत"
+
+msgid "Authorization algorithm"
+msgstr "अधिकृतीकरण एलॉगॅरिथम"
+
+msgid "Auto Security Group"
+msgstr "आपसूक सुरक्षा गट"
+
+msgid "Automatic"
+msgstr "आपसूंक"
+
+msgid ""
+"Automatic: The entire disk is a single partition and automatically resizes. "
+"Manual: Results in faster build times but requires manual partitioning."
+msgstr ""
+"आपशीच: पुराय डिस्क हे एकूच विभाजन आणि आपशीच नवो आकार घेता.मॅन्युअल: गतिमान निर्मणी वेळ "
+"पुण मॅन्युअल विभाजन करचे पडटा."
+
+msgid "Availability Zone"
+msgstr "उपलब्धताय विभाग"
+
+msgid "Availability Zone Name"
+msgstr "उपलब्धताय विभागाचे नाव"
+
+msgid "Availability Zones"
+msgstr "उपलब्धताय विभाग"
+
+msgid "Available"
+msgstr "उपलब्ध"
+
+msgctxt "Current status of a Volume"
+msgid "Available"
+msgstr "उपलब्ध"
+
+msgctxt "Current status of a Volume Backup"
+msgid "Available"
+msgstr "उपलब्ध"
+
+msgid "Average CPU utilization"
+msgstr "सरासर CPU वापर"
+
+msgid "Backup"
+msgstr "बॅकअप"
+
+msgctxt "Current status of a Database Instance"
+msgid "Backup"
+msgstr "बॅकअप"
+
+msgid "Backup Database"
+msgstr "बॅकअप डेटाबेस"
+
+msgid "Backup File"
+msgstr "बॅकअप फायल"
+
+msgid "Backup Name"
+msgstr "बॅकएपाचे नाव"
+
+msgid "Backups"
+msgstr "बॅकअप्स"
+
+msgid "Base Image"
+msgstr "मूळ प्रतिमा"
+
+msgid "Before"
+msgstr "पयली"
+
+msgctxt "Task status of an Instance"
+msgid "Block Device Mapping"
+msgstr "उपकरण मॅपिंग आडयात"
+
+msgid "Block Migration"
+msgstr "स्थलांतर आडयात"
+
+msgid "Block Storage Services"
+msgstr "साठो सेवा आडयात"
+
+msgctxt "Current status of a Database Instance"
+msgid "Blocked"
+msgstr "आडयला"
+
+msgctxt "Power state of an Instance"
+msgid "Blocked"
+msgstr "आडयला"
+
+msgid "Boot from image"
+msgstr "प्रतिमेतल्यान बूट करात"
+
+msgid "Boot from image (creates a new volume)"
+msgstr "प्रतिमेतल्यान बूट करात (नवो आकार तयार करता)"
+
+msgid "Boot from snapshot"
+msgstr "स्नॅपशॉटातल्यान बूट करात"
+
+msgid "Boot from volume"
+msgstr "आकारातल्यान बूट करात"
+
+msgid "Boot from volume snapshot (creates a new volume)"
+msgstr "आकार स्नॅपशॉटातल्यान बूट करात (नवो आकार तयार करता)"
+
+msgid "Bootable"
+msgstr "बूट जावपी"
+
+msgctxt "Current status of a Database Instance"
+msgid "Build"
+msgstr "बांदात"
+
+msgctxt "Current status of a Network"
+msgid "Build"
+msgstr "बांदात"
+
+msgctxt "Current status of an Instance"
+msgid "Build"
+msgstr "बांदात"
+
+msgctxt "current status of port"
+msgid "Build"
+msgstr "बांदात"
+
+msgctxt "status of a network port"
+msgid "Build"
+msgstr "बांदात"
+
+msgctxt "Current status of a Database Backup"
+msgid "Building"
+msgstr "बांदता"
+
+msgctxt "Power state of an Instance"
+msgid "Building"
+msgstr "बांदता"
+
+msgid "CIDR"
+msgstr "CIDR"
+
+msgid "CIDR must be specified."
+msgstr "CIDR स्पश्ट करपाक जाय."
+
+msgid "CPU time used"
+msgstr "वापरिल्ली CPU वेळ"
+
+msgid "Can not specify both image and external image location."
+msgstr "प्रतिमा आनी भायले प्रतिमेचे थळ स्पश्ट करपाक शकना."
+
+msgid "Centralized"
+msgstr "केंद्रीत"
+
+msgid "Change"
+msgstr "बदल"
+
+msgid "Change Password"
+msgstr "पासवर्ड बदल"
+
+msgid "Change Stack Template"
+msgstr "स्टॅक टेंप्लेट बदलात"
+
+msgid "Change Template"
+msgstr "टेंप्लेट बदलात"
+
+msgid "Change Volume Type"
+msgstr "आकार प्रकार बदलात"
+
+msgid "Changing password is not supported."
+msgstr "पासवर्ड बदलुपाक फाटबळ ना."
+
+msgid "Choose Your Boot Source Type."
+msgstr "तुमचो बूट स्त्रोत प्रकार निवडात."
+
+msgid "Choose a Host to evacuate servers to."
+msgstr "सर्व्हर रिकामे करपाखातीर येजमान निवडात."
+
+msgid "Choose a Host to migrate to."
+msgstr "स्थलांतर करपाक येजमान निवडात."
+
+msgid "Choose a main binary"
+msgstr "मुखेल बायनरी निवडात"
+
+msgid "Choose a snapshot"
+msgstr "स्नॅपशॉट निवडात"
+
+msgid "Choose a storage location"
+msgstr "साठो थळ निवडात"
+
+msgid "Choose a volume"
+msgstr "आकार निवडात"
+
+msgid "Choose an DHCP Agent to attach to."
+msgstr "क जोडपाक DHCP एजंट निवडात"
+
+msgid "Choose an image"
+msgstr "प्रतिमा निवडात"
+
+msgid "Choose associated QoS Spec."
+msgstr "संबंधित QoS Spec निवडात"
+
+msgid "Choose consumer for this QoS Spec."
+msgstr "ह्या QoS Spec खातीर गिरायक निवडात."
+
+msgid "Choose libraries"
+msgstr "लायब्ररी निवडात"
+
+msgid "Choose the binary which should be used in this Job."
+msgstr "ह्या कामान वापरपाची बायनरी निवडात."
+
+msgid "Choose the flavor to launch."
+msgstr "चालू करपाक फ्लेवर निवडात."
+
+msgid "Cinder"
+msgstr "सिंडर"
+
+msgid "Cipher"
+msgstr "सायफर"
+
+msgid "Cisco Nexus 1000V"
+msgstr "सिस्को नेक्सस 1000V"
+
+msgid "Cisco Nexus 1000v"
+msgstr "सिस्को नेक्सस 1000v"
+
+msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
+msgstr "वर्गविरहित आंतर-डोमेन रूटिंग (देखीक. 192.168.0.0/24)"
+
+msgid "Clear Domain Context"
+msgstr "डोमेन संदर्भ साफ करात"
+
+msgid "Close"
+msgstr "बंद"
+
+msgid "Cluster"
+msgstr "क्लस्टर"
+
+msgid "Cluster Details"
+msgstr "क्लस्टराचो तपशील"
+
+msgid "Cluster Instances"
+msgstr "क्लस्टर इंस्टंसिस"
+
+msgid "Cluster Name"
+msgstr "क्लस्टराचे नाव"
+
+msgid "Cluster Template"
+msgstr "क्लस्टर टेंप्लेट"
+
+msgid "Cluster Template Details"
+msgstr "क्लस्टर टेंप्लेट तपशील"
+
+msgid "Cluster Template Name"
+msgstr "क्लस्टर टेंप्लेटाचे नाव"
+
+#, python-format
+msgid "Cluster Template copy %s created"
+msgstr "क्लस्टर टेंप्लेट प्रत %s तयार जाल्या"
+
+msgid "Cluster Templates"
+msgstr "क्लस्टर टेंप्लेट्स"
+
+msgid "Cluster template creation failed"
+msgstr "क्लस्टर टेंप्लेट मिर्मणी असफळ"
+
+msgid "Clusters"
+msgstr "क्लस्टर्स"
+
+msgid "Code"
+msgstr "कोड"
+
+msgid "Comma separated list of databases to create"
+msgstr "निर्माण करपाच्या डेटाबेसिंची स्वल्पविराम वेगळी केल्ली वळेरी"
+
+msgid "Compute"
+msgstr "मेजात"
+
+msgid "Compute Host"
+msgstr "येजमान मेजात"
+
+msgid "Compute Services"
+msgstr "सेवा मेजात"
+
+msgid "Configuration Drive"
+msgstr "संरचनाय ड्रायव्ह"
+
+msgid "Configure"
+msgstr "संरचनाय करात"
+
+msgid "Configure Cluster"
+msgstr "क्लस्टराची संरचनाय करात"
+
+msgid "Configure Cluster Template"
+msgstr "क्लस्टर टेंप्लेटाची संरचनाय करात"
+
+msgid "Configure Node Group Template"
+msgstr "नोड गट टेंप्लेटाची संरचनाय करात"
+
+msgid ""
+"Configure OpenStack to write metadata to a special configuration drive that "
+"attaches to the instance when it boots."
+msgstr ""
+"खास संरचनाय ड्रायव्हान बूट जातकेर इंस्टंसाक जुळपी मेटाडेटा बरोवपाक ओपनस्टॅकाची संरचनाय "
+"करात."
+
+msgid "Configure Template"
+msgstr "टेंप्लेटांची संरचनाय करात"
+
+msgid "Confirm Admin Password"
+msgstr "एडमिन पासवर्डाची खात्री करात"
+
+msgid "Confirm Password"
+msgstr "पासवर्डाची खात्री करात"
+
+msgid "Confirm Rebuild Password"
+msgstr "परत बांदिल्ल्या पासवर्डाची खात्री करात"
+
+msgid "Confirm Resize/Migrate"
+msgstr "परत आकार दिवप/स्थलांतरित करपाची खात्री करात"
+
+msgid "Confirm new password"
+msgstr "नव्या पासवर्डाची खात्री करात"
+
+msgctxt "Current status of an Instance"
+msgid "Confirm or Revert Resize/Migrate"
+msgstr "दुजोरो दियात वो परतून परत आकार दियात/स्थलांतर करात"
+
+msgctxt "Task status of an Instance"
+msgid "Confirming Resize or Migrate"
+msgstr "परत आकार दिवपाची वो स्थलांतरित करपाची खात्री करता"
+
+msgid "Connection Limit"
+msgstr "जोडणी मर्यादा"
+
+msgid "Console"
+msgstr "कंसोल"
+
+#, python-format
+msgid "Console type \"%s\" not supported."
+msgstr "कंसोल प्रकार \"%s\" क फाटबळ ना."
+
+msgid "Consumer"
+msgstr "गिरायक"
+
+msgid "Container"
+msgstr "कंटेनर"
+
+msgid "Container Access"
+msgstr "कंटेनर प्रवेश"
+
+msgid "Container Details"
+msgstr "कंटेनराचो तपशील"
+
+msgid "Container Name"
+msgstr "कंटेनराचे नाव"
+
+msgid "Container created successfully."
+msgstr "कंटेनर यशस्विपणान तयार जाला."
+
+msgid "Containers"
+msgstr "कंटेनर्स"
+
+msgid "Control Location"
+msgstr "थळ नियंत्रण"
+
+msgid ""
+"Control access to your instance via key pairs, security groups, and other "
+"mechanisms."
+msgstr ""
+"की जोडी, सुरक्षआ गट आणि हेर यंत्रणांतल्यान तुमच्या इन्स्टन्सांच्या प्रवेशार नियंत्रण करात."
+
+msgid "Cookie Name"
+msgstr "कुकीचे नाव"
+
+msgid "Cookie name is required for APP_COOKIE persistence."
+msgstr "कुकी नाव APP_COOKIE सातत्याखातीर गरजेचे."
+
+#, python-format
+msgid "Copied \"%(orig)s\" to \"%(dest)s\" as \"%(new)s\"."
+msgstr "\"%(orig)s\"  ची \"%(dest)s\" न \"%(new)s\" म्हण प्रत केल्या"
+
+msgid "Copy"
+msgstr "प्रत करात"
+
+msgid "Copy Object"
+msgstr "वस्तीची प्रत करात"
+
+msgid "Copy Template"
+msgstr "टेंप्लेटाची प्रत करात"
+
+#, python-format
+msgid "Cores(Available: %(avail)s, Requested: %(req)s)"
+msgstr "कोअर्स (उपलब्ध: %(avail)s, विनंती केल्ले: %(req)s)"
+
+msgid "Could not create"
+msgstr "तयार करपाक शकना"
+
+msgid "Could not create data source"
+msgstr "डेटा स्त्रोत तयार करपाक शकना"
+
+#, python-format
+msgid "Could not find default role \"%s\" in Keystone"
+msgstr "कीस्टोनांत \"%s\" मुळावी भूमिका मेळना"
+
+msgid "Could not launch job"
+msgstr "काम चालू करपाक शकना"
+
+#, python-format
+msgid "Couldn't get current security group list for instance %s."
+msgstr "%s इंस्टंसाखातीर सद्याची सुरक्षा गट वळेरी मेळोवपाक शकना."
+
+msgid "Couldn't get security group list."
+msgstr "सुरक्षा गट वळेरी मेळोवपाक शकना."
+
+msgid "Count"
+msgstr "गणन"
+
+msgctxt "Power state of an Instance"
+msgid "Crashed"
+msgstr "दुर्घटनाग्रस्त"
+
+msgid "Create"
+msgstr "तयार करात"
+
+msgctxt "Action log of an instance"
+msgid "Create"
+msgstr "तयार करात"
+
+msgid "Create An Image"
+msgstr "प्रतिमा तयार करात"
+
+msgid "Create Backup"
+msgstr "बॅकअप तयार करात"
+
+msgid "Create Cluster Template"
+msgstr "क्लस्टर टेंप्लेट तयार करात"
+
+msgid "Create Container"
+msgstr "कंटेनर तयार करात"
+
+msgid "Create Data Source"
+msgstr "डेटा स्त्रोत  तयार करात"
+
+msgid "Create Domain"
+msgstr "डोमेन तयार करात"
+
+msgid "Create Encryption"
+msgstr "एनक्रिप्शन तयार करात"
+
+msgid "Create Firewall"
+msgstr "फायरवॉल तयार करात"
+
+msgid "Create Flavor"
+msgstr "फ्लेवर तयार करात"
+
+msgid "Create Group"
+msgstr "गट तयार करात"
+
+msgid "Create Host Aggregate"
+msgstr "येजमान एग्रिगेट तयार करात"
+
+msgid ""
+"Create IKE Policy for current project.\n"
+"\n"
+"Assign a name and description for the IKE Policy. "
+msgstr ""
+"सद्याच्या प्रकल्पाखातीर IKE धोरण तयार करात.\n"
+"\n"
+" IKE धोरणाखातीर नाव आनी विवरण दियात. "
+
+msgid ""
+"Create IPSec Policy for current project.\n"
+"\n"
+"Assign a name and description for the IPSec Policy. "
+msgstr ""
+"सद्याच्या प्रकल्पाखातीर IPSec धोरण तयार करात.\n"
+"\n"
+"IPSec धोरणाखातीर नाव आनी विवरण दियात. "
+
+msgid ""
+"Create IPSec Site Connection for current project.\n"
+"\n"
+"Assign a name and description for the IPSec Site Connection. All fields in "
+"this tab are required."
+msgstr ""
+"सद्याच्या प्रकल्पाखातीर  IPSec सायट जोडणी तयार करात.\n"
+"\n"
+"IPSec सायट जोडणेखातीर नाव आनी विवरण दियात. ह्या टॅबातली सगळी क्षेत्रां जाय."
+
+msgid "Create Image"
+msgstr "प्रतिमा तयार करात"
+
+msgid "Create Job Binary"
+msgstr " काम बायनरी तयार करात"
+
+msgid "Create Key Pair"
+msgstr "की जोडी तयार करात"
+
+msgid "Create Network"
+msgstr "नेटवर्क तयार करात"
+
+msgid "Create Network (Quota exceeded)"
+msgstr "नेटवर्क तयार करात (कोटा वाडला)"
+
+msgid "Create Network Profile"
+msgstr "नेटवर्क प्रोफायल तयार करात"
+
+msgid "Create Node Group Template"
+msgstr "नोड गट टेंप्लेट तयार करात"
+
+msgid "Create Port"
+msgstr "पोर्ट तयार करात"
+
+msgid "Create Project"
+msgstr "प्रकल्प तयार करात"
+
+msgid "Create Pseudo-folder"
+msgstr "सूडो-फोल्डर तयार करात"
+
+msgid "Create QoS Spec"
+msgstr " QoS Spec तयार करात"
+
+msgid "Create Role"
+msgstr "भूमीका तयार करात"
+
+msgid "Create Router"
+msgstr "राऊटर तयार करात"
+
+msgid "Create Router (Quota exceeded)"
+msgstr "राऊटर तयार करात (कोटा वाडला)"
+
+msgid "Create Security Group"
+msgstr "सुरक्षा गट तयार करात"
+
+msgid "Create Security Group (Quota exceeded)"
+msgstr "सुरक्षा गट तयार करात (कोटा वाडला)"
+
+msgid "Create Snapshot"
+msgstr "स्नॅपशॉट तयार करात"
+
+msgid "Create Spec"
+msgstr "Spec तयार करात"
+
+msgid "Create Stack"
+msgstr "स्टॅक तयार करात"
+
+msgid "Create Subnet"
+msgstr "उपनेट तयार करात"
+
+msgid "Create Subnet (Quota exceeded)"
+msgstr "उपनेट तयार करात (कोटा वाडला)"
+
+msgid "Create Template"
+msgstr "टेंप्लेट तयार करात"
+
+msgid "Create User"
+msgstr "वापरपी तयार करात"
+
+msgid ""
+"Create VPN Service for current project.\n"
+"\n"
+"Specify a name, description, router, and subnet for the VPN Service. Admin "
+"State is Up (checked) by default."
+msgstr ""
+"सद्याच्या प्रकल्पाखातीर VPN सेवा तयार करात.\n"
+"\n"
+"VPN सेवेखातीर नाव, विवरण, राऊटर आनी उपनेट दियात. मुळाव्यान एडमिन स्थिती वयर (खूण "
+"केल्या) आसा."
+
+msgid "Create Volume"
+msgstr "आकार निर्माण करात"
+
+msgid "Create Volume Backup"
+msgstr "आकार बॅकअप तयार करात"
+
+msgid "Create Volume Snapshot"
+msgstr "आकार स्नॅपशॉट तयार करात"
+
+msgid "Create Volume Type"
+msgstr "आकाराचो प्रकार तयार करात"
+
+msgid "Create Volume Type Encryption"
+msgstr "आकाराच्या प्रकाराचे एनक्रिप्शन तयार करात"
+
+msgid "Create Volume Type Extra Spec"
+msgstr "आकार प्रकार अदिक Spec तयार करात"
+
+msgid "Create a New Volume"
+msgstr "नवो आकार तयार करात"
+
+msgid "Create a QoS Spec"
+msgstr " QoS Spec तयार करात"
+
+msgid "Create a Router"
+msgstr "राऊटर तयार करात"
+
+msgid "Create a Snapshot"
+msgstr "स्नॅपशॉट तयार करात"
+
+msgid ""
+"Create a VIP for this pool. Assign a name, description, IP address, port, "
+"and maximum connections allowed for the VIP. Choose the protocol and session "
+"persistence method for the VIP. Admin State is UP (checked) by default."
+msgstr ""
+"ह्या पुलाखातीर VIP  तयार करात. नाव, विवरण, IP नामो, पोर्ट आणि VIP क दिल्यो वचपी "
+"चडांत चड जोडण्या नेमात. प्रोटोकॉल निवडात आणि VIP खातीर सत्र सातत्य पद्दत. मुळावी "
+"एडमिन स्थिती जावन् आसा UP (खूण केल्ली)"
+
+msgid "Create a Volume"
+msgstr "आकार तयार करात"
+
+msgid "Create a Volume Backup"
+msgstr "आकार बॅकअप तयार करात"
+
+msgid "Create a Volume Snapshot"
+msgstr "आकार स्नॅपशॉट तयार करात"
+
+msgid "Create a Volume Type"
+msgstr "आकार प्रकार तयार करात"
+
+msgid ""
+"Create a firewall based on a policy.\n"
+"\n"
+"A policy must be selected. Other fields are optional."
+msgstr ""
+"धोरणार आधरित फायरवॉल तयार करात.\n"
+"\n"
+"धोरण निवडपाकूच जाय. हेर क्षेत्रां वैकल्पिक आसात."
+
+msgid ""
+"Create a firewall policy with an ordered list of firewall rules.\n"
+"\n"
+"A name must be given. Firewall rules are added in the order placed under the "
+"Rules tab."
+msgstr ""
+"फायरवॉल नियमांच्या प्रमवार वळेरेसंयत फायरवॉल धोरण तयार करात.\n"
+"\n"
+"नाव दिवपाकूच जाय. नियम टॅबातल्या क्रमान फायरवॉल नियम जोडले वतात."
+
+msgid ""
+"Create a firewall rule.\n"
+"\n"
+"Protocol and action must be specified. Other fields are optional."
+msgstr ""
+"फायरवॉल नियम तयार करात.\n"
+"\n"
+"शिष्टाचार आनी कारवाय स्पश्ट करपाकूच जाय. हेर क्षेत्रां वैकल्पिक आसात."
+
+msgid ""
+"Create a monitor template.\n"
+"\n"
+"Select type of monitoring. Specify delay, timeout, and retry limits required "
+"by the monitor. Specify method, URL path, and expected HTTP codes upon "
+"success."
+msgstr ""
+"निरीक्षक टेम्प्लेट तयार करात.\n"
+"\n"
+"निरीक्षणाचो प्रकार स्पश्ट करात. कळाव, टायमआवट आणि निरीक्षकाक जाय आशिल्ले परतून यत्न "
+"करपाची मर्यादा स्पश्ट करात. सफळ जातकीर पद्दत, URL वाट आणि अपेक्षित HTTP संकेत स्पश्ट "
+"करात."
+
+msgid "Create a policy with selected rules."
+msgstr "निवडील्ल्या नियमांसंयत धोरण तयार करात"
+
+msgid "Create a project to organize users."
+msgstr "वापरप्यांची मांडावळ करपाक प्रकल्प निर्मणी करात."
+
+msgid ""
+"Create a subnet associated with the network. Advanced configuration is "
+"available by clicking on the \"Subnet Details\" tab."
+msgstr ""
+"नेटवर्काकडेन संबंदित उपनेट तयार करात. \"उपनेट तपशील\" टॅबार क्लिक केल्यार अद्ययावत "
+"संरचनाय मेळटा."
+
+msgid ""
+"Create a subnet associated with the new network, in which case \"Network "
+"Address\" must be specified. If you wish to create a network without a "
+"subnet, uncheck the \"Create Subnet\" checkbox."
+msgstr ""
+"नव्या नेटवर्काकडेन संबंदित उपनेट तयार करात, जंय \"नेटवर्क नामो\" स्पश्ट केल्लो आसपाक जाय. "
+"तुमी जर उपनेटाबगर नेटवर्क तयार करपाक सोदता,  \"उपनेट निर्मणी\" चेकबॉक्सावेली खूण काडात."
+
+msgid "Create an Encrypted Volume Type"
+msgstr "एनक्रिप्टेड आकार प्रकार तयार करात"
+
+msgid "Create security group for this Node Group."
+msgstr "ह्या नोड गटाखातीर सुरक्षा गट तयार करात."
+
+msgid "Created"
+msgstr "तयार केला"
+
+msgctxt "Current status of a Firewall"
+msgid "Created"
+msgstr "तयार केला"
+
+msgctxt "Current status of a Pool"
+msgid "Created"
+msgstr "तयार केला"
+
+msgctxt "Current status of a VPN Service"
+msgid "Created"
+msgstr "तयार केला"
+
+#, python-format
+msgid "Created Cluster Template %s"
+msgstr "क्लस्टर टेंप्लेट %s तयार केला"
+
+#, python-format
+msgid "Created Node Group Template %s"
+msgstr "नोड गट टेंप्लेट %s तयार केला"
+
+#, python-format
+msgid "Created extra spec \"%s\"."
+msgstr "अदिक spec \"%s\" तयार केला."
+
+#, python-format
+msgid "Created network \"%s\"."
+msgstr "\"%s\" नेटवर्क तयार केला."
+
+#, python-format
+msgid "Created new domain \"%s\"."
+msgstr "नवी डोमेन \"%s\" तयार जाल्या."
+
+#, python-format
+msgid "Created new flavor \"%s\"."
+msgstr "नवो फ्लेवर  \"%s\" तयार केला."
+
+#, python-format
+msgid "Created new host aggregate \"%s\"."
+msgstr "नवो येजमान एग्रिगेट \"%s\" तयार केलो."
+
+#, python-format
+msgid "Created new project \"%s\"."
+msgstr "नवो प्रकल्प \"%s\" तयार करात."
+
+#, python-format
+msgid "Created spec \"%s\"."
+msgstr "spec \"%s\" तयार जाला"
+
+#, python-format
+msgid "Created subnet \"%s\"."
+msgstr "उपनेट \"%s\" तयार जाला."
+
+msgid "Creating"
+msgstr "तयार करता"
+
+msgctxt "Current status of a Volume"
+msgid "Creating"
+msgstr "तयार करता"
+
+msgctxt "Current status of a Volume Backup"
+msgid "Creating"
+msgstr "तयार करता"
+
+#, python-format
+msgid "Creating volume \"%s\""
+msgstr "आकार \"%s\" तयार करता"
+
+#, python-format
+msgid "Creating volume backup \"%s\""
+msgstr "आकार बॅकअप \"%s\" तयार करता."
+
+#, python-format
+msgid "Creating volume snapshot \"%s\"."
+msgstr "आकार स्नॅपशॉट \"%s\" तयार करता."
+
+msgid "Creation Timeout (minutes)"
+msgstr "निर्मणी वेळ सोपली"
+
+msgid "Creation requests for this floating ip"
+msgstr "ह्या फ्लोटिंग आयपीखातीर निर्मणी विनंती"
+
+msgid "Creation requests for this network"
+msgstr "ह्या नेटवर्काखातीर निर्मणी विनंत्यो"
+
+msgid "Creation requests for this port"
+msgstr "ह्या पोर्टाखातीर निर्मणी विनंत्यो"
+
+msgid "Creation requests for this router"
+msgstr "ह्या राऊटराखातीर निर्मणी विनंती"
+
+msgid "Creation requests for this subnet"
+msgstr "ह्या उपनेटवर्काखातीर निर्मणी विनंत्यो"
+
+msgid "Current Host"
+msgstr "सद्याचो येजमान"
+
+msgid "Current Size (GB)"
+msgstr "सद्याचो आकार (GB)"
+
+msgid "Current password"
+msgstr "सद्याचो पासवर्ड"
+
+msgid "Custom ICMP Rule"
+msgstr "कस्टम ICMP नेम"
+
+msgid "Custom TCP Rule"
+msgstr "कस्टम TCP नेम"
+
+msgid "Custom UDP Rule"
+msgstr "कस्टम UDP नेम"
+
+msgid "Customization Script Source"
+msgstr "कस्टमायझेशन लिपी स्त्रोत"
+
+msgid "DENY"
+msgstr "DENY"
+
+msgctxt "Action Name of a Firewall Rule"
+msgid "DENY"
+msgstr "DENY"
+
+msgid "DHCP Agents"
+msgstr "DHCP एजंट"
+
+msgid "DNS Name Servers"
+msgstr "DNS नाव सर्वर्स"
+
+msgid "Daily Usage Report"
+msgstr "सदाचो वापर अहवाल"
+
+msgid "Data Processing"
+msgstr "डेटा प्रक्रिया"
+
+msgid "Data Processing Plugin Details"
+msgstr "डेटा प्रक्रिया प्लगईनाचो तपशील"
+
+msgid "Data Processing Plugins"
+msgstr "डेटा प्रक्रिया प्लगईन्स"
+
+msgid "Data Source Details"
+msgstr "डेटा स्त्रोत तपशील"
+
+msgid "Data Source Type"
+msgstr "डेटा स्त्रोत प्रकार"
+
+msgid "Data Sources"
+msgstr "डेटा स्त्रोत"
+
+msgid "Data source created"
+msgstr "डेटा स्त्रोत तयार केला"
+
+msgid "Database"
+msgstr "डेटाबेस"
+
+msgid "Database Instance"
+msgstr "डेटाबेस इंस्टंस"
+
+msgid "Database Name"
+msgstr "डेटाबेसीचे नाव"
+
+msgid "Databases"
+msgstr "डेटाबेसी"
+
+msgid "Datastore"
+msgstr "डेटास्टोर"
+
+msgid "Datastore Version"
+msgstr "डेटास्टोर आवृत्ती"
+
+msgid "Date Updated"
+msgstr "तारीक सुदाल्ल्या"
+
+msgid "Dates cannot be recognized."
+msgstr "तारकों वळखूपाक येनात."
+
+msgid "Day"
+msgstr "दिंस"
+
+msgid "Dead peer detection actions"
+msgstr "डेड पियर वळख कारवाय"
+
+msgid "Dead peer detection interval"
+msgstr "डेड पियर वळख मध्यंतर"
+
+msgid "Dead peer detection timeout"
+msgstr "डेड पियर वळख टायमआवट"
+
+msgid "Default Quotas"
+msgstr "मुळावे कोटा"
+
+msgid "Default quotas updated."
+msgstr "मुळावे कोटा सुदाल्ल्यात."
+
+msgid "Defaults"
+msgstr "मुळावे"
+
+msgid "Delay"
+msgstr "कळाव"
+
+msgid "Delete on Terminate"
+msgstr "रद्द केल्याउपरांत काडून उडयात"
+
+#, python-format
+msgid "Delete the created network \"%s\" due to subnet creation failure."
+msgstr "उपनेट निर्मणी अपेसाक लागून तयार केल्लो नेटवर्क  \"%s\" काडून उडयात."
+
+msgid "Delete volume on instance terminate"
+msgstr "इन्स्टन्स काडल्याउपरांत आकारमान काडून उडयात."
+
+msgid "Deleted"
+msgstr "काडून उडयला"
+
+msgctxt "Current status of an Image"
+msgid "Deleted"
+msgstr "काडून उडयला"
+
+msgctxt "Current status of an Instance"
+msgid "Deleted"
+msgstr "काडून उडयला"
+
+#, python-format
+msgid "Deleted IKE Policy %s"
+msgstr " IKE धोरण %s काडून उडयला"
+
+#, python-format
+msgid "Deleted IPSec Policy %s"
+msgstr "IPSec धोरण %s काडून उडयला"
+
+#, python-format
+msgid "Deleted IPSec Site Connection %s"
+msgstr "IPSec सायट जोडणी %s काडून उडयल्या"
+
+#, python-format
+msgid "Deleted VIP %s"
+msgstr "काडून उडयल्ले VIP %s "
+
+#, python-format
+msgid "Deleted VPN Service %s"
+msgstr " VPN  सेवा %s काडून उडयल्या"
+
+#, python-format
+msgid "Deleted firewall %s"
+msgstr "काडून उडयल्ले फायरवॉल %s "
+
+#, python-format
+msgid "Deleted member %s"
+msgstr "काडून उडयल्लो सदस्य  %s "
+
+#, python-format
+msgid "Deleted monitor %s"
+msgstr "काडून उडयल्लो निरीक्षक  %s "
+
+#, python-format
+msgid "Deleted policy %s"
+msgstr "%s धोरण काडून उडयला"
+
+#, python-format
+msgid "Deleted pool %s"
+msgstr "काडून उडयल्लो पूल %s "
+
+#, python-format
+msgid "Deleted rule %s"
+msgstr " %s नियम काडून उडयला"
+
+msgid "Deleting"
+msgstr "काडून उडयता"
+
+msgctxt "Current status of a Volume"
+msgid "Deleting"
+msgstr "काडून उडयता"
+
+msgctxt "Current status of a Volume Backup"
+msgid "Deleting"
+msgstr "काडून उडयता"
+
+msgctxt "Task status of an Instance"
+msgid "Deleting"
+msgstr "काडून उडयता"
+
+msgid "Deny"
+msgstr "न्हयकारात"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Destination CIDR"
+msgstr "लक्ष्य  CIDR"
+
+msgid "Destination IP"
+msgstr "लक्ष्य IP"
+
+msgid "Destination IP Address/Subnet"
+msgstr "लक्ष्य IP नामो/उपनेट"
+
+msgid "Destination IP address or subnet"
+msgstr "लक्ष्य IP नामो वो उपनेट"
+
+msgid "Destination Port"
+msgstr "लक्ष्य पोर्ट"
+
+msgid "Destination Port/Port Range"
+msgstr "लक्ष्य पोर्ट/पोर्ट व्याप्ती"
+
+msgid "Destination container"
+msgstr "लक्ष्य कंटेनर"
+
+msgid "Destination object name"
+msgstr "लक्ष्य वस्तीचे नाव"
+
+msgid "Destination port (integer in [1, 65535] or range in a:b)"
+msgstr "लक्ष्य पोर्ट (पूर्णांक  [1, 65535] न वो  a:b व्याप्तीन)"
+
+msgid "Detached"
+msgstr "तोडला"
+
+msgid "Detaching"
+msgstr "तोडटा"
+
+msgid "Details"
+msgstr "तपशील"
+
+msgid "Device"
+msgstr "उपकरण"
+
+msgid "Device ID"
+msgstr "उपरकण ID"
+
+msgid "Device ID attached to the port"
+msgstr "उपकरण ID पोर्टाक जोडला"
+
+msgid "Device Name"
+msgstr "उपकरणाचे नाव"
+
+msgid "Device Owner"
+msgstr "उपकरण मालक"
+
+msgid "Device owner attached to the port"
+msgstr "उपकरण मालक पोर्टाक जोडला"
+
+msgid "Device size (GB)"
+msgstr "उपकरण  आकार (GB)"
+
+msgid "Direct Input"
+msgstr "थेट इनपूट"
+
+msgid "Direction"
+msgstr "दिका"
+
+msgid "Disable Gateway"
+msgstr "गेटवे निष्क्रिय करात"
+
+msgid "Disable HA mode"
+msgstr "HA स्थिती निष्क्रिय करात"
+
+msgid "Disable Service"
+msgstr "सेवा निष्क्रिय करात"
+
+msgid "Disabled"
+msgstr "निष्क्रिय केला"
+
+msgctxt "Current status of a Hypervisor"
+msgid "Disabled"
+msgstr "निष्क्रिय केला"
+
+#, python-format
+msgid "Disabled compute service for host: %s."
+msgstr "येजमानाखातीर अक्षम केल्ली गणन सेवा: %s."
+
+msgid "Disassociate"
+msgstr "जोडणी काडात"
+
+msgid "Disassociate Floating IP"
+msgstr "फ्लोटिंग IP वेगळो करात"
+
+msgid "Disassociate Monitor"
+msgstr "निरीक्षकाकडेन असहयोग"
+
+msgid "Disassociate a health monitor from target pool. "
+msgstr "लक्ष्य पुलांतल्यान आरोग्य निरीक्षक वेगळो करात"
+
+msgid "Disassociated monitor."
+msgstr "निरीक्षकाची जोडणी काडात."
+
+msgid "Disk"
+msgstr "डिस्क"
+
+msgid "Disk (GB)"
+msgstr "डिस्क (GB)"
+
+msgid "Disk Format"
+msgstr "डिस्क स्वरूप"
+
+msgid "Disk GB Hours"
+msgstr "डिस्क GB वरां"
+
+msgid "Disk Over Commit"
+msgstr "डिस्क ओव्हर कमीट"
+
+msgid "Disk Partition"
+msgstr "डिस्क वाटणी"
+
+msgid "Distributed"
+msgstr "वाटला"
+
+#, python-format
+msgid "Domain \"%s\" must be disabled before it can be deleted."
+msgstr "काडून उडोवच्यापयली \"%s\" डोमेन निष्क्रिय करपाक जाय."
+
+msgid "Domain Context cleared."
+msgstr "डोमेन संदर्भ साफ जाला."
+
+#, python-format
+msgid "Domain Context updated to Domain %s."
+msgstr "डोमेन संदर्भ %s डोमेनान सुदारला."
+
+msgid "Domain Groups"
+msgstr "डोमेन गट"
+
+msgid "Domain ID"
+msgstr "डोमेन ID"
+
+msgid "Domain Information"
+msgstr "डोमेन माहिती"
+
+msgid "Domain Members"
+msgstr "डोमेन सदस्य"
+
+msgid "Domain Name"
+msgstr "डोमेनाचे नाव"
+
+msgid "Domains"
+msgstr "डोमेन्स"
+
+msgid ""
+"Domains provide separation between users and infrastructure used by "
+"different organizations."
+msgstr "डोमेन्स विंगडविंगड संघटना वापरतात ते वापरपी आणि संसाधना हांचेमजगती भेद करता."
+
+msgid ""
+"Domains provide separation between users and infrastructure used by "
+"different organizations. Edit the domain details to add or remove groups in "
+"the domain."
+msgstr ""
+"विंगडविंगड संघटनांनी वापरिल्ले वापरपी आणि संसाधनां हांचेमजगती डोमेन्स भेद करता. डोमेनांत गट "
+"जोडपाक वो काडपाक डोमेन तपशील संपादित करात."
+
+msgid "Domains:"
+msgstr "डोमेन्स:"
+
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "Current state of a Hypervisor"
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "Current status of a Firewall"
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "Current status of a Floating IP"
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "Current status of a Network"
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "Current status of a Pool"
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "Current status of a VPN Service"
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "Current status of an IPSec Site Connection"
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "current status of port"
+msgid "Down"
+msgstr "सकयल"
+
+msgctxt "status of a network port"
+msgid "Down"
+msgstr "सकयल"
+
+msgid "Download"
+msgstr "डावनलोड"
+
+msgid "Download Backup"
+msgstr "बॅकअप डावनलोड करात"
+
+msgid "Download CSV Summary"
+msgstr "CSV सार डावनलोड करात"
+
+msgid "Download EC2 Credentials"
+msgstr "EC2 क्रेडेऩ्शियल डावनलोड करात"
+
+msgid "Download Job Binary"
+msgstr " काम बायनरीज डावनलोड करात"
+
+msgid "Download Key Pair"
+msgstr "की जोडी डोवनलोड करात"
+
+msgid "Download OpenStack RC File"
+msgstr "ओपनस्टॅक RC फायल डावनलोड करात"
+
+#, python-format
+msgid "Duration of instance type %s (openstack flavor)"
+msgstr "%s (ओपनस्टॅक फ्लेव्हर) प्रकारच्या इन्स्टन्सचो काळ"
+
+msgid "Edit"
+msgstr "संपादन"
+
+msgid "Edit Connection"
+msgstr "जोडणेचे संपादन करात"
+
+msgid "Edit Consumer"
+msgstr "गिरायक संपादित करात"
+
+msgid "Edit Consumer of QoS Spec"
+msgstr "QoS Spec चे गिरायक संपादित करात"
+
+msgid "Edit Domain"
+msgstr "डोमेनाचे संपादन करात"
+
+msgid "Edit Firewall"
+msgstr "फायरवॉल संपादित करात"
+
+msgid "Edit Flavor"
+msgstr "फ्लेवराचे संपादन करात"
+
+msgid "Edit Group"
+msgstr "गटाचे संपादन करात"
+
+msgid "Edit Host Aggregate"
+msgstr "येजमान एग्रिगेट संपादन"
+
+msgid "Edit IKE Policy"
+msgstr "IKE धोरणाचे संपादन करात"
+
+msgid "Edit IPSec Policy"
+msgstr "IPSec धोरणाचे संपादन करात"
+
+msgid "Edit IPSec Site Connection"
+msgstr " IPSec सायट जोडणी संपादित करात"
+
+msgid "Edit Image Tags"
+msgstr "प्रतिमेची टॅग्ज संपादित करपाक शकना"
+
+msgid "Edit Instance"
+msgstr "इंस्टंस संपादित करात"
+
+msgid "Edit Member"
+msgstr "सदस्य  संपादित करात"
+
+msgid "Edit Monitor"
+msgstr "निरीक्षक संपादित करात"
+
+msgid "Edit Network"
+msgstr "नेटवर्क संपादित करात"
+
+msgid "Edit Network Profile"
+msgstr "नेटवर्क प्रोफायल संपादित करात"
+
+msgid "Edit Policy"
+msgstr "धोरण संपादित करात"
+
+msgid "Edit Pool"
+msgstr "पूलाचे संपादन करात"
+
+msgid "Edit Port"
+msgstr "पोर्टाचे संपादन करात"
+
+msgid "Edit Project"
+msgstr "प्रकल्पाचे संपादन करात"
+
+msgid "Edit QoS Spec Consumer"
+msgstr "QoS Spec गिरायक संपादित करात"
+
+msgid "Edit Router"
+msgstr "राऊटराचे संपादन करात"
+
+msgid "Edit Rule"
+msgstr "नियम संपादित करात"
+
+msgid "Edit Security Group"
+msgstr "सुरक्षा गट संपादित करात"
+
+msgid "Edit Security Groups"
+msgstr "सुरक्षा गट संपादित करात"
+
+msgid "Edit Snapshot"
+msgstr "स्नॅपशॉट संपादित करात"
+
+msgid "Edit Subnet"
+msgstr "उपनेटाचे संपादन करात"
+
+msgid "Edit Tags"
+msgstr "टॅग्ज संपादित करात"
+
+msgid "Edit Template"
+msgstr "टेंप्लेटाचे संपादन करात"
+
+msgid "Edit VIP"
+msgstr "VIP संपादित करात"
+
+msgid "Edit VPN Service"
+msgstr "VPN सेवा संपादित करात"
+
+msgid "Edit Volume"
+msgstr "आकार संपादित करात"
+
+msgid ""
+"Edit the flavor details. Flavors define the sizes for RAM, disk, number of "
+"cores, and other resources. Flavors are selected when users deploy instances."
+msgstr ""
+"फ्लेवर तपशील संपादित करात. फ्लेवर्स RAM चो आकार, डिस्क, कोअरांची संख्या आणि हेर "
+"संसाधनांची व्याख्या करता. वापरपी जेन्ना इन्स्टन्स नेमता तेन्ना फ्लेवर्स निवडले वतात."
+
+msgid "Edit the instance details."
+msgstr "इंस्टंसाचो तपशील संपादित करात."
+
+msgid "Edit the project details."
+msgstr "प्रकल्प तपशील संपादित करात."
+
+msgid "Egress"
+msgstr "इग्रेस"
+
+msgid "Email"
+msgstr "ईमेल"
+
+msgid "Enable DHCP"
+msgstr " DHCP सक्रिय करात"
+
+msgid "Enable HA mode"
+msgstr "HA स्थिती सक्रिय करात"
+
+msgid "Enable rollback on create/update failure."
+msgstr "निर्मणी / सुदार अपयशाचेर रोलबॅक सक्रिय करात."
+
+msgid "Enabled"
+msgstr "सक्रिय केला"
+
+msgctxt "Current status of a Hypervisor"
+msgid "Enabled"
+msgstr "सक्रिय केला"
+
+msgid "Encapsulation mode"
+msgstr "एनकॅप्स्युलेशन स्थिती"
+
+msgid "Encrypted"
+msgstr "एनक्रिप्टेड"
+
+msgid "Encrypted Password"
+msgstr "एनक्रिप्टेड पासवर्ड "
+
+msgid "Encryption"
+msgstr "एनक्रिप्शन"
+
+msgid "Encryption algorithm"
+msgstr "एनक्रिप्शन एलॉगॅरिथम"
+
+msgid "Enhanced VXLAN"
+msgstr "एनहानस्ड VXLAN"
+
+msgid "Enter a value for ICMP code in the range (-1: 255)"
+msgstr "  ICMP कोडाखातीर (-1: 255) व्याप्तीन मोल दियात"
+
+msgid "Enter a value for ICMP type in the range (-1: 255)"
+msgstr "  ICMP प्रकाराखातीर (-1: 255) व्याप्तीन मोल दियात"
+
+msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
+msgstr "  0 आनी 255 मदीं पूर्णांक मोल दियात (वो -1 म्हळ्यार वायल्डकार्ड)."
+
+msgid "Enter an integer value between 1 and 65535."
+msgstr "1 आनी 65535 मदीं पूर्णांक मोल दियात."
+
+msgid ""
+"Enter an integer value between 1 and 65535. The same port will be used for "
+"all the selected members and can be modified later."
+msgstr ""
+"1 आनी 65535 मदीं पूर्णांक मोल दियात. सगळ्या निवडिल्ल्या सदस्यांखातीर तोच पोर्ट वापल्लो "
+"वतलो आनी मागीर बदल्लो वतलो."
+
+msgid "Enter parameter (e.g. GRE)"
+msgstr "परिमाणआं दियात (देखीक GRE)"
+
+msgid "Environment Data"
+msgstr "वातावरण डेटा"
+
+msgid "Environment File"
+msgstr "वातावरण फायल"
+
+msgid "Environment Source"
+msgstr "वातावरण स्त्रोत"
+
+msgid "Ephemeral Disk"
+msgstr "एफमेरल डिस्क"
+
+msgid "Ephemeral Disk (GB)"
+msgstr "एफमेरल डिस्क (जीबी)"
+
+msgid "Equal to or greater than 60"
+msgstr "समान वो 60 परस व्हड"
+
+msgid ""
+"Equal to or greater than 68 if the local subnet is IPv4. Equal to or greater "
+"than 1280 if the local subnet is IPv6."
+msgstr ""
+"थळावे उपनेट IPv4 आसल्यार 68 परस व्हड वो समान. थळावे उपनेट IPv6 आसल्यार 1280 परस व्हड "
+"वो समान."
+
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of a Database Instance"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of a Firewall"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of a Floating IP"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of a Network"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of a Pool"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of a VPN Service"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of a Volume"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of a Volume Backup"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of an IPSec Site Connection"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "Current status of an Instance"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "current status of port"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "current status of router"
+msgid "Error"
+msgstr "एरर"
+
+msgctxt "status of a neteork port"
+msgid "Error"
+msgstr "एरर"
+
+msgid "Error Deleting"
+msgstr "काडून उडयतना एरर"
+
+#, python-format
+msgid "Error Downloading RC File: %s"
+msgstr "RC फायल डोवनलोड करतना एरर: %s"
+
+msgid "Error adding Hosts to the aggregate."
+msgstr "एग्रिगेटाक येजमान जोडतना एरर."
+
+msgid "Error creating database backup."
+msgstr "डेटाबेस बॅकअप करतना एरर."
+
+msgid "Error deleting database on instance."
+msgstr "इंस्टंसाचेर डेटाबेस काडून उडयतना एरर."
+
+msgid "Error deleting database user."
+msgstr "डेटाबेस वापरपी काडून उडयतना एरर."
+
+msgid "Error editing QoS Spec consumer."
+msgstr "QoS Spec गिरायक संपादित करतना एरर."
+
+msgid "Error getting database backup list."
+msgstr "डेटाबेस बॅकअप वळेरी मेळयतना एरर."
+
+msgid "Error updating QoS Spec association."
+msgstr "QoS Spec जोडणी सुदारतना एरर"
+
+msgid "Error when adding or removing hosts."
+msgstr "येजमान जोडतना वो काडून उडयतना एरर."
+
+#, python-format
+msgid "Error writing zipfile: %(exc)s"
+msgstr " झिपफायल बरयतना एरर: %(exc)s"
+
+msgid "Ether Type"
+msgstr "इथर प्रकार"
+
+msgid "Evacuate Host"
+msgstr "येजमान रिकामो करात"
+
+msgid "Events"
+msgstr "घडणूकों"
+
+msgid "Expected HTTP Status Codes"
+msgstr "अपेक्षित HTTP स्थिती कोड्स"
+
+msgid ""
+"Expected code may be a single value (e.g. 200), a list of values (e.g. 200, "
+"202), or range of values (e.g. 200-204)"
+msgstr ""
+"अपेक्षित कोड एकोडे मोल (देख. 200), मोलांची वळेरी (देख. 200, 202) वो मोलांची व्याप्ती "
+"(देख. 200-204) आसू येता"
+
+msgid "Extend Volume"
+msgstr "आकार वाडयात"
+
+#, python-format
+msgid "Extending volume: \"%s\""
+msgstr "वाडपी आकारमान: \"%s\""
+
+msgid "External Gateway"
+msgstr "भायलो गेटवे"
+
+msgid "External Network"
+msgstr "भायलो नेटवर्क"
+
+#, python-format
+msgid ""
+"External network \"%(ext_net_id)s\" expected but not found for router "
+"\"%(router_id)s\"."
+msgstr ""
+"भायलो नेटवर्क \"%(ext_net_id)s\" अपेक्षित पूण \"%(router_id)s\" राऊटराखातीर मेळू ना."
+
+msgid "Extra Specs"
+msgstr "अदिक Specs"
+
+msgctxt "Current status of a Database Backup"
+msgid "Failed"
+msgstr "असफळ"
+
+msgctxt "Current status of a Database Instance"
+msgid "Failed"
+msgstr "असफळ"
+
+msgctxt "Current status of a Job"
+msgid "Failed"
+msgstr "असफळ"
+
+msgctxt "Power state of an Instance"
+msgid "Failed"
+msgstr "असफळ"
+
+#, python-format
+msgid ""
+"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
+"quotas."
+msgstr ""
+"%(users_to_add)s प्रकल्प सदस्य%(group_msg)s जोडपाक आणि प्रकल्प कोटा थारावपाक जाले "
+"ना."
+
+#, python-format
+msgid "Failed to add %s project groups and update project quotas."
+msgstr "%s प्रकल्प गट जोडपाक आनी प्रकल्प कोटा सुदारपाक असफळ."
+
+#, python-format
+msgid "Failed to add agent %(agent_name)s for network %(network)s."
+msgstr " %(network)s नेटवर्काखातीर %(agent_name)s एजंट जोडपाक असफळ."
+
+#, python-format
+msgid "Failed to add router rule %s"
+msgstr "राऊटर नियम %s जोडपाक शकना."
+
+#, python-format
+msgid "Failed to add_interface: %s"
+msgstr "इंटरफेस जोडपाक जाले ना: %s"
+
+#, python-format
+msgid "Failed to check Neutron '%s' extension is not supported"
+msgstr "न्यूट्रॉन  '%s'  तपासपाक जाले ना. विस्ताराक फाटबळ ना."
+
+#, python-format
+msgid "Failed to create a port for network %s"
+msgstr "%s नेटवर्काखातीर पोर्ट तयार करपाक असफळ."
+
+#, python-format
+msgid "Failed to create network \"%(network)s\": %(reason)s"
+msgstr "नेटवर्क \"%(network)s\" तयार करपाक शकना: %(reason)s"
+
+#, python-format
+msgid "Failed to create network %s"
+msgstr "%s नेटवर्क तयार करपाक असफळ"
+
+#, python-format
+msgid "Failed to create network profile %s"
+msgstr "नेटवर्क प्रोफायल %s निर्माण करपाक असफळ."
+
+#, python-format
+msgid "Failed to create router \"%s\"."
+msgstr "\"%s\" राऊटर तयार करपाक शकना."
+
+#, python-format
+msgid ""
+"Failed to create subnet \"%(sub)s\" for network \"%(net)s\":  %(reason)s"
+msgstr "\"%(net)s\"  नेटवर्काखातीर \"%(sub)s\" उपनेट तयार करपाक शकना: %(reason)s"
+
+#, python-format
+msgid "Failed to delete agent: %s"
+msgstr "एजंट काडून उडोंवपाक असफळ: %s"
+
+#, python-format
+msgid "Failed to delete interface %s"
+msgstr " %s इंटरफेस काडपाक अपेस"
+
+#, python-format
+msgid "Failed to delete network \"%s\""
+msgstr "\"%s\" नेटवर्क काडून उडोवपाक अपेस."
+
+#, python-format
+msgid "Failed to delete network %s"
+msgstr "%s नेटवर्क काडून उडोवपाक अपेस"
+
+#, python-format
+msgid "Failed to delete network profile (%s)."
+msgstr "नेटवर्क प्रोफायल %s काडून उडोवपाक शकना."
+
+#, python-format
+msgid "Failed to delete port %s"
+msgstr "%s पोर्ट काडून उडोवपाक अपेस"
+
+#, python-format
+msgid "Failed to delete port: %s"
+msgstr "पोर्ट काडून उडोवपाक शकना: %s"
+
+#, python-format
+msgid "Failed to delete subnet %s"
+msgstr " %s उपनेट काडून उडोवपाक शकना"
+
+#, python-format
+msgid "Failed to disable compute service for host: %s."
+msgstr "येजमानाखातीर गणन सेवा अक्षम करपाक जमले ना: %s."
+
+#, python-format
+msgid "Failed to evacuate host: %s."
+msgstr "येजमान रिकामो करपाक जाले ना: %s."
+
+#, python-format
+msgid "Failed to evacuate instances: %s"
+msgstr "इन्स्टन्सेस काडून उडोवपाक अपेस : %s"
+
+msgid "Failed to fetch internal binary list"
+msgstr "अंतर्गत बायनरीची वळेरी मोळोवपाक शकना."
+
+msgid "Failed to get list of internal binaries."
+msgstr "अंतर्गत बायनरीजची वळेरी मोळोवपाक शकना."
+
+#, python-format
+msgid "Failed to get network list %s"
+msgstr "नेटवर्क वळेरी %s मेळोवपाक जाले ना"
+
+#, python-format
+msgid "Failed to insert rule to policy %(name)s: %(reason)s"
+msgstr "%(name)s धोरणान नियम घालपाक शकना: %(reason)s"
+
+#, python-format
+msgid "Failed to live migrate instance to host \"%s\"."
+msgstr "\"%s\" येजमानांत इन्स्टन्स प्रत्यक्ष स्थलांतरित करपाक जाले ना."
+
+#, python-format
+msgid ""
+"Failed to modify %(num_groups_to_modify)d instance security groups: %(err)s"
+msgstr "%(num_groups_to_modify)d  इन्स्टन्स सुरक्षा गटांत बदल करपाक जाले ना: %(err)s"
+
+#, python-format
+msgid ""
+"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
+"project quotas."
+msgstr ""
+"%(users_to_modify)s प्रकल्प सदस्य%(group_msg)s सुदारपाक आणि प्रकल्प कोटा सुदारपाक "
+"अपयश."
+
+#, python-format
+msgid "Failed to modify %d instance security groups"
+msgstr "%d इंस्टंस सुरक्षा गट बदलुपाक असफळ."
+
+#, python-format
+msgid "Failed to modify %s domain groups."
+msgstr "%s डोमेन गट बदलुपाक असफळ"
+
+#, python-format
+msgid "Failed to modify %s project members and update domain groups."
+msgstr "%s प्रकल्प सदस्य बदलुपाक आनी डोमेन गट सुदारपाक असफळ."
+
+#, python-format
+msgid ""
+"Failed to modify %s project members, update project groups and update "
+"project quotas."
+msgstr "%s प्रकल्प सदस्य सुदारपाक, प्रकल्प गट सुदारपाक आणि प्रकल्प कोटा सुदारपाक जाले ना."
+
+msgid "Failed to obtain network profile binding"
+msgstr "नेटवर्क प्रोफायल बांयंडिंग मेळोवपाक अपेस."
+
+#, python-format
+msgid "Failed to remove rule from policy %(name)s: %(reason)s"
+msgstr "%(name)s धोरणातल्यान नियम काडपाक अपेस: %(reason)s"
+
+#, python-format
+msgid "Failed to retrieve available rules: %s"
+msgstr "उपलब्ध नियम परत मेळोवपाक शकना: %s"
+
+#, python-format
+msgid "Failed to retrieve current rules in policy %(name)s: %(reason)s"
+msgstr "%(name)s धोरणान सद्याचे नियम परत मेळोवपाक शकना: %(reason)s"
+
+msgid "Failed to retrieve health monitors."
+msgstr "आरोग्य निरीक्षक परतून मेळोवपाक जाले ना."
+
+#, python-format
+msgid "Failed to retrieve network %s for a subnet"
+msgstr "उपनेटाखातीर %s नेटवर्क परत मेळोवपाक असफळ"
+
+#, python-format
+msgid "Failed to set gateway %s"
+msgstr "गेटवे %s थारावपाक जाले ना"
+
+#, python-format
+msgid "Failed to update IKE Policy %s"
+msgstr " IKE धोरण %s सुदारपाक असफळ"
+
+#, python-format
+msgid "Failed to update IPSec Policy %s"
+msgstr "IPSec धोरण %s सुदारपाक शकना. "
+
+#, python-format
+msgid "Failed to update IPSec Site Connection %s"
+msgstr " IPSec सायट जोडणी %s सुदारपाक शकना"
+
+#, python-format
+msgid "Failed to update VIP %s"
+msgstr "VIP %s सुदारपाक सकना."
+
+#, python-format
+msgid "Failed to update VPN Service %s"
+msgstr "VPN सेवा %s सुदारपाक शकना."
+
+#, python-format
+msgid "Failed to update firewall %(name)s: %(reason)s"
+msgstr "फायरवॉल %(name)s सुदारपाक शकना: %(reason)s"
+
+#, python-format
+msgid "Failed to update health monitor %s"
+msgstr "आरोग्य निरीक्षक %s सुदारपाक शकना"
+
+msgid "Failed to update image."
+msgstr "प्रतिमा सुदारपाक असफळ."
+
+#, python-format
+msgid "Failed to update member %s"
+msgstr "सदस्य %s सुदारपाक शकना."
+
+#, python-format
+msgid "Failed to update network %s"
+msgstr "%s नेटवर्क सुदारपाक असफळ."
+
+#, python-format
+msgid "Failed to update network profile (%s)."
+msgstr "नेटवर्क प्रोफायल %s सुदारपाक अपेस."
+
+#, python-format
+msgid "Failed to update policy %(name)s: %(reason)s"
+msgstr "धोरण %(name)s सुदारपाक शकना: %(reason)s"
+
+#, python-format
+msgid "Failed to update pool %s"
+msgstr "%s पूल सुदारपाक शकना"
+
+#, python-format
+msgid "Failed to update port %s"
+msgstr "%s पोर्ट सुदारपाक असफळ."
+
+#, python-format
+msgid "Failed to update router %s"
+msgstr "%s राऊटर सुदारपाक शकना."
+
+#, python-format
+msgid "Failed to update rule %(name)s: %(reason)s"
+msgstr "%(name)s नियम सुदारपाक शकना: %(reason)s"
+
+#, python-format
+msgid "Failed to update subnet \"%(sub)s\":  %(reason)s"
+msgstr "उपनेट \"%(sub)s\" सुदारपाक असफळ: %(reason)s"
+
+msgid ""
+"Fields in this tab are optional. You can configure the detail of IPSec site "
+"connection created."
+msgstr ""
+"ह्या टॅबातली क्षेत्रां वैकल्पिक आसात. तयार केल्ल्या IPSec सायट जोडणेच्या तपशीलाची तुमी "
+"संरचनाय करपाक शकतात."
+
+msgid "File"
+msgstr "फायल"
+
+msgid "File exceeds maximum size (16kb)"
+msgstr "फायल कमाल आकारापरस व्हड आसा (16kb)"
+
+msgid "Fingerprint"
+msgstr "बोटांचे ठसे"
+
+msgctxt "Task status of an Instance"
+msgid "Finishing Resize or Migrate"
+msgstr "परत आकार दिवप वो स्थलांतरित करप सोपता"
+
+#, python-format
+msgid "Firewall %s was successfully updated."
+msgstr "फायरवॉल %s यशस्विपणान सुदारला."
+
+msgid "Firewall Details"
+msgstr "फायरवॉल तपशील"
+
+msgid "Firewall Policies"
+msgstr "फायरवॉल धोरणां"
+
+msgid "Firewall Policy Details"
+msgstr "फायरवॉल धोरण तपशील"
+
+msgid "Firewall Rule Details"
+msgstr "फायरवॉल नियमाचो तपशील"
+
+msgid "Firewall Rules"
+msgstr "फायरवॉल नियम "
+
+msgid "Firewalls"
+msgstr "फायरवॉल्स"
+
+msgid "Fixed IPs"
+msgstr "निश्चित IP"
+
+msgid "Flat"
+msgstr "सपाट"
+
+msgid "Flavor"
+msgstr "फ्लेवर"
+
+msgid "Flavor Access"
+msgstr "फ्लेवर प्रवेश"
+
+msgid "Flavor Choice"
+msgstr "फ्लेवराची निवड"
+
+msgid "Flavor ID ="
+msgstr "फ्लेवर ID ="
+
+msgid ""
+"Flavor ID should be UUID4 or integer. Leave this field blank or use 'auto' "
+"to set a random UUID4."
+msgstr ""
+"फ्लेवर ID हो UUID4 वो पूर्णांक जाय. रँडम UUID4 थारावपाक हे क्षेत्र रिकामे दवरात वो "
+"'आपशीच' वापरात."
+
+msgid "Flavor Information"
+msgstr "फ्लेवराची माहिती"
+
+msgid "Flavor Name"
+msgstr "फ्लेवराचे नाव"
+
+msgid "Flavors"
+msgstr "फ्लेवर्स"
+
+msgid ""
+"Flavors define the sizes for RAM, disk, number of cores, and other resources "
+"and can be selected when users deploy instances."
+msgstr ""
+"फ्लेवर्स RAM चो आकार, डिस्क, कोअरांची संख्या, आणि हेर संसाधनांची व्याख्या करता आणि "
+"वापरपी जेन्ना इन्स्टन्स नेमता तेन्ना निवड करू येता."
+
+msgid "Floating IP Pool"
+msgstr "फ्लोटिंग IP पूल"
+
+msgid "Floating IPs"
+msgstr "फ्लोटिंग आयपी"
+
+msgid "Folder created successfully."
+msgstr "फोल्डर यशस्विपणान तयार जाला."
+
+#, python-format
+msgid "For GRE networks, valid tunnel IDs are %(min)s through %(max)s."
+msgstr "GRE नेटवर्काखातीर, वैध टनेल IDs हे %(min)s  %(max)s तल्यान."
+
+#, python-format
+msgid ""
+"For VLAN networks, the VLAN VID on the physical network that realizes the "
+"virtual network. Valid VLAN VIDs are %(vlan_min)s through %(vlan_max)s. For "
+"GRE or VXLAN networks, the tunnel ID. Valid tunnel IDs for GRE networks are "
+"%(gre_min)s through %(gre_max)s. For VXLAN networks, %(vxlan_min)s through "
+"%(vxlan_max)s."
+msgstr ""
+"VLAN नेटवर्काक, व्हर्च्युअल नेटवर्क वळखुपी प्रत्यक्ष नेटवर्कावेलो VLAN VID. वैध VLAN VID हे "
+"%(vlan_min)s %(vlan_max)s तल्यान. GRE वो VXLAN नेटवर्काखातीर, टनेल ID. GRE "
+"नेटवर्कांखातीर वैध टनेल ID %(gre_min)s %(gre_max)s वरवीं आसात. VXLAN नेटवर्कांखातीर, "
+"%(vxlan_min)s हे %(vxlan_max)s वरवीं आसात."
+
+#, python-format
+msgid "For VLAN networks, valid VLAN IDs are %(min)s through %(max)s."
+msgstr "VLAN नेटवर्कांखातीर, वैध VLAN ID हे %(min)s %(max)s तल्यान."
+
+#, python-format
+msgid "For VXLAN networks, valid tunnel IDs are %(min)s through %(max)s."
+msgstr "VXLAN नेटवर्काखातीर, वैध टनेल IDs हे %(min)s %(max)s तल्यान."
+
+msgid "Forbidden"
+msgstr "सोडून दिल्ले"
+
+msgctxt "Force upload volume in in-use status to image"
+msgid "Force"
+msgstr "शक्ती"
+
+#, python-format
+msgid "Forcing to create snapshot \"%s\" from attached volume."
+msgstr "जोडिल्ल्या आकारमानातल्यान स्नॅपशॉट \"%s\" तयार करपाची सक्ति करता."
+
+msgid "Format"
+msgstr "स्वरूप"
+
+msgid "Format ="
+msgstr "स्वरूप ="
+
+msgid "From"
+msgstr "कडल्यान"
+
+msgid "From Port"
+msgstr "पोर्टाकडल्यान"
+
+msgid "From here you can update the default quotas (max limits)."
+msgstr "हांगासांवन तुमी मुळावे कोटा सुदारपाक शकतात (कमाल मर्यादा)."
+
+msgid "GET"
+msgstr "GET"
+
+msgid "GMT"
+msgstr "GMT"
+
+msgid "GRE"
+msgstr "GRE"
+
+msgid "Gateway IP"
+msgstr "गेटवे IP"
+
+msgid "Gateway IP (optional)"
+msgstr "गेटवे  IP (वैकल्पिक)"
+
+msgid "Gateway IP and IP version are inconsistent."
+msgstr "गेटवे IP आणि IP आवृत्तेन सातत्य ना"
+
+msgid "Gateway interface is added"
+msgstr "गेटवे इंटरफेस जोडला"
+
+msgid "General Info"
+msgstr "सर्वसादारण इंन्फो"
+
+msgid "Glance"
+msgstr "ग्लान्स"
+
+#, python-format
+msgid "Group \"%s\" was successfully created."
+msgstr "\"%s\" गट यशस्विपणान तयार जाला."
+
+msgid "Group ID"
+msgstr "गट ID"
+
+msgid "Group Members"
+msgstr "गट सदस्य"
+
+msgid "Group has been updated successfully."
+msgstr "गट यशस्विपणान सुदारला."
+
+msgid "Groups"
+msgstr "गट"
+
+msgid "HA mode"
+msgstr "HA स्थिती"
+
+msgid "HTTP"
+msgstr "HTTP"
+
+msgid "HTTP Method"
+msgstr "HTTP पद्धत"
+
+msgid "HTTP method used to check health status of a member"
+msgstr "सदस्याची ओरोग्याची स्थिती तपासपाक वापरिल्ली HTTP पद्धत"
+
+msgid "HTTPS"
+msgstr "HTTPS"
+
+msgctxt "Current status of an Instance"
+msgid "Hard Reboot"
+msgstr "हार्ड रिबूट"
+
+#, python-format
+msgid "Health monitor %s was successfully updated."
+msgstr "आरोग्य निरीक्षक %s सफळ रीतीन सुदारलो."
+
+msgid "Help"
+msgstr "मदत"
+
+msgid "High Availability Mode"
+msgstr "उचेली उपलब्धताय स्थिती"
+
+msgid "Hive"
+msgstr "हायव्ह"
+
+msgid "Home"
+msgstr "होम"
+
+msgid "Host"
+msgstr "येजमान"
+
+msgid "Host ="
+msgstr "येजमान ="
+
+msgid "Host Aggregate Information"
+msgstr "येजमान एग्रिगेट माहिती"
+
+msgid "Host Aggregates"
+msgstr "येजमान एग्रिगेटस्"
+
+msgid "Host Routes"
+msgstr "येजमान वाटो"
+
+#, python-format
+msgid ""
+"Host Routes format error: Destination CIDR and nexthop must be specified "
+"(value=%s)"
+msgstr "येजमान वाटो स्वरूपण एरर: लक्ष्य CIDR आणि नेक्स्टहॉप स्पश्ट करपाक जाय (मोल=%s)"
+
+msgid ""
+"Host aggregates divide an availability zone into logical units by grouping "
+"together hosts. Create a host aggregate then select the hosts contained in "
+"it."
+msgstr ""
+"येजमान एग्रिगेट उपलब्धताय विभागाक येजमानांचे गट करून लॉजिकल युनिट्सांनी बदलता. येजमान "
+"एग्रिगेट तयार करात, उपरांत तातूतलो येजमान निवडात."
+
+msgid "Host or IP that the user is allowed to connect through."
+msgstr "वापरप्याक जुळपाची परवानगी आशिल्लो येजमान वो IP."
+
+msgid "Hostname"
+msgstr "येजमानाचे नाव"
+
+msgid "Hosts"
+msgstr "येजमान"
+
+msgid "Hypervisor"
+msgstr "हायपरवायजर"
+
+msgid "Hypervisor Instances"
+msgstr "हायपरवायजर इंस्टसिस"
+
+msgid "Hypervisor Servers"
+msgstr "हायपरव्हायजर सर्व्हर"
+
+msgid "Hypervisors"
+msgstr "हायपरवायजर्स"
+
+msgid "ICMP"
+msgstr "ICMP"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "IKE Phase1 negotiation mode"
+msgstr "IKE टप्पो1 वाटाघाट स्थिती"
+
+msgid "IKE Policies"
+msgstr "IKE धोरणां"
+
+msgid "IKE Policy"
+msgstr "IKE धोरण"
+
+#, python-format
+msgid "IKE Policy %s was successfully updated."
+msgstr " IKE धोरण %s यशस्विपणान सुदारला."
+
+msgid "IKE Policy Details"
+msgstr "IKE  धोरण तपशील"
+
+msgid "IKE Policy associated with this connection"
+msgstr "ह्या जोडणेकडे संबंधित IKE धोरण"
+
+msgid "IKE version"
+msgstr "IKE आवृत्ती"
+
+msgid "IP Address"
+msgstr "IP नामो"
+
+msgid "IP Address (optional)"
+msgstr "IP नामो (वैकल्पिक)"
+
+msgid "IP Protocol"
+msgstr "IP शिष्टाचार"
+
+msgid "IP Version"
+msgstr "IP आवृत्ती"
+
+#, python-format
+msgid "IP address %s associated."
+msgstr "IPनामो %s जोडला."
+
+msgid ""
+"IP address allocation pools. Each entry is: start_ip_address,end_ip_address "
+"(e.g., 192.168.1.100,192.168.1.120) and one entry per line."
+msgstr ""
+"IP नामो वाटप पूल्स. प्रत्येक नोंद ही: सुरू_आयपी_नामो,निमणो_आयपी_नामो (देखीक., "
+"192.168.1.100,192.168.1.120) आणि ओळीक एक नोंद."
+
+msgid ""
+"IP address list of DNS name servers for this subnet. One entry per line."
+msgstr "ह्या उपनेटखातीर  DNS नाव सर्व्हराची IP नामो वळेरी. प्रत्येक ओळींत एक नोंद."
+
+msgid ""
+"IP address of Gateway (e.g. 192.168.0.254) The default value is the first IP "
+"of the network address (e.g. 192.168.0.1 for 192.168.0.0/24, 2001:DB8::1 for "
+"2001:DB8::/48). If you use the default, leave blank. If you do not want to "
+"use a gateway, check 'Disable Gateway' below."
+msgstr ""
+"(देख. 192.168.0.254) चो IP नामो. मुळावे मोल नेटवर्क नाम्याचो पयलो IP आसा (देख. "
+"192.168.0.0/24 खातीर 192.168.0.1, 2001:DB8::/48 खातीर 2001:DB8::1). तुमी मुळावे "
+"वपारल्यार, रिकामे सोडात. तुमका गेटवे वापरपाचे नासल्यार, सकयल 'गेटवे निष्क्रिय करात' खूण "
+"करात."
+
+msgid ""
+"IP address of Gateway (e.g. 192.168.0.254). Specify an explicit address to "
+"set the gateway. If you do not want to use a gateway, check 'Disable "
+"Gateway' below."
+msgstr ""
+"गेटवेचो IP नामो (देखीक. 192.168.0.254). गेटवे थारावपाक नामो स्पश्ट करात. तुमी जर गेटवे "
+"वापरपाक सोदनात, सकयल  'गेटवे अक्षम करात' चेर खूण करात."
+
+msgid "IPSec Policies"
+msgstr "IPSec धोरणां"
+
+msgid "IPSec Policy"
+msgstr "IPSec धोरण"
+
+#, python-format
+msgid "IPSec Policy %s was successfully updated."
+msgstr "IPSec धोरण %s यशस्विपणान सुदारला. "
+
+msgid "IPSec Policy Details"
+msgstr "IPSec धोरण तपशील"
+
+msgid "IPSec Policy associated with this connection"
+msgstr "ह्या जोडणेसंयत संबंधित IPSec धोरण"
+
+#, python-format
+msgid "IPSec Site Connection %s was successfully updated."
+msgstr "IPSec सायट जोडणी %s यसस्विपणान सुदाल्ल्या."
+
+msgid "IPSec Site Connection Details"
+msgstr "IPSec सायट जोडणी तपशील"
+
+msgid "IPSec Site Connections"
+msgstr "IPSec  सायट जोडणी"
+
+msgid "IPv4"
+msgstr "IPv4"
+
+msgid "IPv4 Address ="
+msgstr "IPv4 नामो ="
+
+msgid "IPv6"
+msgstr "IPv6"
+
+msgid "IPv6 Address ="
+msgstr "IPv6 नामो ="
+
+msgid "IPv6 Address Configuration Mode"
+msgstr "IPv6 नामो संरचनाय स्थिती"
+
+msgid "ISO - Optical Disk Image"
+msgstr "ISO -  ऑप्टिकल डिस्क प्रतिमा"
+
+msgid "Identity"
+msgstr "ओळख"
+
+msgid "Identity service does not allow editing user data."
+msgstr "ओळख सेवा वापरप्याचो डेटा संपादित करापाची परवानगी दिना."
+
+msgid "Image"
+msgstr "प्रतिमा"
+
+msgctxt "Type of an image"
+msgid "Image"
+msgstr "प्रतिमा"
+
+msgctxt "Task status of an Instance"
+msgid "Image Backup"
+msgstr "प्रतिमा बॅकअप"
+
+msgid "Image File"
+msgstr "प्रतिमा फायल"
+
+msgid "Image ID ="
+msgstr "प्रतिमा ID ="
+
+msgid "Image Location"
+msgstr "प्रतिमेचे थळ"
+
+msgid "Image Name"
+msgstr "प्रतिमेचे नाव"
+
+msgid "Image Name ="
+msgstr "प्रतिमेचे नाव ="
+
+msgctxt "Task status of an Instance"
+msgid "Image Pending Upload"
+msgstr "अपलोड बाकी आशिल्ली प्रतिमा"
+
+msgid "Image Registry"
+msgstr "प्रतिमा नोंदपुस्तक"
+
+msgctxt "Task status of an Instance"
+msgid "Image Snapshot Pending"
+msgstr "प्रतिमा स्नॅपशॉट उल्ला"
+
+msgid "Image Source"
+msgstr "प्रतिमेचो स्त्रोत"
+
+msgctxt "Task status of an Instance"
+msgid "Image Uploading"
+msgstr "प्रतिमा अपलोड जाता"
+
+msgid "Image existence check"
+msgstr "प्रतिमा अस्तित्व तपासणी"
+
+msgid "Image is downloaded"
+msgstr "प्रतिमा डावनलोड जाल्या"
+
+msgid "Image is served out"
+msgstr "प्रतिमा भायर काडल्या."
+
+msgid "Image source must be specified"
+msgstr "प्रतिमेचो स्त्रोत स्पश्ट करपाक जाय"
+
+msgid "Image was successfully updated."
+msgstr "प्रतिमा यशस्विपणान सुदाल्ल्या."
+
+msgid "Images"
+msgstr "प्रतिमा"
+
+msgid "Import Key Pair"
+msgstr "की जोडी आयात करात"
+
+msgid "In Policy"
+msgstr "धोरणान"
+
+msgid "In Use"
+msgstr "वापरान आसा"
+
+msgid "Incremental"
+msgstr "वाडटे"
+
+msgid "Information"
+msgstr "माहिती"
+
+msgid "Ingress"
+msgstr "इनग्रेस"
+
+msgid "Initial Admin User"
+msgstr "सुरवेचो एडमिन वापरपी"
+
+msgid "Initial Databases"
+msgstr "सुरवेच्यो डेटाबेसी"
+
+msgid "Initial admin user to add"
+msgstr "जोडपाचो सुरवेचो एडमिन वापरपी"
+
+msgid "Initialize Databases"
+msgstr "डेटाबेस सुरू करात"
+
+msgid "Initiator state"
+msgstr "सुरवातीची स्थिती"
+
+msgid "Injected File Content (Bytes)"
+msgstr "इंजेक्टेड फायल आशय (बायटस्)"
+
+msgid "Injected File Content Bytes"
+msgstr "इंजेक्टेड फायल आशय बायटस्"
+
+msgid "Injected File Path Bytes"
+msgstr "इंजेक्टेड फायल वाट बायट्स"
+
+msgid "Injected Files"
+msgstr "इंजेक्टेड फायली"
+
+msgid "Input"
+msgstr "इनपुट"
+
+msgid "Input must be in CIDR format"
+msgstr "इनपूट CIDR  स्वरूपान आसपाक जाय."
+
+msgid "Insert Rule"
+msgstr "नियम घालात"
+
+msgid "Insert Rule to Policy"
+msgstr "धोरणान नियम जोडात"
+
+msgid "Instance"
+msgstr "इंस्टंस"
+
+msgid "Instance Action List"
+msgstr "इन्स्टन्स कारवाय वळेरी"
+
+msgid "Instance Boot Source"
+msgstr "इंस्टंस बूट स्त्रोत"
+
+msgid "Instance Count"
+msgstr "इंस्टंस मेजप"
+
+msgid "Instance ID"
+msgstr "इंस्टंस ID"
+
+msgid "Instance Name"
+msgstr "इंस्टंसाचे नाव"
+
+msgid "Instance Password is not set or is not yet available"
+msgstr "इंस्टंस पासवर्ड थारायल्लो ना वो तो आजून उपलब्ध ना."
+
+msgid "Instance Security Groups"
+msgstr "इंस्टंस सुरक्षा गट"
+
+msgid "Instance Snapshot"
+msgstr "इंस्टंस स्नॅपशॉट"
+
+msgid "Instance to be associated"
+msgstr "जोडपाचो इंस्टंस"
+
+msgid "Instances"
+msgstr "इंस्टंसिस"
+
+msgid "Instances Count"
+msgstr "इंस्टंसिसाचे गणन"
+
+msgid "Insufficient privilege level to view domain information."
+msgstr "डोमेन माहिती पळोवपाक अपुरी प्राधान्य पातळी"
+
+msgid "Insufficient privilege level to view group information."
+msgstr "गट माहिती पळोवपाक अपुरी प्राधान्य पातळी."
+
+msgid "Insufficient privilege level to view project information."
+msgstr "प्रकल्प माहिती पळोवपाक अपुरी प्राधान्य पातळी."
+
+msgid "Insufficient privilege level to view role information."
+msgstr "भूमिका माहिती पळोवपाक अपुरी प्राधान्य पातळी."
+
+msgid "Insufficient privilege level to view user information."
+msgstr "वापरप्याली माहिती पळोवपाक अपुरी प्राधान्य पातळी"
+
+msgid "Interface added"
+msgstr "इंटरफेस जोडलो"
+
+msgid "Interfaces"
+msgstr "इंटरफेस"
+
+msgid "Internal IP"
+msgstr "अंतर्गत IP"
+
+msgid "Internal Interface"
+msgstr "अंतर्गत इंटरफेस"
+
+msgid "Internal binary"
+msgstr "अंतर्गत बायनरी"
+
+msgid "Invalid date format: Using today as default."
+msgstr "अमान्य तारकेचे स्वरूप: मुळाव्यान आज वापरता."
+
+msgid ""
+"Invalid time period. The end date should be more recent than the start date."
+msgstr "अवैध काळ. निमणी तारीक सुरवेच्या तारकेच्या लागीची जाय."
+
+msgid ""
+"Invalid time period. You are requesting data from the future which may not "
+"exist."
+msgstr "अमान्य काळ. तुमी भविश्यातली माहिती मागतात जी अस्तित्वांत ना."
+
+msgid "Items Per Page"
+msgstr "दरेक पानावयल्यो वस्तीं"
+
+msgid "Java Opts"
+msgstr "जावा ऑप्टस्"
+
+msgid "Job"
+msgstr "काम"
+
+msgid "Job Binaries"
+msgstr "काम बायनरीज"
+
+msgid "Job Binary Details"
+msgstr "काम बायनरी तपशील"
+
+msgid "Job Execution Details"
+msgstr "काम कार्यवाही तपशील"
+
+msgid "Job Execution ID"
+msgstr "काम कार्यवाही ID"
+
+msgid "Job Type"
+msgstr "कामाचो प्रकार"
+
+msgid "Job args"
+msgstr "काम args"
+
+msgid "Job configs"
+msgstr "काम configs"
+
+msgid "Job created"
+msgstr "काम निर्माण जाला"
+
+msgid "Job launched"
+msgstr "काम चालू केले"
+
+msgid "Job params"
+msgstr "काम params"
+
+msgid "Jobs"
+msgstr "कामां"
+
+msgid "Kernel ID"
+msgstr "कर्नल ID"
+
+msgid "Key"
+msgstr "की"
+
+msgid "Key Pair"
+msgstr "की जोड"
+
+msgid "Key Pair Name"
+msgstr "की जोडीचे नाव"
+
+msgid "Key Pairs"
+msgstr "की जोडी"
+
+msgid "Key Size (bits)"
+msgstr "की आकार(बीट्स)"
+
+msgid ""
+"Key pair name may only contain letters, numbers, underscores, spaces and "
+"hyphens."
+msgstr "की जोड नावांत फकत अक्षरां, संख्या, अंडरस्कोअर, अवकाश आणि विरामचिन्ना आसू येतात."
+
+msgid "Key pair to use for authentication."
+msgstr "अधिकृतीकरणाखातीर वापरपाची की जोडी."
+
+msgid "Key-Value Pairs"
+msgstr "की-मोल जोडीं"
+
+msgid "Keypair"
+msgstr "कीजोडी"
+
+msgid "Kwapi"
+msgstr "क्वापी"
+
+msgid "LUKS Volume Snapshots"
+msgstr "LUKS आकार स्नॅपशॉट्स"
+
+msgid "LUKS Volumes"
+msgstr "LUKS आकार"
+
+msgid "Language"
+msgstr "भास"
+
+msgid "Last 15 days"
+msgstr "निमणे 15 दिंस"
+
+msgid "Last 30 days"
+msgstr "निमणे 30 दिंस"
+
+msgctxt "Time since the last update"
+msgid "Last Updated"
+msgstr "निमणी सुदारिल्ले"
+
+msgid "Last day"
+msgstr "निमणो दिंस"
+
+msgid "Last week"
+msgstr "निमणो सप्तक"
+
+msgid "Last year"
+msgstr "निमणे वर्स"
+
+msgid "Launch"
+msgstr "चालू करात"
+
+msgid "Launch Cluster"
+msgstr "क्लस्टर चालू करात"
+
+msgid "Launch Database"
+msgstr "डेटाबेस चालू करात"
+
+msgid "Launch Instance"
+msgstr "इंस्टंस चालू करात"
+
+msgid "Launch On Existing Cluster"
+msgstr "सद्याच्या क्लस्टरार चालू करात"
+
+msgid "Launch On New Cluster"
+msgstr "नव्या क्लस्टरार चालू करात"
+
+msgid "Launch Stack"
+msgstr "स्टॅक चालू करात"
+
+msgid "Launch as Instance"
+msgstr "इंस्टंस म्हण चालू करात"
+
+msgid "Launch instance in these security groups."
+msgstr "ह्या सुरक्षा गटांत इन्स्टन्स चालू करात."
+
+msgid "Launch instance with these networks"
+msgstr "ह्या नेटवर्कांसंयत इंस्टंस चालू करात"
+
+msgid "Launch instance with this policy profile"
+msgstr "ह्या धोरण प्रोफायलासंयत इंस्टंस चालू करात"
+
+msgid "Launch instances in these security groups."
+msgstr "ह्या सुरक्षा गटांनी इंस्टंसिस चालू करात."
+
+msgid "Launch instances in this availability zone."
+msgstr "ह्या उपलब्धताय विभागान इंस्टंसिस चालू करात."
+
+#, python-format
+msgid "Launched %(count)s named \"%(name)s\"."
+msgstr "\"%(name)s\" चे %(count)s चालू केले"
+
+msgid ""
+"Launching multiple instances is only supported for images and instance "
+"snapshots."
+msgstr "भौ इन्स्टन्स चालू करप हे फकत प्रतिमा आणि इन्स्टन्स स्नॅपशॉटस् खातीर आसा."
+
+msgid "Length of Injected File Path"
+msgstr "इंजेक्टेड फायल वाटेची लांबाय"
+
+msgid "Libs"
+msgstr "Libs"
+
+msgid "Lifetime units"
+msgstr "आजीवन युनिटस्"
+
+msgid "Lifetime units for IKE keys"
+msgstr " IKE कीज् खातीर आजीवन युनिटस्"
+
+msgid "Lifetime value"
+msgstr "आजीवन मोल"
+
+msgid "Lifetime value for IKE keys"
+msgstr " IKE कीज् खातीर आजीवन मोल"
+
+msgid "Lifetime value for IKE keys "
+msgstr "IKE कीज् खातीर आजीवन मोल"
+
+msgid "Limit"
+msgstr "मर्यादा"
+
+msgid "Live Migrate"
+msgstr "प्रत्यक्ष स्थलांतर"
+
+msgid "Live Migrate Instance"
+msgstr "इन्स्टन्स प्रत्यक्ष स्थलांतरित करात"
+
+msgid "Load Balancer"
+msgstr "लोड बॅलन्सर"
+
+#, python-format
+msgid "Load Balancer VIP %s"
+msgstr "लोड बॅलन्सर VIP %s"
+
+msgid "Load Balancers"
+msgstr "बॅलेन्सर चालू करात"
+
+msgid "Load Balancing Method"
+msgstr "बॅलन्सिंग पद्दत चालू करात"
+
+msgid "Local"
+msgstr "थळावे"
+
+msgid "Local Storage (total)"
+msgstr "थळावो साठो (एकूण)"
+
+msgid "Local Storage (used)"
+msgstr "थळावो साठो (वापरिल्ले)"
+
+msgid "Log"
+msgstr "लॉग"
+
+msgid "MAC Learning State"
+msgstr "MAC शिकपाची स्थिती"
+
+msgid "Main Class"
+msgstr "मुखेल वर्ग"
+
+msgid "Make Private"
+msgstr "खासगी करात"
+
+msgid "Make Public"
+msgstr "भौशिक करात"
+
+msgid "Manage Attachments"
+msgstr "जोडण्यांचे व्यवस्थापन करात"
+
+msgid "Manage Floating IP Associations"
+msgstr "फ्लोटिंग IP जोडण्यांचे व्यवस्थापन करात"
+
+msgid "Manage Hosts"
+msgstr "येजमानांचे व्यवस्थापन करात"
+
+msgid "Manage Hosts Aggregate"
+msgstr "येजमान एग्रिगेट व्यवस्थापन करात."
+
+msgid "Manage Hosts within Aggregate"
+msgstr "एग्रिगेटामजगतीचे येजमानांचे व्यवस्थापन करात"
+
+msgid "Manage Members"
+msgstr "सदस्यांचे व्यवस्थापन करात"
+
+msgid "Manage QoS Spec Association"
+msgstr " QoS Spec जोडणेचे व्यवस्थापन करात"
+
+msgid "Manage Rules"
+msgstr "नियमांचे व्यवस्थापन करात"
+
+msgid "Manage Specs"
+msgstr "Specs चे व्यवस्थापन करात"
+
+msgid "Manage Volume Attachments"
+msgstr "आकार जोडींचे व्यवस्थापन करात"
+
+msgid "Management IP"
+msgstr "व्यवस्थापन IP"
+
+msgid "Manual"
+msgstr "हस्तुकी"
+
+msgid "MapReduce"
+msgstr "मॅपरेड्युस"
+
+msgid "Mapped Fixed IP Address"
+msgstr "मॅप्ड निश्चित IP नामो"
+
+msgid "Mapper"
+msgstr "मॅपर"
+
+msgid "Max Retries"
+msgstr "चडांत चड परतून यत्न"
+
+msgid "Max Retries (1~10)"
+msgstr "चडांत चड परतून यत्न (1~10)"
+
+msgid "Max. Size (MB)"
+msgstr "कमाल आकार  (MB)"
+
+msgid "Maximum Transmission Unit size for the connection"
+msgstr "जोडणेखातीर चडांत चड ट्रान्समिशन युनिट आकार."
+
+msgid ""
+"Maximum number of connections allowed for the VIP or '-1' if the limit is "
+"not set"
+msgstr ""
+"मर्यादा थारायल्ली नासल्यार VIP वो '-1' खातीर परवानगी आशिल्ल्या जोडण्यांची कमाल संख्या"
+
+#, python-format
+msgid "Member %s was successfully updated."
+msgstr "सदस्य %s यशस्विपणान सुदारला."
+
+msgid "Member Details"
+msgstr "सदस्य तपशील"
+
+msgid "Member IP address must be specified"
+msgstr "सदस्य IP नामो स्पश्ट करपाक जाय"
+
+msgid "Member Source"
+msgstr "सदस्य स्त्रोत"
+
+msgid "Member address"
+msgstr "सदस्य नामो"
+
+msgid "Member(s)"
+msgstr "सदस्य"
+
+msgid "Members"
+msgstr "सदस्य"
+
+msgid "Message"
+msgstr "संदेश"
+
+msgid "Metadata"
+msgstr "मेटाडेटा"
+
+msgid "Metadata Items"
+msgstr "मेटाडेटा वस्तीं"
+
+msgid "Metadata successfully updated."
+msgstr "मेटाडेटा यशस्विपणान सुदारला."
+
+msgid "Meter"
+msgstr "मीटर"
+
+msgctxt "Current status of an Instance"
+msgid "Migrating"
+msgstr "विलीन जाता"
+
+msgctxt "Task status of an Instance"
+msgid "Migrating"
+msgstr "विलीन जाता"
+
+msgid "Migration Policy"
+msgstr "विलीनीकरण धोरण"
+
+msgid "Min. Size (MB)"
+msgstr "किमान आकार  (MB)"
+
+msgid "Minimum Disk (GB)"
+msgstr "किमान डिस्क (GB)"
+
+msgid "Minimum RAM (MB)"
+msgstr "किमान  RAM (MB)"
+
+#, python-format
+msgid "Modified domain \"%s\"."
+msgstr "डोमेन \"%s\" बदलात."
+
+#, python-format
+msgid "Modified flavor \"%s\"."
+msgstr "बदलिल्लो फ्लेवर \"%s\"."
+
+msgid "Modified flavor information, but unable to modify flavor access."
+msgstr "बदलिल्ली फ्लेवर माहिती, पूण फ्लेवर प्रवेश बदलुपाक शकना."
+
+#, python-format
+msgid "Modified instance \"%s\"."
+msgstr "\"%s\" इंस्टंस बदल्ला."
+
+#, python-format
+msgid "Modified project \"%s\"."
+msgstr "प्रकल्प \"%s\" बदल्ला."
+
+msgid ""
+"Modified project information and members, but unable to modify project "
+"quotas."
+msgstr "प्रकल्प माहिती आनी सदस्य बदल्ल्यात, पूण प्रकल्प कोटा बदलुपाक शकना."
+
+msgid "Modify Access"
+msgstr "प्रवेश बदलात"
+
+msgid "Modify Consumer"
+msgstr "गिरायक बदलात"
+
+msgid "Modify Groups"
+msgstr "गट बदलात"
+
+msgid "Modify Quotas"
+msgstr "कोटा बदलात"
+
+msgid "Modify Usage Report Parameters"
+msgstr "वापर अहवाल परिमाणां बदलात"
+
+msgid "Monitor"
+msgstr "निरीक्षक "
+
+msgid "Monitor Details"
+msgstr "निरीक्षकाचो तपशील"
+
+msgid "Monitor Type"
+msgstr "निरीक्षक प्रकार"
+
+msgid "Monitors"
+msgstr "निरीक्षक "
+
+msgid "Month to date"
+msgstr "म्हयनो ते तारीक"
+
+msgid "Multicast IP Range"
+msgstr "मल्टीकास्ट  IP वळेरी"
+
+msgid "Multicast IPv4 range(e.g. 224.0.1.0-224.0.1.100)"
+msgstr "भौभूमीका IPv4 व्याप्ती(देखीक. 224.0.1.0-224.0.1.100)"
+
+msgid "Must specify start of period"
+msgstr "काळाची सुरवात स्पश्ट करपाक जाय"
+
+msgid "N/A"
+msgstr "N/A"
+
+msgid "Name"
+msgstr "नाव"
+
+msgid ""
+"Name may only contain letters, numbers, underscores, periods and hyphens."
+msgstr ""
+"नावान फक्त आशयाची अक्षरां, संख्या, अंडरस्कोअर, विरामचिन्नां आणि उद्गारचिन्ना आसू येता."
+
+msgid ""
+"Name must start with a letter and may only contain letters, numbers, "
+"underscores, periods and hyphens."
+msgstr ""
+"नाव अक्षरान सुरू जावपाक जाय आणि तातूंत फकत अक्षरां, संख्या, अंडरस्कोअर, पूर्णविराम आणि "
+"विरामचिन्नांच आसू येतात."
+
+msgid "Name of the stack to create."
+msgstr "तयार करपाच्या स्टॅकाचे नाव."
+
+#, python-format
+msgid "Name: %(name)s ID: %(uuid)s"
+msgstr "नाव: %(name)s ID: %(uuid)s"
+
+msgid "Native VXLAN"
+msgstr "नेटिव्ह VXLAN"
+
+msgid "Network"
+msgstr "नेटवर्क"
+
+#, python-format
+msgid "Network \"%s\" was successfully created."
+msgstr "\"%s\" नेटवर्क यशस्विपणान तयार जाला."
+
+#, python-format
+msgid "Network %s was successfully created."
+msgstr "%s नेटवर्क सफळतरेन तयार जाला."
+
+#, python-format
+msgid "Network %s was successfully updated."
+msgstr "%s नेटवर्क यशस्विपणान सुदारला."
+
+msgid "Network Address"
+msgstr "नेटवर्क नामो"
+
+msgid "Network Address and IP version are inconsistent."
+msgstr "नेटवर्क नामो आणि IP आवृत्तेन सातत्य ना."
+
+msgid "Network Agents"
+msgstr "नेटवर्क एजंटस्"
+
+msgid "Network ID"
+msgstr "नेटवर्क ID"
+
+msgid "Network Name"
+msgstr "नेटवर्काचे नाव"
+
+msgid "Network Profile"
+msgstr "नेटवर्क प्रोफायल"
+
+#, python-format
+msgid "Network Profile %s was successfully created."
+msgstr "नेटवर्क प्रोफायल %s यशस्विपणान तयार जाला."
+
+#, python-format
+msgid "Network Profile %s was successfully updated."
+msgstr "नेटवर्क प्रोफायल %s यशस्विपणान सुदारला."
+
+msgid "Network Profiles could not be retrieved."
+msgstr "नेटवर्क प्रोफायल्स परत मेळोवपाक शकना."
+
+msgid "Network Topology"
+msgstr "नेटवर्क टोपोलॉजी"
+
+msgid "Network address in CIDR format (e.g. 192.168.0.0/24)"
+msgstr "CIDR स्वरूपांत नेटवर्क नामो  (देखीक, 192.168.0.0/24)"
+
+msgid "Network address in CIDR format (e.g. 192.168.0.0/24, 2001:DB8::/48)"
+msgstr "CIDR स्वरूप (देख. 192.168.0.0/24, 2001:DB8::/48) न नेटवर्क नामो"
+
+msgid "Network list can not be retrieved."
+msgstr "नेटवर्क वळेरी परत मेळोवपाक शकना."
+
+msgid "Networking"
+msgstr "नेटवर्किंग"
+
+msgctxt "Task status of an Instance"
+msgid "Networking"
+msgstr "नेटवर्किंग"
+
+msgid "Networks"
+msgstr "नेटवर्क्स"
+
+msgid "Neutron"
+msgstr "न्यूट्रॉन"
+
+msgid "Neutron Management Network"
+msgstr "न्यूट्रॉन व्यवस्थापन नेटवर्क"
+
+msgid "Never"
+msgstr "केन्नाच ना"
+
+msgid "New DHCP Agent"
+msgstr "नवो DHCP एजंट"
+
+msgid "New Flavor"
+msgstr "नवो फ्लेवर"
+
+msgid "New Host"
+msgstr "नवो येजमान"
+
+msgid "New Size (GB)"
+msgstr "नवो आकार (GB)"
+
+msgid "New password"
+msgstr "नवो पासवर्ड"
+
+msgid "New size for volume must be greater than current size."
+msgstr "आकारमानाचो नवो आकार सध्याच्या आकारापरस व्हड जाय."
+
+msgid "New size must be greater than current size."
+msgstr "नवो आकार सद्याच्या आकारापरस व्हड आसपाक जाय."
+
+msgid "Next"
+msgstr "फुडे"
+
+msgid "Next Hops"
+msgstr "फुडले हॉप्स"
+
+msgid "No"
+msgstr "ना"
+
+msgid "No Host selected."
+msgstr "येजमान निवडील्ले ना."
+
+msgid "No Hosts found."
+msgstr "येजमान मेळू ना."
+
+msgid "No Images Available"
+msgstr "प्रतिमा उपलब्ध ना"
+
+msgid "No Session Persistence"
+msgstr "सत्रां अस्तित्वांत ना"
+
+msgctxt "Power state of an Instance"
+msgid "No State"
+msgstr "स्थिती ना"
+
+msgid "No Templates Available"
+msgstr "टेंप्लेट्स उपलब्ध ना"
+
+msgid "No availability zone specified"
+msgstr " उपलब्धताय विभाग स्पश्ट केल्लो ना"
+
+msgid "No availability zones found"
+msgstr "उपलब्धताय विभाग मेळू ना"
+
+msgid "No available console found."
+msgstr "उपलब्ध कंसोल मेळू. "
+
+msgid "No available projects"
+msgstr "प्रकल्प उपलब्ध ना"
+
+msgid "No backups available"
+msgstr "बॅकअप्स उपलब्ध ना"
+
+msgid "No flavors available"
+msgstr "फ्लेवर्स उपलब्ध ना"
+
+msgid "No floating IP addresses allocated"
+msgstr "फ्लोटिंग IP नामे दिल्ले ना"
+
+msgid "No floating IP pools available"
+msgstr "फ्लोटिंग IP पूल्स उपलब्ध ना"
+
+msgid "No floating IPs to disassociate."
+msgstr "जोडणी काडपाक फ्लोटिंग IPs ना."
+
+msgid "No groups found."
+msgstr "गट मेळू ना."
+
+msgid "No groups."
+msgstr "गट ना."
+
+msgid "No host selected."
+msgstr "येजमान निवडील्ले ना."
+
+msgid "No hosts found."
+msgstr "येजमान मेळू ना."
+
+msgid "No images available"
+msgstr "प्रतिमा उपलब्ध ना"
+
+msgid "No images available."
+msgstr "प्रतिमा उपलब्ध ना."
+
+msgid "No instances available"
+msgstr "इंस्टंसिस उपलब्ध ना"
+
+msgid "No key pairs available"
+msgstr "की जोडी उपलब्ध ना"
+
+msgid "No keypair"
+msgstr "कीजोडी ना"
+
+msgid "No networks available"
+msgstr "नेटवर्क मेळना"
+
+msgid "No options specified"
+msgstr "विकल्प स्पश्ट केल्ले ना"
+
+msgid "No other agents available."
+msgstr "हेर एजंट्स उपलब्ध ना."
+
+msgid "No other hosts available."
+msgstr "हेर येजमान उपलब्ध ना."
+
+msgid "No ports available"
+msgstr "पोर्ट्स उपलब्ध ना"
+
+msgid "No projects found."
+msgstr "प्रकल्प मेळू ना."
+
+msgid "No projects selected. All projects can use the flavor."
+msgstr "प्रकल्प निवडील्ले ना. सगळे प्रकल्प फ्लेवर्स वापरपाक शकता."
+
+msgid "No provider is available"
+msgstr "पुरोवपी उपलब्ध ना."
+
+msgid "No security groups available"
+msgstr "सुरक्षा गट उपलब्ध ना"
+
+msgid "No security groups enabled."
+msgstr "सुरक्षा गट सक्रिय ना."
+
+msgid "No security groups found."
+msgstr "सुरक्षा गट मेळू ना."
+
+msgid ""
+"No servers available. To add a member, you need at least one running "
+"instance."
+msgstr "सर्वर्स उपलब्ध ना. सदस्य जोडपाक, किमा एक चलपी इंस्टंस जाय."
+
+msgid "No session persistence"
+msgstr "सत्र चिकाटी ना"
+
+msgid "No snapshots available"
+msgstr "स्नॅपशॉट उपलब्ध ना"
+
+msgid "No source, empty volume"
+msgstr "स्त्रोत ना, रिकामो आकार"
+
+msgid "No subnets available"
+msgstr "उपनेट्स उपलब्ध ना"
+
+msgid "No users found."
+msgstr "वापरपी मेळू ना."
+
+msgid "No users."
+msgstr "वापरपी ना."
+
+msgid "No volume snapshots available"
+msgstr "आकार स्नॅपशॉट्स उपलब्ध ना"
+
+msgid "No volume type"
+msgstr "आकाराचो प्रकार"
+
+msgid "No volumes available"
+msgstr "आकार उपलब्ध ना"
+
+msgid "Node Group Template Details"
+msgstr "नोड गट टेंप्लेट तपशील"
+
+#, python-format
+msgid "Node Group Template copy %s created"
+msgstr "नोड गट टेंप्लेट प्रत %s तयार केल्या"
+
+msgid "Node Group Templates"
+msgstr "नोड गट टेंप्लेट्स"
+
+msgid "Node Groups"
+msgstr "नोड गट"
+
+msgid "Node Processes"
+msgstr "नोड प्रक्रिया"
+
+msgid "Node group cluster"
+msgstr "नोड गट क्लस्टर"
+
+msgid "Non-Members"
+msgstr "बिगर-सदस्य"
+
+msgid "None"
+msgstr "काय ना"
+
+msgctxt "Task status of an Instance"
+msgid "None"
+msgstr "काय ना"
+
+msgid "Normal"
+msgstr "सामान्य"
+
+msgid "Not Assigned"
+msgstr "दिंव ना"
+
+msgid "Not Found"
+msgstr "मेळू ना"
+
+msgid "Not available"
+msgstr "उपलब्ध ना"
+
+msgid "Nova"
+msgstr "नोव्हा"
+
+msgid "Number of API requests against swift"
+msgstr "स्विफ्टामुखार  API विनंतींची संख्या"
+
+msgid "Number of VCPUs"
+msgstr "VCPU ची संख्या"
+
+msgid "Number of containers"
+msgstr "कंटेनरांची संख्या"
+
+msgid "Number of incoming bytes"
+msgstr "भीतर येवपी बायट्सांची संख्या"
+
+msgid "Number of incoming bytes on the network for a VM interface"
+msgstr "VM इंटरफेसाखातीर नेटवर्कावेल्या येवपी बायटस ची संख्या"
+
+msgid "Number of incoming packets for a VM interface"
+msgstr " VM इंटरफेसाखातीर भितर येवपी पॅकेटस्ची संख्या"
+
+msgid "Number of instances to launch."
+msgstr "चालू करपाच्या इंस्टंसिसांची संख्या."
+
+msgid "Number of objects"
+msgstr "वस्तींची संख्या"
+
+msgid "Number of outgoing bytes"
+msgstr "भायर वचपी बायट्सांची संख्या"
+
+msgid "Number of outgoing bytes on the network for a VM interface"
+msgstr " VM इंटरफेसाखातीर भायर वचपी बायटांची संख्या"
+
+msgid "Number of outgoing packets for a VM interface"
+msgstr " VM इंटरफेसाखातीर भायर वचपी पॅकेटस्ची संख्या"
+
+msgid ""
+"Number of permissible failures before changing the status of member to "
+"inactive"
+msgstr "सदस्याची स्थिती निष्क्रिय म्हण बदलच्या पयली परवानगी आशिल्ल्या अपेसांची संख्या "
+
+msgid "Number of read requests"
+msgstr "वाचपाच्या विनंतेंची संख्या"
+
+msgid "Number of write requests"
+msgstr "बरोवपाच्या विनंतेंची संख्या"
+
+msgid "OR Copy/Paste your Private Key"
+msgstr "OR तुमची खाजगी की प्रत करात/दसयात"
+
+msgid "Object Details"
+msgstr "वस्तीचो तपशील"
+
+msgid "Object Name"
+msgstr "वस्तीचे नाव"
+
+msgid "Object Store"
+msgstr "वस्त साठो"
+
+msgid "Object was successfully updated."
+msgstr "वस्त यशस्विपणान सुदाल्ल्या."
+
+msgid "Object was successfully uploaded."
+msgstr "वस्त यशस्विपणान अपलोड जाल्या."
+
+msgid "Objects"
+msgstr "वस्तीं"
+
+msgid "Old Flavor"
+msgstr "पोन्नो फ्लेवर"
+
+msgid "On Demand"
+msgstr "मागणी वेल्यान"
+
+msgid "Open Port"
+msgstr "ओपन पोर्ट"
+
+msgid "OpenStack Flavor"
+msgstr "ओपनस्टॅक फ्लेवर"
+
+msgid "Optional Backup Description"
+msgstr "वैकल्पिक बॅकअप विवरण"
+
+msgid "Optional Parameters"
+msgstr "वैकल्पिक परिमाणां"
+
+msgid "Optional parent backup"
+msgstr "वैकल्पिक पालक बॅकअप"
+
+msgid "Optional: Next Hop Addresses (comma delimited)"
+msgstr "वैकल्पिक: मुखावेलो थांबो नामे (स्वल्पविराम निर्बंधित)"
+
+msgid "Orchestration"
+msgstr "ऑर्केस्ट्रेशन"
+
+msgid "Other"
+msgstr "हेर"
+
+msgid "Other Protocol"
+msgstr "हेर शिष्टाचार"
+
+msgid "Output"
+msgstr "आवटपुट"
+
+msgid "Overlay"
+msgstr "ओव्हरले"
+
+msgid "Overview"
+msgstr "अवलोकन"
+
+msgid "PFS"
+msgstr "PFS"
+
+msgid "PING"
+msgstr "PING"
+
+msgid "Page Not Found"
+msgstr "पान मेळू ना"
+
+msgid "Parent Backup"
+msgstr "पालक बॅकअप"
+
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgctxt "Current status of an Instance"
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgid "Password changed. Please log in again to continue."
+msgstr "पासवर्ड बदल्ला. फुडे वचपाक मात्शे परतून लॉग ईन."
+
+#, python-format
+msgid "Password for user \"%s\""
+msgstr "\"%s\" वापरप्याखातीर पासवर्ड"
+
+msgid "Passwords do not match."
+msgstr "पासवर्ड जुळना."
+
+msgctxt "Swift pseudo folder path"
+msgid "Path"
+msgstr "वाट"
+
+msgctxt "Current status of an Instance"
+msgid "Paused"
+msgstr "थारयला"
+
+msgctxt "Power state of an Instance"
+msgid "Paused"
+msgstr "थारयला"
+
+msgctxt "Task status of an Instance"
+msgid "Pausing"
+msgstr "थारयता"
+
+msgid "Peer gateway public IPv4/IPv6 Address or FQDN"
+msgstr "पीयर गेटवे भौशिक IPv4/IPv6 नामो वो FQDN"
+
+msgid "Peer gateway public IPv4/IPv6 address or FQDN for the VPN Connection"
+msgstr "VPN जोडणेखातीर पीयर गेटवे भौशिक IPv4/IPv6 नामो वो FQDN"
+
+msgid "Peer router identity for authentication (Peer ID)"
+msgstr "अधिकृतीकरणाखातीर (पीयर ID) पीयर राऊटर ओळख"
+
+msgid ""
+"Peer router identity for authentication. Can be IPv4/IPv6 address, e-mail, "
+"key ID, or FQDN"
+msgstr ""
+"अधिकृतीकरणाखातीर (पीयर ID) पीयर राऊटर ओळख. IPv4/IPv6 नामो, ईमेल, की ID, वो "
+"FQDN आसू येता"
+
+msgid "Perfect Forward Secrecy"
+msgstr "मुखावेली योग्य गुप्तताय"
+
+msgid "Period"
+msgstr "काळ"
+
+msgid "Permit"
+msgstr "परवानगी दियात"
+
+msgid "Persist cluster after job exit"
+msgstr "काम बंद केल्याउपरांत क्लस्टर उरता"
+
+msgid "Physical Network"
+msgstr "प्रत्यक्ष नेटवर्क"
+
+msgid "Physical Network Name"
+msgstr "प्रत्यक्ष नेटवर्क नाव"
+
+msgid "Pig"
+msgstr "पीग"
+
+msgid "Please choose a HTTP method"
+msgstr "मात्शी HTTP पद्धत निवडात"
+
+msgid ""
+"Please enter a single value (e.g. 200), a list of values (e.g. 200, 202), or "
+"range of values (e.g. 200-204)"
+msgstr ""
+"मात्शे एकोडे मोल (देख. 200), मोलांची वळेरी (देख. 200, 202) वो मोलांची व्याप्ती (देख. "
+"200-204) दियात"
+
+#, python-format
+msgid "Please specify a %s using only one source method."
+msgstr "फकत एक स्त्रोत पद्धत वापरपी %s मात्शे स्पश्ट करात. "
+
+msgid "Please specify an URL"
+msgstr "मात्शे  URL स्पश्ट करात"
+
+#, python-format
+msgid "Please try again later [Error: %s]."
+msgstr "मात्शे मागीर यत्न करात [एरर: %s]."
+
+msgid "Plugin"
+msgstr "प्लगईन"
+
+msgid "Plugin Name"
+msgstr "प्लगईनाचे नाव"
+
+msgid "Plugin name"
+msgstr "प्लगईनाचे नाव"
+
+msgid "Plugins"
+msgstr "प्लगईन्स"
+
+msgid "Policies"
+msgstr "धोरणां"
+
+msgid "Policy"
+msgstr "धोरण"
+
+#, python-format
+msgid "Policy %s was successfully updated."
+msgstr "%s धोरण यशस्विपणान सुदारला."
+
+msgid "Policy Profile"
+msgstr "धोरण प्रोफायल"
+
+msgid "Policy Profiles"
+msgstr "धारेण प्रोफायल"
+
+msgid "Pool"
+msgstr "पूल"
+
+#, python-format
+msgid "Pool %s was successfully updated."
+msgstr "%s पूल यशस्विपणान सुदारला."
+
+msgid "Pool Details"
+msgstr "पूल तपशील"
+
+msgid "Pools"
+msgstr "पूल्स"
+
+msgid "Port"
+msgstr "पोर्ट"
+
+#, python-format
+msgid "Port %s was successfully created."
+msgstr "%s पोर्ट यशस्विपणान तयार जाला."
+
+#, python-format
+msgid "Port %s was successfully updated."
+msgstr "%s पोर्ट यशस्विपणान सुदारला."
+
+msgid "Port Details"
+msgstr "पोर्ट तपशील"
+
+msgid "Port Range"
+msgstr "पोर्ट व्याप्ती"
+
+msgid "Port list can not be retrieved."
+msgstr "पोर्ट वळेरी परत मेळोवपाक शकना."
+
+msgid "Port to be associated"
+msgstr "जोडपाचो पोर्ट"
+
+msgid "Ports"
+msgstr "पोर्ट्स"
+
+msgid "Post-Creation"
+msgstr "निर्मणे-उपरांत"
+
+msgid "Power State"
+msgstr "ऊर्जा स्थिती"
+
+msgid "Power consumption"
+msgstr "वीज वापर"
+
+msgctxt "Task status of an Instance"
+msgid "Powering Off"
+msgstr "बंद करता"
+
+msgctxt "Task status of an Instance"
+msgid "Powering On"
+msgstr "चालू करता"
+
+msgid "Pre-Shared Key (PSK) string"
+msgstr "पयली-वाटिल्ली की (PSK) स्ट्रींग"
+
+msgctxt "Task status of an Instance"
+msgid "Preparing Resize or Migrate"
+msgstr "नव्या आकाराची वो स्थलांतराची तयारी करता"
+
+msgid "Primary Project"
+msgstr "प्राथमिक प्रकल्प"
+
+msgid "Private"
+msgstr "खाजगी"
+
+msgid "Private Key File"
+msgstr "खासगी की फायल"
+
+msgid "Processes"
+msgstr "प्रक्रिया"
+
+msgid "Processes to be launched in node group"
+msgstr "नोड गटान चालू करपाच्यो प्रक्रिया"
+
+msgid "Project"
+msgstr "प्रकल्प"
+
+msgid "Project & User"
+msgstr "प्रकल्प & वापरपी"
+
+msgid "Project Groups"
+msgstr "प्रकल्प गट"
+
+msgid "Project ID"
+msgstr "प्रकल्प ID"
+
+msgid "Project Information"
+msgstr "प्रकल्पाची माहिती"
+
+msgid "Project Members"
+msgstr "प्रकल्प सदस्य"
+
+msgid "Project Name"
+msgstr "प्रकल्पाचे नाव"
+
+msgid "Project Usage"
+msgstr "प्रकल्प वापर"
+
+msgid "Projects"
+msgstr "प्रकल्प"
+
+msgid "Projects could not be retrieved."
+msgstr "प्रकल्प परत मेळोवपाक शकना."
+
+msgid "Projects:"
+msgstr "प्रकल्प:"
+
+msgid "Protected"
+msgstr "सुरक्षित"
+
+msgid "Protocol"
+msgstr "शिष्टाचार"
+
+msgid "Protocol Port"
+msgstr "शिष्टाचार पोर्ट"
+
+msgid "Protocol for the firewall rule"
+msgstr "फायरवॉल नियमाखातीर शिष्टाचार"
+
+msgid "Provider"
+msgstr "पुरोवपी"
+
+msgid "Provider Network Type"
+msgstr "दिवपी नेटवर्क प्रकार"
+
+msgid "Provider for Load Balancer is not supported"
+msgstr "लोड बॅलन्सराक दिवप्याक फाटबळ ना"
+
+msgid "Pseudo-folder Name"
+msgstr "नकली - फोल्डराचे नाव"
+
+msgid "Pseudo-folder was successfully created."
+msgstr "सूडो-फोल्डर यशस्विपणान तयार जाला."
+
+msgid "Public"
+msgstr "भौशिक"
+
+msgid "Public Key"
+msgstr "भौशिक की"
+
+msgid "QCOW2 - QEMU Emulator"
+msgstr "QCOW2 - QEMU इम्यूलेटर"
+
+msgid "QoS Spec Consumer"
+msgstr "QoS Spec गिरायक"
+
+msgid ""
+"QoS Spec consumer value must be different than the current consumer value."
+msgstr "QoS Spec गिरायक मोल सद्याच्या गिरायक मोलापरस वेगळे आसपाक जाय."
+
+msgid "QoS Spec to be associated"
+msgstr "जोडपाचे QoS Spec"
+
+msgid "QoS Specs"
+msgstr "QoS Specs"
+
+msgid "Quota"
+msgstr "कोटा"
+
+msgid "Quota Name"
+msgstr "कोटाचे नाव"
+
+msgid "Quota exceeded for resource router."
+msgstr "संसाधन राऊटराखातीर कोटा वाडला."
+
+#, python-format
+msgid "Quota value(s) cannot be less than the current usage value(s): %s."
+msgstr "कोटा मोल(लां) सद्याचे वापर मोल(लां) परस कमी आसपाक जाय ना: %s."
+
+msgid "Quotas"
+msgstr "कोटा"
+
+msgid "RAM"
+msgstr "RAM"
+
+msgid "RAM (MB)"
+msgstr "RAM (MB)"
+
+msgid "RAM (total)"
+msgstr "RAM (एकूण)"
+
+msgid "RAM (used)"
+msgstr "RAM (वापरिल्ले)"
+
+#, python-format
+msgid "RAM(Available: %(avail)s, Requested: %(req)s)"
+msgstr "RAM(उपलब्ध: %(avail)s, विनंती केला: %(req)s)"
+
+msgid "Ramdisk ID"
+msgstr "रॅमडिस्क ID"
+
+msgid "Raw"
+msgstr "कच्चे"
+
+msgctxt "Image format for display in table"
+msgid "Raw"
+msgstr "कच्चे"
+
+msgid "Reason"
+msgstr "कारण"
+
+msgctxt "Action log of an instance"
+msgid "Reboot"
+msgstr "परत बूट करात"
+
+msgctxt "Current status of a Database Instance"
+msgid "Reboot"
+msgstr "परत बूट करात"
+
+msgctxt "Current status of an Instance"
+msgid "Reboot"
+msgstr "परत बूट करात"
+
+msgctxt "Task status of an Instance"
+msgid "Rebooting"
+msgstr "परत बूट करता"
+
+msgctxt "Task status of an Instance"
+msgid "Rebooting Hard"
+msgstr "हार्ड रिबूटिंग"
+
+msgctxt "Action log of an instance"
+msgid "Rebuild"
+msgstr "परतून बांदणी"
+
+msgctxt "Current status of an Instance"
+msgid "Rebuild"
+msgstr "परतून बांदणी"
+
+msgctxt "Task status of an Instance"
+msgid "Rebuild Block Device Mapping"
+msgstr "ब्लॉक उपकरण मॅपिंग रिबिल्ड"
+
+msgid "Rebuild Instance"
+msgstr "इन्स्टन्स परत बांदात"
+
+msgid "Rebuild Password"
+msgstr "पासवर्ड परतून बांधात"
+
+msgctxt "Task status of an Instance"
+msgid "Rebuild Spawning"
+msgstr "स्पॉनिंग रिबिल्ड"
+
+msgctxt "Task status of an Instance"
+msgid "Rebuilding"
+msgstr "परतून बांदता"
+
+#, python-format
+msgid "Rebuilding instance %s."
+msgstr "%s इंस्टंस परत बांदता."
+
+msgid "Reducer"
+msgstr "रेड्युसर"
+
+msgid "Regions:"
+msgstr "प्रदेश:"
+
+msgid "Register Image"
+msgstr "प्रतिमेची नोंद करात"
+
+msgid "Relative part of requests this pool member serves compared to others"
+msgstr "हेरांच्या तुलनेंत हो पूल सदस्य सेवा करता त्या विनंतींचो संबंधित भाग"
+
+msgid ""
+"Relative part of requests this pool member serves compared to others. \n"
+"The same weight will be applied to all the selected members and can be "
+"modified later. Weight must be in the range 1 to 256."
+msgstr ""
+"हेरांच्या तुलनेंत ह्या पूल सदस्यान केल्ल्या विनंतींचो संबंदित भाग. \n"
+"हेच वजन सगळ्या निवडिल्ल्या सदस्यांक लागू जातले आणि ते उपरांत  बदलू येता. वजन 1 ते 256 च्या "
+"व्याप्तीन आसूंक जाय."
+
+msgid "Relaunch On Existing Cluster"
+msgstr "सद्याच्या क्लस्टरार परत चालू करात"
+
+msgid "Relaunch On New Cluster"
+msgstr "नव्या क्लस्टरार परत चालू करात"
+
+msgid "Remote"
+msgstr "रिमोट"
+
+msgid "Remote peer subnet(s)"
+msgstr "रिमोट पीयर उपनेट(ट्स)"
+
+msgid ""
+"Remote peer subnet(s) address(es) with mask(s) in CIDR format separated with "
+"commas if needed (e.g. 20.1.0.0/24, 21.1.0.0/24)"
+msgstr ""
+"गरज आसल्यार CIDR स्वरूपान स्वल्पविरामान वेगळे केल्ले म्होवाळे(ळ्यां)संयत रिमोट पीयर "
+"उपनेट(ट्स) नामो(मे) (देखीक. 20.1.0.0/24, 21.1.0.0/24)"
+
+msgid "Remove Rule"
+msgstr "नियम काडात"
+
+msgid "Remove Rule from Policy"
+msgstr "धोरणातल्यान नियम काडात"
+
+msgid "Request ID"
+msgstr "विनंती ID"
+
+msgid "Required for APP_COOKIE persistence; Ignored otherwise."
+msgstr "APP_COOKIE सातत्याखातीर गरजेचे; ना जाल्यार दुर्लक्ष."
+
+msgctxt "Current status of an Instance"
+msgid "Rescue"
+msgstr "सोडयात"
+
+msgctxt "Task status of an Instance"
+msgid "Rescuing"
+msgstr "सोडयता"
+
+msgid "Resize"
+msgstr "परत आकार दियात"
+
+msgctxt "Action log of an instance"
+msgid "Resize"
+msgstr "परत आकार दियात"
+
+msgctxt "Current status of a Database Instance"
+msgid "Resize"
+msgstr "परत आकार दियात"
+
+msgid "Resize Database Volume"
+msgstr "डेटाबेस आकारमानाक नवो आकार दियात."
+
+msgid "Resize Instance"
+msgstr "इंस्टंसाक परत आकार दियात"
+
+msgid "Resize Volume"
+msgstr "आकारमानाक नवो आकार दियात"
+
+msgctxt "Current status of an Instance"
+msgid "Resize/Migrate"
+msgstr "परत आकार दियात/स्थलांतरित करात"
+
+msgctxt "Task status of an Instance"
+msgid "Resized or Migrated"
+msgstr "परत आकार दिला वो स्थलांतरित केला"
+
+msgctxt "Task status of an Instance"
+msgid "Resizing or Migrating"
+msgstr "परत आकार दिता वो विलीन करता"
+
+#, python-format
+msgid "Resizing volume \"%s\""
+msgstr "\"%s\" आकारमानाक नवो आकार दियात."
+
+msgid "Resource"
+msgstr "संसाधन"
+
+msgid "Resource Usage"
+msgstr "संसाधन वापर"
+
+msgid "Resources"
+msgstr "संसाधनां"
+
+msgid "Resources Usage Overview"
+msgstr "संसाधन वापर अवलोकन"
+
+msgid "Restore Backup"
+msgstr "बॅकअप परत दवरात"
+
+msgid "Restore Backup to Volume"
+msgstr "आकाराक बॅकअप परत करात"
+
+msgid "Restore Volume Backup"
+msgstr "आकार बॅकअप परतून मेळयात"
+
+msgid "Restore a Volume Backup"
+msgstr "आकार बॅकअप परत करात"
+
+msgctxt "Current status of a Volume Backup"
+msgid "Restoring"
+msgstr "परत सारके करता"
+
+msgctxt "Task status of an Instance"
+msgid "Restoring"
+msgstr "परत सारके करता"
+
+msgctxt "Task status of an Instance"
+msgid "Resuming"
+msgstr "परत येता"
+
+msgid "Retrieve Instance Password"
+msgstr "इंस्टंस पासवर्ड  परत मेळयात."
+
+msgid "Retrieve Password"
+msgstr "पासवर्ड परत मेळयात"
+
+msgid "Revert Resize/Migrate"
+msgstr "नवो आकार/स्थलांतर रद्द करात"
+
+msgctxt "Current status of an Instance"
+msgid "Revert Resize/Migrate"
+msgstr "नवो आकार/स्थलांतर रद्द करात"
+
+msgctxt "Task status of an Instance"
+msgid "Reverting Resize or Migrate"
+msgstr "परत आकार दिवपान वो स्थलांतरित करपान परत येता"
+
+msgid "Role"
+msgstr "भूमीका"
+
+msgid "Role ID"
+msgstr "भूमीका ID"
+
+msgid "Role Name"
+msgstr "भूमीकेचे नाव"
+
+msgid "Role created successfully."
+msgstr "भूमीका यशस्विपणान तयार जाल्या."
+
+msgid "Role updated successfully."
+msgstr "भूमीका यशस्विपणान सुदाल्ल्या."
+
+msgid "Roles"
+msgstr "भूमीका"
+
+msgid "Rollback On Failure"
+msgstr "फसल्यार परतून व्हरात"
+
+msgid "Root Disk"
+msgstr "रूट डिस्क"
+
+msgid "Root Disk (GB)"
+msgstr "रूट डिस्क (GB)"
+
+msgid "Router"
+msgstr "राऊटर "
+
+#, python-format
+msgid "Router %s was successfully created."
+msgstr "%s राऊटर यशस्विपणान तयार जाला."
+
+#, python-format
+msgid "Router %s was successfully updated."
+msgstr "%s राऊटर यशस्विपणान सुदारला."
+
+msgid "Router Details"
+msgstr "राऊटर तपशील"
+
+msgid "Router ID"
+msgstr "राऊटर ID"
+
+msgid "Router Name"
+msgstr "राऊटराचे नाव"
+
+msgid "Router Rules"
+msgstr "राऊटर नियम"
+
+msgid "Router Rules Grid"
+msgstr "राऊटर नेम ग्रीड"
+
+msgid "Router Type"
+msgstr "राऊटराचो प्रकार"
+
+msgid "Router rule added"
+msgstr "राऊटर नियम जोडला"
+
+msgid "Routers"
+msgstr "राऊटर्स"
+
+msgid "Rule"
+msgstr "नियम"
+
+#, python-format
+msgid "Rule %(rule)s was successfully inserted to policy %(policy)s."
+msgstr "%(rule)s नियम यशस्विपणान %(policy)s धोरणान घाला."
+
+#, python-format
+msgid "Rule %(rule)s was successfully removed from policy %(policy)s."
+msgstr " %(rule)s नियम यशस्विपणान %(policy)s धोरणातल्यान काडला"
+
+#, python-format
+msgid "Rule %s was successfully updated."
+msgstr "%s नियम यशस्विपणान सुदारला."
+
+msgid "Rules"
+msgstr "नियम "
+
+msgctxt "Power state of an Instance"
+msgid "Running"
+msgstr "चलता"
+
+msgid "Save"
+msgstr "जतनाय करात"
+
+msgid "Save Changes"
+msgstr "बदलांची जतनाय करात"
+
+#, python-format
+msgid "Saved extra spec \"%s\"."
+msgstr "अदिक spec \"%s\" ची जतनाय जाल्या."
+
+#, python-format
+msgid "Saved spec \"%s\"."
+msgstr "spec \"%s\" ची जतनाय जाल्या."
+
+msgid "Scale"
+msgstr "प्रमाण"
+
+msgid "Scale Cluster"
+msgstr "क्लस्टर प्रमाणित करात"
+
+msgid "Scale cluster operation failed"
+msgstr "क्लस्टर प्रमाणित करप कारवाय असफळ"
+
+msgid "Scaled cluster successfully started."
+msgstr "प्रमाणित क्लस्टर यशस्विपणान सुरू जालो."
+
+#, python-format
+msgid "Scheduled backup \"%(name)s\"."
+msgstr "थारायल्लो बॅकअप \"%(name)s\"."
+
+#, python-format
+msgid "Scheduled deletion of %(data_type)s"
+msgstr "%(data_type)s चे थारायल्ले काडून उडोवप"
+
+#, python-format
+msgid "Scheduled resize of instance \"%s\"."
+msgstr " \"%s\" इन्स्टन्साचो थारिल्लो नवो आकार"
+
+msgctxt "Task status of an Instance"
+msgid "Scheduling"
+msgstr "नेमून दिता"
+
+msgid "Script Data"
+msgstr "लिपी डेटा"
+
+msgid "Script File"
+msgstr "लिपी फायल"
+
+msgid "Script name"
+msgstr "स्क्रिप्टाचे नाव"
+
+msgid "Script text"
+msgstr "स्क्रिप्ट मजकूर"
+
+msgid "Security Group"
+msgstr "सुरक्षा गट"
+
+msgid "Security Group Rules"
+msgstr "सुरक्षा गट नियम"
+
+msgid "Security Groups"
+msgstr "सुरक्षा गट"
+
+msgid "Segment Range"
+msgstr "भागाची व्याप्ती"
+
+msgid "Segment Type"
+msgstr "विभाग प्रकार"
+
+msgid "Segmentation ID"
+msgstr "विभागीकरण ID"
+
+msgid "Select IKE Policy"
+msgstr "IKE धोरण निवडात"
+
+msgid "Select IPSec Policy"
+msgstr "IPSec धोरण निवडात"
+
+msgid "Select Image"
+msgstr "प्रतिमा निवडात"
+
+msgid "Select Instance Snapshot"
+msgstr "इंस्टंस स्नॅपशॉट निवडात"
+
+msgid "Select Script Source"
+msgstr "स्क्रिप्ट स्त्रोत निवडला"
+
+msgid "Select Subnet"
+msgstr "उपनेट निवडात"
+
+msgid "Select Template"
+msgstr "टेंप्लेट निवडात"
+
+msgid "Select VPN Service"
+msgstr "VPN सेवा निवडात"
+
+msgid "Select Volume"
+msgstr "आकार निवडात"
+
+msgid "Select Volume Snapshot"
+msgstr "आकार स्नॅपशॉट निवडात"
+
+msgid "Select a Method"
+msgstr "पद्धत  निवडात"
+
+msgid "Select a Monitor"
+msgstr " निरीक्षक निवडात"
+
+msgid "Select a New Flavor"
+msgstr "नवो फ्लेवर निवडात"
+
+msgid "Select a Policy"
+msgstr "धोरण निवडात"
+
+msgid "Select a Pool"
+msgstr "पूल निवडात"
+
+msgid "Select a Protocol"
+msgstr "शिष्टाचार निवडात"
+
+msgid "Select a Router"
+msgstr "राऊटर निवडात"
+
+msgid "Select a Subnet"
+msgstr "उपनेट निवडात"
+
+msgid "Select a backup to restore"
+msgstr "परत करपाक बॅकअप निवडात"
+
+#, python-format
+msgid "Select a health monitor of %s"
+msgstr "%s चो आरोग्य निरीक्षक निवडात"
+
+msgid "Select a key pair"
+msgstr "की जोडी निवडात"
+
+#, python-format
+msgid "Select a monitor template for %s"
+msgstr "%s खातीर निरीक्षक टेंप्लेट निवडात"
+
+msgid "Select a new agent"
+msgstr "नवो एजंट निवडात"
+
+msgid "Select a new host"
+msgstr "नवो येजमान निवडात"
+
+msgid "Select a new template to re-launch a stack."
+msgstr "स्टॅक परत चालू करपाक नवे टेंप्लेट जोडात."
+
+msgid "Select a port"
+msgstr "पोर्ट निवडात"
+
+msgid "Select a profile"
+msgstr "प्रोफायल निवडात"
+
+msgid "Select a project"
+msgstr "प्रकल्प निवडात"
+
+msgid "Select a target host"
+msgstr "लक्ष्य येजमान निवडात"
+
+msgid "Select a template to launch a stack."
+msgstr "स्टॅक चालू करपाक टेंप्लेट निवडात."
+
+msgid "Select an IP address"
+msgstr " IP नामो निवडात"
+
+msgid "Select an instance"
+msgstr "इंस्टंस निवडात"
+
+msgid "Select an instance to attach to."
+msgstr "क जोडपाक इंस्टंस निवडात."
+
+msgid "Select backup"
+msgstr "बॅकअप निवडात"
+
+msgid "Select datastore type and version"
+msgstr "डेटास्टोराचो प्रकार आणि आवृत्ती निवडात."
+
+msgid "Select format"
+msgstr "स्वरूप निवडात"
+
+msgid "Select from active instances"
+msgstr "सक्रिय इंस्टंसिसातल्यान निवडात"
+
+msgid "Select members for this pool "
+msgstr "ह्या पूलाखातीर सदस्य निवडात"
+
+msgid "Select network"
+msgstr "नेटवर्क निवडात"
+
+msgid "Select networks for your instance."
+msgstr "तुमच्या इंस्टंसाखातीर नेटवर्क्स निवडात."
+
+msgid "Select parent backup"
+msgstr "पालक बॅकअप निवडात"
+
+msgid "Select plugin and hadoop version"
+msgstr "प्लगइन आणि हाडूप आवृत्ती निवडात"
+
+msgid "Select plugin and hadoop version for cluster"
+msgstr "क्लस्टराखातीर प्लगइन आमि हाडूप आवृत्ती निवडात."
+
+msgid "Select plugin and hadoop version for cluster template"
+msgstr "क्लस्टर टेम्प्लेटीखातीर प्लगइन आणि हाडूप आवृत्ती निवडात "
+
+msgid "Select rules for your policy."
+msgstr "तुमच्या धोरणाखातीर नियम निवडात."
+
+msgid "Select source"
+msgstr "स्त्रोत निवडात"
+
+msgid ""
+"Select the projects where the flavors will be used. If no projects are "
+"selected, then the flavor will be available in all projects."
+msgstr ""
+"फ्लेवर्स वापरले वतले ते प्रकल्प निवडात. प्रकल्प निवडले ना जाल्यार, फ्लेवर सगळ्या प्रकल्पांनी "
+"उपलब्ध जातलो."
+
+msgid "Selected Hosts"
+msgstr "निवडील्ले येजमान"
+
+msgid "Selected Projects"
+msgstr "निवडील्ले प्रकल्प"
+
+msgid "Selected hosts"
+msgstr "निवडील्ले येजमान"
+
+msgid "Server error"
+msgstr "सर्वर एरर"
+
+msgid "Service"
+msgstr "सेवा"
+
+msgid "Service Configurations"
+msgstr "सेवा संरचनाय"
+
+msgid "Service Endpoint"
+msgstr "सेवा एंडपॉयंट"
+
+msgid "Services"
+msgstr "सेवा"
+
+msgid "Services Down"
+msgstr "सेवा सकयल"
+
+msgid "Services Up"
+msgstr "सेवा वयर"
+
+msgid "Session Persistence"
+msgstr "सत्र चिकाटी"
+
+msgid "Set Domain Context"
+msgstr "डोमेन संदर्भ थारायात"
+
+msgid "Set Gateway"
+msgstr "गेटवे थारायात"
+
+msgid "Set as Active Project"
+msgstr "सक्रिय प्रकल्प म्हण थारायात"
+
+msgid "Set maximum quotas for the project."
+msgstr "प्रकल्पाखातीर कमाल कमाल कोटा थारायात."
+
+msgid "Settings"
+msgstr "स्थापितां"
+
+msgid "Settings saved."
+msgstr "स्थापितांची जतनाय जाल्या."
+
+msgid "Shared"
+msgstr "वाटिल्ली"
+
+msgid "Shared Storage"
+msgstr "वाटिल्लो साठो"
+
+msgid "Shared with Me"
+msgstr "म्हजेसंयत वाटला"
+
+msgctxt "Current status of an Instance"
+msgid "Shelved"
+msgstr "दाळिल्ले"
+
+msgctxt "Current status of an Instance"
+msgid "Shelved Offloaded"
+msgstr "दाळिल्ले ऑफलोडेड"
+
+msgctxt "Task status of an Instance"
+msgid "Shelving"
+msgstr "दाळता"
+
+msgctxt "Task status of an Instance"
+msgid "Shelving Image Pending Upload"
+msgstr "अपलोड न जाल्ली प्रतिमा दाळता"
+
+msgctxt "Task status of an Instance"
+msgid "Shelving Image Uploading"
+msgstr "प्रतिमा अपलोडिंग दाळता"
+
+msgctxt "Task status of an Instance"
+msgid "Shelving Offloading"
+msgstr "दाळिल्ले ऑफलोडिंग करता"
+
+msgctxt "Power state of an Instance"
+msgid "Shut Down"
+msgstr "बंद करात"
+
+msgctxt "Power state of an Instance"
+msgid "Shut Off"
+msgstr "बंद कर"
+
+msgctxt "Current status of an Instance"
+msgid "Shutoff"
+msgstr "बंद करात"
+
+msgid "Sign Out"
+msgstr "सायन आवट"
+
+msgid "Size"
+msgstr "आकार"
+
+msgid "Size (GB)"
+msgstr "आकार (GB)"
+
+msgid "Size of image to launch."
+msgstr "चालू करपाच्या प्रतिमेचो आकार."
+
+msgid "Size of the volume in GB."
+msgstr "आकारमानाचो आकार GB न."
+
+msgid "Size of volume"
+msgstr "प्रमाणाचो आकार"
+
+msgid "Slash is not an allowed character."
+msgstr "स्लॅशाक परवानगी ना."
+
+msgid ""
+"Slashes are allowed, and are treated as pseudo-folders by the Object Store."
+msgstr "स्लॅशाक परवानगी आसा, आनी वस्त साठो तांका सूडो-फोल्डर म्हण वागता."
+
+msgid "Snapshot"
+msgstr "स्नॅपशॉट"
+
+msgctxt "Type of an image"
+msgid "Snapshot"
+msgstr "स्नॅपशॉट"
+
+#, python-format
+msgid "Snapshot \"%(name)s\" created for instance \"%(inst)s\""
+msgstr "\"%(inst)s\"  इंस्टंसाखातीर \"%(name)s\" स्नॅपशॉट तयार केला"
+
+msgid "Snapshot Name"
+msgstr "स्नॅपशॉटाचे नाव"
+
+msgid "Snapshot source must be specified"
+msgstr "स्नॅपशॉटाचो स्त्रोत स्पश्ट करपाक जाय"
+
+msgctxt "Task status of an Instance"
+msgid "Snapshotting"
+msgstr "स्नॅपशॉटिंग"
+
+msgctxt "Current status of an Instance"
+msgid "Soft Deleted"
+msgstr "सॉफ्ट काडून उडयल्ले"
+
+msgctxt "Task status of an Instance"
+msgid "Soft Deleting"
+msgstr "सॉफ्ट काडून उडयता"
+
+msgid "Something went wrong!"
+msgstr "किदे तरी चुकले"
+
+msgid "Source CIDR"
+msgstr "स्त्रोत CIDR"
+
+msgid "Source IP"
+msgstr "स्त्रोत IP"
+
+msgid "Source IP Address/Subnet"
+msgstr "स्त्रोत IP नामो/उपनेट"
+
+msgid "Source IP address or subnet"
+msgstr "स्त्रोत IP नामो वो उपनेट"
+
+msgid "Source Port"
+msgstr "स्त्रोत पोर्ट"
+
+msgid "Source Port/Port Range"
+msgstr "स्त्रोत पोर्ट/पोर्ट व्याप्ती"
+
+msgid "Source password"
+msgstr "स्त्रोत पासवर्ड"
+
+msgid "Source port (integer in [1, 65535] or range in a:b)"
+msgstr "स्त्रोत पोर्ट (पूर्णांक  [1, 65535] न वो  a:b व्याप्तीन)"
+
+msgid "Source username"
+msgstr "स्त्रोत वापरप्याचेनाव"
+
+msgid "Spark"
+msgstr "स्पार्क"
+
+msgctxt "Task status of an Instance"
+msgid "Spawning"
+msgstr "स्पॉनिंग"
+
+msgid "Spec"
+msgstr "Spec"
+
+msgid ""
+"Specifies how IPv6 addresses and additional information are configured. We "
+"can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
+"specify no option. 'No options specified' means addresses are configured "
+"manually or configured by a non-OpenStack system."
+msgstr ""
+"IPv6 नामो आणि अदिक माहिती कशी संरचनाय करता हे स्पश्ट करता. आमच्यान ओपनस्टॅकान दिल्ली "
+"SLAAC/DHCPv6 stateful/DHCPv6 स्टेटलेस स्पश्ट करू येता वो विकल्प ना स्पश्ट करात.  "
+"'विकल्प ना स्पश्ट केला' म्हळ्यार नामे मॅन्युअली संरचनाय जातले वो बिगर - ओपनस्टॅक व्यवस्थेवरवी "
+"संरचनाय जातले. "
+
+msgid "Specify \"Network Address\""
+msgstr " \"नेटवर्क नामो\" स्पश्ट करात"
+
+msgid "Specify \"Network Address\" or clear \"Create Subnet\" checkbox."
+msgstr "\"नेटवर्क नामो\" स्पश्ट करात वो \"उपनेट तयार करात\" चेकबॉक्स साफ करात."
+
+msgid "Specify IP address of gateway or check \"Disable Gateway\"."
+msgstr "गेटवेचो IP नामो स्पश्ट करात वो  \"गेटवे अक्षम\" चेर खूण करात."
+
+msgid "Specify VIP"
+msgstr " VIP स्पश्ट करात"
+
+msgid "Specify a free IP address from the selected subnet"
+msgstr "निवडिल्ल्या उपनेटातल्यान फुकट IP नामो स्पश्ट करात"
+
+msgid "Specify additional attributes for the subnet."
+msgstr "उपनेटाखातीर अदिक गुणधर्म स्पश्ट करात."
+
+msgid "Specify an IP address for the interface created (e.g. 192.168.0.254)."
+msgstr "तयार केल्ल्या इंटरफेसाक IP नामो स्पश्ट करात (देखीक. 192.168.0.254)."
+
+msgid "Specify member IP address"
+msgstr "सदस्य IP नामो स्पश्ट करात"
+
+msgid "Specs"
+msgstr "Specs"
+
+msgid "Stack Events"
+msgstr "स्टॅक घडणूकों"
+
+msgid "Stack ID"
+msgstr "स्टॅक ID "
+
+msgid "Stack Name"
+msgstr "स्टॅकाचे नाव"
+
+msgid "Stack Resource"
+msgstr "स्टॅक संसाधन"
+
+msgid "Stack Resource Type"
+msgstr "स्टॅक संसाधन प्रकार"
+
+msgid "Stack Resources"
+msgstr "स्टॅक संसाधनं"
+
+msgid "Stack creation started."
+msgstr "स्टॅक निर्मणी सुरू जाल्या."
+
+msgid "Stack creation timeout in minutes."
+msgstr "दाळ निर्मणी टायमआवट मिनटांनी"
+
+msgid "Stack update started."
+msgstr "स्टॅक सुदार सुरू जाला."
+
+msgid "Stacks"
+msgstr "स्टॅक्स"
+
+msgctxt "Action log of an instance"
+msgid "Start"
+msgstr "सुरवात"
+
+msgid "Start Time"
+msgstr "सुरवातीचो वेळ"
+
+#, python-format
+msgid "Start address is larger than end address (value=%s)"
+msgstr "सुरवेचो नामो निमण्या नाम्यापरस व्हड आसा (मोल=%s)"
+
+#, python-format
+msgid "Start and end addresses must be specified (value=%s)"
+msgstr "सुरवेचो आनी निमणो नामो स्पश्ट करपाक जाय (मोल=%s)"
+
+msgid "Start must be earlier than end of period."
+msgstr "सुरवात ही शेवटाच्या पयली आसपाक जाय."
+
+#, python-format
+msgid "Starting evacuation from %(current)s to %(target)s."
+msgstr "%(current)s चे तल्यान %(target)s रिकामे करप सुरू करात."
+
+msgid "State"
+msgstr "राज्य"
+
+msgid "Stats"
+msgstr "Stats"
+
+msgid "Status"
+msgstr "स्थिती"
+
+msgid "Status ="
+msgstr "स्थिती ="
+
+msgid "Status Reason"
+msgstr "स्थितीचे कारण"
+
+msgid "Storage location"
+msgstr "साठो थळ"
+
+msgid "Storage type"
+msgstr "साठ्याचो प्रकार"
+
+msgid "Streaming MapReduce"
+msgstr "मॅपरेड्युस स्ट्रिमिंग करता"
+
+msgid "Sub Type"
+msgstr "उप प्रकार"
+
+msgid "Sub Type Value (Manual Input)"
+msgstr "उप प्रकार मोल (मॅन्युअल इनपुट)"
+
+msgid "Subnet"
+msgstr "उपनेट"
+
+#, python-format
+msgid "Subnet \"%s\" was successfully created."
+msgstr "\"%s\" उपनेट यशस्विपणान तयार जाला."
+
+#, python-format
+msgid "Subnet \"%s\" was successfully updated."
+msgstr "\"%s\" उपनेट यशस्विपणान सुदारला."
+
+msgid "Subnet Details"
+msgstr "उपनेट तपशील"
+
+msgid "Subnet Name"
+msgstr "उपनेटाचे नाव"
+
+msgid "Subnet list can not be retrieved."
+msgstr "उपनेट वळेरी परत मेळोवपाक शकना."
+
+msgid "Subnets"
+msgstr "उपनेट्स "
+
+msgid "Subnets Associated"
+msgstr "संबंधित उपनेट्स"
+
+#, python-format
+msgid "Successfully added rule: %s"
+msgstr "यशस्विपणान नियम जोडला: %s"
+
+#, python-format
+msgid "Successfully associated floating IP: %s"
+msgstr "यशस्विपणान फ्लोटिंग IP जोडल्यात: %s"
+
+#, python-format
+msgid "Successfully created QoS Spec: %s"
+msgstr "यशस्विपणान तयार जाला QoS Spec: %s"
+
+#, python-format
+msgid "Successfully created encryption for volume type: %s"
+msgstr "यशस्विपणान आकार प्रकाराखातीर एनक्रिप्शन तयार केला: %s"
+
+#, python-format
+msgid "Successfully created security group: %s"
+msgstr "यशस्विपणान सुरक्षा गट तयार केला: %s"
+
+#, python-format
+msgid "Successfully created volume type: %s"
+msgstr "यशस्विपणान तयार जाला आकार प्रकार: %s"
+
+#, python-format
+msgid "Successfully disassociated Floating IP: %s"
+msgstr "यशस्विपणान फ्लोटिंग IP ची जोडणी काडल्या : %s"
+
+#, python-format
+msgid "Successfully disassociated floating IP: %s"
+msgstr "यशस्विपणान फ्लोटिंग IP ची जोडणी काडल्या: %s"
+
+#, python-format
+msgid "Successfully imported public key: %s"
+msgstr "यशस्विपणान भौशिक की आयात केल्या: %s"
+
+msgid "Successfully modified QoS Spec consumer."
+msgstr "QoS Spec गिरायक यशस्विपणान बदल्ला."
+
+#, python-format
+msgid ""
+"Successfully restored backup %(backup_name)s to volume with id: %(volume_id)s"
+msgstr ""
+"सफळ रीतीन परत केल्लो बॅकअप %(backup_name)s ते आयडीसह आकारमान: %(volume_id)s"
+
+#, python-format
+msgid ""
+"Successfully sent the request to change the volume type to \"%(vtype)s\" for "
+"volume: \"%(name)s\""
+msgstr ""
+"\"%(name)s\" :प्रकाराखातीर  \"%(vtype)s\" आकारमान प्रकार बदलपाची विनंती सफळ "
+"रीतीन धाडली."
+
+#, python-format
+msgid ""
+"Successfully sent the request to upload volume to image for volume: \"%s\""
+msgstr ""
+"आकारमानाखातीर प्रतिमेन आकारमान अपलोड करपाची विनंती यशस्विपणान धाडल्या: \"%s\""
+
+msgid "Successfully updated QoS Spec association."
+msgstr "QoS Spec जोडणी यशस्विपणान सुदाल्ल्या."
+
+#, python-format
+msgid "Successfully updated aggregate: \"%s.\""
+msgstr "एग्रिगेट : \"%s.\" सफळ रीतीन सुदारलो"
+
+msgid "Successfully updated container access to private."
+msgstr "खासगींत कंटेनर प्रवेश सफळ रीतीन सुदारलो"
+
+msgid "Successfully updated container access to public."
+msgstr "कंटेरन भौशिक प्रवेश सफळ रीतीन सुदारलो."
+
+msgid "Successfully updated image."
+msgstr "प्रतिमा यशस्विपणान सुदाल्ल्या."
+
+#, python-format
+msgid "Successfully updated security group: %s"
+msgstr "यशस्विपणान सुरक्षा गट सुदारला: %s"
+
+#, python-format
+msgid "Successfully updated volume snapshot status: \"%s\"."
+msgstr "आकार स्नॅपशॉट स्थिती: \"%s\" यशस्विपणान सुदारल्या."
+
+#, python-format
+msgid "Successfully updated volume status to \"%s\"."
+msgstr "आकार स्थिती यशस्विपणान \"%s\" न सुदाल्ल्या."
+
+msgid "Supported Versions"
+msgstr "फाटबळ आशिल्ल्यो आवृत्त्यो"
+
+msgctxt "Current status of an Instance"
+msgid "Suspended"
+msgstr "रद्द केले"
+
+msgctxt "Power state of an Instance"
+msgid "Suspended"
+msgstr "रद्द केले"
+
+msgctxt "Task status of an Instance"
+msgid "Suspending"
+msgstr "रद्द करता"
+
+msgid "Swap Disk"
+msgstr "स्वॅप डिस्क"
+
+msgid "Swap Disk (MB)"
+msgstr "स्वॅप डिस्क (MB)"
+
+msgid "Swift"
+msgstr "स्विफ्ट"
+
+msgid "Swift_meters"
+msgstr "स्विफ्ट_मीटर्स"
+
+msgid "System"
+msgstr "व्यवस्था"
+
+msgid "System Information"
+msgstr "व्यवस्था माहिती"
+
+msgid "TCP"
+msgstr "TCP"
+
+msgid "Tags"
+msgstr "टॅग्ज"
+
+msgid "Target Host"
+msgstr "लक्ष येजमान"
+
+msgid "Task"
+msgstr "काम"
+
+msgid "Template"
+msgstr "टेंप्लेट"
+
+msgid "Template Data"
+msgstr "टेंप्लेट डेटा"
+
+msgid "Template File"
+msgstr "टेंप्लेट फायल"
+
+msgid "Template Name"
+msgstr "टेंप्लेटाचे नाव"
+
+msgid "Template Source"
+msgstr "टेंप्लेट स्त्रोत"
+
+msgid "Template URL"
+msgstr "टेंप्लेट URL"
+
+msgid "The \"from\" port number is invalid."
+msgstr "\"कडल्यान\" पोर्ट क्रमांक अमान्य."
+
+msgid "The \"to\" port number is invalid."
+msgstr "\"क\" पोर्ट क्रमांक अमान्य."
+
+msgid ""
+"The \"to\" port number must be greater than or equal to the \"from\" port "
+"number."
+msgstr "\"कडे\" पोर्ट क्रमांक \"कडल्यान\" पोर्ट क्रमांकापरस व्हडलो वो समान आसपाक जाय."
+
+#, python-format
+msgid ""
+"The 'operation' parameter for get_feature_permission '%(feature)s' is "
+"invalid. It should be one of %(allowed)s"
+msgstr ""
+"parameter for get_feature_permission '%(feature)s' खातीरचे 'कारवाय' परिणाम "
+"अवैध. ते  %(allowed)s ल्ल्यांतले एक आसपाक जाय."
+
+msgid "The Aggregate was updated."
+msgstr "एग्रिगेट सुदारलो."
+
+msgid "The ICMP code is invalid."
+msgstr " ICMP कोड अमान्य."
+
+msgid "The ICMP code not in range (-1, 255)"
+msgstr " ICMP कोड (-1, 255) व्याप्तीन ना"
+
+msgid "The ICMP type is invalid."
+msgstr " ICMP प्रकार अमान्य."
+
+msgid "The ICMP type not in range (-1, 255)"
+msgstr " ICMP प्रकार (-1, 255) व्याप्तीन ना"
+
+#, python-format
+msgid "The ID \"%s\" is already used by another flavor."
+msgstr "\"%s\" ID पयलीच हेर फ्लेवरान वापल्ला."
+
+msgid "The Key Pair name that was associated with the instance"
+msgstr "इंस्टंसाकडे संबंधित की जोडीचे नाव"
+
+#, python-format
+msgid ""
+"The Volume size is too small for the '%(image_name)s' image and has to be "
+"greater than or equal to '%(smallest_size)d' GB."
+msgstr ""
+"'%(image_name)s' प्रतिमेखातीर आकारमान आकार खूप ल्हान आसा आनी '%(smallest_size)d' "
+"GB परस व्हडले वो समान आसपाक जाय."
+
+msgid "The container cannot be deleted since it is not empty."
+msgstr "कंटेनर काडून उडोवपाक शकना कारण तो रिकमी ना."
+
+#, python-format
+msgid ""
+"The flavor '%(flavor)s' is too small for requested image.\n"
+"Minimum requirements: %(min_ram)s MB of RAM and %(min_disk)s GB of Root Disk."
+msgstr ""
+"निवंती केल्ल्या प्रतिमेखातीर फ्लेवर '%(flavor)s' खूप ल्हान आसा.\n"
+"किमान गरजों: %(min_ram)s MB  RAM तली आनी %(min_disk)s GB रूट डिस्कातली."
+
+#, python-format
+msgid "The instance is preparing the live migration to host \"%s\"."
+msgstr "इन्स्टन्स \"%s\" येजमान मजगती प्रत्यक्ष स्थलांतराची तयारी करता."
+
+msgid "The instance password encrypted with your public key."
+msgstr "तुमच्या भौशिक की संयत एनक्रिप्ट केल्लो इंस्टंस पासवर्ड."
+
+msgid ""
+"The minimum disk size required to boot the image. If unspecified, this value "
+"defaults to 0 (no minimum)."
+msgstr ""
+"प्रतिमा बूट करपाक गरजेचो डिस्काचो किमान आकार. स्पश्ट करू ना जाल्यार, हे मोल मुळाव्यान 0 "
+"(किमान ना)."
+
+msgid ""
+"The minimum memory size required to boot the image. If unspecified, this "
+"value defaults to 0 (no minimum)."
+msgstr ""
+"प्रतिमा बूट करपाक गरजेची किमान मेमरी. स्पश्ट करू ना जाल्यार, हे मोल मुळाव्यान 0 (किमान "
+"ना)."
+
+#, python-format
+msgid "The name \"%s\" is already used by another flavor."
+msgstr "\"%s\" नाव पयलीच हेर फ्लेवरान वापल्ला."
+
+#, python-format
+msgid "The name \"%s\" is already used by another host aggregate."
+msgstr " \"%s\" नावहेर येजमान एग्रिगेटान पयलीच वापरला."
+
+msgid ""
+"The name of the physical network over which the virtual network is "
+"implemented."
+msgstr "जाचेर व्हर्च्युअल नेटवर्काची अंमलबजावणी केल्या त्या प्रत्यक्ष नेटवर्काचे नाव."
+
+msgid "The page you were looking for doesn't exist"
+msgstr "तुमी पळयतात ते पान अस्तित्वान ना."
+
+msgid "The physical mechanism by which the virtual network is implemented."
+msgstr "व्हर्च्युअल नेटवर्काची अंमलबजावणी करपी प्रत्यक्ष यंत्रणा."
+
+msgid "The pseudo folder cannot be deleted since it is not empty."
+msgstr "सूडो फोल्डर काडून उडोवपाक शकना कारण तो रिकमी ना."
+
+msgid "The raw contents of the environment file."
+msgstr "वातावरण फायलीचो रॉ आशय."
+
+msgid "The raw contents of the template."
+msgstr "टेंप्लेटाचो रॉ आशय"
+
+#, python-format
+msgid ""
+"The requested feature '%(feature)s' is unknown. Please make sure to specify "
+"a feature defined in FEATURE_MAP."
+msgstr ""
+"विनंती केल्ले वैशिश्ट्य '%(feature)s' खबर ना. FEATURE_MAP न व्याख्या केल्ले वैशिश्ट्य स्पश्ट "
+"करपाक विसरू नाकात"
+
+#, python-format
+msgid ""
+"The requested instance cannot be launched. The following requested "
+"resource(s) exceed quota(s): %s."
+msgstr ""
+"विनंती केल्लो इंस्टंस चालू करपाक शकना. मुखावयले विनंती केल्ले संसाधन(नां) कोटा(ज) परस चड "
+"आसा: %s."
+
+msgid ""
+"The requested instance port is already associated with another floating IP."
+msgstr "विनंती केल्लो इंस्टंस पोर्ट पयलीच हेर फ्लोटिंग IP संयत जोडला."
+
+msgid "The specified port is invalid."
+msgstr "स्पश्ट केल्लो पोर्ट अमान्य."
+
+msgid "The state to start in."
+msgstr "सुरवात करपाची स्थिती"
+
+msgid "The state to start the network in."
+msgstr "ज्या स्थितीन नेटवर्क सुरू करपाची ती."
+
+#, python-format
+msgid "The subnet in the Network Address is too small (/%s)."
+msgstr "नेटवर्क नाम्यातले उपनेट खूप ल्हान (/%s) आसा"
+
+#, python-format
+msgid "The volume size cannot be less than the image minimum disk size (%sGB)"
+msgstr "हो आकारमान आकार प्रतिमेच्या किमान डिस्क आकारापरस कमी आसपाक शकना  (%sGB)"
+
+#, python-format
+msgid "The volume size cannot be less than the image size (%s)"
+msgstr "हो आकारमान आकार प्रतिमा आकारापरस कमी आसपाक शकना  (%s)"
+
+#, python-format
+msgid "The volume size cannot be less than the snapshot size (%sGB)"
+msgstr "हो आकारमान आकार स्नॅपशॉट आकारापरस कमी आसपाक शकना  (%sGB)"
+
+#, python-format
+msgid "The volume size cannot be less than the source volume size (%sGB)"
+msgstr "हो आकारमान आकार स्त्रोत आकारमान आकारापरस कमी आसपाक शकना  (%sGB)"
+
+msgid "There are no meters defined yet."
+msgstr "मीटर आजून स्पश्ट केल्ले नात."
+
+msgid ""
+"There is not enough capacity for this flavor in the selected availability "
+"zone. Try again later or select a different availability zone."
+msgstr ""
+"निवडील्ल्या उपलब्धताय विभागान ह्या फ्लेवराक जायती क्षमता ना. मागीर यत्न करात वो दुसरो "
+"उपलब्धताय विभागा निवडात."
+
+#, python-format
+msgid "There was a problem parsing the %(prefix)s: %(error)s"
+msgstr "%(prefix)s: %(error)s पार्सिंग करतास्तना आडमेळ आयली."
+
+msgid ""
+"This is required for operations to be performed throughout the lifecycle of "
+"the stack"
+msgstr "साठ्याच्या जीवितभर कारवाय करपाखातीर हाची गरज आसा."
+
+msgid "This name is already taken."
+msgstr "हे नाव पयलीसांवन आसा."
+
+msgid ""
+"This volume is currently attached to an instance. In some cases, creating a "
+"snapshot from an attached volume can result in a corrupted snapshot."
+msgstr ""
+"हो आकारमान सद्या इंस्टंसाक जोडला. काय केसीनी, जोडिल्ल्या आकारमानातल्यान स्नॅपशॉट तयार "
+"केल्यार इबाडिल्लो स्नॅपशॉट तयार जाव येता."
+
+msgid "Time"
+msgstr "वेळ"
+
+msgid "Time Since Event"
+msgstr "घडणुकेउपरांतचो वेळ"
+
+msgid "Time since created"
+msgstr "तयार केल्ल्या सांवन वेळ"
+
+msgid "Timeout"
+msgstr "वेळ सोपलो"
+
+msgid "Timezone"
+msgstr "टायमझोन"
+
+msgid "Title"
+msgstr "माथळो"
+
+msgid "To"
+msgstr "क"
+
+msgid "To Port"
+msgstr "पोर्टाकडे"
+
+msgid "To date to must be greater than From date."
+msgstr "मेरेन तारीक कडल्यान तारकेपरस व्हडली आसपाक जाय."
+
+msgid ""
+"To specify an allowed IP range, select &quot;CIDR&quot;. To allow access "
+"from all members of another security group select &quot;Security Group&quot;."
+msgstr ""
+"दिल्ली IP व्याप्ती स्पश्ट करपाक,  &quot;CIDR&quot;निवडात. हेर सुरक्षा गटातल्या सगळ्या "
+"सदस्यांकडल्यान प्रवेशाक अनुमती दिवपाखातीर निवडात &quot;सुरक्षा गट &quot;."
+
+msgid "Topology"
+msgstr "टोपोलॉजी"
+
+msgid "Total Size of LUKS Volumes and Snapshots (GB)"
+msgstr "LUKS आकारांचो आणि स्नॅपशॉटस्चो एकूण आकार (GB)"
+
+msgid "Total Size of Volumes and Snapshots (GB)"
+msgstr "आकार आणि स्नॅपशॉटस्चो एकूण आकार (GB)"
+
+msgid "Total disk usage (GB * Hours Used) for the project"
+msgstr "प्रकल्पाखातीर एकूण डिस्क वापर (GB * वरां वापल्ला) "
+
+msgid "Total size of stored objects"
+msgstr "साठयल्ल्या वस्तींचो एकूण आकार"
+
+msgid "Transform Protocol"
+msgstr "हस्तांतर प्रोटोकॉल"
+
+msgid "Trunk"
+msgstr "ट्रँक"
+
+msgid "Type"
+msgstr "प्रकार"
+
+msgid "Type and version of datastore."
+msgstr "डेटास्टोराचो प्रकार आणि आवृत्ती."
+
+msgid "UDP"
+msgstr "UDP"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "UTC"
+msgstr "UTC"
+
+#, python-format
+msgid "UTC %(hour)s:%(min)s"
+msgstr "UTC %(hour)s:%(min)s"
+
+#, python-format
+msgid "Unable to add Firewall \"%s\"."
+msgstr "\"%s\" फायरवॉल जोडपाक शकना."
+
+#, python-format
+msgid "Unable to add IKE Policy \"%s\"."
+msgstr "IKE धोरण \"%s\" जोडपाक शकना."
+
+#, python-format
+msgid "Unable to add IPSec Policy \"%s\"."
+msgstr "IPSec धोरण \"%s\" जोडपाक शकना.."
+
+#, python-format
+msgid "Unable to add IPSec Site Connection \"%s\"."
+msgstr "IPSec सायट जोडणी \"%s\" जोडपाक शकना."
+
+#, python-format
+msgid "Unable to add Policy \"%s\"."
+msgstr "\"%s\" धोरण जोडपाक शकना."
+
+#, python-format
+msgid "Unable to add Rule \"%s\"."
+msgstr "नियम \"%s\" जोडपाक शकना."
+
+#, python-format
+msgid "Unable to add VIP \"%s\"."
+msgstr " VIP \"%s\" जोडपाक शकना."
+
+#, python-format
+msgid "Unable to add VPN Service \"%s\"."
+msgstr "VPN सेवा \"%s\" जोडपाक शकना."
+
+msgid "Unable to add member(s)"
+msgstr "सदस्य जोडपाक शकना"
+
+msgid "Unable to add monitor"
+msgstr "निरीक्षक  जोडपाक शकना"
+
+msgid "Unable to add monitor."
+msgstr "निरीक्षक जोडपाक शकना."
+
+#, python-format
+msgid "Unable to add pool \"%s\"."
+msgstr "\"%s\" पूल जोडपाक शकना."
+
+msgid "Unable to add rule to security group."
+msgstr "सुरक्षा गटाक नियम जोडपाक शकना."
+
+msgid "Unable to add user to primary project."
+msgstr "वापरपी प्राथमिक प्रकल्पान जोडपाक शकना."
+
+msgid "Unable to allocate Floating IP."
+msgstr "फ्लोटिंग IP दिवपाक शकना."
+
+#, python-format
+msgid "Unable to associate IP address %s."
+msgstr "IPनामो %s जोडपाक अपेस."
+
+msgid "Unable to associate floating IP."
+msgstr "फ्लोटिंग IP जोडपाक जाले ना."
+
+msgid "Unable to associate monitor."
+msgstr "निरीक्षक जोडपाक शकना."
+
+msgid "Unable to attach volume."
+msgstr "आकार जोडपाक शकना."
+
+msgid "Unable to change password."
+msgstr "पासवर्ड बदलुपाक शकना."
+
+#, python-format
+msgid "Unable to change the volume type for volume: \"%s\""
+msgstr "आकारमानाखातीर आकारमान प्रकार बदलुपाक शकना: \"%s\""
+
+#, python-format
+msgid "Unable to clear gateway for router \"%(name)s\": \"%(msg)s\""
+msgstr "राऊटर \"%(name)s\" खातीर गेटवे मेकळो करपाक जाले ना: \"%(msg)s\""
+
+msgid "Unable to connect to Neutron."
+msgstr "न्युट्रॉनाक जोडपाक शकलो ना"
+
+msgid "Unable to copy object."
+msgstr "वस्तीची प्रत करपाक शकना."
+
+msgid "Unable to create QoS Spec."
+msgstr "QoS spec तयार करपाक शकना"
+
+msgid "Unable to create container."
+msgstr "कंटेनर तायर करपाक शकना."
+
+#, python-format
+msgid "Unable to create domain \"%s\"."
+msgstr "डोमेन \"%s\" तयार करपाक शकना."
+
+msgid "Unable to create encrypted volume type."
+msgstr "एनक्रिप्टेड आकाराचो प्रकार तयार करपाक शकना."
+
+#, python-format
+msgid "Unable to create flavor \"%s\"."
+msgstr "फ्लेवर  \"%s\" तयार करपाक शकना."
+
+msgid "Unable to create flavor."
+msgstr "फ्लेवर तयार करपाक शकना."
+
+msgid "Unable to create group."
+msgstr "गट तयार करपाक शकना."
+
+#, python-format
+msgid "Unable to create host aggregate \"%s\"."
+msgstr "येजमान एग्रिगेट \"%s\" तयार करपाक शकना."
+
+msgid "Unable to create host aggregate."
+msgstr "येजमान एग्रिगेट तयार करपाक शकना."
+
+msgid "Unable to create job binary"
+msgstr " काम बायनरी तयार करपाक शकना"
+
+#, python-format
+msgid "Unable to create key pair: %(exc)s"
+msgstr "की जोडी तयार करपाक शकना: %(exc)s"
+
+#, python-format
+msgid "Unable to create network \"%s\"."
+msgstr "\"%s\" नेटवर्क तयार करपाक शकना."
+
+msgid "Unable to create new cluster for job."
+msgstr "कामाखातीर नवो क्लस्टर तयार करपाक शकना."
+
+#, python-format
+msgid "Unable to create project \"%s\"."
+msgstr "प्रकल्प \"%s\" तयार करपाक शकना."
+
+msgid "Unable to create pseudo-folder."
+msgstr "सूडो-फोल्डर तयार करपाक शकना."
+
+msgid "Unable to create role."
+msgstr "भूमीका तयार करपाक शकना."
+
+msgid "Unable to create snapshot."
+msgstr "स्नॅपशॉट तयार करपाक शकना."
+
+msgid "Unable to create spec."
+msgstr "Spec तयार करपाक शकना."
+
+#, python-format
+msgid "Unable to create subnet \"%s\"."
+msgstr "उपनेट \"%s\" तयार करपाक शकना."
+
+msgid "Unable to create the cluster"
+msgstr "क्लस्टर तयार करपाक शकना"
+
+msgid "Unable to create user."
+msgstr "वापरपी तयार करपाक शकना."
+
+msgid "Unable to create volume backup."
+msgstr "आकार बॅकअप तयार करपाक असफळ."
+
+msgid "Unable to create volume snapshot."
+msgstr "आकार स्नॅपशॉट तयार करपाक शकना."
+
+msgid "Unable to create volume type extra spec."
+msgstr "आकार प्रकार अदिक Spec तयार करपाक शकना"
+
+msgid "Unable to create volume type."
+msgstr "आकाराचो प्रकार तयार करपाक शकना."
+
+msgid "Unable to create volume."
+msgstr "आकार तयार करपाक शकना."
+
+#, python-format
+msgid "Unable to delete IKE Policy: %s"
+msgstr "IKE धोरण: %s काडून उडोवपाक शकना"
+
+#, python-format
+msgid "Unable to delete IPSec Policy: %s"
+msgstr "IPSec धोरण: %s काडून उडोवपाक शकना"
+
+#, python-format
+msgid "Unable to delete IPSec Site Connection: %s"
+msgstr "IPSec सायट जोडणी: %s काडून उडोवपाक शकना"
+
+#, python-format
+msgid "Unable to delete VIP. %s"
+msgstr "VIP काडून उडोवपाक शकना. %s "
+
+#, python-format
+msgid "Unable to delete VPN Service: %s"
+msgstr " VPN सोवा: %s काडून उडोवपाक शकना"
+
+msgid "Unable to delete container."
+msgstr "कंटेनर काडून उडोवपाक शकना."
+
+#, python-format
+msgid "Unable to delete firewall. %s"
+msgstr "फायरवॉल काडून उडोवपाक शकना. %s"
+
+#, python-format
+msgid "Unable to delete member. %s"
+msgstr "सदस्य काडून उडोवपाक शकना. %s "
+
+#, python-format
+msgid "Unable to delete monitor. %s"
+msgstr "निरीक्षक  काडून उडोवपाक शकना. %s "
+
+#, python-format
+msgid "Unable to delete policy. %s"
+msgstr "धोरण काडून उडोवपाक शकना. %s"
+
+#, python-format
+msgid "Unable to delete pool. %s"
+msgstr "पूल काडून उडोवपाक शकना. %s "
+
+#, python-format
+msgid "Unable to delete router \"%s\""
+msgstr "\"%s\" राऊटर काडून उडोवपाक शकना"
+
+msgid "Unable to delete router rule."
+msgstr "राऊटर नियम काडून उडोवपाक शकना."
+
+#, python-format
+msgid "Unable to delete rule. %s"
+msgstr "नियम काडून उडोवपाक शकना. %s"
+
+msgid "Unable to determine if availability zones extension is supported."
+msgstr "उपलब्धताय विभाग विस्तारांक फाटबळ आसा काय ना ते थारावपाक शकना."
+
+msgid "Unable to determine if volume type encryption is supported."
+msgstr "आकार प्रकार एनक्रिप्शनाक फाटबळ आसा काय ना ते थारावपाक शकना."
+
+msgid "Unable to disassociate floating IP."
+msgstr "फ्लोटिंग IP ची जोडणी काडपाक शकना."
+
+msgid "Unable to disassociate monitor."
+msgstr "निरीक्षकाची जोडणी काडपाक शकना."
+
+msgid "Unable to edit spec."
+msgstr "Spec संपादित करपाक शकना"
+
+msgid "Unable to edit volume type extra spec."
+msgstr "आकार प्रकार अदिक Spec संपादित करपाक शकना"
+
+msgid "Unable to extend volume."
+msgstr "आकार वाडोवपाक शकना."
+
+msgid "Unable to fetch EC2 credentials."
+msgstr "EC2 क्रेडेन्शियल्स मेळोवपाक जाले ना."
+
+msgid "Unable to fetch available images."
+msgstr "उपलब्ध प्रतिमा मेळोवपाक शकना."
+
+msgid "Unable to fetch cluster list"
+msgstr "क्लस्टर वळेरी मेळोवपाक शकना."
+
+msgid "Unable to fetch cluster template list"
+msgstr "क्लस्टर टेंप्लेटाची वळेरी मेळोवपाक असफळ."
+
+msgid "Unable to fetch cluster template."
+msgstr "क्लस्टर टेंप्लेट मेळोवपाक असफळ."
+
+msgid "Unable to fetch cluster to scale"
+msgstr "प्रमाणित करपाक क्लस्टर मेळोवपाक शकना"
+
+msgid "Unable to fetch cluster to scale."
+msgstr "प्रमाणित करपाक क्लस्टर मेळोवपाक शकना."
+
+msgid "Unable to fetch clusters."
+msgstr "क्लस्टर्स मेळोवपाक शकना."
+
+msgid "Unable to fetch data sources."
+msgstr "डेटा स्त्रोत मेळोवपाक शकना."
+
+msgid "Unable to fetch flavor for template."
+msgstr "टेंप्लेटाखातीर फ्लेवर मेळोवपाक शकना."
+
+msgid "Unable to fetch floating ip pools."
+msgstr "फ्लोटिंग ip पूल्स मेळोवपाक शकना."
+
+msgid "Unable to fetch image choices."
+msgstr "प्रतिमेच्यो निवडी मेळोवपाक शकना."
+
+msgid "Unable to fetch instance details."
+msgstr "इंस्टंसिसाचो तपशील मेळोवपाक शकना."
+
+msgid "Unable to fetch job binary list."
+msgstr " काम बायनरी वळेरी मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to fetch job binary: %(exc)s"
+msgstr " काम बायनरी वळेरी मेळोवपाक शकना: %(exc)s"
+
+msgid "Unable to fetch job executions."
+msgstr "काम कार्यवाही मेळोवपाक येवना"
+
+msgid "Unable to fetch jobs."
+msgstr "कामां मेळोवपाक शकना."
+
+msgid "Unable to fetch keypair choices."
+msgstr "कीजोडी निवडी मेळोवपाक शकना."
+
+msgid "Unable to fetch node group details."
+msgstr "नोड गटाचो तपशील मेळोवपाक असफळ."
+
+msgid "Unable to fetch node group template list."
+msgstr "नोड गट टेंप्लेट वळेरी मेळोवपाक शकना."
+
+msgid "Unable to fetch plugin details."
+msgstr "प्लगईन तपशील मेळोवपाक शकना."
+
+msgid "Unable to fetch plugin list."
+msgstr "क्लस्टर टेंप्लेट तयार करात"
+
+msgid "Unable to fetch template object."
+msgstr "टेंप्लेट वस्त मेळोवपाक शकना."
+
+msgid "Unable to fetch template to copy."
+msgstr "टेंप्लेट ते प्रत मेळोवपाक शकना."
+
+msgid "Unable to fetch the image details"
+msgstr "प्रतिमेचो तपशील परत मेळोवपाक शकना"
+
+msgid "Unable to find backup!"
+msgstr "बॅकअप सोदपाक अपेस!"
+
+msgid "Unable to find default role."
+msgstr "मुळावी भूमीका सोदपाक अपेस"
+
+msgid "Unable to generate process choices."
+msgstr "प्रक्रिया निवडी निर्माण करपाक शकना."
+
+msgid "Unable to get EC2 credentials"
+msgstr "EC2 क्रेडेन्शियल्स मेळोवपाक जाले ना"
+
+#, python-format
+msgid "Unable to get RDP console for instance \"%s\"."
+msgstr "\"%s\" इंस्टंसाखातीर RDP कंसोल मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to get SPICE console for instance \"%s\"."
+msgstr "\"%s\" इंस्टंसाखातीर SPICE कंसोल मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to get VNC console for instance \"%s\"."
+msgstr "\"%s\" इंस्टंसाखातीर VNC कंसोल मेळोवपाक शकना."
+
+msgid "Unable to get cinder services list."
+msgstr "सिंडर सेवा वळेरी मेळोवपाक शकना."
+
+msgid "Unable to get database backup data."
+msgstr "डेटाबेस बॅकअप डेटा मेळोवपाक शकना."
+
+msgid "Unable to get databases data."
+msgstr "डेटाबेसींचो डेटा मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to get events for stack \"%s\"."
+msgstr "\"%s\" स्टॅकाखातीर घडणूकों मेळोंवपाक शकना."
+
+msgid "Unable to get flavor list"
+msgstr "फ्लेवर वळेरी मेळोवपाक शकना."
+
+msgid "Unable to get host aggregate list"
+msgstr "येजमान एग्रिगेट वळेरी मेळोवपाक जाले ना"
+
+#, python-format
+msgid "Unable to get log for instance \"%s\"."
+msgstr "\"%s\" इंस्टंसाखातीर लॉग मेळोवपाक शकना."
+
+msgid "Unable to get network agents info."
+msgstr "नेटवर्क एजंट्स इंन्फो मेळोवपाक शकना."
+
+msgid "Unable to get network agents list."
+msgstr "नेटवर्क एजंट्सांची वळेरी मेळोवपाक शकना."
+
+msgid "Unable to get node group details."
+msgstr "नोड गट तपशील मेळोवपाक शकना."
+
+msgid "Unable to get nova services list."
+msgstr "नोव्हा सेवा वळेरी मेळोवपाक शकना."
+
+msgid "Unable to get openrc credentials"
+msgstr "openrc क्रेडेन्शियल्स मेळोवपाक जाले ना"
+
+msgid "Unable to get quota info."
+msgstr "कोटा इंन्फो मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to get resources for stack \"%s\"."
+msgstr "\"%s\" स्टॅकाखातीर संसाधनां मेळोंवपाक शकना."
+
+#, python-format
+msgid "Unable to get subnet \"%s\""
+msgstr "उपनेट  \"%s\" मेळोवपाक शकना"
+
+msgid "Unable to get the available hosts"
+msgstr "उपलब्ध आशिल्ले येजमान मेळोवपाक जाले ना"
+
+msgid "Unable to get user data."
+msgstr "वापरप्याचो डेटा मेळोवपाक शकना."
+
+msgid "Unable to import key pair."
+msgstr "की जोडी आयात करपाक शकना."
+
+#, python-format
+msgid "Unable to launch %(count)s named \"%(name)s\"."
+msgstr "\"%(name)s\" नाव आशिल्ले चालू करपाक %(count)s शकना."
+
+msgid "Unable to launch job."
+msgstr "काम चालू करपाक शकना."
+
+msgid "Unable to list containers."
+msgstr "कंटेनर्सांची वळेरी करपाक शकना."
+
+msgid "Unable to list database backups for parent."
+msgstr "पालकाखातीर डेटाबेस बॅकअपां वळेरी करपाक शकना."
+
+msgid "Unable to list database instances to backup."
+msgstr "बॅकअप करपाच्या डेटाबेस इंस्टंसिसांची वळेरी करपाक शकना."
+
+msgid "Unable to list dhcp agents hosting network."
+msgstr "नेटवर्काचे येजमानपद करपी डीएचसीपी एजंटांची वळेरी करपाक शकना."
+
+#, python-format
+msgid "Unable to load the specified image. %s"
+msgstr "स्पश्ट केल्ली प्रतिमा लोड करपाक शकना. %s"
+
+msgid "Unable to load the specified snapshot."
+msgstr "स्पश्ट केल्लो स्नॅपशॉट लोड कराक शकना."
+
+#, python-format
+msgid "Unable to load the specified volume. %s"
+msgstr "स्पश्ट केल्ली प्रतिमा लोड करपाक शकना. %s"
+
+#, python-format
+msgid "Unable to locate VIP to delete. %s"
+msgstr "काडून उडोवपाक VIP सोदपाक शकना. %s"
+
+msgid "Unable to lookup volume or backup information."
+msgstr "आकार वो बॅकअप माहिती पळोवपाक शकना."
+
+#, python-format
+msgid "Unable to modify domain \"%s\"."
+msgstr "डोमेन \"%s\" बदलुपाक शकना."
+
+#, python-format
+msgid "Unable to modify flavor \"%s\"."
+msgstr "फ्लेवर \"%s\" बदलुपाक शकना."
+
+#, python-format
+msgid "Unable to modify instance \"%s\"."
+msgstr "\"%s\" इंस्टंस बदलुपाक सकना."
+
+#, python-format
+msgid "Unable to modify project \"%s\"."
+msgstr "\"%s\" प्रकल्प बदलुपाक शकना."
+
+msgid "Unable to obtain flavors."
+msgstr "फ्लेवर मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to parse IP address %s."
+msgstr "IP नामो  %s पार्स करपाक शकना."
+
+msgid "Unable to populate anti-affinity processes."
+msgstr "आसक्ती-विरोधी प्रक्रियांक एकठांय करपाक अपेस."
+
+msgid "Unable to process plugin tags"
+msgstr "प्लगईन टॅग्जांची प्रक्रिया करपाक शकना"
+
+msgid "Unable to rebuild instance."
+msgstr "इन्स्टन्स परतून बांदपाक जाले ना"
+
+#, python-format
+msgid "Unable to resize instance \"%s\"."
+msgstr "\"%s\" इंस्टंसाक परत आकार दिवपाक शकना."
+
+#, python-format
+msgid "Unable to resize volume. %s"
+msgstr " %s आकारमानाक नवो आकार दिवपाक शकना."
+
+msgid "Unable to restore backup."
+msgstr "बॅकअप परतून मेळोवपाक जाले ना"
+
+msgid "Unable to retrieve IKE Policies list."
+msgstr "IKE धोरण वळेरी परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve IKE Policy details."
+msgstr "IKE धोरण तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve IKE Policy details. %s"
+msgstr "IKE धोरण तपशील परत मेळोवपाक शकना. %s"
+
+#, python-format
+msgid ""
+"Unable to retrieve IP addresses from Neutron for instance \"%(name)s"
+"\" (%(id)s)."
+msgstr "\"%(name)s\" (%(id)s) इंस्टंसाखातीर न्टूट्रॉनातल्यान IP नामे परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve IP addresses from Neutron."
+msgstr "न्यूट्रॉनातल्यान IP नामे परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve IPSec Policies list."
+msgstr "IPSec  धोरणां वळेरी परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve IPSec Policy details."
+msgstr "IPSec धोरण तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve IPSec Policy details. %s"
+msgstr "IPSec धोरण तपशील परत मेळोवपाक शकना. %s"
+
+msgid "Unable to retrieve IPSec Site Connection details."
+msgstr "IPSec सायट जोडणी तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve IPSec Site Connection details. %s"
+msgstr "IPSec सायट जोडणी तपशील परत मेळोवपाक शकना. %s"
+
+msgid "Unable to retrieve IPSec Site Connections list."
+msgstr " IPSec सायट जोडण्यांची वळेरी परत मेळोवपाक अपेस."
+
+msgid "Unable to retrieve Nova availability zones."
+msgstr "नोव्हा उपलब्धताय विभाग परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve QoS Spec association."
+msgstr "QoS Spec जोडणी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve QoS Spec details."
+msgstr "QoS Spec तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve QoS Specs."
+msgstr "QoS Specs परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve QoS spec details."
+msgstr "QoS spec तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve QoS spec list."
+msgstr "QoS spec वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve QoS specs"
+msgstr "QoS specs परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve VIP details."
+msgstr "VIP तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve VIP details. %s"
+msgstr "VIP तपशील परत मेळोवपाक शकना. %s"
+
+msgid "Unable to retrieve VPN Service details."
+msgstr "VPN सेवा तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve VPN Service details. %s"
+msgstr "VPN सेवा तपशील परत मेळोवपाक शकना. %s"
+
+msgid "Unable to retrieve VPN Services list."
+msgstr "VPN सेवा वळेरी परत मेळोंवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve a list of external networks \"%s\"."
+msgstr "भायले नेटवर्क \"%s\" ची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve agent list."
+msgstr "एजंटाची वळेरी परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve an external network \"%s\"."
+msgstr "भायलो नेटवर्क \"%s\" परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve attachment information."
+msgstr "जोडणेची माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve availability zone list."
+msgstr "उपलब्धताय विभाग वळेरी परतून मेळोवपाक शकना"
+
+msgid "Unable to retrieve availability zones."
+msgstr "उपलब्धताय विभाग परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve available metadata for aggregate."
+msgstr "एग्रिगेटाखातीर उपलब्ध मेटाडेटा परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve available metadata for flavors."
+msgstr "फ्लेवरांखातीर उपलब्ध मेटाडेटा परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve available properties for image."
+msgstr " प्रतिमेखातीर उपलब्ध वैशष्ट्या परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve backup details."
+msgstr "बॅकअप तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve compute host information."
+msgstr "येजमान गणन माहिती परतून मेळोवपाक जाले ना."
+
+msgid "Unable to retrieve compute limit information."
+msgstr "गणन मर्यादा माहिती परत मेळोवपाक जाले ना."
+
+msgid "Unable to retrieve container list."
+msgstr "कंटेनर वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve data processing plugins."
+msgstr "डेटा प्रक्रिया प्लगईन्स परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve database instances."
+msgstr "डेटाबेस इंस्टंसिस परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve database size information."
+msgstr "डेटाबेस आकाराची माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve default Neutron quota values."
+msgstr "मुळावी न्यूट्रॉन कोटा मोलां परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve default quota values."
+msgstr "मुळावो कोटा मोलां परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve details for backup: %s"
+msgstr "बॅकअपाखातीर तपशील परत मेळोवपाक शकना: %s"
+
+#, python-format
+msgid "Unable to retrieve details for database instance: %s"
+msgstr "डेटाबेस इंस्टंसिसाचो तपशील परत मेळोवपाक शकना: %s"
+
+#, python-format
+msgid "Unable to retrieve details for instance \"%s\"."
+msgstr "\"%s\" इंस्टंसाखातीर तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve details for network \"%s\"."
+msgstr "\"%s\" नेटवर्काखातीर तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve details for parent backup: %s"
+msgstr "पालक बॅकअपाखातीर तपशील परत मेळोवपाक शकना: %s"
+
+#, python-format
+msgid "Unable to retrieve details for router \"%s\"."
+msgstr "राऊटर \"%s\" खातीर तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve details."
+msgstr "तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve domain details."
+msgstr "डोमेन तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve domain information."
+msgstr "डोमेन माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve domain list."
+msgstr "डोमेन वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve extensions information."
+msgstr "विस्तार माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve extra spec list."
+msgstr "अदिक Spec वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve firewall details."
+msgstr "फायरवॉलाचो तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve firewall list."
+msgstr "फायरवॉल वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve flavor access list. Please try again later."
+msgstr "फ्लेवर प्रवेश वळेरी परत मेळोवपाक शकना. मात्शे मागीर परत यत्न करात."
+
+msgid "Unable to retrieve flavor details."
+msgstr "फ्लेवराचो तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid ""
+"Unable to retrieve flavor information for instance \"%(name)s\" (%(id)s)."
+msgstr "\"%(name)s\" (%(id)s) इंस्टंसाखातीर फ्लेवराची माहिती परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve flavor information for instance \"%s\"."
+msgstr "\"%s\" इंस्टंसाखातीरफ्लोवर माहिती परतमेळोवपाक शकना."
+
+msgid "Unable to retrieve flavor list."
+msgstr "फ्लेवर वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve flavors."
+msgstr "फ्लेवर्स  परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve floating IP addresses."
+msgstr "फ्लोटिंग IP नामे परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve floating IP pools."
+msgstr "फ्लोटिंग IP पूल्सपरत मेळोवपाक शकना."
+
+msgid "Unable to retrieve group list."
+msgstr "गट वळेरी परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve group list. Please try again later."
+msgstr "गट वळेरी परत मेळोवपाक शकना. मात्शे मागीर परत यत्न करात."
+
+msgid "Unable to retrieve group users."
+msgstr "गट वापरपी परत मेळोंवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve health monitor details. %s"
+msgstr "आरोग्य निरीक्षकाचो तपशील परत मेळोवपाक शकना. %s"
+
+msgid "Unable to retrieve host aggregates list."
+msgstr "येजमान एग्रिगेट वळेरी परतून मेळोवपाक जाले ना"
+
+msgid "Unable to retrieve host information."
+msgstr "येजमान माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve hypervisor information."
+msgstr "हायपरवायजर माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve hypervisor instances list."
+msgstr "हायपरवायजर इंस्टसिस वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve hypervisor statistics."
+msgstr "हायपरवायजर सांख्यिकी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve image details."
+msgstr "प्रतिमा तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve image list"
+msgstr "प्रतिमेची वळेरी परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve image list."
+msgstr "प्रतिमा वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve image."
+msgstr "प्रतिमा परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve images for the current project."
+msgstr "सद्याच्या प्रकल्पाखातीर प्रतिमां परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve images with filter %s."
+msgstr "%s फिल्टरासंयत प्रतिमा मेळोवपाक शकना."
+
+msgid "Unable to retrieve images."
+msgstr "प्रतिमा परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instance action list."
+msgstr "इंस्टंस कारवाय वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instance details."
+msgstr "इंस्टंस तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instance flavors."
+msgstr "इंस्टंस फ्लेवर्स परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instance list."
+msgstr "इंस्टंस वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instance password."
+msgstr "इन्स्टन्स पासवर्ड परतून मेळोवपाक जाले ना."
+
+msgid "Unable to retrieve instance project information."
+msgstr "इंस्टंस प्रकल्प माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instance size information."
+msgstr "इंस्टंस आकार माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instance."
+msgstr "इंस्टंस परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instances list."
+msgstr "इंस्टंसिसांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve instances."
+msgstr "इंस्टंसिस परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve key pair list."
+msgstr "की जोडी वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve key pairs."
+msgstr "की जोडी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve limit information."
+msgstr "मर्यादेची माहिती परत मेळोवपाक असफळ."
+
+msgid "Unable to retrieve list of security groups"
+msgstr "सुरक्षआ गटांची वळेरी परतून मेळोवपाक जाले ना"
+
+msgid "Unable to retrieve list of volume snapshots."
+msgstr "आकार स्नॅपशॉटांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve list of volumes."
+msgstr "आकारांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve member details."
+msgstr "सदस्य तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve member details. %s"
+msgstr "सगस्य तपशील परत मेळोवपाक शकना. %s"
+
+msgid "Unable to retrieve member list."
+msgstr "सदस्यांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve metadata."
+msgstr "मेटाडेटा परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve monitor details."
+msgstr "निरीक्षक तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve monitor list."
+msgstr "निरीक्षकाची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve monitors list."
+msgstr "निरीक्षक वळेरी परत मेळयात."
+
+msgid "Unable to retrieve network details."
+msgstr "नेटवर्क तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve network profile details."
+msgstr "नेटवर्क प्रोफायल तपशील मेळोवपाक अपेस."
+
+msgid "Unable to retrieve network quota information."
+msgstr "नेटवर्क कोटाची माहिती परत मेळोवपाक असफळ."
+
+msgid "Unable to retrieve network."
+msgstr "नेटवर्क परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve networks list."
+msgstr "नेटवर्कांची वळेरी परत मेळोवपाक शकना. %s"
+
+msgid "Unable to retrieve networks."
+msgstr "नेटवर्क्स परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve object list."
+msgstr "वस्त वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve object."
+msgstr "वस्त परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve plugin."
+msgstr "प्लगईन परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve policies list."
+msgstr "धोरणांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve policy details."
+msgstr "धोरणाचो तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve policy list (%(error)s)."
+msgstr "धोरण वळेरी  (%(error)s) परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve policy list."
+msgstr "धोरणाची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve pool details."
+msgstr "पूल तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve pool details. %s"
+msgstr "पूल तपशील परत मेळोवपाक शकना. %s"
+
+#, python-format
+msgid "Unable to retrieve pool subnet. %s"
+msgstr "पूल उपनेट परत मेळोवपाक शकना. %s"
+
+#, python-format
+msgid "Unable to retrieve pool. %s"
+msgstr "पूल परत मेळोवपाक शकना. %s"
+
+msgid "Unable to retrieve pools list."
+msgstr "पूलांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve port details"
+msgstr "पोर्ट तपशील परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve port details."
+msgstr "पोर्ट तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve project details."
+msgstr "प्रकल्प तपशील परत मेळोवपाक असफळ."
+
+msgid "Unable to retrieve project domain."
+msgstr "प्रकल्प डोमेन परत मेळोवपाक असफळ"
+
+msgid "Unable to retrieve project information."
+msgstr "प्रकल्प माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve project list."
+msgstr "प्रकल्प वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve providers list."
+msgstr "पुरोवप्यांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve public images."
+msgstr "भौशिक प्रतिमा परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve quota information."
+msgstr "कोटा माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve resource."
+msgstr "संसाधन परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve role list."
+msgstr "भूमीकेची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve roles list."
+msgstr "भूमीकांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve router details."
+msgstr "राऊटराचो तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve router list."
+msgstr "राऊटर वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve router."
+msgstr "राऊटर परतून मेळोवपाक जाले ना."
+
+msgid "Unable to retrieve routers list."
+msgstr "राऊटर्साची वळेरी परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve rule details."
+msgstr "नियम "
+
+#, python-format
+msgid "Unable to retrieve rules (%(error)s)."
+msgstr "नियम परत मेळोवपाक शकना (%(error)s)."
+
+msgid "Unable to retrieve rules list."
+msgstr "नियमांची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve security group list. Please try again later."
+msgstr "सुरक्षा गट वळेरी परतून मेळोवपाक जाले ना. मात्रे परतून यत्न करात"
+
+msgid "Unable to retrieve security group."
+msgstr "सुरक्षा गट परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve security groups for instance \"%(name)s\" (%(id)s)."
+msgstr "\"%(name)s\" (%(id)s) इंस्टंसाखातीर सुरक्षा गट परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve security groups."
+msgstr " सुरक्षा गट परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve snapshot details."
+msgstr "स्नॅपशॉटाचो तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve snapshot list."
+msgstr "स्नॅपशॉट वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve stack list."
+msgstr "स्टॅक वळेरी परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve stack template."
+msgstr "स्टॅक टेंप्लेट परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve stack."
+msgstr "स्टॅक परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve subnet details"
+msgstr "उपनेटचो तपशील परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve subnet details."
+msgstr "उपनेटचे तपशील परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve tenant limits."
+msgstr "टेनंत मर्यादा मेळोवपाक शकना:"
+
+msgid "Unable to retrieve the aggregate to be updated"
+msgstr "सुदारपाची एग्रिगेट परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve the aggregate to be updated."
+msgstr "सुदारपाची एग्रिगेट परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve the flavor metadata."
+msgstr "फ्लेवर मेटाडेटा परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve the image to be updated."
+msgstr "सुदारपाची प्रतिमा परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve the specified pool."
+msgstr "स्पश्ट केल्लो पूल परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve the specified pool. Unable to add VIP \"%s\"."
+msgstr "स्पश्ट केल्लो पूल परत मेळोवपाक शकना. VIP \"%s\" जोडपाक शकना."
+
+msgid "Unable to retrieve the volume type list."
+msgstr "आकार प्रकार वळेरी परतून मेळोवपाक जाले ना"
+
+msgid "Unable to retrieve usage information."
+msgstr "वापराची माहिती परत मेळोवपाक असफळ."
+
+msgid "Unable to retrieve user domain role assignments."
+msgstr "वापरप्याचे डोमेन भूमीका स्वाध्याय परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve user information."
+msgstr "वापरप्याची माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve user list."
+msgstr "वापरप्याची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve user list. Please try again later."
+msgstr "वापरप्याची वळोरी परत मेळोवपाक शकना. मात्शे मागीर परत यत्न करात."
+
+msgid "Unable to retrieve user roles."
+msgstr "वापरप्याच्यो भूमीका परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve users."
+msgstr "वापरपी परत मेळोंवपाक शकना."
+
+msgid "Unable to retrieve version information."
+msgstr "आवृत्तेची माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume backups."
+msgstr "आकार बॅकअप्स परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume details."
+msgstr "आकाराचो तपशील परत मेळोवपाक शकना."
+
+#, python-format
+msgid "Unable to retrieve volume information for volume: \"%s\""
+msgstr "आकारमानाखातीर आकार माहिती परत मेळोवपाक शकना: \"%s\""
+
+msgid "Unable to retrieve volume information."
+msgstr "आकाराची माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume limit information."
+msgstr "आकाराच्या मर्यादेची माहिती परत मेळोवपाक असफळ."
+
+#, python-format
+msgid "Unable to retrieve volume list for instance \"%(name)s\" (%(id)s)."
+msgstr "\"%(name)s\" (%(id)s) इंस्टंसाखातीर आकार वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume list."
+msgstr "आकाराची वळेरी परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume project information."
+msgstr "आकारा प्रकल्प माहिती परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve volume snapshot."
+msgstr "आकाराचो स्नॅपशॉट परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume snapshots."
+msgstr "आकाराचे स्नॅपशॉट परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve volume type details."
+msgstr "आकार प्रकाराचो तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume type encryption details."
+msgstr "आकार प्रकार एनक्रिप्शनाचो तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume type encryption information."
+msgstr "आकार प्रकार एनक्रिप्शन माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume type extra spec details."
+msgstr "आकार प्रकार अदिक spec चो तपशील परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume type name."
+msgstr "आकार प्रकाराचे नाव परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume types"
+msgstr "आकाराचे प्रकार परत मेळोवपाक शकना"
+
+msgid "Unable to retrieve volume."
+msgstr "आकार परत मेळोवपाक शकना."
+
+msgid "Unable to retrieve volume/instance attachment information"
+msgstr "आकार/इंस्टंस जोडणेची माहिती परत मेळोवपाक शकना."
+
+msgid "Unable to set Domain Context."
+msgstr "डोमेन संदर्भ थारावपाक शकना."
+
+#, python-format
+msgid "Unable to set flavor access for project %s."
+msgstr "%s प्रकल्पाखातीर फ्लेवर प्रवेश थारावपाक शकना."
+
+msgid "Unable to set gateway."
+msgstr "गेटवे थारावपाक जाले ना"
+
+msgid "Unable to set project quotas."
+msgstr "प्रकल्प कोटा थारावपाक शकना."
+
+msgid "Unable to sort instance flavors."
+msgstr "इंस्टंस फ्लेवर्सांचे वर्गीकरण करपाक शकना."
+
+msgid "Unable to update container access."
+msgstr "कंटेनर प्रवेश सुदारपाक शकना."
+
+msgid "Unable to update default quotas."
+msgstr "मुळावे कोटा सुदारपाक शकना."
+
+msgid "Unable to update group."
+msgstr "गट सुदारपाक शकना."
+
+#, python-format
+msgid "Unable to update image \"%s\"."
+msgstr "\"%s\" प्रतिमा सुदारपाक शकना."
+
+msgid "Unable to update object."
+msgstr "वस्त सुदारपाक शकना."
+
+msgid "Unable to update role."
+msgstr "भूमीका सुदारपाक शकना."
+
+msgid "Unable to update row"
+msgstr "ओळ सुदारपाक शकना"
+
+#, python-format
+msgid "Unable to update subnet \"%s\"."
+msgstr "उपनेट \"%s\" सुदारपाक शकना."
+
+msgid "Unable to update the aggregate metadata."
+msgstr "एग्रिगेट मेटाडेटा सुदारपाक जाले ना"
+
+msgid "Unable to update the aggregate."
+msgstr "एग्रिगेट सुदारपाक शकना"
+
+msgid "Unable to update the flavor metadata."
+msgstr "फ्लेवर मेटाडेटा सुदारपाक शकना."
+
+msgid "Unable to update the group."
+msgstr "गट सुदारपाक शकना."
+
+msgid "Unable to update the image metadata."
+msgstr "प्रतिमा मेटाडेटा सुदारपाक शकना."
+
+msgid "Unable to update the user."
+msgstr "वापरपी सुदारपाक शकना."
+
+msgid "Unable to update volume snapshot status."
+msgstr "आकाराची स्नॅपशॉट स्थिती सुदारपाक शकना."
+
+msgid "Unable to update volume snapshot."
+msgstr "आकार स्नॅपशॉट सुदारपाक शकना."
+
+#, python-format
+msgid "Unable to update volume status to \"%s\"."
+msgstr "आकार स्थिती \"%s\" न सुदारपाक शकना."
+
+msgid "Unable to update volume."
+msgstr "आकार सुदरपाक शकना."
+
+msgid "Unable to upload cluster template file"
+msgstr "क्लस्टर टेंप्लेट फायल अपलोड करपाक शकना"
+
+msgid "Unable to upload job binary"
+msgstr " काम बायनरी अपलोड करपाक असफळ."
+
+msgid "Unable to upload object."
+msgstr "वस्त अपलोड करपाक शकना."
+
+#, python-format
+msgid "Unable to upload volume to image for volume: \"%s\""
+msgstr "आकारमानाखातीर प्रतिमेन आकारमान अपलोड करपाक शकना: \"%s\""
+
+msgid "Unknown"
+msgstr "अनोळखी"
+
+msgid "Unknown instance"
+msgstr "अज्ञात इंस्टंस"
+
+msgid "Unknown instance (None)"
+msgstr "अज्ञात इंस्टंस (काय ना)"
+
+msgctxt "Task status of an Instance"
+msgid "Unrescuing"
+msgstr "वाचयना"
+
+msgctxt "Task status of an Instance"
+msgid "Unshelving"
+msgstr "दाळ काडटा"
+
+msgid "Up"
+msgstr "वयर"
+
+msgctxt "Current state of a Hypervisor"
+msgid "Up"
+msgstr "वयर"
+
+msgid "Update"
+msgstr "सुदार"
+
+msgid "Update Aggregate Metadata"
+msgstr "एग्रिगेट मेटाडेटा सुदारात"
+
+msgid "Update Default Quotas"
+msgstr "मुळावे कोटा सुदारात"
+
+msgid "Update Defaults"
+msgstr "मुळावे सुदारात"
+
+msgid "Update Flavor Metadata"
+msgstr "फ्लेवर मेटाडेटा सुदारात"
+
+msgid "Update Group"
+msgstr "गट सुदारात"
+
+msgid "Update Image"
+msgstr "प्रतिमा सुदारात"
+
+msgid "Update Image Metadata"
+msgstr "प्रतिमा मेटाडेटा सुदारात"
+
+msgid "Update Metadata"
+msgstr "मेटाडेटा सुदारात"
+
+msgid "Update Network"
+msgstr "नेटवर्क सुदारात"
+
+msgid "Update Network Profile"
+msgstr "नेटवर्क प्रोफायल सुदारात"
+
+msgid "Update Object"
+msgstr "वस्त सुदारात"
+
+msgid "Update Port"
+msgstr "पोर्ट सुदारात"
+
+msgid "Update Role"
+msgstr "भूमीका सुदारात"
+
+msgid "Update Router"
+msgstr "राऊटर सुदारात"
+
+msgid "Update Stack"
+msgstr "स्टॅक सुदारात"
+
+msgid "Update Stack Parameters"
+msgstr "स्टॅक परिमाणां सुदारात"
+
+msgid "Update Status"
+msgstr "स्थिती सुदारात"
+
+msgid "Update User"
+msgstr "वापरपी सुदारात"
+
+msgid "Update Volume Snapshot Status"
+msgstr "आकार स्नॅपशॉट स्थिती सुदारात"
+
+msgid "Update Volume Status"
+msgstr "आकार स्थिती सुदारात"
+
+msgid ""
+"Update a subnet associated with the network. Advanced configuration are "
+"available at \"Subnet Details\" tab."
+msgstr "नेटवर्काकडेन संबंदित उपनेट सुदारात. अद्ययावत संरचनाय \"उपनेट तपशील\" टॅबांत आसात."
+
+msgid "Update requests for this floating ip"
+msgstr "ह्या फ्लोटिंग आयपीखातीर सुदार विनंती"
+
+msgid "Update requests for this network"
+msgstr "ह्या नेटवर्काखातीर सुदार विनंत्यो"
+
+msgid "Update requests for this port"
+msgstr "ह्या पोर्टाखातीर सुदार विनंत्यो"
+
+msgid "Update requests for this router"
+msgstr "ह्या राऊटराखातीर सुदार विनंती"
+
+msgid "Update requests for this subnet"
+msgstr "ह्या उपनेटवर्काखातीर सुदार विनंत्यो"
+
+msgid "Updated"
+msgstr "सुदारला"
+
+msgid "Updated At"
+msgstr "चेर सुदारला"
+
+#, python-format
+msgid "Updated subnet \"%s\"."
+msgstr "उपनेट \"%s\" सुदारला."
+
+msgctxt "Task status of an Instance"
+msgid "Updating Password"
+msgstr "पासवर्ड सुदारता"
+
+#, python-format
+msgid "Updating volume \"%s\""
+msgstr "आकार  \"%s\" सुदारता"
+
+#, python-format
+msgid "Updating volume snapshot \"%s\""
+msgstr "आकार स्नॅपशॉट \"%s\" सुदारता"
+
+msgid "Upload"
+msgstr "अपलोड"
+
+msgid "Upload File"
+msgstr "फायल अपलोड करात"
+
+msgid "Upload Object"
+msgstr "वस्त अपलोड करात"
+
+msgid "Upload Objects"
+msgstr "वस्तीं अपलोड करात"
+
+msgid "Upload Template"
+msgstr "टेंप्लेट अपलोड करात"
+
+msgid "Upload Volume to Image"
+msgstr "आकार प्रतिमेन अपलोड करात"
+
+msgid "Upload to Image"
+msgstr "प्रतिमेन अपलोड करात"
+
+msgid "Uploaded image size"
+msgstr "अपलोड केल्ल्या प्रतिमेचो आकार"
+
+msgid "Url"
+msgstr "Url"
+
+msgid "Usage"
+msgstr "वापर"
+
+msgid "Usage (Hours)"
+msgstr "वापर (वरां)"
+
+msgid "Usage Report"
+msgstr "वापर अहवाल"
+
+msgid "Use Server Default"
+msgstr "मुळावे सर्व्हर वापरात"
+
+msgid "Use a volume as source"
+msgstr "आकार स्त्रोत म्हण वापरात"
+
+msgid "Use anti-affinity groups for processes"
+msgstr "प्रक्रियांखातीर आसक्ती-विरोधी गट वापरात"
+
+msgid "Use anti-affinity groups for: "
+msgstr ":खातीर आसक्ती-विरोधी गट वापरात"
+
+msgid "Use image as a source"
+msgstr "प्रतिमा स्त्रोत म्हण वापरात"
+
+msgid "Use snapshot as a source"
+msgstr "स्नॅपशॉट स्त्रोत म्हण वापरात"
+
+msgid "User"
+msgstr "वापरपी"
+
+#, python-format
+msgid "User \"%s\" was successfully created."
+msgstr "\"%s\" वापरपी यशस्विपणान तयार जाला."
+
+#, python-format
+msgid "User %s has no role defined for that project."
+msgstr "%s वापरप्याची त्या प्रकल्पाखातीर भूमीका स्पश्ट केल्ली ना."
+
+msgid "User Credentials Details"
+msgstr "वापरपी क्रेडेन्शियल्स तपशील"
+
+msgid "User ID"
+msgstr "वापरपी ID"
+
+msgid "User Name"
+msgstr "वापरप्याचे नाव"
+
+msgid "User Settings"
+msgstr "वापरपी स्थापितां"
+
+msgid "User has been updated successfully."
+msgstr "वापरपी यशस्विपणान सुदारला. "
+
+#, python-format
+msgid "User name \"%s\" is already used."
+msgstr "\"%s\" वापरप्याचे नाव पयलीसांवन वापरान आसा."
+
+msgid "Username"
+msgstr "वापरप्यालेनाव"
+
+msgid "Users"
+msgstr "वापरपी"
+
+msgid "VCPU Hours"
+msgstr "VCPU वरां"
+
+msgid "VCPUs"
+msgstr "VCPUs"
+
+msgid "VCPUs (total)"
+msgstr "VCPU (एकूण)"
+
+msgid "VCPUs (used)"
+msgstr "VCPU (वापरिल्ले)"
+
+msgid "VIP"
+msgstr "VIP"
+
+#, python-format
+msgid "VIP %s was successfully updated."
+msgstr "VIP %s यशस्विपणान सुदारला."
+
+msgid "VIP Details"
+msgstr "VIP तपशील"
+
+msgid "VIP Subnet"
+msgstr " VIP उपनेट"
+
+msgid "VLAN"
+msgstr "VLAN"
+
+msgid "VPN"
+msgstr "VPN"
+
+msgid "VPN Service"
+msgstr "VPN सेवा"
+
+#, python-format
+msgid "VPN Service %s was successfully updated."
+msgstr "VPN सेवा %s  यशस्विपणान सुदाल्ल्या."
+
+msgid "VPN Service Details"
+msgstr "VPN सेवा तपशील"
+
+msgid "VPN Service associated with this connection"
+msgstr "ह्या जोडणेकडे संबंधित VPN सेवा"
+
+msgid "VPN Services"
+msgstr "VPN सेवा"
+
+msgid "VXLAN"
+msgstr "VXLAN"
+
+msgid "Valid integer greater than the DPD interval"
+msgstr "DPD मध्यंतरापरस वैध पूर्णांक व्हड आसा."
+
+msgid "Value"
+msgstr "मोल"
+
+msgid "Value (Avg)"
+msgstr "मोल (सरासर)"
+
+msgid "Version"
+msgstr "आवृत्ती"
+
+msgid "View Container"
+msgstr "कंटेनर पळयात"
+
+msgid "View Credentials"
+msgstr "क्रेडेन्शियल्स पळयात"
+
+msgid "View Details"
+msgstr "तपशील पळयात"
+
+msgid "View Extra Specs"
+msgstr "अदिक Specs पळयात"
+
+msgid "View Log"
+msgstr "लॉग पळयात"
+
+msgid "View Usage"
+msgstr "वापर पळयात"
+
+msgid "Virtual Private Network"
+msgstr "व्हर्च्युअल प्रायवेट नेटवर्क"
+
+msgid "Volume"
+msgstr "आकार"
+
+#, python-format
+msgid "Volume %(volume_name)s on instance %(instance_name)s"
+msgstr "इंस्टंस %(volume_name)s चेर आकार %(instance_name)s"
+
+msgid "Volume Backup"
+msgstr "आकार बॅकअप"
+
+msgid "Volume Backups"
+msgstr "आकार बॅकअप्स"
+
+msgid "Volume Name"
+msgstr "आकाराचे नाव"
+
+msgid "Volume Size"
+msgstr "आकारमानाचो आकार"
+
+msgid "Volume Snapshot"
+msgstr " आकार स्नॅपशॉट"
+
+msgid "Volume Snapshots"
+msgstr "आकार स्नॅपशॉट्स"
+
+msgid "Volume Source"
+msgstr "आकार स्त्रोत"
+
+msgid "Volume Type Encryption Details"
+msgstr "आकार प्रकार एनक्रिप्शन तपशील"
+
+msgid "Volume Types"
+msgstr "आकाराचे प्रकार"
+
+#, python-format
+msgid ""
+"Volume cannot be extended to %(req)iGB as you only have %(avail)iGB of your "
+"quota available."
+msgstr ""
+"आकारमान %(req)iGB मेरेन वाडोवपाक शकना कारण तुमचेकडे तुमच्या कोटातलो फकत %(avail)iGB "
+"उपलब्ध आसा."
+
+msgid ""
+"Volume mount point (e.g. 'vda' mounts at '/dev/vda'). Leave this field blank "
+"to let the system choose a device name for you."
+msgstr ""
+"आकारमान माऊंट बिंदू (देखीक 'vda' माउंट जाता '/dev/vda' हांगा). तुमच्याखातीर उपकरणाचे "
+"नाव सिस्टमान निवडपाखातीर हे क्षेत्र रिकामे दवरात."
+
+msgid "Volume size in gigabytes (integer value)."
+msgstr "गिगाबायटांनी आकारमानाचो आकार (पूर्णांक मोल)"
+
+#, python-format
+msgid ""
+"Volume size must be equal to or greater than the image minimum disk size "
+"(%sGB)"
+msgstr "आकारमान आकार प्रतिमा किमान डिस्क आकाराइतलोच वो व्हड आसपाक जाय (%sGB) "
+
+#, python-format
+msgid "Volume size must be equal to or greater than the image size (%s)"
+msgstr "आकारमान आकार प्रतिमा आकाराइतलोच वो व्हड आसपाक जाय (%s) "
+
+#, python-format
+msgid ""
+"Volume size must be equal to or greater than the origin volume size (%s)"
+msgstr "आकारमान आकार मुळाव्या आकारमानाच्या आकाराइतलोच वो व्हड आसपाक जाय (%s)"
+
+#, python-format
+msgid "Volume size must be equal to or greater than the snapshot size (%sGB)"
+msgstr "आकारमान आकार स्नॅपशॉट आकार (%sGB) परस व्हडलो वो समान आसपाक जाय."
+
+msgid "Volume size must be greater than 0"
+msgstr "आकारमानाचे आकार 0 परस व्हड जाय"
+
+msgid "Volume source must be specified"
+msgstr "आकार स्त्रोत स्पश्ट करपाक जाय"
+
+msgid "Volumes"
+msgstr "आकार"
+
+msgid "Volumes per node"
+msgstr "नोडाफाटलो आकार"
+
+msgid "Volumes size (GB)"
+msgstr "आकारमानाचो आकार (जीबी)"
+
+msgid "Weight"
+msgstr "वजन"
+
+msgid "Which keypair to use for authentication."
+msgstr "अधिकृतीकरणाखातीर खंयची कीजोडी वापरपाची. "
+
+msgid "Yes"
+msgstr "हंय"
+
+msgid "You are already using all of your available floating IPs."
+msgstr "तुमी पयलीच तुमचे सगळे उपलब्ध IPs वापरता."
+
+msgid "You are already using all of your available volumes."
+msgstr "तुमी पयलीच तुमचे सगळे उपलब्ध आकार वापरता."
+
+msgid "You cannot disable the user you are currently logged in as."
+msgstr "तुमी सध्या लॉग इन आसात तो वापरपी तुमच्यान अक्षम करपाक येना."
+
+msgid ""
+"You cannot revoke your administrative privileges from the domain you are "
+"currently logged into. Please switch to another domain with administrative "
+"privileges or remove the administrative role manually via the CLI."
+msgstr ""
+"तुमी सध्या लॉग्ड आसात त्या डोमेनातल्यान तुमी तुमची प्रशासकीय प्राधान्यां परतून थारावपाक "
+"शकनात. प्रशासकीय प्राधान्यां आशिल्ल्या हेर डोमेनांत वचात वो CLI वरवीं प्रशासकीय भूमिका "
+"मॅन्युअली काडून उडयात."
+
+msgid ""
+"You cannot revoke your administrative privileges from the project you are "
+"currently logged into. Please switch to another project with administrative "
+"privileges or remove the administrative role manually via the CLI."
+msgstr ""
+"तुमी सध्या लॉग्ड आसात त्या प्रकल्पातल्यान तुमची प्रशासकीय प्राधान्यां तुमच्यान परत करपाक "
+"येनात. प्रशासकीय प्राधान्यां आशिल्ल्या हेर प्रकल्पांत वचात वो CLI वरवीं प्रशासकीय भूमिका "
+"मॅन्युअली काडून उडयात."
+
+msgid "You may have mistyped the address or the page may have moved."
+msgstr "तुमी नामो सारको बरोव नासत वो पान हालला आसत."
+
+msgid "You must select a datastore type and version."
+msgstr "तुमी डेटास्टोराचो प्रकार आणि आवृत्ती निवडपाक जाय.."
+
+msgid "You must select a snapshot."
+msgstr "तुमी स्नॅपशॉट निवडपाकूच जाय."
+
+msgid "You must select a volume."
+msgstr "तुमी आकार निवडपाक जाय."
+
+msgid "You must select an image."
+msgstr "तुमी प्रतिमा निवडपाकूच जाय."
+
+msgid "You must set volume size"
+msgstr "तुमी आकारमानाचो आकार थारावपाक जाय"
+
+msgid "You must specify a password if you create a user."
+msgstr "तुमी वापरपी तयार केल्यार तुमी पासवर्ड दिवपाक जाय."
+
+msgid "You must specify a template via one of the available sources."
+msgstr "उपलब्ध आशिल्ल्या एका स्त्रोतावरवीं तुमी टेंप्लेट स्पश्ट करपाक जाय."
+
+msgid "You must specify at least one database if you create a user."
+msgstr "तुमी वापरपी तयार केल्यार तुमी किमान एक डेटाबेस दिवपाक जाय."
+
+#, python-format
+msgid "Your image %s has been queued for creation."
+msgstr "तुमची %s प्रतिमा निर्मणीखातीर रांगेन आसा."
+
+msgid "Zone"
+msgstr "विभाग"
+
+msgid "aes-128"
+msgstr "aes-128"
+
+msgid "aes-192"
+msgstr "aes-192"
+
+msgid "aes-256"
+msgstr "aes-256"
+
+msgid "ah"
+msgstr "ah"
+
+msgid "ah-esp"
+msgstr "ah-esp"
+
+msgid "back-end"
+msgstr "बॅक एंड"
+
+msgid "bi-directional"
+msgstr "भौ-दिकी"
+
+msgctxt "Both of front-end and back-end"
+msgid "both"
+msgstr "दोनूय"
+
+msgid "clear"
+msgstr "साफ"
+
+msgid "disabled"
+msgstr "निष्क्रिय करात"
+
+msgid "dm-crypt"
+msgstr "dm-crypt"
+
+msgid "environment"
+msgstr "वातावरण"
+
+msgid "esp"
+msgstr "esp"
+
+msgid "front-end"
+msgstr "फ्रंट एंड"
+
+msgid "group14"
+msgstr "गट14"
+
+msgid "group2"
+msgstr "गट2"
+
+msgid "group5"
+msgstr "गट5"
+
+msgid "hold"
+msgstr "धरात"
+
+msgid "instance"
+msgstr "इंस्टंस"
+
+msgid "pseudo-folder"
+msgstr "सूडो-फोल्डर"
+
+msgid "response-only"
+msgstr "प्रतिसाद-फकत"
+
+msgid "restart"
+msgstr "परत सुरू करात"
+
+msgid "restart-by-peer"
+msgstr "रिस्टार्ट बाय पीयर"
+
+msgid "seconds"
+msgstr "सेकंद"
+
+msgid "sha1"
+msgstr "sha1"
+
+msgid "template"
+msgstr "टेंप्लेट "
+
+msgid "transport"
+msgstr "वाहतूक"
+
+msgid "tunnel"
+msgstr "टनल"
+
+msgid "undefined"
+msgstr "स्पश्ट करू ना"
+
+msgid "unknown IP address"
+msgstr "अज्ञात IP नामो "
+
+msgid "v1"
+msgstr "v1"
+
+msgid "v2"
+msgstr "v2"

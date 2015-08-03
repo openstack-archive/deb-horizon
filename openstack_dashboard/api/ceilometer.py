@@ -289,10 +289,10 @@ def resource_list(request, query=None, ceilometer_usage_object=None):
     return [Resource(r, ceilometer_usage_object) for r in resources]
 
 
-def sample_list(request, meter_name, query=None):
+def sample_list(request, meter_name, query=None, limit=None):
     """List the samples for this meters."""
     samples = ceilometerclient(request).samples.list(meter_name=meter_name,
-                                                     q=query)
+                                                     q=query, limit=limit)
     return [Sample(s) for s in samples]
 
 
@@ -1275,9 +1275,9 @@ class Meters(object):
                 'label': '',
                 'description': _("Sensor Voltage Reading"),
             }),
-            ('hardware.ipmi.node.inlet_temperature', {
+            ('hardware.ipmi.node.temperature', {
                 'label': '',
-                'description': _("System Inlet Temperature Reading"),
+                'description': _("System Temperature Reading"),
             }),
             ('hardware.ipmi.node.outlet_temperature', {
                 'label': '',

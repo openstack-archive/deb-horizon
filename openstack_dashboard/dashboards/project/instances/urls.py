@@ -44,4 +44,8 @@ urlpatterns = patterns(
     url(INSTANCES % 'resize', views.ResizeView.as_view(), name='resize'),
     url(INSTANCES_KEYPAIR % 'decryptpassword',
         views.DecryptPasswordView.as_view(), name='decryptpassword'),
+    url(INSTANCES % 'attach_interface',
+        views.AttachInterfaceView.as_view(), name='attach_interface'),
+    url(INSTANCES % 'detach_interface',
+        views.DetachInterfaceView.as_view(), name='detach_interface'),
 )

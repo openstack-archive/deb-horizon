@@ -192,6 +192,11 @@ class RemoveRuleFromPolicyLink(policy.PolicyTargetMixin,
                            kwargs={'policy_id': policy.id})
         return base_url
 
+    def allowed(self, request, policy):
+        if len(policy.rules) > 0:
+            return True
+        return False
+
 
 class AddRouterToFirewallLink(policy.PolicyTargetMixin,
                               tables.LinkAction):
@@ -264,6 +269,7 @@ class RulesTable(tables.DataTable):
     name = tables.Column("name_or_id",
                          verbose_name=_("Name"),
                          link="horizon:project:firewalls:ruledetails")
+    description = tables.Column('description', verbose_name=_('Description'))
     protocol = tables.Column("protocol",
                              filters=(lambda v: filters.default(v, _("ANY")),
                                       filters.upper,),
@@ -279,6 +285,9 @@ class RulesTable(tables.DataTable):
     action = tables.Column("action",
                            display_choices=ACTION_DISPLAY_CHOICES,
                            verbose_name=_("Action"))
+    shared = tables.Column("shared",
+                           verbose_name=_("Shared"),
+                           filters=(filters.yesno, filters.capfirst))
     enabled = tables.Column("enabled",
                             verbose_name=_("Enabled"),
                             filters=(filters.yesno, filters.capfirst))
@@ -297,8 +306,12 @@ class PoliciesTable(tables.DataTable):
     name = tables.Column("name_or_id",
                          verbose_name=_("Name"),
                          link="horizon:project:firewalls:policydetails")
+    description = tables.Column('description', verbose_name=_('Description'))
     firewall_rules = tables.Column(get_rules_name,
                                    verbose_name=_("Rules"))
+    shared = tables.Column("shared",
+                           verbose_name=_("Shared"),
+                           filters=(filters.yesno, filters.capfirst))
     audited = tables.Column("audited",
                             verbose_name=_("Audited"),
                             filters=(filters.yesno, filters.capfirst))
@@ -338,6 +351,7 @@ class FirewallsTable(tables.DataTable):
     name = tables.Column("name_or_id",
                          verbose_name=_("Name"),
                          link="horizon:project:firewalls:firewalldetails")
+    description = tables.Column('description', verbose_name=_('Description'))
     firewall_policy_id = tables.Column(get_policy_name,
                                        link=get_policy_link,
                                        verbose_name=_("Policy"))

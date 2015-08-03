@@ -13,69 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-(function(){
+(function() {
   'use strict';
 
   describe('Launch Instance Network Step', function() {
 
-    describe('LaunchInstanceNetworkCtrl', function() {
-      var scope, ctrl;
+    beforeEach(module('hz.dashboard.launch-instance'));
 
-      beforeEach(module('hz.dashboard.launch-instance'));
+    describe('LaunchInstanceNetworkController', function() {
+      var scope, ctrl;
 
       beforeEach(inject(function($controller) {
         scope = {model: {
                   newInstanceSpec: {networks: ['net-a']},
                   networks: ['net-a', 'net-b']}};
-        ctrl = $controller('LaunchInstanceNetworkCtrl', {$scope:scope});
+        ctrl = $controller('LaunchInstanceNetworkController', {$scope:scope});
       }));
 
       it('has correct network statuses', function() {
-        expect(scope.networkStatuses).toBeDefined();
-        expect(scope.networkStatuses.ACTIVE).toBeDefined();
-        expect(scope.networkStatuses.DOWN).toBeDefined();
-        expect(Object.keys(scope.networkStatuses).length).toBe(2);
+        expect(ctrl.networkStatuses).toBeDefined();
+        expect(ctrl.networkStatuses.ACTIVE).toBeDefined();
+        expect(ctrl.networkStatuses.DOWN).toBeDefined();
+        expect(Object.keys(ctrl.networkStatuses).length).toBe(2);
       });
 
       it('has correct network admin states', function() {
-        expect(scope.networkAdminStates).toBeDefined();
-        expect(scope.networkAdminStates.UP).toBeDefined();
-        expect(scope.networkAdminStates.DOWN).toBeDefined();
-        expect(Object.keys(scope.networkStatuses).length).toBe(2);
+        expect(ctrl.networkAdminStates).toBeDefined();
+        expect(ctrl.networkAdminStates.UP).toBeDefined();
+        expect(ctrl.networkAdminStates.DOWN).toBeDefined();
+        expect(Object.keys(ctrl.networkStatuses).length).toBe(2);
       });
 
       it('defines a multiple-allocation table', function() {
-        expect(scope.tableLimits).toBeDefined();
-        expect(scope.tableLimits.maxAllocation).toBe(-1);
+        expect(ctrl.tableLimits).toBeDefined();
+        expect(ctrl.tableLimits.maxAllocation).toBe(-1);
       });
 
       it('contains its own labels', function() {
-        expect(scope.label).toBeDefined();
-        expect(Object.keys(scope.label).length).toBeGreaterThan(0);
+        expect(ctrl.label).toBeDefined();
+        expect(Object.keys(ctrl.label).length).toBeGreaterThan(0);
       });
 
       it('contains help text for the table', function() {
-        expect(scope.tableHelpText).toBeDefined();
-        expect(scope.tableHelpText.allocHelpText).toBeDefined();
-        expect(scope.tableHelpText.availHelpText).toBeDefined();
+        expect(ctrl.tableHelpText).toBeDefined();
+        expect(ctrl.tableHelpText.allocHelpText).toBeDefined();
+        expect(ctrl.tableHelpText.availHelpText).toBeDefined();
       });
 
       it('uses scope to set table data', function() {
-        expect(scope.tableDataMulti).toBeDefined();
-        expect(scope.tableDataMulti.available).toEqual(['net-a', 'net-b']);
-        expect(scope.tableDataMulti.allocated).toEqual(['net-a']);
-        expect(scope.tableDataMulti.displayedAllocated).toEqual([]);
-        expect(scope.tableDataMulti.displayedAvailable).toEqual([]);
+        expect(ctrl.tableDataMulti).toBeDefined();
+        expect(ctrl.tableDataMulti.available).toEqual(['net-a', 'net-b']);
+        expect(ctrl.tableDataMulti.allocated).toEqual(['net-a']);
+        expect(ctrl.tableDataMulti.displayedAllocated).toEqual([]);
+        expect(ctrl.tableDataMulti.displayedAvailable).toEqual([]);
       });
     });
 
-    describe('LaunchInstanceNetworkHelpCtrl', function() {
+    describe('LaunchInstanceNetworkHelpController', function() {
       var ctrl;
 
-      beforeEach(module('hz.dashboard.launch-instance'));
-
       beforeEach(inject(function($controller) {
-        ctrl = $controller('LaunchInstanceNetworkHelpCtrl', {});
+        ctrl = $controller('LaunchInstanceNetworkHelpController', {});
       }));
 
       it('defines the title', function() {

@@ -20,7 +20,7 @@
 from __future__ import absolute_import
 
 from django import http
-from mox import IsA  # noqa
+from mox3.mox import IsA  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
@@ -77,7 +77,7 @@ class QuotaTests(test.APITestCase):
         api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts,
                              all_tenants=True) \
             .AndReturn([servers, False])
-        opts = {'alltenants': 1, 'tenant_id': self.request.user.tenant_id}
+        opts = {'all_tenants': 1, 'project_id': self.request.user.tenant_id}
         cinder.volume_list(IsA(http.HttpRequest), opts) \
             .AndReturn(self.volumes.list())
         cinder.volume_snapshot_list(IsA(http.HttpRequest), opts) \
@@ -201,7 +201,7 @@ class QuotaTests(test.APITestCase):
         api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts,
                              all_tenants=True) \
             .AndReturn([servers, False])
-        opts = {'alltenants': 1, 'tenant_id': self.request.user.tenant_id}
+        opts = {'all_tenants': 1, 'project_id': self.request.user.tenant_id}
         cinder.volume_list(IsA(http.HttpRequest), opts) \
             .AndReturn(self.volumes.list())
         cinder.volume_snapshot_list(IsA(http.HttpRequest), opts) \
@@ -246,7 +246,7 @@ class QuotaTests(test.APITestCase):
         api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts,
                              all_tenants=True) \
             .AndReturn([servers, False])
-        opts = {'alltenants': 1, 'tenant_id': self.request.user.tenant_id}
+        opts = {'all_tenants': 1, 'project_id': self.request.user.tenant_id}
         cinder.volume_list(IsA(http.HttpRequest), opts) \
             .AndReturn(self.volumes.list())
         cinder.volume_snapshot_list(IsA(http.HttpRequest), opts) \

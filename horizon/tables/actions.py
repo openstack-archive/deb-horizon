@@ -29,7 +29,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 import six
 
-from horizon import exceptions
 from horizon import messages
 from horizon.utils import functions
 from horizon.utils import html
@@ -764,9 +763,9 @@ class BatchAction(Action):
             msgstr = action
         else:
             if action_type == "past":
-                msgstr = pgettext_lazy("past", "%(action)s %(data_type)s")
+                msgstr = pgettext_lazy(u"past", "%(action)s %(data_type)s")
             else:
-                msgstr = pgettext_lazy("present", "%(action)s %(data_type)s")
+                msgstr = pgettext_lazy(u"present", "%(action)s %(data_type)s")
         return msgstr % {'action': action, 'data_type': data_type}
 
     def action(self, request, datum_id):
@@ -803,9 +802,9 @@ class BatchAction(Action):
             datum_display = table.get_object_display(datum) or datum_id
             if not table._filter_action(self, request, datum):
                 action_not_allowed.append(datum_display)
-                LOG.info('Permission denied to %s: "%s"' %
-                         (self._get_action_name(past=True).lower(),
-                          datum_display))
+                LOG.warning('Permission denied to %s: "%s"' %
+                            (self._get_action_name(past=True).lower(),
+                             datum_display))
                 continue
             try:
                 self.action(request, datum_id)
@@ -819,12 +818,12 @@ class BatchAction(Action):
                 # Handle the exception but silence it since we'll display
                 # an aggregate error message later. Otherwise we'd get
                 # multiple error messages displayed to the user.
-                if getattr(ex, "_safe_message", None):
-                    ignore = False
-                else:
-                    ignore = True
-                    action_failure.append(datum_display)
-                exceptions.handle(request, ignore=ignore)
+                action_failure.append(datum_display)
+                action_description = (
+                    self._get_action_name(past=True).lower(), datum_display)
+                LOG.warning(
+                    'Action %(action)s Failed for %(reason)s', {
+                        'action': action_description, 'reason': ex})
 
         # Begin with success message class, downgrade to info if problems.
         success_message_level = messages.success

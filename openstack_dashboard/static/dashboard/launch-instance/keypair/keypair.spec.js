@@ -100,7 +100,8 @@
 
       beforeEach(module(function ($provide) {
         $provide.value('$modalInstance', {});
-        $provide.value('novaAPI', {});
+        $provide.value('horizon.openstack-service-api.nova', {});
+        $provide.value('horizon.framework.widgets.toast.service', {});
       }));
 
       beforeEach(module('hz.dashboard'));
@@ -158,7 +159,8 @@
 
       beforeEach(module(function ($provide) {
         $provide.value('$modalInstance', {});
-        $provide.value('novaAPI', {});
+        $provide.value('horizon.openstack-service-api.nova', {});
+        $provide.value('horizon.framework.widgets.toast.service', {});
       }));
 
       beforeEach(module('hz.dashboard'));

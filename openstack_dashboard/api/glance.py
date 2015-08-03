@@ -34,7 +34,6 @@ from django.core.files.uploadedfile import TemporaryUploadedFile
 import glanceclient as glance_client
 from six.moves import _thread as thread
 
-from horizon import exceptions
 from horizon.utils import functions as utils
 from horizon.utils.memoized import memoized  # noqa
 from openstack_dashboard.api import base
@@ -111,9 +110,7 @@ def image_list_detailed(request, marker=None, sort_dir='desc',
 def image_update(request, image_id, **kwargs):
     image_data = kwargs.get('data', None)
     try:
-        image = glanceclient(request).images.update(image_id, **kwargs)
-    except Exception:
-        exceptions.handle(request, ignore=True)
+        return glanceclient(request).images.update(image_id, **kwargs)
     finally:
         if image_data:
             try:
@@ -126,13 +123,25 @@ def image_update(request, image_id, **kwargs):
                         '%(file)s (%(e)s)') %
                        dict(file=filename, e=str(e)))
                 LOG.warn(msg)
-    return image
 
 
 def image_create(request, **kwargs):
-    copy_from = kwargs.pop('copy_from', None)
+    """Create image.
+
+    Keyword arguments:
+    copy_from -- URL from which Glance server should immediately copy
+                 the data and store it in its configured image store.
+    data      -- Form data posted from client.
+    location  -- URL where the data for this image already resides.
+
+    In the case of 'copy_from' and 'location' the Glance server
+    will give us a immediate response from create and handle the data
+    asynchronously.
+
+    In the case of 'data' the process of uploading the data may take
+    some time and is handed off to a seperate thread.
+    """
     data = kwargs.pop('data', None)
-    location = kwargs.pop('location', None)
 
     image = glanceclient(request).images.create(**kwargs)
 
@@ -149,16 +158,6 @@ def image_create(request, **kwargs):
         thread.start_new_thread(image_update,
                                 (request, image.id),
                                 {'data': data,
-                                 'purge_props': False})
-    elif copy_from:
-        thread.start_new_thread(image_update,
-                                (request, image.id),
-                                {'copy_from': copy_from,
-                                 'purge_props': False})
-    elif location:
-        thread.start_new_thread(image_update,
-                                (request, image.id),
-                                {'location': location,
                                  'purge_props': False})
 
     return image

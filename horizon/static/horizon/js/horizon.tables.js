@@ -22,17 +22,17 @@ horizon.datatables = {
         return;
       }
       // Trigger the update handlers.
-      $rows_to_update.each(function(index, row) {
+      $rows_to_update.each(function() {
         var $row = $(this),
           $table = $row.closest('table.datatable');
         horizon.ajax.queue({
           url: $row.attr('data-update-url'),
-          error: function (jqXHR, textStatus, errorThrown) {
+          error: function (jqXHR) {
             switch (jqXHR.status) {
               // A 404 indicates the object is gone, and should be removed from the table
               case 404:
                 // Update the footer count and reset to default empty row if needed
-                var $footer, row_count, footer_text, colspan, template, params, $empty_row;
+                var row_count, colspan, template, params;
 
                 // existing count minus one for the row we're removing
                 row_count = horizon.datatables.update_footer_count($table, -1);
@@ -44,7 +44,7 @@ horizon.datatables = {
                       "colspan": colspan,
                       no_items_label: gettext("No items to display.")
                   };
-                  empty_row = template.render(params);
+                  var empty_row = template.render(params);
                   $row.replaceWith(empty_row);
                 } else {
                   $row.remove();
@@ -55,13 +55,13 @@ horizon.datatables = {
                 horizon.datatables.update_actions();
                 break;
               default:
-                horizon.utils.log(gettext("An error occurred while updating."));
+                console.log(gettext("An error occurred while updating."));
                 $row.removeClass("ajax-update");
                 $row.find("i.ajax-updating").remove();
                 break;
             }
           },
-          success: function (data, textStatus, jqXHR) {
+          success: function (data) {
             var $new_row = $(data);
 
             if ($new_row.hasClass('status_unknown')) {
@@ -69,7 +69,8 @@ horizon.datatables = {
               var imagePath = $new_row.find('.btn-action-required').length > 0 ?
                 "dashboard/img/action_required.png":
                 "dashboard/img/loading.gif";
-              imagePath = STATIC_URL + imagePath;
+
+              imagePath = window.STATIC_URL + imagePath;
               spinner_elm.prepend(
                 $("<div>")
                   .addClass("loading_gif")
@@ -94,7 +95,7 @@ horizon.datatables = {
               }
             }
           },
-          complete: function (jqXHR, textStatus) {
+          complete: function () {
             // Revalidate the button check for the updated table
             horizon.datatables.validate_button();
             rows_to_update--;
@@ -121,14 +122,14 @@ horizon.datatables = {
 
   update_actions: function() {
     var $actions_to_update = $('.btn-launch.ajax-update, .btn-create.ajax-update');
-    $actions_to_update.each(function(index, action) {
+    $actions_to_update.each(function() {
       var $action = $(this);
       horizon.ajax.queue({
         url: $action.attr('data-update-url'),
-        error: function (jqXHR, textStatus, errorThrown) {
-          horizon.utils.log(gettext("An error occurred while updating."));
+        error: function () {
+          console.log(gettext("An error occurred while updating."));
         },
-        success: function (data, textStatus, jqXHR) {
+        success: function (data) {
           var $new_action = $(data);
 
           // Only replace row if the html content has changed
@@ -144,15 +145,16 @@ horizon.datatables = {
     // Enable or disable table batch action buttons based on row selection.
     $form = $form || $(".table_wrapper > form");
     $form.each(function () {
-      var checkboxes = $(this).find(".table-row-multi-select:checkbox");
-      var action_buttons = $(this).find('.table_actions button[data-batch-action="true"]');
+      var $this = $(this);
+      var checkboxes = $this.find(".table-row-multi-select:checkbox");
+      var action_buttons = $this.find('.table_actions button[data-batch-action="true"]');
       action_buttons.toggleClass("disabled", !checkboxes.filter(":checked").length);
     });
   },
 
   initialize_checkboxes_behavior: function() {
     // Bind the "select all" checkbox action.
-    $('div.table_wrapper, #modal_wrapper').on('click', 'table thead .multi_select_column .table-row-multi-select:checkbox', function(evt) {
+    $('div.table_wrapper, #modal_wrapper').on('click', 'table thead .multi_select_column .table-row-multi-select:checkbox', function() {
       var $this = $(this),
       $table = $this.closest('table'),
       is_checked = $this.prop('checked'),
@@ -160,14 +162,14 @@ horizon.datatables = {
       checkboxes.prop('checked', is_checked);
     });
     // Change "select all" checkbox behavior while any checkbox is checked/unchecked.
-    $("div.table_wrapper, #modal_wrapper").on("click", 'table tbody .table-row-multi-select:checkbox', function (evt) {
+    $("div.table_wrapper, #modal_wrapper").on("click", 'table tbody .table-row-multi-select:checkbox', function () {
       var $table = $(this).closest('table');
       var $multi_select_checkbox = $table.find('thead .multi_select_column .table-row-multi-select:checkbox');
       var any_unchecked = $table.find("tbody .table-row-multi-select:checkbox").not(":checked");
       $multi_select_checkbox.prop('checked', any_unchecked.length === 0);
     });
     // Enable/disable table batch action buttons when row selection changes.
-    $("div.table_wrapper, #modal_wrapper").on("click", '.table-row-multi-select:checkbox', function (evt) {
+    $("div.table_wrapper, #modal_wrapper").on("click", '.table-row-multi-select:checkbox', function () {
       horizon.datatables.validate_button($(this).closest("form"));
     });
   },
@@ -182,15 +184,16 @@ horizon.datatables = {
     // submit is completed to remove these changes.
     $form = $form || $(".table_wrapper > form");
     $form.on("submit", function () {
+      var $this = $(this);
       // Add the 'submitted' flag to the form so the row update interval knows
       // not to update the row and therefore re-enable the actions that we are
       // disabling here.
-      $(this).attr('data-submitted', 'true');
+      $this.attr('data-submitted', 'true');
       // Disable row action buttons. This prevents multiple form submission.
-      $(this).find('td.actions_column button[type="submit"]').addClass("disabled");
+      $this.find('td.actions_column button[type="submit"]').addClass("disabled");
       // Use CSS to update the cursor so it's very clear that an action is
       // in progress.
-      $(this).addClass('wait');
+      $this.addClass('wait');
     });
   }
 };
@@ -237,9 +240,13 @@ horizon.datatables.confirm = function (action) {
     child_backdrop.css('z-index', $modal_parent.css('z-index')+10);
     modal.css('z-index', child_backdrop.css('z-index')+10);
   }
-  modal.find('.btn-primary').click(function (evt) {
+  modal.find('.btn-primary').click(function () {
     form = $action.closest('form');
-    form.append("<input type='hidden' name='" + $action.attr('name') + "' value='" + $action.attr('value') + "'/>");
+    var el = document.createElement("input");
+    el.type='hidden';
+    el.name = $action.attr('name');
+    el.value = $action.attr('value');
+    form.append(el);
     form.submit();
     modal.modal('hide');
     horizon.modals.modal_spinner(gettext("Working"));
@@ -251,7 +258,7 @@ horizon.datatables.confirm = function (action) {
 $.tablesorter.addParser({
   // set a unique id
   id: 'sizeSorter',
-  is: function(s) {
+  is: function() {
     // Not an auto-detected parser
     return false;
   },
@@ -280,12 +287,12 @@ $.tablesorter.addParser({
 $.tablesorter.addParser({
   // set a unique id
   id: 'timesinceSorter',
-  is: function(s) {
+  is: function() {
     // Not an auto-detected parser
     return false;
   },
   // compare int values
-  format: function(s, table, cell, cellIndex) {
+  format: function(s, table, cell) {
     return $(cell).find('span').data('seconds');
   },
   type: 'numeric'
@@ -307,14 +314,14 @@ $.tablesorter.addParser({
 
 $.tablesorter.addParser({
   id: 'naturalSort',
-  is: function(s) {
+  is: function() {
     return false;
   },
   // compare int values, non-integers use the ordinal value of the first byte
   format: function(s) {
-    result = parseInt(s);
+    var result = parseInt(s);
     if (isNaN(result)) {
-      m = s.match(/\d+/);
+      var m = s.match(/\d+/);
       if (m && m.length) {
         return parseInt(m[0]);
       } else {
@@ -380,7 +387,7 @@ horizon.datatables.disable_buttons = function() {
 
 $.tablesorter.addParser({
   id: 'uuid',
-  is: function(s) {
+  is: function() {
     return false;
   },
   format: function(s) {
@@ -392,9 +399,9 @@ $.tablesorter.addParser({
     // For example the string "SO" would become 83.79 which is then
     // numerically comparable to other strings.
     s = s.toUpperCase();
-    value = 0.0;
-    for(i = 0; i < s.length; i++) {
-      char_offset = 1.0 / Math.pow(100, i);
+    var value = 0.0;
+    for(var i = 0; i < s.length; i++) {
+      var char_offset = 1.0 / Math.pow(100, i);
       value = value + (s.charCodeAt(i) * char_offset);
     }
     return value;
@@ -425,10 +432,10 @@ horizon.datatables.update_footer_count = function (el, modifier) {
 
 horizon.datatables.add_no_results_row = function (table) {
   // Add a "no results" row if there are no results.
-  template = horizon.templates.compiled_templates["#empty_row_template"];
+  var template = horizon.templates.compiled_templates["#empty_row_template"];
   if (!table.find("tbody tr:visible").length && typeof(template) !== "undefined") {
-    colspan = table.find("th[colspan]").attr('colspan');
-    params = {
+    var colspan = table.find("th[colspan]").attr('colspan');
+    var params = {
         "colspan": colspan,
         no_items_label: gettext("No items to display.")
     };
@@ -454,8 +461,8 @@ horizon.datatables.set_table_sorting = function (parent) {
       header_options = {};
     // Disable if not sortable or has <= 1 item
     if ($table.find('tbody tr').not('.empty').length > 1){
-      $table.find("thead th[class!='table_header']").each(function (i, val) {
-        $th = $(this);
+      $table.find("thead th[class!='table_header']").each(function (i) {
+        var $th = $(this);
         if (!$th.hasClass('sortable')) {
           header_options[i] = {sorter: false};
         } else if ($th.data('type') === 'size'){
@@ -476,7 +483,8 @@ horizon.datatables.set_table_sorting = function (parent) {
         headers: header_options,
         widgets: ['zebra'],
         selectorHeaders: "thead th[class!='table_header']",
-        cancelSelection: false
+        cancelSelection: false,
+        emptyTo: 'none'
       });
     }
   });
@@ -507,7 +515,7 @@ horizon.datatables.set_table_query_filter = function (parent) {
           return false;
         }
       });
-      input.next('button.btn span.search-icon').on('click keypress', function (evt) {
+      input.next('button.btn span.search-icon').on('click keypress', function () {
         return false;
       });
 
@@ -524,8 +532,7 @@ horizon.datatables.set_table_query_filter = function (parent) {
           horizon.datatables.remove_no_results_row(table);
         },
         onAfter: function () {
-          var template, table, colspan, params;
-          table = $(table_selector);
+          var table = $(table_selector);
           horizon.datatables.update_footer_count(table);
           horizon.datatables.add_no_results_row(table);
           horizon.datatables.fix_row_striping(table);
