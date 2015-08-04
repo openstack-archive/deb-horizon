@@ -80,8 +80,6 @@ Build-Depends-Indep: gettext,
                      python-xstatic-term.js,
                      python-xvfbwrapper,
                      python-yaml,
-Build-Conflicts: python-rednose,
-                 python-unittest2,
 Standards-Version: 3.9.6
 Homepage: http://horizon.openstack.org
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
