@@ -1,6 +1,7 @@
 horizon (2015.1.1-1) unstable; urgency=medium
 
   * New upstream release.
+  * Added Compatibility_fix_for_pyscss_1.3.4.patch (Closes: #794927).
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 27 Aug 2015 09:03:13 +0000
 

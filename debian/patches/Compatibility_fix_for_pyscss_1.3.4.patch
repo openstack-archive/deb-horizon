@@ -1,0 +1,56 @@
+Subject: Compatibility fix for pyscss 1.3.4
+ This commit alters the action-list.scss file so it is compatible with the
+ newer version of pyScss (1.3.4+), allowing us to upgrade to that version.
+ .
+ This change is a prerequisite for the update to get into the global
+ requirements so that that change can pass testing.
+Author: Richard Jones <r1chardj0n3s@gmail.com>
+Date: Fri, 1 May 2015 11:39:37 +1000
+Change-Id: Idec7ce039b57476ce20b7b678431459c2ca0bdbf
+Co-Authored-By: Kelly Domico <kelly.domico@hp.com>
+(cherry picked from commit cca93ade7c23c1f2794376161b6660a459292eee)
+Origin: upstream, https://github.com/redhat-openstack/horizon/commit/c398152d22eefe1bb21c5ef7a800da2f0cfc21fb.patch
+
+diff --git a/horizon/static/angular/action-list/action-list.scss b/horizon/static/angular/action-list/action-list.scss
+old mode 100644
+new mode 100755
+index 58092e0..5b3fcc4
+--- a/horizon/static/angular/action-list/action-list.scss
++++ b/horizon/static/angular/action-list/action-list.scss
+@@ -22,16 +22,33 @@ action-list.btn-group {
+     right: -0.35em;
+     z-index: 3;
+ 
+-    & + .btn:not(:first-child) {
++    & + .btn:last-child:not(:first-child):not(.dropdown-toggle),
++    & + .btn:not(:last-child):not(:first-child):not(.dropdown-toggle),
++    & + .btn.single-button:not(:first-child),
++    & + .btn.split-button:not(:first-child):not(:last-child) {
+       border-top-left-radius: 4px;
+       border-bottom-left-radius: 4px;
++    }
++  }
+ 
+-      &.btn-sm {
++  &.btn-group-sm {
++    notifications {
++      & + .btn:last-child:not(:first-child):not(.dropdown-toggle),
++      & + .btn:not(:last-child):not(:first-child):not(.dropdown-toggle),
++      & + .btn.single-button:not(:first-child),
++      & + .btn.split-button:not(:first-child):not(:last-child) {
+         border-top-left-radius: 3px;
+         border-bottom-left-radius: 3px;
+       }
++    }
++  }
+ 
+-      &.btn-lg {
++  &.btn-group-lg {
++    notifications {
++      & + .btn:last-child:not(:first-child):not(.dropdown-toggle),
++      & + .btn:not(:last-child):not(:first-child):not(.dropdown-toggle),
++      & + .btn.single-button:not(:first-child),
++      & + .btn.split-button:not(:first-child):not(:last-child) {
+         border-top-left-radius: 6px;
+         border-bottom-left-radius: 6px;
+       }

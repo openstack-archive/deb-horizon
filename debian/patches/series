@@ -2,3 +2,4 @@ fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 adds-minus-v-flag-when-running-nosetests.patch
+Compatibility_fix_for_pyscss_1.3.4.patch
