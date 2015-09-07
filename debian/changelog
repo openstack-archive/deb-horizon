@@ -1,6 +1,7 @@
 horizon (1:8.0.0~b3-1) experimental; urgency=medium
 
   * New upstream release.
+  * Fix (build-)depends for this release.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 07 Sep 2015 14:27:34 +0200
 
