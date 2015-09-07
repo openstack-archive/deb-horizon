@@ -9,15 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-07-19 22:22+0000\n"
-"PO-Revision-Date: 2015-07-23 13:22+0000\n"
-"Last-Translator: Sungjin Kang <potopro@gmail.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/horizon/"
+"POT-Creation-Date: 2015-09-01 03:11+0000\n"
+"PO-Revision-Date: 2015-08-30 00:10+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/openstack/horizon/"
 "language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.0\n"
 "Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -39,6 +39,14 @@ msgstr ""
 "<li><b>인스턴스 스냅샷</b>:이 옵션은 인스턴스를 부팅하기 위해 인스턴스 스냅샷"
 "을 사용합니다.</li>"
 
+msgid ""
+"A key pair allows you to SSH into your newly created instance. You may "
+"select an existing key pair, import a key pair, or generate a new key pair."
+msgstr ""
+"키 페어를 통해 새로 생성한 인스턴스로 SSH 접속을 할 수 있습니다. 기존 키 페어"
+"를 선택하거나, 키 페어를 가져오거나, 또는 새로운 키 페어를 생성할 수 있습니"
+"다."
+
 msgid "A name is required for your instance."
 msgstr "인스턴스에 대한 이름이 필요합니다."
 
@@ -50,6 +58,16 @@ msgstr "Active"
 
 msgid "Admin State"
 msgstr "관리자 상태"
+
+msgid ""
+"Administrators are responsible for creating and managing flavors. A custom "
+"flavor can be created for you or for a specific project where it is shared "
+"with the users assigned to that project. If you need a custom flavor, "
+"contact your administrator."
+msgstr ""
+"관리자는 flavor에 대해 생성 및 관리를 담당합니다. 사용자 정의 flavor를 직접 "
+"또는 해당 프로젝트에 할당된 사용자와 공유되고 있는 특정 프로젝트에 생성할 수 "
+"있습니다. 사용자 정의 flavor가 필요한 경우, 관리자에게 문의하십시오."
 
 msgid ""
 "Administrators set up the pool of floating IPs that are available to attach "
@@ -66,6 +84,13 @@ msgstr ""
 "두 가지 디스크 파티션 옵션이 있습니다. <b>자동</b>으로 선택하면 디스크 크기"
 "를 재조정하여 단일 파티션으로 설정합니다. <b>수동</b>으로 선택하면 해당 디스"
 "크에 여러 파티션을 생성할 수 있습니다."
+
+msgid ""
+"An instance name is required and used to help you uniquely identify your "
+"instance in the dashboard."
+msgstr ""
+"인스턴스 이름은 필수이며 대시보드에서 인스턴스를 식별 및 구별 가능하기 위해 "
+"사용됩니다."
 
 msgid "Automatic"
 msgstr "자동"
@@ -93,6 +118,9 @@ msgstr ""
 "메타데이터를 특정 구성 드라이브에 기록하고 싶은 경우 <b>드라이브 구성</b> 체"
 "크박스를 선택합니다. 인스턴스가 부팅될 때, 선택된 해당  <b>드라이브 구성</b>"
 "에 붙어 메타데이터를 액세스합니다."
+
+msgid "Click to see more details"
+msgstr "클릭하여 세부 사항 보기"
 
 msgid "Configuration"
 msgstr "구성"
@@ -141,6 +169,9 @@ msgstr "사용자 삭제"
 
 msgid "Delete Volume on Terminate"
 msgstr "종료시 볼륨 삭제"
+
+msgid "Deleted"
+msgstr "삭제됨"
 
 msgid "Description"
 msgstr "설명"
@@ -203,6 +234,20 @@ msgid ""
 msgstr ""
 "Flavor는 인스턴스의 컴퓨트, 메모리 및 스토리지 용량에 대한 크기를 관리합니다."
 
+msgid "Format"
+msgstr "포멧"
+
+#, python-format
+msgid ""
+"From a Windows system, you can use PuTTYGen to create private/public keys. "
+"Use the PuTTY Key Generator to create and save the keys, then copy the "
+"public key in the red highlighted box to your <samp>%(authorizeKeysFile)s</"
+"samp> file."
+msgstr ""
+"Windows 시스템에서는, PuTTYGen을 사용하여 비밀/공개키를 생성할 수 있습니다. "
+"PuTTY 키 생성기를 사용하여 키를 생성 및 저장하고, 빨간 색으로 강조된 상자에 "
+"있는 공개 키를 <samp>%(authorizeKeysFile)s</samp> 파일에 복사합니다."
+
 msgid "ID"
 msgstr "ID"
 
@@ -214,6 +259,9 @@ msgstr ""
 
 msgid "Image"
 msgstr "이미지"
+
+msgid "Image Name"
+msgstr "이미지 이름"
 
 msgid "Impact on your quota"
 msgstr "쿼터에 미치는 영향"
@@ -266,6 +314,9 @@ msgstr ""
 "키 페어는 인스턴스가 구동된 후 로그인하는 방법에 대한 것입니다. 인식하고자 하"
 "는 키 페어 이름을 선택합니다."
 
+msgid "Killed"
+msgstr "Killed"
+
 msgid "Launch Instance"
 msgstr "인스턴스 시작"
 
@@ -281,8 +332,17 @@ msgstr "최대 포트번호"
 msgid "Min Disk"
 msgstr "최소 디스크"
 
+msgid "Min Disk (GB)"
+msgstr "최소 디스크 (GB)"
+
 msgid "Min Port"
 msgstr "최소 포트번호"
+
+msgid "Min RAM"
+msgstr "최소 RAM"
+
+msgid "Min RAM (MB)"
+msgstr "최소 RAM (MB)"
 
 msgid "Min Ram"
 msgstr "최소 램"
@@ -311,8 +371,14 @@ msgstr "네트워크는 클라우드 내 인스턴스에 대한 통신 채널을
 msgid "No"
 msgstr "아니오"
 
+msgid "No available items"
+msgstr "사용 가능한 항목 없음"
+
 msgid "OK"
 msgstr "OK"
+
+msgid "Pending Delete"
+msgstr "Pending Delete"
 
 msgid "Physical Network"
 msgstr "물리적인 네트워크"
@@ -335,6 +401,9 @@ msgstr "프로젝트"
 msgid "Project ID"
 msgstr "프로젝트 ID"
 
+msgid "Protected"
+msgstr "보호됨"
+
 msgid "Protocol"
 msgstr "프로토콜"
 
@@ -347,8 +416,14 @@ msgstr "공용"
 msgid "Public Key"
 msgstr "공개 키"
 
+msgid "Queued"
+msgstr "Queued"
+
 msgid "RAM"
 msgstr "RAM"
+
+msgid "Re-order items using drag and drop"
+msgstr "다시 주문할 아이템은 드래그 앤 드롭으로 가져옵니다."
 
 msgid "Remote"
 msgstr "원격"
@@ -358,6 +433,12 @@ msgstr "필요한"
 
 msgid "Root Disk"
 msgstr "Root 디스크"
+
+msgid "Save"
+msgstr "저장"
+
+msgid "Saving"
+msgstr "Saving"
 
 msgid "Script size"
 msgstr "스크립트 크기"
@@ -394,6 +475,9 @@ msgstr "아래의 사용 가능한 키 페어 중 하나를 선택합니다."
 msgid "Select a source from those listed below."
 msgstr "해당 아래 목록으로부터 소스를 선택합니다."
 
+msgid "Select an item from Available items below"
+msgstr "아래의 사용 가능한 항목에서 항목을 선택"
+
 msgid "Select at least one network"
 msgstr "적어도 하나 이상 네트워크를 선택합니다."
 
@@ -429,6 +513,9 @@ msgstr "크기"
 msgid "Size (GB)"
 msgstr "크기 (GB)"
 
+msgid "Snapshot"
+msgstr "스냅샷"
+
 msgid "Status"
 msgstr "상태"
 
@@ -436,12 +523,12 @@ msgid "Subnets Associated"
 msgstr "서브넷 특징"
 
 #, python-format
-msgid "Successfully created key pair %(name)s"
-msgstr "키 페어 %(name)s를 성공적으로 생성하였습니다."
+msgid "Successfully created key pair %(name)s."
+msgstr "키 페어 %(name)s 를 성공적으로 생성하였습니다."
 
 #, python-format
-msgid "Successfully imported key pair %(name)s"
-msgstr "키 페어  %(name)s를 성공적으로 등록하였습니다."
+msgid "Successfully imported key pair %(name)s."
+msgstr "키 페어 %(name)s 를 성공적으로 가져왔습니다."
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -473,12 +560,28 @@ msgstr ""
 "선택한 이미지 소스는 root 디스크가 최소 %(minDisk)s GB인 flavor가 필요합니"
 "다. Root 디스크가 더 큰 flavor를 선택하거나 다른 이미지 소스를 사용하십시오."
 
+#, python-format
+msgid ""
+"The selected image source requires a flavor with at least %(minRam)s MB of "
+"RAM. Select a flavor with more RAM or use a different image source."
+msgstr ""
+"선택한 이미지 소스는 최소 %(minRam)s MB 만큼의 RAM을 필요로 하는 flavor입니"
+"다. 보다 많은 RAM을 가진 flavor를 선택하거나 다른 이미지 소스를 사용하세요."
+
 msgid "The status indicates whether the network has an active connection."
 msgstr "해당 상태는 네트워크가 활성화된 연결을 이루고 있는지를 가리킵니다."
 
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
 msgstr "볼륨 크기는 최소 %(minVolumeSize)s GB여야 합니다."
+
+#, python-format
+msgid ""
+"There are two ways to generate a key pair. From a Linux system, generate the "
+"key pair with the <samp>%(genKeyPairCmd)s</samp> command:"
+msgstr ""
+"키 페어를 생성하는 두 가지 방법이 있습니다. Linux 시스템에서는, <samp>"
+"%(genKeyPairCmd)s</samp> 명령어로 키 페어를 생성합니다:"
 
 #, python-format
 msgid ""
@@ -685,6 +788,15 @@ msgstr "볼륨을 가져오지 못했습니다."
 msgid "Up"
 msgstr "Up"
 
+msgid "Update Aggregate Metadata"
+msgstr "집합 메타데이터 업데이트"
+
+msgid "Update Flavor Metadata"
+msgstr "Flavor 메타데이터 업데이트"
+
+msgid "Update Image Metadata"
+msgstr "이미지 메타데이터 업데이트"
+
 msgid "Updated"
 msgstr "업데이트"
 
@@ -693,9 +805,6 @@ msgstr "사용자 ID"
 
 msgid "User Name"
 msgstr "사용자 이름"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "Visibility"
 msgstr "가시성"
@@ -708,6 +817,13 @@ msgstr "볼륨 스냅샷"
 
 msgid "Volume size is required and must be an integer"
 msgstr "볼륨 크기가 필요하고 정수값이어야 합니다"
+
+msgid ""
+"Volumes can only be attached to 1 active instance at a time. Please either "
+"set your instance count to 1 or select a different source type."
+msgstr ""
+"볼륨은 1개의 활성화된 인스턴스에만 동시에 부착될 수 있습니다. 인스턴스 개수"
+"를 1로 설정하거나 다른 소스 타입을 선택하세요."
 
 msgid ""
 "When selecting volume as boot source, please ensure the instance's "

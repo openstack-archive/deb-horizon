@@ -17,12 +17,13 @@
     "karma-jasmine": "0.3.5",
     "karma-ng-html2js-preprocessor": "0.1.2",
     "karma-phantomjs-launcher": "0.2.0",
+    "karma-threshold-reporter": "0.1.15",
     "phantomjs": "1.9.17"
   },
   "scripts": {
     "postinstall": "if [ ! -d .venv ]; then tox -epy27 --notest; fi",
     "test": "karma start horizon/karma.conf.js --single-run && karma start openstack_dashboard/karma.conf.js --single-run",
-    "lint": "eslint --no-color horizon/static openstack_dashboard/static"
+    "lint": "eslint --no-color */static openstack_dashboard/dashboards/*/static"
   },
   "dependencies": {}
 }

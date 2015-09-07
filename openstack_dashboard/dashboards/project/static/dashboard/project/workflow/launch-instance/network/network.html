@@ -1,0 +1,187 @@
+<div ng-controller="LaunchInstanceNetworkController as ctrl">
+  <h1 translate>Networks</h1>
+  <div class="content">
+    <div class="subtitle" translate>
+      Networks provide the communication channels for instances in the cloud.
+    </div>
+
+  <div class="form-group" ng-if="model.arePortProfilesSupported">
+    <label class="control-label required" for="profile" translate>Profile</label>
+    <select class="form-control" id="profile" ng-model="model.newInstanceSpec.profile" ng-options="profile.name for profile in model.profiles">
+      <option value="" translate>(None)</option>
+    </select>
+  </div>
+
+  <transfer-table tr-model="ctrl.tableDataMulti" help-text="ctrl.tableHelpText" limits="ctrl.tableLimits">
+    <allocated validate-number-min="1" ng-model="ctrl.tableDataMulti.allocated.length">
+      <table st-table="ctrl.tableDataMulti.displayedAllocated" st-safe-src="ctrl.tableDataMulti.allocated" hz-table
+        class="table-striped table-rsp table-detail modern">
+        <thead>
+          <tr>
+            <th class="reorder"></th>
+            <th class="expander"></th>
+            <th class="rsp-p1" translate>Network</th>
+            <th class="rsp-p2" translate>Subnets Associated</th>
+            <th class="rsp-p1" translate>Shared</th>
+            <th class="rsp-p1" translate>Admin State</th>
+            <th class="rsp-p1" translate>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-if="ctrl.tableDataMulti.allocated.length === 0">
+            <td colspan="8">
+              <div class="no-rows-help" translate>
+                Select an item from Available items below
+              </div>
+            </td>
+          </tr>
+          <tr ng-repeat-start="row in ctrl.tableDataMulti.displayedAllocated track by row.id"
+            lr-drag-data="ctrl.tableDataMulti.displayedAllocated" lr-drag-src="reorder"
+            lr-drop-target="reorder" lr-drop-success="trCtrl.updateAllocated(e, item, collection)">
+            <td class="reorder">
+              <span class="fa fa-sort" title="{$ 'Re-order items using drag and drop'|translate $}"></span>
+              {$ $index + 1 $}
+            </td>
+            <td class="expander">
+              <span class="fa fa-chevron-right" hz-expand-detail
+                title="{$ 'Click to see more details'|translate $}"></span>
+            </td>
+            <td class="rsp-p1">{$ row.name $}</td>
+            <td class="rsp-p2">
+              <div ng-repeat="subnet in row.subnets">{$ subnet.name $}</div>
+            </td>
+            <td class="rsp-p1">{$ row.shared | yesno $}</td>
+            <td class="rsp-p1">{$ row.admin_state | decode:ctrl.networkAdminStates $}</td>
+            <td class="rsp-p1">{$ row.status | decode:ctrl.networkStatuses $}</td>
+            <td class="action-col">
+              <action-list>
+                <action action-classes="'btn btn-sm btn-default'"
+                  callback="trCtrl.deallocate" item="row">
+                  <span class="fa fa-minus"></span>
+                </action>
+              </action-list>
+            </td>
+          </tr>
+          <tr ng-repeat-end class="detail-row">
+            <td colspan="2"></td>
+            <td colspan="7" class="detail">
+              <dl class="dl-horizontal">
+                <dt translate>ID</dt>
+                <dd>{$ row.id $}</dd>
+                <dt translate>Project</dt>
+                <dd>{$ row.tenant_id $}</dd>
+                <dt translate>External Network</dt>
+                <dd>{$ row['router:external'] | yesno $}</dd>
+              </dl>
+              <div><b translate>Provider Network</b></div>
+              <div class="row" class="detail">
+                <dl class="col-sm-3">
+                  <dt translate>Type</dt>
+                  <dd translate>{$ row['provider:network_type'] $}</dd>
+                </dl>
+                <dl class="col-sm-3">
+                  <dt translate>Segmentation ID</dt>
+                  <dd>{$ row['provider:segmentation_id'] $}</dd>
+                </dl>
+                <dl class="col-sm-3">
+                  <dt translate>Physical Network</dt>
+                  <dd>{$ row['provider:physical_network'] $}</dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </allocated>
+    <available>
+      <table st-table="ctrl.tableDataMulti.displayedAvailable" st-safe-src="ctrl.tableDataMulti.available"
+        hz-table class="table-striped table-rsp table-detail modern">
+        <thead>
+          <tr>
+            <th class="search-header" colspan="8">
+              <hz-search-bar group-classes="input-group-sm" icon-classes="fa-search">
+              </hz-search-bar>
+            </th>
+          </tr>
+          <tr>
+            <th class="reorder"></th>
+            <th class="expander"></th>
+            <th st-sort="name" st-sort-default class="rsp-p1" translate>Network</th>
+            <th class="rsp-p2" translate>Subnets Associated</th>
+            <th st-sort="shared" class="rsp-p1" translate>Shared</th>
+            <th st-sort="admin_state" class="rsp-p1" translate>Admin State</th>
+            <th st-sort="status" class="rsp-p1" translate>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-if="trCtrl.numAvailable() === 0">
+            <td colspan="8">
+              <div class="no-rows-help" translate>
+                No available items
+              </div>
+            </td>
+          </tr>
+          <tr ng-repeat-start="row in ctrl.tableDataMulti.displayedAvailable track by row.id" ng-if="!trCtrl.allocatedIds[row.id]">
+            <td class="reorder"></td>
+            <td class="expander">
+              <span class="fa fa-chevron-right" hz-expand-detail
+                title="{$ 'Click to see more details'|translate $}"></span>
+            </td>
+            <td class="rsp-p1">{$ row.name$}</td>
+            <td class="rsp-p2">
+              <div ng-repeat="subnet in row.subnets">{$ subnet.name $}</div>
+            </td>
+            <td class="rsp-p1">{$ row.shared | yesno $}</td>
+            <td class="rsp-p1">{$ row.admin_state | decode:ctrl.networkAdminStates $}</td>
+            <td class="rsp-p1">{$ row.status | decode:ctrl.networkStatuses $}</td>
+            <td class="action-col">
+              <action-list button-tooltip="row.warningMessage"
+                bt-model="ctrl.tooltipModel" bt-disabled="!row.disabled"
+                warning-classes="'invalid'">
+                <notifications>
+                  <span class="fa fa-exclamation-circle invalid" ng-show="row.disabled"></span>
+                </notifications>
+                <action action-classes="'btn btn-sm btn-default'"
+                  callback="trCtrl.allocate" item="row" disabled="row.disabled">
+                  <span class="fa fa-plus"></span>
+                </action>
+              </action-list>
+            </td>
+          </tr>
+          <tr ng-repeat-end class="detail-row" ng-if="!trCtrl.allocatedIds[row.id]">
+            <td colspan="2"></td>
+            <td colspan="7" class="detail">
+              <dl class="dl-horizontal">
+                <dt translate>ID</dt>
+                <dd>{$ row.id $}</dd>
+                <dt translate>Project</dt>
+                <dd>{$ row.tenant_id $}</dd>
+                <dt translate>External Network</dt>
+                <dd>{$ row['router:external'] | yesno $}</dd>
+              </dl>
+              <div><b translate>Provider Network</b></div>
+              <div class="row">
+                <dl class="col-sm-3">
+                  <dt translate>Type</dt>
+                  <dd>{$ row['provider:network_type'] $}</dd>
+                </dl>
+                <dl class="col-sm-3">
+                  <dt translate>Segmentation ID</dt>
+                  <dd>{$ row['provider:segmentation_id'] $}</dd>
+                </dl>
+                <dl class="col-sm-3">
+                  <dt translate>Physical Network</dt>
+                  <dd>{$ row['provider:physical_network'] $}</dd>
+                </dl>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </available>
+  </transfer-table>
+
+  </div>
+</div>

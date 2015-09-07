@@ -519,6 +519,16 @@ class FilterAction(BaseAction):
         return False
 
 
+class NameFilterAction(FilterAction):
+    """A filter action for name property."""
+
+    def filter(self, table, items, filter_string):
+        """Naive case-insensitive search."""
+        query = filter_string.lower()
+        return [item for item in items
+                if query in item.name.lower()]
+
+
 class FixedFilterAction(FilterAction):
     """A filter action with fixed buttons."""
 
@@ -743,7 +753,7 @@ class BatchAction(Action):
         action_attr = getattr(self, "action_%s" % action_type)
         if self.use_action_method:
             action_attr = action_attr(count)
-        if isinstance(action_attr, (basestring, Promise)):
+        if isinstance(action_attr, (six.string_types, Promise)):
             action = action_attr
         else:
             toggle_selection = getattr(self, "current_%s_action" % action_type)

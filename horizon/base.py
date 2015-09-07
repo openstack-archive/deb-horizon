@@ -255,6 +255,18 @@ class Panel(HorizonComponent):
         The ``name`` argument for the URL pattern which corresponds to
         the index view for this ``Panel``. This is the view that
         :meth:`.Panel.get_absolute_url` will attempt to reverse.
+
+    .. staticmethod:: can_register
+
+        This optional static method can be used to specify conditions that
+        need to be satisfied to load this panel. Unlike ``permissions`` and
+        ``allowed`` this method is intended to handle settings based
+        conditions rather than user based permission and policy checks.
+        The return value is boolean. If the method returns ``True``, then the
+        panel will be registered and available to user (if ``permissions`` and
+        ``allowed`` runtime checks are also satisfied). If the method returns
+        ``False``, then the panel will not be registered and will not be
+        available via normal navigation or direct URL access.
     """
     name = ''
     slug = ''
@@ -294,6 +306,7 @@ class Panel(HorizonComponent):
         return urlpatterns, self.slug, self.slug
 
 
+@six.python_2_unicode_compatible
 class PanelGroup(object):
     """A container for a set of :class:`~horizon.Panel` classes.
 
@@ -324,7 +337,7 @@ class PanelGroup(object):
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self.slug)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def __iter__(self):
@@ -722,14 +735,11 @@ class Site(Registry, HorizonComponent):
                 dashboards.append(dashboard)
                 registered.pop(dashboard.__class__)
             if len(registered):
-                extra = registered.values()
-                extra.sort()
+                extra = sorted(registered.values())
                 dashboards.extend(extra)
             return dashboards
         else:
-            dashboards = self._registry.values()
-            dashboards.sort()
-            return dashboards
+            return sorted(self._registry.values())
 
     def get_default_dashboard(self):
         """Returns the default :class:`~horizon.Dashboard` instance.
@@ -922,6 +932,14 @@ class Site(Registry, HorizonComponent):
                     LOG.warning("Could not load panel: %s", mod_path)
                     return
                 panel = getattr(mod, panel_cls)
+                # test is can_register method is present and call method if
+                # it is to determine if the panel should be loaded
+                if hasattr(panel, 'can_register') and \
+                   callable(getattr(panel, 'can_register')):
+                    if not panel.can_register():
+                        LOG.debug("Load condition failed for panel: %(panel)s",
+                                  {'panel': panel_slug})
+                        return
                 dashboard_cls.register(panel)
                 if panel_group:
                     dashboard_cls.get_panel_group(panel_group).\

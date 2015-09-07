@@ -23,6 +23,7 @@ from django import http
 from django.test.utils import override_settings
 
 from mox3.mox import IsA  # noqa
+import six
 
 from openstack_dashboard import api
 from openstack_dashboard.api import cinder
@@ -103,6 +104,7 @@ class VolumeViewTests(test.TestCase):
 
         url = reverse('horizon:project:volumes:volumes:create')
         res = self.client.post(url, formData)
+        self.assertNoFormErrors(res)
 
         redirect_url = VOLUME_VOLUMES_TAB_URL
         self.assertRedirectsNoFollow(res, redirect_url)
@@ -436,6 +438,7 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_snapshot_get',
                                  'volume_type_list',
+                                 'volume_type_default',
                                  'volume_get'),
                         api.glance: ('image_list_detailed',),
                         quotas: ('tenant_limit_usages',)})
@@ -452,6 +455,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
             AndReturn(self.volume_types.list())
+        cinder.volume_type_list(IsA(http.HttpRequest)).\
+            AndReturn(self.volume_types.list())
+        cinder.volume_type_default(IsA(http.HttpRequest)).\
+            AndReturn(self.volume_types.first())
         quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
             AndReturn(usage_limit)
         cinder.volume_snapshot_get(IsA(http.HttpRequest),
@@ -600,6 +607,7 @@ class VolumeViewTests(test.TestCase):
         self.assertRedirectsNoFollow(res, redirect_url)
 
     @test.create_stubs({cinder: ('volume_type_list',
+                                 'volume_type_default',
                                  'availability_zone_list',
                                  'extension_supported'),
                         api.glance: ('image_get',
@@ -618,6 +626,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
             AndReturn(self.volume_types.list())
+        cinder.volume_type_list(IsA(http.HttpRequest)).\
+            AndReturn(self.volume_types.list())
+        cinder.volume_type_default(IsA(http.HttpRequest)).\
+            AndReturn(self.volume_types.first())
         quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
             AndReturn(usage_limit)
         api.glance.image_get(IsA(http.HttpRequest),
@@ -666,6 +678,8 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
             AndReturn(self.volume_types.list())
+        cinder.volume_type_list(IsA(http.HttpRequest)).\
+            AndReturn(self.volume_types.list())
         quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
             AndReturn(usage_limit)
         api.glance.image_get(IsA(http.HttpRequest),
@@ -701,6 +715,7 @@ class VolumeViewTests(test.TestCase):
 
     @test.create_stubs({cinder: ('volume_snapshot_list',
                                  'volume_type_list',
+                                 'volume_type_default',
                                  'volume_list',
                                  'availability_zone_list',
                                  'extension_supported'),
@@ -718,6 +733,10 @@ class VolumeViewTests(test.TestCase):
 
         cinder.volume_type_list(IsA(http.HttpRequest)).\
             AndReturn(self.volume_types.list())
+        cinder.volume_type_list(IsA(http.HttpRequest)).\
+            AndReturn(self.volume_types.list())
+        cinder.volume_type_default(IsA(http.HttpRequest)).\
+            AndReturn(self.volume_types.first())
         quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
             AndReturn(usage_limit)
         cinder.volume_snapshot_list(IsA(http.HttpRequest),
@@ -768,6 +787,8 @@ class VolumeViewTests(test.TestCase):
                     'method': u'CreateForm',
                     'size': 10}
 
+        cinder.volume_type_list(IsA(http.HttpRequest)).\
+            AndReturn(self.volume_types.list())
         cinder.volume_type_list(IsA(http.HttpRequest)).\
             AndReturn(self.volume_types.list())
         quotas.tenant_limit_usages(IsA(http.HttpRequest)).\
@@ -991,7 +1012,7 @@ class VolumeViewTests(test.TestCase):
 
         classes = (list(create_link.get_default_classes())
                    + list(create_link.classes))
-        link_name = "%s (%s)" % (unicode(create_link.verbose_name),
+        link_name = "%s (%s)" % (six.text_type(create_link.verbose_name),
                                  "Quota exceeded")
         expected_string = "<a href='%s' class=\"%s disabled\" "\
             "id=\"volumes__row_%s__action_snapshots\">%s</a>" \
@@ -1034,7 +1055,7 @@ class VolumeViewTests(test.TestCase):
         url = create_link.get_link_url()
         classes = (list(create_link.get_default_classes())
                    + list(create_link.classes))
-        link_name = "%s (%s)" % (unicode(create_link.verbose_name),
+        link_name = "%s (%s)" % (six.text_type(create_link.verbose_name),
                                  "Quota exceeded")
         expected_string = "<a href='%s' title='%s'  class='%s disabled' "\
             "id='volumes__action_create'  data-update-url=" \
@@ -1345,9 +1366,9 @@ class VolumeViewTests(test.TestCase):
         url = reverse('horizon:project:volumes:volumes:extend',
                       args=[volume.id])
         res = self.client.post(url, formData)
-        self.assertFormError(res, 'form', None,
-                             "New size must be greater than "
-                             "current size.")
+        self.assertFormErrors(res, 1,
+                              "New size must be greater than "
+                              "current size.")
 
     @test.create_stubs({cinder: ('volume_get',
                                  'tenant_absolute_limits')})

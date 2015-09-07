@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from StringIO import StringIO
+from six import StringIO
 
 from horizon.test import helpers as test
 from horizon.utils.babel_extract_angular import extract_angular
@@ -150,4 +150,23 @@ class ExtractAngularTestCase(test.TestCase):
                 (8, u'gettext', '"it\\\'s awesome"', []),
                 (9, u'gettext', 'oh \\"hello\\" there', []),
             ],
+            messages)
+
+    def test_trim_translate_tag(self):
+        buf = StringIO(
+            "<html><translate> \n hello\n world! \n "
+            "</translate></html>")
+
+        messages = list(extract_angular(buf, [], [], {}))
+        self.assertEqual([(1, 'gettext', 'hello\n world!', [])], messages)
+
+    def test_nested_translate_tag(self):
+        buf = StringIO(
+            "<html><translate>hello <b>beautiful <i>world</i></b> !"
+            "</translate></html>"
+        )
+
+        messages = list(extract_angular(buf, [], [], {}))
+        self.assertEqual(
+            [(1, 'gettext', 'hello <b>beautiful <i>world</i></b> !', [])],
             messages)

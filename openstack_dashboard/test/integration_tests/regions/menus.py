@@ -35,12 +35,20 @@ class NavigationAccordionRegion(baseregion.BaseRegion):
     def project_bar(self):
         return self._get_element(*self._project_bar_locator)
 
-    _first_level_item_selected_locator = (by.By.CSS_SELECTOR, 'dt.active')
-    _second_level_item_selected_locator = (by.By.CSS_SELECTOR, 'h4.active')
+    _first_level_item_selected_locator = (
+        by.By.CSS_SELECTOR, 'li.openstack-dashboard.selenium-active > a')
+    _second_level_item_selected_locator = (
+        by.By.CSS_SELECTOR, 'li.nav-header.selenium-active > a')
 
-    _first_level_item_xpath_template = '//dt[contains(text(),\'%s\')]'
-    _second_level_item_xpath_template = '//h4[contains(text(),\'%s\')]'
-    _third_level_item_xpath_template = '//li/a[text()=\'%s\']'
+    _first_level_item_xpath_template = (
+        "//li[contains(concat('', @class, ''), 'openstack-dashboard') "
+        "and contains(., '%s')]/a")
+    _second_level_item_xpath_template = (
+        "//li[contains(concat('', @class, ''), 'nav-header') "
+        "and contains(., '%s')]/a")
+    _third_level_item_xpath_template = (
+        "//li[contains(concat('', @class, ''), 'openstack-panel') and "
+        "contains(., '%s')]/a")
 
     def _get_first_level_item_locator(self, text):
         return (by.By.XPATH,
@@ -85,7 +93,7 @@ class NavigationAccordionRegion(baseregion.BaseRegion):
         if not get_selected_func:
             self._click_item(text, loc_craft_func)
         else:
-            for _ in xrange(self.MAX_MENU_ITEM_CLICK_TRIES):
+            for _ in range(self.MAX_MENU_ITEM_CLICK_TRIES):
                 selected_item = get_selected_func()
                 if selected_item and text == selected_item.text:
                     break

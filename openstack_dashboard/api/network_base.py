@@ -84,8 +84,8 @@ class FloatingIpManager(object):
     def associate(self, floating_ip_id, port_id):
         """Associates the floating IP to the port.
 
-        port_id is a fixed IP of a instance (Nova) or
-        a port_id attached to a VNIC of a instance.
+        port_id is a fixed IP of an instance (Nova) or
+        a port_id attached to a VNIC of an instance.
         """
         pass
 
@@ -170,9 +170,9 @@ class SecurityGroupManager(object):
     * from_port: lower limit of allowed port range (inclusive)
     * to_port: upper limit of allowed port range (inclusive)
     * ip_range: remote IP CIDR (source for ingress, dest for egress).
-    The value should be a format of "{'cidr': <cidr>}"
+      The value should be a format of "{'cidr': <cidr>}"
     * group: remote security group. The value should be a format of
-    "{'name': <secgroup_name>}"
+      "{'name': <secgroup_name>}"
 
     """
 

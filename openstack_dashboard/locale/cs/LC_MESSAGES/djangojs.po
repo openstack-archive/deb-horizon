@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-07-25 00:06+0000\n"
-"PO-Revision-Date: 2015-07-24 14:49+0000\n"
+"POT-Creation-Date: 2015-09-01 03:11+0000\n"
+"PO-Revision-Date: 2015-08-30 04:51+0000\n"
 "Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/horizon/language/"
+"Language-Team: Czech (http://www.transifex.com/openstack/horizon/language/"
 "cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.0\n"
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
@@ -46,6 +46,53 @@ msgid ""
 msgstr ""
 "<li><b>Snímek instance</b>: Tato volba využije snímek instance pro její "
 "zavedení.</li>"
+
+msgid ""
+"<li><b>Volume Snapshot</b>: This option uses a volume snapshot to boot the "
+"instance, and creates a new volume to persist instance data. You can choose "
+"to delete the volume on termination of the instance.</li>"
+msgstr ""
+"<li><b>Snímek svazku</b>: Tato volba využívá snímek svazku k zavedení "
+"instance a vytváří nový svazek pro uchování jejích dat. Můžete zadat zdali "
+"svazek při ukončení instance smazat.</li>"
+
+msgid ""
+"<li><b>Volume</b>: This option uses a volume that already exists. It does "
+"not create a new volume. You can choose to delete the volume on termination "
+"of the instance. <em>Note: when selecting Volume, you can only launch one "
+"instance.</em></li>"
+msgstr ""
+"<li><b>Svazek</b>: Tato volba využívá svazek, který již existuje. Nevytváří "
+"nový svazek. Můžete zadat zdali svazek při ukončení instance smazat. "
+"<em>Poznámka: při zvolení svazku můžete spustit pouze jednu instanci.</em></"
+"li>"
+
+msgid ""
+"A floating IP allows instances to be addressable from an external network.\n"
+"    Floating IPs are not allocated to instances at creation time and may be "
+"assigned\n"
+"    after the instance is created. To attach a floating IP, go to the "
+"<b>Instances</b>\n"
+"    view and click the <b>Actions</b> menu to the right of an instance.\n"
+"    Then, select the <b>Associate Floating IP</b> option and enter the "
+"necessary details."
+msgstr ""
+"Plovoucí IP adresa umožňuje instancím být adresovatelné z vnější sítě. \n"
+"    Plovoucí IP adresy nejsou přiděleny k instancím při vytváření, ale toto "
+"lze provést\n"
+"    po jejich vytvoření. Pro připojení plovoucí IP adresy, přejděte na "
+"zobrazení\n"
+"    <b>Instancí</b> a klikněte na nabídku <b>Činnosti</b> napravo od "
+"instance.\n"
+"    Pak zvolte volbu <b>Přidružit plovoucí IP</b> a zadejte potřebné údaje."
+
+msgid ""
+"A key pair allows you to SSH into your newly created instance. You may "
+"select an existing key pair, import a key pair, or generate a new key pair."
+msgstr ""
+"Pár klíčů Vám umožňuje se připojit pomocí SSH do vaší nově vytvořené "
+"instance. Zde můžete zvolit existující pár klíčů, importovat ho nebo "
+"vytvořit zcela nový."
 
 msgid "A name is required for your instance."
 msgstr "Název vaší instance je vyžadován."
@@ -77,11 +124,47 @@ msgstr ""
 "Správci vytvářejí zásobu plovoucích adres IP, které je možno připojit k "
 "instancím."
 
+msgid ""
+"An <b>External</b> network is set up by an administrator.\n"
+"    If you want an instance to communicate outside of the data center,\n"
+"    then attach a router between your <b>Project</b> network and the "
+"<b>External</b> network.\n"
+"    You can use the <b>Network Topology</b> view to connect the router to "
+"the two networks."
+msgstr ""
+"<b>Vnější</b> síť vytváří správce. \n"
+"    Pokud chcete, aby instance komunikovala mimo datové centrum,\n"
+"    pak připojte směrovač mezi sítí vašeho <b>Projektu</b>  a <b>Vnější</b> "
+"sítí. \n"
+"    Pro připojení směrovače do těchto dvou sítí můžete využít zobrazení "
+"<b>Topologie sítě</b>."
+
+msgid ""
+"An advanced option available when launching an instance is disk "
+"partitioning. There are two disk partition options. Selecting <b>Automatic</"
+"b> resizes the disk and sets it to a single partition. Selecting <b>Manual</"
+"b> allows you to create multiple partitions on the disk."
+msgstr ""
+"Pokročilou možností při vytváření instance je rozdělení disku. Existují dvě "
+"možnosti rozdělení disku. Výběrem <b>Automaticky</b> změní velikost disku a "
+"nastaví ho na jeden oddíl. Výběrem <b>Ručně</b> můžete vytvořit mnoho oddílu "
+"na disku."
+
+msgid ""
+"An instance name is required and used to help you uniquely identify your "
+"instance in the dashboard."
+msgstr ""
+"Název instance je vyžadován a používá se k jedinečné identifikaci vašich "
+"instancí na nástěnce."
+
 msgid "Automatic"
 msgstr "Automaticky"
 
 msgid "Availability Zone"
 msgstr "Zóna dostupnosti"
+
+msgid "Boot Source"
+msgstr "Zdroj zavedení"
 
 msgid "Cancel"
 msgstr "Zrušit"
@@ -103,6 +186,9 @@ msgstr ""
 "Zaškrtněte políčko <b>Konfigurační jednotka</b> pokud chcete zapsat popisná "
 "data do zvláštní konfigurační jednotky: Při zavádění je instance k této "
 "jednotce připojena a tím získá přístup k těmto datům."
+
+msgid "Click to see more details"
+msgstr "Klikněte pro podrobnosti"
 
 msgid "Configuration"
 msgstr "Konfigurace"
@@ -152,6 +238,9 @@ msgstr "Smazat uživatele"
 msgid "Delete Volume on Terminate"
 msgstr "Odstranit svazek při ukončení"
 
+msgid "Deleted"
+msgstr "Smazáno"
+
 msgid "Description"
 msgstr "Popis"
 
@@ -191,6 +280,9 @@ msgstr "Efemérní disk"
 msgid "Ether Type"
 msgstr "Typ ethernetu"
 
+msgid "Event log is not available."
+msgstr "Záznam události není dostupný."
+
 #, python-format
 msgid "Extension is not enabled: %(extension)s."
 msgstr "Rozšíření není povoleno: %(extension)s."
@@ -214,6 +306,9 @@ msgstr ""
 "Konfigurace určují velikost výpočetních, pamětních a úložných možností "
 "instance."
 
+msgid "Format"
+msgstr "Formátovat"
+
 #, python-format
 msgid ""
 "From a Windows system, you can use PuTTYGen to create private/public keys. "
@@ -236,7 +331,25 @@ msgstr ""
 "vstoupit."
 
 msgid ""
-"If you want to create an instance that uses ephemeral storage, meaning the "
+"If a security group is not associated with an instance before it is "
+"launched, then you will have very limited access to the instance after it is "
+"deployed. You will only be able to access the instance from a VNC console."
+msgstr ""
+"Pokud bezpečnostní skupina není přidružena k instanci před jejím spuštěním, "
+"pak budete mít k ní velmi omezený přístup po jejím spuštění. Takto budete "
+"mít k instanci přístup pouze pomocí konzole VNC."
+
+msgid ""
+"If you select an availability zone and plan to use the boot from volume "
+"option, make sure that the availability zone you select for the instance is "
+"the same availability zone where your bootable volume resides."
+msgstr ""
+"Pokud zvolíte zónu dostupnosti a plánujete využit možnosti zavedení ze "
+"svazku, ujistěte se prosím že vámi zvolená zóna dostupnosti instance je "
+"stejná jako zóna, ve které je umístěn zaveditelný svazek."
+
+msgid ""
+"If you want to create an instance that uses ephemeral storage, meaning th "
 "instance data is lost when the instance is deleted, then choose one of the "
 "following boot sources:"
 msgstr ""
@@ -256,11 +369,17 @@ msgstr ""
 msgid "Image"
 msgstr "Obraz"
 
+msgid "Image Name"
+msgstr "Název obrazu"
+
 msgid "Impact on your quota"
 msgstr "Dopad na vaši kvótu"
 
 msgid "Import Key Pair"
 msgstr "Importovat pár klíče"
+
+msgid "Import Key Pair Help"
+msgstr "Nápověda k importu páru klíčů"
 
 msgid "Instance Details"
 msgstr "Podrobnosti instance"
@@ -277,14 +396,35 @@ msgstr "Zdroj instance"
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "Počet instanci je vyžadován - musí být celé číslo a alespoň 1."
 
+msgid ""
+"Instance source is the template used to create an instance. You can use a "
+"snapshot of an existing instance, an image, or a volume (if enabled). You "
+"can also choose to use persistent storage by creating a new volume."
+msgstr ""
+"Zdroj instance je šablona použitá k jejímu vytvoření. Můžete použít snímek "
+"existující instance, obraz, nebo svazek (pokud je povolen). Vytvořením "
+"nového svazku můžete také zvolit trvalé úložiště."
+
 msgid "Insufficient privilege level to view user information."
 msgstr "Nedostatečná úroveň oprávnění pro zobrazení informací o uživateli."
 
 msgid "Key Pair"
 msgstr "Pár klíčů"
 
+msgid "Key Pair Help"
+msgstr "Nápověda k páru klíčů"
+
 msgid "Key Pair Name"
 msgstr "Název páru klíčů"
+
+msgid ""
+"Key Pairs are how you login to your instance after it is launched. Choose a "
+"key pair name you will recognize and paste your SSH public key into the "
+"space provided."
+msgstr ""
+"Pár klíčů je způsob jak se přihlásit do instance po jejím spuštění. Zvolte "
+"název páru klíčů, který si zapamatujete a vložte svůj veřejný klíč SSH do "
+"vyhrazeného prostoru."
 
 msgid ""
 "Key Pairs are how you login to your instance after it is launched. Choose a "
@@ -292,6 +432,9 @@ msgid ""
 msgstr ""
 "Pár klíčů je způsob jak se přihlásit do instance po jejím spuštění. Zvolte "
 "název páru klíčů, který si zapamatujete."
+
+msgid "Killed"
+msgstr "Ukončit"
 
 msgid "Launch Instance"
 msgstr "Spustit instanci"
@@ -302,8 +445,23 @@ msgstr "Načíst skript ze souboru"
 msgid "Manual"
 msgstr "Ručně"
 
+msgid "Max Port"
+msgstr "Maximální port"
+
 msgid "Min Disk"
 msgstr "Minimální disk"
+
+msgid "Min Disk (GB)"
+msgstr "Min Kapacita (GB)"
+
+msgid "Min Port"
+msgstr "Minimální port"
+
+msgid "Min RAM"
+msgstr "Min RAM"
+
+msgid "Min RAM (MB)"
+msgstr "Min RAM (MB)"
 
 msgid "Min Ram"
 msgstr "Minimální RAM"
@@ -332,11 +490,26 @@ msgstr "Sítě poskytují komunikační kanály pro instance v cloudu."
 msgid "No"
 msgstr "Ne"
 
+msgid "No available items"
+msgstr "Žádné dostupné položky"
+
 msgid "OK"
 msgstr "OK"
 
+msgid "Pending Delete"
+msgstr "Čeká na smazání"
+
 msgid "Physical Network"
 msgstr "Fyzická síť"
+
+msgid ""
+"Please provide the initial host name for the instance, the availability zone "
+"where it will be deployed, and the instance count. Increase the Count to "
+"create multiple instances with the same settings."
+msgstr ""
+"Prosím zadejte název počátečního hostitele instance, zónu dostupnosti, kde "
+"bude nasazena a počet instancí. Počet zvyšte pro vytvoření mnoha instanci se "
+"stejným nastavením."
 
 msgid "Policy check failed."
 msgstr "Kontrola zásady selhala."
@@ -357,11 +530,14 @@ msgid "Project ID"
 msgstr "ID projektu"
 
 msgid ""
-"Project networks are created by users. These networks are fully isolated and "
-"are project-specific."
+"Project networks are created by users.\n"
+"    These networks are fully isolated and are project-specific."
 msgstr ""
-"Sítě projektu vytvářejí uživatelé. Tyto projekty jsou zcela odděleny a patří "
-"ke konkrétním projektům."
+"Sítě projektu vytvářejí uživatelé.\n"
+"    Tyto projekty jsou zcela odděleny a patří ke konkrétním projektům."
+
+msgid "Protected"
+msgstr "Chráněno"
 
 msgid "Protocol"
 msgstr "Protokol"
@@ -369,14 +545,27 @@ msgstr "Protokol"
 msgid "Provider Network"
 msgstr "Síť poskytovatele"
 
+msgid ""
+"Provider networks are created by administrators.\n"
+"    These networks map to an existing physical network in the data center."
+msgstr ""
+"Sítě poskytovatele vytváří správci. \n"
+"    Tyto sítě jsou mapovány na existující fyzické sítě v     datovém centru."
+
 msgid "Public"
 msgstr "Veřejné"
 
 msgid "Public Key"
 msgstr "Veřejný klíč"
 
+msgid "Queued"
+msgstr "Ve frontě"
+
 msgid "RAM"
 msgstr "RAM"
+
+msgid "Re-order items using drag and drop"
+msgstr "ˇ5azení položek změňte přetažením"
 
 msgid "Remote"
 msgstr "Vzdálené"
@@ -386,6 +575,12 @@ msgstr "Vyžadováno"
 
 msgid "Root Disk"
 msgstr "Kořenový disk"
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Saving"
+msgstr "Ukládání"
 
 msgid "Script size"
 msgstr "Velikost skriptu"
@@ -416,7 +611,7 @@ msgstr ""
 "Bezpečnostní skupiny určují sadu filtrů IP adres, které určují jak přenosy "
 "po síti putují z a do instance. Uživatelé mohou do existující bezpečnostní "
 "skupiny přidat dodatečná pravidla, která podrobněji určují možnosti pro "
-"přístup k instanci. Pro vytvoření dalších pravidel přejděte na <b>Compute | "
+"přístup k instanci. Pro vytvoření dalších pravidel přejděte na <b>Výpočet | "
 "Přístup a zabezpečení</b>, pak klikněte na bezpečnostní skupinu a klikněte "
 "na <b>Správa pravidel</b>."
 
@@ -438,6 +633,9 @@ msgstr "Vyberte pár klíčů ze seznamu dostupných níže."
 msgid "Select a source from those listed below."
 msgstr "Vyberte zdroj ze seznamu níže"
 
+msgid "Select an item from Available items below"
+msgstr "Vyberte položku ze seznamu níže"
+
 msgid "Select at least one network"
 msgstr "Vyberte alespoň jednu síť"
 
@@ -449,6 +647,10 @@ msgstr "Zvolte jeden"
 
 msgid "Select one or more"
 msgstr "Zvolte jeden nebo více"
+
+msgid "Select one or more security groups from the available groups below."
+msgstr ""
+"Vyberte jednu nebo více bezpečnostních skupin ze seznamu dostupných níže."
 
 msgid "Select the security groups."
 msgstr "Vyberte bezpečnostní skupiny"
@@ -464,11 +666,17 @@ msgstr "Nastavení není povoleno: %(setting)s"
 msgid "Shared"
 msgstr "Sdíleno"
 
+msgid "Show events"
+msgstr "Zobrazit události"
+
 msgid "Size"
 msgstr "Velikost"
 
 msgid "Size (GB)"
 msgstr "Velikost (GB)"
+
+msgid "Snapshot"
+msgstr "Snímek"
 
 msgid "Status"
 msgstr "Stav"
@@ -477,12 +685,12 @@ msgid "Subnets Associated"
 msgstr "Podsítě přidruženy"
 
 #, python-format
-msgid "Successfully created key pair %(name)s"
-msgstr "Pár klíčů %(name)s úspěšně vytvořen"
+msgid "Successfully created key pair %(name)s."
+msgstr "Úspěšně vytvořen pár klíčů %(name)s."
 
 #, python-format
-msgid "Successfully imported key pair %(name)s"
-msgstr "Pár klíčů %(name)s úspěšně importován"
+msgid "Successfully imported key pair %(name)s."
+msgstr "Úspěšně importován pár klíčů %(name)s."
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -493,14 +701,22 @@ msgstr ""
 
 msgid ""
 "The flavor you select must have enough resources allocated to support the "
-"type of instance you are trying to create. Flavors that don't provide enough "
-"resources for your instance are identified on the <b>Available</b> table "
-"with a yellow warning icon."
+"type of instance you are trying to create. Flavors that do not provide "
+"enough resources for your instance are identified on the <b>Available</b> "
+"table with a yellow warning icon."
 msgstr ""
 "Zvolená konfigurace musí mít dostatek přidělených zdrojů, aby mohla "
 "podporovat typ vámi vytvářené instance. Konfigurace, které vaší instanci "
 "neposkytují dostatek zdrojů, jsou v tabulce <b>Dostupné</b> uvedeny se "
 "žlutou ikonkou s vykřičníkem."
+
+#, python-format
+msgid ""
+"The instance count must not exceed your quota available of "
+"%(maxInstanceCount)s instances"
+msgstr ""
+"Počet instancí nesmí překročit vaši dostupnou kvótu %(maxInstanceCount)s "
+"instancí"
 
 msgid "The key pair allows you to SSH into the instance."
 msgstr "Pár klíčů Vám umožňuje se do této instance připojit pomocí SSH."
@@ -529,12 +745,16 @@ msgstr ""
 msgid "The status indicates whether the network has an active connection."
 msgstr "Stav udává, zda síť má aktivní připojení."
 
+msgid "The step has completed successfully. No events to display."
+msgstr "Krok byl úspěšně dokončen. Žádné události k zobrazení."
+
 msgid ""
 "The subnet identifies a sub-section of a network. A subnet is specified in "
-"CIDR format. A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
+"CIDR format.\n"
+"    A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
 msgstr ""
-"Podsíť určuje podsekci sítě. Podsíť je zadávána ve formátu CIDR. Typický "
-"příklad formátu CIDR je <samp>192.xxx.x.x/24</samp>."
+"Podsíť určuje podsekci sítě. Podsíť je zadávána ve formátu CIDR. \n"
+"    Typický příklad formátu CIDR je <samp>192.xxx.x.x/24</samp>."
 
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
@@ -645,8 +865,17 @@ msgstr "Nelze smazat uživatele."
 msgid "Unable to delete the users."
 msgstr "Nelze smazat uživatele."
 
+msgid "Unable to edit the aggregate extra specs."
+msgstr "Nelze upravit dodatečné specifikace agregátu."
+
 msgid "Unable to edit the domain."
 msgstr "Nelze upravit doménu."
+
+msgid "Unable to edit the flavor extra specs."
+msgstr "Nelze upravit dodatečné specifikace konfigurace."
+
+msgid "Unable to edit the image custom properties."
+msgstr "Nelze upravit přizpůsobené vlastnosti obrazu."
 
 msgid "Unable to edit the project."
 msgstr "Nelze upravit projekt."
@@ -672,6 +901,9 @@ msgstr "Nelze importovat pár klíčů."
 msgid "Unable to retrieve settings."
 msgstr "Nelze získat nastavení."
 
+msgid "Unable to retrieve the aggregate extra specs."
+msgstr "Nelze získat dodatečné specifikace agregátu."
+
 msgid "Unable to retrieve the availability zones."
 msgstr "Nelze získat zóny dostupnosti."
 
@@ -695,6 +927,9 @@ msgstr "Nelze získat konfiguraci."
 
 msgid "Unable to retrieve the flavors."
 msgstr "Nelze získat konfigurace."
+
+msgid "Unable to retrieve the image custom properties."
+msgstr "Nelze získat přizpůsobené vlastnosti obrazu."
 
 msgid "Unable to retrieve the image."
 msgstr "Nelze získat obraz."
@@ -750,8 +985,20 @@ msgstr "Nelze získat svazky snímků."
 msgid "Unable to retrieve the volumes."
 msgstr "Nelze získat svazky."
 
+msgid "Unable to validate the template."
+msgstr "Nelze ověřit šablonu."
+
 msgid "Up"
 msgstr "Otevřen"
+
+msgid "Update Aggregate Metadata"
+msgstr "Aktualizovat popisná data agregátu"
+
+msgid "Update Flavor Metadata"
+msgstr "Aktualizovat popisná data konfigurace"
+
+msgid "Update Image Metadata"
+msgstr "Aktualizovat popisná data obrazu"
 
 msgid "Updated"
 msgstr "Aktualizováno"
@@ -762,8 +1009,8 @@ msgstr "ID uživatele"
 msgid "User Name"
 msgstr "Uživatelské jméno"
 
-msgid "VCPUs"
-msgstr "VCPU"
+msgid "VCPUS"
+msgstr "VCPUS"
 
 msgid "Visibility"
 msgstr "Viditelnost"
@@ -777,8 +1024,35 @@ msgstr "Snímek svazku"
 msgid "Volume size is required and must be an integer"
 msgstr "Velikost svazku je vyžadována musí být celé číslo"
 
+msgid ""
+"Volumes can only be attached to 1 active instance at a time. Please either "
+"set your instance count to 1 or select a different source type."
+msgstr ""
+"Svazky lze připojit pouze k 1 aktivní instanci najednou. Buď prosím nastavte "
+"počet svých instancí na 1 nebo zvolte jiný typ zdroje."
+
+msgid ""
+"When selecting volume as boot source, please ensure the instance's "
+"availability zone is compatible with your volume's availability zone."
+msgstr ""
+"Při zvolení svazku jako zdroj zavedení se prosím ujistěte, že zóna "
+"dostupnosti instance je kompatibilní se zónou svazku."
+
+msgid ""
+"When the <b>Admin State</b> for a network is set to <b>Up</b>,\n"
+"    then the network is available for use. You can set the <b>Admin State</"
+"b> to <b>Down</b>\n"
+"    if you are not ready for other users to access the network."
+msgstr ""
+"Když je <b>Stav správce</b> pro síť nastaven na <b>Otevřen</b>, \n"
+"    pak je síť možné použít. Stav můžete nastavit na <b>Zavřen</b>,\n"
+"    pokud nejste připraveni na využití sítě ostatními uživateli."
+
 msgid "Yes"
 msgstr "Ano"
 
 msgid "bytes"
 msgstr "bajtů"
+
+msgid "{$ row['provider:network_type'] $}"
+msgstr "{$ řádek['poskytovatel:typ sítě'] $}"

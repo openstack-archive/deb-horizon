@@ -49,6 +49,7 @@ PALETTE = termcolors.PALETTES[termcolors.DEFAULT_PALETTE]
 STRING_SEPARATOR = "__"
 
 
+@six.python_2_unicode_compatible
 class Column(html.HTMLElement):
     """A class which represents a single column in a :class:`.DataTable`.
 
@@ -163,7 +164,7 @@ class Column(html.HTMLElement):
        A callable to get the HTML attributes of a column cell depending
        on the data. For example, to add additional description or help
        information for data in a column cell (e.g. in Images panel, for the
-       column 'format'):
+       column 'format')::
 
             helpText = {
               'ARI':'Amazon Ramdisk Image'
@@ -335,7 +336,7 @@ class Column(html.HTMLElement):
         if self.link is not None:
             self.classes.append('anchor')
 
-    def __unicode__(self):
+    def __str__(self):
         return six.text_type(self.verbose_name)
 
     def __repr__(self):
@@ -395,7 +396,7 @@ class Column(html.HTMLElement):
                 except Exception:
                     msg = ("Filter '%(filter)s' failed with data "
                            "'%(data)s' on column '%(col_name)s'")
-                    args = {'filter': filter_func.func_name,
+                    args = {'filter': filter_func.__name__,
                             'data': data,
                             'col_name': six.text_type(self.verbose_name)}
                     LOG.warning(msg, args)
@@ -650,10 +651,14 @@ class Cell(html.HTMLElement):
         self.inline_edit_mod = False
         # add tooltip to cells if the truncate variable is set
         if column.truncate:
+            # NOTE(tsufiev): trying to pull cell raw data out of datum for
+            # those columns where truncate is False leads to multiple errors
+            # in unit tests
             data = getattr(datum, column.name, '') or ''
             if len(data) > column.truncate:
                 self.attrs['data-toggle'] = 'tooltip'
                 self.attrs['title'] = data
+                self.attrs['data-selenium'] = data
         self.data = self.get_data(datum, column, row)
 
     def get_data(self, datum, column, row):
@@ -995,7 +1000,7 @@ class DataTableOptions(object):
         filter_actions = [action for action in self.table_actions if
                           issubclass(action, FilterAction)]
         if len(filter_actions) > 1:
-            raise NotImplementedError("Multiple filter actions is not "
+            raise NotImplementedError("Multiple filter actions are not "
                                       "currently supported.")
         self.filter = getattr(options, 'filter', len(filter_actions) > 0)
         if len(filter_actions) == 1:
@@ -1052,32 +1057,35 @@ class DataTableMetaclass(type):
     def __new__(mcs, name, bases, attrs):
         # Process options from Meta
         class_name = name
-        attrs["_meta"] = opts = DataTableOptions(attrs.get("Meta", None))
+        dt_attrs = {}
+        dt_attrs["_meta"] = opts = DataTableOptions(attrs.get("Meta", None))
 
         # Gather columns; this prevents the column from being an attribute
         # on the DataTable class and avoids naming conflicts.
         columns = []
         for attr_name, obj in attrs.items():
-            if issubclass(type(obj), (opts.column_class, Column)):
-                column_instance = attrs.pop(attr_name)
+            if isinstance(obj, (opts.column_class, Column)):
+                column_instance = attrs[attr_name]
                 column_instance.name = attr_name
                 column_instance.classes.append('normal_column')
                 columns.append((attr_name, column_instance))
+            else:
+                dt_attrs[attr_name] = obj
         columns.sort(key=lambda x: x[1].creation_counter)
 
         # Iterate in reverse to preserve final order
-        for base in bases[::-1]:
+        for base in reversed(bases):
             if hasattr(base, 'base_columns'):
-                columns = base.base_columns.items() + columns
-        attrs['base_columns'] = SortedDict(columns)
+                columns[0:0] = base.base_columns.items()
+        dt_attrs['base_columns'] = SortedDict(columns)
 
         # If the table is in a ResourceBrowser, the column number must meet
         # these limits because of the width of the browser.
         if opts.browser_table == "navigation" and len(columns) > 3:
-            raise ValueError("You can only assign three column to %s."
+            raise ValueError("You can assign at most three columns to %s."
                              % class_name)
         if opts.browser_table == "content" and len(columns) > 2:
-            raise ValueError("You can only assign two columns to %s."
+            raise ValueError("You can assign at most two columns to %s."
                              % class_name)
 
         if opts.columns:
@@ -1087,7 +1095,7 @@ class DataTableMetaclass(type):
                 if column_data[0] not in opts.columns:
                     columns.pop(columns.index(column_data))
             # Re-order based on declared columns
-            columns.sort(key=lambda x: attrs['_meta'].columns.index(x[0]))
+            columns.sort(key=lambda x: dt_attrs['_meta'].columns.index(x[0]))
         # Add in our auto-generated columns
         if opts.multi_select and opts.browser_table != "navigation":
             multi_select = opts.column_class("multi_select",
@@ -1102,7 +1110,7 @@ class DataTableMetaclass(type):
             actions_column.classes.append('actions_column')
             columns.append(("actions", actions_column))
         # Store this set of columns internally so we can copy them per-instance
-        attrs['_columns'] = SortedDict(columns)
+        dt_attrs['_columns'] = SortedDict(columns)
 
         # Gather and register actions for later access since we only want
         # to instantiate them once.
@@ -1112,15 +1120,16 @@ class DataTableMetaclass(type):
         actions.sort(key=attrgetter('name'))
         actions_dict = SortedDict([(action.name, action())
                                    for action in actions])
-        attrs['base_actions'] = actions_dict
+        dt_attrs['base_actions'] = actions_dict
         if opts._filter_action:
             # Replace our filter action with the instantiated version
             opts._filter_action = actions_dict[opts._filter_action.name]
 
         # Create our new class!
-        return type.__new__(mcs, name, bases, attrs)
+        return type.__new__(mcs, name, bases, dt_attrs)
 
 
+@six.python_2_unicode_compatible
 @six.add_metaclass(DataTableMetaclass)
 class DataTable(object):
     """A class which defines a table with all data and associated actions.
@@ -1173,7 +1182,7 @@ class DataTable(object):
         self.needs_summary_row = any([col.summation
                                       for col in self.columns.values()])
 
-    def __unicode__(self):
+    def __str__(self):
         return six.text_type(self._meta.verbose_name)
 
     def __repr__(self):

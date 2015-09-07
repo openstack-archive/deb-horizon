@@ -135,7 +135,10 @@ def nodegroup_template_create(request, name, plugin_name, hadoop_version,
                               auto_security_group=False,
                               availability_zone=False,
                               volumes_availability_zone=False,
-                              is_proxy_gateway=False):
+                              volume_type=None,
+                              is_proxy_gateway=False,
+                              volume_local_to_instance=False,
+                              use_autoconfig=None):
     return client(request).node_group_templates.create(
         name=name,
         plugin_name=plugin_name,
@@ -151,7 +154,10 @@ def nodegroup_template_create(request, name, plugin_name, hadoop_version,
         auto_security_group=auto_security_group,
         availability_zone=availability_zone,
         volumes_availability_zone=volumes_availability_zone,
-        is_proxy_gateway=is_proxy_gateway)
+        volume_type=volume_type,
+        is_proxy_gateway=is_proxy_gateway,
+        volume_local_to_instance=volume_local_to_instance,
+        use_autoconfig=use_autoconfig)
 
 
 def nodegroup_template_list(request, search_opts=None):
@@ -178,7 +184,10 @@ def nodegroup_template_update(request, ngt_id, name, plugin_name,
                               security_groups=None, auto_security_group=False,
                               availability_zone=False,
                               volumes_availability_zone=False,
-                              is_proxy_gateway=False):
+                              volume_type=None,
+                              is_proxy_gateway=False,
+                              volume_local_to_instance=False,
+                              use_autoconfig=None):
     return client(request).node_group_templates.update(
         ng_template_id=ngt_id,
         name=name,
@@ -195,13 +204,16 @@ def nodegroup_template_update(request, ngt_id, name, plugin_name,
         auto_security_group=auto_security_group,
         availability_zone=availability_zone,
         volumes_availability_zone=volumes_availability_zone,
-        is_proxy_gateway=is_proxy_gateway)
+        volume_type=volume_type,
+        is_proxy_gateway=is_proxy_gateway,
+        volume_local_to_instance=volume_local_to_instance,
+        use_autoconfig=use_autoconfig)
 
 
 def cluster_template_create(request, name, plugin_name, hadoop_version,
                             description=None, cluster_configs=None,
                             node_groups=None, anti_affinity=None,
-                            net_id=None):
+                            net_id=None, use_autoconfig=None):
     return client(request).cluster_templates.create(
         name=name,
         plugin_name=plugin_name,
@@ -210,7 +222,8 @@ def cluster_template_create(request, name, plugin_name, hadoop_version,
         cluster_configs=cluster_configs,
         node_groups=node_groups,
         anti_affinity=anti_affinity,
-        net_id=net_id)
+        net_id=net_id,
+        use_autoconfig=use_autoconfig)
 
 
 def cluster_template_list(request, search_opts=None):
@@ -228,24 +241,31 @@ def cluster_template_delete(request, ct_id):
 def cluster_template_update(request, ct_id, name, plugin_name,
                             hadoop_version, description=None,
                             cluster_configs=None, node_groups=None,
-                            anti_affinity=None, net_id=None):
-    return client(request).cluster_templates.update(
-        cluster_template_id=ct_id,
-        name=name,
-        plugin_name=plugin_name,
-        hadoop_version=hadoop_version,
-        description=description,
-        cluster_configs=cluster_configs,
-        node_groups=node_groups,
-        anti_affinity=anti_affinity,
-        net_id=net_id)
+                            anti_affinity=None, net_id=None,
+                            use_autoconfig=None):
+    try:
+        template = client(request).cluster_templates.update(
+            cluster_template_id=ct_id,
+            name=name,
+            plugin_name=plugin_name,
+            hadoop_version=hadoop_version,
+            description=description,
+            cluster_configs=cluster_configs,
+            node_groups=node_groups,
+            anti_affinity=anti_affinity,
+            net_id=net_id,
+            use_autoconfig=use_autoconfig)
+
+    except APIException as e:
+        raise exceptions.Conflict(e)
+    return template
 
 
 def cluster_create(request, name, plugin_name, hadoop_version,
                    cluster_template_id=None, default_image_id=None,
                    is_transient=None, description=None, cluster_configs=None,
                    node_groups=None, user_keypair_id=None,
-                   anti_affinity=None, net_id=None):
+                   anti_affinity=None, net_id=None, use_autoconfig=None):
     return client(request).clusters.create(
         name=name,
         plugin_name=plugin_name,
@@ -258,7 +278,8 @@ def cluster_create(request, name, plugin_name, hadoop_version,
         node_groups=node_groups,
         user_keypair_id=user_keypair_id,
         anti_affinity=anti_affinity,
-        net_id=net_id)
+        net_id=net_id,
+        use_autoconfig=use_autoconfig)
 
 
 def cluster_scale(request, cluster_id, scale_object):
@@ -271,8 +292,10 @@ def cluster_list(request, search_opts=None):
     return client(request).clusters.list(search_opts=search_opts)
 
 
-def cluster_get(request, cluster_id):
-    return client(request).clusters.get(cluster_id=cluster_id)
+def cluster_get(request, cluster_id, show_progress=False):
+    return client(request).clusters.get(
+        cluster_id=cluster_id,
+        show_progress=show_progress)
 
 
 def cluster_delete(request, cluster_id):
@@ -300,6 +323,10 @@ def data_source_get(request, ds_id):
 
 def data_source_delete(request, ds_id):
     client(request).data_sources.delete(data_source_id=ds_id)
+
+
+def data_source_update(request, ds_id, data):
+    return client(request).data_sources.update(ds_id, data)
 
 
 def job_binary_create(request, name, url, description, extra):

@@ -10,15 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-07-19 22:22+0000\n"
-"PO-Revision-Date: 2015-07-17 21:06+0000\n"
-"Last-Translator: Heleno Jimenez de la Cruz <heleno.jimenez@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/horizon/language/"
+"POT-Creation-Date: 2015-09-01 03:11+0000\n"
+"PO-Revision-Date: 2015-08-30 00:10+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Spanish (http://www.transifex.com/openstack/horizon/language/"
 "es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.0\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -71,20 +71,6 @@ msgstr ""
 "<em>Nota: al escoger Volumen, sólo puede lanzar una instancia.</em></li>"
 
 msgid ""
-"A floating IP allows instances to be addressable from an external network. "
-"Floating IPs are not allocated to instances at creation time and may be "
-"assigned after the instance is created. To attach a floating IP, go to the "
-"<b>Instances</b> view and click the <b>Actions</b> menu to the right of an "
-"instance. Then, select the <b>Associate Floating IP</b> option and enter the "
-"necessary details."
-msgstr ""
-"Una IP flotante permite a las instancias ser accesibles desde redes "
-"externas. Las IP's externas no se asignan en el momento de la creación de la "
-"instancia. Para anexar una IP flotante, vaya a la vista <b>Instancias</b> y "
-"haga click en el menú <b>Acciones</b> a la derecha de la instancia. Escoja "
-"la opción <b>Asociar IP flotante</b> e introduzca los datos necesarios."
-
-msgid ""
 "A key pair allows you to SSH into your newly created instance. You may "
 "select an existing key pair, import a key pair, or generate a new key pair."
 msgstr ""
@@ -121,18 +107,6 @@ msgid ""
 msgstr ""
 "Los administradores definen un conjunto de IP's flotantes que pueden "
 "asociarse a las instancias."
-
-msgid ""
-"An <b>External</b> network is set up by an administrator. If you want an "
-"instance to communicate outside of the data center, then attach a router "
-"between your <b>Project</b> network and the <b>External</b> network. You can "
-"use the <b>Network Topology</b> view to connect the router to the two "
-"networks."
-msgstr ""
-"Una red <b>Externa</b> es creada por un administrador. Si desea que una "
-"instancia pueda comunicarse fuera del centro de datos, anexe un enrutador "
-"entre su red de <b>Proyecto</b> y la red <b>Externa</b>. Puede utilizar la "
-"vista de <b>Topología de red</b> para conectar el enrutador a las dos redes."
 
 msgid ""
 "An advanced option available when launching an instance is disk "
@@ -179,6 +153,9 @@ msgstr ""
 "Marcar la opción <b>Configuration Drive</b> si se desea escribir metadatos a "
 "una unidad de configuración especial. Cuando la instancia arranca, se "
 "adjunta a la <b>Configuration Drive</b> y accesa a los metadatos. "
+
+msgid "Click to see more details"
+msgstr "Haga click para ver más detalles"
 
 msgid "Configuration"
 msgstr "Configuración"
@@ -228,6 +205,9 @@ msgstr "Eliminar usuarios"
 
 msgid "Delete Volume on Terminate"
 msgstr "Borrar volumen al terminar"
+
+msgid "Deleted"
+msgstr "Eliminado"
 
 msgid "Description"
 msgstr "Descripción"
@@ -291,6 +271,9 @@ msgstr ""
 "Los sabores definen el tamaño que tendrá la instancia respecto a CPU, "
 "memoria y almacenamiento."
 
+msgid "Format"
+msgstr "Formato"
+
 #, python-format
 msgid ""
 "From a Windows system, you can use PuTTYGen to create private/public keys. "
@@ -331,15 +314,6 @@ msgstr ""
 "misma donde el volumen de arranque reside."
 
 msgid ""
-"If you want to create an instance that uses ephemeral storage, meaning the "
-"instance data is lost when the instance is deleted, then choose one of the "
-"following boot sources:"
-msgstr ""
-"Si se desea crear una instancia que use almacenamiento volátil, significa "
-"que los datos de la instancia se perderán cuando la instacia es borrada, "
-"entonces elegir uno de los siguientes fuentes de arranque:"
-
-msgid ""
 "If you want to create an instance that uses persistent storage, meaning the "
 "instance data is saved when the instance is deleted, then select one of the "
 "following boot options:"
@@ -350,6 +324,9 @@ msgstr ""
 
 msgid "Image"
 msgstr "Imagen"
+
+msgid "Image Name"
+msgstr "Nombre de la imagen"
 
 msgid "Impact on your quota"
 msgstr "Impacto en tu capacidad"
@@ -415,6 +392,9 @@ msgstr ""
 "una vez que se ha lanzado. Escoja un nombre de pareja de claves que "
 "reconozca."
 
+msgid "Killed"
+msgstr "Terminado forzosamente"
+
 msgid "Launch Instance"
 msgstr "Ejecutar Instancia"
 
@@ -432,6 +412,9 @@ msgstr "Disco mínimo"
 
 msgid "Min Port"
 msgstr "Puerto mínimo"
+
+msgid "Min RAM"
+msgstr "RAM mínima"
 
 msgid "Min Ram"
 msgstr "RAM mínima"
@@ -461,8 +444,14 @@ msgstr ""
 msgid "No"
 msgstr "No"
 
+msgid "No available items"
+msgstr "No hay ítems disponibles"
+
 msgid "OK"
 msgstr "OK"
+
+msgid "Pending Delete"
+msgstr "Pendiente a Eliminar"
 
 msgid "Physical Network"
 msgstr "Red Física"
@@ -494,12 +483,8 @@ msgstr "Proyecto"
 msgid "Project ID"
 msgstr "ID del proyecto"
 
-msgid ""
-"Project networks are created by users. These networks are fully isolated and "
-"are project-specific."
-msgstr ""
-"Las redes de projectos se crean por los usuarios. Estas redes están "
-"completamente aisladas y son específicas del proyecto."
+msgid "Protected"
+msgstr "Protegido"
 
 msgid "Protocol"
 msgstr "Protocolo"
@@ -507,21 +492,20 @@ msgstr "Protocolo"
 msgid "Provider Network"
 msgstr "Red de Proveedor"
 
-msgid ""
-"Provider networks are created by administrators. These networks map to an "
-"existing physical network in the data center."
-msgstr ""
-"Las redes de proveedores son creadas por administradores. Estas redes van "
-"asociadas a redes físicas existentes en el centro de datos."
-
 msgid "Public"
 msgstr "Público"
 
 msgid "Public Key"
 msgstr "Clave Pública"
 
+msgid "Queued"
+msgstr "Encolado"
+
 msgid "RAM"
 msgstr "RAM"
+
+msgid "Re-order items using drag and drop"
+msgstr "Reordene los ítems arrastrando y soltando."
 
 msgid "Remote"
 msgstr "Remoto"
@@ -531,6 +515,12 @@ msgstr "Obligatorio"
 
 msgid "Root Disk"
 msgstr "Disco raíz"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Saving"
+msgstr "Guardando"
 
 msgid "Script size"
 msgstr "Tamaño del script"
@@ -583,6 +573,9 @@ msgstr "Seleccionar un Par de Claves de las pares de clave disponible abajo"
 msgid "Select a source from those listed below."
 msgstr "Seleccionar un origen de los listados abajo,"
 
+msgid "Select an item from Available items below"
+msgstr "Seleccione un ítem de los disponibles abajo"
+
 msgid "Select at least one network"
 msgstr "Seleccionar al menos una red"
 
@@ -619,19 +612,14 @@ msgstr "Tamaño"
 msgid "Size (GB)"
 msgstr "Tamaño (GB)"
 
+msgid "Snapshot"
+msgstr "Instantánea"
+
 msgid "Status"
 msgstr "Estado"
 
 msgid "Subnets Associated"
 msgstr "Subredes Asociadas"
-
-#, python-format
-msgid "Successfully created key pair %(name)s"
-msgstr "Par de claves %(name)s creadas satisfactoriamente"
-
-#, python-format
-msgid "Successfully imported key pair %(name)s"
-msgstr "Par de claves %(name)s importada satisfactoriamente"
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -639,17 +627,6 @@ msgid ""
 msgstr ""
 "El sabor que selecciona para una instancia determina la cantidad de computo, "
 "almacenamiento y recursos de memoria que serán reservados para la instancia."
-
-msgid ""
-"The flavor you select must have enough resources allocated to support the "
-"type of instance you are trying to create. Flavors that don't provide enough "
-"resources for your instance are identified on the <b>Available</b> table "
-"with a yellow warning icon."
-msgstr ""
-"El sabor escogido debe tener suficientes recursos disponibles para la "
-"instancia que está intentando crear. Los sabores que no proporcionan "
-"suficientes recursos para la instancia, se indican en la tabla "
-"<b>Disponible</b> con un icono amarillo de advertencia."
 
 #, python-format
 msgid ""
@@ -686,14 +663,6 @@ msgstr ""
 
 msgid "The status indicates whether the network has an active connection."
 msgstr "El estado indica si la red tiene una conexión activa"
-
-msgid ""
-"The subnet identifies a sub-section of a network. A subnet is specified in "
-"CIDR format. A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
-msgstr ""
-"La subred identifica una sub sección de una red. Una subnet se especifica en "
-"formato CIDR. Un ejemplo de formato CIDR típico sería <samp>192.xxxx.x.x/24</"
-"samp>."
 
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
@@ -913,6 +882,15 @@ msgstr "No ha sido posible obtener los volúmenes."
 msgid "Up"
 msgstr "Arriba"
 
+msgid "Update Aggregate Metadata"
+msgstr "Actualizar los metadatos agregados"
+
+msgid "Update Flavor Metadata"
+msgstr "Actualizar los metadatos del sabor"
+
+msgid "Update Image Metadata"
+msgstr "Actualizar metadatos de imagen"
+
 msgid "Updated"
 msgstr "Actualizado"
 
@@ -921,9 +899,6 @@ msgstr "ID de usuario"
 
 msgid "User Name"
 msgstr "Usuario"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "Visibility"
 msgstr "Visibilidad"
@@ -952,15 +927,6 @@ msgstr ""
 "Cuando se selecciona un volumen como origen de arranque, por favor asegurar "
 "que la zona de disponibilidad de la instanciaes compatible con sus zonas de "
 "disponibilidad del volumen."
-
-msgid ""
-"When the <b>Admin State</b> for a network is set to <b>Up</b>, then the "
-"network is available for use. You can set the <b>Admin State</b> to <b>Down</"
-"b> if you are not ready for other users to access the network."
-msgstr ""
-"Cuando el <b>Admin State</b> de una red está establecido a <b>Up</b>, la red "
-"estará disponible para su uso. Puede establecer el <b>Admin State</b> a "
-"<b>Down</b> si no está lista para que otros usuarios accedan a ella."
 
 msgid "Yes"
 msgstr "Sí"

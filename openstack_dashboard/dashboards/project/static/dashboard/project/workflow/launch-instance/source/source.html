@@ -1,0 +1,396 @@
+<div ng-controller="LaunchInstanceSourceController as ctrl">
+  <h1 translate>Instance Details</h1>
+
+  <!--content-->
+  <div class="content">
+    <div translate class="subtitle">Please provide the initial host name for the instance, the availability zone where it will be deployed, and the instance count. Increase the Count to create multiple instances with the same settings.</div>
+
+    <!--selected-source form-->
+    <div class="selected-source clearfix">
+      <div class="row">
+        <div class="col-xs-12 col-sm-8">
+          <div class="row form-group">
+            <div class="col-sm-12 col-md-5">
+              <div class="form-field required instance-name"
+                ng-class="{ 'has-warning': launchInstanceSourceForm['instance-name'].$invalid && launchInstanceSourceForm['instance-name'].$dirty }">
+                <label translate class="on-top">Instance Name</label>
+                <span class="fa fa-exclamation-triangle invalid"
+                    ng-show="launchInstanceSourceForm['instance-name'].$invalid && launchInstanceSourceForm.$dirty"
+                    popover="{$ ctrl.instanceNameError $}"
+                    popover-placement="top" popover-append-to-body="true"
+                    popover-trigger="hover"></span>
+                <input name="instance-name" type="text" class="form-control input-sm"
+                       ng-model="model.newInstanceSpec.name" ng-required="true">
+              </div>
+            </div>
+
+            <div class="col-sm-12 col-md-5">
+              <div class="form-field availability-zone">
+                <label translate class="on-top">Availability Zone</label>
+                <select class="form-control input-sm"
+                        ng-options="zone for zone in model.availabilityZones"
+                        ng-model="model.newInstanceSpec.availability_zone">
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-2">
+              <div class="form-field instance_count"
+                ng-class="{ 'has-warning': launchInstanceSourceForm['instance-count'].$invalid }">
+                <label translate class="on-top">Count</label>
+                <span class="fa fa-exclamation-triangle invalid"
+                    ng-show="launchInstanceSourceForm['instance-count'].$invalid"
+                    popover="{$ launchInstanceSourceForm['instance-count'].$error.validateNumberMax ? ctrl.instanceCountMaxError : ctrl.instanceCountError $}"
+                    popover-placement="top" popover-append-to-body="true"
+                    popover-trigger="hover"></span>
+                <input name="instance-count" type="number" class="form-control input-sm"
+                       ng-model="model.newInstanceSpec.instance_count"
+                       ng-required="true" ng-pattern="/^[0-9]+$/"
+                       validate-number-min="1"
+                       validate-number-max="{$ ctrl.maxInstanceCount $}">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!--instance chart-->
+        <div class="col-xs-12 col-sm-4">
+          <div class="chart">
+            <pie-chart chart-data="ctrl.instanceStats"
+                       chart-settings="ctrl.chartSettings"></pie-chart>
+          </div>
+        </div>
+        <!--end instance chart-->
+      </div>
+    </div>
+    <!--end selected-source form-->
+
+    <h2 translate class="section-title">Instance Source</h2>
+    <div translate class="subtitle">Instance source is the template used to create an instance. You can use a snapshot of an existing instance, an image, or a volume (if enabled). You can also choose to use persistent storage by creating a new volume.</div>
+
+    <!--instance-source form-->
+    <div class="instance-source clearfix">
+      <div class="form-horizontal">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3">
+            <div class="form-field image"
+              ng-class="{ 'has-warning': launchInstanceSourceForm['boot-source-type'].$invalid }">
+              <label translate class="on-top">Boot Source</label>
+              <span class="fa fa-exclamation-triangle invalid"
+                    ng-show="launchInstanceSourceForm['boot-source-type'].$invalid"
+                    popover="{$ ctrl.bootSourceTypeError $}"
+                    popover-placement="top" popover-append-to-body="true"
+                    popover-trigger="hover"></span>
+              <select name="boot-source-type" class="form-control input-sm"
+                      ng-options="src.label for src in ctrl.bootSourcesOptions track by src.type"
+                      ng-change="ctrl.updateBootSourceSelection(model.newInstanceSpec.source_type.type)"
+                      ng-model="model.newInstanceSpec.source_type">
+              </select>
+            </div>
+          </div>
+
+          <!-- start image select options -->
+          <div class="col-xs-12 col-sm-9"
+               ng-if="model.newInstanceSpec.source_type.type === 'image' &&
+                      model.allowCreateVolumeFromImage">
+
+            <div class="col-xs-12 col-sm-3">
+              <div class="form-group create-volume">
+                <label translate class="on-top">Create New Volume</label>
+                <div class="form-field">
+                  <div class="btn-group">
+                    <label class="btn btn-toggle"
+                      ng-repeat="option in ctrl.toggleButtonOptions"
+                      ng-model="model.newInstanceSpec.vol_create"
+                      btn-radio="option.value">{$ ::option.label $}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div hz-if-settings='["OPENSTACK_HYPERVISOR_FEATURES.can_set_mount_point"]'
+              ng-if="model.newInstanceSpec.vol_create === true">
+              <div class="col-xs-12 col-sm-3">
+                <div class="form-field">
+                  <label translate>Device Name</label>
+                  <input class="form-control input-sm"
+                         ng-model="model.newInstanceSpec.vol_device_name"
+                         type="text">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-2 volume-size-wrapper" ng-if="model.newInstanceSpec.vol_create == true">
+              <div class="form-field volume-size"
+                ng-class="{ 'has-warning': launchInstanceSourceForm['volume-size'].$invalid }">
+                <label translate class="on-top">Size (GB)</label>
+                <span class="fa fa-exclamation-triangle invalid"
+                    ng-show="launchInstanceSourceForm['volume-size'].$invalid"
+                    popover="{$ launchInstanceSourceForm['volume-size'].$error.validateNumberMin ? ctrl.minVolumeSizeError : 
+                    ctrl.volumeSizeError $}"
+                    popover-placement="top" popover-append-to-body="true"
+                    popover-trigger="hover"></span>
+                <input name="volume-size" type="number"
+                       class="form-control input-sm volume-size"
+                       ng-model="model.newInstanceSpec.vol_size"
+                       ng-pattern="/^[0-9]+$/" ng-required="true"
+                       validate-number-min="{$ ctrl.minVolumeSize $}">
+              </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-4" ng-if="model.newInstanceSpec.vol_create == true">
+              <div class="form-group delete-volume">
+                <label translate class="on-top">Delete Volume on Terminate</label>
+                <div class="form-field">
+                  <div class="btn-group">
+                    <label class="btn btn-toggle"
+                      ng-repeat="option in ctrl.toggleButtonOptions"
+                      ng-model="model.newInstanceSpec.vol_delete_on_terminate"
+                      btn-radio="option.value">{$ ::option.label $}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- end image select options -->
+
+          <!-- start volume select options -->
+          <div class="col-xs-12 col-sm-9"
+               ng-if="model.newInstanceSpec.source_type.type == 'volume' || model.newInstanceSpec.source_type.type == 'volume_snapshot'">
+            <div class="col-xs-12 col-sm-6">
+
+              <div class="form-group delete-volume">
+                <label translate class="on-top">Delete Volume on Terminate</label>
+                <div class="form-field">
+                  <div class="btn-group">
+                    <label class="btn btn-toggle"
+                      ng-repeat="option in ctrl.toggleButtonOptions"
+                      ng-model="model.newInstanceSpec.vol_delete_on_terminate"
+                      btn-radio="option.value">{$ ::option.label $}</label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- end volume select options -->
+
+        </div>
+      </div>
+    </div>
+    <!--end instance-source form-->
+
+    <transfer-table help-text="ctrl.helpText"
+                    tr-model="ctrl.tableData">
+      <allocated validate-number-min="1" ng-model="ctrl.tableData.allocated.length">
+        <table class="table-striped table-rsp table-detail modern"
+               hz-table
+               st-safe-src="ctrl.tableData.allocated"
+               st-table="ctrl.tableData.displayAllocated">
+
+          <!-- transfer table, allocated table head -->
+          <thead>
+            <tr>
+              <th class="expander"></th>
+              <th ng-class="ctrl.tableHeadCells[0].classList"
+                  ng-style="ctrl.tableHeadCells[0].style">
+                {$ ctrl.tableHeadCells[0].text $}
+              </th>
+              <th ng-class="ctrl.tableHeadCells[1].classList"
+                  ng-style="ctrl.tableHeadCells[1].style">
+                {$ ctrl.tableHeadCells[1].text $}
+              </th>
+              <th ng-class="ctrl.tableHeadCells[2].classList"
+                  ng-style="ctrl.tableHeadCells[2].style">
+                {$ ctrl.tableHeadCells[2].text $}
+              </th>
+              <th ng-class="ctrl.tableHeadCells[3].classList"
+                  ng-style="ctrl.tableHeadCells[3].style">
+                {$ ctrl.tableHeadCells[3].text $}
+              </th>
+              <th ng-class="ctrl.tableHeadCells[4].classList"
+                  ng-style="ctrl.tableHeadCells[4].style">
+                {$ ctrl.tableHeadCells[4].text $}
+              </th>
+              <th class="action"></th>
+            </tr>
+          </thead><!-- /transfer table, allocated table head -->
+
+          <!-- transfer table, allocated table body -->
+          <tbody>
+
+            <tr ng-if="ctrl.tableData.allocated.length === 0">
+              <td colspan="{$ ctrl.tableHeadCells.length + 2 $}">
+                <div class="no-rows-help">
+                  {$ ::trCtrl.helpText.noneAllocText $}
+                </div>
+              </td>
+            </tr>
+
+            <tr ng-repeat-start="row in ctrl.selection">
+              <td class="expander">
+                <span class="fa fa-chevron-right"
+                      hz-expand-detail
+                      title="{$ ::trCtrl.helpText.expandDetailsText $}"></span>
+              </td>
+              <td ng-class="ctrl.tableBodyCells[0].classList"
+                  ng-style="ctrl.tableBodyCells[0].style">
+                {$ ctrl.tableBodyCells[0].filter ? ctrl.tableBodyCells[0].filter(row[ctrl.tableBodyCells[0].key], ctrl.tableBodyCells[0].filterArg) : row[ctrl.tableBodyCells[0].key] $}
+              </td>
+              <td ng-class="ctrl.tableBodyCells[1].classList"
+                  ng-style="ctrl.tableBodyCells[1].style">
+                {$ ctrl.tableBodyCells[1].filter ? ctrl.tableBodyCells[1].filter(row[ctrl.tableBodyCells[1].key], ctrl.tableBodyCells[1].filterArg) : row[ctrl.tableBodyCells[1].key] $}
+              </td>
+              <td ng-class="ctrl.tableBodyCells[2].classList"
+                  ng-style="ctrl.tableBodyCells[2].style">
+                {$ ctrl.tableBodyCells[2].filter ? ctrl.tableBodyCells[2].filter(row[ctrl.tableBodyCells[2].key], ctrl.tableBodyCells[2].filterArg) : row[ctrl.tableBodyCells[2].key] $}
+              </td>
+              <td ng-class="ctrl.tableBodyCells[3].classList"
+                  ng-style="ctrl.tableBodyCells[3].style">
+                {$ ctrl.tableBodyCells[3].filter ? ctrl.tableBodyCells[3].filter(row[ctrl.tableBodyCells[3].key], ctrl.tableBodyCells[3].filterArg) : row[ctrl.tableBodyCells[3].key] $}
+              </td>
+              <td ng-class="ctrl.tableBodyCells[4].classList"
+                  ng-style="ctrl.tableBodyCells[4].style">
+                <span ng-if="model.newInstanceSpec.source_type.type === 'volume' && row.availability_zone !== model.newInstanceSpec.availability_zone"
+                      class="invalid fa fa-exclamation-triangle"
+                      popover="{$ ::trCtrl.helpText.volumeAZHelpText $}"
+                      popover-trigger="mouseenter mouseleave"
+                      popover-append-to-body="true"
+                      popover-placement="top"></span>
+                {$ ctrl.tableBodyCells[4].filter ? ctrl.tableBodyCells[4].filter(row[ctrl.tableBodyCells[4].key], ctrl.tableBodyCells[4].filterArg) : row[ctrl.tableBodyCells[4].key] $}
+              </td>
+              <td class="action-col">
+                <action-list>
+                  <action action-classes="'btn btn-sm btn-default'"
+                          callback="trCtrl.deallocate"
+                          item="row">
+                    <span class="fa fa-minus"></span>
+                  </action>
+                </action-list>
+              </td>
+            </tr>
+            <tr class="detail-row"
+                ng-repeat-end
+                ng-include="ctrl.sourceDetails">
+            </tr>
+          </tbody><!-- /transfer table, allocated table body -->
+        </table>
+      </allocated>
+
+      <available>
+        <table st-table="ctrl.tableData.displayedAvailable"
+               st-safe-src="ctrl.tableData.available"
+               hz-table
+               class="table-striped table-rsp table-detail modern">
+
+          <!-- transfer table, available table head -->
+          <thead>
+          <tr>
+            <th class="search-header"
+                colspan="{$ ctrl.tableHeadCells.length + 2 $}">
+              <hz-search-bar group-classes="input-group-sm"
+                          icon-classes="fa-search">
+              </hz-search-bar>
+              </th>
+            </tr>
+            <tr>
+              <th class="expander"></th>
+              <th ng-attr-st-sort-default="{$ ctrl.tableHeadCells[0].sortDefault $}"
+                  ng-class="ctrl.tableHeadCells[0].classList"
+                  ng-style="ctrl.tableHeadCells[0].style"
+                  st-sort="{$ ctrl.tableHeadCells[0].sortable && ctrl.tableBodyCells[0].key $}">
+                {$ ctrl.tableHeadCells[0].text $}
+              </th>
+              <th ng-attr-st-sort-default="{$ ctrl.tableHeadCells[1].sortDefault $}"
+                  ng-class="ctrl.tableHeadCells[1].classList"
+                  ng-style="ctrl.tableHeadCells[1].style"
+                  st-sort="{$ ctrl.tableHeadCells[1].sortable && ctrl.tableBodyCells[1].key $}">
+                {$ ctrl.tableHeadCells[1].text $}
+              </th>
+              <th ng-attr-st-sort-default="{$ ctrl.tableHeadCells[2].sortDefault $}"
+                  ng-class="ctrl.tableHeadCells[2].classList"
+                  ng-style="ctrl.tableHeadCells[2].style"
+                  st-sort="{$ ctrl.tableHeadCells[2].sortable && ctrl.tableBodyCells[2].key $}">
+                {$ ctrl.tableHeadCells[2].text $}
+              </th>
+              <th ng-attr-st-sort-default="{$ ctrl.tableHeadCells[3].sortDefault $}"
+                  ng-class="ctrl.tableHeadCells[3].classList"
+                  ng-style="ctrl.tableHeadCells[3].style"
+                  st-sort="{$ ctrl.tableHeadCells[3].sortable && ctrl.tableBodyCells[3].key $}">
+                {$ ctrl.tableHeadCells[3].text $}
+              </th>
+              <th ng-attr-st-sort-default="{$ ctrl.tableHeadCells[4].sortDefault $}"
+                  ng-class="ctrl.tableHeadCells[4].classList"
+                  ng-style="ctrl.tableHeadCells[4].style"
+                  st-sort="{$ ctrl.tableHeadCells[4].sortable && ctrl.tableBodyCells[4].key $}">
+                {$ ctrl.tableHeadCells[4].text $}
+              </th>
+              <th class="action"></th>
+            </tr>
+          </thead><!-- /transfer table, available table head -->
+
+          <tbody>
+
+            <tr ng-if="trCtrl.numAvailable() === 0">
+              <td colspan="{$ ctrl.tableHeadCells.length + 2 $}">
+                <div class="no-rows-help">
+                  {$ ::trCtrl.helpText.noneAvailText $}
+                </div>
+              </td>
+            </tr>
+
+            <tr ng-repeat-start="row in ctrl.tableData.displayedAvailable track by row.id"
+                ng-if="!trCtrl.allocatedIds[row.id]">
+              <td class="expander">
+                <span class="fa fa-chevron-right"
+                      hz-expand-detail
+                      title="{$ ::trCtrl.helpText.expandDetailsText $}">
+                </span>
+              </td>
+              <td ng-class="ctrl.tableBodyCells[0].classList"
+                  ng-style="ctrl.tableBodyCells[0].style">
+                {$ ctrl.tableBodyCells[0].filter ? ctrl.tableBodyCells[0].filter(row[ctrl.tableBodyCells[0].key], ctrl.tableBodyCells[0].filterArg) : row[ctrl.tableBodyCells[0].key] $}
+              </td>
+              <td ng-class="ctrl.tableBodyCells[1].classList"
+                  ng-style="ctrl.tableBodyCells[1].style">
+                {$ ctrl.tableBodyCells[1].filter ? ctrl.tableBodyCells[1].filter(row[ctrl.tableBodyCells[1].key], ctrl.tableBodyCells[1].filterArg) : row[ctrl.tableBodyCells[1].key] $}
+              </td>
+              <td ng-class="ctrl.tableBodyCells[2].classList"
+                  ng-style="ctrl.tableBodyCells[2].style">
+                {$ ctrl.tableBodyCells[2].filter ? ctrl.tableBodyCells[2].filter(row[ctrl.tableBodyCells[2].key], ctrl.tableBodyCells[2].filterArg) : row[ctrl.tableBodyCells[2].key] $}
+              </td>
+              <td ng-class="ctrl.tableBodyCells[3].classList"
+                  ng-style="ctrl.tableBodyCells[3].style">
+                {$ ctrl.tableBodyCells[3].filter ? ctrl.tableBodyCells[3].filter(row[ctrl.tableBodyCells[3].key], ctrl.tableBodyCells[3].filterArg) : row[ctrl.tableBodyCells[3].key] $}
+              </td>
+              <td ng-class="ctrl.tableBodyCells[4].classList"
+                  ng-style="ctrl.tableBodyCells[4].style">
+                <span ng-if="model.newInstanceSpec.source_type.type === 'volume' && row.availability_zone !== model.newInstanceSpec.availability_zone"
+                      class="invalid fa fa-exclamation-triangle"
+                      popover="{$ ::trCtrl.helpText.volumeAZHelpText $}"
+                      popover-trigger="mouseenter mouseleave"
+                      popover-append-to-body="true"
+                      popover-placement="top"></span>
+                {$ ctrl.tableBodyCells[4].filter ? ctrl.tableBodyCells[4].filter(row[ctrl.tableBodyCells[4].key], ctrl.tableBodyCells[4].filterArg) : row[ctrl.tableBodyCells[4].key] $}
+              </td>
+              <td class="action-col">
+                <action-list>
+                  <action action-classes="'btn btn-sm btn-default'"
+                          callback="trCtrl.allocate"
+                          item="row">
+                    <span class="fa fa-plus"></span>
+                  </action>
+                </action-list>
+              </td>
+            </tr>
+            <tr class="detail-row"
+                ng-repeat-end
+                ng-include="ctrl.sourceDetails">
+            </tr>
+          </tbody>
+        </table>
+      </available>
+    </transfer-table>
+
+  </div>
+  <!-- end content -->
+</div>

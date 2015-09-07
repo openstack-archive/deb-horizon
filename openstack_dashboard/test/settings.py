@@ -15,6 +15,7 @@ import os
 from horizon.test.settings import *  # noqa
 from horizon.utils import secret_key
 from openstack_dashboard import exceptions
+from openstack_dashboard.static_settings import find_static_files  # noqa
 from openstack_dashboard.static_settings import get_staticfiles_dirs  # noqa
 
 STATICFILES_DIRS = get_staticfiles_dirs()
@@ -22,6 +23,8 @@ STATICFILES_DIRS = get_staticfiles_dirs()
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.abspath(os.path.join(TEST_DIR, ".."))
 STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
+STATIC_URL = '/static/'
+WEBROOT = '/'
 
 SECRET_KEY = secret_key.generate_or_read_from_file(
     os.path.join(TEST_DIR, '.secret_key_store'))
@@ -48,9 +51,6 @@ INSTALLED_APPS = (
     'compressor',
     'horizon',
     'openstack_dashboard',
-    # TODO(david-lyle) remove this in later patch, issue with enabled vs
-    # non-enabled panels/dashs for testing.
-    'openstack_dashboard.dashboards.router',
 )
 
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
@@ -86,6 +86,8 @@ settings.update_dashboards(
     INSTALLED_APPS,
 )
 INSTALLED_APPS[0:0] = []
+
+find_static_files(ROOT_PATH, HORIZON_CONFIG)
 
 # Set to True to allow users to upload images to glance via Horizon server.
 # When enabled, a file form field will appear on the create image form.

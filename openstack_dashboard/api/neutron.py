@@ -29,6 +29,7 @@ from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
 from neutronclient.common import exceptions as neutron_exc
 from neutronclient.v2_0 import client as neutron_client
+import six
 
 from horizon import messages
 from horizon.utils.memoized import memoized  # noqa
@@ -49,6 +50,25 @@ ROUTER_INTERFACE_OWNERS = (
     'network:router_interface',
     'network:router_interface_distributed'
 )
+
+
+def _init_apiresource(apiresource):
+    """Handle common initialization of apiresource.
+
+        Note: the dictionary is modified in place.
+    """
+
+    if apiresource['admin_state_up']:
+        apiresource['admin_state'] = 'UP'
+    else:
+        apiresource['admin_state'] = 'DOWN'
+
+    # Django cannot handle a key name with ':', so use '__'.
+    apiresource.update({
+        key.replace(':', '__'): value
+        for key, value in apiresource.items()
+        if ':' in key
+    })
 
 
 class NeutronAPIDictWrapper(base.APIDictWrapper):
@@ -76,8 +96,7 @@ class Agent(NeutronAPIDictWrapper):
     """Wrapper for neutron agents."""
 
     def __init__(self, apiresource):
-        apiresource['admin_state'] = \
-            'UP' if apiresource['admin_state_up'] else 'DOWN'
+        _init_apiresource(apiresource)
         super(Agent, self).__init__(apiresource)
 
 
@@ -85,12 +104,7 @@ class Network(NeutronAPIDictWrapper):
     """Wrapper for neutron Networks."""
 
     def __init__(self, apiresource):
-        apiresource['admin_state'] = \
-            'UP' if apiresource['admin_state_up'] else 'DOWN'
-        # Django cannot handle a key name with ':', so use '__'
-        for key in apiresource.keys():
-            if ':' in key:
-                apiresource['__'.join(key.split(':'))] = apiresource[key]
+        _init_apiresource(apiresource)
         super(Network, self).__init__(apiresource)
 
     def to_dict(self):
@@ -107,16 +121,15 @@ class Subnet(NeutronAPIDictWrapper):
         super(Subnet, self).__init__(apiresource)
 
 
+class SubnetPool(NeutronAPIDictWrapper):
+    """Wrapper for neutron subnetpools."""
+
+
 class Port(NeutronAPIDictWrapper):
     """Wrapper for neutron ports."""
 
     def __init__(self, apiresource):
-        # Django cannot handle a key name with ':', so use '__'
-        for key in apiresource.keys():
-            if ':' in key:
-                apiresource['__'.join(key.split(':'))] = apiresource[key]
-        apiresource['admin_state'] = \
-            'UP' if apiresource['admin_state_up'] else 'DOWN'
+        _init_apiresource(apiresource)
         if 'mac_learning_enabled' in apiresource:
             apiresource['mac_state'] = \
                 ON_STATE if apiresource['mac_learning_enabled'] else OFF_STATE
@@ -136,8 +149,7 @@ class Router(NeutronAPIDictWrapper):
     """Wrapper for neutron routers."""
 
     def __init__(self, apiresource):
-        apiresource['admin_state'] = \
-            'UP' if apiresource['admin_state_up'] else 'DOWN'
+        _init_apiresource(apiresource)
         super(Router, self).__init__(apiresource)
 
 
@@ -164,6 +176,7 @@ class SecurityGroup(NeutronAPIDictWrapper):
         return {k: self._apidict[k] for k in self._apidict if k != 'rules'}
 
 
+@six.python_2_unicode_compatible
 class SecurityGroupRule(NeutronAPIDictWrapper):
     # Required attributes:
     #   id, parent_group_id
@@ -204,7 +217,7 @@ class SecurityGroupRule(NeutronAPIDictWrapper):
         rule['group'] = {'name': group} if group else {}
         super(SecurityGroupRule, self).__init__(rule)
 
-    def __unicode__(self):
+    def __str__(self):
         if 'name' in self.group:
             remote = self.group['name']
         elif 'cidr' in self.ip_range:
@@ -653,12 +666,12 @@ def network_get(request, network_id, expand_subnet=True, **params):
 
 
 def network_create(request, **kwargs):
-    """Create a subnet on a specified network.
+    """Create a  network object.
 
     :param request: request context
     :param tenant_id: (optional) tenant id of the network created
     :param name: (optional) name of the network created
-    :returns: Subnet object
+    :returns: Network object
     """
     LOG.debug("network_create(): kwargs = %s" % kwargs)
     # In the case network profiles are being used, profile id is needed.
@@ -733,6 +746,73 @@ def subnet_update(request, subnet_id, **kwargs):
 def subnet_delete(request, subnet_id):
     LOG.debug("subnet_delete(): subnetid=%s" % subnet_id)
     neutronclient(request).delete_subnet(subnet_id)
+
+
+def subnetpool_list(request, **params):
+    LOG.debug("subnetpool_list(): params=%s" % (params))
+    subnetpools = \
+        neutronclient(request).list_subnetpools(**params).get('subnetpools')
+    return [SubnetPool(s) for s in subnetpools]
+
+
+def subnetpool_get(request, subnetpool_id, **params):
+    LOG.debug("subnetpool_get(): subnetpoolid=%s, params=%s" %
+              (subnetpool_id, params))
+    subnetpool = \
+        neutronclient(request).show_subnetpool(subnetpool_id,
+                                               **params).get('subnetpool')
+    return SubnetPool(subnetpool)
+
+
+def subnetpool_create(request, name, prefixes, **kwargs):
+    """Create a subnetpool.
+
+    ip_version is auto-detected in back-end.
+
+    Parameters:
+    request           -- Request context
+    name              -- Name for subnetpool
+    prefixes          -- List of prefixes for pool
+
+    Keyword Arguments (optional):
+    min_prefixlen     -- Minimum prefix length for allocations from pool
+    max_prefixlen     -- Maximum prefix length for allocations from pool
+    default_prefixlen -- Default prefix length for allocations from pool
+    default_quota     -- Default quota for allocations from pool
+    shared            -- Subnetpool should be shared (Admin-only)
+    tenant_id         -- Owner of subnetpool
+
+    Returns:
+    SubnetPool object
+    """
+    LOG.debug("subnetpool_create(): name=%s, prefixes=%s, kwargs=%s"
+              % (name, prefixes, kwargs))
+    body = {'subnetpool':
+            {'name': name,
+             'prefixes': prefixes,
+             }
+            }
+    if 'tenant_id' not in kwargs:
+        kwargs['tenant_id'] = request.user.project_id
+    body['subnetpool'].update(kwargs)
+    subnetpool = \
+        neutronclient(request).create_subnetpool(body=body).get('subnetpool')
+    return SubnetPool(subnetpool)
+
+
+def subnetpool_update(request, subnetpool_id, **kwargs):
+    LOG.debug("subnetpool_update(): subnetpoolid=%s, kwargs=%s" %
+              (subnetpool_id, kwargs))
+    body = {'subnetpool': kwargs}
+    subnetpool = \
+        neutronclient(request).update_subnetpool(subnetpool_id,
+                                                 body=body).get('subnetpool')
+    return SubnetPool(subnetpool)
+
+
+def subnetpool_delete(request, subnetpool_id):
+    LOG.debug("subnetpool_delete(): subnetpoolid=%s" % subnetpool_id)
+    return neutronclient(request).delete_subnetpool(subnetpool_id)
 
 
 def port_list(request, **params):

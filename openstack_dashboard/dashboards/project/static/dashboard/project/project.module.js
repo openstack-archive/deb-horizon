@@ -18,14 +18,16 @@
   'use strict';
 
   /**
-   * @ngdoc overview
-   * @ngname hz.dashboard.project
-   *
+   * @ngdoc module
+   * @ngname horizon.dashboard.project
    * @description
    * Dashboard module to host project panels.
    */
   angular
-    .module('hz.dashboard.project', ['hz.dashboard.project.images'])
+    .module('horizon.dashboard.project', [
+      'horizon.dashboard.project.images',
+      'horizon.dashboard.project.workflow'
+    ])
     .config(config);
 
   config.$inject = [
@@ -34,12 +36,12 @@
   ];
 
   /**
-   * @name hz.dashboard.project.basePath
+   * @name horizon.dashboard.project.basePath
    * @description Base path for the project dashboard
    */
   function config($provide, $windowProvider) {
     var path = $windowProvider.$get().STATIC_URL + 'dashboard/project/';
-    $provide.constant('hz.dashboard.project.basePath', path);
+    $provide.constant('horizon.dashboard.project.basePath', path);
   }
 
 })();

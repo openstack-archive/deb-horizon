@@ -61,7 +61,7 @@ class LaunchImageNG(LaunchImage):
     name = "launch_image_ng"
     verbose_name = _("Launch")
     url = "horizon:project:images:index"
-    classes = ("btn-launch")
+    classes = ("btn-launch", )
     ajax = False
 
     def __init__(self, attrs=None, **kwargs):
@@ -71,9 +71,12 @@ class LaunchImageNG(LaunchImage):
     def get_link_url(self, datum):
         imageId = self.table.get_object_id(datum)
         url = reverse(self.url)
-        ngclick = "openLaunchInstanceWizard({successUrl: '%s', imageId: '%s'})"
-        self.attrs.update({"ng-controller": "LaunchInstanceModalController",
-                           "ng-click": ngclick % (url, imageId)})
+        ngclick = "modal.openLaunchInstanceWizard(" \
+            "{successUrl: '%s', imageId: '%s'})" % (url, imageId)
+        self.attrs.update({
+            "ng-controller": "LaunchInstanceModalController as modal",
+            "ng-click": ngclick
+        })
         return "javascript:void(0);"
 
 
@@ -157,6 +160,30 @@ class CreateVolumeFromImage(tables.LinkAction):
                 and base.is_service_enabled(request, 'volume')):
             return image.status == "active"
         return False
+
+
+class UpdateMetadata(tables.LinkAction):
+    name = "update_metadata"
+    verbose_name = _("Update Metadata")
+    ajax = False
+    icon = "pencil"
+    attrs = {"ng-controller": "MetadataModalHelperController as modal"}
+
+    def __init__(self, attrs=None, **kwargs):
+        kwargs['preempt'] = True
+        super(UpdateMetadata, self).__init__(attrs, **kwargs)
+
+    def get_link_url(self, datum):
+        image_id = self.table.get_object_id(datum)
+        self.attrs['ng-click'] = (
+            "modal.openMetadataModal('image', '%s', true)" % image_id)
+        return "javascript:void(0);"
+
+    def allowed(self, request, image=None):
+        return (api.glance.VERSIONS.active >= 2 and
+                image and
+                image.status == "active" and
+                image.owner == request.user.project_id)
 
 
 def filter_tenants():
@@ -271,7 +298,8 @@ class ImagesTable(tables.DataTable):
     )
     name = tables.Column(get_image_name,
                          link="horizon:project:images:images:detail",
-                         verbose_name=_("Image Name"))
+                         truncate=40,
+                         verbose_name=_("Image Name"),)
     image_type = tables.Column(get_image_type,
                                verbose_name=_("Type"),
                                display_choices=TYPE_CHOICES)
@@ -306,5 +334,6 @@ class ImagesTable(tables.DataTable):
         if getattr(settings, 'LAUNCH_INSTANCE_NG_ENABLED', False):
             launch_actions = (LaunchImageNG,) + launch_actions
         row_actions = launch_actions + (CreateVolumeFromImage,
-                                        EditImage, DeleteImage,)
+                                        EditImage, UpdateMetadata,
+                                        DeleteImage,)
         pagination_param = "image_marker"

@@ -22,6 +22,7 @@ import logging
 
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+import six
 import six.moves.urllib.parse as urlparse
 
 from keystoneclient import exceptions as keystone_exceptions
@@ -76,6 +77,7 @@ except ImportError:
     pass
 
 
+@six.python_2_unicode_compatible
 class Service(base.APIDictWrapper):
     """Wrapper for a dict based on the service data from keystone."""
     _attrs = ['id', 'type', 'name']
@@ -92,7 +94,7 @@ class Service(base.APIDictWrapper):
         self.disabled = None
         self.region = region
 
-    def __unicode__(self):
+    def __str__(self):
         if(self.type == "identity"):
             return _("%(type)s (%(backend)s backend)") \
                 % {"type": self.type, "backend": keystone_backend_name()}
@@ -100,7 +102,7 @@ class Service(base.APIDictWrapper):
             return self.type
 
     def __repr__(self):
-        return "<Service: %s>" % unicode(self)
+        return "<Service: %s>" % six.text_type(self)
 
 
 def _get_endpoint_url(request, endpoint_type, catalog=None):
@@ -210,12 +212,15 @@ def domain_update(request, domain_id, name=None, description=None,
 def tenant_create(request, name, description=None, enabled=None,
                   domain=None, **kwargs):
     manager = VERSIONS.get_project_manager(request, admin=True)
-    if VERSIONS.active < 3:
-        return manager.create(name, description, enabled, **kwargs)
-    else:
-        return manager.create(name, domain,
-                              description=description,
-                              enabled=enabled, **kwargs)
+    try:
+        if VERSIONS.active < 3:
+            return manager.create(name, description, enabled, **kwargs)
+        else:
+            return manager.create(name, domain,
+                                  description=description,
+                                  enabled=enabled, **kwargs)
+    except keystone_exceptions.Conflict:
+        raise exceptions.Conflict()
 
 
 def get_default_domain(request):
@@ -289,11 +294,15 @@ def tenant_list(request, paginate=False, marker=None, domain=None, user=None,
 def tenant_update(request, project, name=None, description=None,
                   enabled=None, domain=None, **kwargs):
     manager = VERSIONS.get_project_manager(request, admin=True)
-    if VERSIONS.active < 3:
-        return manager.update(project, name, description, enabled, **kwargs)
-    else:
-        return manager.update(project, name=name, description=description,
-                              enabled=enabled, domain=domain, **kwargs)
+    try:
+        if VERSIONS.active < 3:
+            return manager.update(project, name, description, enabled,
+                                  **kwargs)
+        else:
+            return manager.update(project, name=name, description=description,
+                                  enabled=enabled, domain=domain, **kwargs)
+    except keystone_exceptions.Conflict:
+        raise exceptions.Conflict()
 
 
 def user_list(request, project=None, domain=None, group=None, filters=None):

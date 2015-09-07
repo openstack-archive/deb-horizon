@@ -15,12 +15,14 @@
 // Dashboard Components
 @import "splash";
 @import "components/resource_browser";
-@import "components/topbar";
-@import "components/accordion_nav";
+@import "components/sidebar";
+@import "components/navbar";
 @import "components/inline_edit";
 @import "components/charts";
 @import "components/workflow";
 @import "components/network_topology";
+@import "components/context_selection";
+@import "components/pie_charts";
 @import "/framework/framework";
 
 
@@ -40,30 +42,7 @@
   zoom: 1;
 } // IE7
 
-@font-face {
-  font-family: 'anivers';
-  src: url('../fonts/Anivers_Regular-webfont.eot');
-  src: url('../fonts/Anivers_Regular-webfont.eot?iefix')
-      format('eot'),
-    url('../fonts/Anivers_Regular-webfont.woff')
-      format('woff'),
-    url('../fonts/Anivers_Regular-webfont.ttf')
-      format('truetype'),
-    url('../fonts/Anivers_Regular-webfont.svg#webfont3JLVF59W')
-      format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
 body {
-  background-color: $body-bg;
-  &:not(#splash) {
-    background-image: url('../img/sidebar_bg.png');
-    background-repeat: repeat-y;
-    background-position: -200px top;
-  }
-  color: $text-color;
-  min-width: $body-min-width;
 }
 
 small {
@@ -105,7 +84,6 @@ dt {
   margin: 0 0 5px 0;
   padding: 10px 0 5px 0;
   border-bottom: 0;
-  font-family: anivers;
   height: auto;
   width: 100%;
   h1 {
@@ -122,33 +100,6 @@ h2 {
 #create_container_form .modal-footer{
   margin-top: 190px;
 }
-
-.sidebar {
-  background-color: $sidebar-background-color;
-  padding-top: 20px;
-  margin-left: -$sidebar-width;
-  left: $sidebar-width;
-  width: $sidebar-width;
-  position: absolute;
-  z-index: 0;
-  -webkit-box-shadow:inset -3px 2px 6px -2px #C7C7C7, inset -1px 0 0 0 #cccccc;
-  box-shadow:inset -3px 2px 6px -2px #C7C7C7, inset -1px 0 0 0 #cccccc;
-}
-
-.sidebar h4 {
-  margin-left: 14px;
-  color: $headings-color;
-}
-
-.sidebar .nav-tabs {
-  margin-top: -34px;
-}
-
-.sidebar .nav-tabs li.active a {
-  background-color: $body-bg;
-}
-
-
 
 
 /* Tenant Dropdown */
@@ -268,7 +219,6 @@ a.current_item:hover h4 {
 }
 .table_title h3,
 .table_header h3 {
-  font-family: anivers;
   font-weight: normal;
   font-size: 24px;
   margin: 0 0 5px 0;
@@ -576,7 +526,6 @@ td.loading {
   margin: -18px 0 25px;
   padding: 10px;
   border: 1px solid $border-color;
-  font-family: "anivers";
 }
 
 #monitoring h3 {
@@ -953,6 +902,8 @@ tr.terminated {
 }
 
 #main_content {
+  min-width: $main-content-min-width;
+
   .nav-tabs {
     border-bottom: 1px solid $nav-tabs-border-color;
     border-top: none;
@@ -1016,22 +967,6 @@ tr.terminated {
 .tooltip {
   z-index: 12000;
   word-wrap: break-word;
-}
-
-.volume_boot_disclosure {
-  font-weight: bold;
-  color: $gray;
-  cursor: pointer;
-  background-image: url(../img/right_droparrow.png);
-  background-repeat: no-repeat;
-  background-position: 130px center;
-}
-
-.volume_boot_disclosure.on {
-  width: 334px;
-  margin-bottom: 10px;
-  border-bottom: solid 1px $border-color;
-  background-image: url(../img/drop_arrow.png);
 }
 
 .nav-tabs a {
@@ -1144,7 +1079,6 @@ iframe {
 }
 
 .quota-heading {
-  font-family: anivers;
   font-weight: normal;
   font-size: 24px;
   margin-bottom: 10px;

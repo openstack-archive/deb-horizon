@@ -20,6 +20,7 @@ from django import shortcuts
 from django.template import defaultfilters
 
 from mox3.mox import IsA  # noqa
+import six
 
 from horizon import tables
 from horizon.tables import formset as table_formset
@@ -331,7 +332,7 @@ class DataTableTests(test.TestCase):
         self.assertTrue(self.table._meta.actions_column)
         self.assertTrue(self.table._meta.multi_select)
         # Test for verbose_name
-        self.assertEqual(u"My Table", unicode(self.table))
+        self.assertEqual(u"My Table", six.text_type(self.table))
         # Column ordering and exclusion.
         # This should include auto-columns for multi_select and actions,
         # but should not contain the excluded column.
@@ -497,8 +498,8 @@ class DataTableTests(test.TestCase):
         self.assertEqual('1', row.cells['id'].data)  # Standard attr access
         self.assertEqual('custom object_1', row.cells['name'].data)  # Callable
         # name and verbose_name
-        self.assertEqual("Id", unicode(id_col))
-        self.assertEqual("Verbose Name", unicode(name_col))
+        self.assertEqual("Id", six.text_type(id_col))
+        self.assertEqual("Verbose Name", six.text_type(name_col))
         # sortable
         self.assertEqual(False, id_col.sortable)
         self.assertNotIn("sortable", id_col.get_final_attrs().get('class', ""))
@@ -780,6 +781,40 @@ class DataTableTests(test.TestCase):
                             'Verbose Name</label>',
                             count=1, html=True)
 
+    def test_table_search_action(self):
+        class TempTable(MyTable):
+            class Meta(object):
+                name = "my_table"
+                table_actions = (tables.NameFilterAction,)
+
+        # with the filter string 2, it should return 2nd item
+        action_string = "my_table__filter__q"
+        req = self.factory.post('/my_url/', {action_string: '2'})
+        self.table = TempTable(req, TEST_DATA)
+        self.assertQuerysetEqual(self.table.get_table_actions(),
+                                 ['<NameFilterAction: filter>'])
+        handled = self.table.maybe_handle()
+        self.assertIsNone(handled)
+        self.assertQuerysetEqual(self.table.filtered_data,
+                                 ['<FakeObject: object_2>'])
+
+        # with empty filter string, it should return all data
+        req = self.factory.post('/my_url/', {action_string: ''})
+        self.table = TempTable(req, TEST_DATA)
+        handled = self.table.maybe_handle()
+        self.assertIsNone(handled)
+        self.assertQuerysetEqual(self.table.filtered_data,
+                                 ['<FakeObject: object_1>',
+                                  '<FakeObject: object_2>',
+                                  '<FakeObject: object_3>'])
+
+        # with unknown value it should return empty list
+        req = self.factory.post('/my_url/', {action_string: 'horizon'})
+        self.table = TempTable(req, TEST_DATA)
+        handled = self.table.maybe_handle()
+        self.assertIsNone(handled)
+        self.assertQuerysetEqual(self.table.filtered_data, [])
+
     def test_inline_edit_mod_textarea(self):
         class TempTable(MyTable):
             name = tables.Column(get_name,
@@ -828,13 +863,15 @@ class DataTableTests(test.TestCase):
         req = self.factory.get('/my_url/')
         self.table = MyTable(req, TEST_DATA_3)
         toggle_action = self.table.get_row_actions(TEST_DATA_3[0])[2]
-        self.assertEqual("Batch Item", unicode(toggle_action.verbose_name))
+        self.assertEqual("Batch Item",
+                         six.text_type(toggle_action.verbose_name))
 
         # Batch action with custom help text
         req = self.factory.get('/my_url/')
         self.table = MyTable(req, TEST_DATA_3)
         toggle_action = self.table.get_row_actions(TEST_DATA_3[0])[4]
-        self.assertEqual("BatchHelp Item", unicode(toggle_action.verbose_name))
+        self.assertEqual("BatchHelp Item",
+                         six.text_type(toggle_action.verbose_name))
 
         # Single object toggle action
         # GET page - 'up' to 'down'
@@ -842,7 +879,8 @@ class DataTableTests(test.TestCase):
         self.table = MyTable(req, TEST_DATA_3)
         self.assertEqual(5, len(self.table.get_row_actions(TEST_DATA_3[0])))
         toggle_action = self.table.get_row_actions(TEST_DATA_3[0])[3]
-        self.assertEqual("Down Item", unicode(toggle_action.verbose_name))
+        self.assertEqual("Down Item",
+                         six.text_type(toggle_action.verbose_name))
 
         # Toggle from status 'up' to 'down'
         # POST page
@@ -863,7 +901,7 @@ class DataTableTests(test.TestCase):
         self.table = MyTable(req, TEST_DATA_2)
         self.assertEqual(4, len(self.table.get_row_actions(TEST_DATA_2[0])))
         toggle_action = self.table.get_row_actions(TEST_DATA_2[0])[2]
-        self.assertEqual("Up Item", unicode(toggle_action.verbose_name))
+        self.assertEqual("Up Item", six.text_type(toggle_action.verbose_name))
 
         # POST page
         action_string = "my_table__toggle__2"
@@ -979,12 +1017,16 @@ class DataTableTests(test.TestCase):
 
         # Verbose names
         table_actions = self.table.get_table_actions()
-        self.assertEqual("Filter", unicode(table_actions[0].verbose_name))
-        self.assertEqual("Delete Me", unicode(table_actions[1].verbose_name))
+        self.assertEqual("Filter",
+                         six.text_type(table_actions[0].verbose_name))
+        self.assertEqual("Delete Me",
+                         six.text_type(table_actions[1].verbose_name))
 
         row_actions = self.table.get_row_actions(TEST_DATA[0])
-        self.assertEqual("Delete Me", unicode(row_actions[0].verbose_name))
-        self.assertEqual("Log In", unicode(row_actions[1].verbose_name))
+        self.assertEqual("Delete Me",
+                         six.text_type(row_actions[0].verbose_name))
+        self.assertEqual("Log In",
+                         six.text_type(row_actions[1].verbose_name))
 
     def test_server_filtering(self):
         filter_value_param = "my_table__filter__q"
@@ -1232,8 +1274,8 @@ class DataTableTests(test.TestCase):
         self.assertEqual('1', row.cells['id'].data)  # Standard attr access
         self.assertEqual('custom object_1', row.cells['name'].data)  # Callable
         # name and verbose_name
-        self.assertEqual("Id", unicode(id_col))
-        self.assertEqual("Verbose Name", unicode(name_col))
+        self.assertEqual("Id", six.text_type(id_col))
+        self.assertEqual("Verbose Name", six.text_type(name_col))
         self.assertIn("sortable", name_col.get_final_attrs().get('class', ""))
         # hidden
         self.assertEqual(True, id_col.hidden)

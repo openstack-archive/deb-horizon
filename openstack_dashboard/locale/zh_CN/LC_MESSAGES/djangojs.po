@@ -3,20 +3,21 @@
 # This file is distributed under the same license as the PROJECT project.
 #
 # Translators:
+# Allerson Yao, 2015
 # 刘俊朋 <liujunpeng@inspur.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-07-19 22:22+0000\n"
-"PO-Revision-Date: 2015-07-15 21:17+0000\n"
+"POT-Creation-Date: 2015-09-01 03:11+0000\n"
+"PO-Revision-Date: 2015-08-30 00:10+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/horizon/"
+"Language-Team: Chinese (China) (http://www.transifex.com/openstack/horizon/"
 "language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.0\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -61,18 +62,6 @@ msgstr ""
 "实例时删除卷。 <em>注意：当选择卷时，您只可以启动一个实例。</em></li>"
 
 msgid ""
-"A floating IP allows instances to be addressable from an external network. "
-"Floating IPs are not allocated to instances at creation time and may be "
-"assigned after the instance is created. To attach a floating IP, go to the "
-"<b>Instances</b> view and click the <b>Actions</b> menu to the right of an "
-"instance. Then, select the <b>Associate Floating IP</b> option and enter the "
-"necessary details."
-msgstr ""
-"浮动IP允许实例可以从外部网络访问。创建实例时不分配浮动IPs，可以在创建实例后分"
-"配浮动IPs。为了绑定一个浮动IP，到<b>实例</b>视图，点击一个实例右边的<b>动作</"
-"b>菜单。然后，选择 <b>分配浮动IP</b> 选项，填写必须的详细信息。"
-
-msgid ""
 "A key pair allows you to SSH into your newly created instance. You may "
 "select an existing key pair, import a key pair, or generate a new key pair."
 msgstr ""
@@ -105,17 +94,6 @@ msgid ""
 "Administrators set up the pool of floating IPs that are available to attach "
 "to instances."
 msgstr "管理员建立可以绑定到实例的浮动IP池。"
-
-msgid ""
-"An <b>External</b> network is set up by an administrator. If you want an "
-"instance to communicate outside of the data center, then attach a router "
-"between your <b>Project</b> network and the <b>External</b> network. You can "
-"use the <b>Network Topology</b> view to connect the router to the two "
-"networks."
-msgstr ""
-"管理员创建一个 <b>外部</b>网络。如果你想要一个实例与数据中心外部通信，您需要"
-"在<b>项目</b>网络和<b>External</b> 网络之间绑定一个路由器。您可以使用 <b>网络"
-"拓扑</b> 视图在两个网络之间连接路由器。"
 
 msgid ""
 "An advanced option available when launching an instance is disk "
@@ -156,6 +134,9 @@ msgid ""
 "<b>Configuration Drive</b> and accesses the metadata."
 msgstr ""
 "如果您想将元数据希尔某个指定的配置驱动器中，请选中<b>配置驱动</b> 复选框。"
+
+msgid "Click to see more details"
+msgstr "点击查看更多细节"
 
 msgid "Configuration"
 msgstr "配置"
@@ -203,6 +184,9 @@ msgstr "删除用户"
 
 msgid "Delete Volume on Terminate"
 msgstr "终止后删除卷"
+
+msgid "Deleted"
+msgstr "删除"
 
 msgid "Description"
 msgstr "描述"
@@ -264,6 +248,9 @@ msgid ""
 "the instance."
 msgstr "类型管理实例的计算、内存和存储容量的大小。"
 
+msgid "Format"
+msgstr "镜像格式"
+
 #, python-format
 msgid ""
 "From a Windows system, you can use PuTTYGen to create private/public keys. "
@@ -299,14 +286,6 @@ msgstr ""
 "动卷所在的域是同一个。"
 
 msgid ""
-"If you want to create an instance that uses ephemeral storage, meaning the "
-"instance data is lost when the instance is deleted, then choose one of the "
-"following boot sources:"
-msgstr ""
-"如果您想使用临时存储创建实例，意味着当实例被删除时实例数据也丢失，那么从以下"
-"启动源中选择一个："
-
-msgid ""
 "If you want to create an instance that uses persistent storage, meaning the "
 "instance data is saved when the instance is deleted, then select one of the "
 "following boot options:"
@@ -316,6 +295,9 @@ msgstr ""
 
 msgid "Image"
 msgstr "镜像"
+
+msgid "Image Name"
+msgstr "镜像名称"
 
 msgid "Impact on your quota"
 msgstr "影响您的配额"
@@ -375,6 +357,9 @@ msgid ""
 msgstr ""
 "密钥对是您在实例启动后登陆进去的一种方式。选择一个您易于识别的密钥对名字。"
 
+msgid "Killed"
+msgstr "已杀死"
+
 msgid "Launch Instance"
 msgstr "启动实例"
 
@@ -390,8 +375,17 @@ msgstr "最大端口"
 msgid "Min Disk"
 msgstr "最小磁盘"
 
+msgid "Min Disk (GB)"
+msgstr "最小磁盘 (GB)"
+
 msgid "Min Port"
 msgstr "最小端口"
+
+msgid "Min RAM"
+msgstr "最小内存"
+
+msgid "Min RAM (MB)"
+msgstr "最小内存 (MB)"
 
 msgid "Min Ram"
 msgstr "最小内存"
@@ -420,8 +414,14 @@ msgstr "在云中，网络为实例提供通信通道。"
 msgid "No"
 msgstr "否"
 
+msgid "No available items"
+msgstr "没有可选项"
+
 msgid "OK"
 msgstr "确定"
+
+msgid "Pending Delete"
+msgstr "等待删除完成"
 
 msgid "Physical Network"
 msgstr "物理网络"
@@ -452,10 +452,8 @@ msgstr "项目"
 msgid "Project ID"
 msgstr "项目ID"
 
-msgid ""
-"Project networks are created by users. These networks are fully isolated and "
-"are project-specific."
-msgstr "用户创建项目网络。这些网络完全隔离，并且属于具体的项目"
+msgid "Protected"
+msgstr "受保护的"
 
 msgid "Protocol"
 msgstr "协议"
@@ -463,19 +461,20 @@ msgstr "协议"
 msgid "Provider Network"
 msgstr "提供者网络"
 
-msgid ""
-"Provider networks are created by administrators. These networks map to an "
-"existing physical network in the data center."
-msgstr "管理员创建提供者网络。这些网络映射到数据中心中存在的物理网络。"
-
 msgid "Public"
 msgstr "公有"
 
 msgid "Public Key"
 msgstr "公钥"
 
+msgid "Queued"
+msgstr "已排队"
+
 msgid "RAM"
 msgstr "内存"
+
+msgid "Re-order items using drag and drop"
+msgstr "使用拖放重新排序"
 
 msgid "Remote"
 msgstr "远程"
@@ -485,6 +484,12 @@ msgstr "必须"
 
 msgid "Root Disk"
 msgstr "根磁盘"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Saving"
+msgstr "保存中"
 
 msgid "Script size"
 msgstr "脚本大小"
@@ -532,6 +537,9 @@ msgstr "从以下可用的秘钥对选择一个"
 msgid "Select a source from those listed below."
 msgstr "从以下列表选择一个源。"
 
+msgid "Select an item from Available items below"
+msgstr "从以下可选项中选择一项"
+
 msgid "Select at least one network"
 msgstr "至少选择一个网络"
 
@@ -567,6 +575,9 @@ msgstr "大小"
 msgid "Size (GB)"
 msgstr "大小(GB)"
 
+msgid "Snapshot"
+msgstr "快照"
+
 msgid "Status"
 msgstr "状态"
 
@@ -574,11 +585,11 @@ msgid "Subnets Associated"
 msgstr "子网已连接"
 
 #, python-format
-msgid "Successfully created key pair %(name)s"
+msgid "Successfully created key pair %(name)s."
 msgstr "成功创建密钥对%(name)s"
 
 #, python-format
-msgid "Successfully imported key pair %(name)s"
+msgid "Successfully imported key pair %(name)s."
 msgstr "成功导入密钥对%(name)s"
 
 msgid ""
@@ -586,15 +597,6 @@ msgid ""
 "storage and memory resources that will be carved out for the instance."
 msgstr ""
 "您为实例选择的类型决定计算、存储和内存资源数量，这些资源将会决定实例配置。"
-
-msgid ""
-"The flavor you select must have enough resources allocated to support the "
-"type of instance you are trying to create. Flavors that don't provide enough "
-"resources for your instance are identified on the <b>Available</b> table "
-"with a yellow warning icon."
-msgstr ""
-"你选择的类型必须有足够的资源分配用来支持您准备创建的实例类型。类型不能为您的"
-"虚拟机提供资源将在 <b>可用</b>表格中用黄色告警图标标识。"
 
 #, python-format
 msgid ""
@@ -627,13 +629,6 @@ msgstr ""
 
 msgid "The status indicates whether the network has an active connection."
 msgstr "状态表明网络是否处于活跃连接。"
-
-msgid ""
-"The subnet identifies a sub-section of a network. A subnet is specified in "
-"CIDR format. A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
-msgstr ""
-"子网标识一个网络的子集。子网通过CIDR格式指定。典型的CIDR格式如下<samp>192."
-"xxx.x.x/24</samp>。"
 
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
@@ -756,6 +751,9 @@ msgstr "无法编辑用户。"
 msgid "Unable to fetch the service catalog."
 msgstr "无法取得服务目录"
 
+msgid "Unable to get the Keystone service version."
+msgstr "无法获取Keystone服务版本"
+
 msgid "Unable to grant the role."
 msgstr "无法授予角色"
 
@@ -846,6 +844,15 @@ msgstr "无法获取卷。"
 msgid "Up"
 msgstr "正常"
 
+msgid "Update Aggregate Metadata"
+msgstr "更新聚合元数据"
+
+msgid "Update Flavor Metadata"
+msgstr "更新云主机类型的元数据"
+
+msgid "Update Image Metadata"
+msgstr "更新镜像元数据"
+
 msgid "Updated"
 msgstr "已更新"
 
@@ -854,9 +861,6 @@ msgstr "用户ID"
 
 msgid "User Name"
 msgstr "用户名"
-
-msgid "VCPUs"
-msgstr "虚拟处理器（VCPU）"
 
 msgid "Visibility"
 msgstr "可见"
@@ -881,14 +885,6 @@ msgid ""
 "When selecting volume as boot source, please ensure the instance's "
 "availability zone is compatible with your volume's availability zone."
 msgstr "当选择卷为启动源时，请确保实例可用域与您的卷可用域兼容。"
-
-msgid ""
-"When the <b>Admin State</b> for a network is set to <b>Up</b>, then the "
-"network is available for use. You can set the <b>Admin State</b> to <b>Down</"
-"b> if you are not ready for other users to access the network."
-msgstr ""
-"当网络的<b>管理员状态</b>设置为 <b>启用</b>，网络才可用。如果您准备不允许其它"
-"用户访问这个网络，你可以将<b>管理员状态</b> 设置为<b>停用</b>。"
 
 msgid "Yes"
 msgstr "是"

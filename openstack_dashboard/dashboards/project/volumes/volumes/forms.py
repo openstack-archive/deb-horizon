@@ -70,7 +70,7 @@ def availability_zones(request):
                                          'zones.'))
     if not zone_list:
         zone_list.insert(0, ("", _("No availability zones found")))
-    elif len(zone_list) > 0:
+    elif len(zone_list) > 1:
         zone_list.insert(0, ("", _("Any Availability Zone")))
 
     return zone_list
@@ -265,7 +265,7 @@ class CreateForm(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
         volume_types = cinder.volume_type_list(request)
-        self.fields['type'].choices = [("", _("No volume type"))] + \
+        self.fields['type'].choices = [("no_type", _("No volume type"))] + \
                                       [(type.name, type.name)
                                        for type in volume_types]
 
@@ -378,6 +378,9 @@ class CreateForm(forms.SelfHandlingForm):
                 raise ValidationError(error_message)
 
             metadata = {}
+
+            if data['type'] == 'no_type':
+                data['type'] = ''
 
             volume = cinder.volume_create(request,
                                           data['size'],
@@ -707,8 +710,9 @@ class ExtendForm(forms.SelfHandlingForm):
         new_size = cleaned_data.get('new_size')
         orig_size = self.initial['orig_size']
         if new_size <= orig_size:
-            raise ValidationError(
-                _("New size must be greater than current size."))
+            error_msg = _("New size must be greater than current size.")
+            self._errors['new_size'] = self.error_class([error_msg])
+            return cleaned_data
 
         usages = quotas.tenant_limit_usages(self.request)
         availableGB = usages['maxTotalVolumeGigabytes'] - \

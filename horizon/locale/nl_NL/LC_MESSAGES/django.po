@@ -3,21 +3,38 @@
 # This file is distributed under the same license as the PROJECT project.
 #
 # Translators:
+# Evelijn Saaltink <evelijnsaaltink@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-07-19 22:22+0000\n"
-"PO-Revision-Date: 2015-06-15 15:01+0000\n"
+"POT-Creation-Date: 2015-08-21 01:46+0000\n"
+"PO-Revision-Date: 2015-08-20 17:13+0000\n"
 "Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/"
+"Language-Team: Dutch (Netherlands) (http://www.transifex.com/openstack/"
 "horizon/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.0\n"
 "Language: nl_NL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid ""
+"\n"
+"      <label>From:</label> %(start)s"
+msgstr ""
+"\n"
+"      <label>Van:</label> %(start)s"
+
+#, python-format
+msgid ""
+"\n"
+"      <label>To:</label>%(end)s"
+msgstr ""
+"\n"
+"      <label>Aan:</label>%(end)s"
 
 #, python-format
 msgctxt "past"
@@ -61,11 +78,27 @@ msgstr "%s succesvol afgerond."
 msgid "%s did not complete."
 msgstr "%s was niet voltooid."
 
+msgid "&laquo;&nbsp;Prev"
+msgstr "&laquo;&nbsp;Prev"
+
+msgid "(No Limit)"
+msgstr "(Geen limiet)"
+
 msgid "-"
 msgstr "-"
 
+msgid "0 Bytes"
+msgstr "0 bytes"
+
+#, python-format
+msgid "A %(resource)s with the name \"%(name)s\" already exists."
+msgstr "Een %(resource)s met de naam \"%(name)s\" bestaat al."
+
 msgid "Actions"
 msgstr "Acties"
+
+msgid "Active RAM:"
+msgstr "Actieve RAM:"
 
 msgid "Add a row"
 msgstr "Rij toevoegen"
@@ -81,6 +114,9 @@ msgstr "Terug"
 
 msgid "Cancel"
 msgstr "Annuleren"
+
+msgid "Connect"
+msgstr "Verbinden"
 
 msgid "Delete"
 msgstr "Verwijderen"
@@ -127,6 +163,9 @@ msgstr ""
 
 msgid "Members"
 msgstr "Leden"
+
+msgid "More Actions"
+msgstr "Meer acties"
 
 msgid "N/A"
 msgstr "n.v.t."

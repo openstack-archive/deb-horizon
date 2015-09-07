@@ -43,8 +43,9 @@ from neutronclient.v2_0 import client as neutron_client
 from novaclient.v2 import client as nova_client
 from openstack_auth import user
 from openstack_auth import utils
+import six
+from six import moves
 from swiftclient import client as swift_client
-from troveclient import client as trove_client
 
 from horizon import base
 from horizon import conf
@@ -261,7 +262,7 @@ class TestCase(horizon_helpers.TestCase):
             assert len(errors) == count, \
                 "%d errors were found on the form, %d expected" % \
                 (len(errors), count)
-            if message and message not in unicode(errors):
+            if message and message not in six.text_type(errors):
                 self.fail("Expected message not found, instead found: %s"
                           % ["%s: %s" % (key, [e for e in field_errors]) for
                              (key, field_errors) in errors.items()])
@@ -343,7 +344,6 @@ class APITestCase(TestCase):
         self._original_cinderclient = api.cinder.cinderclient
         self._original_heatclient = api.heat.heatclient
         self._original_ceilometerclient = api.ceilometer.ceilometerclient
-        self._original_troveclient = api.trove.troveclient
 
         # Replace the clients with our stubs.
         api.glance.glanceclient = lambda request: self.stub_glanceclient()
@@ -355,7 +355,6 @@ class APITestCase(TestCase):
                                self.stub_heatclient())
         api.ceilometer.ceilometerclient = (lambda request:
                                            self.stub_ceilometerclient())
-        api.trove.troveclient = lambda request: self.stub_troveclient()
 
     def tearDown(self):
         super(APITestCase, self).tearDown()
@@ -366,7 +365,6 @@ class APITestCase(TestCase):
         api.cinder.cinderclient = self._original_cinderclient
         api.heat.heatclient = self._original_heatclient
         api.ceilometer.ceilometerclient = self._original_ceilometerclient
-        api.trove.troveclient = self._original_troveclient
 
     def stub_novaclient(self):
         if not hasattr(self, "novaclient"):
@@ -434,12 +432,6 @@ class APITestCase(TestCase):
             self.ceilometerclient = self.mox.\
                 CreateMock(ceilometer_client.Client)
         return self.ceilometerclient
-
-    def stub_troveclient(self):
-        if not hasattr(self, "troveclient"):
-            self.mox.StubOutWithMock(trove_client, 'Client')
-            self.troveclient = self.mox.CreateMock(trove_client.Client)
-        return self.troveclient
 
 
 @unittest.skipUnless(os.environ.get('WITH_SELENIUM', False),
@@ -540,7 +532,7 @@ class PluginTestCase(TestCase):
         del base.Horizon
         base.Horizon = base.HorizonSite()
         # Reload the convenience references to Horizon stored in __init__
-        reload(import_module("horizon"))
+        moves.reload_module(import_module("horizon"))
         # Re-register our original dashboards and panels.
         # This is necessary because autodiscovery only works on the first
         # import, and calling reload introduces innumerable additional
@@ -560,7 +552,7 @@ class PluginTestCase(TestCase):
         only for testing and should never be used on a live site.
         """
         urlresolvers.clear_url_caches()
-        reload(import_module(settings.ROOT_URLCONF))
+        moves.reload_module(import_module(settings.ROOT_URLCONF))
         base.Horizon._urls()
 
 

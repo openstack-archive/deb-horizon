@@ -1,5 +1,6 @@
 {% load compress %}
 {% load url from future %}
+{% load firstof from future %}
 {% load datepicker_locale from horizon %}
 
 {% datepicker_locale as DATEPICKER_LOCALE %}
@@ -26,9 +27,7 @@
 <script src="{{ STATIC_URL }}horizon/lib/jquery/jquery.bootstrap.wizard.js"></script>
 <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
 <script src='{{ STATIC_URL }}horizon/lib/bootstrap_datepicker/bootstrap-datepicker.js'></script>
-<script src="{{ STATIC_URL }}horizon/lib/magic_search/magic_search.js"></script>
 <script src="{{ STATIC_URL }}horizon/lib/hogan.js"></script>
-<script src='{{ STATIC_URL }}horizon/js/horizon.accordion_nav.js'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.communication.js'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.datepickers.js'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.forms.js'></script>
@@ -39,6 +38,7 @@
 <script type="text/javascript">
   horizon.modals.MODAL_BACKDROP = "{% firstof HORIZON_CONFIG.modal_backdrop 'static' %}";
 </script>
+<script src='{{ STATIC_URL }}horizon/js/horizon.selenium.js'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.quota.js'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.tables.js'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.tables_inline_edit.js'></script>
@@ -54,11 +54,14 @@
 <script src='{{ STATIC_URL }}horizon/js/horizon.d3linechart.js'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.d3barchart.js'></script>
 <script src='{{ STATIC_URL }}horizon/js/horizon.firewalls.js'></script>
+<script src='{{ STATIC_URL }}horizon/js/horizon.volumes.js'></script>
 <script src='{{ STATIC_URL }}horizon/lib/jsencrypt/jsencrypt.js'></script>
 
 {% for file in HORIZON_CONFIG.js_files %}
     <script src='{{ STATIC_URL }}{{ file }}'></script>
 {% endfor %}
+
+<script src="{{ STATIC_URL }}horizon/lib/magic_search/magic_search.js"></script>
 
 {% block custom_js_files %}{% endblock %}
 {% endcompress %}

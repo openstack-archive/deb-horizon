@@ -5,20 +5,21 @@
 # Translators:
 # Andreas Jaeger <jaegerandi@gmail.com>, 2015
 # Ettore Atalan <atalanttore@googlemail.com>, 2015
+# Frank Kloeker <eumel@arcor.de>, 2015
 # Robert Simai, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-07-19 22:22+0000\n"
-"PO-Revision-Date: 2015-07-15 21:17+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/horizon/language/"
+"POT-Creation-Date: 2015-09-01 03:11+0000\n"
+"PO-Revision-Date: 2015-08-30 13:32+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
+"Language-Team: German (http://www.transifex.com/openstack/horizon/language/"
 "de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.0\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -27,6 +28,17 @@ msgstr "(Max: 16 kB)"
 
 msgid "(None)"
 msgstr "(Kein)"
+
+msgid ""
+"<li><b>Image (with Create New Volume checked)</b>: This options uses an "
+"image to boot the instance, and creates a new volume to persist instance "
+"data. You can specify volume size and whether to delete the volume on "
+"termination of the instance.</li>"
+msgstr ""
+"<li><b>Abbild (mit Erstelle Neuen Datenträger markiert)</b>: Diese Option "
+"verwendet ein Abbild zum booten der Instanz und erzeugt einen Datenträger "
+"zum Erhalt der Instanzdaten. Sie können die Datenträgergröße angeben und ob "
+"der Datenträger beim beenden der Instanz gelöscht werden soll.</li>"
 
 msgid "<li><b>Image</b>: This option uses an image to boot the instance.</li>"
 msgstr ""
@@ -39,6 +51,27 @@ msgid ""
 msgstr ""
 "<li><b>Instanz Schattenkopie</b>: Diese Option verwendet eine Instanz-"
 "Schattenkopie zum booten der Instanz.</li>"
+
+msgid ""
+"<li><b>Volume Snapshot</b>: This option uses a volume snapshot to boot the "
+"instance, and creates a new volume to persist instance data. You can choose "
+"to delete the volume on termination of the instance.</li>"
+msgstr ""
+"<li><b>Datenträger Schattenkopie</b>: Diese Option verwendet eine "
+"Datenträger Schattenkopie zum booten der Instanz und erzeugt einen neuen "
+"Datenträger zum Erhalt der Instanzdaten. Sie können auswählen, ob der "
+"Datenträger beim beenden der Instanz gelöscht wird.</li>"
+
+msgid ""
+"<li><b>Volume</b>: This option uses a volume that already exists. It does "
+"not create a new volume. You can choose to delete the volume on termination "
+"of the instance. <em>Note: when selecting Volume, you can only launch one "
+"instance.</em></li>"
+msgstr ""
+"<li><b>Datenträger</b>: Diese Option verwendet einen bestehenden "
+"Datenträger, es wird kein neuer erstellt. Sie können auswählen, ob der "
+"Datenträger beim beenden der Instanz gelöscht wird. <em>Hinweis: wenn Sie "
+"Datenträger auswählen können Sie nur eine Instanz starten.</em></li>"
 
 msgid ""
 "A key pair allows you to SSH into your newly created instance. You may "
@@ -61,11 +94,35 @@ msgid "Admin State"
 msgstr "Admin Status"
 
 msgid ""
+"Administrators are responsible for creating and managing flavors. A custom "
+"flavor can be created for you or for a specific project where it is shared "
+"with the users assigned to that project. If you need a custom flavor, "
+"contact your administrator."
+msgstr ""
+"Administratoren sind für die Erstellung und das Verwalten der Varianten "
+"verantwortlich. Eine angepasste Variante kann für Sie oder für ein "
+"bestimmtes Projekt erstellt werden und mit den Projektbenutzern geteilt "
+"werden. Wenn Sie eine angepasste Variante benötigen kontaktieren Sie den "
+"Administrator."
+
+msgid ""
 "Administrators set up the pool of floating IPs that are available to attach "
 "to instances."
 msgstr ""
 "Administratoren richten den Pool der Floating IPs für die Zuweisung zu "
 "Instanzen ein."
+
+msgid ""
+"An advanced option available when launching an instance is disk "
+"partitioning. There are two disk partition options. Selecting <b>Automatic</"
+"b> resizes the disk and sets it to a single partition. Selecting <b>Manual</"
+"b> allows you to create multiple partitions on the disk."
+msgstr ""
+"Eine erweiterte Option beim Erstellen einer Instanz ist "
+"Festplattenpartitionierung. Es gibt 2 Optionen für "
+"Festplattenpartitionierung. Wähle <b>Automatic</b Vergrößerung der "
+"Festplatte und setze es zu einer einzelnen Partition. Wähle <b>Manual</b>, "
+"um die Erstellung mehrerer Partitionen an einer Festplatte zu erlauben."
 
 msgid ""
 "An instance name is required and used to help you uniquely identify your "
@@ -80,6 +137,9 @@ msgstr "Automatisch"
 msgid "Availability Zone"
 msgstr "Verfügbarkeitszone"
 
+msgid "Boot Source"
+msgstr "Boot-Quelle"
+
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -91,6 +151,19 @@ msgstr "Liste der Nova-Erweiterungen kann nicht abgerufen werden."
 
 msgid "Change Password"
 msgstr "Passwort ändern"
+
+msgid ""
+"Check the <b>Configuration Drive</b> box if you want to write metadata to a "
+"special configuration drive. When the instance boots, it attaches to the "
+"<b>Configuration Drive</b> and accesses the metadata."
+msgstr ""
+"Aktiviere die <b>Configuration Drive</b> Box, wenn Du Metadaten zu einem "
+"speziellen Konfigurationslaufwerk schreiben möchtest. Wenn die Instanz "
+"bootet, wird die <b>Configuration Drive</b> hinzugefügt und erlaubt den "
+"Zugriff auf die Metadaten."
+
+msgid "Click to see more details"
+msgstr "Klicken um mehr Details zu sehen"
 
 msgid "Configuration"
 msgstr "Konfiguration"
@@ -141,6 +214,9 @@ msgstr "Benutzer löschen"
 msgid "Delete Volume on Terminate"
 msgstr "Datenträger beim Beenden löschen"
 
+msgid "Deleted"
+msgstr "Gelöscht"
+
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -180,6 +256,9 @@ msgstr "Flüchtige Festplatte"
 msgid "Ether Type"
 msgstr "Netzwerktyp"
 
+msgid "Event log is not available."
+msgstr "Ereignisprotokoll ist nicht verfügbar."
+
 #, python-format
 msgid "Extension is not enabled: %(extension)s."
 msgstr "Erweiterung ist nicht aktiviert: %(extension)s."
@@ -203,6 +282,21 @@ msgstr ""
 "Varianten beinhalten die Größen der Compute-, Speicher- und Storage-"
 "Kapazität einer Instanz."
 
+msgid "Format"
+msgstr "Abbildformat"
+
+#, python-format
+msgid ""
+"From a Windows system, you can use PuTTYGen to create private/public keys. "
+"Use the PuTTY Key Generator to create and save the keys, then copy the "
+"public key in the red highlighted box to your <samp>%(authorizeKeysFile)s</"
+"samp> file."
+msgstr ""
+"Verwenden Sie PuTTYGen unter Windows um den privaten und öffentlichen "
+"Schlüssel zu erzeugen. Erstellen und speichern Sie die Schlüssel, kopieren "
+"Sie den öffentlichen Schlüssel dann in die rot hervorgehobene Box im der "
+"<samp>%(authorizeKeysFile)s</samp> Datei."
+
 msgid "ID"
 msgstr "Kennung"
 
@@ -222,13 +316,13 @@ msgstr ""
 "Instanz dann nur mit Hilfe der VNC Konsole zugreifen."
 
 msgid ""
-"If you want to create an instance that uses ephemeral storage, meaning the "
-"instance data is lost when the instance is deleted, then choose one of the "
-"following boot sources:"
+"If you select an availability zone and plan to use the boot from volume "
+"option, make sure that the availability zone you select for the instance is "
+"the same availability zone where your bootable volume resides."
 msgstr ""
-"Wenn Sie eine Instanz erzeugen wollen, die flüchtigen Storage verwendet, Sie "
-"die Instanzdaten also verlieren, wenn die Instanz gelöscht wird, dann wählen "
-"Sie aus den folgenden Boot-Quellen:"
+"Wenn Sie eine Verfügbarkeitszone auswählen und von einem Datenträger booten "
+"wollen, stellen Sie sicher, dass für die Instanz die selbe "
+"Verfügbarkeitszone ausgewählt wird wie für den bootfähigen Datenträger."
 
 msgid ""
 "If you want to create an instance that uses persistent storage, meaning the "
@@ -241,6 +335,9 @@ msgstr ""
 
 msgid "Image"
 msgstr "Abbild"
+
+msgid "Image Name"
+msgstr "Abbildname"
 
 msgid "Impact on your quota"
 msgstr "Auswirkung auf ihre Quota"
@@ -306,6 +403,9 @@ msgstr ""
 "Verwenden Sie Schlüsselpaare zum Einloggen nachdem eine Instanz gestartet "
 "wurde. Wählen Sie ein Schlüsselpaar aus, daß sie kennen."
 
+msgid "Killed"
+msgstr "Getötet"
+
 msgid "Launch Instance"
 msgstr "Instanz starten"
 
@@ -321,8 +421,17 @@ msgstr "Max Port"
 msgid "Min Disk"
 msgstr "Min Festplatte"
 
+msgid "Min Disk (GB)"
+msgstr "Min Disk (GB)"
+
 msgid "Min Port"
 msgstr "Min Port"
+
+msgid "Min RAM"
+msgstr "Min RAM"
+
+msgid "Min RAM (MB)"
+msgstr "Min RAM (MB)"
 
 msgid "Min Ram"
 msgstr "Min RAM"
@@ -353,8 +462,14 @@ msgstr ""
 msgid "No"
 msgstr "Nein"
 
+msgid "No available items"
+msgstr "Keine verfügbaren Positionen"
+
 msgid "OK"
 msgstr "OK"
+
+msgid "Pending Delete"
+msgstr "Geplante Löschung"
 
 msgid "Physical Network"
 msgstr "Physikalisches Netzwerk"
@@ -388,11 +503,14 @@ msgid "Project ID"
 msgstr "Projekt-ID"
 
 msgid ""
-"Project networks are created by users. These networks are fully isolated and "
-"are project-specific."
+"Project networks are created by users.\n"
+"    These networks are fully isolated and are project-specific."
 msgstr ""
-"Projekt-Netzwerke werden von Benutzern angelegt. Diese Netzwerke sind "
-"vollständig isoliert und projektspezifisch."
+"Projektnetzwerke werden von Benutzern angelegt.\n"
+"Diese Netzwerke sind vollständig isoliert und projektspezifisch."
+
+msgid "Protected"
+msgstr "Geschützt"
 
 msgid "Protocol"
 msgstr "Protokoll"
@@ -401,11 +519,12 @@ msgid "Provider Network"
 msgstr "Anbieternetzwerk"
 
 msgid ""
-"Provider networks are created by administrators. These networks map to an "
-"existing physical network in the data center."
+"Provider networks are created by administrators.\n"
+"    These networks map to an existing physical network in the data center."
 msgstr ""
-"Anbieternetzwerke werden von den Administratoren erstellt. Diese Netzwerke "
-"werden auf vorhandenen physikalischen Netzwerken im Rechenzentrum abgebildet."
+"Anbieternetzwerke werden von den Administratoren erstellt.\n"
+"Diese Netzwerke werden auf vorhandenen physikalischen Netzwerken im "
+"Rechenzentrum abgebildet."
 
 msgid "Public"
 msgstr "Öffentlich"
@@ -413,8 +532,14 @@ msgstr "Öffentlich"
 msgid "Public Key"
 msgstr "Öffentlicher Schlüssel"
 
+msgid "Queued"
+msgstr "In Warteschlange"
+
 msgid "RAM"
 msgstr "RAM"
+
+msgid "Re-order items using drag and drop"
+msgstr "Umsortieren der Positionen durch ziehen und ablegen"
 
 msgid "Remote"
 msgstr "Entfernt"
@@ -424,6 +549,12 @@ msgstr "Erforderlich"
 
 msgid "Root Disk"
 msgstr "Root-Festplatte"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Saving"
+msgstr "Speichern"
 
 msgid "Script size"
 msgstr "Skriptgröße"
@@ -443,6 +574,21 @@ msgstr ""
 "Sicherheitsgruppen sind projektspezifisch und können nicht für verschiedene "
 "Projekte geteilt werden."
 
+msgid ""
+"Security groups define a set of IP filter rules that determine how network "
+"traffic flows to and from an instance. Users can add additional rules to an "
+"existing security group to further define the access options for an "
+"instance. To create additional rules, go to the <b>Compute | Access & "
+"Security</b> view, then find the security group and click <b>Manage Rules</"
+"b>."
+msgstr ""
+"Security Groups definieren eine Anzahl von IP-Filtern, die bestimmen, wie "
+"Netzwerkverkehr zu und von einer Instanz fließt. Benutzer können zusätzliche "
+"Regeln zu einer bestehenden Security Group hinzufügen, um Zugriffsoptionen "
+"für diese Instanz weiter zu definieren. Zum Erstellen zusätzlicher Regeln, "
+"gehe zu zur <b>Compute | Access & Security</b> Ansicht, finde die Security "
+"Group und klicke b>Manage Rules</b>."
+
 msgid "Segmentation ID"
 msgstr "Segmentierungskennung"
 
@@ -460,6 +606,9 @@ msgstr "Wählen Sie ein Schlüsselpaar aus den verfügbaren Schlüsselpaaren aus
 
 msgid "Select a source from those listed below."
 msgstr "Wählen Sie aus den unten stehenden Quellen aus."
+
+msgid "Select an item from Available items below"
+msgstr "Wählen Sie einen Eintrag aus den verfügbaren Positionen aus"
 
 msgid "Select at least one network"
 msgstr "Wählen Sie mindestens ein Netzwerk aus"
@@ -491,11 +640,17 @@ msgstr "Einstellung ist nicht aktiviert: %(setting)s"
 msgid "Shared"
 msgstr "Gemeinsam verwendet"
 
+msgid "Show events"
+msgstr "Ereignisse anzeigen"
+
 msgid "Size"
 msgstr "Größe"
 
 msgid "Size (GB)"
 msgstr "Größe (GB)"
+
+msgid "Snapshot"
+msgstr "Schattenkopie"
 
 msgid "Status"
 msgstr "Status"
@@ -504,12 +659,12 @@ msgid "Subnets Associated"
 msgstr "Subnetze zugewiesen"
 
 #, python-format
-msgid "Successfully created key pair %(name)s"
-msgstr "Schlüsselpaar %(name)s erfolgreich erstellt"
+msgid "Successfully created key pair %(name)s."
+msgstr "Erstellung der Schlüsselpaares %(name)s erfolgreich."
 
 #, python-format
-msgid "Successfully imported key pair %(name)s"
-msgstr "Schlüsselpaar %(name)s erfolgreich importiert"
+msgid "Successfully imported key pair %(name)s."
+msgstr "Importieren des Schlüsselpaares %(name)s erfolgreich."
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -554,13 +709,8 @@ msgstr ""
 msgid "The status indicates whether the network has an active connection."
 msgstr "Der Status zeigt an, ob das Netzwerk eine aktive Verbindung hat."
 
-msgid ""
-"The subnet identifies a sub-section of a network. A subnet is specified in "
-"CIDR format. A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
-msgstr ""
-"Das Subnetz beschreibt eine Untergruppe des Netzwerkes. Ein Subnetz wird im "
-"CIDR-Format bestimmt. Ein typisches CIDR-Format sieht folgendermaßen aus: "
-"<samp>192.xxx.x.x/24</samp>."
+msgid "The step has completed successfully. No events to display."
+msgstr "Der Schritt wurde erfolgreich beendet. Keine Ereignisse zum Anzeigen."
 
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
@@ -677,6 +827,12 @@ msgstr "Die Benutzer können nicht gelöscht werden."
 msgid "Unable to edit the domain."
 msgstr "Die Domäne kann nicht bearbeitet werden."
 
+msgid "Unable to edit the flavor extra specs."
+msgstr "Extraspezifikationen zur Variante können nicht bearbeitet werden."
+
+msgid "Unable to edit the image custom properties."
+msgstr "Die Abbildanpassungseigenschaften können nicht bearbeitet werden."
+
 msgid "Unable to edit the project."
 msgstr "Das Projekt kann nicht bearbeitet werden."
 
@@ -688,6 +844,9 @@ msgstr "Der Benutzer kann nicht bearbeitet werden."
 
 msgid "Unable to fetch the service catalog."
 msgstr "Die Dienstkatalog kann nicht abgerufen werden."
+
+msgid "Unable to get the Keystone service version."
+msgstr "Keystone Dienst-Version kann nicht abgerufen werden."
 
 msgid "Unable to grant the role."
 msgstr "Die Rolle kann nicht gewährt werden."
@@ -721,6 +880,9 @@ msgstr "Die Variante kann nicht abgerufen werden."
 
 msgid "Unable to retrieve the flavors."
 msgstr "Die Varianten können nicht abgerufen werden."
+
+msgid "Unable to retrieve the image custom properties."
+msgstr "Die Abbildanpassungseigenschaften können nicht abgerufen werden."
 
 msgid "Unable to retrieve the image."
 msgstr "Das Abbild konnte nicht abgerufen werden."
@@ -776,20 +938,32 @@ msgstr "Datenträger-Schattenkopien können nicht abgerufen werden."
 msgid "Unable to retrieve the volumes."
 msgstr "Die Datenträger können nicht abgerufen werden."
 
+msgid "Unable to validate the template."
+msgstr "Vorlage kann nicht validiert werden."
+
 msgid "Up"
 msgstr "Hoch"
+
+msgid "Update Aggregate Metadata"
+msgstr "Aggregat-Metadaten bearbeiten."
+
+msgid "Update Flavor Metadata"
+msgstr "Varianten Metadaten aktualisieren"
+
+msgid "Update Image Metadata"
+msgstr "Abbild-Metadaten erneuern"
 
 msgid "Updated"
 msgstr "Aktualisiert"
 
 msgid "User ID"
-msgstr "Benutzer ID"
+msgstr "Benutzerkennung"
 
 msgid "User Name"
 msgstr "Benutzername"
 
-msgid "VCPUs"
-msgstr "VCPUs"
+msgid "VCPUS"
+msgstr "VCPUS"
 
 msgid "Visibility"
 msgstr "Sichtbarkeit"
@@ -824,3 +998,6 @@ msgstr "Ja"
 
 msgid "bytes"
 msgstr "Bytes"
+
+msgid "{$ row['provider:network_type'] $}"
+msgstr "{$ row['provider:network_type'] $}"

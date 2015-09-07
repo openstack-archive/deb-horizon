@@ -435,7 +435,7 @@ class SetInstanceDetailsAction(workflows.Action):
                                                   context.get('project_id'),
                                                   self._images_cache)
         for image in images:
-            image.bytes = image.virtual_size or image.size
+            image.bytes = getattr(image, 'virtual_size', None) or image.size
             image.volume_size = max(
                 image.min_disk, functions.bytes_to_gigabytes(image.bytes))
             choices.append((image.id, image))
@@ -466,7 +466,8 @@ class SetInstanceDetailsAction(workflows.Action):
     def populate_volume_id_choices(self, request, context):
         volumes = []
         try:
-            if base.is_service_enabled(request, 'volume'):
+            if (base.is_service_enabled(request, 'volume')
+                    or base.is_service_enabled(request, 'volumev2')):
                 available = api.cinder.VOLUME_STATE_AVAILABLE
                 volumes = [self._get_volume_display_name(v)
                            for v in cinder.volume_list(self.request,
@@ -483,7 +484,8 @@ class SetInstanceDetailsAction(workflows.Action):
     def populate_volume_snapshot_id_choices(self, request, context):
         snapshots = []
         try:
-            if base.is_service_enabled(request, 'volume'):
+            if (base.is_service_enabled(request, 'volume')
+                    or base.is_service_enabled(request, 'volumev2')):
                 available = api.cinder.VOLUME_STATE_AVAILABLE
                 snapshots = [self._get_volume_display_name(s)
                              for s in cinder.volume_snapshot_list(
@@ -912,7 +914,9 @@ class LaunchInstance(workflows.Workflow):
 
         avail_zone = context.get('availability_zone', None)
 
-        if api.neutron.is_port_profiles_supported():
+        port_profiles_supported = api.neutron.is_port_profiles_supported()
+
+        if port_profiles_supported:
             nics = self.set_network_port_profiles(request,
                                                   context['network_id'],
                                                   context['profile_id'])
@@ -935,8 +939,16 @@ class LaunchInstance(workflows.Workflow):
                                    config_drive=context.get('config_drive'))
             return True
         except Exception:
+            if port_profiles_supported:
+                ports_failing_deletes = _cleanup_ports_on_failed_vm_launch(
+                    request, nics)
+                if ports_failing_deletes:
+                    ports_str = ', '.join(ports_failing_deletes)
+                    msg = (_('Port cleanup failed for these port-ids (%s).')
+                           % ports_str)
+                    exceptions.handle(request, msg)
             exceptions.handle(request)
-            return False
+        return False
 
     def set_network_port_profiles(self, request, net_ids, profile_id):
         # Create port with Network ID and Port Profile
@@ -974,3 +986,15 @@ class LaunchInstance(workflows.Workflow):
                            'profile_id': profile_id})
 
         return nics
+
+
+def _cleanup_ports_on_failed_vm_launch(request, nics):
+    ports_failing_deletes = []
+    LOG.debug('Cleaning up stale VM ports.')
+    for nic in nics:
+        try:
+            LOG.debug('Deleting port with id: %s' % nic['port-id'])
+            api.neutron.port_delete(request, nic['port-id'])
+        except Exception:
+            ports_failing_deletes.append(nic['port-id'])
+    return ports_failing_deletes

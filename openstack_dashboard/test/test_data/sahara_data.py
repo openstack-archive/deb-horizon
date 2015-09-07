@@ -128,6 +128,8 @@ def data(TEST):
         "volume_mount_prefix": "/volumes/disk",
         "volumes_per_node": 0,
         "volumes_size": 0,
+        "volume_type": None,
+        "volume_local_to_instance": False,
         "security_groups": [],
         "volumes_availability_zone": None,
     }
@@ -143,7 +145,7 @@ def data(TEST):
         "cluster_configs": {},
         "created_at": "2014-06-04 14:01:06.460711",
         "default_image_id": None,
-        "description": None,
+        "description": "Sample description",
         "hadoop_version": "1.2.1",
         "id": "a2c3743f-31a2-4919-8d02-792138a87a98",
         "name": "sample-cluster-template",
@@ -169,6 +171,8 @@ def data(TEST):
                 "volume_mount_prefix": "/volumes/disk",
                 "volumes_per_node": 0,
                 "volumes_size": 0,
+                "volume_type": None,
+                "volume_local_to_instance": False,
                 "volumes_availability_zone": None,
             },
             {
@@ -188,6 +192,8 @@ def data(TEST):
                 "volume_mount_prefix": "/volumes/disk",
                 "volumes_per_node": 0,
                 "volumes_size": 0,
+                "volume_type": None,
+                "volume_local_to_instance": False,
                 "volumes_availability_zone": None,
             }
         ],
@@ -248,8 +254,11 @@ def data(TEST):
                 "volume_mount_prefix": "/volumes/disk",
                 "volumes_per_node": 0,
                 "volumes_size": 0,
+                "volume_type": None,
+                "volume_local_to_instance": False,
                 "security_groups": [],
                 "volumes_availability_zone": None,
+                "id": "ng1"
             },
             {
                 "count": 2,
@@ -290,8 +299,11 @@ def data(TEST):
                 "volume_mount_prefix": "/volumes/disk",
                 "volumes_per_node": 0,
                 "volumes_size": 0,
+                "volume_type": None,
+                "volume_local_to_instance": False,
                 "security_groups": ["b7857890-09bf-4ee0-a0d5-322d7a6978bf"],
                 "volumes_availability_zone": None,
+                "id": "ng2"
             }
         ],
         "plugin_name": "vanilla",
@@ -306,6 +318,53 @@ def data(TEST):
     cluster1 = clusters.Cluster(
         clusters.ClusterManager(None), cluster1_dict)
     TEST.clusters.add(cluster1)
+
+    cluster2_dict = copy.deepcopy(cluster1_dict)
+    cluster2_dict.update({
+        "id": "cl2",
+        "name": "cl2_name",
+        "provision_progress": [
+            {
+                "created_at": "2015-03-27T15:51:54",
+                "updated_at": "2015-03-27T15:59:34",
+                "step_name": "first_step",
+                "step_type": "some_type",
+                "successful": True,
+                "events": [],
+                "total": 3
+            },
+            {
+                "created_at": "2015-03-27T16:01:54",
+                "updated_at": "2015-03-27T16:10:22",
+                "step_name": "second_step",
+                "step_type": "some_other_type",
+                "successful": None,
+                "events": [
+                    {
+                        "id": "evt1",
+                        "created_at": "2015-03-27T16:01:22",
+                        "node_group_id": "ng1",
+                        "instance_name": "cercluster-master-001",
+                        "successful": True,
+                        "event_info": None
+                    },
+                    {
+                        "id": "evt2",
+                        "created_at": "2015-03-27T16:04:51",
+                        "node_group_id": "ng2",
+                        "instance_name": "cercluster-workers-001",
+                        "successful": True,
+                        "event_info": None
+                    }
+                ],
+                "total": 3
+            }
+        ]
+    })
+
+    cluster2 = clusters.Cluster(
+        clusters.ClusterManager(None), cluster2_dict)
+    TEST.clusters.add(cluster2)
 
     # Data Sources.
     data_source1_dict = {
@@ -396,7 +455,8 @@ def data(TEST):
         "name": "pigjob",
         "tenant_id": "429ad8447c2d47bc8e0382d244e1d1df",
         "type": "Pig",
-        "updated_at": None
+        "updated_at": None,
+        "job_config": {"configs": {}}
     }
 
     job1 = jobs.Job(jobs.JobsManager(None), job1_dict)
@@ -488,7 +548,11 @@ def data(TEST):
         "cluster_name_set": True,
         "job_name_set": True,
         "cluster_name": "cluster-1",
-        "job_name": "job-1"
+        "job_name": "job-1",
+        "data_source_urls": {
+            "85884883-3083-49eb-b442-71dd3734d02c": "swift://a.sahara/input",
+            "426fb01c-5c7e-472d-bba2-b1f0fe7e0ede": "hdfs://a.sahara/output"
+        }
     }
 
     jobex1 = job_executions.JobExecution(

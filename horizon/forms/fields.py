@@ -15,6 +15,7 @@
 import re
 
 import netaddr
+import six
 
 from django.core.exceptions import ValidationError  # noqa
 from django.core import urlresolvers
@@ -147,30 +148,31 @@ class SelectWidget(widgets.Select):
         for the option object. It returns a dictionary
         containing the html attributes and their values.
         For example, to define a title attribute for the
-        choices:
+        choices::
 
-        helpText = { 'Apple': 'This is a fruit',
-                  'Carrot': 'This is a vegetable' }
+            helpText = { 'Apple': 'This is a fruit',
+                      'Carrot': 'This is a vegetable' }
 
-        def get_title(data):
-            text = helpText.get(data, None)
-            if text:
-                return {'title': text}
-            else:
-                return {}
+            def get_title(data):
+                text = helpText.get(data, None)
+                if text:
+                    return {'title': text}
+                else:
+                    return {}
 
-        ....
-        ....
+            ....
+            ....
 
-        widget=forms.SelectWidget( attrs={'class': 'switchable',
-                                          'data-slug': 'source'},
-                                   transform_html_attrs=get_title )
+            widget=forms.SelectWidget( attrs={'class': 'switchable',
+                                             'data-slug': 'source'},
+                                    transform_html_attrs=get_title )
 
-        self.fields[<field name>].choices =
-               ([
-                 ('apple','Apple'),
-                 ('carrot','Carrot')
-               ])
+            self.fields[<field name>].choices =
+                ([
+                    ('apple','Apple'),
+                    ('carrot','Carrot')
+                ])
+
     """
     def __init__(self, attrs=None, choices=(), data_attrs=(), transform=None,
                  transform_html_attrs=None):
@@ -188,7 +190,7 @@ class SelectWidget(widgets.Select):
             html_attrs = self.transform_html_attrs(option_label)
             other_html += flatatt(html_attrs)
 
-        if not isinstance(option_label, (basestring, Promise)):
+        if not isinstance(option_label, (six.string_types, Promise)):
             for data_attr in self.data_attrs:
                 data_value = html.conditional_escape(
                     force_text(getattr(option_label,

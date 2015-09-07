@@ -33,10 +33,22 @@ JOB_BINARY_CREATE_URL = ("horizon:project:data_processing.job_binaries"
 
 
 class AdditionalLibsAction(workflows.Action):
+
     lib_binaries = forms.DynamicChoiceField(
         label=_("Choose libraries"),
         required=False,
-        add_item_link=JOB_BINARY_CREATE_URL)
+        add_item_link=JOB_BINARY_CREATE_URL,
+        widget=forms.Select(
+            attrs={
+                'class': 'switched',
+                'data-switch-on': 'jobtype',
+                'data-jobtype-pig': _("Choose libraries"),
+                'data-jobtype-hive': _("Choose libraries"),
+                'data-jobtype-shell': _("Choose additional files"),
+                'data-jobtype-spark': _("Choose libraries"),
+                'data-jobtype-java': _("Choose libraries"),
+                'data-jobtype-mapreduce.streaming': _("Choose libraries")
+            }))
 
     lib_ids = forms.CharField(
         required=False,
@@ -78,7 +90,9 @@ class GeneralConfigAction(workflows.Action):
                 'data-switch-on': 'jobtype',
                 'data-jobtype-pig': _("Choose a main binary"),
                 'data-jobtype-hive': _("Choose a main binary"),
+                'data-jobtype-shell': _("Choose a shell script"),
                 'data-jobtype-spark': _("Choose a main binary"),
+                'data-jobtype-storm': _("Choose a main binary"),
                 'data-jobtype-mapreduce.streaming': _("Choose a main binary")
             }))
 
@@ -145,8 +159,8 @@ class ConfigureLibs(workflows.Step):
 
     def contribute(self, data, context):
         chosen_libs = json.loads(data.get("lib_ids", '[]'))
-        for k in xrange(len(chosen_libs)):
-            context["lib_" + str(k)] = chosen_libs[k]
+        for index, library in enumerate(chosen_libs):
+            context["lib_%s" % index] = library
         return context
 
 

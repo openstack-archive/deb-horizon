@@ -12,36 +12,76 @@ and a ``_styles.scss`` file with additional styles to load after dashboard
 styles have loaded.
 
 To use a custom theme, set ``CUSTOM_THEME_PATH`` in ``local_settings.py`` to
-the directory location for the theme (e.g., ``"static/themes/blue"``). The
+the directory location for the theme (e.g., ``"themes/material"``). The
 path can either be relative to the ``openstack_dashboard`` directory or an
 absolute path to an accessible location on the file system. The default
-``CUSTOM_THEME_PATH`` is ``static/themes/default``.
+``CUSTOM_THEME_PATH`` is ``themes/default``.
 
 Both the Dashboard custom variables and Bootstrap variables can be overridden.
 For a full list of the Dashboard SCSS variables that can be changed, see the
 variables file at ``openstack_dashboard/static/dashboard/scss/_variables.scss``.
 
-Changing the Logo
+Organizing Your Theme Directory
+-------------------------------
+
+A custom theme directory can be organized differently, depending on the
+level of customization that is desired, as it can include static files
+as well as Django templates.  It can include special subdirectories that will
+be used differently: ``static``, ``templates`` and ``img``.
+
+The Static Folder
 -----------------
 
-There are currently two places where the OpenStack logo is pulled in
-through the stylesheets. The first is shown at the login screen and the other
-on top of the menu bar. To override the logo place your logo in your themes
-directory and set the image to use in ``_styles.scss``. For example::
+If the theme folder contains a sub-folder called ``static``, then that sub
+folder will be used as the **static root of the theme**.  I.e., Horizon will
+look in that sub-folder for the _variables.scss and _styles.scss files.
+The contents of this folder will also be served up at ``/static/custom``.
 
-    #splash .login {
-      background-image: url(/static/themes/THEME/logo-splash.png);
-    }
+The Templates Folder
+--------------------
 
-    .topbar {
-      h1.brand a {
-        background-image: url(/static/themes/THEME/logo.png);
-      }
-    }
+If the theme folder contains a sub-folder ``templates``, then the path
+to that sub-folder will be prepended to the ``TEMPLATE_DIRS`` tuple to
+allow for theme specific template customizations.
 
-``THEME`` should be replaced by the name of your theme directory.
-The dimensions should be ``width: 216px, height: 35px`` for a drop in
-replacement.
+Using the Templates Folder
+--------------------------
+
+Any Django template that is used in Horizon can be overridden through a theme.
+This allows highly customized user experiences to exist within the scope of
+different themes.  Any template that is overridden must adhere to the same
+directory structure that the extending template expects.
+
+For example, if you wish to customize the sidebar, Horizon expects the template
+to live at ``horizon/_sidebar.html``.  You would need to duplicate that
+directory structure under your templates directory, such that your override
+would live at ``{CUSTOM_THEME_PATH}/templates/horizon/_sidebar.html``.
+
+The Img Folder
+--------------
+
+If the static root of the theme folder contains an ``img`` directory,
+then all images contained within ``dashboard/img`` can be overridden by
+providing a file with the same name.
+
+For a complete list of the images that can be overridden this way, see:
+``openstack_dashboard/static/dashboard/img``
+
+Customizing the Logo
+--------------------
+
+If you wish to customize the logo that is used on the splash screen or in the
+top navigation bar, then you simply need to create an ``img`` directory under
+your theme's static root directory and place your custom ``logo.png`` or
+``logo-splash.png`` within it.
+
+If you wish to override the ``logo.png`` using the previous method, and if the
+image used is larger than the height of the top navbar, then the image will be
+constrained to fit within the height of nav.  You can customize the height of
+the top navigation by customizing the SCSS variable: ``$navbar-height``.
+If the image's height is smaller than the navbar height, then the image
+will retain its original resolution and size, and simply be centered
+vertically in the available space.
 
 Prior to the Kilo release the images files inside of Horizon needed to be
 replaced by your images files or the Horizon stylesheets needed to be altered
@@ -76,6 +116,26 @@ This allows for common site-customization requirements such as:
 * Registering or unregistering panels from an existing dashboard.
 * Changing the names of dashboards and panels.
 * Re-ordering panels within a dashboard or panel group.
+
+Default Horizon panels are loaded based upon files within the openstack_dashboard/enabled/
+folder.  These files are loaded based upon the filename order, with space left for more
+files to be added.  There are some example files available within this folder, with the
+.example suffix added.  Developers and deployers should strive to use this method of
+customization as much as possible, and support for this is given preference over more
+exotic methods such as monkey patching and overrides files.
+
+Horizon customization module (overrides)
+========================================
+
+Horizon has a global overrides mechanism available to perform customizations that are not
+yet customizable via configuration settings.  This file can perform monkey patching and
+other forms of customization which are not possible via the enabled folder's customization
+method.
+
+This method of customization is meant to be available for deployers of Horizon, and use of
+this should be avoided by Horizon plugins at all cost.  Plugins needing this level of
+monkey patching and flexibility should instead look for changing their __init__.py file
+and performing customizations through other means.
 
 To specify the python module containing your modifications, add the key
 ``customization_module`` to your ``HORIZON_CONFIG`` dictionary in

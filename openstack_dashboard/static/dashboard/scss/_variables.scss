@@ -2,17 +2,16 @@
 to our variables */
 @import "/custom/variables";
 
-
-/* This variable can be used to change the web root of horizon
-default value is already '/' */
-$webroot: "" !default;
+/* When used with Horizon via Django, this value is set automatically from
+   settings.py and is added dynamically to the namespace through
+   horizon/utils/scss_filter.py */
+$static_url: "/static/" !default;
 
 
 /* Horizon Custom Variables */
 
 $code-font-family: Menlo, Monaco, Consolas, 'Courier New' !default;
-$body-min-width: 900px !default;
-$sidebar-background-color: #f9f9f9 !default;
+$main-content-min-width: 900px !default;
 $sidebar-width: 220px !default;
 $border-color: #dddddd !default;
 $table-bg-odd: $table-bg-accent !default;
@@ -60,25 +59,11 @@ $rbrowser-footer-background-color: #f1f1f1;
 //       .table-striped-datatable styles.
 
 // Font-awesome path to the icon fonts
-$fa-font-path: $webroot + "/static/horizon/lib/font-awesome/fonts";
+$fa-font-path: $static_url + "horizon/lib/font-awesome/fonts";
 
 /* Charts */
 
 $overview_chart_height: 81px;
-
-
-/* Accordion Navigation */
-
-$accordionBaseFontColor: #6e6e6e !default;
-$accordionBorderColor: #e5e5e5 !default;
-$accordionBoxShadowColor: #c7c7c7 !default;
-$accordionHighlightColor: #d93c27 !default;
-$accordionHeaderActiveColor: #e3e4e6 !default;
-$accordionHeaderBorderColor: #bbbbbb !default;
-$accordionItemActiveBgColor: #ffffff !default;
-$accordionItemFontColor: #6e6e6e !default;
-$accordionSubBorderColor: #c0c1c2 !default;
-$accordionSubHeaderFontColor: #6e6e6e !default;
 
 /* Help panel */
 
@@ -213,3 +198,9 @@ $members-list-border: 1px solid $gray-light !default;
 $members-list-item-width: 130px !default;
 $members-list-item-max-width: 327px !default;
 $members-list-roles-width: 125px !default;
+
+// Mimics the padding in _dropdowns.scss
+// Not sure why this is hardcoded :-/
+// https://github.com/twbs/bootstrap/issues/13443
+$dropdown-item-padding-vertical:   3px;
+$dropdown-item-padding-horizontal: 20px;

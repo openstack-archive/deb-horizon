@@ -49,6 +49,23 @@ class CreateView(forms.ModalFormView):
     success_url = reverse_lazy("horizon:project:images:index")
     page_title = _("Create An Image")
 
+    def get_initial(self):
+        initial = {}
+        for name in [
+            'name',
+            'description',
+            'image_url',
+            'source_type',
+            'architecture',
+            'disk_format',
+            'minimum_disk',
+            'minimum_ram'
+        ]:
+            tmp = self.request.GET.get(name)
+            if tmp:
+                initial[name] = tmp
+        return initial
+
 
 class UpdateView(forms.ModalFormView):
     form_class = project_forms.UpdateImageForm
@@ -109,6 +126,13 @@ class DetailView(tabs.TabView):
         context["image"] = image
         context["url"] = self.get_redirect_url()
         context["actions"] = table.render_row_actions(image)
+        status_label = [label for (value, label) in
+                        project_tables.ImagesTable.STATUS_DISPLAY_CHOICES
+                        if value.lower() == (image.status or '').lower()]
+        if status_label:
+            image.status_label = status_label[0]
+        else:
+            image.status_label = image.status
         return context
 
     @staticmethod

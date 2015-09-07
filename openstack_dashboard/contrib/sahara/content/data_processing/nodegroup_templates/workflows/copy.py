@@ -46,12 +46,15 @@ class CopyNodegroupTemplate(create_flow.ConfigureNodegroupTemplate):
                                                     **kwargs)
 
         g_fields = None
+        snp_fields = None
         s_fields = None
         for step in self.steps:
             if isinstance(step, create_flow.GeneralConfig):
                 g_fields = step.action.fields
             if isinstance(step, create_flow.SecurityConfig):
                 s_fields = step.action.fields
+            if isinstance(step, create_flow.SelectNodeProcesses):
+                snp_fields = step.action.fields
 
         g_fields["nodegroup_name"].initial = self.template.name + "-copy"
         g_fields["description"].initial = self.template.description
@@ -69,11 +72,15 @@ class CopyNodegroupTemplate(create_flow.ConfigureNodegroupTemplate):
             else "ephemeral_drive"
         volumes_per_node = self.template.volumes_per_node
         volumes_size = self.template.volumes_size
+        volume_type = self.template.volume_type
+        volume_local_to_instance = self.template.volume_local_to_instance
         g_fields["storage"].initial = storage
         g_fields["volumes_per_node"].initial = volumes_per_node
         g_fields["volumes_size"].initial = volumes_size
         g_fields["volumes_availability_zone"].initial = \
             self.template.volumes_availability_zone
+        g_fields['volume_type'].initial = volume_type
+        g_fields['volume_local_to_instance'].initial = volume_local_to_instance
 
         if self.template.floating_ip_pool:
             g_fields['floating_ip_pool'].initial = (
@@ -105,4 +112,4 @@ class CopyNodegroupTemplate(create_flow.ConfigureNodegroupTemplate):
                     _service = service
                     break
             processes_dict["%s:%s" % (_service, process)] = process
-        g_fields["processes"].initial = processes_dict
+        snp_fields["processes"].initial = processes_dict

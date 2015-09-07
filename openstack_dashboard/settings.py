@@ -64,6 +64,7 @@ HORIZON_CONFIG = {
     'exceptions': {'recoverable': exceptions.RECOVERABLE,
                    'not_found': exceptions.NOT_FOUND,
                    'unauthorized': exceptions.UNAUTHORIZED},
+    'modal_backdrop': 'static',
     'angular_modules': [],
     'js_files': [],
     'js_spec_files': [],
@@ -141,7 +142,7 @@ STATICFILES_FINDERS = (
 )
 
 COMPRESS_PRECOMPILERS = (
-    ('text/scss', 'django_pyscss.compressor.DjangoScssFilter'),
+    ('text/scss', 'horizon.utils.scss_filter.HorizonScssFilter'),
 )
 
 COMPRESS_CSS_FILTERS = (
@@ -260,9 +261,10 @@ SECURITY_GROUP_RULES = {
 
 ADD_INSTALLED_APPS = []
 
-# STATIC directory for custom theme, set as default.
+# directory for custom theme, set as default.
 # It can be overridden in local_settings.py
-CUSTOM_THEME_PATH = 'static/themes/default'
+DEFAULT_THEME_PATH = 'themes/default'
+CUSTOM_THEME_PATH = DEFAULT_THEME_PATH
 
 try:
     from local.local_settings import *  # noqa
@@ -295,7 +297,7 @@ CUSTOM_THEME = os.path.join(ROOT_PATH, CUSTOM_THEME_PATH)
 # it to our first-come, first-serve TEMPLATE_DIRS
 if os.path.exists(os.path.join(CUSTOM_THEME, 'templates')):
     TEMPLATE_DIRS = \
-        (os.path.join(CUSTOM_THEME_PATH, 'templates'),) + TEMPLATE_DIRS
+        (os.path.join(CUSTOM_THEME, 'templates'),) + TEMPLATE_DIRS
 
 # Only expose the subdirectory 'static' if it exists from a custom theme,
 # allowing other logic to live with a theme that we might not want to expose
@@ -303,9 +305,23 @@ if os.path.exists(os.path.join(CUSTOM_THEME, 'templates')):
 if os.path.exists(os.path.join(CUSTOM_THEME, 'static')):
     CUSTOM_THEME = os.path.join(CUSTOM_THEME, 'static')
 
+# Only collect and expose the default theme if the user chose to set a
+# different theme
+if DEFAULT_THEME_PATH != CUSTOM_THEME_PATH:
+    STATICFILES_DIRS.append(
+        ('themes/default', os.path.join(ROOT_PATH, DEFAULT_THEME_PATH)),
+    )
+
 STATICFILES_DIRS.append(
     ('custom', CUSTOM_THEME),
 )
+
+# Load the subdirectory 'img' of a custom theme if it exists, thereby allowing
+# very granular theme overrides of all dashboard img files using the first-come
+# first-serve filesystem loader.
+if os.path.exists(os.path.join(CUSTOM_THEME, 'img')):
+    STATICFILES_DIRS.insert(0, ('dashboard/img',
+                            os.path.join(CUSTOM_THEME, 'img')))
 
 # populate HORIZON_CONFIG with auto-discovered JavaScript sources, mock files,
 # specs files and external templates.

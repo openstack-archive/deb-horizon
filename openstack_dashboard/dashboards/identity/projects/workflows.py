@@ -164,27 +164,6 @@ class CreateProjectInfoAction(workflows.Action):
             self.fields["domain_id"].widget = readonlyInput
             self.fields["domain_name"].widget = readonlyInput
 
-    def clean_name(self):
-        project_name = self.cleaned_data['name']
-        domain_id = self.cleaned_data['domain_id']
-
-        # Due to potential performance issues project name validation
-        # for the keystone.v2 is omitted
-        try:
-            if keystone.VERSIONS.active >= 3:
-                tenant = api.keystone.tenant_list(
-                    self.request,
-                    domain=domain_id,
-                    filters={'name': project_name})
-
-                if tenant:
-                    msg = _('Project name is already in use. Please use a '
-                            'different name.')
-                    raise forms.ValidationError(msg)
-        except Exception:
-            exceptions.handle(self.request, ignore=True)
-        return project_name
-
     class Meta(object):
         name = _("Project Information")
         help_text = _("Create a project to organize users.")
@@ -448,7 +427,10 @@ class CreateProject(CommonQuotaWorkflow):
                                             **kwargs)
 
     def format_status_message(self, message):
-        return message % self.context.get('name', 'unknown project')
+        if "%s" in message:
+            return message % self.context.get('name', 'unknown project')
+        else:
+            return message
 
     def _create_project(self, request, data):
         # create the project
@@ -461,6 +443,10 @@ class CreateProject(CommonQuotaWorkflow):
                                                      enabled=data['enabled'],
                                                      domain=domain_id)
             return self.object
+        except exceptions.Conflict:
+            msg = _('Project name "%s" is already used.') % data['name']
+            self.failure_message = msg
+            return
         except Exception:
             exceptions.handle(request, ignore=True)
             return
@@ -573,12 +559,6 @@ class UpdateProjectInfoAction(CreateProjectInfoAction):
             cleaned_data['enabled'] = True
         return cleaned_data
 
-    def clean_name(self):
-        project_name = self.cleaned_data['name']
-        if self.initial['name'] == project_name:
-            return project_name
-        return super(UpdateProjectInfoAction, self).clean_name()
-
     class Meta(object):
         name = _("Project Information")
         slug = 'update_info'
@@ -622,7 +602,10 @@ class UpdateProject(CommonQuotaWorkflow):
                                             **kwargs)
 
     def format_status_message(self, message):
-        return message % self.context.get('name', 'unknown project')
+        if "%s" in message:
+            return message % self.context.get('name', 'unknown project')
+        else:
+            return message
 
     @memoized.memoized_method
     def _get_available_roles(self, request):
@@ -638,6 +621,10 @@ class UpdateProject(CommonQuotaWorkflow):
                 name=data['name'],
                 description=data['description'],
                 enabled=data['enabled'])
+        except exceptions.Conflict:
+            msg = _('Project name "%s" is already used.') % data['name']
+            self.failure_message = msg
+            return
         except Exception:
             exceptions.handle(request, ignore=True)
             return

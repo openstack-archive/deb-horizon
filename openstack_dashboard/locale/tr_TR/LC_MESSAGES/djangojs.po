@@ -3,20 +3,21 @@
 # This file is distributed under the same license as the PROJECT project.
 #
 # Translators:
+# ADİL REŞİT DURSUN <ardursun@deltanoc.com>, 2015
 # Mücahit Büyükyılmaz <mucahit@konya.edu.tr>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Horizon\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-07-19 22:22+0000\n"
-"PO-Revision-Date: 2015-07-22 06:32+0000\n"
-"Last-Translator: Mücahit Büyükyılmaz <mucahit@konya.edu.tr>\n"
-"Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/horizon/"
+"POT-Creation-Date: 2015-09-01 03:11+0000\n"
+"PO-Revision-Date: 2015-08-30 00:10+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Turkish (Turkey) (http://www.transifex.com/openstack/horizon/"
 "language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.0\n"
 "Language: tr_TR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -69,21 +70,6 @@ msgstr ""
 "<em>Not: Hacmi seçerken sadece bir sunucu başlatabilirsiniz.</em></li>"
 
 msgid ""
-"A floating IP allows instances to be addressable from an external network. "
-"Floating IPs are not allocated to instances at creation time and may be "
-"assigned after the instance is created. To attach a floating IP, go to the "
-"<b>Instances</b> view and click the <b>Actions</b> menu to the right of an "
-"instance. Then, select the <b>Associate Floating IP</b> option and enter the "
-"necessary details."
-msgstr ""
-"Değişken IP adresleri sunucunuzun harici bir ağdan erişilebilir olmasına "
-"imkan verirler. Değişken IP adresleri sunuculara oluşturulma zamanında "
-"atanmazlar ve sunucu oluşturulduktan sonra kullanılabilirler. Bir değişken "
-"IP adresi eklemek için <b>Sunucular</b> görünümüne gidin ve <b>Eylemler</b> "
-"menüsüne tıklayın. <b>Değişken IP İlişkilendir</b> seçeneğini işaretleyin ve "
-"gereken ayarları girin."
-
-msgid ""
 "A key pair allows you to SSH into your newly created instance. You may "
 "select an existing key pair, import a key pair, or generate a new key pair."
 msgstr ""
@@ -119,18 +105,6 @@ msgid ""
 "to instances."
 msgstr ""
 "Yöneticiler sunuculara atanabilecek değişken IP adresi havuzunu ayarlarlar."
-
-msgid ""
-"An <b>External</b> network is set up by an administrator. If you want an "
-"instance to communicate outside of the data center, then attach a router "
-"between your <b>Project</b> network and the <b>External</b> network. You can "
-"use the <b>Network Topology</b> view to connect the router to the two "
-"networks."
-msgstr ""
-"<b>Harici</b> bir ağ yönetici tarafından kurulur. Eğer veri merkezinin "
-"dışıyla iletişime geçecek bir sunucuya ihtiyacınız varsa <b>Proje</b> ağınız "
-"ile <b>Harici</b> ağ arasına bir yönlendirici yerleştirin. Yönlendiricinizi "
-"iki ağı birleştirmek için <b>Ağ Topolojisi</b> görünümünü kullanabilirsiniz."
 
 msgid ""
 "An advanced option available when launching an instance is disk "
@@ -176,6 +150,9 @@ msgstr ""
 "Bir özel yapılandırma aygıtına üst veriyi yazmak istiyorsanız "
 "<b>Yapılandırma Aygıtı</b> kutusunu işaretleyin. Sunucu başlarken "
 "<b>Yapılandırma Aygıtını</b> bağlar ve üst veriye erişir."
+
+msgid "Click to see more details"
+msgstr "Daha fazla detaylar için tıklayın"
 
 msgid "Configuration"
 msgstr "Yapılandırma"
@@ -224,6 +201,9 @@ msgstr "Kullanıcıları Sil"
 
 msgid "Delete Volume on Terminate"
 msgstr "Kapatıldığında Hacmi Sil"
+
+msgid "Deleted"
+msgstr "Silinmiş"
 
 msgid "Description"
 msgstr "Tanımlama"
@@ -287,6 +267,9 @@ msgstr ""
 "Şablonlar sunucuların hesaplama, bellek ve depolama kapasitelerini "
 "belirlerler."
 
+msgid "Format"
+msgstr "Biçim"
+
 #, python-format
 msgid ""
 "From a Windows system, you can use PuTTYGen to create private/public keys. "
@@ -325,15 +308,6 @@ msgstr ""
 "kullanılabilirlik alanında olduğundan emin olun."
 
 msgid ""
-"If you want to create an instance that uses ephemeral storage, meaning the "
-"instance data is lost when the instance is deleted, then choose one of the "
-"following boot sources:"
-msgstr ""
-"Geçici bir depolama kullanan yani sunucu silindiğinde verileri kaybolacak "
-"bir sunucu oluşturmak istediğinizde aşağıdaki başlatma kaynaklarından birini "
-"seçin:"
-
-msgid ""
 "If you want to create an instance that uses persistent storage, meaning the "
 "instance data is saved when the instance is deleted, then select one of the "
 "following boot options:"
@@ -344,6 +318,9 @@ msgstr ""
 
 msgid "Image"
 msgstr "İmaj"
+
+msgid "Image Name"
+msgstr "İmaj Adı"
 
 msgid "Impact on your quota"
 msgstr "Kotanız etkisi"
@@ -407,6 +384,9 @@ msgstr ""
 "Anahtar Çiftleri sunucunun başlatıldığında ona nasıl erişeceğinizi belirtir. "
 "Anahtar çiftinize hatırlayabileceğiniz bir isim verin."
 
+msgid "Killed"
+msgstr "Öldürüldü"
+
 msgid "Launch Instance"
 msgstr "Sunucuyu Başlat"
 
@@ -422,8 +402,17 @@ msgstr "En yüksek bağlantı noktası"
 msgid "Min Disk"
 msgstr "En az Disk"
 
+msgid "Min Disk (GB)"
+msgstr "Minimum Disk (GB)"
+
 msgid "Min Port"
 msgstr "En düşük bağlantı noktası"
+
+msgid "Min RAM"
+msgstr "Asgari RAM"
+
+msgid "Min RAM (MB)"
+msgstr "Minimum RAM (MB)"
 
 msgid "Min Ram"
 msgstr "En az Bellek"
@@ -452,8 +441,14 @@ msgstr "Ağlar buluttaki sunucular için iletişim kanalları sağlarlar."
 msgid "No"
 msgstr "Hayır"
 
+msgid "No available items"
+msgstr "Uygun parça yok"
+
 msgid "OK"
 msgstr "Tamam"
+
+msgid "Pending Delete"
+msgstr "Silme Beklemede"
 
 msgid "Physical Network"
 msgstr "Fiziksel Ağ"
@@ -485,12 +480,8 @@ msgstr "Proje"
 msgid "Project ID"
 msgstr "Proje ID"
 
-msgid ""
-"Project networks are created by users. These networks are fully isolated and "
-"are project-specific."
-msgstr ""
-"Proje ağlarını kullanıcılar oluşturur. Bu ağlar tamamen soyutlanmış "
-"projelere özel ağlardır."
+msgid "Protected"
+msgstr "Korumalı"
 
 msgid "Protocol"
 msgstr "İletişim Kuralı"
@@ -498,21 +489,20 @@ msgstr "İletişim Kuralı"
 msgid "Provider Network"
 msgstr "Sağlayıcı Ağı"
 
-msgid ""
-"Provider networks are created by administrators. These networks map to an "
-"existing physical network in the data center."
-msgstr ""
-"Sağlayıcı ağları yönetici tarafından oluşturuldu. Bu ağlar veri merkezindeki "
-"fiziksel ağlara karşılık gelir."
-
 msgid "Public"
 msgstr "Genel"
 
 msgid "Public Key"
 msgstr "Açık Anahtar"
 
+msgid "Queued"
+msgstr "Kuyrukta"
+
 msgid "RAM"
 msgstr "Bellek"
+
+msgid "Re-order items using drag and drop"
+msgstr "Sürükle ve bırak kullanarak ögeleri yeniden sipariş ver"
 
 msgid "Remote"
 msgstr "Uzak"
@@ -522,6 +512,12 @@ msgstr "Gerekli"
 
 msgid "Root Disk"
 msgstr "Kök Diski"
+
+msgid "Save"
+msgstr "Kaydet"
+
+msgid "Saving"
+msgstr "Kaydediliyor"
 
 msgid "Script size"
 msgstr "Betik boyutu"
@@ -571,6 +567,9 @@ msgstr "Aşağıdaki kullanılabilir anahtar çiftlerinden birini seçin."
 msgid "Select a source from those listed below."
 msgstr "Listeden bir kaynak seçin."
 
+msgid "Select an item from Available items below"
+msgstr "Aşağıdaki kullanılabilir öğelerden birini seçin."
+
 msgid "Select at least one network"
 msgstr "En az bir ağ seçmelisiniz"
 
@@ -606,19 +605,14 @@ msgstr "Boyut"
 msgid "Size (GB)"
 msgstr "Boyut (GB)"
 
+msgid "Snapshot"
+msgstr "Anlık Görüntü"
+
 msgid "Status"
 msgstr "Statü"
 
 msgid "Subnets Associated"
 msgstr "Alt Ağlar İlişkilendirildi"
-
-#, python-format
-msgid "Successfully created key pair %(name)s"
-msgstr "%(name)s anahtar çifti başarıyla oluşturuldu"
-
-#, python-format
-msgid "Successfully imported key pair %(name)s"
-msgstr "%(name)s anahtar çifti başarıyla içe aktarıldı"
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -626,16 +620,6 @@ msgid ""
 msgstr ""
 "Bir sunucu için seçtiğiniz şablon onun hesaplama, depolama ve bellek "
 "kaynaklarını belirler."
-
-msgid ""
-"The flavor you select must have enough resources allocated to support the "
-"type of instance you are trying to create. Flavors that don't provide enough "
-"resources for your instance are identified on the <b>Available</b> table "
-"with a yellow warning icon."
-msgstr ""
-"Seçtiğiniz şablon oluşturmaya çalıştığınız sunucu türü için sağlanan yeterli "
-"kaynaklara sahip olmalıdır. Yeterli kaynağa sahip olmayan nitelikler "
-"<b>Kullanılabilir</b> tablosunda sarı uyarı simgesiyle işaretlenir."
 
 #, python-format
 msgid ""
@@ -669,13 +653,6 @@ msgstr ""
 
 msgid "The status indicates whether the network has an active connection."
 msgstr "Durum ağın etkin bağlantı içerip içermediğini belirtir."
-
-msgid ""
-"The subnet identifies a sub-section of a network. A subnet is specified in "
-"CIDR format. A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
-msgstr ""
-"Alt ağ bir ağın alt bölümünü temsil eder. Bir alt ağ CUDR biçiminde "
-"tanımlanır. Örnek bir CIDR gösterimi <samp>192.xxx.x.x/24</samp> şeklindedir."
 
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
@@ -803,6 +780,9 @@ msgstr "Kullanıcı düzenlenemedi."
 msgid "Unable to fetch the service catalog."
 msgstr "Servis kataloğu getirilemedi."
 
+msgid "Unable to get the Keystone service version."
+msgstr "Keystone servis versiyonu alınamadı."
+
 msgid "Unable to grant the role."
 msgstr "Rol verilemedi."
 
@@ -893,6 +873,15 @@ msgstr "Hacimler alınamadı."
 msgid "Up"
 msgstr "Açık"
 
+msgid "Update Aggregate Metadata"
+msgstr "Takım Metadata'sı Güncelle"
+
+msgid "Update Flavor Metadata"
+msgstr "Şablon Üstverisini Güncelle"
+
+msgid "Update Image Metadata"
+msgstr "İmaj Üstverisini Güncelle"
+
 msgid "Updated"
 msgstr "Güncellendi"
 
@@ -901,9 +890,6 @@ msgstr "Kullanıcı ID"
 
 msgid "User Name"
 msgstr "Kullanıcı Adı"
-
-msgid "VCPUs"
-msgstr "VPCU'lar"
 
 msgid "Visibility"
 msgstr "Görünürlük"
@@ -930,15 +916,6 @@ msgid ""
 msgstr ""
 "Bir hacmi başlatma kaynağı olarak seçerken sunucu ile aynı kullanılabilirlik "
 "alanında olduğundan emin olun."
-
-msgid ""
-"When the <b>Admin State</b> for a network is set to <b>Up</b>, then the "
-"network is available for use. You can set the <b>Admin State</b> to <b>Down</"
-"b> if you are not ready for other users to access the network."
-msgstr ""
-"<b>Yönetici Durumu</b> eğer <b>Açık</b> olarak ayarlandığında ağ kullanıma "
-"uygun olur. <b>Yönetici Durumunu</b> <b>Kapalı</b> hale getirirseniz diğer "
-"kullanıcılar bu ağa erişmeye hazır olmazlar."
 
 msgid "Yes"
 msgstr "Evet"
