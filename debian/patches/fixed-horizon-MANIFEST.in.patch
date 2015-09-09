@@ -9,8 +9,8 @@ Last-Update: 2013-03-18
  recursive-include doc *.py *.rst *.css *.js *.html *.conf *.jpg *.gif *.png *.css_t
 -recursive-include horizon *.html *.css *.js *.csv *.template *.tmpl *.mo *.po
 -recursive-include openstack_dashboard *.html *.js *.less *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template
-+recursive-include horizon *.html *.css *.js *.csv *.template *.tmpl *.mo *.po *.py
-+recursive-include openstack_dashboard *.html *.js *.less *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template *.py
++recursive-include horizon *.html *.css *.js *.csv *.template *.tmpl *.mo *.po *.py *.scss
++recursive-include openstack_dashboard *.html *.js *.less *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template *.py *.scss
  recursive-include tools *.py *.sh
  
  include AUTHORS
