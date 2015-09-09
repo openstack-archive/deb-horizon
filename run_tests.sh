@@ -26,7 +26,8 @@ function usage {
   echo "  -P, --no-pep8            Don't run pep8 by default"
   echo "  -t, --tabs               Check for tab characters in files."
   echo "  -y, --pylint             Just run pylint"
-  echo "  -j, --jshint             Just run jshint"
+  echo "  -e, --eslint             Just run eslint"
+  echo "  -k, --karma              Just run karma"
   echo "  -q, --quiet              Run non-interactively. (Relatively) quiet."
   echo "                           Implies -V if -N is not set."
   echo "  --only-selenium          Run only the Selenium unit tests"
@@ -69,7 +70,8 @@ no_pep8=0
 just_pylint=0
 just_docs=0
 just_tabs=0
-just_jshint=0
+just_eslint=0
+just_karma=0
 never_venv=0
 quiet=0
 restore_env=0
@@ -105,7 +107,8 @@ function process_option {
     -8|--pep8-changed) just_pep8_changed=1;;
     -P|--no-pep8) no_pep8=1;;
     -y|--pylint) just_pylint=1;;
-    -j|--jshint) just_jshint=1;;
+    -e|--eslint) just_eslint=1;;
+    -k|--karma) just_karma=1;;
     -f|--force) force=1;;
     -t|--tabs) just_tabs=1;;
     -q|--quiet) quiet=1;;
@@ -153,12 +156,20 @@ function run_pylint {
   fi
 }
 
-function run_jshint {
-  echo "Running jshint ..."
-  jshint horizon/static/horizon/js
-  jshint horizon/static/horizon/tests
-  jshint horizon/static/angular/
-  jshint openstack_dashboard/static/dashboard/
+function run_eslint {
+  echo "Running eslint ..."
+  if [ "`which npm`" == '' ] ; then
+    echo "npm is not present; please install, e.g. sudo apt-get install npm"
+  else
+    npm install
+    npm run lint
+  fi
+}
+
+function run_karma {
+  echo "Running karma ..."
+  npm install
+  npm run test
 }
 
 function warn_on_flake8_without_venv {
@@ -297,7 +308,6 @@ function restore_environment {
     fi
 
     cp -r /tmp/.horizon_environment/$JOB_NAME/.venv ./ || true
-
     echo "Environment restored successfully."
   fi
 }
@@ -412,26 +422,42 @@ function run_integration_tests {
   exit 0
 }
 
+function babel_extract {
+  DOMAIN=$1
+  KEYWORDS="-k gettext_noop -k gettext_lazy -k ngettext_lazy:1,2"
+  KEYWORDS+=" -k ugettext_noop -k ugettext_lazy -k ungettext_lazy:1,2"
+  KEYWORDS+=" -k npgettext:1c,2,3 -k pgettext_lazy:1c,2 -k npgettext_lazy:1c,2,3"
+
+  ${command_wrapper} pybabel extract -F ../babel-${DOMAIN}.cfg -o locale/${DOMAIN}.pot $KEYWORDS .
+}
+
 function run_makemessages {
-  OPTS="-l en --no-obsolete --settings=openstack_dashboard.test.settings"
-  DASHBOARD_OPTS="--extension=html,txt,csv --ignore=openstack"
+
   echo -n "horizon: "
   cd horizon
-  ${command_wrapper} $root/manage.py makemessages $OPTS
+  babel_extract django
   HORIZON_PY_RESULT=$?
+
   echo -n "horizon javascript: "
-  ${command_wrapper} $root/manage.py makemessages -d djangojs $OPTS
+  babel_extract djangojs
   HORIZON_JS_RESULT=$?
+
   echo -n "openstack_dashboard: "
   cd ../openstack_dashboard
-  ${command_wrapper} $root/manage.py makemessages $DASHBOARD_OPTS $OPTS
+  babel_extract django
   DASHBOARD_RESULT=$?
+
+  echo -n "openstack_dashboard javascript: "
+  babel_extract djangojs
+  DASHBOARD_JS_RESULT=$?
+
   cd ..
   if [ $check_only -eq 1 ]; then
-    git checkout -- horizon/locale/en/LC_MESSAGES/django*.po
-    git checkout -- openstack_dashboard/locale/en/LC_MESSAGES/django.po
+    git checkout -- horizon/locale/django*.pot
+    git checkout -- openstack_dashboard/locale/django*.pot
   fi
-  exit $(($HORIZON_PY_RESULT || $HORIZON_JS_RESULT || $DASHBOARD_RESULT))
+
+  exit $(($HORIZON_PY_RESULT || $HORIZON_JS_RESULT || $DASHBOARD_RESULT || $DASHBOARD_JS_RESULT))
 }
 
 function run_compilemessages {
@@ -441,20 +467,17 @@ function run_compilemessages {
   cd ../openstack_dashboard
   ${command_wrapper} $root/manage.py compilemessages
   DASHBOARD_RESULT=$?
-  cd ..
-  # English is the source language, so compiled catalogs are unnecessary.
-  rm -vf horizon/locale/en/LC_MESSAGES/django*.mo
-  rm -vf openstack_dashboard/locale/en/LC_MESSAGES/django.mo
   exit $(($HORIZON_PY_RESULT || $DASHBOARD_RESULT))
 }
 
 function run_pseudo {
   for lang in $testargs
-  # Use English po file as the source file/pot file just like real Horizon translations
+  # Use English pot file as the source file/pot file just like real Horizon translations
   do
-      ${command_wrapper} $root/tools/pseudo.py openstack_dashboard/locale/en/LC_MESSAGES/django.po openstack_dashboard/locale/$lang/LC_MESSAGES/django.po $lang
-      ${command_wrapper} $root/tools/pseudo.py horizon/locale/en/LC_MESSAGES/django.po horizon/locale/$lang/LC_MESSAGES/django.po $lang
-      ${command_wrapper} $root/tools/pseudo.py horizon/locale/en/LC_MESSAGES/djangojs.po horizon/locale/$lang/LC_MESSAGES/djangojs.po $lang
+      ${command_wrapper} $root/tools/pseudo.py openstack_dashboard/locale/django.pot openstack_dashboard/locale/$lang/LC_MESSAGES/django.po $lang
+      ${command_wrapper} $root/tools/pseudo.py openstack_dashboard/locale/djangojs.pot openstack_dashboard/locale/$lang/LC_MESSAGES/djangojs.po $lang
+      ${command_wrapper} $root/tools/pseudo.py horizon/locale/django.pot horizon/locale/$lang/LC_MESSAGES/django.po $lang
+      ${command_wrapper} $root/tools/pseudo.py horizon/locale/djangojs.pot horizon/locale/$lang/LC_MESSAGES/djangojs.po $lang
   done
   exit $?
 }
@@ -549,9 +572,15 @@ if [ $just_pylint -eq 1 ]; then
     exit $?
 fi
 
-# Jshint
-if [ $just_jshint -eq 1 ]; then
-    run_jshint
+# ESLint
+if [ $just_eslint -eq 1 ]; then
+    run_eslint
+    exit $?
+fi
+
+# Karma
+if [ $just_karma -eq 1 ]; then
+    run_karma
     exit $?
 fi
 
