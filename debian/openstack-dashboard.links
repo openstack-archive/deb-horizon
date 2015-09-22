@@ -6,3 +6,5 @@
 /var/lib/openstack-dashboard/static/js /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
 
 /usr/share/fonts-font-awesome/fonts /usr/lib/python2.7/dist-packages/horizon/static/horizon/lib/font-awesome/fonts
+/usr/share/fonts-roboto-fontface/fonts /usr/lib/python2.7/dist-packages/horizon/static/horizon/lib/roboto_fontface/fonts
+/usr/share/fonts-materialdesignicons-webfont/fonts /usr/lib/python2.7/dist-packages/horizon/static/horizon/lib/mdi/fonts
