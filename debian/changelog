@@ -1,6 +1,7 @@
 horizon (1:8.0.0~b3-2) experimental; urgency=medium
 
   * Added Improving_find_static_robustness.patch.
+  * Removed all instances of pyshared, now using lib/python2.7 instead.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 21 Sep 2015 13:21:22 +0000
 
