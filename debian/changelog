@@ -1,3 +1,9 @@
+horizon (2:8.0.0~b3-5) experimental; urgency=medium
+
+  * Increasing EPOCH to match the one of Ubuntu.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 22 Sep 2015 19:28:12 +0000
+
 horizon (1:8.0.0~b3-4) experimental; urgency=medium
 
   * Now also allowing Horizon to be installed in /horizon, not just on the
