@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon 2013.2-1\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
-"POT-Creation-Date: 2014-03-07 10:34+0100\n"
+"POT-Creation-Date: 2015-09-22 13:31+0000\n"
 "PO-Revision-Date: 2013-11-18 19:42+0000\n"
 "Last-Translator: Américo Monteiro <a_monteiro@gmx.com>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
@@ -33,6 +33,14 @@ msgid ""
 msgstr ""
 "O pacote Apache define um sítio web predefinido e uma página predefinida, "
 "configurada em /etc/apache2/sites-available/default."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"If this option is not selected, Horizon will be installed using /horizon "
+"instead of the webroot."
+msgstr ""
 
 #. Type: boolean
 #. Description

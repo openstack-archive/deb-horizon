@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
-"POT-Creation-Date: 2014-03-07 10:34+0100\n"
+"POT-Creation-Date: 2015-09-22 13:31+0000\n"
 "PO-Revision-Date: 2013-12-08 21:21-0300\n"
 "Last-Translator: Matías Bellone <matiasbellone+debian@gmail.com>\n"
 "Language-Team: Debian Spanish <debian-l10n-spanish@lists.debian.org>\n"
@@ -62,6 +62,14 @@ msgstr ""
 "ambos configurados en el archivo «/etc/apache2/sites-available/default». "
 "Seleccione esta opción si desea desactivar esta configuración y reemplazarla "
 "con la configuración del panel de control de OpenStack («Dashboard»)."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"If this option is not selected, Horizon will be installed using /horizon "
+"instead of the webroot."
+msgstr ""
 
 #. Type: boolean
 #. Description

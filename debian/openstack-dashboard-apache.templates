@@ -14,6 +14,9 @@ _Description: Activate Dashboard and disable default VirtualHost?
  The Apache package sets up a default web site and a default page, configured
  in /etc/apache2/sites-available/default.
  .
+ If this option is not selected, Horizon will be installed using /horizon
+ instead of the webroot.
+ .
  Choose this option to replace that default with the OpenStack Dashboard
  configuration.
 

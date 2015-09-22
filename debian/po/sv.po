@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
-"POT-Creation-Date: 2014-03-07 10:34+0100\n"
+"POT-Creation-Date: 2015-09-22 13:31+0000\n"
 "PO-Revision-Date: 2015-04-01 16:51+0100\n"
 "Last-Translator: Martin Bagge / brother <brother@bsnet.se>\n"
 "Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
@@ -33,6 +33,14 @@ msgid ""
 msgstr ""
 "Apache-paketet levereras med en standard webbplats och en standard sida, "
 "dessa inställningar finns i /etc/apache2/sites-available/default."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"If this option is not selected, Horizon will be installed using /horizon "
+"instead of the webroot."
+msgstr ""
 
 #. Type: boolean
 #. Description

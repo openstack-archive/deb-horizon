@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
-"POT-Creation-Date: 2013-10-08 19:12+0200\n"
+"POT-Creation-Date: 2015-09-22 13:31+0000\n"
 "PO-Revision-Date: 2013-10-10 23:51+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
@@ -29,8 +29,16 @@ msgid ""
 "The Apache package sets up a default web site and a default page, configured "
 "in /etc/apache2/sites-available/default."
 msgstr ""
-"Pakken Apache opsætter en standardnetside og en standardside, konfigureret i !"
-"/etc/apache2/sites-available/default."
+"Pakken Apache opsætter en standardnetside og en standardside, konfigureret "
+"i !/etc/apache2/sites-available/default."
+
+#. Type: boolean
+#. Description
+#: ../openstack-dashboard-apache.templates:2001
+msgid ""
+"If this option is not selected, Horizon will be installed using /horizon "
+"instead of the webroot."
+msgstr ""
 
 #. Type: boolean
 #. Description
@@ -39,8 +47,8 @@ msgid ""
 "Choose this option to replace that default with the OpenStack Dashboard "
 "configuration."
 msgstr ""
-"Vælg denne indstilling for at erstatte den standard med Openstack "
-"Dashboard-konfigurationen."
+"Vælg denne indstilling for at erstatte den standard med Openstack Dashboard-"
+"konfigurationen."
 
 #. Type: boolean
 #. Description

@@ -23,24 +23,38 @@ HORIZON_USE_SSL=yes" >/etc/default/openstack-dashboard-apache
 	db_get horizon/activate_vhost
 	if [ "${RET}" = "true" ] && [ -x /etc/init.d/apache2 ] ; then
 		sed -i 's#[ \t]*HORIZON_ACTIVATE_VHOSTS=.*#HORIZON_ACTIVATE_VHOSTS=yes#' /etc/default/openstack-dashboard-apache
-		a2dissite default || true
+		a2dissite 000-default.conf || true
+		a2dissite default-ssl.conf || true
+		sed -i "s|^[ \t]*WEBROOT[ \t]=.*|WEBROOT = '/'|" /etc/openstack-dashboard/local_settings.py
 		db_get horizon/use_ssl
 		if [ "${RET}" = "true" ] ; then
 			sed -i 's#[ \t]*HORIZON_USE_SSL=.*#HORIZON_USE_SSL=yes#' /etc/default/openstack-dashboard-apache
 			a2enmod ssl
 			a2enmod rewrite
 			a2dissite openstack-dashboard.conf
+			a2dissite openstack-dashboard-alias-only.conf
 			a2ensite openstack-dashboard-ssl-redirect.conf
 			a2ensite openstack-dashboard-ssl.conf
 		else
 			sed -i 's#[ \t]*HORIZON_USE_SSL=.*#HORIZON_USE_SSL=no#' /etc/default/openstack-dashboard-apache
 			a2dissite openstack-dashboard-ssl.conf
 			a2dissite openstack-dashboard-ssl-redirect.conf
+			a2dissite openstack-dashboard-alias-only.conf
 			a2ensite openstack-dashboard.conf
 		fi
+		/usr/share/openstack-dashboard/manage.py compress --force
 		invoke-rc.d --quiet apache2 reload
 	else
 		sed -i 's#[ \t]*HORIZON_ACTIVATE_VHOSTS=.*#HORIZON_ACTIVATE_VHOSTS=no#' /etc/default/openstack-dashboard-apache
+		a2ensite 000-default.conf || true
+		a2ensite default-ssl.conf || true
+		sed -i "s|^[ \t]*WEBROOT[ \t]=.*|WEBROOT = '/horizon'|" /etc/openstack-dashboard/local_settings.py
+		a2dissite openstack-dashboard.conf
+		a2dissite openstack-dashboard-ssl-redirect.conf
+		a2dissite openstack-dashboard-ssl.conf
+		a2ensite openstack-dashboard-alias-only.conf
+		/usr/share/openstack-dashboard/manage.py compress --force
+		invoke-rc.d --quiet apache2 reload
 	fi
 	db_stop
 fi

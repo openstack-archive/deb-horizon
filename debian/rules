@@ -43,6 +43,9 @@ override_dh_link:
 	mv $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss/* $(CURDIR)/debian/openstack-dashboard/var/lib/openstack-dashboard/static/scss
 	rmdir $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss
 	dh_link
+	for i in auth framework horizon ; do \
+		ln -s /usr/lib/python2.7/dist-packages/horizon/static/$$i $(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/openstack_dashboard/static/$$i ; \
+	done
 
 override_dh_auto_clean:
 	dh_auto_clean

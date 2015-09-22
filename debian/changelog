@@ -1,3 +1,10 @@
+horizon (1:8.0.0~b3-4) experimental; urgency=medium
+
+  * Now also allowing Horizon to be installed in /horizon, not just on the
+    takeover of webroot. This will be the default.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 22 Sep 2015 13:27:52 +0000
+
 horizon (1:8.0.0~b3-3) experimental; urgency=medium
 
   * Also adds symlink to the fonts-roboto-fontface and materialdesignicons
