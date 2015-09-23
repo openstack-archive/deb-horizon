@@ -1,0 +1,9 @@
+Document: horizon-doc
+Title: Horizon Documentation
+Author: OpenStack
+Abstract: Sphinx documentation for Horizon
+Section: Programming/Python
+
+Format: HTML
+Index: /usr/share/doc/horizon-doc/html/index.html
+Files: /usr/share/doc/horizon-doc/html/*
