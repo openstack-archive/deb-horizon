@@ -1,3 +1,9 @@
+horizon (2:8.0.0~b3-7) experimental; urgency=medium
+
+  * openstack-dashboard-apache now also Depends: apache2.
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 23 Sep 2015 13:25:46 +0200
+
 horizon (2:8.0.0~b3-6) experimental; urgency=medium
 
   * Added a horizon-doc package.

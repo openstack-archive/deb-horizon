@@ -180,7 +180,8 @@ Description: web application to control an OpenStack cloud
 
 Package: openstack-dashboard-apache
 Architecture: all
-Depends: debconf,
+Depends: apache2,
+         debconf,
          libapache2-mod-wsgi (>= 2.3),
          openstack-dashboard,
          ${misc:Depends},
