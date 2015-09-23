@@ -1,3 +1,10 @@
+horizon (2:8.0.0~b3-6) experimental; urgency=medium
+
+  * Added a horizon-doc package.
+  * Fixed debian/rules dpkg-parsechangelog to be compatible with Ubuntu.
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 23 Sep 2015 08:50:12 +0200
+
 horizon (2:8.0.0~b3-5) experimental; urgency=medium
 
   * Increasing EPOCH to match the one of Ubuntu.

@@ -184,7 +184,7 @@ Depends: debconf,
          libapache2-mod-wsgi (>= 2.3),
          openstack-dashboard,
          ${misc:Depends},
-Description: OpenStack Dashboard - Apache support
+Description: web application to control an OpenStack cloud - Apache support
  The OpenStack Dashboard is a web application to control an OpenStack
  cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
  using the OpenStack REST API just as you would with the command line
@@ -192,3 +192,16 @@ Description: OpenStack Dashboard - Apache support
  .
  This package includes the configuration files to use within Apache. If you
  wish to configure Apache yourself, use only openstack-dashboard.
+
+Package: horizon-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends},
+         ${sphinxdoc:Depends},
+Description: web application to control an OpenStack cloud - doc
+ The OpenStack Dashboard is a web application to control an OpenStack
+ cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
+ using the OpenStack REST API just as you would with the command line
+ clients.
+ .
+ This package contains the documentation.
