@@ -1,3 +1,11 @@
+horizon (2:8.0.0~rc1-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Fixed (build-)depends for this release.
+  * Removed Improving_find_static_robustness.patch applied upstream.
+
+ -- Thomas Goirand <zigo@debian.org>  Sat, 26 Sep 2015 16:05:12 +0200
+
 horizon (2:8.0.0~b3-7) experimental; urgency=medium
 
   * openstack-dashboard-apache now also Depends: apache2.

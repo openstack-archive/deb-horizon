@@ -1,4 +1,2 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
-fixed-horizon-MANIFEST.in.patch
-Improving_find_static_robustness.patch
