@@ -264,8 +264,8 @@ def cluster_template_update(request, ct_id, name, plugin_name,
 def cluster_create(request, name, plugin_name, hadoop_version,
                    cluster_template_id=None, default_image_id=None,
                    is_transient=None, description=None, cluster_configs=None,
-                   node_groups=None, user_keypair_id=None,
-                   anti_affinity=None, net_id=None, use_autoconfig=None):
+                   node_groups=None, user_keypair_id=None, anti_affinity=None,
+                   net_id=None, count=None, use_autoconfig=None):
     return client(request).clusters.create(
         name=name,
         plugin_name=plugin_name,
@@ -279,6 +279,7 @@ def cluster_create(request, name, plugin_name, hadoop_version,
         user_keypair_id=user_keypair_id,
         anti_affinity=anti_affinity,
         net_id=net_id,
+        count=count,
         use_autoconfig=use_autoconfig)
 
 
@@ -353,6 +354,10 @@ def job_binary_get_file(request, jb_id):
     return client(request).job_binaries.get_file(job_binary_id=jb_id)
 
 
+def job_binary_update(request, jb_id, data):
+    return client(request).job_binaries.update(jb_id, data)
+
+
 def job_binary_internal_create(request, name, data):
     return client(request).job_binary_internals.create(
         name=name,
@@ -375,13 +380,14 @@ def job_binary_internal_delete(request, jbi_id):
     client(request).job_binary_internals.delete(job_binary_id=jbi_id)
 
 
-def job_create(request, name, j_type, mains, libs, description):
+def job_create(request, name, j_type, mains, libs, description, interface):
     return client(request).jobs.create(
         name=name,
         type=j_type,
         mains=mains,
         libs=libs,
-        description=description)
+        description=description,
+        interface=interface)
 
 
 def job_list(request, search_opts=None):
@@ -401,13 +407,15 @@ def job_get_configs(request, job_type):
 
 
 def job_execution_create(request, job_id, cluster_id,
-                         input_id, output_id, configs):
+                         input_id, output_id, configs,
+                         interface):
     return client(request).job_executions.create(
         job_id=job_id,
         cluster_id=cluster_id,
         input_id=input_id,
         output_id=output_id,
-        configs=configs)
+        configs=configs,
+        interface=interface)
 
 
 def _resolve_job_execution_names(job_execution, cluster=None,

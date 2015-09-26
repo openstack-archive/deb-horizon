@@ -3,21 +3,23 @@
 # This file is distributed under the same license as the PROJECT project.
 #
 # Translators:
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-29 02:57+0000\n"
-"PO-Revision-Date: 2015-08-28 11:21+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Assamese (http://www.transifex.com/openstack/horizon/language/"
-"as/)\n"
+"POT-Creation-Date: 2015-09-18 05:57+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-08 11:14+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Assamese (http://www.transifex.com/openstack/horizon/language/"
+"as/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: as\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 #, python-format
 msgid ""
@@ -556,13 +558,6 @@ msgstr "VIP যোগ কৰক"
 
 msgid "Add VPN Service"
 msgstr "VPN সেৱা যোগ কৰক"
-
-msgid ""
-"Add and remove security groups to this project from the list of available "
-"security groups."
-msgstr ""
-"উপলব্ধ সুৰক্ষাৰ গোটবোৰৰ তালিকাখনৰ পৰা এই প্ৰক্ষেপটোলৈ সুৰক্ষাৰ গোটবোৰ যোগ আৰু আতঁৰ "
-"কৰক."
 
 msgid "Add custom tag"
 msgstr "ব্যৱস্থা কৰা টেগ যোগ কৰক"
@@ -1695,15 +1690,6 @@ msgid ""
 msgstr ""
 "নেটৱৰ্কটোৰ সৈতে জড়িত উপনেট এটা তৈয়াৰ কৰক. \"Subnet Details\" টেবত ক্লিক কৰাৰ "
 "দ্বাৰা উন্নত ৰূপৰেখা উপলব্ধ হয়."
-
-msgid ""
-"Create a subnet associated with the new network, in which case \"Network "
-"Address\" must be specified. If you wish to create a network without a "
-"subnet, uncheck the \"Create Subnet\" checkbox."
-msgstr ""
-"নেটৱৰ্কটোৰ সৈতে জড়িত উপনেট এটা তৈয়াৰ কৰক, যিটো ক্ষেত্ৰত \"Network Address\" "
-"নিৰ্ধাৰণ কৰাটো অপৰিহাৰ্য. যদি আপুনি উপনেট এটা অবিহনে নেটৱৰ্ক এটা তৈয়াৰ কৰিবলৈ "
-"ইচ্ছা কৰে, তেন্তে \"Create Subnet\" পৰীক্ষাবাকচটো পৰীক্ষা নকৰিব."
 
 msgid "Create an Encrypted Volume Type"
 msgstr "এটা এনক্ৰিপ্ট কৰা আয়নত প্ৰকাৰ তৈয়াৰ কৰক"
@@ -3183,9 +3169,6 @@ msgstr "GRE"
 msgid "Gateway IP"
 msgstr "গেটৱে IP"
 
-msgid "Gateway IP (optional)"
-msgstr "গেটৱে IP (বৈকল্পিক)"
-
 msgid "Gateway IP and IP version are inconsistent."
 msgstr "গেটৱে IP আৰু IP সংস্কৰণ হল অস্থিৰ."
 
@@ -3417,15 +3400,6 @@ msgstr ""
 "IP টো (উদাহৰণ 192.168.0.1 for 192.168.0.0/24, 2001:DB8::/48 ৰ বাবে 2001:"
 "DB8::1). যদি আপুনি ডিফল্ট হিচাপে ব্যৱহাৰ কৰে, তেন্তে খালী এৰক. যদি আপুনি গেটৱে "
 "এটা ব্যৱহাৰ কৰিব নিবিচাৰে, তেন্তে তলৰ 'গেটৱে অক্ষম কৰক' ত ক্লিক কৰক."
-
-msgid ""
-"IP address of Gateway (e.g. 192.168.0.254). Specify an explicit address to "
-"set the gateway. If you do not want to use a gateway, check 'Disable "
-"Gateway' below."
-msgstr ""
-"গেটৱে ৰ IP ঠিকনা (উদাহৰণ 192.168.0.254). গেটৱে ছেট কৰিবলৈ বিশদ ঠিকনা এটা "
-"নিৰ্দিষ্ট কৰক. যদি আপুনি গেটৱে এটা ব্যৱহাৰ কৰিব নিবিচাৰে, তেন্তে তলত 'গেটৱে অক্ষম "
-"কৰক' টো পৰীক্ষা কৰক."
 
 msgid "IP allocation pool"
 msgstr "IP নিৰ্ধাৰণ কৰা পুল"
@@ -4165,9 +4139,6 @@ msgstr "মেটাডাটা"
 
 msgid "Metadata Items"
 msgstr "মেটাডাটা বস্তুবোৰ"
-
-msgid "Metadata successfully updated."
-msgstr "মেটাডাটা সফলতাৰে আপডেট কৰা হল."
 
 msgid "Meter"
 msgstr "মিটাৰ "
@@ -5020,12 +4991,6 @@ msgstr "ব্যক্তিগত"
 
 msgid "Private Key File"
 msgstr "ব্যক্তিগত মুখ্য ফাইল"
-
-msgid "Processes"
-msgstr "প্ৰক্ৰিয়াবোৰ"
-
-msgid "Processes to be launched in node group"
-msgstr "নোড গোটত আৰম্ভ কৰিবলগীয়া প্ৰক্ৰিয়াবোৰ"
 
 msgid "Project"
 msgstr "প্ৰক্ষেপ"
@@ -5942,9 +5907,6 @@ msgid ""
 msgstr ""
 "শ্লেছবোৰ অনুমোদন কৰা হয়, আৰু বস্তু ভঁৰালৰ দ্বাৰা ছিউড'-ফল্ডাৰ হিচাপে ব্যৱহাৰ কৰা হয়."
 
-msgid "Small"
-msgstr "সৰু"
-
 msgid "Snapshot"
 msgstr "স্নেপশ্বট"
 
@@ -6046,10 +6008,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "\"Network Address\" নিৰ্ধাৰণ কৰক"
-
-msgid "Specify \"Network Address\" or clear \"Create Subnet\" checkbox."
-msgstr ""
-"\"Network Address\" নিৰ্দিষ্ট কৰক বা \"Create Subnet\" পৰীক্ষাবাকচ সম্পন্ন কৰক."
 
 msgid "Specify IP address of gateway or check \"Disable Gateway\"."
 msgstr "গেটৱেৰ IP ঠিকনা নিৰ্দিষ্ট কৰক বা \"Disable Gateway\" পৰীক্ষা কৰক."
@@ -7414,15 +7372,6 @@ msgstr "উপলব্ধতা মণ্ডলৰ তালিকা উদ্
 msgid "Unable to retrieve availability zones."
 msgstr "উপলব্ধতাৰ মণ্ডলবোৰ উদ্ধাৰ কৰিবলৈ অক্ষম."
 
-msgid "Unable to retrieve available metadata for aggregate."
-msgstr "গড় কৰিবৰ বাবে উপলব্ধ মেটাডাটা উদ্ধাৰ কৰিবলৈ অক্ষম."
-
-msgid "Unable to retrieve available metadata for flavors."
-msgstr "ফ্লেভাৰবোৰৰ বাবে উপলব্ধ মেটাডাটা উদ্ধাৰ কৰিব পৰা নগল."
-
-msgid "Unable to retrieve available properties for image."
-msgstr "ছবিৰ বাবে উপলব্ধ সম্পত্তিবোৰ উদ্ধাৰ কৰিবলৈ অক্ষম."
-
 msgid "Unable to retrieve backup details."
 msgstr "বেকআপৰ পূংখানুপূংখ বিৱৰণ উদ্ধাৰ কৰিবলৈ অক্ষম."
 
@@ -7798,15 +7747,6 @@ msgstr "পট্টাধাৰী সীমাবোৰ উদ্ধাৰ ক
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "আপডেট কৰিবলগীয়া গড় উদ্ধাৰ কৰিবলৈ অক্ষম"
 
-msgid "Unable to retrieve the aggregate to be updated."
-msgstr "আপডেট কৰিবলগীয়া গড় উদ্ধাৰ কৰিবলৈ অক্ষম."
-
-msgid "Unable to retrieve the flavor metadata."
-msgstr "ফ্লেভাৰ মেটাডাটা উদ্ধাৰ কৰিবলৈ অক্ষম."
-
-msgid "Unable to retrieve the image to be updated."
-msgstr "আপডেট কৰিবলৈ ছবিটো উদ্ধাৰ কৰিবলৈ অক্ষম."
-
 msgid "Unable to retrieve the specified pool."
 msgstr "নিৰ্ধাৰিত পুল উদ্ধাৰ কৰিবলৈ অক্ষম."
 
@@ -7939,20 +7879,11 @@ msgstr "শাৰী আপডেট কৰিবলৈ অক্ষম"
 msgid "Unable to update subnet \"%s\"."
 msgstr "\"%s\" উপনেট আপডেট কৰিবলৈ অক্ষম."
 
-msgid "Unable to update the aggregate metadata."
-msgstr "গড় মেটাডাটা আপডেট কৰিবলৈ অক্ষম."
-
 msgid "Unable to update the aggregate."
 msgstr "গড় আপডেট কৰিবলৈ অক্ষম."
 
-msgid "Unable to update the flavor metadata."
-msgstr "ফ্লেভাৰ মেটাডাটা আপডেট কৰিবলৈ অক্ষম."
-
 msgid "Unable to update the group."
 msgstr "গোট আপডেট কৰিবলৈ অক্ষম."
-
-msgid "Unable to update the image metadata."
-msgstr "ছবি মেটাডাটা আপডেট কৰিবলৈ অক্ষম."
 
 msgid "Unable to update the user."
 msgstr "ব্যৱহাৰকৰ্তা আপডেট কৰিবলৈ অক্ষম."
@@ -8013,26 +7944,17 @@ msgstr "ওপৰলৈ"
 msgid "Update"
 msgstr "আপডেট"
 
-msgid "Update Aggregate Metadata"
-msgstr "গড় মেটাডাটা আপডেট কৰক"
-
 msgid "Update Default Quotas"
 msgstr "ডিফল্ট কোটাবোৰ আপডেট কৰক"
 
 msgid "Update Defaults"
 msgstr "ডিফল্টবোৰ আপডেট কৰক"
 
-msgid "Update Flavor Metadata"
-msgstr "ফ্লেভাৰ মেটাডাটা আপডেট কৰক"
-
 msgid "Update Group"
 msgstr "গোট আপডেট কৰক"
 
 msgid "Update Image"
 msgstr "ছবি আপডেট কৰক"
-
-msgid "Update Image Metadata"
-msgstr "ছবি মেটাডাটা আপডেট কৰক"
 
 msgid "Update Metadata"
 msgstr "মেটাডাটা আপডেট কৰক"

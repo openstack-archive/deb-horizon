@@ -52,12 +52,13 @@ class AddInterfaceView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(AddInterfaceView, self).get_context_data(**kwargs)
         context['router'] = self.get_object()
+        context['form_url'] = 'horizon:project:routers:addinterface'
         return context
 
     def get_initial(self):
         router = self.get_object()
         return {"router_id": self.kwargs['router_id'],
-                "router_name": router.name}
+                "router_name": router.name_or_id}
 
 
 class SetGatewayView(forms.ModalFormView):
@@ -88,7 +89,7 @@ class SetGatewayView(forms.ModalFormView):
     def get_initial(self):
         router = self.get_object()
         return {"router_id": self.kwargs['router_id'],
-                "router_name": router.name}
+                "router_name": router.name_or_id}
 
 
 class DetailView(tabs.TabView):

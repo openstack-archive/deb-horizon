@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-29 06:13+0000\n"
+"POT-Creation-Date: 2015-09-19 06:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,42 +17,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.0\n"
 
-#: static/framework/util/filters/filters.js:40
+#: static/framework/util/filters/filters.js:41
 msgid "Yes"
 msgstr ""
 
-#: static/framework/util/filters/filters.js:40
+#: static/framework/util/filters/filters.js:41
 msgid "No"
 msgstr ""
 
-#: static/framework/util/filters/filters.js:56
-#: static/framework/util/filters/filters.js:143
+#: static/framework/util/filters/filters.js:57
+#: static/framework/util/filters/filters.js:161
 #, python-format
 msgid "%s GB"
 msgstr ""
 
-#: static/framework/util/filters/filters.js:73
-#: static/framework/util/filters/filters.js:145
+#: static/framework/util/filters/filters.js:74
+#: static/framework/util/filters/filters.js:163
 #, python-format
 msgid "%s MB"
 msgstr ""
 
-#: static/framework/util/filters/filters.js:141
+#: static/framework/util/filters/filters.js:121
+msgid "-"
+msgstr ""
+
+#: static/framework/util/filters/filters.js:159
 #, python-format
 msgid "%s TB"
 msgstr ""
 
-#: static/framework/util/filters/filters.js:147
+#: static/framework/util/filters/filters.js:165
 #, python-format
 msgid "%s KB"
 msgstr ""
 
-#: static/framework/util/filters/filters.js:149
+#: static/framework/util/filters/filters.js:167
 #, python-format
 msgid "%s bytes"
 msgstr ""
 
-#: static/framework/util/filters/filters.js:173
+#: static/framework/util/filters/filters.js:191
 #: static/horizon/js/horizon.tables.js:405
 #, python-format
 msgid "Displaying %s item"
@@ -60,9 +64,9 @@ msgid_plural "Displaying %s items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: static/framework/util/filters/filters.js:177
+#: static/framework/util/filters/filters.js:195
 #, python-format
-msgid "Displaying %s of %s items"
+msgid "Displaying %(count)s of %(total)s items"
 msgstr ""
 
 #: static/framework/widgets/action-list/action-list.module.js:49
@@ -87,90 +91,108 @@ msgstr ""
 msgid "Remaining"
 msgstr ""
 
-#: static/framework/widgets/charts/pie-chart.directive.js:154
+#: static/framework/widgets/charts/pie-chart.directive.js:172
+msgid "no quota"
+msgstr ""
+
+#: static/framework/widgets/charts/pie-chart.directive.js:175
 #: static/framework/widgets/metadata/tree/tree.module.js:48
 msgid "Max"
 msgstr ""
 
-#: static/framework/widgets/charts/pie-chart.directive.js:157
+#: static/framework/widgets/charts/pie-chart.directive.js:178
 msgid "Total"
 msgstr ""
 
+#: static/framework/widgets/magic-search/hz-magic-search-bar.directive.js:95
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:35
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:50
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:54
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:54
 #: static/framework/widgets/modal/simple-modal.service.js:66
 #: static/framework/widgets/wizard/wizard.module.js:47
 #: static/horizon/js/horizon.modals.js:33
 msgid "Cancel"
 msgstr ""
 
-#: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:36
-#: static/framework/widgets/magic-search/magic-overrides.spec.js:51
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:55
-msgid "Prompt"
+#: static/framework/widgets/magic-search/hz-magic-search-bar.directive.js:96
+msgid "Click here for filters."
 msgstr ""
 
+#: static/framework/widgets/magic-search/hz-magic-search-bar.directive.js:97
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:37
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:52
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:56
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:56
 msgid "Remove"
+msgstr ""
+
+#: static/framework/widgets/magic-search/hz-magic-search-bar.directive.js:98
+msgid "In current results"
+msgstr ""
+
+#: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:36
+#: static/framework/widgets/magic-search/magic-overrides.spec.js:51
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:55
+msgid "Prompt"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:38
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:53
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:57
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:57
 msgid "Text"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:44
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:59
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:63
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:63
 #: static/framework/widgets/transfer-table/transfer-table.example.html:14
 msgid "Name"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:49
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:64
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:68
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:74
 msgid "Status"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:51
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:66
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:70
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:76
 msgid "Active"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:52
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:67
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:71
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:77
 msgid "Shutdown"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:53
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:68
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:72
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:78
 #: static/framework/widgets/toast/toast.service.js:59
 msgid "Error"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:58
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:73
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:77
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:83
 msgid "Flavor"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:61
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:76
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:80
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:86
 msgid "m1.tiny"
 msgstr ""
 
 #: static/framework/widgets/magic-search/hz-magic-search-bar.spec.js:62
 #: static/framework/widgets/magic-search/magic-overrides.spec.js:77
-#: static/framework/widgets/magic-search/st-magic-search.spec.js:81
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:87
 msgid "m1.small"
+msgstr ""
+
+#: static/framework/widgets/magic-search/st-magic-search.directive.spec.js:68
+msgid "Server Name"
 msgstr ""
 
 #: static/framework/widgets/metadata/display/metadata-display.html:25
@@ -219,7 +241,7 @@ msgstr ""
 
 #: static/framework/widgets/metadata/tree/tree.module.js:56
 #: static/framework/widgets/table/table.module.js:52
-#: static/horizon/js/horizon.forms.js:184
+#: static/horizon/js/horizon.forms.js:246
 msgid "Filter"
 msgstr ""
 
@@ -326,7 +348,7 @@ msgid "No data available."
 msgstr ""
 
 #: static/horizon/js/horizon.d3linechart.js:411
-#: static/horizon/js/horizon.modals.js:340
+#: static/horizon/js/horizon.modals.js:347
 #: static/horizon/js/horizon.tables_inline_edit.js:92
 #: static/horizon/js/horizon.tables_inline_edit.js:155
 msgid "An error occurred. Please try again later."
@@ -335,6 +357,10 @@ msgstr ""
 #: static/horizon/js/horizon.firewalls.js:32
 #: static/horizon/js/horizon.instances.js:32
 msgid "There was a problem communicating with the server, please try again."
+msgstr ""
+
+#: static/horizon/js/horizon.forms.js:108
+msgid "pool default"
 msgstr ""
 
 #: static/horizon/js/horizon.instances.js:274
@@ -383,62 +409,83 @@ msgstr ""
 msgid "There was an error submitting the form. Please try again."
 msgstr ""
 
-#: static/horizon/js/horizon.modals.js:321
-#: static/horizon/js/horizon.modals.js:404 static/horizon/js/horizon.tabs.js:21
+#: static/horizon/js/horizon.modals.js:328
+#: static/horizon/js/horizon.modals.js:411 static/horizon/js/horizon.tabs.js:21
 msgid "Loading"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:531
-#: static/horizon/js/horizon.networktopology.js:537
+#: static/horizon/js/horizon.networktopology.js:929
+#: static/horizon/js/horizon.networktopology.js:935
+#: static/horizon/js/horizon.networktopology.js:941
 msgid "None"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:551
+#: static/horizon/js/horizon.networktopology.js:964
 msgid "Delete"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:554
+#: static/horizon/js/horizon.networktopology.js:967
 msgid "STATUS"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:555
+#: static/horizon/js/horizon.networktopology.js:968
 msgid "ID"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:556
+#: static/horizon/js/horizon.networktopology.js:969
 msgid "Interfaces"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:557
+#: static/horizon/js/horizon.networktopology.js:970
+msgid "Subnets"
+msgstr ""
+
+#: static/horizon/js/horizon.networktopology.js:971
 msgid "Delete Interface"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:558
+#: static/horizon/js/horizon.networktopology.js:972
+msgid "Delete Subnet"
+msgstr ""
+
+#: static/horizon/js/horizon.networktopology.js:973
 msgid "Open Console"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:559
+#: static/horizon/js/horizon.networktopology.js:974
 msgid "View Details"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:562
+#: static/horizon/js/horizon.networktopology.js:975
+msgid "IP Addresses"
+msgstr ""
+
+#: static/horizon/js/horizon.networktopology.js:979
 msgid "Delete Router"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:563
+#: static/horizon/js/horizon.networktopology.js:980
 msgid "View Router Details"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:566
+#: static/horizon/js/horizon.networktopology.js:983
 msgid "Add Interface"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:572
+#: static/horizon/js/horizon.networktopology.js:989
 msgid "Terminate Instance"
 msgstr ""
 
-#: static/horizon/js/horizon.networktopology.js:573
+#: static/horizon/js/horizon.networktopology.js:990
 msgid "View Instance Details"
+msgstr ""
+
+#: static/horizon/js/horizon.networktopology.js:1004
+msgid "Delete Network"
+msgstr ""
+
+#: static/horizon/js/horizon.networktopology.js:1007
+msgid "Create Subnet"
 msgstr ""
 
 #: static/horizon/js/horizon.tables.js:45

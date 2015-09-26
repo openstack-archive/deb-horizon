@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-01 06:14+0000\n"
+"POT-Creation-Date: 2015-09-17 06:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,68 +29,121 @@ msgstr ""
 msgid "The step has completed successfully. No events to display."
 msgstr ""
 
-#: dashboards/identity/static/dashboard/identity/users/table/table-batch-actions.html:14
-msgid "Create User"
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:8
+msgid "Remove"
 msgstr ""
 
-#: dashboards/identity/static/dashboard/identity/users/table/table-batch-actions.html:24
-msgid "Delete Users"
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:12
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/flavor/select-flavor-table.html:27
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:36
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:90
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/security-groups/security-groups.html:19
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/security-groups/security-groups.html:72
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:152
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:159
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:166
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:173
+msgid "Name"
 msgstr ""
 
-#: dashboards/identity/static/dashboard/identity/users/table/table-header.html:16
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-details.html:17
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:21
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/security-groups/security-groups.html:20
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/security-groups/security-groups.html:73
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:167
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:174
+msgid "Description"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:30
+msgid "Mapping Type"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:31
+msgid ""
+"See http://docs.openstack.org/developer/sahara/userdoc/edp.html for "
+"definitions."
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:37
+msgid "Positional Argument"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:38
+msgid "Named Parameter"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:39
+msgid "Configuration Value"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:46
+msgid "Location"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:47
+msgid ""
+"For configs and params, type the key name; for args, type the index as an"
+" integer, starting from 0."
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:58
+msgid "Value Type"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:62
+msgid "String"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:63
+msgid "Number"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:64
+msgid "Data Source"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:71
+msgid "Required?"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:80
+msgid "Default Value"
+msgstr ""
+
+#: contrib/sahara/content/data_processing/static/dashboard/project/data_processing/data_processing.job_interface_arguments.js:81
+msgid ""
+"For data sources, use a data source UUID or a path (as per data source "
+"creation.)"
+msgstr ""
+
+#: dashboards/identity/static/dashboard/identity/users/table/table.controller.js:64
+msgid "Insufficient privilege level to view user information."
+msgstr ""
+
+#: dashboards/identity/static/dashboard/identity/users/table/table.html:30
 msgid "User Name"
 msgstr ""
 
-#: dashboards/identity/static/dashboard/identity/users/table/table-header.html:20
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-details.html:20
+#: dashboards/identity/static/dashboard/identity/users/table/table.html:31
+#: dashboards/identity/static/dashboard/identity/users/table/table.html:90
 msgid "Email"
 msgstr ""
 
-#: dashboards/identity/static/dashboard/identity/users/table/table-header.html:24
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-details.html:23
+#: dashboards/identity/static/dashboard/identity/users/table/table.html:32
 msgid "User ID"
 msgstr ""
 
-#: dashboards/identity/static/dashboard/identity/users/table/table-header.html:28
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-details.html:26
+#: dashboards/identity/static/dashboard/identity/users/table/table.html:33
+#: dashboards/identity/static/dashboard/identity/users/table/table.html:94
 msgid "Enabled"
 msgstr ""
 
-#: dashboards/identity/static/dashboard/identity/users/table/table-header.html:32
-msgid "Actions"
-msgstr ""
-
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-actions.html:12
-msgid "Edit"
-msgstr ""
-
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-actions.html:19
-msgid "Change Password"
-msgstr ""
-
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-actions.html:26
-msgid "Disable"
-msgstr ""
-
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-actions.html:27
-msgid "Enable"
-msgstr ""
-
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-actions.html:35
-msgid "Delete"
-msgstr ""
-
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-details.html:11
+#: dashboards/identity/static/dashboard/identity/users/table/table.html:80
 msgid "Domain ID"
 msgstr ""
 
-#: dashboards/identity/static/dashboard/identity/users/table/table-row-details.html:14
+#: dashboards/identity/static/dashboard/identity/users/table/table.html:84
 msgid "Project ID"
-msgstr ""
-
-#: dashboards/identity/static/dashboard/identity/users/table/table.controller.js:66
-msgid "Insufficient privilege level to view user information."
 msgstr ""
 
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/launch-instance-model.js:392
@@ -116,9 +169,9 @@ msgstr ""
 
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/launch-instance-workflow.service.js:30
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/launch-instance-workflow.service.js:73
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:43
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:43
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.controller.js:39
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.html:2
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:2
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.html:2
 msgid "Launch Instance"
 msgstr ""
 
@@ -142,36 +195,43 @@ msgid "Security Groups"
 msgstr ""
 
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/launch-instance-workflow.service.js:59
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:44
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:2
 msgid "Key Pair"
 msgstr ""
 
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/launch-instance-workflow.service.js:65
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:54
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.html:2
 msgid "Configuration"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration-help.controller.js:33
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:54
+msgid "Automatic"
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:55
+msgid "Manual"
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.help.html:2
 msgid "Configuration Help"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration-help.controller.js:37
-#, python-format
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.help.html:3
 msgid ""
 "Custom scripts are attached to instances to perform specific actions when"
 " the instance is launched. For example, if you are unable to install "
-"<samp>%(cloutInit)s</samp> inside a guest operating system, you can use a"
-" custom script to get a public key and add it to the user account."
+"<samp>cloud-init</samp> inside a guest operating system, you can use a "
+"custom script to get a public key and add it to the user account."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration-help.controller.js:41
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.help.html:4
 msgid ""
 "Type your script directly into the Customization Script field. If your "
 "browser supports the HTML5 File API, you may choose to load your script "
 "from a file. The size of your script should not exceed 16 Kb."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration-help.controller.js:42
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.help.html:5
 msgid ""
 "An advanced option available when launching an instance is disk "
 "partitioning. There are two disk partition options. Selecting "
@@ -180,59 +240,43 @@ msgid ""
 "disk."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration-help.controller.js:43
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.help.html:6
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to"
 " a special configuration drive. When the instance boots, it attaches to "
 "the <b>Configuration Drive</b> and accesses the metadata."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:56
-msgid "Customization Script"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:57
-msgid "(Max: 16Kb)"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:58
-msgid "Load script from a file"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:59
-msgid "Configuration Drive"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:60
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.html:14
 msgid "Disk Partition"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:61
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.html:30
+msgid "Configuration Drive"
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/load-edit.html:3
+msgid "Customization Script"
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/load-edit.html:4
+msgid "(Modified)"
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/load-edit.html:17
 msgid "Script size"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:62
-msgid "Modified"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:63
-msgid "Script size > 16Kb"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:64
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/load-edit.html:19
 msgid "bytes"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:65
-msgid "The maximum script size is 16Kb."
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/load-edit.html:20
+msgid "(Max: 16Kb)"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:69
-msgid "Automatic"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/configuration.controller.js:70
-msgid "Manual"
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/configuration/load-edit.html:32
+msgid "Load script from a file"
 msgstr ""
 
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/flavor/flavor.controller.js:40
@@ -307,17 +351,6 @@ msgid ""
 " the instance."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/flavor/select-flavor-table.html:27
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:48
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/security-groups/security-groups.html:19
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/security-groups/security-groups.html:72
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:152
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:159
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:166
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:173
-msgid "Name"
-msgstr ""
-
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/flavor/select-flavor-table.html:28
 msgid "VCPUS"
 msgstr ""
@@ -350,136 +383,119 @@ msgstr ""
 msgid "Impact on your quota"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:44
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:50
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:50
-msgid "Create Key Pair"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:46
-msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose"
-" a key pair name you will recognize."
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:48
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:48
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.controller.js:42
-msgid "Key Pair Name"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:49
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:50
-#: static/app/core/metadata/modal/modal.html:14
-msgid "Cancel"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:51
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:52
-msgid "Required"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:65
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.controller.js:52
 #, python-format
 msgid "Successfully created key pair %(name)s."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair-help.controller.js:36
-msgid "Import Key Pair Help"
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.html:5
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.html:33
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:15
+msgid "Create Key Pair"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair-help.controller.js:43
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair-help.controller.js:43
-#, python-format
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.html:7
 msgid ""
-"There are two ways to generate a key pair. From a Linux system, generate "
-"the key pair with the <samp>%(genKeyPairCmd)s</samp> command:"
+"Key Pairs are how you login to your instance after it is launched.\n"
+"        Choose a key pair name you will recognize."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair-help.controller.js:44
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair-help.controller.js:45
-#, python-format
-msgid ""
-"This command generates a pair of keys: a private key (%(privateKeyPath)s)"
-" and a public key (%(publicKeyPath)s)."
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.html:13
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:15
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.html:12
+msgid "Key Pair Name"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair-help.controller.js:45
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair-help.controller.js:47
-#, python-format
-msgid ""
-"From a Windows system, you can use PuTTYGen to create private/public "
-"keys. Use the PuTTY Key Generator to create and save the keys, then copy "
-"the public key in the red highlighted box to your "
-"<samp>%(authorizeKeysFile)s</samp> file."
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.html:14
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:16
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:22
+msgid "Required"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:44
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:51
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:51
-msgid "Import Key Pair"
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/create-keypair.html:26
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:35
+#: static/app/core/metadata/modal/modal.html:14
+msgid "Cancel"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:46
-msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose"
-" a key pair name you will recognize and paste your SSH public key into "
-"the space provided."
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:49
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:56
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.controller.js:45
-msgid "Public Key"
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:66
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.controller.js:54
 #, python-format
 msgid "Successfully imported key pair %(name)s."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair-help.controller.js:33
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:5
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:42
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:20
+msgid "Import Key Pair"
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:7
+msgid ""
+"Key Pairs are how you login to your instance after it is launched.\n"
+"        Choose a key pair name you will recognize and paste your SSH "
+"public key into the\n"
+"        space provided."
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/import-keypair.html:21
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair-details.html:2
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.html:16
+msgid "Public Key"
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.help.html:1
 msgid "Key Pair Help"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair-help.controller.js:51
-msgid "The key pair allows you to SSH into the instance."
-msgstr ""
-
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:46
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.help.html:4
 msgid ""
-"A key pair allows you to SSH into your newly created instance. You may "
-"select an existing key pair, import a key pair, or generate a new key "
-"pair."
+"There are two ways to generate a key pair. From a Linux system,\n"
+"  generate the key pair with the <samp>ssh-keygen</samp> command:"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:49
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/security-groups/security-groups.html:20
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/security-groups/security-groups.html:73
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:167
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.controller.js:174
-msgid "Description"
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.help.html:9
+msgid ""
+"This command generates a pair of keys: a private key (cloud.key)\n"
+"  and a public key (cloud.key.pub)."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:55
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.controller.js:43
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.help.html:16
+msgid ""
+"From a Windows system, you can use PuTTYGen to create private/public "
+"keys.\n"
+"  Use the PuTTY Key Generator to create and save the keys, then copy\n"
+"  the public key in the red highlighted box to your "
+"<samp>.ssh/authorized_keys</samp>\n"
+"  file."
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:5
+msgid ""
+"A key pair allows you to SSH into your newly created instance.\n"
+"      You may select an existing key pair, import a key pair, or generate"
+" a new key pair."
+msgstr ""
+
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:37
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:91
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.html:14
 msgid "Fingerprint"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.controller.js:69
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/keypair.html:44
 msgid "Select a key pair from the available key pairs below."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.controller.js:40
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.controller.js:44
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.html:5
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.html:18
 msgid "Private Key"
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.controller.js:41
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.html:7
 msgid "This is your new key pair. Copy this information and keep it secure."
 msgstr ""
 
-#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.controller.js:46
+#: dashboards/project/static/dashboard/project/workflow/launch-instance/keypair/new-keypair.html:29
 msgid "OK"
 msgstr ""
 
@@ -921,9 +937,9 @@ msgstr ""
 
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.help.html:13
 msgid ""
-"If you want to create an instance that uses ephemeral storage, meaning th"
-" instance data is lost when the instance is deleted, then choose one of "
-"the following boot sources:"
+"If you want to create an instance that uses ephemeral storage, meaning "
+"the instance data is lost when the instance is deleted, then choose one "
+"of the following boot sources:"
 msgstr ""
 
 #: dashboards/project/static/dashboard/project/workflow/launch-instance/source/source.help.html:14

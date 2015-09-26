@@ -172,6 +172,7 @@ INSTALLED_APPS = [
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 AUTHENTICATION_BACKENDS = ('openstack_auth.backend.KeystoneBackend',)
 AUTHENTICATION_URLS = ['openstack_auth.urls']
+AUTH_USER_MODEL = 'openstack_auth.User'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
@@ -325,7 +326,7 @@ if os.path.exists(os.path.join(CUSTOM_THEME, 'img')):
 
 # populate HORIZON_CONFIG with auto-discovered JavaScript sources, mock files,
 # specs files and external templates.
-find_static_files(ROOT_PATH, HORIZON_CONFIG)
+find_static_files(HORIZON_CONFIG)
 
 # Load the pluggable dashboard settings
 import openstack_dashboard.enabled

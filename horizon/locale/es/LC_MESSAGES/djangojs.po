@@ -7,22 +7,26 @@
 # Alberto Molina Coballes <alb.molina@gmail.com>, 2015
 # cametiope <aldohcasa@hotmail.com>, 2014
 # Marian Tort <marian.tort@gmail.com>, 2015
+# Miriam Godinez <miriamgc@hotmail.com>, 2015
 # Sergio Cuellar Valdes <scuellarv@kionetworks.com>, 2015
+# Eduardo Gonzalez Gutierrez <dabarren@gmail.com>, 2015. #zanata
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-04 04:10+0000\n"
-"PO-Revision-Date: 2015-07-03 18:02+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Spanish (http://www.transifex.com/openstack/horizon/language/"
-"es/)\n"
+"POT-Creation-Date: 2015-09-19 06:33+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-21 04:20+0000\n"
+"Last-Translator: Eduardo Gonzalez Gutierrez <dabarren@gmail.com>\n"
+"Language-Team: Spanish (http://www.transifex.com/openstack/horizon/language/"
+"es/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 #, python-format
 msgid "%s GB"
@@ -43,6 +47,9 @@ msgstr "%s TB"
 #, python-format
 msgid "%s bytes"
 msgstr "%s bytes"
+
+msgid "-"
+msgstr "-"
 
 msgid "Active"
 msgstr "Activo"
@@ -74,6 +81,9 @@ msgstr "Anterior"
 msgid "Cancel"
 msgstr "Cancelar "
 
+msgid "Click here for filters."
+msgstr "Pulse aquí para filtros."
+
 msgid "Click here to expand the row and view the errors."
 msgstr "Haga click aquí para ver los errores."
 
@@ -102,6 +112,9 @@ msgstr "No se ha podido descifrar la contraseña"
 msgid "Could not read the file"
 msgstr "No se ha podido leer el fichero"
 
+msgid "Create Subnet"
+msgstr "Crear Subred"
+
 msgid "Current Usage"
 msgstr "Uso actual"
 
@@ -123,11 +136,21 @@ msgstr "Eliminar"
 msgid "Delete Interface"
 msgstr "Eliminar interfaz"
 
+msgid "Delete Network"
+msgstr "Borrar Red"
+
 msgid "Delete Router"
 msgstr "Eliminar router"
 
+msgid "Delete Subnet"
+msgstr "Borrar Subred"
+
 msgid "Detail Information"
 msgstr "Información detallada"
+
+#, python-format
+msgid "Displaying %(count)s of %(total)s items"
+msgstr "Mostrando %(count)s de %(total)s elementos"
 
 #, python-format
 msgid "Displaying %s item"
@@ -164,6 +187,12 @@ msgstr "Sabor"
 
 msgid "ID"
 msgstr "ID"
+
+msgid "IP Addresses"
+msgstr "Direcciones IP"
+
+msgid "In current results"
+msgstr "En resultados actuales"
 
 msgid "Info"
 msgstr "Info"
@@ -206,6 +235,9 @@ msgstr "Metadatos no disponibles"
 
 msgid "No data available."
 msgstr "No hay datos disponibles."
+
+msgid "No description available."
+msgstr "Descripción no disponible."
 
 msgid "No existing metadata"
 msgstr "No hay metadatos existentes"
@@ -267,6 +299,9 @@ msgstr "Seleccione un ítem de los disponibles abajo"
 msgid "Select one"
 msgstr "Seleccione uno"
 
+msgid "Server Name"
+msgstr "Nombre del servidor"
+
 msgid "Shutdown"
 msgstr "Apagar"
 
@@ -279,6 +314,9 @@ msgstr "Estado: %s"
 
 msgid "Submit"
 msgstr "Enviar"
+
+msgid "Subnets"
+msgstr "Subredes"
 
 msgid "Success"
 msgstr "Éxito"
@@ -346,8 +384,17 @@ msgstr ""
 msgid "You have selected %s. "
 msgstr "Ha seleccionado %s."
 
+msgid "description"
+msgstr "descripción"
+
 msgid "m1.small"
 msgstr "m1.small"
 
 msgid "m1.tiny"
 msgstr "m1.tiny"
+
+msgid "no quota"
+msgstr "Sin cuota"
+
+msgid "pool default"
+msgstr "Predeterminados del pool"

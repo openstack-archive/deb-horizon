@@ -3,21 +3,23 @@
 # This file is distributed under the same license as the PROJECT project.
 #
 # Translators:
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-29 02:57+0000\n"
-"PO-Revision-Date: 2015-08-28 11:21+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Konkani (http://www.transifex.com/openstack/horizon/language/"
-"kok/)\n"
+"POT-Creation-Date: 2015-09-18 05:57+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-08 11:14+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Konkani (http://www.transifex.com/openstack/horizon/language/"
+"kok/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: kok\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 #, python-format
 msgid ""
@@ -548,12 +550,6 @@ msgstr "VIP जोडात"
 
 msgid "Add VPN Service"
 msgstr "VPN सेवा जोडात"
-
-msgid ""
-"Add and remove security groups to this project from the list of available "
-"security groups."
-msgstr ""
-"उपलब्ध आशिल्ल्या सुरक्षा गटांच्या वळेरेतल्यान ह्या प्रकल्पाक सुरक्षा गट जोडात आणि काडात"
 
 msgid "Add custom tag"
 msgstr "थारायल्लो टॅग जोडात"
@@ -1676,14 +1672,6 @@ msgid ""
 msgstr ""
 "नेटवर्काकडेन संबंदित उपनेट तयार करात. \"उपनेट तपशील\" टॅबार क्लिक केल्यार अद्ययावत "
 "संरचनाय मेळटा."
-
-msgid ""
-"Create a subnet associated with the new network, in which case \"Network "
-"Address\" must be specified. If you wish to create a network without a "
-"subnet, uncheck the \"Create Subnet\" checkbox."
-msgstr ""
-"नव्या नेटवर्काकडेन संबंदित उपनेट तयार करात, जंय \"नेटवर्क नामो\" स्पश्ट केल्लो आसपाक जाय. "
-"तुमी जर उपनेटाबगर नेटवर्क तयार करपाक सोदता,  \"उपनेट निर्मणी\" चेकबॉक्सावेली खूण काडात."
 
 msgid "Create an Encrypted Volume Type"
 msgstr "एनक्रिप्टेड आकार प्रकार तयार करात"
@@ -3149,9 +3137,6 @@ msgstr "GRE"
 msgid "Gateway IP"
 msgstr "गेटवे IP"
 
-msgid "Gateway IP (optional)"
-msgstr "गेटवे  IP (वैकल्पिक)"
-
 msgid "Gateway IP and IP version are inconsistent."
 msgstr "गेटवे IP आणि IP आवृत्तेन सातत्य ना"
 
@@ -3378,14 +3363,6 @@ msgstr ""
 "192.168.0.0/24 खातीर 192.168.0.1, 2001:DB8::/48 खातीर 2001:DB8::1). तुमी मुळावे "
 "वपारल्यार, रिकामे सोडात. तुमका गेटवे वापरपाचे नासल्यार, सकयल 'गेटवे निष्क्रिय करात' खूण "
 "करात."
-
-msgid ""
-"IP address of Gateway (e.g. 192.168.0.254). Specify an explicit address to "
-"set the gateway. If you do not want to use a gateway, check 'Disable "
-"Gateway' below."
-msgstr ""
-"गेटवेचो IP नामो (देखीक. 192.168.0.254). गेटवे थारावपाक नामो स्पश्ट करात. तुमी जर गेटवे "
-"वापरपाक सोदनात, सकयल  'गेटवे अक्षम करात' चेर खूण करात."
 
 msgid "IP allocation pool"
 msgstr " IP वाटप पूल"
@@ -4114,9 +4091,6 @@ msgstr "मेटाडेटा"
 
 msgid "Metadata Items"
 msgstr "मेटाडेटा वस्तीं"
-
-msgid "Metadata successfully updated."
-msgstr "मेटाडेटा यशस्विपणान सुदारला."
 
 msgid "Meter"
 msgstr "मीटर"
@@ -4963,12 +4937,6 @@ msgstr "खाजगी"
 
 msgid "Private Key File"
 msgstr "खासगी की फायल"
-
-msgid "Processes"
-msgstr "प्रक्रिया"
-
-msgid "Processes to be launched in node group"
-msgstr "नोड गटान चालू करपाच्यो प्रक्रिया"
 
 msgid "Project"
 msgstr "प्रकल्प"
@@ -5883,9 +5851,6 @@ msgid ""
 "Slashes are allowed, and are treated as pseudo-folders by the Object Store."
 msgstr "स्लॅशाक परवानगी आसा, आनी वस्त साठो तांका सूडो-फोल्डर म्हण वागता."
 
-msgid "Small"
-msgstr "ल्हान"
-
 msgid "Snapshot"
 msgstr "स्नॅपशॉट"
 
@@ -5987,9 +5952,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr " \"नेटवर्क नामो\" स्पश्ट करात"
-
-msgid "Specify \"Network Address\" or clear \"Create Subnet\" checkbox."
-msgstr "\"नेटवर्क नामो\" स्पश्ट करात वो \"उपनेट तयार करात\" चेकबॉक्स साफ करात."
 
 msgid "Specify IP address of gateway or check \"Disable Gateway\"."
 msgstr "गेटवेचो IP नामो स्पश्ट करात वो  \"गेटवे अक्षम\" चेर खूण करात."
@@ -7338,15 +7300,6 @@ msgstr "उपलब्धताय विभाग वळेरी परतू
 msgid "Unable to retrieve availability zones."
 msgstr "उपलब्धताय विभाग परत मेळोवपाक शकना."
 
-msgid "Unable to retrieve available metadata for aggregate."
-msgstr "एग्रिगेटाखातीर उपलब्ध मेटाडेटा परत मेळोवपाक शकना."
-
-msgid "Unable to retrieve available metadata for flavors."
-msgstr "फ्लेवरांखातीर उपलब्ध मेटाडेटा परत मेळोवपाक शकना."
-
-msgid "Unable to retrieve available properties for image."
-msgstr " प्रतिमेखातीर उपलब्ध वैशष्ट्या परत मेळोवपाक शकना."
-
 msgid "Unable to retrieve backup details."
 msgstr "बॅकअप तपशील परत मेळोवपाक शकना."
 
@@ -7722,15 +7675,6 @@ msgstr "टेनंत मर्यादा मेळोवपाक शकन
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "सुदारपाची एग्रिगेट परत मेळोवपाक शकना"
 
-msgid "Unable to retrieve the aggregate to be updated."
-msgstr "सुदारपाची एग्रिगेट परत मेळोवपाक शकना."
-
-msgid "Unable to retrieve the flavor metadata."
-msgstr "फ्लेवर मेटाडेटा परत मेळोवपाक शकना."
-
-msgid "Unable to retrieve the image to be updated."
-msgstr "सुदारपाची प्रतिमा परत मेळोवपाक शकना."
-
 msgid "Unable to retrieve the specified pool."
 msgstr "स्पश्ट केल्लो पूल परत मेळोवपाक शकना."
 
@@ -7863,20 +7807,11 @@ msgstr "ओळ सुदारपाक शकना"
 msgid "Unable to update subnet \"%s\"."
 msgstr "उपनेट \"%s\" सुदारपाक शकना."
 
-msgid "Unable to update the aggregate metadata."
-msgstr "एग्रिगेट मेटाडेटा सुदारपाक जाले ना"
-
 msgid "Unable to update the aggregate."
 msgstr "एग्रिगेट सुदारपाक शकना"
 
-msgid "Unable to update the flavor metadata."
-msgstr "फ्लेवर मेटाडेटा सुदारपाक शकना."
-
 msgid "Unable to update the group."
 msgstr "गट सुदारपाक शकना."
-
-msgid "Unable to update the image metadata."
-msgstr "प्रतिमा मेटाडेटा सुदारपाक शकना."
 
 msgid "Unable to update the user."
 msgstr "वापरपी सुदारपाक शकना."
@@ -7937,26 +7872,17 @@ msgstr "वयर"
 msgid "Update"
 msgstr "सुदार"
 
-msgid "Update Aggregate Metadata"
-msgstr "एग्रिगेट मेटाडेटा सुदारात"
-
 msgid "Update Default Quotas"
 msgstr "मुळावे कोटा सुदारात"
 
 msgid "Update Defaults"
 msgstr "मुळावे सुदारात"
 
-msgid "Update Flavor Metadata"
-msgstr "फ्लेवर मेटाडेटा सुदारात"
-
 msgid "Update Group"
 msgstr "गट सुदारात"
 
 msgid "Update Image"
 msgstr "प्रतिमा सुदारात"
-
-msgid "Update Image Metadata"
-msgstr "प्रतिमा मेटाडेटा सुदारात"
 
 msgid "Update Metadata"
 msgstr "मेटाडेटा सुदारात"

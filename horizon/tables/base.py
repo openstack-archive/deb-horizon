@@ -27,7 +27,6 @@ from django import template
 from django.template.defaultfilters import slugify  # noqa
 from django.template.defaultfilters import truncatechars  # noqa
 from django.template.loader import render_to_string
-from django.utils.datastructures import SortedDict
 from django.utils.html import escape
 from django.utils import http
 from django.utils.http import urlencode
@@ -487,7 +486,7 @@ class Row(html.HTMLElement):
 
     .. attribute:: cells
 
-        The cells belonging to this row stored in a ``SortedDict`` object.
+        The cells belonging to this row stored in a ``OrderedDict`` object.
         This attribute is populated during instantiation.
 
     .. attribute:: status
@@ -555,7 +554,7 @@ class Row(html.HTMLElement):
         for column in table.columns.values():
             cell = table._meta.cell_class(datum, column, self)
             cells.append((column.name or column.auto, cell))
-        self.cells = SortedDict(cells)
+        self.cells = collections.OrderedDict(cells)
 
         if self.ajax:
             interval = conf.HORIZON_CONFIG['ajax_poll_interval']
@@ -610,7 +609,7 @@ class Row(html.HTMLElement):
 
     def get_ajax_update_url(self):
         table_url = self.table.get_absolute_url()
-        params = urlencode(SortedDict([
+        params = urlencode(collections.OrderedDict([
             ("action", self.ajax_action_name),
             ("table", self.table.name),
             ("obj_id", self.table.get_object_id(self.datum))
@@ -689,7 +688,8 @@ class Cell(html.HTMLElement):
             # Adding id of the input so it pairs with label correctly
             form_field_attributes['id'] = widget_name
 
-            if template.defaultfilters.urlize in column.filters:
+            if (template.defaultfilters.urlize in column.filters or
+                    template.defaultfilters.yesno in column.filters):
                 data = widget.render(widget_name,
                                      column.get_raw_data(datum),
                                      form_field_attributes)
@@ -805,7 +805,7 @@ class Cell(html.HTMLElement):
     def get_ajax_update_url(self):
         column = self.column
         table_url = column.table.get_absolute_url()
-        params = urlencode(SortedDict([
+        params = urlencode(collections.OrderedDict([
             ("action", self.row.ajax_cell_action_name),
             ("table", column.table.name),
             ("cell_name", column.name),
@@ -1077,7 +1077,7 @@ class DataTableMetaclass(type):
         for base in reversed(bases):
             if hasattr(base, 'base_columns'):
                 columns[0:0] = base.base_columns.items()
-        dt_attrs['base_columns'] = SortedDict(columns)
+        dt_attrs['base_columns'] = collections.OrderedDict(columns)
 
         # If the table is in a ResourceBrowser, the column number must meet
         # these limits because of the width of the browser.
@@ -1110,7 +1110,7 @@ class DataTableMetaclass(type):
             actions_column.classes.append('actions_column')
             columns.append(("actions", actions_column))
         # Store this set of columns internally so we can copy them per-instance
-        dt_attrs['_columns'] = SortedDict(columns)
+        dt_attrs['_columns'] = collections.OrderedDict(columns)
 
         # Gather and register actions for later access since we only want
         # to instantiate them once.
@@ -1118,8 +1118,8 @@ class DataTableMetaclass(type):
         actions = list(set(opts.row_actions) | set(opts.table_actions) |
                        set(opts.table_actions_menu))
         actions.sort(key=attrgetter('name'))
-        actions_dict = SortedDict([(action.name, action())
-                                   for action in actions])
+        actions_dict = collections.OrderedDict([(action.name, action())
+                                                for action in actions])
         dt_attrs['base_actions'] = actions_dict
         if opts._filter_action:
             # Replace our filter action with the instantiated version
@@ -1172,7 +1172,7 @@ class DataTable(object):
             column = copy.copy(_column)
             column.table = self
             columns.append((key, column))
-        self.columns = SortedDict(columns)
+        self.columns = collections.OrderedDict(columns)
         self._populate_data_cache()
 
         # Associate these actions with this table

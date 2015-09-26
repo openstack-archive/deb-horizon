@@ -15,7 +15,6 @@ import copy
 
 from django.core.urlresolvers import reverse
 from django import http
-from django.utils import unittest
 
 from mox3.mox import IgnoreArg  # noqa
 from mox3.mox import IsA  # noqa
@@ -84,8 +83,7 @@ class RouterTests(RouterMixin, test.TestCase):
     @test.create_stubs({api.neutron: ('router_list', 'network_list'),
                         quotas: ('tenant_quota_usages',)})
     def test_index(self):
-        quota_data = self.quota_usages.first()
-        quota_data['routers']['available'] = 5
+        quota_data = self.neutron_quota_usages.first()
         api.neutron.router_list(
             IsA(http.HttpRequest),
             tenant_id=self.tenant.id,
@@ -105,8 +103,7 @@ class RouterTests(RouterMixin, test.TestCase):
     @test.create_stubs({api.neutron: ('router_list', 'network_list'),
                         quotas: ('tenant_quota_usages',)})
     def test_index_router_list_exception(self):
-        quota_data = self.quota_usages.first()
-        quota_data['routers']['available'] = 5
+        quota_data = self.neutron_quota_usages.first()
         api.neutron.router_list(
             IsA(http.HttpRequest),
             tenant_id=self.tenant.id,
@@ -127,8 +124,7 @@ class RouterTests(RouterMixin, test.TestCase):
                         quotas: ('tenant_quota_usages',)})
     def test_set_external_network_empty(self):
         router = self.routers.first()
-        quota_data = self.quota_usages.first()
-        quota_data['routers']['available'] = 5
+        quota_data = self.neutron_quota_usages.first()
         api.neutron.router_list(
             IsA(http.HttpRequest),
             tenant_id=self.tenant.id,
@@ -173,8 +169,7 @@ class RouterTests(RouterMixin, test.TestCase):
                         quotas: ('tenant_quota_usages',)})
     def test_router_delete(self):
         router = self.routers.first()
-        quota_data = self.quota_usages.first()
-        quota_data['routers']['available'] = 5
+        quota_data = self.neutron_quota_usages.first()
         api.neutron.router_list(
             IsA(http.HttpRequest),
             tenant_id=self.tenant.id,
@@ -214,8 +209,7 @@ class RouterTests(RouterMixin, test.TestCase):
     def test_router_with_interface_delete(self):
         router = self.routers.first()
         ports = self.ports.list()
-        quota_data = self.quota_usages.first()
-        quota_data['routers']['available'] = 5
+        quota_data = self.neutron_quota_usages.first()
         api.neutron.router_list(
             IsA(http.HttpRequest),
             tenant_id=self.tenant.id,
@@ -698,7 +692,6 @@ class RouterRuleTests(RouterMixin, test.TestCase):
             res,
             '%s/routers/extensions/routerrules/grid.html' % self.DASHBOARD)
 
-    @unittest.skip("blocking the gate see bug 1490403")
     @test.create_stubs({api.neutron: ('network_list',)})
     def test_routerrule_detail(self):
         router = self.routers_with_rules.first()
@@ -926,7 +919,7 @@ class RouterViewTests(RouterMixin, test.TestCase):
     @test.create_stubs({api.neutron: ('router_list', 'network_list'),
                         quotas: ('tenant_quota_usages',)})
     def test_create_button_disabled_when_quota_exceeded(self):
-        quota_data = self.quota_usages.first()
+        quota_data = self.neutron_quota_usages.first()
         quota_data['routers']['available'] = 0
         api.neutron.router_list(
             IsA(http.HttpRequest),
@@ -957,3 +950,37 @@ class RouterViewTests(RouterMixin, test.TestCase):
             % (url, link_name, " ".join(classes), link_name)
         self.assertContains(res, expected_string, html=True,
                             msg_prefix="The create button is not disabled")
+
+    @test.create_stubs({api.neutron: ('router_list', 'network_list'),
+                        quotas: ('tenant_quota_usages',)})
+    def test_create_button_shown_when_quota_disabled(self):
+        quota_data = self.neutron_quota_usages.first()
+        quota_data['routers'].pop('available')
+        api.neutron.router_list(
+            IsA(http.HttpRequest),
+            tenant_id=self.tenant.id,
+            search_opts=None).AndReturn(self.routers.list())
+        quotas.tenant_quota_usages(
+            IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(quota_data)
+
+        self._mock_external_network_list()
+        self.mox.ReplayAll()
+
+        res = self.client.get(self.INDEX_URL)
+        self.assertTemplateUsed(res, 'project/routers/index.html')
+
+        routers = res.context['Routers_table'].data
+        self.assertItemsEqual(routers, self.routers.list())
+
+        create_link = tables.CreateRouter()
+        url = create_link.get_link_url()
+        classes = (list(create_link.get_default_classes())
+                   + list(create_link.classes))
+        link_name = "%s" % (six.text_type(create_link.verbose_name))
+        expected_string = "<a href='%s' title='%s'  class='%s' "\
+            "id='Routers__action_create'>" \
+            "<span class='fa fa-plus'></span>%s</a>" \
+            % (url, link_name, " ".join(classes), link_name)
+        self.assertContains(res, expected_string, html=True,
+                            msg_prefix="The create button is not displayed")

@@ -5,24 +5,33 @@
 # Translators:
 # Allerson Yao, 2015
 # 刘俊朋 <liujunpeng@inspur.com>, 2015
+# Daisy <guoyingc@cn.ibm.com>, 2015. #zanata
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
+# Xu Yang <xuyang@cn.fujitsu.com>, 2015. #zanata
+# Yu Zhiuguo <yuzg@cn.fujitsu.com>, 2015. #zanata
+# zhangjingwen <zhangjingwen@cn.fujitsu.com>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-01 03:11+0000\n"
-"PO-Revision-Date: 2015-08-30 00:10+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/openstack/horizon/"
-"language/zh_CN/)\n"
+"POT-Creation-Date: 2015-09-24 21:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-25 06:19+0000\n"
+"Last-Translator: zhangjingwen <zhangjingwen@cn.fujitsu.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/openstack/horizon/"
+"language/zh_CN/)\n"
 "Generated-By: Babel 2.0\n"
-"Language: zh_CN\n"
+"Language: zh-CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Zanata 3.7.1\n"
 
 msgid "(Max: 16Kb)"
 msgstr "(最大:16Kb)"
+
+msgid "(Modified)"
+msgstr "(已修改)"
 
 msgid "(None)"
 msgstr "(无)"
@@ -33,8 +42,8 @@ msgid ""
 "data. You can specify volume size and whether to delete the volume on "
 "termination of the instance.</li>"
 msgstr ""
-"<li><b>镜像 (创建新卷)</b>：这个选项使用一个镜像启动实例，创建一个新卷用来持"
-"久化数据。您可以指定卷大小和在销毁实例时是否删除卷。</li>"
+"<li><b>镜像 (创建新卷)</b>：这个选项使用镜像启动实例，并且创建一个新卷用来持"
+"久化实例数据。您可以指定卷大小和在销毁实例时是否删除卷。</li>"
 
 msgid "<li><b>Image</b>: This option uses an image to boot the instance.</li>"
 msgstr "<li><b>镜像</b>：本选项使用一个镜像启动实例。</li>"
@@ -62,17 +71,31 @@ msgstr ""
 "实例时删除卷。 <em>注意：当选择卷时，您只可以启动一个实例。</em></li>"
 
 msgid ""
-"A key pair allows you to SSH into your newly created instance. You may "
-"select an existing key pair, import a key pair, or generate a new key pair."
+"A floating IP allows instances to be addressable from an external network.\n"
+"    Floating IPs are not allocated to instances at creation time and may be "
+"assigned\n"
+"    after the instance is created. To attach a floating IP, go to the "
+"<b>Instances</b>\n"
+"    view and click the <b>Actions</b> menu to the right of an instance.\n"
+"    Then, select the <b>Associate Floating IP</b> option and enter the "
+"necessary details."
 msgstr ""
-"秘钥对允许您SSH到您新创建的实例。你可以选择一个已存在、导入或生成一个新的秘钥"
-"对。"
+"一个浮动IP允许实例从外部网络寻址。\n"
+"实例在创建时浮动IP地址病不会分配，在实例创建后可以指定。\n"
+"要附加一个浮动IP，在<b>Instances</b>查看并单击一个实例的\n"
+" <b>Actions</b>菜单到右边。\n"
+"然后，选择 <b>Associate Floating IP</b> 并输入必要的描述。"
+
+msgid ""
+"A key pair allows you to SSH into your newly created instance.\n"
+"      You may select an existing key pair, import a key pair, or generate a "
+"new key pair."
+msgstr ""
+"密钥对允许您SSH到您新创建的实例。\n"
+"你可以选择一个已存在的密钥对、导入一个密钥对或生成一个新的密钥对。"
 
 msgid "A name is required for your instance."
 msgstr "您的实例名字是必须的。"
-
-msgid "Actions"
-msgstr "动作"
 
 msgid "Active"
 msgstr "运行中"
@@ -96,6 +119,19 @@ msgid ""
 msgstr "管理员建立可以绑定到实例的浮动IP池。"
 
 msgid ""
+"An <b>External</b> network is set up by an administrator.\n"
+"    If you want an instance to communicate outside of the data center,\n"
+"    then attach a router between your <b>Project</b> network and the "
+"<b>External</b> network.\n"
+"    You can use the <b>Network Topology</b> view to connect the router to "
+"the two networks."
+msgstr ""
+"<b>外部</b>网络由管理员创建。\n"
+"如果您希望云主机与数据中心的外部网络能够通信，\n"
+"那么可以在您的<b>项目</b>网络和<b>外部</b>网络之间添加一个路由。\n"
+"然后就可以通过 <b>网络拓扑</b>视图，使用此路由连接这两个网络。"
+
+msgid ""
 "An advanced option available when launching an instance is disk "
 "partitioning. There are two disk partition options. Selecting <b>Automatic</"
 "b> resizes the disk and sets it to a single partition. Selecting <b>Manual</"
@@ -116,6 +152,9 @@ msgstr "自动"
 msgid "Availability Zone"
 msgstr "可用域"
 
+msgid "Boot Source"
+msgstr "启动源 "
+
 msgid "Cancel"
 msgstr "取消"
 
@@ -125,15 +164,13 @@ msgstr "无法从认证获取服务目录。"
 msgid "Cannot get the Nova extension list."
 msgstr "无法查询Nova扩展列表。"
 
-msgid "Change Password"
-msgstr "修改密码"
-
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
 "special configuration drive. When the instance boots, it attaches to the "
 "<b>Configuration Drive</b> and accesses the metadata."
 msgstr ""
-"如果您想将元数据希尔某个指定的配置驱动器中，请选中<b>配置驱动</b> 复选框。"
+"如果您想将元数据写入指定的配置驱动器中，请选中<b>配置驱动</b> 复选框。当实例"
+"启动时，就会追加<b>配置驱动</b>并访问元数据。"
 
 msgid "Click to see more details"
 msgstr "点击查看更多细节"
@@ -147,6 +184,9 @@ msgstr "配置驱动器"
 msgid "Configuration Help"
 msgstr "配置帮助"
 
+msgid "Configuration Value"
+msgstr "配置值"
+
 msgid "Count"
 msgstr "计数"
 
@@ -156,31 +196,27 @@ msgstr "创建秘钥对"
 msgid "Create New Volume"
 msgstr "创建新卷"
 
-msgid "Create User"
-msgstr "创建用户"
-
 msgid "Created"
 msgstr "已创建"
 
-#, python-format
 msgid ""
 "Custom scripts are attached to instances to perform specific actions when "
-"the instance is launched. For example, if you are unable to install <samp>"
-"%(cloutInit)s</samp> inside a guest operating system, you can use a custom "
-"script to get a public key and add it to the user account."
+"the instance is launched. For example, if you are unable to install "
+"<samp>cloud-init</samp> inside a guest operating system, you can use a "
+"custom script to get a public key and add it to the user account."
 msgstr ""
 "当实例启动时，自定义脚本被绑定到实例执行特定的动作。比如，如果你无法在客户机"
-"操作系统内安装<samp>%(cloutInit)s</samp>，你可以使用自定义脚本获取一个公钥并"
-"把它添加到用户账户中。"
+"操作系统内安装<samp>cloud-init</samp>，你可以使用自定义脚本获取一个公钥并把它"
+"添加到用户账户中。"
 
 msgid "Customization Script"
 msgstr "自定义脚本"
 
-msgid "Delete"
-msgstr "删除"
+msgid "Data Source"
+msgstr "数据源"
 
-msgid "Delete Users"
-msgstr "删除用户"
+msgid "Default Value"
+msgstr "缺省值"
 
 msgid "Delete Volume on Terminate"
 msgstr "终止后删除卷"
@@ -197,9 +233,6 @@ msgstr "设备名称"
 msgid "Direction"
 msgstr "直连"
 
-msgid "Disable"
-msgstr "禁用"
-
 msgid "Disk Partition"
 msgstr "磁盘分区"
 
@@ -209,14 +242,8 @@ msgstr "域ID"
 msgid "Down"
 msgstr "停止"
 
-msgid "Edit"
-msgstr "编辑"
-
 msgid "Email"
 msgstr "邮箱"
-
-msgid "Enable"
-msgstr "激活"
 
 msgid "Enabled"
 msgstr "激活"
@@ -226,6 +253,9 @@ msgstr "临时磁盘"
 
 msgid "Ether Type"
 msgstr "以太网类型"
+
+msgid "Event log is not available."
+msgstr "事件日志不可用。"
 
 #, python-format
 msgid "Extension is not enabled: %(extension)s."
@@ -248,19 +278,30 @@ msgid ""
 "the instance."
 msgstr "类型管理实例的计算、内存和存储容量的大小。"
 
+msgid ""
+"For configs and params, type the key name; for args, type the index as an "
+"integer, starting from 0."
+msgstr "对于配置和参数，定义键名类型；对于参数，定义索引类型为从0开始的整数。"
+
+msgid ""
+"For data sources, use a data source UUID or a path (as per data source "
+"creation.)"
+msgstr "对于数据源，使用数据源UUID或者路径(根据数据源创建。)"
+
 msgid "Format"
 msgstr "镜像格式"
 
-#, python-format
 msgid ""
-"From a Windows system, you can use PuTTYGen to create private/public keys. "
-"Use the PuTTY Key Generator to create and save the keys, then copy the "
-"public key in the red highlighted box to your <samp>%(authorizeKeysFile)s</"
-"samp> file."
+"From a Windows system, you can use PuTTYGen to create private/public keys.\n"
+"  Use the PuTTY Key Generator to create and save the keys, then copy\n"
+"  the public key in the red highlighted box to your <samp>.ssh/"
+"authorized_keys</samp>\n"
+"  file."
 msgstr ""
-"从一个Windows系统，你可以使用PuTTYGen生成公/私秘钥。使用PuTTY的秘钥生成器创建"
-"和保存这些值，然后从红色高亮框中复制公钥到您的<samp>%(authorizeKeysFile)s</"
-"samp>文件。"
+"从一个Windows系统，你可以使用PuTTYGen生成公/私密钥。\n"
+"使用PuTTY密钥生成器来创建和保存这些密钥，\n"
+"然后复制红色高亮框中的公钥到您的\n"
+"<samp>.ssh/authorized_keys</samp>文件。"
 
 msgid "ID"
 msgstr "ID"
@@ -286,6 +327,14 @@ msgstr ""
 "动卷所在的域是同一个。"
 
 msgid ""
+"If you want to create an instance that uses ephemeral storage, meaning the "
+"instance data is lost when the instance is deleted, then choose one of the "
+"following boot sources:"
+msgstr ""
+"如果您想创建一个使用临时存储的实例，意味着当实例被删除时数据会丢失，那么从以"
+"下启动项中选择一个："
+
+msgid ""
 "If you want to create an instance that uses persistent storage, meaning the "
 "instance data is saved when the instance is deleted, then select one of the "
 "following boot options:"
@@ -304,9 +353,6 @@ msgstr "影响您的配额"
 
 msgid "Import Key Pair"
 msgstr "导入秘钥对"
-
-msgid "Import Key Pair Help"
-msgstr "导入密钥对帮助"
 
 msgid "Instance Details"
 msgstr "实例详情"
@@ -344,21 +390,24 @@ msgid "Key Pair Name"
 msgstr "密钥对名字"
 
 msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose a "
-"key pair name you will recognize and paste your SSH public key into the "
-"space provided."
+"Key Pairs are how you login to your instance after it is launched.\n"
+"        Choose a key pair name you will recognize and paste your SSH public "
+"key into the\n"
+"        space provided."
 msgstr ""
-"密钥对是您在实例启动后登陆进去的一种方式。选择一个您易于识别的密钥对名字，粘"
-"贴您的SSH公钥到空白处。"
+"密钥对是您在实例启动后登陆进去的一种方式。\n"
+"选择一个您易于识别的密钥对名字，并把您的SSH公钥粘贴到\n"
+"空白处。"
 
 msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose a "
-"key pair name you will recognize."
+"Key Pairs are how you login to your instance after it is launched.\n"
+"        Choose a key pair name you will recognize."
 msgstr ""
-"密钥对是您在实例启动后登陆进去的一种方式。选择一个您易于识别的密钥对名字。"
+"密钥对是您在实例启动后登陆进去的一种方式。\n"
+"选择一个您易于识别的密钥对名字。"
 
 msgid "Killed"
-msgstr "已杀死"
+msgstr "终止"
 
 msgid "Launch Instance"
 msgstr "启动实例"
@@ -366,8 +415,14 @@ msgstr "启动实例"
 msgid "Load script from a file"
 msgstr "从文件加载脚本"
 
+msgid "Location"
+msgstr "位置"
+
 msgid "Manual"
 msgstr "手动"
+
+msgid "Mapping Type"
+msgstr "映射类型"
 
 msgid "Max Port"
 msgstr "最大端口"
@@ -390,11 +445,11 @@ msgstr "最小内存 (MB)"
 msgid "Min Ram"
 msgstr "最小内存"
 
-msgid "Modified"
-msgstr "修改"
-
 msgid "Name"
 msgstr "名称"
+
+msgid "Named Parameter"
+msgstr "命名参数"
 
 msgid "Network"
 msgstr "网络"
@@ -417,6 +472,9 @@ msgstr "否"
 msgid "No available items"
 msgstr "没有可选项"
 
+msgid "Number"
+msgstr "序号"
+
 msgid "OK"
 msgstr "确定"
 
@@ -437,6 +495,9 @@ msgstr ""
 msgid "Policy check failed."
 msgstr "策略检查失败。"
 
+msgid "Positional Argument"
+msgstr "定位参数"
+
 msgid "Private"
 msgstr "私有"
 
@@ -452,6 +513,13 @@ msgstr "项目"
 msgid "Project ID"
 msgstr "项目ID"
 
+msgid ""
+"Project networks are created by users.\n"
+"    These networks are fully isolated and are project-specific."
+msgstr ""
+"项目网络是由用户创建。\n"
+"这些网络完全隔离，为具体项目专用。"
+
 msgid "Protected"
 msgstr "受保护的"
 
@@ -460,6 +528,13 @@ msgstr "协议"
 
 msgid "Provider Network"
 msgstr "提供者网络"
+
+msgid ""
+"Provider networks are created by administrators.\n"
+"    These networks map to an existing physical network in the data center."
+msgstr ""
+"提供者网络是由管理员创建。\n"
+"这些网络映射到数据中心里现存的物理网络。"
 
 msgid "Public"
 msgstr "公有"
@@ -479,8 +554,14 @@ msgstr "使用拖放重新排序"
 msgid "Remote"
 msgstr "远程"
 
+msgid "Remove"
+msgstr "移除"
+
 msgid "Required"
 msgstr "必须"
+
+msgid "Required?"
+msgstr "必须?"
 
 msgid "Root Disk"
 msgstr "根磁盘"
@@ -493,9 +574,6 @@ msgstr "保存中"
 
 msgid "Script size"
 msgstr "脚本大小"
-
-msgid "Script size > 16Kb"
-msgstr "脚本大小 > 16Kb"
 
 msgid "Security Groups"
 msgstr "安全组"
@@ -517,7 +595,13 @@ msgid ""
 msgstr ""
 "安全组定义了IP过滤规则集合，这些规则决定网络流量如何到达和离开实例。为了将来"
 "为实例定义访问可选规则，用户可以往一个已存在的安全组添加额外的规则。创建额外"
-"规则，到<b>计算 |访问&安全</b>视图，然后找到安全组，点击<b>规则管理</b>"
+"规则，到<b>计算 | 访问 & 安全</b>视图，然后找到安全组，点击<b>规则管理</b>"
+
+msgid ""
+"See http://docs.openstack.org/developer/sahara/userdoc/edp.html for "
+"definitions."
+msgstr ""
+"定义请参考http://docs.openstack.org/developer/sahara/userdoc/edp.html。"
 
 msgid "Segmentation ID"
 msgstr "段ID"
@@ -532,7 +616,7 @@ msgid "Select Source Help"
 msgstr "选择源帮助"
 
 msgid "Select a key pair from the available key pairs below."
-msgstr "从以下可用的秘钥对选择一个"
+msgstr "从以下可用的密钥对选择一个"
 
 msgid "Select a source from those listed below."
 msgstr "从以下列表选择一个源。"
@@ -569,6 +653,9 @@ msgstr "配置没有启用：%(setting)s"
 msgid "Shared"
 msgstr "共享的"
 
+msgid "Show events"
+msgstr "显示事件"
+
 msgid "Size"
 msgstr "大小"
 
@@ -580,6 +667,9 @@ msgstr "快照"
 
 msgid "Status"
 msgstr "状态"
+
+msgid "String"
+msgstr "字符串"
 
 msgid "Subnets Associated"
 msgstr "子网已连接"
@@ -598,17 +688,20 @@ msgid ""
 msgstr ""
 "您为实例选择的类型决定计算、存储和内存资源数量，这些资源将会决定实例配置。"
 
+msgid ""
+"The flavor you select must have enough resources allocated to support the "
+"type of instance you are trying to create. Flavors that do not provide "
+"enough resources for your instance are identified on the <b>Available</b> "
+"table with a yellow warning icon."
+msgstr ""
+"您所选择的云主机类型必须有足够的资源用来支持您想要创建的实例类型。未能给您的"
+"实例提供足够资源的云主机会被表<b>Available</b>中的一个黄色警告符号标识出。"
+
 #, python-format
 msgid ""
 "The instance count must not exceed your quota available of "
 "%(maxInstanceCount)s instances"
 msgstr "实例数不能超过您的最大可用%(maxInstanceCount)s 实例数"
-
-msgid "The key pair allows you to SSH into the instance."
-msgstr "密钥对允许您SSH登陆实例。"
-
-msgid "The maximum script size is 16Kb."
-msgstr "最大脚本大小是16Kb。"
 
 #, python-format
 msgid ""
@@ -630,24 +723,34 @@ msgstr ""
 msgid "The status indicates whether the network has an active connection."
 msgstr "状态表明网络是否处于活跃连接。"
 
+msgid "The step has completed successfully. No events to display."
+msgstr "本步骤已成功完成。没有可以显示的事件。"
+
+msgid ""
+"The subnet identifies a sub-section of a network. A subnet is specified in "
+"CIDR format.\n"
+"    A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
+msgstr ""
+"一个子网确定了一个网段，被指定为CIDR格式。\n"
+"典型的CIDR格式类似<samp>192.xxx.x.x/24</samp>。"
+
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
 msgstr "卷大小至少%(minVolumeSize)s GB"
 
-#, python-format
 msgid ""
-"There are two ways to generate a key pair. From a Linux system, generate the "
-"key pair with the <samp>%(genKeyPairCmd)s</samp> command:"
+"There are two ways to generate a key pair. From a Linux system,\n"
+"  generate the key pair with the <samp>ssh-keygen</samp> command:"
 msgstr ""
-"有两种方式创建秘钥对。从一个Linux系统，使用<samp>%(genKeyPairCmd)s</samp> 命"
-"令生成秘钥对。"
+"有两种方式创建密钥对。从一个Linux系统，\n"
+"使用<samp>ssh-keygen</samp> 命令生成密钥对。"
 
-#, python-format
 msgid ""
-"This command generates a pair of keys: a private key (%(privateKeyPath)s) "
-"and a public key (%(publicKeyPath)s)."
+"This command generates a pair of keys: a private key (cloud.key)\n"
+"  and a public key (cloud.key.pub)."
 msgstr ""
-"这个命令生成一个秘钥对：私钥(%(privateKeyPath)s)和公钥(%(publicKeyPath)s)。"
+"这个命令生成一对密钥：一个私钥 (cloud.key)\n"
+"和一个公钥(cloud.key.pub)。"
 
 msgid ""
 "This flavor requires more RAM than your quota allows. Please select a "
@@ -736,8 +839,17 @@ msgstr "无法删除用户。"
 msgid "Unable to delete the users."
 msgstr "无法删除用户。"
 
+msgid "Unable to edit the aggregate extra specs."
+msgstr "无法编辑聚合额外的规格。"
+
 msgid "Unable to edit the domain."
 msgstr "无法编辑域。"
+
+msgid "Unable to edit the flavor extra specs."
+msgstr "无法编辑类型额外的规格。"
+
+msgid "Unable to edit the image custom properties."
+msgstr "无法编辑镜像的定制属性。"
 
 msgid "Unable to edit the project."
 msgstr "无法编辑项目。"
@@ -763,6 +875,9 @@ msgstr "无法导入密钥对。"
 msgid "Unable to retrieve settings."
 msgstr "无法获取配置。"
 
+msgid "Unable to retrieve the aggregate extra specs."
+msgstr "无法获取聚合额外的规格。"
+
 msgid "Unable to retrieve the availability zones."
 msgstr "无法获取可用域。"
 
@@ -786,6 +901,9 @@ msgstr "无法获取类型。"
 
 msgid "Unable to retrieve the flavors."
 msgstr "无法获取类型。"
+
+msgid "Unable to retrieve the image custom properties."
+msgstr "无法获得镜像的定制属性。"
 
 msgid "Unable to retrieve the image."
 msgstr "无法获取镜像。"
@@ -841,6 +959,9 @@ msgstr "无法获取卷快照。"
 msgid "Unable to retrieve the volumes."
 msgstr "无法获取卷。"
 
+msgid "Unable to validate the template."
+msgstr "无法验证模板。"
+
 msgid "Up"
 msgstr "正常"
 
@@ -861,6 +982,12 @@ msgstr "用户ID"
 
 msgid "User Name"
 msgstr "用户名"
+
+msgid "VCPUS"
+msgstr "虚拟内核"
+
+msgid "Value Type"
+msgstr "值类型"
 
 msgid "Visibility"
 msgstr "可见"
@@ -886,8 +1013,21 @@ msgid ""
 "availability zone is compatible with your volume's availability zone."
 msgstr "当选择卷为启动源时，请确保实例可用域与您的卷可用域兼容。"
 
+msgid ""
+"When the <b>Admin State</b> for a network is set to <b>Up</b>,\n"
+"    then the network is available for use. You can set the <b>Admin State</"
+"b> to <b>Down</b>\n"
+"    if you are not ready for other users to access the network."
+msgstr ""
+"当网络的<b>Admin State</b> 被设置为<b>Up</b>,\n"
+"网络将会是可用的。如果你还没有准备让别人访问该网络，\n"
+"可以把 <b>Admin State</b> 设置为<b>Down</b>。"
+
 msgid "Yes"
 msgstr "是"
 
 msgid "bytes"
 msgstr "字节数"
+
+msgid "{$ row['provider:network_type'] $}"
+msgstr "{$ row['provider:network_type'] $}"

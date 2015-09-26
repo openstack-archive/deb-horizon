@@ -4,21 +4,24 @@
 #
 # Translators:
 # Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2015
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
+# Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-01 03:11+0000\n"
-"PO-Revision-Date: 2015-08-30 04:51+0000\n"
-"Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/openstack/horizon/language/"
-"cs/)\n"
+"POT-Creation-Date: 2015-09-24 21:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-24 10:09+0000\n"
+"Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/openstack/horizon/language/"
+"cs/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Zanata 3.7.1\n"
 
 msgid ""
 "\n"
@@ -390,6 +393,19 @@ msgstr ""
 "přetrvávání sezení.\n"
 " Stav správce je standardně Zapnut (zaškrtnut)."
 
+msgid ""
+"\n"
+"Resize the canvas by scrolling up/down with your mouse/trackpad on the "
+"topology.\n"
+"Pan around the canvas by clicking and dragging the space behind the "
+"topology.\n"
+"  "
+msgstr ""
+"\n"
+"Velikost plátna můžete změnit posunutím nahoeu/dolů myší po topologii.\n"
+"Kliknutím a následným táhnutím plátna se můžete posunovat doleva/doprava.\n"
+"  "
+
 msgid " - End"
 msgstr "- Konec"
 
@@ -406,6 +422,9 @@ msgstr "Hotovo"
 msgid "\"Add Router Route\""
 msgstr "\"Přidat cestu směrovače\""
 
+msgid "\"Clusters\""
+msgstr "\"Clustery\""
+
 msgid ""
 "\"Customization Script\" is analogous to \"User Data\" in other systems."
 msgstr ""
@@ -414,6 +433,9 @@ msgstr ""
 
 msgid "\"Edit Volume Type\""
 msgstr "\"Upravit typ svazku\""
+
+msgid "\"Launch Cluster\""
+msgstr "\"Spustit cluster\""
 
 msgid "\"N/A\""
 msgstr "\"Nedostupné\""
@@ -440,12 +462,6 @@ msgid ""
 msgstr ""
 "\"Některé konfigurace neodpovídající minimálním požadavkům obrazu byly "
 "zakázány.\""
-
-msgid "\"Update Aggregate Metadata\""
-msgstr "\"Aktualizovat popisná data agregátu\""
-
-msgid "\"Update Flavor Metadata\""
-msgstr "\"Aktualizovat popisná data konfigurace\""
 
 msgid "\"Users\""
 msgstr "\"Uživatelé\""
@@ -485,6 +501,10 @@ msgstr "%(name)s - %(size)s GB (%(label)s)"
 #, python-format
 msgid "%(name)s | %(RAM)s RAM"
 msgstr "%(name)s | %(RAM)s RAM"
+
+#, python-format
+msgid "%(name)s | %(RAM)s RAM | %(instances)s instances"
+msgstr "%(name)s | %(RAM)s RAM | %(instances)s instancí"
 
 #, python-format
 msgid "%(offset)s: %(label)s"
@@ -543,6 +563,10 @@ msgstr "%s GB"
 #, python-format
 msgid "%s instances"
 msgstr "%s instancí"
+
+#, python-format
+msgid "%s processes: "
+msgstr "%s procesů: "
 
 #, python-format
 msgid "%sGB"
@@ -797,12 +821,18 @@ msgctxt "status of a network port"
 msgid "Active"
 msgstr "Aktivní"
 
+msgid "Active Instances:"
+msgstr "Aktivní instance:"
+
 msgid ""
 "Actual device name may differ due to hypervisor settings. If not specified, "
 "then hypervisor will select a device name."
 msgstr ""
 "Skutečný název zařízení se může lišit kvůli nastavením hypervizoru. Pokud "
 "není zadán, pak hypervizor název zařízení vybere."
+
+msgid "Adapt For Oozie"
+msgstr "Přizpůsobit pro Oozie"
 
 msgid "Add"
 msgstr "Přidat"
@@ -891,6 +921,9 @@ msgstr "Přidat směrovače"
 msgid "Add Rule"
 msgstr "Přidat pravidlo"
 
+msgid "Add Shard"
+msgstr "Přidat část"
+
 msgid "Add Static Route"
 msgstr "Přidat statickou cestu"
 
@@ -919,10 +952,10 @@ msgid "Add VPN Service"
 msgstr "Přidat službu VPN"
 
 msgid ""
-"Add and remove security groups to this project from the list of available "
+"Add and remove security groups to this instance from the list of available "
 "security groups."
 msgstr ""
-"Přidejte nebo odeberte bezpečnostní skupiny v tomto projektu ze seznamu "
+"Přidat a odstranit bezpečnostní skupiny z/do této instance ze seznamu "
 "dostupných bezpečnostních skupin."
 
 msgid "Add custom tag"
@@ -1042,6 +1075,10 @@ msgstr "Přidán monitor"
 msgid "Added pool \"%s\"."
 msgstr "Přidána zásoba \"%s\"."
 
+#, python-format
+msgid "Added shard to \"%s\""
+msgstr "Část přidána do \"%s\""
+
 msgid "Additional routes"
 msgstr "Dodatečné cesty"
 
@@ -1063,6 +1100,9 @@ msgstr ""
 
 msgid "Address"
 msgstr "Adresa"
+
+msgid "Address pool"
+msgstr "Zásoba adres"
 
 msgid "Address:"
 msgstr "Adresa:"
@@ -1156,6 +1196,9 @@ msgstr "Přidělit IP"
 
 msgid "Allocate IP To Project"
 msgstr "Přidělit IP do projektu"
+
+msgid "Allocate Network Address from a pool"
+msgstr "Přidělit síťovou adresu ze sítě"
 
 msgid "Allocate a floating IP from a given floating IP pool."
 msgstr "Přidělit plovoucí IP ze zadané zásoby plovoucích IP."
@@ -1348,6 +1391,9 @@ msgstr "Režim oprávnění"
 msgid "Auto Security Group"
 msgstr "Skupina automatické bezpečnosti"
 
+msgid "Auto-configure"
+msgstr "Automatické nastavení"
+
 msgid "Automatic"
 msgstr "Automaticky"
 
@@ -1358,6 +1404,13 @@ msgstr ""
 "Automatické: Celý disk je jeden oddíl automaticky měnící svoji velikost. "
 "Ručně: Má za následek rychlejší dobu sestavení ale vyžaduje ruční nastavení "
 "oddílů."
+
+msgid ""
+"Automatically modify the Hadoop configuration so that job config values are "
+"set and so that Oozie will handle exit codes correctly."
+msgstr ""
+"Automaticky upravit nastavení Hadoop tak, aby hodnoty nastavení úkolu byly "
+"zadány a aby Oozie správně zpracovával návratové kódy."
 
 msgid "Availability Zone"
 msgstr "Zóna dostupnosti"
@@ -1810,11 +1863,20 @@ msgstr "Zavřít"
 msgid "Cluster"
 msgstr "Cluster"
 
+msgid "Cluster Count"
+msgstr "Počet clusterů"
+
 msgid "Cluster Creation Guide"
 msgstr "Průvodce vytvořením clusteru"
 
+msgid "Cluster Detail"
+msgstr "Podrobnosti clusteru"
+
 msgid "Cluster Details"
 msgstr "Podrobnosti clusteru"
+
+msgid "Cluster Details: {{ cluster.name }}"
+msgstr "Podrobnosti clusteru: {{ cluster.name }}"
 
 msgid "Cluster Events"
 msgstr "Události clusteru"
@@ -1830,6 +1892,9 @@ msgstr "Název clusteru"
 
 msgid "Cluster Overview"
 msgstr "Přehled clusterů"
+
+msgid "Cluster Size"
+msgstr "Velikost clusteru"
 
 msgid "Cluster Template"
 msgstr "Šablona clusteru"
@@ -1912,6 +1977,9 @@ msgstr "Konfigurace"
 msgid "Configuration Drive"
 msgstr "Konfigurační jednotka"
 
+msgid "Configuration Value"
+msgstr "Hodnota nastavení"
+
 msgid "Configure"
 msgstr "Nastavit"
 
@@ -1971,6 +2039,9 @@ msgid "Connection Examples"
 msgstr "Příklady připojení"
 
 msgid "Connection Info"
+msgstr "Informace o připojení"
+
+msgid "Connection Information"
 msgstr "Informace o připojení"
 
 msgid "Connection Limit"
@@ -2431,15 +2502,6 @@ msgstr ""
 "Vytvořte podsíť přidruženou k síti. Kliknutím na kartu \"Podrobnosti podsítě"
 "\" zobrazíte pokročilá nastavení."
 
-msgid ""
-"Create a subnet associated with the new network, in which case \"Network "
-"Address\" must be specified. If you wish to create a network without a "
-"subnet, uncheck the \"Create Subnet\" checkbox."
-msgstr ""
-"Vytvořte podsíť přidruženou k nové síti, v takovém případě ale musíte zadat "
-"\"Síťovou adresu\". Pokud chcete vytvořit síť bez podsítě, pak odškrtněte "
-"políčko \"Vytvořit podsíť\"."
-
 msgid "Create an Encrypted Volume Type"
 msgstr "Vytvořit šifrovaný typ svazku."
 
@@ -2587,6 +2649,9 @@ msgstr "Současný hostitel"
 msgid "Current Size (GB)"
 msgstr "Současná velikost (GB)"
 
+msgid "Current Task"
+msgstr "Současný úkol"
+
 msgid "Current choice:"
 msgstr "Současná volba:"
 
@@ -2706,6 +2771,9 @@ msgstr ""
 "Zpracování dat poskytuje různé možnosti umístění úložiště. Můžete zvolit "
 "Efemerní disk nebo svazek Cinder, které budou připojeny k instancím."
 
+msgid "Data Source"
+msgstr "Zdroj dat"
+
 msgid "Data Source Details"
 msgstr "Podrobnosti zdroje dat"
 
@@ -2799,6 +2867,9 @@ msgstr "Rozšifrovat heslo"
 msgid "Default Quotas"
 msgstr "Výchozí kvóta"
 
+msgid "Default Value"
+msgstr "Výchozí hodnota"
+
 msgid "Default quotas updated."
 msgstr "Výchozí kvóty aktualizovány."
 
@@ -2853,6 +2924,12 @@ msgstr[0] "Smazat kontejner"
 msgstr[1] "Smazat kontejnery"
 msgstr[2] "Smazat kontejnery"
 
+msgid "Delete DHCP Agent"
+msgid_plural "Delete DHCP Agents"
+msgstr[0] "Smazat agenta DHCP"
+msgstr[1] "Smazat agenty DHCP"
+msgstr[2] "Smazat agenty DHCP"
+
 msgid "Delete Data Source"
 msgid_plural "Delete Data Sources"
 msgstr[0] "Smazat zdroj dat"
@@ -2897,11 +2974,23 @@ msgstr[0] "Smazat bránu firewall"
 msgstr[1] "Smazat brány firewall"
 msgstr[2] "Smazat brány firewall"
 
+msgid "Delete Flavor"
+msgid_plural "Delete Flavors"
+msgstr[0] "Smazat konfiguraci"
+msgstr[1] "Smazat konfigurace"
+msgstr[2] "Smazat konfigurace"
+
 msgid "Delete Group"
 msgid_plural "Delete Groups"
 msgstr[0] "Smazat skupinu"
 msgstr[1] "Smazat skupiny"
 msgstr[2] "Smazat skupiny"
+
+msgid "Delete Host Aggregate"
+msgid_plural "Delete Host Aggregates"
+msgstr[0] "Smazat agregát hostitele"
+msgstr[1] "Smazat agregáty hostitele"
+msgstr[2] "Smazat agregáty hostitele"
 
 msgid "Delete IKE Policy"
 msgid_plural "Delete IKE Policies"
@@ -2979,6 +3068,12 @@ msgstr[0] "Smazat jmenný prostor"
 msgstr[1] "Smazat jmenné prostory"
 msgstr[2] "Smazat jmenné prostory"
 
+msgid "Delete Network"
+msgid_plural "Delete Networks"
+msgstr[0] "Smazat síť"
+msgstr[1] "Smazat sítě"
+msgstr[2] "Smazat sítě"
+
 msgid "Delete Object"
 msgid_plural "Delete Objects"
 msgstr[0] "Smazat objekt"
@@ -2996,6 +3091,12 @@ msgid_plural "Delete Pools"
 msgstr[0] "Smazat zásobu"
 msgstr[1] "Smazat zásoby"
 msgstr[2] "Smazat zásoby"
+
+msgid "Delete Port"
+msgid_plural "Delete Ports"
+msgstr[0] "Smazat port"
+msgstr[1] "Smazat porty"
+msgstr[2] "Smazat porty"
 
 msgid "Delete Project"
 msgid_plural "Delete Projects"
@@ -3050,6 +3151,12 @@ msgid_plural "Delete Static Routes"
 msgstr[0] "Smazat statickou cestu"
 msgstr[1] "Smazat statické cesty"
 msgstr[2] "Smazat statické cesty"
+
+msgid "Delete Subnet"
+msgid_plural "Delete Subnets"
+msgstr[0] "Smazat podsíť"
+msgstr[1] "Smazat podsítě"
+msgstr[2] "Smazat podsítě"
 
 msgid "Delete Template"
 msgid_plural "Delete Templates"
@@ -3129,6 +3236,12 @@ msgstr[0] "Kontejner smazán"
 msgstr[1] "Kontejnery smazány"
 msgstr[2] "Kontejnery smazány"
 
+msgid "Deleted DHCP Agent"
+msgid_plural "Deleted DHCP Agents"
+msgstr[0] "Agent DHCP smazán"
+msgstr[1] "Agenti DHCP smazány"
+msgstr[2] "Agenti DHCP smazány"
+
 msgid "Deleted Data Source"
 msgid_plural "Deleted Data Sources"
 msgstr[0] "Zdroj dat smazán"
@@ -3159,11 +3272,23 @@ msgstr[0] "Dodatečná specifikace smazána"
 msgstr[1] "Dodatečné specifikace smazány"
 msgstr[2] "Dodatečné specifikace smazány"
 
+msgid "Deleted Flavor"
+msgid_plural "Deleted Flavors"
+msgstr[0] "Konfigurace smazána"
+msgstr[1] "Konfigurace smazány"
+msgstr[2] "Konfigurace smazány"
+
 msgid "Deleted Group"
 msgid_plural "Deleted Groups"
 msgstr[0] "Skupina smazána"
 msgstr[1] "Skupiny smazány"
 msgstr[2] "Skupiny smazány"
+
+msgid "Deleted Host Aggregate"
+msgid_plural "Deleted Host Aggregates"
+msgstr[0] "Agregát hostitele smazán"
+msgstr[1] "Agregáty hostitele smazány"
+msgstr[2] "Agregáty hostitele smazány"
 
 #, python-format
 msgid "Deleted IKE Policy %s"
@@ -3219,11 +3344,23 @@ msgstr[0] "Jmenný prostor smazán"
 msgstr[1] "Jmenné prostory smazány"
 msgstr[2] "Jmenné prostory smazány"
 
+msgid "Deleted Network"
+msgid_plural "Deleted Networks"
+msgstr[0] "Sít smazána"
+msgstr[1] "Sítě smazány"
+msgstr[2] "Sítě smazány"
+
 msgid "Deleted Object"
 msgid_plural "Deleted Objects"
 msgstr[0] "Objekt smazán"
 msgstr[1] "Objekty smazány"
 msgstr[2] "Objekty smazány"
+
+msgid "Deleted Port"
+msgid_plural "Deleted Ports"
+msgstr[0] "Port smazán"
+msgstr[1] "Porty smazány"
+msgstr[2] "Porty smazány"
 
 msgid "Deleted Project"
 msgid_plural "Deleted Projects"
@@ -3278,6 +3415,12 @@ msgid_plural "Deleted Static Routes"
 msgstr[0] "Statická cesta smazána"
 msgstr[1] "Statické cesty smazány"
 msgstr[2] "Statické cesty smazány"
+
+msgid "Deleted Subnet"
+msgid_plural "Deleted Subnets"
+msgstr[0] "Podsíť smazána"
+msgstr[1] "Podsítě smazány"
+msgstr[2] "Podsítě smazány"
 
 msgid "Deleted Template"
 msgid_plural "Deleted Templates"
@@ -3467,6 +3610,15 @@ msgstr "Přímý vstup"
 msgid "Direction"
 msgstr "Směr"
 
+msgid "Disable Domain"
+msgid_plural "Disable Domains"
+msgstr[0] "Zakázat doménu"
+msgstr[1] "Zakázat domény"
+msgstr[2] "Zakázat domény"
+
+msgid "Disable Domains"
+msgstr "Zakázat domény"
+
 msgid "Disable Gateway"
 msgstr "Zakázat bránu"
 
@@ -3491,6 +3643,12 @@ msgstr "Zakázáno"
 msgctxt "Current status of a Hypervisor"
 msgid "Disabled"
 msgstr "Zakázáno"
+
+msgid "Disabled Domain"
+msgid_plural "Disabled Domains"
+msgstr[0] "Doména zakázána"
+msgstr[1] "Domény zakázány"
+msgstr[2] "Domény zakázány"
 
 msgid "Disabled User"
 msgid_plural "Disabled Users"
@@ -3751,6 +3909,9 @@ msgstr "Upravit značky obrazu"
 msgid "Edit Instance"
 msgstr "Upravit instanci"
 
+msgid "Edit Job Binary"
+msgstr "Upravit binární soubor úkolu"
+
 msgid "Edit Member"
 msgstr "Upravit člena"
 
@@ -3863,8 +4024,26 @@ msgstr "E-mail"
 msgid "Enable DHCP"
 msgstr "Povolit DHCP"
 
+msgid "Enable Domain"
+msgid_plural "Enable Domains"
+msgstr[0] "Povolit doménu"
+msgstr[1] "Povolit domény"
+msgstr[2] "Povolit domény"
+
+msgid "Enable Domains"
+msgstr "Povolit domény"
+
 msgid "Enable HA mode"
 msgstr "Povolit režim HA"
+
+msgid "Enable Service"
+msgid_plural "Enable Services"
+msgstr[0] "Povolit službu"
+msgstr[1] "Povolit služby"
+msgstr[2] "Povolit služby"
+
+msgid "Enable Swift Paths"
+msgstr "Povolit cesty Swift"
 
 msgid "Enable User"
 msgid_plural "Enable Users"
@@ -3881,6 +4060,18 @@ msgstr "Povoleno"
 msgctxt "Current status of a Hypervisor"
 msgid "Enabled"
 msgstr "Povoleno"
+
+msgid "Enabled Domain"
+msgid_plural "Enabled Domains"
+msgstr[0] "Doména povolena"
+msgstr[1] "Domény povoleny"
+msgstr[2] "Domény povoleny"
+
+msgid "Enabled Service"
+msgid_plural "Enabled Services"
+msgstr[0] "Služba povolena"
+msgstr[1] "Služby povoleny"
+msgstr[2] "Služby povoleny"
 
 msgid "Enabled User"
 msgid_plural "Enabled Users"
@@ -3911,6 +4102,9 @@ msgstr "Energie (Kwapi)"
 
 msgid "Engine Id"
 msgstr "Id jádra"
+
+msgid "Enter Network Address manually"
+msgstr "Zadejte síťovou adresu ručně"
 
 msgid "Enter a value for ICMP code in the range (-1: 255)"
 msgstr "Zadejte hodnotu pro kód ICMP v rozsahu (-1: 255)"
@@ -4753,9 +4947,6 @@ msgstr "GRE"
 msgid "Gateway IP"
 msgstr "IP brány"
 
-msgid "Gateway IP (optional)"
-msgstr "IP brány (nepovinné)"
-
 msgid "Gateway IP and IP version are inconsistent."
 msgstr "IP brány a verze IP jsou v rozporu."
 
@@ -5015,14 +5206,6 @@ msgstr ""
 "DB8::/48). Pokud používáte výchozí hodnotu, nechejte pole prázdné. Pokud "
 "bránu nechcete používat, zaškrtněte \"Zakázat bránu\" níže."
 
-msgid ""
-"IP address of Gateway (e.g. 192.168.0.254). Specify an explicit address to "
-"set the gateway. If you do not want to use a gateway, check 'Disable "
-"Gateway' below."
-msgstr ""
-"IP adresy brány (např. 192.168.0.254). Pro nastavení musíte zadat konkrétní "
-"adresu. Pokud bránu nechcete použit, zaškrtněte níže 'Zakázat bránu'."
-
 msgid "IP allocation pool"
 msgstr "Zásoba přidělitelných ip"
 
@@ -5064,6 +5247,9 @@ msgstr "IPv4"
 msgid "IPv4 Address ="
 msgstr "Adresa IPv4 = "
 
+msgid "IPv4:"
+msgstr "IPv4:"
+
 msgid "IPv6"
 msgstr "IPv6"
 
@@ -5072,6 +5258,9 @@ msgstr "Adresa IPv6 ="
 
 msgid "IPv6 Address Configuration Mode"
 msgstr "Režim nastavení adresy IPv6"
+
+msgid "IPv6:"
+msgstr "IPv6:"
 
 msgid "ISO - Optical Disk Image"
 msgstr "ISO - Obraz optického disku"
@@ -5120,6 +5309,21 @@ msgstr ""
 "Pokud není zadán název kontejneru, bude Vám vytvořen výchozí s názvem "
 "volumebackups. Zálohy budou mít stejnou velikost jako svazek, z něhož byly "
 "vytvořeny."
+
+msgid ""
+"If selected, instances of a cluster will be automatically configured during "
+"creation. Otherwise you should manually specify configuration values"
+msgstr ""
+"Při zvolení jsou instance clusteru během vytváření automaticky nastaveny. V "
+"opačném případě musíte hodnoty nastavení zadat ručně."
+
+msgid ""
+"If selected, instances of a node group will be automatically configured "
+"during cluster creation. Otherwise you should manually specify configuration "
+"values."
+msgstr ""
+"Při zvolení jsou instance skupiny uzlu automaticky nastaveny během "
+"vytváření. V opačném případě musíte hodnoty nastavení zadat ručně."
 
 msgid ""
 "If you select an image via an HTTP URL, the Image Location field MUST be a "
@@ -5397,6 +5601,9 @@ msgstr "Instance"
 msgid "Instances Count"
 msgstr "Počet instancí"
 
+msgid "Instances Per Shard"
+msgstr "Instance v části"
+
 msgid "Insufficient privilege level to view domain information."
 msgstr "Nedostatečná úroveň oprávnění pro zobrazení informací o doméně."
 
@@ -5414,6 +5621,9 @@ msgstr "Nedostatečná úroveň oprávnění pro zobrazení informací o uživat
 
 msgid "Intelligent Platform Management Interface (IPMI)"
 msgstr "Rozhraní inteligentní správy platformy (IPMI)"
+
+msgid "Interface Arguments"
+msgstr "Argumenty rozhraní"
 
 msgid "Interface added"
 msgstr "Rozhraní přidáno"
@@ -5729,6 +5939,10 @@ msgstr[0] "Úkol spuštěny"
 msgstr[1] "Úkoly spuštěny"
 msgstr[2] "Úkoly spuštěny"
 
+#, python-format
+msgid "Launched cluster \"%s\""
+msgstr "Cluster \"%s\" spuštěn"
+
 msgid ""
 "Launching multiple instances is only supported for images and instance "
 "snapshots."
@@ -5802,11 +6016,17 @@ msgstr "Místní"
 msgid "Local Disk Usage"
 msgstr "Využití místního disku"
 
+msgid "Local Side Public IPs"
+msgstr "Veřejné IP adresy na místní straně"
+
 msgid "Local Storage (total)"
 msgstr "Místní kapacita (celkem)"
 
 msgid "Local Storage (used)"
 msgstr "Místní kapacita (použitá)"
+
+msgid "Location"
+msgstr "Umístění"
 
 msgid "Lock Instance"
 msgid_plural "Lock Instances"
@@ -5932,6 +6152,9 @@ msgstr "Mapovaná pevní IP adresa"
 msgid "Mapper"
 msgstr "Mapovač"
 
+msgid "Mapping Type"
+msgstr "Typ mapování"
+
 msgid "Master Instance Name"
 msgstr "Název hlavní instance"
 
@@ -6003,9 +6226,6 @@ msgstr "Určení popisných dat"
 msgid "Metadata Items"
 msgstr "Položky popisných dat"
 
-msgid "Metadata successfully updated."
-msgstr "Popisná data úspěšně aktualizována"
-
 msgid "Meter"
 msgstr "Metr"
 
@@ -6014,6 +6234,18 @@ msgstr "Metriky:"
 
 msgid "Migrate"
 msgstr "Přenést"
+
+msgid "Migrate Host"
+msgid_plural "Migrate Hosts"
+msgstr[0] "Přesunout hostitele"
+msgstr[1] "Přesunout hostitele"
+msgstr[2] "Přesunout hostitele"
+
+msgid "Migrate Instance"
+msgid_plural "Migrate Instances"
+msgstr[0] "Přesunout instanci"
+msgstr[1] "Přesunout instance"
+msgstr[2] "Přesunout instance"
 
 msgid "Migrate Volume"
 msgstr "Přesunout svazek"
@@ -6117,6 +6349,13 @@ msgstr "Změňte nastavení nástěnky pro vašeho uživatele."
 msgid "Modify name and description of a volume."
 msgstr "Změňte název a popis svazku."
 
+msgid ""
+"Modify the configuration so that swift URLs can be dereferenced through HDFS "
+"at runtime."
+msgstr ""
+"Změnit nastavení tak, aby URL swift mohly být dereferencovány pomocí HDFS "
+"při spuštění."
+
 msgid "Modify the name and description of a snapshot."
 msgstr "Změňte název a popis snímku."
 
@@ -6176,6 +6415,9 @@ msgstr "Název: %(name)s ID: %(uuid)s"
 msgid "Name: %(node_group_name)s"
 msgstr "Název: %(node_group_name)s"
 
+msgid "Named Parameter"
+msgstr "Pojmenovaný parametr"
+
 msgid "Namespace"
 msgstr "Jmenný prostor"
 
@@ -6234,6 +6476,9 @@ msgstr "Síť (Neutron)"
 msgid "Network Address"
 msgstr "Síťová adresa"
 
+msgid "Network Address Source"
+msgstr "Zdroj síťové adresy"
+
 msgid "Network Address and IP version are inconsistent."
 msgstr "Síťová adresa a verze IP jsou v rozporu."
 
@@ -6248,6 +6493,9 @@ msgstr "Podrobnosti sítě: {{ network.name }}"
 
 msgid "Network ID"
 msgstr "ID sítě"
+
+msgid "Network Mask"
+msgstr "Maska sítě"
 
 msgid "Network Name"
 msgstr "Název sítě"
@@ -6272,6 +6520,9 @@ msgstr "Síťová adresa ve formátu CIDR (např.: 192.168.0.0/24)"
 
 msgid "Network address in CIDR format (e.g. 192.168.0.0/24, 2001:DB8::/48)"
 msgstr "Síťová adresa ve formátu CIDR (např.: 192.168.0.0/24, 2001:DB8::/48)"
+
+msgid "Network attached to instance."
+msgstr "Síť připojená k instanci."
 
 msgid "Network list can not be retrieved."
 msgstr "Nelze získat seznam sítí."
@@ -6311,6 +6562,9 @@ msgstr "Nová konfigurace"
 msgid "New Host"
 msgstr "Nový hostitel"
 
+msgid "New Password"
+msgstr "Nové heslo"
+
 msgid "New Size (GB)"
 msgstr "Nová velkost (GB)"
 
@@ -6322,6 +6576,9 @@ msgstr "Nový název je v konfliktu s jiným typem."
 
 msgid "New password"
 msgstr "Nové heslo"
+
+msgid "New password for cluster access."
+msgstr "Nové heslo pro přístup ke clusteru"
 
 msgid "New size for volume must be greater than current size."
 msgstr "Nová velikost svazku musí být větší než současná."
@@ -6673,6 +6930,9 @@ msgstr ""
 "                        šablony clusteru, všechny volby vztahující\n"
 "                        se ke clusteru."
 
+msgid "Number"
+msgstr "Číslo"
+
 msgid "Number of API requests against swift"
 msgstr "Počet žádostí API na Swift"
 
@@ -6682,6 +6942,9 @@ msgstr "Počet instancí"
 msgid "Number of Nodes"
 msgstr "Počet uzlů"
 
+msgid "Number of Shards"
+msgstr "Počet částí"
+
 msgid "Number of Snapshots"
 msgstr "Počet snímků"
 
@@ -6690,6 +6953,9 @@ msgstr "Počet VCPU"
 
 msgid "Number of Volumes"
 msgstr "Počet svazků"
+
+msgid "Number of clusters to launch."
+msgstr "Počet clusterů ke spuštění"
 
 msgid "Number of containers"
 msgstr "Počet kontejnerů"
@@ -6711,6 +6977,12 @@ msgstr "Počet příchozích bajtů v síti pro rozhraní VM"
 
 msgid "Number of incoming packets for a VM interface"
 msgstr "Počet příchozích paketů pro rozhraní VM"
+
+msgid "Number of instances in the cluster. (Read only)"
+msgstr "Počet instanci v clusteru. (Pouze pro čtení)"
+
+msgid "Number of instances per shard. (Read only)"
+msgstr "Počet instancí v části (Pouze pro čtení)"
 
 msgid "Number of instances to launch."
 msgstr "Počet instancí ke spuštění."
@@ -6744,6 +7016,9 @@ msgstr "Počet přípustných selhání před změnou stavu člena na neaktivní
 
 msgid "Number of read requests"
 msgstr "Počet žádostí o čtení"
+
+msgid "Number of shards. (Read only)"
+msgstr "Počet částí. (Pouze pro čtení)"
 
 msgid "Number of write requests"
 msgstr "Počet žádostí o zápis"
@@ -6855,6 +7130,10 @@ msgstr "Ostatní"
 msgid "Other Protocol"
 msgstr "Ostatní protokoly"
 
+#, python-format
+msgid "Out of range float values are not JSON compliant: %r"
+msgstr "Hodnoty s plovoucí čárkou mimo rozsah neodpovídají normám JSON: %r"
+
 msgid "Output"
 msgstr "Výstup"
 
@@ -6923,6 +7202,12 @@ msgstr "Heslo bylo změněno. Por pokračovaní se prosím znovu přihlaste."
 
 msgid "Password changed. Please log in to continue."
 msgstr "Heslo bylo změněno. Por pokračovaní se prosím přihlaste."
+
+msgid "Password for root user must be specified."
+msgstr "Heslo pro superuživatele musí být zadáno."
+
+msgid "Password for root user."
+msgstr "Heslo pro superuživatele."
 
 #, python-format
 msgid "Password for user \"%s\""
@@ -7147,6 +7432,9 @@ msgstr "Porty"
 msgid "Position in Policy"
 msgstr "Umístění v zásadě"
 
+msgid "Positional Argument"
+msgstr "Poziční argument"
+
 msgid "Post-Creation"
 msgstr "Po vytvoření"
 
@@ -7204,12 +7492,6 @@ msgstr "Tajné"
 msgid "Private Key File"
 msgstr "Soubor soukromého klíče"
 
-msgid "Processes"
-msgstr "Procesy"
-
-msgid "Processes to be launched in node group"
-msgstr "Procesy které budou spuštěny ve skupině uzlu"
-
 msgid "Profile"
 msgstr "Profil"
 
@@ -7237,6 +7519,9 @@ msgstr "Skupiny projektu"
 
 msgid "Project ID"
 msgstr "ID projektu"
+
+msgid "Project ID:"
+msgstr "ID projektu:"
 
 msgid "Project Information"
 msgstr "Informace o projektu"
@@ -7621,6 +7906,9 @@ msgstr ""
 "Požadavky od jedinečné zdrojové IP adresy jsou soustavně\n"
 "směrovány do stejné instance."
 
+msgid "Required"
+msgstr "Vyžadováno"
+
 msgid "Required for APP_COOKIE persistence; Ignored otherwise."
 msgstr "Vyžadováno pro vyrvání APP_COOKIE; Jinak ignorováno."
 
@@ -7640,6 +7928,9 @@ msgstr "Resetovat průvodce clusterem"
 
 msgid "Reset Job Execution Guide"
 msgstr "Resetovat průvodce spuštěním úkolu"
+
+msgid "Reset Root Password"
+msgstr "Resetovat heslo superuživatele"
 
 msgid "Reset to Default"
 msgstr "Resetovat na výchozí"
@@ -7883,6 +8174,13 @@ msgstr "Kořenový disk"
 
 msgid "Root Disk (GB)"
 msgstr "Kořenový disk (GB)"
+
+msgid "Root Password"
+msgstr "Heslo superuživatele"
+
+#, python-format
+msgid "Root password updated for cluster \"%s\""
+msgstr "Heslo superuživatele aktualizováno pro cluster \"%s\""
 
 msgid "Rotates requests evenly between multiple instances."
 msgstr "Rovnoměrně cyklí požadavky mezi více instancemi."
@@ -8136,6 +8434,12 @@ msgstr[2] "Naplánován přesun (čeká se na potvrzení) instancí"
 msgid "Scheduled resize of instance \"%s\"."
 msgstr "Naplánovaná změna velikosti instance \"%s\"."
 
+msgid "Scheduled termination of Cluster"
+msgid_plural "Scheduled termination of Clusters"
+msgstr[0] "Ukončení clusteru naplánováno"
+msgstr[1] "Ukončení clusterů naplánováno"
+msgstr[2] "Ukončení clusterů naplánováno"
+
 msgid "Scheduled termination of Instance"
 msgid_plural "Scheduled termination of Instances"
 msgstr[0] "Ukončení instance naplánováno"
@@ -8213,6 +8517,9 @@ msgstr "Vyberte snímek instance"
 msgid "Select Network"
 msgstr "Vyberte síť"
 
+msgid "Select Node Group Processes"
+msgstr "Vyberte procesy skupiny uzlu"
+
 msgid "Select Port"
 msgstr "Vyberte port"
 
@@ -8260,6 +8567,9 @@ msgstr "Vyberte směrovač"
 
 msgid "Select a Subnet"
 msgstr "Vybrat podsíť"
+
+msgid "Select a Value Type for your next argument:"
+msgstr "Vyberte typ hodnoty pro váš další argument"
 
 msgid "Select a backup to restore"
 msgstr "Vyberte zálohu pro obnovení"
@@ -8314,6 +8624,9 @@ msgstr "Vyberte zásuvný modul a verzi pro nový cluster."
 msgid "Select a plugin and version for the new Node Group template."
 msgstr "Vyberte zásuvný modul a verzi pro novou šablonu uzlu."
 
+msgid "Select a pool"
+msgstr "Vyberte zásobu"
+
 msgid "Select a port"
 msgstr "Vyberte port"
 
@@ -8367,6 +8680,9 @@ msgstr "Vyberte síť"
 
 msgid "Select networks for your instance."
 msgstr "Vyberte sítě pro vaší instanci."
+
+msgid "Select node processes for the node group"
+msgstr "Vyberte procesy uzlu pro jeho skupinu"
 
 msgid "Select parent backup"
 msgstr "Vyberte nadřazenou zálohu"
@@ -8534,9 +8850,21 @@ msgstr "Shell"
 msgid "Shell Action"
 msgstr "Činnost shell"
 
+msgid "Shelve Instance"
+msgid_plural "Shelve Instances"
+msgstr[0] "Uskladnit instanci"
+msgstr[1] "Uskladnit instance"
+msgstr[2] "Uskladnit instance"
+
 msgctxt "Current status of an Instance"
 msgid "Shelved"
 msgstr "Uskladněno"
+
+msgid "Shelved Instance"
+msgid_plural "Shelved Instances"
+msgstr[0] "Instance uskladněna"
+msgstr[1] "Instance uskladněny"
+msgstr[2] "Instance uskladněny"
 
 msgctxt "Current status of an Instance"
 msgid "Shelved Offloaded"
@@ -8606,6 +8934,9 @@ msgstr "Velikost efemérního disku"
 msgid "Size of image to launch."
 msgstr "Velikost obrazu pro spuštění."
 
+msgid "Size of instance to launch."
+msgstr "Velikost instance pro spuštění."
+
 msgid "Size of root disk"
 msgstr "Velikost kořenového disku"
 
@@ -8628,9 +8959,6 @@ msgid ""
 "Slashes are allowed, and are treated as pseudo-folders by the Object Store."
 msgstr ""
 "Lomítka jsou povolena a jsou považována za pseudosložky úložištěm objektů."
-
-msgid "Small"
-msgstr "Malé"
 
 msgid "Snapshot"
 msgstr "Snímek"
@@ -8774,8 +9102,12 @@ msgstr "Udává, že svazek může být použit ke spuštění instance"
 msgid "Specify \"Network Address\""
 msgstr "Zadejte \"Síťovou adresu\""
 
-msgid "Specify \"Network Address\" or clear \"Create Subnet\" checkbox."
-msgstr "Zadejte \"Síťová adresa\" nebo odškrtněte políčko \"Vytvořit podsíť\"."
+msgid ""
+"Specify \"Network Address\", \"Address pool\" or clear \"Create Subnet\" "
+"checkbox."
+msgstr ""
+"Zadejte \"Síťová adresa\", \"Zásoba adres\" nebo odškrtněte políčko "
+"\"Vytvořit podsíť\"."
 
 msgid "Specify IP address of gateway or check \"Disable Gateway\"."
 msgstr "Zadejte IP adresu brány nebo zaškrtněte \"Zakázat bránu\"."
@@ -8804,11 +9136,17 @@ msgstr "Zadejte obraz pro nahrání do Služby obrazů."
 msgid "Specify member IP address"
 msgstr "Zadejte IP adresu člena"
 
+msgid "Specify the details for adding additional shards."
+msgstr "Zadejte podrobnosti přidáním dalších částí"
+
 msgid "Specify the details for launching an instance."
 msgstr "Zadejte podrobnosti spuštění instance."
 
 msgid "Specify the details for the database backup."
 msgstr "Zadejte podrobnosti zálohy databáze."
+
+msgid "Specify the new root password for vertica cluster."
+msgstr "Zadejte nové heslo superuživatele pro vertikální cluster."
 
 msgid "Specify the new volume size for the database instance."
 msgstr "Zadejte novou velikost svazku instance databáze."
@@ -8965,6 +9303,9 @@ msgstr "Storm"
 msgid "Streaming MapReduce"
 msgstr "Streamování Mapreduce"
 
+msgid "String"
+msgstr "Řetězec"
+
 msgid "Subnet"
 msgstr "Podsíť"
 
@@ -8998,6 +9339,9 @@ msgstr "Podsíť: %(dest_subnetname)s"
 #, python-format
 msgid "Subnet: %(row_source_subnetname)s"
 msgstr "Podsíť: %(row_source_subnetname)s"
+
+msgid "Subnetpool"
+msgstr "Zásoba podsítě"
 
 msgid "Subnets"
 msgstr "Podsítě"
@@ -9267,11 +9611,20 @@ msgstr "URL šablony"
 msgid "Template not specified"
 msgstr "Šablona nezadána"
 
+msgid "Terminate Cluster"
+msgid_plural "Terminate Clusters"
+msgstr[0] "Ukončit cluster"
+msgstr[1] "Ukončit clustery"
+msgstr[2] "Ukončit clustery"
+
 msgid "Terminate Instance"
 msgid_plural "Terminate Instances"
 msgstr[0] "Ukončit instanci"
 msgstr[1] "Ukončit instance"
 msgstr[2] "Ukončit instance"
+
+msgid "Terminated cluster is not recoverable."
+msgstr "Ukončený cluster nelze obnovit."
 
 msgid "Terminated instances are not recoverable."
 msgstr "Ukončené instance nelze obnovit"
@@ -9531,12 +9884,18 @@ msgstr ""
 "Konfigurace '%(flavor)s' je pro požadovaný obraz příliš malá.\n"
 "Minimální požadavky: %(min_ram)s MB RAM a %(min_disk)s GB na kořenovém disku."
 
+msgid "The flavor must be specified."
+msgstr "Konfigurace musí být zadána."
+
 #, python-format
 msgid "The instance is preparing the live migration to host \"%s\"."
 msgstr "Instance se připravuje na přesun za běhu na hostitele \"%s\"."
 
 msgid "The instance password encrypted with your public key."
 msgstr "Heslo instance zašifrované pomocí vašeho veřejného klíče."
+
+msgid "The instance(s) will be shut off."
+msgstr "Instance budou vypnuty."
 
 #, python-format
 msgid ""
@@ -9595,6 +9954,9 @@ msgid ""
 msgstr ""
 "Adresy dalšího skoku mohou být použity k potlačení směrovače používaného "
 "klientem."
+
+msgid "The number of shards must be greater than 1."
+msgstr "Počet částí musí být větší než 1."
 
 msgid "The page you were looking for doesn't exist"
 msgstr "Stránka, kterou hledáte, neexistuje"
@@ -9811,9 +10173,6 @@ msgstr ""
 "Pro ukončení režimu celé obrazovky klikněte na tlačítko Zpět ve svém "
 "prohlížeči."
 
-msgid "To power off a specific instance."
-msgstr "Pro vypnutí konkrétní instance."
-
 msgid ""
 "To specify an allowed IP range, select &quot;CIDR&quot;. To allow access "
 "from all members of another security group select &quot;Security Group&quot;."
@@ -9825,6 +10184,12 @@ msgstr ""
 msgid "To:"
 msgstr "Do:"
 
+msgid "Toggle Network Collapse"
+msgstr "Povolit sbalení sítě"
+
+msgid "Toggle labels"
+msgstr "Přepnout štítky"
+
 msgid "Toggle navigation"
 msgstr "Přepnout navigaci"
 
@@ -9834,11 +10199,23 @@ msgstr "Téma"
 msgid "Topology"
 msgstr "Topologie"
 
+msgid "Total Active RAM (MB):"
+msgstr "Celkem aktivní RAM ( V MB):"
+
 msgid "Total Disk"
 msgstr "Celková kapacita"
 
+msgid "Total Disk Size (GB):"
+msgstr "Celková kapacita disku (V GB)"
+
+msgid "Total Disk Usage (Hours):"
+msgstr "Celkové využití disku (V hodinách):"
+
 msgid "Total Gigabytes"
 msgstr "Celkem gigabajtů"
+
+msgid "Total Memory Usage (Hours):"
+msgstr "Celkové využití paměti (V hodinách):"
 
 msgid "Total RAM"
 msgstr "Celkem RAM"
@@ -9848,6 +10225,9 @@ msgstr "Celková velikost Svazků LUKS a Snímků (GB)"
 
 msgid "Total Size of Volumes and Snapshots (GB)"
 msgstr "Celková velikost Svazků a Snímků (GB)"
+
+msgid "Total VCPU Usage (Hours):"
+msgstr "Celkové využití VCPU (V hodinách):"
 
 msgid ""
 "Total VCPU usage (Number of VCPU in instance * Hours Used) for the project"
@@ -9979,6 +10359,10 @@ msgstr "Nelze získat zásobu \"%s\"."
 msgid "Unable to add rule to security group."
 msgstr "Nelze přidat pravidlo do bezpečnostní skupiny."
 
+#, python-format
+msgid "Unable to add shard. %s"
+msgstr "Nelze přidat část. %s"
+
 msgid "Unable to add user to primary project."
 msgstr "Nelze přidat roli do hlavního projektu."
 
@@ -10071,6 +10455,9 @@ msgstr "Nelze vytvořit nový obraz: Název obrazu je příliš dlouhý."
 #, python-format
 msgid "Unable to create new image: Invalid disk format %s for image."
 msgstr "Nelze vytvořit nový obraz: Obraz má neplatný formát disku %s."
+
+msgid "Unable to create new image: URL scheme not supported."
+msgstr "Nelze vytvořit nový obraz: Schéma URL není podporováno."
 
 #, python-format
 msgid "Unable to create new namespace. %s"
@@ -10345,6 +10732,9 @@ msgstr "Nelze získat monitor funkčnosti %(monitor_id)s zásoby %(pool)s."
 msgid "Unable to get host aggregate list"
 msgstr "Nelze získat seznam agregátů hostitele."
 
+msgid "Unable to get instances data."
+msgstr "Nelze získat data instance."
+
 #, python-format
 msgid "Unable to get log for instance \"%s\"."
 msgstr "Nelze získat protokol instance \"%s\"."
@@ -10401,9 +10791,16 @@ msgstr "Nelze získat seznam typů svazku."
 msgid "Unable to import key pair."
 msgstr "Nelze importovat pár klíčů."
 
+msgid "Unable to initialize subnetpools"
+msgstr "Nelze zavést zásoby podsítě"
+
 #, python-format
 msgid "Unable to launch %(count)s named \"%(name)s\"."
 msgstr "Nelze spustit %(count)s pojmenovaných \"%(name)s\"."
+
+#, python-format
+msgid "Unable to launch cluster. %s"
+msgstr "Nelze spustit cluster. %s"
 
 msgid "Unable to launch job."
 msgstr "Nelze spustit úkol."
@@ -10457,6 +10854,12 @@ msgstr "Nelze změnit instanci \"%s\"."
 msgid "Unable to modify project \"%s\"."
 msgstr "Nelze změnit projekt \"%s\"."
 
+msgid "Unable to obtain datastore versions."
+msgstr "Nelze získat verze datových úložišť."
+
+msgid "Unable to obtain datastores."
+msgstr "Nelze získat datová úložiště."
+
 msgid "Unable to obtain flavors."
 msgstr "Nelze získat konfigurace."
 
@@ -10472,6 +10875,10 @@ msgstr "Nelze zpracovat značky zásuvného modulu"
 
 msgid "Unable to rebuild instance."
 msgstr "Instanci nelze znovu sestavit."
+
+#, python-format
+msgid "Unable to reset password. %s"
+msgstr "Nelze resetovat heslo. %s"
 
 #, python-format
 msgid "Unable to resize instance \"%s\"."
@@ -10588,17 +10995,11 @@ msgstr "Nelze získat seznam zón dostupnosti."
 msgid "Unable to retrieve availability zones."
 msgstr "Nelze získat zóny dostupnosti."
 
-msgid "Unable to retrieve available metadata for aggregate."
-msgstr "Nelze získat dostupná popisná data agregátu."
-
-msgid "Unable to retrieve available metadata for flavors."
-msgstr "Nelze získat dostupná popisná data konfigurací."
-
-msgid "Unable to retrieve available properties for image."
-msgstr "Nelze získat dostupné vlastnosti obrazu."
-
 msgid "Unable to retrieve backup details."
 msgstr "Nelze získat podrobnosti zálohy."
+
+msgid "Unable to retrieve cluster details."
+msgstr "Nelze získat podrobnosti clusteru."
 
 msgid "Unable to retrieve compute host information."
 msgstr "Nelze získat informace o hostiteli výpočtu."
@@ -10611,6 +11012,9 @@ msgstr "Nelze získat seznam kontejnerů."
 
 msgid "Unable to retrieve data processing plugins."
 msgstr "Nelze získat zásuvné moduly zpracování dat."
+
+msgid "Unable to retrieve database clusters."
+msgstr "Nelze získat clustery databáze."
 
 msgid "Unable to retrieve database instances."
 msgstr "Nelze získat instance databáze."
@@ -10639,6 +11043,10 @@ msgstr "Nelze získat podrobnosti šablony clusteru \"%s\"."
 #, python-format
 msgid "Unable to retrieve details for data source \"%s\"."
 msgstr "Nelze získat podrobnosti zdroje dat \"%s\"."
+
+#, python-format
+msgid "Unable to retrieve details for database cluster: %s"
+msgstr "Nelze získat podrobnosti clusteru databáze: %s"
 
 #, python-format
 msgid "Unable to retrieve details for database instance: %s"
@@ -10820,6 +11228,10 @@ msgstr "Nelze získat seznam instancí."
 
 msgid "Unable to retrieve instances."
 msgstr "Nelze získat instance."
+
+#, python-format
+msgid "Unable to retrieve job binary \"%s\"."
+msgstr "Nelze získat binární soubor úkolu \"%s\"."
 
 msgid "Unable to retrieve key pair list."
 msgstr "Nelze získat seznam párů klíče."
@@ -11043,15 +11455,6 @@ msgstr "Nelze získat limit nájemníků."
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "Nelze získat seznam agregátů k aktualizaci"
 
-msgid "Unable to retrieve the aggregate to be updated."
-msgstr "Nelze získat seznam agregátů k aktualizaci."
-
-msgid "Unable to retrieve the flavor metadata."
-msgstr "Nelze získat popisná data konfigurace."
-
-msgid "Unable to retrieve the image to be updated."
-msgstr "Nelze získat obraz k aktualizaci."
-
 msgid "Unable to retrieve the specified pool."
 msgstr "Nelze získat zadanou zásobu"
 
@@ -11208,6 +11611,9 @@ msgstr "Nelze aktualizovat skupinu."
 msgid "Unable to update image \"%s\"."
 msgstr "Nelze aktualizovat obraz \"%s\"."
 
+msgid "Unable to update job binary"
+msgstr "Nelze aktualizovat binární soubor úkolu"
+
 msgid "Unable to update object."
 msgstr "Nelze aktualizovat objekt."
 
@@ -11225,20 +11631,11 @@ msgstr "Nelze aktualizovat bezpečnostní skupinu: %s"
 msgid "Unable to update subnet \"%s\"."
 msgstr "Nelze aktualizovat podsíť \"%s\"."
 
-msgid "Unable to update the aggregate metadata."
-msgstr "Nelze aktualizovat popisná data agregátu."
-
 msgid "Unable to update the aggregate."
 msgstr "Nelze aktualizovat agregát."
 
-msgid "Unable to update the flavor metadata."
-msgstr "Nelze aktualizovat popisná data konfigurace."
-
 msgid "Unable to update the group."
 msgstr "Nelze aktualizovat skupinu."
-
-msgid "Unable to update the image metadata."
-msgstr "Nelze aktualizovat popisná data obrazu."
 
 msgid "Unable to update the user password."
 msgstr "Nelze aktualizovat heslo uživatele."
@@ -11344,6 +11741,18 @@ msgstr "Odznačte směrovače, které budou odebrány z brány firewall."
 msgid "Unselect the routers you want to disassociate from the firewall."
 msgstr "Odznačte směrovače, které chcete oddělit od brány firewall."
 
+msgid "Unshelve Instance"
+msgid_plural "Unshelve Instances"
+msgstr[0] "Vyskladnit instanci"
+msgstr[1] "Vyskladnit instance"
+msgstr[2] "Vyskladnit instance"
+
+msgid "Unshelved Instance"
+msgid_plural "Unshelved Instances"
+msgstr[0] "Instance vyskladněna"
+msgstr[1] "Instance vyskladněny"
+msgstr[2] "Instance vyskladněny"
+
 msgctxt "Task status of an Instance"
 msgid "Unshelving"
 msgstr "Vyskladňování"
@@ -11357,9 +11766,6 @@ msgstr "Otevřen"
 
 msgid "Update"
 msgstr "Aktualizovat"
-
-msgid "Update Aggregate Metadata"
-msgstr "Aktualizovat popisná data agregátu"
 
 msgid "Update Associations"
 msgstr "Aktualizovat přidružení"
@@ -11378,17 +11784,11 @@ msgctxt "current status of stack"
 msgid "Update Failed"
 msgstr "Aktualizace selhala."
 
-msgid "Update Flavor Metadata"
-msgstr "Aktualizovat popisná data konfigurace"
-
 msgid "Update Group"
 msgstr "Aktualizovat skupinu"
 
 msgid "Update Image"
 msgstr "Aktualizovat obraz"
-
-msgid "Update Image Metadata"
-msgstr "Aktualizovat popisná data obrazu"
 
 msgctxt "current status of stack"
 msgid "Update In Progress"
@@ -11540,6 +11940,9 @@ msgstr "Přehled využití"
 msgid "Usage Report"
 msgstr "Zpráva o využití"
 
+msgid "Usage Report For Period:"
+msgstr "Zpráva o využití za období:"
+
 msgid "Use HBase Common library"
 msgstr "Použít společnou knihovnu HBase"
 
@@ -11554,6 +11957,9 @@ msgstr "Použít skupiny proti slučivosti pro procesy"
 
 msgid "Use anti-affinity groups for: "
 msgstr "Použít skupiny proti slučivosti pro:"
+
+msgid "Use auto-configuration"
+msgstr "Použít automatické nastavení"
 
 msgid "Use image as a source"
 msgstr "Použít obraz jako zdroj"
@@ -11736,6 +12142,9 @@ msgstr "Hodnota"
 
 msgid "Value (Avg)"
 msgstr "Hodnota (Prům)"
+
+msgid "Value Type"
+msgstr "Typ hodnoty"
 
 msgid "Value:"
 msgstr "Hodnota:"
@@ -11976,6 +12385,10 @@ msgstr "Velikost svazku musí být větší než 0"
 
 msgid "Volume source must be specified"
 msgstr "Zdroj svazku musí být zadán."
+
+#, python-format
+msgid "Volume type name \"%s\" already exists."
+msgstr "Typ svazku s názvem \"%s\" již existuje."
 
 msgid "Volume type name can not be empty."
 msgstr "Název typu svazku nemůže být prázdný."

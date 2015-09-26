@@ -6,24 +6,33 @@
 # Heleno Jimenez de la Cruz <heleno.jimenez@gmail.com>, 2015
 # Marian Tort <marian.tort@gmail.com>, 2015
 # Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>, 2015
+# Eduardo Gonzalez Gutierrez <dabarren@gmail.com>, 2015. #zanata
+# Marian T <marian.tort@gmail.com>, 2015. #zanata
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
+# Pedro Navarro Pérez <pednape@gmail.com>, 2015. #zanata
+# Veruska <reaching.out@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-01 03:11+0000\n"
-"PO-Revision-Date: 2015-08-30 00:10+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Spanish (http://www.transifex.com/openstack/horizon/language/"
-"es/)\n"
+"POT-Creation-Date: 2015-09-22 10:47+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-22 04:25+0000\n"
+"Last-Translator: Pedro Navarro Pérez <pednape@gmail.com>\n"
+"Language-Team: Spanish (http://www.transifex.com/openstack/horizon/language/"
+"es/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 msgid "(Max: 16Kb)"
 msgstr "(Máximo: 16Kb)"
+
+msgid "(Modified)"
+msgstr "(Modificado)"
 
 msgid "(None)"
 msgstr "(Ninguno)"
@@ -71,18 +80,28 @@ msgstr ""
 "<em>Nota: al escoger Volumen, sólo puede lanzar una instancia.</em></li>"
 
 msgid ""
-"A key pair allows you to SSH into your newly created instance. You may "
-"select an existing key pair, import a key pair, or generate a new key pair."
+"A floating IP allows instances to be addressable from an external network.\n"
+"    Floating IPs are not allocated to instances at creation time and may be "
+"assigned\n"
+"    after the instance is created. To attach a floating IP, go to the "
+"<b>Instances</b>\n"
+"    view and click the <b>Actions</b> menu to the right of an instance.\n"
+"    Then, select the <b>Associate Floating IP</b> option and enter the "
+"necessary details."
 msgstr ""
-"Un Par de claves le permite SSH dentro de su instancia cread más "
-"recientemente. Debe seleccionar un par de claves existente, importar un par "
-"de claves, o generar un nuevo par de claves."
+"Una IP flotante permite que las instancias sean accesibles desde una red "
+"externa.\n"
+"Las IPs flotantes no están asignadas a instancias al momento de su creación "
+"y deben ser asignadas\n"
+"luego que se cree la instancia. Para asignar una IP flotante, vaya a la "
+"vista de <b>Instancias</b> \n"
+"y haga click en el menú de <b>Acciones</b> en la parte derecha de una "
+"instancia.\n"
+"Luego, seleccione la opción <b>Asociar IP Flotante</b> e introduzca los "
+"detalles necesarios."
 
 msgid "A name is required for your instance."
 msgstr "Un nombre es necesario para su instancia. "
-
-msgid "Actions"
-msgstr "Acciones"
 
 msgid "Active"
 msgstr "Activo"
@@ -109,6 +128,21 @@ msgstr ""
 "asociarse a las instancias."
 
 msgid ""
+"An <b>External</b> network is set up by an administrator.\n"
+"    If you want an instance to communicate outside of the data center,\n"
+"    then attach a router between your <b>Project</b> network and the "
+"<b>External</b> network.\n"
+"    You can use the <b>Network Topology</b> view to connect the router to "
+"the two networks."
+msgstr ""
+"Una red  <b>Externa</b> es configurada por un administrador.\n"
+"Si desea que una instancia se comunique por fuera del data center,\n"
+"debe adjuntar un router entre su red de <b>Proyecto</b> y la red <b>Externa</"
+"b>.\n"
+"Puede usar la vista de  <b>Topología de Red</b> para conectar el router a "
+"ambas redes."
+
+msgid ""
 "An advanced option available when launching an instance is disk "
 "partitioning. There are two disk partition options. Selecting <b>Automatic</"
 "b> resizes the disk and sets it to a single partition. Selecting <b>Manual</"
@@ -133,6 +167,9 @@ msgstr "Automático"
 msgid "Availability Zone"
 msgstr "Zona de Disponibilidad"
 
+msgid "Boot Source"
+msgstr "Fuente de Arranque"
+
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -141,9 +178,6 @@ msgstr "No puedo obtener el catálogo de servicios de keystone."
 
 msgid "Cannot get the Nova extension list."
 msgstr "No se puede obtener la lista de extensiones de Nova."
-
-msgid "Change Password"
-msgstr "Cambiar contraseña"
 
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
@@ -166,6 +200,9 @@ msgstr "Unidad de Configuración"
 msgid "Configuration Help"
 msgstr "Ayuda de Configuración"
 
+msgid "Configuration Value"
+msgstr "Valor de Configuración "
+
 msgid "Count"
 msgstr "Número"
 
@@ -175,33 +212,17 @@ msgstr "Crear Par de Claves"
 msgid "Create New Volume"
 msgstr "Crear nuevo volumen"
 
-msgid "Create User"
-msgstr "Crear usuario"
-
 msgid "Created"
 msgstr "Creado"
-
-#, python-format
-msgid ""
-"Custom scripts are attached to instances to perform specific actions when "
-"the instance is launched. For example, if you are unable to install <samp>"
-"%(cloutInit)s</samp> inside a guest operating system, you can use a custom "
-"script to get a public key and add it to the user account."
-msgstr ""
-"Scripts Personalizados están adjuntos a instancias para realizar acciones "
-"específicas cuando la instancia es ejecutada. Por ejemplo, si no le ha sido "
-"posible instalar <samp>%(cloutInit)s</samp> dentro de un sistema operativo "
-"huésped, puede usar un script personalizado para obtener una llave pública y "
-"agregarla a la cuenta del usuario. "
 
 msgid "Customization Script"
 msgstr "Script de Personalización"
 
-msgid "Delete"
-msgstr "Eliminar"
+msgid "Data Source"
+msgstr "Fuente de Datos"
 
-msgid "Delete Users"
-msgstr "Eliminar usuarios"
+msgid "Default Value"
+msgstr "Valor por defecto"
 
 msgid "Delete Volume on Terminate"
 msgstr "Borrar volumen al terminar"
@@ -218,9 +239,6 @@ msgstr "Nombre del dispositivo"
 msgid "Direction"
 msgstr "Dirección"
 
-msgid "Disable"
-msgstr "Deshabilitar"
-
 msgid "Disk Partition"
 msgstr "Partición de Disco"
 
@@ -230,14 +248,8 @@ msgstr "ID de dominio"
 msgid "Down"
 msgstr "Abajo"
 
-msgid "Edit"
-msgstr "Editar"
-
 msgid "Email"
 msgstr "Correo electrónico"
-
-msgid "Enable"
-msgstr "Habilitar"
 
 msgid "Enabled"
 msgstr "Habilitado"
@@ -247,6 +259,9 @@ msgstr "Disco efímero"
 
 msgid "Ether Type"
 msgstr "Tipo Ethernet"
+
+msgid "Event log is not available."
+msgstr "Registro de eventos no se encuentra disponible."
 
 #, python-format
 msgid "Extension is not enabled: %(extension)s."
@@ -271,20 +286,14 @@ msgstr ""
 "Los sabores definen el tamaño que tendrá la instancia respecto a CPU, "
 "memoria y almacenamiento."
 
+#, fuzzy
+msgid ""
+"For data sources, use a data source UUID or a path (as per data source "
+"creation.)"
+msgstr "Para fuentes de datos, use una fuente de datos UUID o una ruta "
+
 msgid "Format"
 msgstr "Formato"
-
-#, python-format
-msgid ""
-"From a Windows system, you can use PuTTYGen to create private/public keys. "
-"Use the PuTTY Key Generator to create and save the keys, then copy the "
-"public key in the red highlighted box to your <samp>%(authorizeKeysFile)s</"
-"samp> file."
-msgstr ""
-"Desde un sistema  Windows system, puede utilizar  PuTTYGen para crear claves "
-"pública/privadas.  Utilice el Generador PuttyGen para crear y salvar las "
-"claves y luego copiar la clave pública en el campo resaltado en rojo <samp>"
-"%(authorizeKeysFile)s</samp>."
 
 msgid "ID"
 msgstr "ID"
@@ -334,9 +343,6 @@ msgstr "Impacto en tu capacidad"
 msgid "Import Key Pair"
 msgstr "Importar Par de Claves"
 
-msgid "Import Key Pair Help"
-msgstr "Ayuda para Importar Par de Claves"
-
 msgid "Instance Details"
 msgstr "Detalles de la Instancia"
 
@@ -375,23 +381,6 @@ msgstr "Ayuda de Par de Claves"
 msgid "Key Pair Name"
 msgstr "Nombre de Par de Claves"
 
-msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose a "
-"key pair name you will recognize and paste your SSH public key into the "
-"space provided."
-msgstr ""
-"Los pares de clave son el método utilizado para ingresar en una instancia "
-"una vez que se ha lanzado. Escoja un nombre de pareja de claves que "
-"reconozca y pegue su clave pública SSH en el campo proporcionado."
-
-msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose a "
-"key pair name you will recognize."
-msgstr ""
-"Los pares de clave son el método utilizado para ingresar en una instancia "
-"una vez que se ha lanzado. Escoja un nombre de pareja de claves que "
-"reconozca."
-
 msgid "Killed"
 msgstr "Terminado forzosamente"
 
@@ -401,8 +390,14 @@ msgstr "Ejecutar Instancia"
 msgid "Load script from a file"
 msgstr "Cargar script desde un archivo"
 
+msgid "Location"
+msgstr "Localización"
+
 msgid "Manual"
 msgstr "Manual"
+
+msgid "Mapping Type"
+msgstr "Tipo de Asignación"
 
 msgid "Max Port"
 msgstr "Puerto máximo"
@@ -410,20 +405,26 @@ msgstr "Puerto máximo"
 msgid "Min Disk"
 msgstr "Disco mínimo"
 
+msgid "Min Disk (GB)"
+msgstr "Disco mín. (GB)"
+
 msgid "Min Port"
 msgstr "Puerto mínimo"
 
 msgid "Min RAM"
 msgstr "RAM mínima"
 
+msgid "Min RAM (MB)"
+msgstr "Memoria RAM mín. (MB)"
+
 msgid "Min Ram"
 msgstr "RAM mínima"
 
-msgid "Modified"
-msgstr "Modificado"
-
 msgid "Name"
 msgstr "Nombre"
+
+msgid "Named Parameter"
+msgstr "Parámetro denominado"
 
 msgid "Network"
 msgstr "Red"
@@ -447,6 +448,9 @@ msgstr "No"
 msgid "No available items"
 msgstr "No hay ítems disponibles"
 
+msgid "Number"
+msgstr "Número"
+
 msgid "OK"
 msgstr "OK"
 
@@ -468,6 +472,9 @@ msgstr ""
 msgid "Policy check failed."
 msgstr "Comprobación de política fallada."
 
+msgid "Positional Argument"
+msgstr "Argumento posicional"
+
 msgid "Private"
 msgstr "Privado"
 
@@ -483,6 +490,13 @@ msgstr "Proyecto"
 msgid "Project ID"
 msgstr "ID del proyecto"
 
+msgid ""
+"Project networks are created by users.\n"
+"    These networks are fully isolated and are project-specific."
+msgstr ""
+"Redes de proyectos son creadas por los usuarios.\n"
+"Estas redes están totalmente aisladas y son específicas por proyecto."
+
 msgid "Protected"
 msgstr "Protegido"
 
@@ -491,6 +505,13 @@ msgstr "Protocolo"
 
 msgid "Provider Network"
 msgstr "Red de Proveedor"
+
+msgid ""
+"Provider networks are created by administrators.\n"
+"    These networks map to an existing physical network in the data center."
+msgstr ""
+"Las redes de proveedor son creadas por los administradores.\n"
+"Esas redes apuntan hacia una red física existente en el centro de datos."
 
 msgid "Public"
 msgstr "Público"
@@ -510,8 +531,14 @@ msgstr "Reordene los ítems arrastrando y soltando."
 msgid "Remote"
 msgstr "Remoto"
 
+msgid "Remove"
+msgstr "Eliminar"
+
 msgid "Required"
 msgstr "Obligatorio"
+
+msgid "Required?"
+msgstr "¿Requerido?"
 
 msgid "Root Disk"
 msgstr "Disco raíz"
@@ -524,9 +551,6 @@ msgstr "Guardando"
 
 msgid "Script size"
 msgstr "Tamaño del script"
-
-msgid "Script size > 16Kb"
-msgstr "Tamaño del script > 16kb"
 
 msgid "Security Groups"
 msgstr "Grupos de Seguridad"
@@ -554,6 +578,13 @@ msgstr ""
 "opciones adicionales de acceso a una instancia. Para crear reglas "
 "adicionales, vaya a la vista <b>Compute | Acceso y Seguridad</b>, busque el "
 "grupo de seguridad y haga click en <b>Gestionar reglas</b>."
+
+msgid ""
+"See http://docs.openstack.org/developer/sahara/userdoc/edp.html for "
+"definitions."
+msgstr ""
+"Mire http://docs.openstack.org/developer/sahara/userdoc/edp.html para las "
+"definiciones."
 
 msgid "Segmentation ID"
 msgstr "ID de Segmentación"
@@ -606,6 +637,9 @@ msgstr "Ajuste no habilitado: %(setting)s"
 msgid "Shared"
 msgstr "Compartido"
 
+msgid "Show events"
+msgstr "Mostrar eventos"
+
 msgid "Size"
 msgstr "Tamaño"
 
@@ -618,8 +652,19 @@ msgstr "Instantánea"
 msgid "Status"
 msgstr "Estado"
 
+msgid "String"
+msgstr "Cadena"
+
 msgid "Subnets Associated"
 msgstr "Subredes Asociadas"
+
+#, python-format
+msgid "Successfully created key pair %(name)s."
+msgstr "Se creado correctamente el par de claves %(name)s."
+
+#, python-format
+msgid "Successfully imported key pair %(name)s."
+msgstr "Se ha importado correctamente el par de claves %(name)s."
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -628,6 +673,17 @@ msgstr ""
 "El sabor que selecciona para una instancia determina la cantidad de computo, "
 "almacenamiento y recursos de memoria que serán reservados para la instancia."
 
+msgid ""
+"The flavor you select must have enough resources allocated to support the "
+"type of instance you are trying to create. Flavors that do not provide "
+"enough resources for your instance are identified on the <b>Available</b> "
+"table with a yellow warning icon."
+msgstr ""
+"The sabor que ha seleccionado debe tener suficientes recursos para soportar "
+"el tipo de instancia que está intentado crear. Los sabores sin recursos "
+"disponibles para su instancia aparecen en la tabla <b>Available</b> con un "
+"icono en amarillo como aviso."
+
 #, python-format
 msgid ""
 "The instance count must not exceed your quota available of "
@@ -635,12 +691,6 @@ msgid ""
 msgstr ""
 "El número de instancias no debe exceder su quota disponible de "
 "%(maxInstanceCount)s instancias."
-
-msgid "The key pair allows you to SSH into the instance."
-msgstr "El par de claves te permite SSH dentro de la instancia."
-
-msgid "The maximum script size is 16Kb."
-msgstr "El tamaño máximo del script es 16Kb."
 
 #, python-format
 msgid ""
@@ -664,25 +714,21 @@ msgstr ""
 msgid "The status indicates whether the network has an active connection."
 msgstr "El estado indica si la red tiene una conexión activa"
 
+msgid "The step has completed successfully. No events to display."
+msgstr "Este paso se ha realizado con éxito. No hay eventos a mostrar."
+
+msgid ""
+"The subnet identifies a sub-section of a network. A subnet is specified in "
+"CIDR format.\n"
+"    A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
+msgstr ""
+"La subred identifica una sub-sección de una red. Una subred está "
+"especificada en el formato CIDR.\n"
+"Un formato CIDR típico se ve como <samp>192.xxx.x.x/24</samp>."
+
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
 msgstr "El tamaño del volumen debe ser al menos %(minVolumeSize)s GB"
-
-#, python-format
-msgid ""
-"There are two ways to generate a key pair. From a Linux system, generate the "
-"key pair with the <samp>%(genKeyPairCmd)s</samp> command:"
-msgstr ""
-"Existen dos maneras de generar un par de claves. Desde un sistema Linux, "
-"generar el par de claves con el comando <samp>%(genKeyPairCmd)s</samp>:"
-
-#, python-format
-msgid ""
-"This command generates a pair of keys: a private key (%(privateKeyPath)s) "
-"and a public key (%(publicKeyPath)s)."
-msgstr ""
-"Este comando genera un par de claves: una clave privada  "
-"(%(privateKeyPath)s) y una clave pública (%(publicKeyPath)s)."
 
 msgid ""
 "This flavor requires more RAM than your quota allows. Please select a "
@@ -879,6 +925,9 @@ msgstr "No ha sido posible obtener las instantáneas de volumen."
 msgid "Unable to retrieve the volumes."
 msgstr "No ha sido posible obtener los volúmenes."
 
+msgid "Unable to validate the template."
+msgstr "No es posible validar la plantilla."
+
 msgid "Up"
 msgstr "Arriba"
 
@@ -899,6 +948,12 @@ msgstr "ID de usuario"
 
 msgid "User Name"
 msgstr "Usuario"
+
+msgid "VCPUS"
+msgstr "VCPUS"
+
+msgid "Value Type"
+msgstr "Tipo de valor"
 
 msgid "Visibility"
 msgstr "Visibilidad"
@@ -928,8 +983,23 @@ msgstr ""
 "que la zona de disponibilidad de la instanciaes compatible con sus zonas de "
 "disponibilidad del volumen."
 
+msgid ""
+"When the <b>Admin State</b> for a network is set to <b>Up</b>,\n"
+"    then the network is available for use. You can set the <b>Admin State</"
+"b> to <b>Down</b>\n"
+"    if you are not ready for other users to access the network."
+msgstr ""
+"Cuando el <b>Estado de Administrador</b> para una red se encuentra en "
+"<b>Arriba</b>,\n"
+"entonces la red se encuentra disponible para su uso. Puede cambiar el  "
+"<b>Estado de Administrador</b> a  <b>Abajo</b>\n"
+"si no se encuentra listo para que oros usuarios accedan a la red."
+
 msgid "Yes"
 msgstr "Sí"
 
 msgid "bytes"
 msgstr "bytes"
+
+msgid "{$ row['provider:network_type'] $}"
+msgstr "{$ row['provider:network_type'] $}"

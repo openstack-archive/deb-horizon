@@ -334,21 +334,22 @@ def handle(request, message=None, redirect=None, ignore=False,
 
     log_entry = encoding.force_text(exc_value)
 
+    user_message = ""
     # We trust messages from our own exceptions
     if issubclass(exc_type, HorizonException):
-        message = exc_value
+        user_message = log_entry
     # If the message has a placeholder for the exception, fill it in
     elif message and "%(exc)s" in message:
-        message = encoding.force_text(message) % {"exc": log_entry}
-    if message:
-        message = encoding.force_text(message)
+        user_message = encoding.force_text(message) % {"exc": log_entry}
+    elif message:
+        user_message = encoding.force_text(message)
 
     for exc_handler in HANDLE_EXC_METHODS:
         if issubclass(exc_type, exc_handler['exc']):
             if exc_handler['set_wrap']:
                 wrap = True
             handler = exc_handler['handler']
-            ret = handler(request, message, redirect, ignore,
+            ret = handler(request, user_message, redirect, ignore,
                           exc_handler.get('escalate', escalate),
                           handled, force_silence, force_log,
                           log_method, log_entry, log_level)
@@ -358,5 +359,14 @@ def handle(request, message=None, redirect=None, ignore=False,
     # If we've gotten here, time to wrap and/or raise our exception.
     if wrap:
         raise HandledException([exc_type, exc_value, exc_traceback])
+
+    # assume exceptions handled in the code that pass in a message are already
+    # handled appropriately and treat as recoverable
+    if message:
+        ret = handle_recoverable(request, user_message, redirect, ignore,
+                                 escalate, handled, force_silence, force_log,
+                                 log_method, log_entry, log_level)
+        if ret:
+            return ret
 
     six.reraise(exc_type, exc_value, exc_traceback)

@@ -12,8 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from collections import OrderedDict
+
 from django.core.urlresolvers import reverse_lazy
-from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -51,7 +52,7 @@ class IndexView(tables.DataTableView):
                     "networks' projects.")
             exceptions.handle(self.request, msg)
 
-        tenant_dict = SortedDict([(t.id, t) for t in tenants])
+        tenant_dict = OrderedDict([(t.id, t) for t in tenants])
         return tenant_dict
 
     def _get_agents_data(self, network):
@@ -168,6 +169,21 @@ class DetailView(tables.MultiTableView):
         context["network"] = network
         context["url"] = self.get_redirect_url()
         context["actions"] = table.render_row_actions(network)
+        status_label = [label for (value, label) in
+                        networks_tables.project_tables.STATUS_DISPLAY_CHOICES
+                        if value.lower() == (network.status or '').lower()]
+        if status_label:
+            network.status_label = status_label[0]
+        else:
+            network.status_label = network.status
+        admin_state_label = [state for (value, state) in
+                             networks_tables.DISPLAY_CHOICES
+                             if value.lower() ==
+                             (network.admin_state or '').lower()]
+        if admin_state_label:
+            network.admin_state_label = admin_state_label[0]
+        else:
+            network.admin_state_label = network.admin_state
         return context
 
     @staticmethod

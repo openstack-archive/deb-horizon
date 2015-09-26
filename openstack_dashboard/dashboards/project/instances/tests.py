@@ -16,6 +16,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from collections import OrderedDict
 import json
 import logging
 import sys
@@ -27,7 +28,6 @@ from django.core.urlresolvers import reverse
 from django.forms import widgets
 from django import http
 import django.test
-from django.utils.datastructures import SortedDict
 from django.utils import encoding
 from django.utils.http import urlencode
 from mox3.mox import IgnoreArg  # noqa
@@ -74,6 +74,8 @@ class InstanceTests(helpers.TestCase):
         servers = self.servers.list()
         api.nova.extension_supported('AdminActions',
                                      IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
@@ -133,10 +135,12 @@ class InstanceTests(helpers.TestCase):
     def test_index_flavor_list_exception(self):
         servers = self.servers.list()
         flavors = self.flavors.list()
-        full_flavors = SortedDict([(f.id, f) for f in flavors])
+        full_flavors = OrderedDict([(f.id, f) for f in flavors])
         search_opts = {'marker': None, 'paginate': True}
         api.nova.extension_supported('AdminActions',
                                      IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
         api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts) \
             .AndReturn([servers, False])
@@ -181,6 +185,8 @@ class InstanceTests(helpers.TestCase):
 
         api.nova.extension_supported('AdminActions',
                                      IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
@@ -611,6 +617,129 @@ class InstanceTests(helpers.TestCase):
 
         self.assertRedirectsNoFollow(res, INDEX_URL)
 
+    @helpers.create_stubs({api.nova: ('server_shelve',
+                                      'server_list',
+                                      'flavor_list',
+                                      'extension_supported',),
+                           api.glance: ('image_list_detailed',),
+                           api.network: ('servers_update_addresses',)})
+    def test_shelve_instance(self):
+        servers = self.servers.list()
+        server = servers[0]
+
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.flavor_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.flavors.list())
+        api.glance.image_list_detailed(IgnoreArg()) \
+            .AndReturn((self.images.list(), False, False))
+        search_opts = {'marker': None, 'paginate': True}
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts) \
+            .AndReturn([servers, False])
+        api.network.servers_update_addresses(IsA(http.HttpRequest), servers)
+        api.nova.server_shelve(IsA(http.HttpRequest), six.text_type(server.id))
+
+        self.mox.ReplayAll()
+
+        formData = {'action': 'instances__shelve__%s' % server.id}
+        res = self.client.post(INDEX_URL, formData)
+
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @helpers.create_stubs({api.nova: ('server_shelve',
+                                      'server_list',
+                                      'flavor_list',
+                                      'extension_supported',),
+                           api.glance: ('image_list_detailed',),
+                           api.network: ('servers_update_addresses',)})
+    def test_shelve_instance_exception(self):
+        servers = self.servers.list()
+        server = servers[0]
+
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.flavor_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.flavors.list())
+        api.glance.image_list_detailed(IgnoreArg()) \
+            .AndReturn((self.images.list(), False, False))
+        search_opts = {'marker': None, 'paginate': True}
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts) \
+            .AndReturn([servers, False])
+        api.network.servers_update_addresses(IsA(http.HttpRequest), servers)
+        api.nova.server_shelve(IsA(http.HttpRequest),
+                               six.text_type(server.id)) \
+            .AndRaise(self.exceptions.nova)
+
+        self.mox.ReplayAll()
+
+        formData = {'action': 'instances__shelve__%s' % server.id}
+        res = self.client.post(INDEX_URL, formData)
+
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @helpers.create_stubs({api.nova: ('server_unshelve',
+                                      'server_list',
+                                      'flavor_list',
+                                      'extension_supported',),
+                           api.glance: ('image_list_detailed',),
+                           api.network: ('servers_update_addresses',)})
+    def test_unshelve_instance(self):
+        servers = self.servers.list()
+        server = servers[0]
+        server.status = "SHELVED_OFFLOADED"
+
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.flavor_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.flavors.list())
+        api.glance.image_list_detailed(IgnoreArg()) \
+            .AndReturn((self.images.list(), False, False))
+        search_opts = {'marker': None, 'paginate': True}
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts) \
+            .AndReturn([servers, False])
+        api.network.servers_update_addresses(IsA(http.HttpRequest), servers)
+        api.nova.server_unshelve(IsA(http.HttpRequest),
+                                 six.text_type(server.id))
+
+        self.mox.ReplayAll()
+
+        formData = {'action': 'instances__shelve__%s' % server.id}
+        res = self.client.post(INDEX_URL, formData)
+
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @helpers.create_stubs({api.nova: ('server_unshelve',
+                                      'server_list',
+                                      'flavor_list',
+                                      'extension_supported',),
+                           api.glance: ('image_list_detailed',),
+                           api.network: ('servers_update_addresses',)})
+    def test_unshelve_instance_exception(self):
+        servers = self.servers.list()
+        server = servers[0]
+        server.status = "SHELVED_OFFLOADED"
+
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.flavor_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.flavors.list())
+        api.glance.image_list_detailed(IgnoreArg()) \
+            .AndReturn((self.images.list(), False, False))
+        search_opts = {'marker': None, 'paginate': True}
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts) \
+            .AndReturn([servers, False])
+        api.network.servers_update_addresses(IsA(http.HttpRequest), servers)
+        api.nova.server_unshelve(IsA(http.HttpRequest),
+                                 six.text_type(server.id)) \
+            .AndRaise(self.exceptions.nova)
+
+        self.mox.ReplayAll()
+
+        formData = {'action': 'instances__shelve__%s' % server.id}
+        res = self.client.post(INDEX_URL, formData)
+
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
     @helpers.create_stubs({api.nova: ('server_lock',
                                       'server_list',
                                       'extension_supported',),
@@ -770,6 +899,8 @@ class InstanceTests(helpers.TestCase):
         api.network.floating_ip_supported(IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
         api.nova.extension_supported('AdminActions', IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
 
         self.mox.ReplayAll()
@@ -1140,6 +1271,8 @@ class InstanceTests(helpers.TestCase):
         api.nova.extension_supported('AdminActions',
                                      IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         api.glance.image_list_detailed(IgnoreArg()) \
@@ -1482,6 +1615,16 @@ class InstanceTests(helpers.TestCase):
     def test_launch_instance_get_without_password(self):
         self.test_launch_instance_get(expect_password_fields=False)
 
+    @django.test.utils.override_settings(
+        OPENSTACK_HYPERVISOR_FEATURES={'requires_keypair': True})
+    def test_launch_instance_required_key(self):
+        flavor = self.flavors.first()
+        image = self.images.first()
+        image.min_ram = flavor.ram
+        image.min_disk = flavor.disk
+        self._test_launch_form_instance_requirement_error(image, flavor,
+                                                          keypair_require=True)
+
     def test_launch_instance_get_no_block_device_mapping_v2_supported(self):
         self.test_launch_instance_get(block_device_mapping_v2=False)
 
@@ -1731,7 +1874,7 @@ class InstanceTests(helpers.TestCase):
                                flavor.id,
                                keypair.name,
                                customization_script,
-                               [sec_group.name],
+                               [str(sec_group.id)],
                                block_device_mapping=None,
                                block_device_mapping_v2=None,
                                nics=nics,
@@ -1756,7 +1899,7 @@ class InstanceTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'availability_zone': avail_zone.zoneName,
                      'volume_type': '',
                      'network': self.networks.first().id,
@@ -1885,7 +2028,7 @@ class InstanceTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'availability_zone': avail_zone.zoneName,
                      'volume_type': '',
                      'network': self.networks.first().id,
@@ -1973,14 +2116,14 @@ class InstanceTests(helpers.TestCase):
                 {'device_name': u'vda',
                  'source_type': 'volume',
                  'destination_type': 'volume',
-                 'delete_on_termination': 0,
+                 'delete_on_termination': False,
                  'uuid': volume_source_id,
                  'boot_index': '0',
                  'volume_size': 1
                  }
             ]
         else:
-            block_device_mapping = {device_name: u"%s::0" % volume_choice}
+            block_device_mapping = {device_name: u"%s::False" % volume_choice}
             block_device_mapping_2 = None
 
         nics = [{"net-id": self.networks.first().id, "v4-fixed-ip": ''}]
@@ -2050,7 +2193,7 @@ class InstanceTests(helpers.TestCase):
                                flavor.id,
                                keypair.name,
                                customization_script,
-                               [sec_group.name],
+                               [str(sec_group.id)],
                                block_device_mapping=block_device_mapping,
                                block_device_mapping_v2=block_device_mapping_2,
                                nics=nics,
@@ -2073,7 +2216,7 @@ class InstanceTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'availability_zone': avail_zone.zoneName,
                      'volume_size': '1',
                      'volume_id': volume_choice,
@@ -2125,7 +2268,7 @@ class InstanceTests(helpers.TestCase):
         customization_script = 'user data'
         device_name = u'vda'
         volume_choice = "%s:vol" % volume.id
-        block_device_mapping = {device_name: u"%s::0" % volume_choice}
+        block_device_mapping = {device_name: u"%s::False" % volume_choice}
         nics = [{"net-id": self.networks.first().id, "v4-fixed-ip": ''}]
         quota_usages = self.quota_usages.first()
 
@@ -2195,7 +2338,7 @@ class InstanceTests(helpers.TestCase):
                                flavor.id,
                                keypair.name,
                                customization_script,
-                               [sec_group.name],
+                               [str(sec_group.id)],
                                block_device_mapping=block_device_mapping,
                                block_device_mapping_v2=None,
                                nics=nics,
@@ -2216,7 +2359,7 @@ class InstanceTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'availability_zone': avail_zone.zoneName,
                      'network': self.networks.first().id,
                      'volume_type': 'volume_id',
@@ -2323,7 +2466,7 @@ class InstanceTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'availability_zone': avail_zone.zoneName,
                      'volume_type': '',
                      'count': 1}
@@ -2354,6 +2497,168 @@ class InstanceTests(helpers.TestCase):
                  'volume_snapshot_list',),
         quotas: ('tenant_quota_usages',)})
     def test_launch_instance_post_boot_from_snapshot(
+            self,
+            test_with_profile=False,
+            test_with_bdmv2=False
+    ):
+        flavor = self.flavors.first()
+        keypair = self.keypairs.first()
+        server = self.servers.first()
+        snapshot = self.cinder_volume_snapshots.first()
+        sec_group = self.security_groups.first()
+        avail_zone = self.availability_zones.first()
+        customization_script = 'user data'
+        device_name = u'vda'
+        snapshot_choice = "%s:snap" % snapshot.id
+        if test_with_bdmv2:
+            snapshot_source_id = snapshot.id.split(':')[0]
+            block_device_mapping = None
+            block_device_mapping_2 = [
+                {'device_name': u'vda',
+                 'source_type': 'snapshot',
+                 'destination_type': 'volume',
+                 'delete_on_termination': 0,
+                 'uuid': snapshot_source_id,
+                 'boot_index': '0',
+                 'volume_size': 1
+                 }
+            ]
+        else:
+            block_device_mapping = {device_name:
+                                    u"%s::False" % snapshot_choice}
+            block_device_mapping_2 = None
+
+        nics = [{"net-id": self.networks.first().id, "v4-fixed-ip": ''}]
+        quota_usages = self.quota_usages.first()
+
+        api.nova.extension_supported('BlockDeviceMappingV2Boot',
+                                     IsA(http.HttpRequest)) \
+            .AndReturn(test_with_bdmv2)
+        api.nova.flavor_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.flavors.list())
+        api.nova.keypair_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.keypairs.list())
+        api.network.security_group_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.security_groups.list())
+        api.nova.availability_zone_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.availability_zones.list())
+        api.glance.image_list_detailed(
+            IsA(http.HttpRequest),
+            filters={'is_public': True, 'status': 'active'}) \
+            .AndReturn([self.images.list(), False, False])
+        api.glance.image_list_detailed(
+            IsA(http.HttpRequest),
+            filters={'property-owner_id': self.tenant.id,
+                     'status': 'active'}) \
+            .AndReturn([[], False, False])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        api.nova.flavor_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.flavors.list())
+        if test_with_profile:
+            policy_profiles = self.policy_profiles.list()
+            policy_profile_id = self.policy_profiles.first().id
+            port = self.ports.first()
+            api.neutron.profile_list(
+                IsA(http.HttpRequest),
+                'policy').AndReturn(policy_profiles)
+            api.neutron.port_create(
+                IsA(http.HttpRequest),
+                self.networks.first().id,
+                policy_profile_id=policy_profile_id).AndReturn(port)
+            nics = [{"port-id": port.id}]
+        api.nova.extension_supported('DiskConfig',
+                                     IsA(http.HttpRequest)) \
+            .AndReturn(True)
+        api.nova.extension_supported('ConfigDrive',
+                                     IsA(http.HttpRequest)).AndReturn(True)
+        snapshots = [v for v in self.cinder_volume_snapshots.list()
+                     if (v.status == AVAILABLE)]
+        cinder.volume_list(IsA(http.HttpRequest),
+                           search_opts=VOLUME_SEARCH_OPTS) \
+            .AndReturn([])
+        cinder.volume_snapshot_list(IsA(http.HttpRequest),
+                                    search_opts=SNAPSHOT_SEARCH_OPTS) \
+            .AndReturn(snapshots)
+        api.nova.extension_supported('BlockDeviceMappingV2Boot',
+                                     IsA(http.HttpRequest)) \
+            .AndReturn(test_with_bdmv2)
+
+        api.nova.server_create(IsA(http.HttpRequest),
+                               server.name,
+                               '',
+                               flavor.id,
+                               keypair.name,
+                               customization_script,
+                               [str(sec_group.id)],
+                               block_device_mapping=block_device_mapping,
+                               block_device_mapping_v2=block_device_mapping_2,
+                               nics=nics,
+                               availability_zone=avail_zone.zoneName,
+                               instance_count=IsA(int),
+                               admin_pass=u'',
+                               disk_config=u'AUTO',
+                               config_drive=True)
+        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
+              .AndReturn(quota_usages)
+
+        self.mox.ReplayAll()
+
+        form_data = {'flavor': flavor.id,
+                     'source_type': 'volume_snapshot_id',
+                     'source_id': snapshot_choice,
+                     'keypair': keypair.name,
+                     'name': server.name,
+                     'script_source': 'raw',
+                     'script_data': customization_script,
+                     'project_id': self.tenants.first().id,
+                     'user_id': self.user.id,
+                     'groups': str(sec_group.id),
+                     'availability_zone': avail_zone.zoneName,
+                     'volume_size': '1',
+                     'volume_snapshot_id': snapshot_choice,
+                     'device_name': device_name,
+                     'network': self.networks.first().id,
+                     'count': 1,
+                     'disk_config': 'AUTO',
+                     'config_drive': True}
+        if test_with_profile:
+            form_data['profile'] = self.policy_profiles.first().id
+        url = reverse('horizon:project:instances:launch')
+        res = self.client.post(url, form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    def test_launch_instance_post_boot_from_snapshot_with_bdmv2(self):
+        self.test_launch_instance_post_boot_from_snapshot(test_with_bdmv2=True)
+
+    @helpers.update_settings(
+        OPENSTACK_NEUTRON_NETWORK={'profile_support': 'cisco'})
+    def test_launch_instance_post_boot_from_snapshot_with_profile(self):
+        self.test_launch_instance_post_boot_from_snapshot(
+            test_with_profile=True)
+
+    @helpers.create_stubs({
+        api.glance: ('image_list_detailed',),
+        api.neutron: ('network_list',
+                      'profile_list',
+                      'port_create',),
+        api.nova: ('extension_supported',
+                   'flavor_list',
+                   'keypair_list',
+                   'availability_zone_list',
+                   'server_create',),
+        api.network: ('security_group_list',),
+        cinder: ('volume_list',
+                 'volume_snapshot_list',),
+        quotas: ('tenant_quota_usages',)})
+    def test_launch_instance_post_boot_from_snapshot_error(
         self,
         test_with_profile=False,
     ):
@@ -2508,7 +2813,8 @@ class InstanceTests(helpers.TestCase):
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
                                          'profile_list',
-                                         'port_create',),
+                                         'port_create',
+                                         'port_delete'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -2588,7 +2894,7 @@ class InstanceTests(helpers.TestCase):
                                flavor.id,
                                keypair.name,
                                customization_script,
-                               [sec_group.name],
+                               [str(sec_group.id)],
                                block_device_mapping=None,
                                block_device_mapping_v2=None,
                                nics=nics,
@@ -2598,6 +2904,8 @@ class InstanceTests(helpers.TestCase):
                                disk_config='AUTO',
                                config_drive=False) \
             .AndRaise(self.exceptions.keystone)
+        if test_with_profile:
+            api.neutron.port_delete(IsA(http.HttpRequest), port.id)
         quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
             .AndReturn(quota_usages)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
@@ -2617,7 +2925,7 @@ class InstanceTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'volume_type': '',
                      'network': self.networks.first().id,
                      'count': 1,
@@ -2729,7 +3037,7 @@ class InstanceTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'volume_type': 'volume_id',
                      'volume_id': volume_choice,
                      'device_name': device_name,
@@ -2836,7 +3144,7 @@ class InstanceTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'volume_type': 'volume_id',
                      'volume_id': volume_choice,
                      'device_name': device_name,
@@ -2883,7 +3191,8 @@ class InstanceTests(helpers.TestCase):
                                     'volume_snapshot_list',),
                            quotas: ('tenant_quota_usages',)})
     def _test_launch_form_instance_requirement_error(self, image, flavor,
-                                                     test_with_profile=False):
+                                                     test_with_profile=False,
+                                                     keypair_require=False):
         keypair = self.keypairs.first()
         server = self.servers.first()
         volume = self.volumes.first()
@@ -2954,22 +3263,27 @@ class InstanceTests(helpers.TestCase):
                      'source_type': 'image_id',
                      'image_id': image.id,
                      'availability_zone': avail_zone.zoneName,
-                     'keypair': keypair.name,
                      'name': server.name,
                      'script_source': 'raw',
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'volume_type': 'volume_id',
                      'volume_id': volume_choice,
                      'device_name': device_name,
                      'count': 1}
+        if not keypair_require:
+            form_data['keypair'] = keypair.name
 
         url = reverse('horizon:project:instances:launch')
         res = self.client.post(url, form_data)
-        msg = "The flavor &#39;%s&#39; is too small" % flavor.name
-        self.assertContains(res, msg)
+        if keypair_require:
+            msg = "This field is required"
+            self.assertContains(res, msg)
+        else:
+            msg = "The flavor &#39;%s&#39; is too small" % flavor.name
+            self.assertContains(res, msg)
 
     def test_launch_form_instance_requirement_error_disk(
         self,
@@ -3089,7 +3403,7 @@ class InstanceTests(helpers.TestCase):
                      'customization_script': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': str(sec_group.id),
                      'volume_type': 'volume_id',
                      'volume_id': volume_choice,
                      'volume_size': max(
@@ -3219,7 +3533,7 @@ class InstanceTests(helpers.TestCase):
             'script_data': customization_script,
             'project_id': self.tenants.first().id,
             'user_id': self.user.id,
-            'groups': sec_group.name,
+            'groups': str(sec_group.id),
             'volume_size': volume_size,
             'device_name': device_name,
             'count': 1
@@ -3278,6 +3592,8 @@ class InstanceTests(helpers.TestCase):
 
         api.nova.extension_supported('AdminActions',
                                      IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
@@ -3345,7 +3661,7 @@ class InstanceTests(helpers.TestCase):
         device_mapping_v2 = [{'device_name': None,  # device_name must be None
                               'source_type': 'image',
                               'destination_type': 'volume',
-                              'delete_on_termination': 0,
+                              'delete_on_termination': False,
                               'uuid': image.id,
                               'boot_index': '0',
                               'volume_size': image.size}]
@@ -3402,7 +3718,7 @@ class InstanceTests(helpers.TestCase):
                                flavor.id,
                                keypair.name,
                                customization_script,
-                               [sec_group.name],
+                               [str(sec_group.id)],
                                block_device_mapping=None,
                                block_device_mapping_v2=device_mapping_v2,
                                nics=nics,
@@ -3425,7 +3741,7 @@ class InstanceTests(helpers.TestCase):
             'script_data': customization_script,
             'project_id': self.tenants.first().id,
             'user_id': self.user.id,
-            'groups': sec_group.name,
+            'groups': str(sec_group.id),
             'volume_size': image.size,
             'device_name': device_name,
             'network': self.networks.first().id,
@@ -3450,6 +3766,8 @@ class InstanceTests(helpers.TestCase):
         server.status = "VERIFY_RESIZE"
         api.nova.extension_supported('AdminActions',
                                      IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
@@ -4005,6 +4323,8 @@ class InstanceTests(helpers.TestCase):
         api.nova.extension_supported('AdminActions',
                                      IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(self.flavors.list())
         api.glance.image_list_detailed(IgnoreArg()) \
@@ -4147,9 +4467,11 @@ class InstanceAjaxTests(helpers.TestCase):
         instance_id = server.id
         flavor_id = server.flavor["id"]
         flavors = self.flavors.list()
-        full_flavors = SortedDict([(f.id, f) for f in flavors])
+        full_flavors = OrderedDict([(f.id, f) for f in flavors])
 
         api.nova.extension_supported('AdminActions', IsA(http.HttpRequest))\
+            .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
         api.neutron.is_extension_supported(IsA(http.HttpRequest),
                                            'security-group')\
@@ -4178,7 +4500,7 @@ class InstanceAjaxTests(helpers.TestCase):
         instance_id = server.id
         flavor_id = server.flavor["id"]
         flavors = self.flavors.list()
-        full_flavors = SortedDict([(f.id, f) for f in flavors])
+        full_flavors = OrderedDict([(f.id, f) for f in flavors])
 
         server.status = 'ERROR'
         server.fault = {"message": "NoValidHost",
@@ -4192,6 +4514,8 @@ class InstanceAjaxTests(helpers.TestCase):
                         "created": "2013-10-07T00:08:32Z"}
 
         api.nova.extension_supported('AdminActions', IsA(http.HttpRequest))\
+            .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
             .MultipleTimes().AndReturn(True)
         api.neutron.is_extension_supported(IsA(http.HttpRequest),
                                            'security-group')\
@@ -4231,6 +4555,8 @@ class InstanceAjaxTests(helpers.TestCase):
 
         api.nova.extension_supported('AdminActions', IsA(http.HttpRequest))\
             .MultipleTimes().AndReturn(True)
+        api.nova.extension_supported('Shelve', IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(True)
         api.neutron.is_extension_supported(IsA(http.HttpRequest),
                                            'security-group')\
             .MultipleTimes().AndReturn(True)
@@ -4256,7 +4582,7 @@ class ConsoleManagerTests(helpers.TestCase):
     def setup_consoles(self):
         # Need to refresh with mocks or will fail since mox do not detect
         # the api_call() as mocked.
-        console.CONSOLES = SortedDict([
+        console.CONSOLES = OrderedDict([
             ('VNC', api.nova.server_vnc_console),
             ('SPICE', api.nova.server_spice_console),
             ('RDP', api.nova.server_rdp_console),
@@ -4550,7 +4876,7 @@ class ConsoleManagerTests(helpers.TestCase):
                                flavor.id,
                                keypair.name,
                                customization_script,
-                               [sec_group.name],
+                               [str(sec_group.id)],
                                block_device_mapping=None,
                                block_device_mapping_v2=None,
                                nics=nics,
@@ -4580,7 +4906,7 @@ class ConsoleManagerTests(helpers.TestCase):
                      'script_data': customization_script,
                      'project_id': self.tenants.first().id,
                      'user_id': self.user.id,
-                     'groups': sec_group.name,
+                     'groups': [str(sec_group.id)],
                      'volume_type': '',
                      'network': self.networks.first().id,
                      'count': 1,

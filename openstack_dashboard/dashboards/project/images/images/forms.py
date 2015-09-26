@@ -19,7 +19,9 @@
 """
 Views for managing images.
 """
+
 from django.conf import settings
+from django.core import validators
 from django.forms import ValidationError  # noqa
 from django.forms.widgets import HiddenInput  # noqa
 from django.template import defaultfilters
@@ -102,6 +104,8 @@ class CreateImageForm(forms.SelfHandlingForm):
                                    'ng-model': 'copyFrom',
                                    'ng-change':
                                    'ctrl.selectImageFormat(copyFrom)'}),
+                               validators=[validators.URLValidator(
+                                   schemes=["http", "https"])],
                                required=False)
     image_file = forms.FileField(label=_("Image File"),
                                  help_text=_("A local image to upload."),
@@ -267,6 +271,9 @@ class CreateImageForm(forms.SelfHandlingForm):
                             '%s for image.') % meta['disk_format']
                 elif "Image name too long" in e.details:
                     msg = _('Unable to create new image: Image name too long.')
+                elif "not supported" in e.details:
+                    msg = _('Unable to create new image: URL scheme not '
+                            'supported.')
 
             exceptions.handle(request, msg)
 

@@ -17,7 +17,6 @@
 #    under the License.
 
 from django.core.urlresolvers import reverse
-from django.forms import ValidationError  # noqa
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
@@ -64,10 +63,10 @@ class ManageVolume(forms.SelfHandlingForm):
         required=False,
         help_text=_("Volume name to be assigned"))
     description = forms.CharField(max_length=255, widget=forms.Textarea(
-        attrs={'class': 'modal-body-fixed-width', 'rows': 4}),
+        attrs={'rows': 4}),
         label=_("Description"), required=False)
     metadata = forms.CharField(max_length=255, widget=forms.Textarea(
-        attrs={'class': 'modal-body-fixed-width', 'rows': 2}),
+        attrs={'rows': 2}),
         label=_("Metadata"), required=False,
         help_text=_("Comma-separated key=value pairs"),
         validators=[utils_validators.validate_metadata])
@@ -214,40 +213,6 @@ class MigrateVolume(forms.SelfHandlingForm):
                               redirect=redirect)
 
 
-class CreateVolumeType(forms.SelfHandlingForm):
-    name = forms.CharField(max_length=255, label=_("Name"))
-    vol_type_description = forms.CharField(
-        max_length=255,
-        widget=forms.Textarea(
-            attrs={'class': 'modal-body-fixed-width',
-                   'rows': 4}),
-        label=_("Description"),
-        required=False)
-
-    def clean_name(self):
-        cleaned_name = self.cleaned_data['name']
-        if len(cleaned_name.strip()) == 0:
-            raise ValidationError(_('Volume type name can not be empty.'))
-
-        return cleaned_name
-
-    def handle(self, request, data):
-        try:
-            # Remove any new lines in the public key
-            volume_type = cinder.volume_type_create(
-                request,
-                data['name'],
-                data['vol_type_description'])
-            messages.success(request, _('Successfully created volume type: %s')
-                             % data['name'])
-            return volume_type
-        except Exception:
-            redirect = reverse("horizon:admin:volumes:index")
-            exceptions.handle(request,
-                              _('Unable to create volume type.'),
-                              redirect=redirect)
-
-
 class UpdateStatus(forms.SelfHandlingForm):
     status = forms.ChoiceField(label=_("Status"))
 
@@ -280,24 +245,3 @@ class UpdateStatus(forms.SelfHandlingForm):
             exceptions.handle(request,
                               _('Unable to update volume status to "%s".') %
                               new_status, redirect=redirect)
-
-
-class CreateQosSpec(forms.SelfHandlingForm):
-    name = forms.CharField(max_length=255, label=_("Name"))
-    consumer = forms.ChoiceField(label=_("Consumer"),
-                                 choices=cinder.CONSUMER_CHOICES)
-
-    def handle(self, request, data):
-        try:
-            qos_spec = cinder.qos_spec_create(request,
-                                              data['name'],
-                                              {'consumer': data['consumer']})
-            messages.success(request,
-                             _('Successfully created QoS Spec: %s')
-                             % data['name'])
-            return qos_spec
-        except Exception:
-            redirect = reverse("horizon:admin:volumes:index")
-            exceptions.handle(request,
-                              _('Unable to create QoS Spec.'),
-                              redirect=redirect)

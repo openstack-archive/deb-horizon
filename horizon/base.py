@@ -32,7 +32,6 @@ from django.conf.urls import patterns
 from django.conf.urls import url
 from django.core.exceptions import ImproperlyConfigured  # noqa
 from django.core.urlresolvers import reverse
-from django.utils.datastructures import SortedDict
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject  # noqa
 from django.utils.importlib import import_module  # noqa
@@ -58,6 +57,10 @@ def _decorate_urlconf(urlpatterns, decorator, *args, **kwargs):
             _decorate_urlconf(pattern.url_patterns, decorator, *args, **kwargs)
 
 
+# FIXME(lhcheng): We need to find a better way to cache the result.
+# Rather than storing it in the session, we could leverage the Django
+# session. Currently, this has been causing issue with cookie backend,
+# adding 1600+ in the cookie size.
 def access_cached(func):
     def inner(self, context):
         session = context['request'].session
@@ -110,7 +113,10 @@ class HorizonComponent(object):
                 urlpatterns = patterns('')
         return urlpatterns
 
-    @access_cached
+    # FIXME(lhcheng): Removed the access_cached decorator for now until
+    # a better implementation has been figured out. This has been causing
+    # issue with cookie backend, adding 1600+ in the cookie size.
+    # @access_cached
     def can_access(self, context):
         """Return whether the user has role based access to this component.
 
@@ -491,7 +497,7 @@ class Dashboard(Registry, HorizonComponent):
                                    name=_("Other"),
                                    panels=slugs)
             panel_groups.append((new_group.slug, new_group))
-        return SortedDict(panel_groups)
+        return collections.OrderedDict(panel_groups)
 
     def get_absolute_url(self):
         """Returns the default URL for this dashboard.
@@ -568,7 +574,7 @@ class Dashboard(Registry, HorizonComponent):
             panels_to_discover.extend(panel_group.panels)
             panel_groups.append((panel_group.slug, panel_group))
 
-        self._panel_groups = SortedDict(panel_groups)
+        self._panel_groups = collections.OrderedDict(panel_groups)
 
         # Do the actual discovery
         package = '.'.join(self.__module__.split('.')[:-1])

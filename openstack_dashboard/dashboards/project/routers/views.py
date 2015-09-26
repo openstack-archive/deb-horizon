@@ -17,9 +17,10 @@
 Views for managing Neutron Routers.
 """
 
+from collections import OrderedDict
+
 from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
-from django.utils.datastructures import SortedDict
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
 
@@ -68,8 +69,8 @@ class IndexView(tables.DataTableView):
             search_opts = {'router:external': True}
             ext_nets = api.neutron.network_list(self.request,
                                                 **search_opts)
-            ext_net_dict = SortedDict((n['id'], n.name_or_id)
-                                      for n in ext_nets)
+            ext_net_dict = OrderedDict((n['id'], n.name_or_id)
+                                       for n in ext_nets)
         except Exception as e:
             msg = _('Unable to retrieve a list of external networks "%s".') % e
             exceptions.handle(self.request, msg)
@@ -148,6 +149,21 @@ class DetailView(tabs.TabbedTableView):
             self.request, "dvr", "get")
         context['ha_supported'] = api.neutron.get_feature_permission(
             self.request, "l3-ha", "get")
+        status_label = [label for (value, label) in
+                        table.STATUS_DISPLAY_CHOICES
+                        if value.lower() == (router.status or '').lower()]
+        if status_label:
+            router.status_label = status_label[0]
+        else:
+            router.status_label = router.status
+        admin_state_label = [state for (value, state) in
+                             table.ADMIN_STATE_DISPLAY_CHOICES
+                             if value.lower() ==
+                             (router.admin_state or '').lower()]
+        if admin_state_label:
+            router.admin_state_label = admin_state_label[0]
+        else:
+            router.admin_state_label = router.admin_state
 
         return context
 

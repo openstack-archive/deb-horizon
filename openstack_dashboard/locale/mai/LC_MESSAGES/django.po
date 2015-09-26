@@ -3,21 +3,23 @@
 # This file is distributed under the same license as the PROJECT project.
 #
 # Translators:
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-29 02:57+0000\n"
-"PO-Revision-Date: 2015-08-28 11:21+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Maithili (http://www.transifex.com/openstack/horizon/language/"
-"mai/)\n"
+"POT-Creation-Date: 2015-09-18 05:57+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-08 11:14+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Maithili (http://www.transifex.com/openstack/horizon/language/"
+"mai/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: mai\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 #, python-format
 msgid ""
@@ -551,11 +553,6 @@ msgstr "VIP जोड़ू"
 
 msgid "Add VPN Service"
 msgstr "VPN सेवा जोड़ू"
-
-msgid ""
-"Add and remove security groups to this project from the list of available "
-"security groups."
-msgstr "मोजुद सुरक्षा समूह क सूची सँ सुरक्षा समूह केँ एहि प्रोजेक्ट मे जोड़ू आओर निकालू."
 
 msgid "Add custom tag"
 msgstr "पसंदीदा टैग जोड़ू"
@@ -1679,15 +1676,6 @@ msgid ""
 msgstr ""
 "संजाल क सँग जुड़ल एकटा सबनेट बनाउ. उन्नत विन्यास \"सबनेट विवरण\" टैब पर क्लिक करै पर "
 "मोजुद अछि."
-
-msgid ""
-"Create a subnet associated with the new network, in which case \"Network "
-"Address\" must be specified. If you wish to create a network without a "
-"subnet, uncheck the \"Create Subnet\" checkbox."
-msgstr ""
-"\"संजाल पता\" निर्दिष्ट कएल जएनाइ चाही जकरामे नव सँजाल क सँग जुड़े एकटा सबनेट बनाउ. "
-"अहाँ एकटा सबनेट क बिनु एकटा संजाल बनाबै क लेल चाहैत अछि, \"सबनेट बनाउ\" चेकबाक्स "
-"अचयनित."
 
 msgid "Create an Encrypted Volume Type"
 msgstr "एकटा एनक्रिप्टेड वाल्यूम प्रकार बनाउ"
@@ -3160,9 +3148,6 @@ msgstr "GRE"
 msgid "Gateway IP"
 msgstr "गेटवे IP"
 
-msgid "Gateway IP (optional)"
-msgstr "गेटवे आईपी (वैकल्पिक)"
-
 msgid "Gateway IP and IP version are inconsistent."
 msgstr "गेटवे आईपी आओर आईपी संस्करण असंगत अछि."
 
@@ -3392,15 +3377,6 @@ msgstr ""
 "192.168.0.0/24, 2001:DB8::1 for 2001:DB8::/48) सँजाल पता क पहिल आईपी अछि. अहाँ "
 "पूर्वनिर्धारित क उपयोग करू, तँ खाली छोड़ दिअ'. अहाँ कोनो प्रवेश द्वार क उपयोग कएनाइ "
 "चाहैत अछि, तँ 'अक्षम गेटवे' नीच्चाँ क जाँच करू."
-
-msgid ""
-"IP address of Gateway (e.g. 192.168.0.254). Specify an explicit address to "
-"set the gateway. If you do not want to use a gateway, check 'Disable "
-"Gateway' below."
-msgstr ""
-"गेटवे (जहिना 192.168.0.254) क आईपी पता. प्रवेश द्वार स्थापित करबाक लेल एकटा स्पष्ट "
-"पता निर्दिष्ट करू. अहाँ कोनो प्रवेश द्वार क उपयोग कएनाइ चाहैत अछि, तँ 'अक्षम गेटवे' "
-"नीच्चाँ क जाँच करू."
 
 msgid "IP allocation pool"
 msgstr "आईपी ​​आवंटन पूल"
@@ -4135,9 +4111,6 @@ msgstr "मेटाडाटा"
 
 msgid "Metadata Items"
 msgstr "मेटाडेटा मद"
-
-msgid "Metadata successfully updated."
-msgstr "मेटाडेटा क सफलतापूर्वक अद्यतन कएल गेल."
 
 msgid "Meter"
 msgstr "मीटर"
@@ -4987,12 +4960,6 @@ msgstr "निज"
 
 msgid "Private Key File"
 msgstr "निज कुँजी फाइल"
-
-msgid "Processes"
-msgstr "प्रक्रिया"
-
-msgid "Processes to be launched in node group"
-msgstr "ई नोड समूह मे लान्च क जाएबला प्रक्रिया."
 
 msgid "Project"
 msgstr "परियोजना"
@@ -5907,9 +5874,6 @@ msgid ""
 "Slashes are allowed, and are treated as pseudo-folders by the Object Store."
 msgstr "स्लैश अनुमति देल जाइछ, आओर वस्तु संग्रह सँ छद्म फोल्डर क रूपेँ व्यवहार कए रहल अछि."
 
-msgid "Small"
-msgstr "छोट"
-
 msgid "Snapshot"
 msgstr "स्नेपशाट"
 
@@ -6012,9 +5976,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "\"संजालक पता\" निर्दिष्ट करू"
-
-msgid "Specify \"Network Address\" or clear \"Create Subnet\" checkbox."
-msgstr "\"संजाल पता\" अथवा स्पष्ट \"सबनेट बनाउ\" चेकबाक्स निर्दिष्ट करू."
 
 msgid "Specify IP address of gateway or check \"Disable Gateway\"."
 msgstr "प्रवेश द्वार क आईपी पता निर्दिष्ट अथवा \"अक्षम गेटवे\" क जाँच करू."
@@ -7371,15 +7332,6 @@ msgstr "कुल मेजबान सूची आन सकबा मे अ
 msgid "Unable to retrieve availability zones."
 msgstr "उपलब्धता क्षेत्र केँ फिनु प्राप्त करबामे असमर्थ."
 
-msgid "Unable to retrieve available metadata for aggregate."
-msgstr "सकल क लेल मोजुद मेटाडाटा फिनु प्राप्त करबामे असमर्थ."
-
-msgid "Unable to retrieve available metadata for flavors."
-msgstr "फ्लेवर क लेल मोजुद मेटाडाटा फिनु प्राप्त करबामे असमर्थ."
-
-msgid "Unable to retrieve available properties for image."
-msgstr "बिंब कलेल मोजुद विशेषता केँ फिनु प्राप्त करबामे असमर्थ."
-
 msgid "Unable to retrieve backup details."
 msgstr "बैकअप विवरण केँ फिनु प्राप्त करबामे असमर्थ."
 
@@ -7756,15 +7708,6 @@ msgstr "परियोजना सीमा केँ प्राप्त �
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "अपडेट हए बला सकल केँ निकालब मे अक्षम."
 
-msgid "Unable to retrieve the aggregate to be updated."
-msgstr "अपडेट हए बला सकल केँ निकालब मे अक्षम."
-
-msgid "Unable to retrieve the flavor metadata."
-msgstr "फ्लेवर मेटाडेटा प्राप्त करबामे असमर्थ."
-
-msgid "Unable to retrieve the image to be updated."
-msgstr "अपडेट हए बला छवि केँ निकालब मे अक्षम."
-
 msgid "Unable to retrieve the specified pool."
 msgstr "निर्दिष्ट पूल पुनर्प्राप्त करबामे असमर्थ."
 
@@ -7897,20 +7840,11 @@ msgstr "पंक्ति अद्यतन मे असमर्थ"
 msgid "Unable to update subnet \"%s\"."
 msgstr " \"%s\" सबनेट अपडेट करबामे असमर्थ."
 
-msgid "Unable to update the aggregate metadata."
-msgstr "सकल मेटाडेटा अपडेट करबामे असमर्थ."
-
 msgid "Unable to update the aggregate."
 msgstr "सकल अपडेट करबामे असमर्थ."
 
-msgid "Unable to update the flavor metadata."
-msgstr "फ्लैवर मेटाडेटा अपडेट करबामे असमर्थ."
-
 msgid "Unable to update the group."
 msgstr "समूह अपडेट करबामे असमर्थ."
-
-msgid "Unable to update the image metadata."
-msgstr "बिंब मेटाडेटा अपडेट करबामे असमर्थ."
 
 msgid "Unable to update the user."
 msgstr "प्रयोक्ता केँ अद्यतन करबामे असमर्थ."
@@ -7971,26 +7905,17 @@ msgstr "उप्पर"
 msgid "Update"
 msgstr "अद्यतन"
 
-msgid "Update Aggregate Metadata"
-msgstr "सकल मेटाडेटा अपडेट करू"
-
 msgid "Update Default Quotas"
 msgstr "पूर्वनिर्धारित कोटा अद्यतन करू"
 
 msgid "Update Defaults"
 msgstr "पूर्वनिर्धारित अद्यतन करू"
 
-msgid "Update Flavor Metadata"
-msgstr "फ्लैवर मेटाडेटा अद्यतन करू"
-
 msgid "Update Group"
 msgstr "समूह अपडेट करू"
 
 msgid "Update Image"
 msgstr "बिंब अद्यतन करू"
-
-msgid "Update Image Metadata"
-msgstr "बिंब मेटाडेटा अद्यतन करू"
 
 msgid "Update Metadata"
 msgstr "मेटाडाटा अद्यतन करू"

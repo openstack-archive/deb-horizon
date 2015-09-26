@@ -13,23 +13,26 @@
 # Kyrylo Romanenko <kromanenko@mirantis.com>, 2015
 # Nikita Burtsev, 2015
 # Nikita Burtsev, 2015
+# Ilya Alekseyev <ilyaalekseyev@acm.org>, 2015. #zanata
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-29 02:57+0000\n"
-"PO-Revision-Date: 2015-08-28 11:21+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Russian (http://www.transifex.com/openstack/horizon/language/"
-"ru/)\n"
+"POT-Creation-Date: 2015-09-22 10:47+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-23 08:51+0000\n"
+"Last-Translator: Ilya Alekseyev <ilyaalekseyev@acm.org>\n"
+"Language-Team: Russian (http://www.transifex.com/openstack/horizon/language/"
+"ru/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 msgid ""
 "\n"
@@ -440,6 +443,10 @@ msgid "%s instances"
 msgstr "%s инстансов"
 
 #, python-format
+msgid "%s processes: "
+msgstr "%s процессов: "
+
+#, python-format
 msgid "%sGB"
 msgstr "%s ГБ"
 
@@ -592,6 +599,14 @@ msgstr "ALLOW"
 msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 msgstr "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
+#, python-format
+msgid "ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(cidr)s"
+msgstr "РАЗРЕШИТЬ %(from)s:%(to)s/%(ip_protocol)s из %(cidr)s"
+
+#, python-format
+msgid "ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(group)s"
+msgstr "РАЗРЕШИТЬ %(from)s:%(to)s/%(ip_protocol)s из%(group)s"
+
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon Machine Image"
 
@@ -691,6 +706,9 @@ msgid ""
 msgstr ""
 "Реальное имя устройства может отличаться из-за настроек гипервизора. Если не "
 "указан, то гипервизор выберет имя устройства."
+
+msgid "Adapt For Oozie"
+msgstr "Адаптировать для Oozie"
 
 msgid "Add"
 msgstr "Добавить"
@@ -803,13 +821,6 @@ msgstr "Добавить VIP"
 
 msgid "Add VPN Service"
 msgstr "Добавить сервис VPN"
-
-msgid ""
-"Add and remove security groups to this project from the list of available "
-"security groups."
-msgstr ""
-"Добавить и удалить группы безопасности в этом проекте из списка доступных "
-"групп безопасности."
 
 msgid "Add custom tag"
 msgstr "Добавить пользовательский тег"
@@ -1217,6 +1228,9 @@ msgstr "Режим авторизации"
 msgid "Auto Security Group"
 msgstr "Автоматическая группа безопасности"
 
+msgid "Auto-configure"
+msgstr "Автоконфигурация"
+
 msgid "Automatic"
 msgstr "Автоматически"
 
@@ -1523,6 +1537,9 @@ msgstr "Выбрать главный двоичный файл"
 msgid "Choose a new instance flavor."
 msgstr "Выберите новый тип для инстанса."
 
+msgid "Choose a shell script"
+msgstr "Выберите скрипт shell"
+
 msgid "Choose a snapshot"
 msgstr "Выбрать снимок"
 
@@ -1531,6 +1548,9 @@ msgstr "Выбрать место хранения"
 
 msgid "Choose a volume"
 msgstr "Выбрать диск"
+
+msgid "Choose additional files"
+msgstr "Выберите дополнительные файлы"
 
 msgid "Choose an DHCP Agent to attach to."
 msgstr "Выберите агент DHCP для прикрепления"
@@ -1603,6 +1623,14 @@ msgstr ""
 "мышью\n"
 "вы также можете изменить порядок с помощью мыши. "
 
+msgid "Choose the Input Data Source (n/a for Java and Shell jobs)."
+msgstr ""
+"Выберите входящий источник данных (недоступно для  заданий Java и Shell)."
+
+msgid "Choose the Output Data Source (n/a for Java and Shell jobs)."
+msgstr ""
+"Выберите исходящий источник данных (недоступно для  заданий Java и Shell)."
+
 msgid "Choose the binary which should be used in this Job."
 msgstr "Выберите исполняемые файл, который будет использован в этой задаче."
 
@@ -1674,11 +1702,17 @@ msgstr "Закрыть"
 msgid "Cluster"
 msgstr "Кластер"
 
+msgid "Cluster Count"
+msgstr "Количество кластеров"
+
 msgid "Cluster Creation Guide"
 msgstr "Руководство по созданию кластера"
 
 msgid "Cluster Details"
 msgstr "Данные кластера"
+
+msgid "Cluster Events"
+msgstr "События кластера"
 
 msgid "Cluster Guide"
 msgstr "Мастер кластера"
@@ -1694,6 +1728,10 @@ msgstr "Обзор кластера"
 
 msgid "Cluster Template"
 msgstr "Шаблон кластера"
+
+#, python-format
+msgid "Cluster Template %s updated"
+msgstr "Шаблон кластера %s обновлен"
 
 msgid "Cluster Template Details"
 msgstr "Данные шаблона кластера"
@@ -1714,8 +1752,14 @@ msgstr "Кластер может быть запущен с помощью су
 msgid "Cluster configurations are not specified"
 msgstr "Конфигурации кластера не указаны"
 
+msgid "Cluster provision steps"
+msgstr "Шаги создания кластера"
+
 msgid "Cluster template creation failed"
 msgstr "Не удалось создать шаблон кластера"
+
+msgid "Cluster template update failed"
+msgstr "Обновление шаблона кластера не удалось"
 
 msgid "Cluster type chosen"
 msgstr "Выбран тип кластера"
@@ -1738,6 +1782,9 @@ msgstr "Разделенные запятой пары ключ=значение
 msgctxt "Current status of a Database Backup"
 msgid "Completed"
 msgstr "Завершено"
+
+msgid "Completed Successfully"
+msgstr "Успешно завершено"
 
 msgid "Component"
 msgstr "Компонент"
@@ -1926,6 +1973,9 @@ msgstr "В Keystone не удалось найти стандартную рол
 
 msgid "Could not launch job"
 msgstr "Не удалось запустить задачу"
+
+msgid "Could not update data source"
+msgstr "Невозможно обновить источник данных"
 
 #, python-format
 msgid "Couldn't get current security group list for instance %s."
@@ -2276,15 +2326,6 @@ msgstr ""
 "Создание подсети связанной с сетью. Дополнительная конфигурация доступна на "
 "закладке \"Детали подсети\"."
 
-msgid ""
-"Create a subnet associated with the new network, in which case \"Network "
-"Address\" must be specified. If you wish to create a network without a "
-"subnet, uncheck the \"Create Subnet\" checkbox."
-msgstr ""
-"Создать подсеть, связанную с новой сетью, в этом случае \"Сетевой адрес\" "
-"должен быть указан. Если вы хотите создать сеть без подсети, то снимите "
-"флажок в \"Создать подсеть\"."
-
 msgid "Create an Encrypted Volume Type"
 msgstr "Создать шифруемый Тип Дисков"
 
@@ -2363,6 +2404,9 @@ msgstr "Создан параметр \"%s\"."
 #, python-format
 msgid "Created subnet \"%s\"."
 msgstr "Создана подсеть \"%s\"."
+
+msgid "Created time"
+msgstr "Время создания"
 
 msgid "Created volume transfer."
 msgstr "Создана передача диска."
@@ -2542,6 +2586,9 @@ msgstr ""
 "Обработка данных предоставляет различные места хранения параметров. Вы "
 "можете выбрать временный диск или Cinder диск для подключения к машине."
 
+msgid "Data Source"
+msgstr "Источник данных"
+
 msgid "Data Source Details"
 msgstr "Информация об источнике данных"
 
@@ -2573,6 +2620,9 @@ msgstr ""
 
 msgid "Data source created"
 msgstr "Источник данных создан"
+
+msgid "Data source updated"
+msgstr "Источник данных обновлен"
 
 msgid "Database"
 msgstr "База данных"
@@ -2663,14 +2713,14 @@ msgid "Delete Backup"
 msgid_plural "Delete Backups"
 msgstr[0] "Удалить резервную копию"
 msgstr[1] "Удалить резервные копии"
-msgstr[2] ""
+msgstr[2] "Удалить резервные копии"
 msgstr[3] "Удалить резервные копии"
 
 msgid "Delete Cluster"
 msgid_plural "Delete Clusters"
 msgstr[0] "Удалить кластер"
 msgstr[1] "Удалить кластеры"
-msgstr[2] ""
+msgstr[2] "Удалить кластеры"
 msgstr[3] "Удалить кластеры"
 
 msgctxt "current status of stack"
@@ -2695,7 +2745,7 @@ msgid "Delete Data Source"
 msgid_plural "Delete Data Sources"
 msgstr[0] "Удалить источник данных"
 msgstr[1] "Удалить источники данных"
-msgstr[2] ""
+msgstr[2] "Удалить источники данных"
 msgstr[3] "Удалить источники данных"
 
 msgid "Delete Database"
@@ -2803,24 +2853,24 @@ msgstr[3] "Удалить интерфейсы"
 
 msgid "Delete Job"
 msgid_plural "Delete Jobs"
-msgstr[0] "Удалить задача"
-msgstr[1] "Удалить задачи"
-msgstr[2] ""
-msgstr[3] "Удалить задачи"
+msgstr[0] "Удалить задание"
+msgstr[1] "Удалить задания"
+msgstr[2] "Удалить задания"
+msgstr[3] "Удалить задания"
 
 msgid "Delete Job Binary"
 msgid_plural "Delete Job Binaries"
-msgstr[0] "Удалить исполняемый файл задач"
-msgstr[1] "Удалить исполняемые файлы задач"
-msgstr[2] ""
-msgstr[3] "Удалить исполняемые файлы задач"
+msgstr[0] "Удалить исполняемый файл задания"
+msgstr[1] "Удалить исполняемые файлы задания"
+msgstr[2] "Удалить исполняемые файлы задания"
+msgstr[3] "Удалить исполняемые файлы задания"
 
 msgid "Delete Job Template"
 msgid_plural "Delete Job Templates"
-msgstr[0] "Удалить шаблон задач"
-msgstr[1] "Удалить шаблоны задач"
-msgstr[2] ""
-msgstr[3] "Удалить шаблоны задач"
+msgstr[0] "Удалить шаблон задания"
+msgstr[1] "Удалить шаблоны задания"
+msgstr[2] "Удалить шаблоны задания"
+msgstr[3] "Удалить шаблоны задания"
 
 msgid "Delete Key Pair"
 msgid_plural "Delete Key Pairs"
@@ -2938,7 +2988,7 @@ msgid "Delete Template"
 msgid_plural "Delete Templates"
 msgstr[0] "Удалить шаблон"
 msgstr[1] "Удалить шаблоны"
-msgstr[2] ""
+msgstr[2] "Удалить шаблоны"
 msgstr[3] "Удалить шаблоны"
 
 msgid "Delete User"
@@ -3001,14 +3051,14 @@ msgid "Deleted Backup"
 msgid_plural "Deleted Backups"
 msgstr[0] "Резервная копия удалена"
 msgstr[1] "Резервные копии удалены"
-msgstr[2] ""
+msgstr[2] "Резервные копии удалены"
 msgstr[3] "Резервные копии удалены"
 
 msgid "Deleted Cluster"
 msgid_plural "Deleted Clusters"
 msgstr[0] "Кластер удален"
 msgstr[1] "Кластеры удалены"
-msgstr[2] ""
+msgstr[2] "Кластеры удалены"
 msgstr[3] "Кластеры удалены"
 
 msgid "Deleted Container"
@@ -3029,7 +3079,7 @@ msgid "Deleted Data Source"
 msgid_plural "Deleted Data Sources"
 msgstr[0] "Источник данных удален"
 msgstr[1] "Источники данных удалены"
-msgstr[2] ""
+msgstr[2] "Источники данных удалены"
 msgstr[3] "Источники данных удалены"
 
 msgid "Deleted Database"
@@ -3109,24 +3159,24 @@ msgstr[3] "Интерфейсы удалены"
 
 msgid "Deleted Job"
 msgid_plural "Deleted Jobs"
-msgstr[0] "Задача удалена"
-msgstr[1] "Задачи удалены"
-msgstr[2] ""
-msgstr[3] "Задачи удалены"
+msgstr[0] "Задание удалено"
+msgstr[1] "Задания удалены"
+msgstr[2] "Задания удалены"
+msgstr[3] "Задания удалены"
 
 msgid "Deleted Job Binary"
 msgid_plural "Deleted Job Binaries"
-msgstr[0] "Исполняемый файл задачи удален"
-msgstr[1] "Исполняемые файлы задач удалены"
-msgstr[2] ""
-msgstr[3] "Исполняемые файлы задач удалены"
+msgstr[0] "Исполняемый файл задания удален"
+msgstr[1] "Исполняемые файлы задания удалены"
+msgstr[2] "Исполняемые файлы задания удалены"
+msgstr[3] "Исполняемые файлы задания удалены"
 
 msgid "Deleted Job Template"
 msgid_plural "Deleted Jobs Templates"
-msgstr[0] "Шаблон задач удален"
-msgstr[1] "Шаблоны задач удалены"
-msgstr[2] ""
-msgstr[3] "Шаблоны задач удалены"
+msgstr[0] "Шаблон задания удален"
+msgstr[1] "Шаблоны задания удалены"
+msgstr[2] "Шаблоны задания удалены"
+msgstr[3] "Шаблоны задания удалены"
 
 msgid "Deleted Key Pair"
 msgid_plural "Deleted Key Pairs"
@@ -3237,7 +3287,7 @@ msgid "Deleted Template"
 msgid_plural "Deleted Templates"
 msgstr[0] "Шаблон удален"
 msgstr[1] "Шаблоны удалены"
-msgstr[2] ""
+msgstr[2] "Шаблоны удалены"
 msgstr[3] "Шаблоны удалены"
 
 msgid "Deleted User"
@@ -3628,6 +3678,9 @@ msgstr "Скачать исполняемый файл"
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "Загрузить пары ключей &quot;%(keypair_name)s&quot;"
 
+msgid "Duration"
+msgstr "Продолжительность"
+
 #, python-format
 msgid "Duration of instance type %s (openstack flavor)"
 msgstr "Время работы инстанса %s (тип инстанса OpenStack)"
@@ -3644,6 +3697,9 @@ msgstr "EC2 URL"
 msgid "Edit"
 msgstr "Изменить"
 
+msgid "Edit Cluster Template"
+msgstr "Редактировать шаблон кластера"
+
 msgid "Edit Connection"
 msgstr "Редактировать подключение"
 
@@ -3652,6 +3708,9 @@ msgstr "Редактировать потребителя"
 
 msgid "Edit Consumer of QoS Spec"
 msgstr "Изменить потребителя спецификации QoS"
+
+msgid "Edit Data Source"
+msgstr "Редактировать источник данных"
 
 msgid "Edit Domain"
 msgstr "Изменить домен"
@@ -3692,6 +3751,9 @@ msgstr "Редактировать теги образа"
 
 msgid "Edit Instance"
 msgstr "Редактировать экземпляр"
+
+msgid "Edit Job Binary"
+msgstr "Редактировать исполняемый файл задания"
 
 msgid "Edit Member"
 msgstr "Редактироват участника"
@@ -4055,6 +4117,9 @@ msgid ""
 "Evacuate the servers from the selected down host to an active target host."
 msgstr ""
 "Эвакуировать инстансы с выбранного недоступного узла нв активный целевой узел"
+
+msgid "Event time"
+msgstr "Время события"
 
 msgid "Events"
 msgstr "События"
@@ -4602,6 +4667,19 @@ msgid "For Object Store job binaries, you must:"
 msgstr "Для исполняемых файлов Объектного Хранилища вы должны:"
 
 msgid ""
+"For Shell Action jobs, any required files beyond the main script may be "
+"added as \"libraries\"."
+msgstr ""
+"Для заданий Shell любые необходимые файлы, помимо основного скрипта, могут "
+"быть добавлены как библиотеки."
+
+msgid ""
+"For Spark and Shell jobs, only a main is required, \"libs\" are optional."
+msgstr ""
+"Для заданий Spark и Shell необходим только основной скрипт, библиотеки не "
+"обязательны."
+
+msgid ""
 "For TCP and UDP rules you may choose to open either a single port or a range "
 "of ports. Selecting the \"Port Range\" option will provide you with space to "
 "provide both the starting and ending ports for the range. For ICMP rules you "
@@ -4684,9 +4762,6 @@ msgstr "GRE"
 
 msgid "Gateway IP"
 msgstr "IP шлюза"
-
-msgid "Gateway IP (optional)"
-msgstr "IP шлюза (опционально)"
 
 msgid "Gateway IP and IP version are inconsistent."
 msgstr "IP шлюза и версия IP протокола несовместимы."
@@ -4948,14 +5023,6 @@ msgstr ""
 "2001:DB8::/48). Если вы используете по умолчанию, оставьте поле пустым. Если "
 "вы не хотите использовать шлюз, галочкой отметьте \"Отключить шлюз\" ниже."
 
-msgid ""
-"IP address of Gateway (e.g. 192.168.0.254). Specify an explicit address to "
-"set the gateway. If you do not want to use a gateway, check 'Disable "
-"Gateway' below."
-msgstr ""
-"IP-адрес шлюза (напр.192.168.0.254). Указать адрес для настройки шлюза. Если "
-"вы не хотите использовать шлюз, галочкой выберите \"Отключить шлюз\" ниже."
-
 msgid "IP allocation pool"
 msgstr "Пул выделения IP"
 
@@ -5165,6 +5232,9 @@ msgstr ""
 "Кроме того, вы можете создать внешнюю или общую сеть, установив "
 "соответствующий флажок "
 
+msgid "In progress"
+msgstr "В процессе"
+
 msgctxt "Current status of a Volume"
 msgid "In-use"
 msgstr "Используется"
@@ -5328,6 +5398,9 @@ msgstr ""
 
 msgid "Intelligent Platform Management Interface (IPMI)"
 msgstr "Интеллектуальный интерфейс управления платформой (IPMI)"
+
+msgid "Interface Arguments"
+msgstr "Аргументы интерфейса"
 
 msgid "Interface added"
 msgstr "Интерфейс добавлен"
@@ -5569,10 +5642,10 @@ msgstr "Запустить машину (Превышен лимит)"
 
 msgid "Launch Job"
 msgid_plural "Launch Jobs"
-msgstr[0] "Запустить задачу"
-msgstr[1] "Запустить задачи"
-msgstr[2] ""
-msgstr[3] "Запустить задачи"
+msgstr[0] "Выполнить задание"
+msgstr[1] "Выполнить задания"
+msgstr[2] "Выполнить задания"
+msgstr[3] "Выполнить задания"
 
 msgid "Launch On Existing Cluster"
 msgstr "Запустить на существующем кластере"
@@ -5638,10 +5711,10 @@ msgstr "Запущен кластер %s"
 
 msgid "Launched Job"
 msgid_plural "Launched Jobs"
-msgstr[0] "Задача запущена"
-msgstr[1] "Задачи запущены"
-msgstr[2] ""
-msgstr[3] "Задачи запущены"
+msgstr[0] "Задание запущена"
+msgstr[1] "Задания запущены"
+msgstr[2] "Задания запущены"
+msgstr[3] "Задания запущены"
 
 msgid ""
 "Launching multiple instances is only supported for images and instance "
@@ -5847,6 +5920,9 @@ msgstr "Сопоставлен фиксированный IP-адрес"
 msgid "Mapper"
 msgstr "Сопоставитель"
 
+msgid "Mapping Type"
+msgstr "Тип отображения"
+
 msgid "Master Instance Name"
 msgstr "Название основной инстансы"
 
@@ -5917,9 +5993,6 @@ msgstr "Определения метаданных"
 
 msgid "Metadata Items"
 msgstr "Элементы метаданных"
-
-msgid "Metadata successfully updated."
-msgstr "Метаданные успешно обновлены."
 
 msgid "Meter"
 msgstr "Метрика"
@@ -6197,6 +6270,9 @@ msgstr "Сеть в формате CIDR (например 192.168.0.0/24)"
 msgid "Network address in CIDR format (e.g. 192.168.0.0/24, 2001:DB8::/48)"
 msgstr "Адрес сети в CIDR формате (например 192.168.0.0/24, 2001:DB8::/48)"
 
+msgid "Network attached to instance."
+msgstr "Сеть подключенная к инстансу."
+
 msgid "Network list can not be retrieved."
 msgstr "Не удалось получить список сетей."
 
@@ -6365,6 +6441,9 @@ msgstr "Нет доступных образов"
 
 msgid "No images available."
 msgstr "Нет доступных образов."
+
+msgid "No info available"
+msgstr "Нет доступной информации"
 
 msgid "No input was provided for the namespace content."
 msgstr "Не указано содержимое пространства имен."
@@ -6561,6 +6640,9 @@ msgstr ""
 "вы сможете задать любые настройки для конкретного кластера\n"
 "в дополнительных закладках формы создания шаблона кластера."
 
+msgid "Number"
+msgstr "Число"
+
 msgid "Number of API requests against swift"
 msgstr "Количество обращений к API Swift"
 
@@ -6578,6 +6660,9 @@ msgstr "Количество VCPU"
 
 msgid "Number of Volumes"
 msgstr "Количество дисков"
+
+msgid "Number of clusters to launch."
+msgstr "Количество кластеров для запуска."
 
 msgid "Number of containers"
 msgstr "Количество контейнеров"
@@ -6599,6 +6684,9 @@ msgstr "Объем входящего трафика на сетевом инт�
 
 msgid "Number of incoming packets for a VM interface"
 msgstr "Количество входящих пакетов на интерфейсе ВМ"
+
+msgid "Number of instances in the cluster. (Read only)"
+msgstr "Количество инстансов в кластере. (Только чтение)"
 
 msgid "Number of instances to launch."
 msgstr "Число инстансов для запуска."
@@ -6802,6 +6890,9 @@ msgstr "Пароль изменен. Снова войдите в систему
 
 msgid "Password changed. Please log in to continue."
 msgstr "Пароль изменен. Пожалуйста войдите в систему для продолжения."
+
+msgid "Password for root user."
+msgstr "Пароль пользователя root"
 
 #, python-format
 msgid "Password for user \"%s\""
@@ -7081,14 +7172,11 @@ msgstr "Частный"
 msgid "Private Key File"
 msgstr "Файл закрытого ключа"
 
-msgid "Processes"
-msgstr "Процессы"
-
-msgid "Processes to be launched in node group"
-msgstr "Процессы запущены в узле группы"
-
 msgid "Profile"
 msgstr "Профиль"
+
+msgid "Progress"
+msgstr "Прогресс"
 
 msgid "Project"
 msgstr "Проект"
@@ -7755,6 +7843,9 @@ msgstr "Корневой диск"
 msgid "Root Disk (GB)"
 msgstr "Корневой диск (ГБ)"
 
+msgid "Root Password"
+msgstr "Пароль root"
+
 msgctxt "load balancing method"
 msgid "Round Robin"
 msgstr "Равномерно"
@@ -7847,6 +7938,9 @@ msgid ""
 msgstr ""
 "Правила определяют какой трафик разрешен к машинам которым назначена группа "
 "безопасности. Правило группы безопасности состоит из трех основных частей:"
+
+msgid "Run HBase EDP Jobs with common HBase library on HDFS"
+msgstr "Выполнить задание HBase EDP с общей библиотекой HBase на HDFS"
 
 msgctxt "Power state of an Instance"
 msgid "Running"
@@ -8090,6 +8184,9 @@ msgstr "Выберите снимок инстанса"
 msgid "Select Network"
 msgstr "Выберите сеть"
 
+msgid "Select Node Group Processes"
+msgstr "Выберите процессы группы нод"
+
 msgid "Select Port"
 msgstr "Выберите порт"
 
@@ -8137,6 +8234,9 @@ msgstr "Выберите Маршрутизатор"
 
 msgid "Select a Subnet"
 msgstr "Выбор подсети"
+
+msgid "Select a Value Type for your next argument:"
+msgstr "Выберите тип значения для следующего аргумента:"
 
 msgid "Select a backup to restore"
 msgstr "Выбрать резервную копию для восстановления"
@@ -8385,6 +8485,12 @@ msgstr "Общее хранилище"
 msgid "Shared with Me"
 msgstr "В совместном доступе"
 
+msgid "Shell"
+msgstr "Shell"
+
+msgid "Shell Action"
+msgstr "Команда Shell"
+
 msgctxt "Current status of an Instance"
 msgid "Shelved"
 msgstr "Отложен"
@@ -8459,6 +8565,9 @@ msgstr "Размер временного диска"
 msgid "Size of image to launch."
 msgstr "Размер образа для запуска"
 
+msgid "Size of instance to launch."
+msgstr "Размер инстанса для запуска."
+
 msgid "Size of root disk"
 msgstr "Объем корневого диска"
 
@@ -8478,9 +8587,6 @@ msgid ""
 "Slashes are allowed, and are treated as pseudo-folders by the Object Store."
 msgstr ""
 "Слеши разрешены и рассматриваются как псевдо-каталоги Хранилища Объектов."
-
-msgid "Small"
-msgstr "Маленький"
 
 msgid "Snapshot"
 msgstr "Снимок"
@@ -8627,9 +8733,6 @@ msgstr "Указывает что диск может быть использо�
 msgid "Specify \"Network Address\""
 msgstr "Указать \"Сетевой адрес\""
 
-msgid "Specify \"Network Address\" or clear \"Create Subnet\" checkbox."
-msgstr "Задайте \"Сетевой адрес\" или снимите флаг \"Создать подсеть\"."
-
 msgid "Specify IP address of gateway or check \"Disable Gateway\"."
 msgstr "Задайте IP адрес шлюза или установите флашок \"Не использовать шлюз\"."
 
@@ -8767,6 +8870,9 @@ msgstr[1] "Запущены инстансы"
 msgstr[2] ""
 msgstr[3] "Запущены инстансы"
 
+msgid "Started at"
+msgstr "Запущено "
+
 #, python-format
 msgid "Starting evacuation from %(current)s to %(target)s."
 msgstr "Запускается эвакуация с %(current)s на %(target)s."
@@ -8799,6 +8905,9 @@ msgstr "Статус ="
 msgid "Status Reason"
 msgstr "Причина статуса"
 
+msgid "Step Description"
+msgstr "Описание шага"
+
 msgctxt "Action log of an instance"
 msgid "Stop"
 msgstr "Остановить"
@@ -8809,8 +8918,14 @@ msgstr "Место хранения"
 msgid "Storage type"
 msgstr "Тип хранения"
 
+msgid "Storm"
+msgstr "Storm"
+
 msgid "Streaming MapReduce"
 msgstr "Поточный MapReduce"
+
+msgid "String"
+msgstr "Строка"
 
 msgid "Subnet"
 msgstr "Подсеть"
@@ -9624,9 +9739,6 @@ msgid "To exit the fullscreen mode, click the browser's back button."
 msgstr ""
 "Для выхода из полноэкранного режима нажмите на кнопку \"Назад\" в браузере."
 
-msgid "To power off a specific instance."
-msgstr "Выключить конкретную машину."
-
 msgid ""
 "To specify an allowed IP range, select &quot;CIDR&quot;. To allow access "
 "from all members of another security group select &quot;Security Group&quot;."
@@ -10087,6 +10199,9 @@ msgstr "Не удалось получить шаблон объекта."
 msgid "Unable to fetch template to copy."
 msgstr "Не удалось получить шаблон для копирования."
 
+msgid "Unable to fetch template to edit."
+msgstr "Невозможно получит шаблон для редактирования"
+
 msgid "Unable to fetch the image details"
 msgstr "Не удалось получить данные образа"
 
@@ -10391,15 +10506,6 @@ msgstr "Не удалось получить список зон доступн�
 msgid "Unable to retrieve availability zones."
 msgstr "Не удалось получить зоны доступности."
 
-msgid "Unable to retrieve available metadata for aggregate."
-msgstr "Не удалось получить доступные метаданные агрегатора."
-
-msgid "Unable to retrieve available metadata for flavors."
-msgstr "Не удалось получить доступные метаданные для типа инстансов."
-
-msgid "Unable to retrieve available properties for image."
-msgstr "Не удалось получить доступные свойства образа"
-
 msgid "Unable to retrieve backup details."
 msgstr "Не удалось получить подробную информацию о резервной копии."
 
@@ -10618,6 +10724,10 @@ msgstr "Не удалось получить список инстансов."
 
 msgid "Unable to retrieve instances."
 msgstr "Не удалось получить инстансы."
+
+#, python-format
+msgid "Unable to retrieve job binary \"%s\"."
+msgstr "Невозможно получить исполняемый файл задания \"%s\"."
 
 msgid "Unable to retrieve key pair list."
 msgstr "Не удалось получить список пар ключей"
@@ -10841,15 +10951,6 @@ msgstr "Не удалось получить ограничения проект
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "Не удалось получить агрегатор для обновления"
 
-msgid "Unable to retrieve the aggregate to be updated."
-msgstr "Не удалось получить агрегатор для обновления"
-
-msgid "Unable to retrieve the flavor metadata."
-msgstr "Не удалось получить метаданные для типа инстансов."
-
-msgid "Unable to retrieve the image to be updated."
-msgstr "Не удалось получить образ для обновления"
-
 msgid "Unable to retrieve the specified pool."
 msgstr "Не удалось получить указанный пул."
 
@@ -10996,6 +11097,9 @@ msgstr "Не удалось изменить группу."
 msgid "Unable to update image \"%s\"."
 msgstr "Не удалось обновить образ \"%s\"."
 
+msgid "Unable to update job binary"
+msgstr "Невозможно обновить исполняемый файл задания"
+
 msgid "Unable to update object."
 msgstr "Не удалось обновить объект"
 
@@ -11013,20 +11117,11 @@ msgstr "Не удалось обновить группу безопасност
 msgid "Unable to update subnet \"%s\"."
 msgstr "Не удалось обновить подсеть \"%s\"."
 
-msgid "Unable to update the aggregate metadata."
-msgstr "Не удалось обновить метаданные агрегатора."
-
 msgid "Unable to update the aggregate."
 msgstr "Не удалось обновить агрегатор."
 
-msgid "Unable to update the flavor metadata."
-msgstr "Не удалось обновить метаданные типа инстансов."
-
 msgid "Unable to update the group."
 msgstr "Не удалось изменить группу."
-
-msgid "Unable to update the image metadata."
-msgstr "Не удалось обновить метаданные образа"
 
 msgid "Unable to update the user password."
 msgstr "Не удалось изменить пароль пользователя."
@@ -11109,15 +11204,15 @@ msgid "Unregister Image"
 msgid_plural "Unregister Images"
 msgstr[0] "Удалить образ"
 msgstr[1] "Удалить образы"
-msgstr[2] ""
+msgstr[2] "Удалить образы"
 msgstr[3] "Удалить образы"
 
 msgid "Unregistered Image"
 msgid_plural "Unregistered Images"
 msgstr[0] "Образ удалены"
 msgstr[1] "Образы удалены"
-msgstr[2] ""
-msgstr[3] "Образы удален"
+msgstr[2] "Образы удалены"
+msgstr[3] "Образы удалены"
 
 msgctxt "Task status of an Instance"
 msgid "Unrescuing"
@@ -11144,9 +11239,6 @@ msgstr "Up"
 msgid "Update"
 msgstr "Обновить"
 
-msgid "Update Aggregate Metadata"
-msgstr " Обновить метаданные агрегатора"
-
 msgid "Update Associations"
 msgstr "Обновить Ассоциации"
 
@@ -11164,17 +11256,11 @@ msgctxt "current status of stack"
 msgid "Update Failed"
 msgstr "Изменение завершилось неуспешно"
 
-msgid "Update Flavor Metadata"
-msgstr "Обновить метаданные типа инстанса"
-
 msgid "Update Group"
 msgstr "Обновить группу"
 
 msgid "Update Image"
 msgstr "Обновить образ"
-
-msgid "Update Image Metadata"
-msgstr "Обновить метаданные образа"
 
 msgctxt "current status of stack"
 msgid "Update In Progress"
@@ -11265,6 +11351,9 @@ msgstr "Обновлено"
 msgid "Updated subnet \"%s\"."
 msgstr "Обновленная подсеть \"%s\"."
 
+msgid "Updated time"
+msgstr "Время обновления"
+
 msgctxt "Task status of an Instance"
 msgid "Updating Password"
 msgstr "Обновление пароля"
@@ -11337,6 +11426,9 @@ msgstr "Использовать анти-аффинные группы для �
 
 msgid "Use anti-affinity groups for: "
 msgstr "Использовать анти-аффинные группы для:"
+
+msgid "Use auto-configuration"
+msgstr "Использовать автоконфигурацию"
 
 msgid "Use image as a source"
 msgstr "Использовать образ как источник"

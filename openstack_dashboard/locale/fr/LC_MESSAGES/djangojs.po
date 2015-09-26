@@ -7,24 +7,33 @@
 # Corinne Verheyde <cverheyd@hotmail.com>, 2015
 # Lucas Mascaro <mascaro.lucas@yahoo.fr>, 2015
 # Maxime COQUEREL <max.coquerel@gmail.com>, 2015
+# Corinne Verheyde <cverheyd@gmail.com>, 2015. #zanata
+# François Bureau <bureaufrancois@gmail.com>, 2015. #zanata
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
+# Romain Chantereau <rchanter@redhat.com>, 2015. #zanata
+# andrew melim <nokostya.translation@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-01 03:11+0000\n"
-"PO-Revision-Date: 2015-08-30 00:10+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: French (http://www.transifex.com/openstack/horizon/language/"
-"fr/)\n"
+"POT-Creation-Date: 2015-09-18 23:31+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-18 10:06+0000\n"
+"Last-Translator: Corinne Verheyde <cverheyd@gmail.com>\n"
+"Language-Team: French (http://www.transifex.com/openstack/horizon/language/"
+"fr/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 msgid "(Max: 16Kb)"
 msgstr "(Max: 16Ko)"
+
+msgid "(Modified)"
+msgstr "(Modifié)"
 
 msgid "(None)"
 msgstr "(Aucun)"
@@ -95,18 +104,17 @@ msgstr ""
 "informations nécessaires."
 
 msgid ""
-"A key pair allows you to SSH into your newly created instance. You may "
-"select an existing key pair, import a key pair, or generate a new key pair."
+"A key pair allows you to SSH into your newly created instance.\n"
+"      You may select an existing key pair, import a key pair, or generate a "
+"new key pair."
 msgstr ""
-"Une paire de clés vous permet d'SSH une instance nouvellement créée. Vous "
-"pouvez sélectionner une paire de clés existante, importer une paire de clés, "
-"ou générer une nouvelle paire de clés."
+"Une paire de clés vous permet de vous connecter en SSH à vos instances "
+"nouvellement créées.\n"
+"    Vous pouvez sélectionner une paire de clés existante, en importer une "
+"existente ou en générer une nouvelle."
 
 msgid "A name is required for your instance."
 msgstr "Vous avez besoin d'un nom pour votre instance."
-
-msgid "Actions"
-msgstr "Actions"
 
 msgid "Active"
 msgstr "Active"
@@ -152,8 +160,8 @@ msgid ""
 "b> resizes the disk and sets it to a single partition. Selecting <b>Manual</"
 "b> allows you to create multiple partitions on the disk."
 msgstr ""
-"Le partitionnement de disques est une action avancée disponible quand on "
-"exécute une instance.  <b>Automatic</b> redimensionne le disque et le "
+"Le partitionnement de disques est une des actions avancées disponibles quand "
+"on lance une instance.  <b>Automatic</b> redimensionne le disque et le "
 "définit en tant que partition unique. <b>Manuel</b> vous permet de créer "
 "plusieurs partitions sur le disque."
 
@@ -170,6 +178,9 @@ msgstr "Automatique"
 msgid "Availability Zone"
 msgstr "Zone de disponibilité"
 
+msgid "Boot Source"
+msgstr "Source de démarrage"
+
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -179,18 +190,15 @@ msgstr "Impossible d'obtenir le catalogue de services Keystone"
 msgid "Cannot get the Nova extension list."
 msgstr "Impossible d'obtenir la liste des extensions Nova."
 
-msgid "Change Password"
-msgstr "Changer Mot de passe"
-
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
 "special configuration drive. When the instance boots, it attaches to the "
 "<b>Configuration Drive</b> and accesses the metadata."
 msgstr ""
-"Configurer l'espace <b>Disque de configuration</b> pour écrire les "
-"métadonnées sur un disque de configuration spécifique. Quand l'instance sera "
-"exécutée, il s'attachera au <b>Disque de configuration</b> et pourra accéder "
-"aux métadonnées."
+"Cocher la case <b>Disque de configuration</b>  si vous souhaitez écrire les "
+"métadonnées sur un disque de configuration spécifique.Quand l'instance "
+"démarrera, elle s'attachera le <b>Disque de configuration</b> et pourra "
+"accéder aux métadonnées."
 
 msgid "Click to see more details"
 msgstr "Cliquer pour une vue plus détaillée"
@@ -199,10 +207,13 @@ msgid "Configuration"
 msgstr "Configuration"
 
 msgid "Configuration Drive"
-msgstr "Disque de configuration"
+msgstr "Disque de Configuration"
 
 msgid "Configuration Help"
 msgstr "Aide à la configuration"
+
+msgid "Configuration Value"
+msgstr "Valeur de configuration"
 
 msgid "Count"
 msgstr "Compteur"
@@ -213,33 +224,29 @@ msgstr "Créer Paire Clés"
 msgid "Create New Volume"
 msgstr "Créer un nouveau volume"
 
-msgid "Create User"
-msgstr "Créer un utilisateur"
-
 msgid "Created"
 msgstr "Créé"
 
-#, python-format
 msgid ""
 "Custom scripts are attached to instances to perform specific actions when "
-"the instance is launched. For example, if you are unable to install <samp>"
-"%(cloutInit)s</samp> inside a guest operating system, you can use a custom "
-"script to get a public key and add it to the user account."
+"the instance is launched. For example, if you are unable to install "
+"<samp>cloud-init</samp> inside a guest operating system, you can use a "
+"custom script to get a public key and add it to the user account."
 msgstr ""
-"Des scripts personnalisés sont joints aux instances pour pouvoir réaliser "
-"certaines actions quand l'instance est exécutée. Ainsi, si vous n'êtes pas "
-"en mesure d'installer  <samp>%(cloutInit)s</samp> dans un système "
-"d'exploitation, vous pouvez utiliser un script personnalisé pour pouvoir "
-"obtenir une clé publique et l'ajouter au compte utilisateur."
+"Les scripts personnalisés sont attachés à l'instance pour réaliser certaines "
+"actions spécifiques au lancement de l'instance. Par exemple, si vous ne "
+"pouvez pas installer <samp>cloud-init</samp> à l'intérieur d'un système "
+"d'exploitation invité, vous pouvez utiliser un script personnalisé pour "
+"récupérer une clé publique et l'ajouter au compte utilisateur."
 
 msgid "Customization Script"
-msgstr "Script de personnalisation"
+msgstr "Script de Personnalisation"
 
-msgid "Delete"
-msgstr "Supprimer"
+msgid "Data Source"
+msgstr "Source de données"
 
-msgid "Delete Users"
-msgstr "Supprimer les utilisateurs"
+msgid "Default Value"
+msgstr "Valeur par défaut"
 
 msgid "Delete Volume on Terminate"
 msgstr "Supprimer le volume après terminaison"
@@ -256,9 +263,6 @@ msgstr "Nom du périphérique"
 msgid "Direction"
 msgstr "Direction"
 
-msgid "Disable"
-msgstr "Désactiver"
-
 msgid "Disk Partition"
 msgstr "Partition Disque"
 
@@ -268,14 +272,8 @@ msgstr "ID Domaine"
 msgid "Down"
 msgstr "Bas"
 
-msgid "Edit"
-msgstr "Editer"
-
 msgid "Email"
 msgstr "E-mail"
-
-msgid "Enable"
-msgstr "Activer"
 
 msgid "Enabled"
 msgstr "Activé"
@@ -285,6 +283,9 @@ msgstr "Disque Éphémère"
 
 msgid "Ether Type"
 msgstr "Type de protocole"
+
+msgid "Event log is not available."
+msgstr "Le journal des événements n'est pas disponible."
 
 #, python-format
 msgid "Extension is not enabled: %(extension)s."
@@ -309,20 +310,29 @@ msgstr ""
 "Les gabarits sont en place pour gérer la taille de la capacité de stockage, "
 "de mémoire et de calcul d'une instance."
 
+msgid ""
+"For data sources, use a data source UUID or a path (as per data source "
+"creation.)"
+msgstr ""
+"Pour les sources de données, utiliser l'UUID de la source de données ou un "
+"chemin (tel que celui utilisé pour la création)"
+
 msgid "Format"
 msgstr "Format"
 
-#, python-format
 msgid ""
-"From a Windows system, you can use PuTTYGen to create private/public keys. "
-"Use the PuTTY Key Generator to create and save the keys, then copy the "
-"public key in the red highlighted box to your <samp>%(authorizeKeysFile)s</"
-"samp> file."
+"From a Windows system, you can use PuTTYGen to create private/public keys.\n"
+"  Use the PuTTY Key Generator to create and save the keys, then copy\n"
+"  the public key in the red highlighted box to your <samp>.ssh/"
+"authorized_keys</samp>\n"
+"  file."
 msgstr ""
-"Dans les systèmes Windows, vous pouvez utiliser PuTTYGen pour créer des clés "
-"privées/publiques. Utilisez le générateur de clés Putty Key Generator pour "
-"créer et sauvegarder les clés, puis copiez la clé publique dans la zone en "
-"surbrillance rouge dans votre fichier <samp>%(authorizeKeysFile)s</samp>."
+"Sur un système Windows, vous pouvez utiliser PuTTYGen pour créer une paire "
+"de clés publique/privée.\n"
+"  Utilisez le générateur de clés de PuTTY pour créer et sauvegarder les "
+"clés, puis copiez\n"
+"  la clé publique dans la boite surlignée en rouge dans votre fichier\n"
+"  <samp>.ssh/authorized_keys</samp>."
 
 msgid "ID"
 msgstr "ID"
@@ -372,10 +382,7 @@ msgid "Impact on your quota"
 msgstr "Impact sur votre quota"
 
 msgid "Import Key Pair"
-msgstr "Importer Paire Clés"
-
-msgid "Import Key Pair Help"
-msgstr "Importer Paire Clés"
+msgstr "Importer une Paire Clés"
 
 msgid "Instance Details"
 msgstr "Détails de l'instance"
@@ -384,7 +391,7 @@ msgid "Instance Name"
 msgstr "Nom de l'instance"
 
 msgid "Instance Snapshot"
-msgstr "Instantané Instance"
+msgstr "Instantané d'Instance"
 
 msgid "Instance Source"
 msgstr "Source de l'instance"
@@ -419,20 +426,16 @@ msgid "Key Pair Name"
 msgstr "Nom Paire Clés"
 
 msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose a "
-"key pair name you will recognize and paste your SSH public key into the "
-"space provided."
+"Key Pairs are how you login to your instance after it is launched.\n"
+"        Choose a key pair name you will recognize and paste your SSH public "
+"key into the\n"
+"        space provided."
 msgstr ""
-"Les paires de clés servent à se connecter à une instance après son "
-"lancement. Choisissez un nom de paire de clés que vous reconnaîtrez et "
-"collez votre clé publique SSH dans l'espace réservé à cet effet."
-
-msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose a "
-"key pair name you will recognize."
-msgstr ""
-"Les paires de clés servent à se connecter à une instance après son "
-"lancement. Choisissez un nom de paire de clés que vous reconnaîtrez."
+"Les Paires de Clés définissent comment vous vous connectez à votre instance "
+"après l’avoir lancée.\n"
+"    Choisissez un nom représentatif pour votre paire de clés et coller votre "
+"clé publique SSH dans\n"
+"    l’espace prévu à cet effet."
 
 msgid "Killed"
 msgstr "Supprimé par force"
@@ -442,6 +445,9 @@ msgstr "Lancer Instance"
 
 msgid "Load script from a file"
 msgstr "Charger le script à partir d'un fichier"
+
+msgid "Location"
+msgstr "Emplacement"
 
 msgid "Manual"
 msgstr "Manuelle"
@@ -467,11 +473,11 @@ msgstr "Ram Mon (Mo)"
 msgid "Min Ram"
 msgstr "RAM Min"
 
-msgid "Modified"
-msgstr "Modifié"
-
 msgid "Name"
 msgstr "Nom"
+
+msgid "Named Parameter"
+msgstr "Paramètre nommé"
 
 msgid "Network"
 msgstr "Réseau"
@@ -496,6 +502,9 @@ msgstr "Non"
 msgid "No available items"
 msgstr "Pas d'élément disponible"
 
+msgid "Number"
+msgstr "Nombre"
+
 msgid "OK"
 msgstr "OK"
 
@@ -517,6 +526,9 @@ msgstr ""
 
 msgid "Policy check failed."
 msgstr "La vérification de la stratégie a échoué."
+
+msgid "Positional Argument"
+msgstr "Argument positionnel"
 
 msgid "Private"
 msgstr "Privé"
@@ -576,8 +588,14 @@ msgstr ""
 msgid "Remote"
 msgstr "Distant"
 
+msgid "Remove"
+msgstr "Supprimer"
+
 msgid "Required"
 msgstr "Obligatoire"
+
+msgid "Required?"
+msgstr "Exigé ?"
 
 msgid "Root Disk"
 msgstr "Disque Racine"
@@ -590,9 +608,6 @@ msgstr "Enregistrement"
 
 msgid "Script size"
 msgstr "Taille Script"
-
-msgid "Script size > 16Kb"
-msgstr "Taille du script > 16Ko"
 
 msgid "Security Groups"
 msgstr "Groupes de sécurité"
@@ -621,6 +636,13 @@ msgstr ""
 "précisément les options d'accès à une instance. Pour créer des règles "
 "supplémentaires, allez dans la vue <b>Compute | Accès & Sécurité</b>, "
 "cherchez le groupe de sécurité, et cliquez sur <b>Gestion des règles</b>."
+
+msgid ""
+"See http://docs.openstack.org/developer/sahara/userdoc/edp.html for "
+"definitions."
+msgstr ""
+"Lire http://docs.openstack.org/developer/sahara/userdoc/edp.html pour les "
+"définitions."
 
 msgid "Segmentation ID"
 msgstr "ID de segmentation"
@@ -674,6 +696,9 @@ msgstr "Le paramètre n'est pas activé : %(setting)s"
 msgid "Shared"
 msgstr "Partagé"
 
+msgid "Show events"
+msgstr "Afficher les événements"
+
 msgid "Size"
 msgstr "Taille"
 
@@ -686,6 +711,9 @@ msgstr "Instantané"
 msgid "Status"
 msgstr "Statut"
 
+msgid "String"
+msgstr "Chaîne de caractères"
+
 msgid "Subnets Associated"
 msgstr "Sous-réseaux associés"
 
@@ -695,7 +723,7 @@ msgstr "La paire de clés %(name)s est maintenant créée."
 
 #, python-format
 msgid "Successfully imported key pair %(name)s."
-msgstr "La paire de clés %(name)s est maintenant importée."
+msgstr "La paire de clés %(name)s a été importée avec succès."
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -704,6 +732,17 @@ msgstr ""
 "Le gabarit que vous sélectionnez détermine le montant de ressources de "
 "mémoire, de stockage et de calcul qui seront réservés à votre instance."
 
+msgid ""
+"The flavor you select must have enough resources allocated to support the "
+"type of instance you are trying to create. Flavors that do not provide "
+"enough resources for your instance are identified on the <b>Available</b> "
+"table with a yellow warning icon."
+msgstr ""
+"Le gabarit que vous sélectionnez doit avoir assez de ressources pour "
+"soutenir le type d'instance que vous devez créer. Les gabarits que ne sont "
+"pas suffisants pour créer des instances sont identifiés sur le tableau "
+"<b>disponible</b> et l'icône d'avertissement jaune."
+
 #, python-format
 msgid ""
 "The instance count must not exceed your quota available of "
@@ -711,12 +750,6 @@ msgid ""
 msgstr ""
 "Le nombre d'instances ne doit pas dépasser votre quota de "
 "%(maxInstanceCount)s  instances"
-
-msgid "The key pair allows you to SSH into the instance."
-msgstr "La paire de clés vous permet d'SSH dans l'instance."
-
-msgid "The maximum script size is 16Kb."
-msgstr "La taille maximum du script est de 16Ko."
 
 #, python-format
 msgid ""
@@ -740,6 +773,9 @@ msgstr ""
 msgid "The status indicates whether the network has an active connection."
 msgstr "Le statut indique si le réseau a une connexion active."
 
+msgid "The step has completed successfully. No events to display."
+msgstr "L'étape s'est terminée avec succès. Aucun événement à afficher."
+
 msgid ""
 "The subnet identifies a sub-section of a network. A subnet is specified in "
 "CIDR format.\n"
@@ -753,30 +789,27 @@ msgstr ""
 msgid "The volume size must be at least %(minVolumeSize)s GB"
 msgstr "La taille du volume doit être d'au moins %(minVolumeSize)s Go"
 
-#, python-format
 msgid ""
-"There are two ways to generate a key pair. From a Linux system, generate the "
-"key pair with the <samp>%(genKeyPairCmd)s</samp> command:"
+"There are two ways to generate a key pair. From a Linux system,\n"
+"  generate the key pair with the <samp>ssh-keygen</samp> command:"
 msgstr ""
-"Il y a deux façons de générer une paire de clés. Dans les systèmes Linux, "
-"vous pourrez générer une paire de clés grâce à la commande <samp>"
-"%(genKeyPairCmd)s</samp> :"
+"Il y a deux façons de générer une paire de clés. Sur un système Linux,\n"
+"  générez la paire avec la commande : <samp>ssh-keygen</samp>:"
 
-#, python-format
 msgid ""
-"This command generates a pair of keys: a private key (%(privateKeyPath)s) "
-"and a public key (%(publicKeyPath)s)."
+"This command generates a pair of keys: a private key (cloud.key)\n"
+"  and a public key (cloud.key.pub)."
 msgstr ""
-"Cette commande génère une paire de clés : une clé privée "
-"(%(privateKeyPath)s) et une clé publique (%(publicKeyPath)s)."
+"Cette commande génère une paire de clés : une clé privée (cloud.key)\n"
+"  et une clé publique (cloud.key.pub)."
 
 msgid ""
 "This flavor requires more RAM than your quota allows. Please select a "
 "smaller flavor or decrease the instance count."
 msgstr ""
-"Ce gabarit requiert un montant de mémoire RAM supérieur au montant autorisé "
-"par votre quota. Veuillez sélectionner un plus petit gabarit ou diminuez le "
-"nombre d'instances."
+"Ce gabarit requiert plus de mémoire RAM qu'autorisé par votre quota. "
+"Veuillez sélectionner un plus petit gabarit ou diminuez le nombre "
+"d'instances."
 
 msgid ""
 "This flavor requires more VCPUs than your quota allows. Please select a "
@@ -801,7 +834,7 @@ msgid "Total RAM"
 msgstr "Total RAM"
 
 msgid "Total VCPUs"
-msgstr "Total des VCPU"
+msgstr "Total des VCPUs"
 
 msgid "Type"
 msgstr "Type"
@@ -864,8 +897,18 @@ msgstr "Impossible de supprimer l'utilisateur."
 msgid "Unable to delete the users."
 msgstr "Impossible de supprimer les utilisateurs."
 
+msgid "Unable to edit the aggregate extra specs."
+msgstr "Impossible d'éditer les paramètres supplémentaires de l'agrégat."
+
 msgid "Unable to edit the domain."
 msgstr "Impossible d'éditer le domaine."
+
+msgid "Unable to edit the flavor extra specs."
+msgstr ""
+"Impossible d'éditer les paramètres supplémentaires du gabarit d'instance."
+
+msgid "Unable to edit the image custom properties."
+msgstr "Impossible d'éditer les propriétés personnalisées de l'image."
 
 msgid "Unable to edit the project."
 msgstr "Impossible d'éditer le projet."
@@ -890,6 +933,9 @@ msgstr "Impossible d'importer la paire de clés."
 
 msgid "Unable to retrieve settings."
 msgstr "Impossible de récupérer les paramètres."
+
+msgid "Unable to retrieve the aggregate extra specs."
+msgstr "Impossible de récupérer les paramètres supplémentaires de l'agrégat."
 
 msgid "Unable to retrieve the availability zones."
 msgstr "Impossible de récupérer les zones de disponibilité."
@@ -916,6 +962,9 @@ msgstr "Impossible de récupérer le gabarit d'instance."
 
 msgid "Unable to retrieve the flavors."
 msgstr "Impossible de récupérer les gabarits d'instance."
+
+msgid "Unable to retrieve the image custom properties."
+msgstr "Impossible de récupérer les propriétés personnalisées de l'image."
 
 msgid "Unable to retrieve the image."
 msgstr "Impossible de récupérer l'image."
@@ -971,6 +1020,9 @@ msgstr "Impossible de récupérer les instantanés de volume."
 msgid "Unable to retrieve the volumes."
 msgstr "Impossible de récupérer les volumes."
 
+msgid "Unable to validate the template."
+msgstr "Impossible de valider le modèle."
+
 msgid "Up"
 msgstr "Haut"
 
@@ -992,6 +1044,12 @@ msgstr "ID Utilisateur"
 msgid "User Name"
 msgstr "Nom d'utilisateur"
 
+msgid "VCPUS"
+msgstr "VCPUS"
+
+msgid "Value Type"
+msgstr "Type de valeur"
+
 msgid "Visibility"
 msgstr "Visibilité"
 
@@ -999,7 +1057,7 @@ msgid "Volume"
 msgstr "Volume"
 
 msgid "Volume Snapshot"
-msgstr "Instantané Volume"
+msgstr "Instantané de Volume"
 
 msgid "Volume size is required and must be an integer"
 msgstr ""

@@ -7,21 +7,24 @@
 # Lafaiet <coldmetall@gmail.com>, 2015
 # Luís Eduardo Tenório Silva <eduardovansilva@gmail.com>, 2015
 # Tiago OR (James) <tiagoor@gmail.com>, 2015
+# Marcelo Dieder <marcelodieder@gmail.com>, 2015. #zanata
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-01 03:11+0000\n"
-"PO-Revision-Date: 2015-08-30 00:10+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/openstack/"
-"horizon/language/pt_BR/)\n"
+"POT-Creation-Date: 2015-09-19 06:33+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-21 03:45+0000\n"
+"Last-Translator: Marcelo Dieder <marcelodieder@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/openstack/"
+"horizon/language/pt_BR/)\n"
 "Generated-By: Babel 2.0\n"
-"Language: pt_BR\n"
+"Language: pt-BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 msgid "(Max: 16Kb)"
 msgstr "(Max: 16Kb)"
@@ -72,19 +75,8 @@ msgstr ""
 "instância. <em>Nota: ao selecionar Volume, você só pode lançar uma instância."
 "</em></ li>"
 
-msgid ""
-"A key pair allows you to SSH into your newly created instance. You may "
-"select an existing key pair, import a key pair, or generate a new key pair."
-msgstr ""
-"Um par de chaves permite que você faça SSH para sua instância recém criada. "
-"Você pode selecionar um par de chaves existente, importar um par de chaves "
-"ou gerar um novo."
-
 msgid "A name is required for your instance."
 msgstr "É preciso um nome para sua instância."
-
-msgid "Actions"
-msgstr "Ações"
 
 msgid "Active"
 msgstr "Ativo"
@@ -144,9 +136,6 @@ msgstr "Não é possível obter o catálogo de serviços a partir do keystone."
 msgid "Cannot get the Nova extension list."
 msgstr "Não é possível obter lista de extensão do Nova."
 
-msgid "Change Password"
-msgstr "Alterar Senha"
-
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
 "special configuration drive. When the instance boots, it attaches to the "
@@ -177,33 +166,14 @@ msgstr "Criar par de chaves"
 msgid "Create New Volume"
 msgstr "Criar um Novo Volume"
 
-msgid "Create User"
-msgstr "Criar Usuário"
-
 msgid "Created"
 msgstr "Criado"
-
-#, python-format
-msgid ""
-"Custom scripts are attached to instances to perform specific actions when "
-"the instance is launched. For example, if you are unable to install <samp>"
-"%(cloutInit)s</samp> inside a guest operating system, you can use a custom "
-"script to get a public key and add it to the user account."
-msgstr ""
-"Scripts personalizados são acoplados às instâncias para executar ação "
-"específicas quando a instância é executada. Por exemplo, se você está "
-"impossibilitado de instalar <samp>%(cloutInit)s</samp> dentro de um sistema "
-"convidado, você pode utilizar um script para adquirir uma chave pública e a "
-"adicionar à conta de usuário."
 
 msgid "Customization Script"
 msgstr "Script de Customização"
 
-msgid "Delete"
-msgstr "Excluir"
-
-msgid "Delete Users"
-msgstr "Excluir Usuários"
+msgid "Default Value"
+msgstr "Valor padrão"
 
 msgid "Delete Volume on Terminate"
 msgstr "Excluir Volume ao Finalizar"
@@ -220,9 +190,6 @@ msgstr "Nome do Dispositivo"
 msgid "Direction"
 msgstr "Direção"
 
-msgid "Disable"
-msgstr "Desabilitar"
-
 msgid "Disk Partition"
 msgstr "Partição de Disco"
 
@@ -232,14 +199,8 @@ msgstr "ID do Domínio"
 msgid "Down"
 msgstr "Inativo"
 
-msgid "Edit"
-msgstr "Editar"
-
 msgid "Email"
 msgstr "Email"
-
-msgid "Enable"
-msgstr "Habilitar"
 
 msgid "Enabled"
 msgstr "Habilitado"
@@ -249,6 +210,9 @@ msgstr "Disco Temporário"
 
 msgid "Ether Type"
 msgstr "Tipo Ether"
+
+msgid "Event log is not available."
+msgstr "Log de evento não está disponível"
 
 #, python-format
 msgid "Extension is not enabled: %(extension)s."
@@ -275,18 +239,6 @@ msgstr ""
 
 msgid "Format"
 msgstr "Formato"
-
-#, python-format
-msgid ""
-"From a Windows system, you can use PuTTYGen to create private/public keys. "
-"Use the PuTTY Key Generator to create and save the keys, then copy the "
-"public key in the red highlighted box to your <samp>%(authorizeKeysFile)s</"
-"samp> file."
-msgstr ""
-"A partir de um sistema Windows, você pode utilizar o PuTTYGen para criar "
-"chaves privadas/públicas. Utilize o PuTTY Key Generator para criar e salvar "
-"as chaves, então copie a chave pública na caixa destacada em vermelho para o "
-"seu arquivo <samp>%(authorizeKeysFile)s</samp>."
 
 msgid "ID"
 msgstr "ID"
@@ -338,9 +290,6 @@ msgstr "Impacto na sua cota"
 msgid "Import Key Pair"
 msgstr "Importar par de chaves"
 
-msgid "Import Key Pair Help"
-msgstr "Ajuda em Importar par de chaves "
-
 msgid "Instance Details"
 msgstr "Detalhes da Instância"
 
@@ -379,22 +328,6 @@ msgstr "Ajuda em Par de chaves"
 msgid "Key Pair Name"
 msgstr "Nome do par de chaves"
 
-msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose a "
-"key pair name you will recognize and paste your SSH public key into the "
-"space provided."
-msgstr ""
-"Par de chaves é a maneira de logar na sua instância após sua inicialização. "
-"Escolha um nome de par de chaves que você irá reconhecer e cole sua chave "
-"SSH pública no espaço fornecido."
-
-msgid ""
-"Key Pairs are how you login to your instance after it is launched. Choose a "
-"key pair name you will recognize."
-msgstr ""
-"Par de chaves é a maneira de logar na sua instância após sua inicialização. "
-"Escolha um nome de par de chaves que você irá reconhecer."
-
 msgid "Killed"
 msgstr "Morto"
 
@@ -404,8 +337,14 @@ msgstr "Disparar Instância"
 msgid "Load script from a file"
 msgstr "Carregar script de um arquivo"
 
+msgid "Location"
+msgstr "Localização"
+
 msgid "Manual"
 msgstr "Manual"
+
+msgid "Mapping Type"
+msgstr "Tipo de mapeamento"
 
 msgid "Max Port"
 msgstr "Máx. Porta"
@@ -427,9 +366,6 @@ msgstr "Mín. RAM (MB)"
 
 msgid "Min Ram"
 msgstr "Mín. RAM"
-
-msgid "Modified"
-msgstr "Modificado"
 
 msgid "Name"
 msgstr "Nome"
@@ -454,6 +390,9 @@ msgstr "Não"
 
 msgid "No available items"
 msgstr "Itens indisponíveis"
+
+msgid "Number"
+msgstr "Número"
 
 msgid "OK"
 msgstr "OK"
@@ -518,6 +457,9 @@ msgstr "reordene os itens clicando em um deles e arrastando-o"
 msgid "Remote"
 msgstr "Remoto"
 
+msgid "Remove"
+msgstr "Remover"
+
 msgid "Required"
 msgstr "Requerido"
 
@@ -532,9 +474,6 @@ msgstr "Salvando"
 
 msgid "Script size"
 msgstr "Tamanho do Script"
-
-msgid "Script size > 16Kb"
-msgstr "Tamanho do Script > 16Kb"
 
 msgid "Security Groups"
 msgstr "Grupos de Segurança"
@@ -614,6 +553,9 @@ msgstr "Configuração não está habilitada: %(setting)s"
 msgid "Shared"
 msgstr "Compartilhado"
 
+msgid "Show events"
+msgstr "Mostrar eventos"
+
 msgid "Size"
 msgstr "Tamanho"
 
@@ -653,12 +595,6 @@ msgstr ""
 "A quantidade de instâncias não deve exceder sua cota disponível de "
 "%(maxInstanceCount)s instâncias"
 
-msgid "The key pair allows you to SSH into the instance."
-msgstr "O par de chaves permite que você faça SSH para a instância."
-
-msgid "The maximum script size is 16Kb."
-msgstr "O tamanho máximo do script é 16Kb."
-
 #, python-format
 msgid ""
 "The selected image source requires a flavor with at least %(minDisk)s GB of "
@@ -680,25 +616,12 @@ msgstr ""
 msgid "The status indicates whether the network has an active connection."
 msgstr "O status indica se a rede tem uma conexão ativa."
 
+msgid "The step has completed successfully. No events to display."
+msgstr "A etapa foi concluída com sucesso. Não há eventos para exibir."
+
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
 msgstr "O tamanho do volume total deve ser de no mínimo %(minVolumeSize)s GB"
-
-#, python-format
-msgid ""
-"There are two ways to generate a key pair. From a Linux system, generate the "
-"key pair with the <samp>%(genKeyPairCmd)s</samp> command:"
-msgstr ""
-"Existem duas maneiras de gerar um par de chaves. De um sistema Linux, gere o "
-"par de chaves com o comando <samp>%(genKeyPairCmd)s</samp>:"
-
-#, python-format
-msgid ""
-"This command generates a pair of keys: a private key (%(privateKeyPath)s) "
-"and a public key (%(publicKeyPath)s)."
-msgstr ""
-"Este comando gera um par de chaves: uma chave privada (%(privateKeyPath)s) e "
-"uma chave pública (%(publicKeyPath)s)."
 
 msgid ""
 "This flavor requires more RAM than your quota allows. Please select a "

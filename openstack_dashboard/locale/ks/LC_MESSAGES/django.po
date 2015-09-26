@@ -3,21 +3,23 @@
 # This file is distributed under the same license as the PROJECT project.
 #
 # Translators:
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Horizon\n"
+"Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-22 19:10+0000\n"
-"PO-Revision-Date: 2015-08-22 15:27+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: Kashmiri (http://www.transifex.com/openstack/horizon/language/"
-"ks/)\n"
+"POT-Creation-Date: 2015-09-18 05:57+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-09-08 11:14+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
+"Language-Team: Kashmiri (http://www.transifex.com/openstack/horizon/language/"
+"ks/)\n"
 "Generated-By: Babel 2.0\n"
 "Language: ks\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.7.1\n"
 
 #, python-format
 msgid ""
@@ -541,12 +543,6 @@ msgstr "جمع کئریو VIP"
 
 msgid "Add VPN Service"
 msgstr "جمع کئریو VPNسئروِس"
-
-msgid ""
-"Add and remove security groups to this project from the list of available "
-"security groups."
-msgstr ""
-"جمع کریو یا کڈیو  حِفاظتی گروپ یَتھ پروجیکٹس دَستِیآب  لِسٹ  حِفاظتی گروپ مَنز"
 
 msgid "Add custom tag"
 msgstr "جمع کریو قسٹم ٹیگ"
@@ -1623,15 +1619,6 @@ msgid ""
 msgstr ""
 "بَنایئو أکھ سب نیٹ یُس جوڈیتھ آسہٕ نیٹ وئرک سیتھ ۔ خآص کئنفِگریشن چھ دَستِیغب کِلک "
 "کئرنہٖ سیتھ  \"Subnet Details\" ٹیبس پئٹھ"
-
-msgid ""
-"Create a subnet associated with the new network, in which case \"Network "
-"Address\" must be specified. If you wish to create a network without a "
-"subnet, uncheck the \"Create Subnet\" checkbox."
-msgstr ""
-"بَنایئو اَکھ سب نیٹ یُس جوڈیتھ چُھ نئوس  نیٹ وئرک سیتھ، یَتھ مَنز  \"Network "
-"Address\" گئژہ وَضاحت  آسُن ۔ اگر توہیہٕ یَژہیو بَناوُن اَکھ  نیٹ وئرک سب نیٹ وئرے، "
-"اَن چیک کئریو \"Create Subnet\" چیک بآکس"
 
 msgid "Create an Encrypted Volume Type"
 msgstr "بَنایئو اَکھ ٖ اینکریپٹڈ والیوم قِسم  "
@@ -3081,9 +3068,6 @@ msgstr "GRE"
 msgid "Gateway IP"
 msgstr "IPگیٹ وے"
 
-msgid "Gateway IP (optional)"
-msgstr " گیٹ وے IP (آپشنل)"
-
 msgid "Gateway IP and IP version are inconsistent."
 msgstr "گیٹ وے IP تہ  IPوئرجن چُھ  مُستئکِل "
 
@@ -3308,15 +3292,6 @@ msgstr ""
 "خآطرہ (e.g. 192.168.0.1 for 192.168.0.0/24, 2001:DB8::1 for 2001:DB8::/48)."
 "اگر توہیہٕ ڈیفالٹ چھو اِستعمال کئران ترایئو خآلی ۔ اگر توہیہٕ چھو نہٖ یٔژہان "
 "اِستعمال کئرون اَکھ گیٹ وے، , چیک کئریو  'Disable Gateway' بونکن."
-
-msgid ""
-"IP address of Gateway (e.g. 192.168.0.254). Specify an explicit address to "
-"set the gateway. If you do not want to use a gateway, check 'Disable "
-"Gateway' below."
-msgstr ""
-"IP ایڈریس گیٹ وے خآطرہ (e.g. 192.168.0.254) وَضاحت کئریو اَکھ  واجِب گیٹ وے سیٹ "
-"کئرنہٕ خآطرہ ۔ اگر توہیہٕ چھو نہٕ یَژہان اِستعمال کئرون  اَکھ گیٹ وے، چیک کئریو "
-"'معزور گیٹ وے' بونکین"
 
 msgid "IP allocation pool"
 msgstr "IPایلوکیشن پوول"
@@ -4030,9 +4005,6 @@ msgstr " میٹا ڈیٹا"
 
 msgid "Metadata Items"
 msgstr "  میٹا ڈیٹا آئٹم"
-
-msgid "Metadata successfully updated."
-msgstr "میٹا ڈیٹا کامیابی سآن اَپڈیٹ کئورمُت "
 
 msgid "Meter"
 msgstr "میٹر"
@@ -4859,12 +4831,6 @@ msgstr "زاتی"
 msgid "Private Key File"
 msgstr " فآئل زاتی کئی"
 
-msgid "Processes"
-msgstr "پروسیسز"
-
-msgid "Processes to be launched in node group"
-msgstr "پراسیسِز یِم لانچ چھ کرین نوڈ گروپس مَنز"
-
 msgid "Project"
 msgstr "پروجیکٹ"
 
@@ -5658,9 +5624,6 @@ msgid ""
 "Slashes are allowed, and are treated as pseudo-folders by the Object Store."
 msgstr "سِلیش چُھ اِجازت، تہ ین خآلِر کرنہ سئڈو فولڈرپٹھ آبجیکٹ سِٹور پٹھ"
 
-msgid "Small"
-msgstr "لَکئوٹ"
-
 msgid "Snapshot"
 msgstr " سِنیپ شآٹس"
 
@@ -5750,9 +5713,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "وَضاحت کئریو  \"نیٹ وئرک ایڈریس\""
-
-msgid "Specify \"Network Address\" or clear \"Create Subnet\" checkbox."
-msgstr "وَضاحت کئریو  \"Network Address\" or clear \"Create Subnet\" چیک بآکس"
 
 msgid "Specify IP address of gateway or check \"Disable Gateway\"."
 msgstr "وَضاحت کئران IP ایڈریس گیٹ وے یا چیک خآطرہ \"Disable Gateway\"."
@@ -7098,15 +7058,6 @@ msgstr "نا قابِل دَستِیاب زون لِسٹ واپس عئنس من�
 msgid "Unable to retrieve availability zones."
 msgstr "نا قابِل دَستِیاب زون واپس اَنہٕ  خآطرہ "
 
-msgid "Unable to retrieve available metadata for aggregate."
-msgstr "نا قابِل دَستِیاب  میٹا ڈیٹا یُس ایگریگیٹ کئرون چُھ سُہٕ واپس عئنس منز"
-
-msgid "Unable to retrieve available metadata for flavors."
-msgstr "نا قابِل  دَستِیاب میٹا ڈیٹا فلوئر س خآطرہ واپس  انہٕ خآطرہ"
-
-msgid "Unable to retrieve available properties for image."
-msgstr "نا قابِل واپس اَنہٕ خآطرہ دَستِیاب خَصوصیت شکل خآطرہ"
-
 msgid "Unable to retrieve backup details."
 msgstr "نا قابِل والیوم بیک اَپ تَفصیل واپس     اَنہٕ ٕ خآطرہ"
 
@@ -7484,15 +7435,6 @@ msgstr "ناکامیاب والیوم  تَفصیل والیوم واپس  اَ�
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "نا قابِل ایگریگیٹ یُس اَپڈیٹ کئرون عئوس سُہٕ واپس عئنس منز"
 
-msgid "Unable to retrieve the aggregate to be updated."
-msgstr "نا قابِل ایگریگیٹ یُس اَپڈیٹ کئرون عئوس سُہٕ واپس عئنس منز"
-
-msgid "Unable to retrieve the flavor metadata."
-msgstr "نا قابِل فلیور میٹا ڈیٹا اَپڈیٹ کئرنہٕ  خآطرہ"
-
-msgid "Unable to retrieve the image to be updated."
-msgstr "نا قابِل واپس اَنہٕ خآطرہ شکل اَپڈیٹ کئرنہٕ خآطرہ"
-
 msgid "Unable to retrieve the specified pool."
 msgstr "نا قابِل  وَضاحت پول واپس اَنہٕ  ٕ خآطرہ۔ "
 
@@ -7628,20 +7570,11 @@ msgstr "نا قابِل رو اَپڈیٹ کئرنہٕ خآطرہ"
 msgid "Unable to update subnet \"%s\"."
 msgstr "نا قابِل سب نیٹاَپڈیٹ کئرنہٕ خآطرہ\"%s\""
 
-msgid "Unable to update the aggregate metadata."
-msgstr "نا قابِل اَپڈیٹ کئورنہٕ خآطرہ ایگرِگیٹ میٹا ڈیٹا"
-
 msgid "Unable to update the aggregate."
 msgstr "نا قابِل اَپڈیٹ کئورنہٕ خآطرہ ایگرِگیٹ"
 
-msgid "Unable to update the flavor metadata."
-msgstr "نا قابِل فلیور میٹا ڈیٹا اَپڈیٹ کئرنہٕ  خآطرہ"
-
 msgid "Unable to update the group."
 msgstr "نا قابِل اَپڈیٹ کئرنہٕ ٕ خآطرہ   گروپ "
-
-msgid "Unable to update the image metadata."
-msgstr "نا قابِل اَپڈیٹ کئرنہٕ خآطرہ  شکل میٹا ڈیٹا"
 
 msgid "Unable to update the user."
 msgstr "نا قابِل یوزر اَپڈیٹ کئرنہٕ خآطرہ"
@@ -7694,26 +7627,17 @@ msgstr "ہیور"
 msgid "Update"
 msgstr "اَپڈیٹ"
 
-msgid "Update Aggregate Metadata"
-msgstr " اَپڈیٹ ایگریگیٹ  میٹا ڈیٹا"
-
 msgid "Update Default Quotas"
 msgstr "اَپڈیٹ  ڈیفالٹ  کئوٹا"
 
 msgid "Update Defaults"
 msgstr "اَپڈیٹ  ڈیفالٹ"
 
-msgid "Update Flavor Metadata"
-msgstr " اَپڈیٹ  میٹا ڈیٹا فِلیور"
-
 msgid "Update Group"
 msgstr "اپڈیٹ کئریو گروپ"
 
 msgid "Update Image"
 msgstr "اَپڈیٹ  کئریو شکل"
-
-msgid "Update Image Metadata"
-msgstr " اَپڈیٹ  میٹا ڈیٹا شکل"
 
 msgid "Update Metadata"
 msgstr " اَپڈیٹ میٹا ڈیٹا"

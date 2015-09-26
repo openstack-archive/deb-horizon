@@ -21,6 +21,7 @@ from openstack_dashboard.api import lbaas
 from openstack_dashboard.api import neutron
 from openstack_dashboard.api import vpn
 from openstack_dashboard.test.test_data import utils
+from openstack_dashboard.usage import quotas as usage_quotas
 
 
 def data(TEST):
@@ -42,6 +43,7 @@ def data(TEST):
     TEST.members = utils.TestDataContainer()
     TEST.monitors = utils.TestDataContainer()
     TEST.neutron_quotas = utils.TestDataContainer()
+    TEST.neutron_quota_usages = utils.TestDataContainer()
     TEST.net_profiles = utils.TestDataContainer()
     TEST.policy_profiles = utils.TestDataContainer()
     TEST.network_profile_binding = utils.TestDataContainer()
@@ -705,6 +707,18 @@ def data(TEST):
                   }
     TEST.neutron_quotas.add(base.QuotaSet(quota_data))
 
+    # Quota Usages
+    quota_usage_data = {'networks': {'used': 0, 'quota': 5},
+                        'subnets': {'used': 0, 'quota': 5},
+                        'routers': {'used': 0, 'quota': 5},
+                        }
+    quota_usage = usage_quotas.QuotaUsage()
+    for k, v in quota_usage_data.items():
+        quota_usage.add_quota(base.Quota(k, v['quota']))
+        quota_usage.tally(k, v['used'])
+
+    TEST.neutron_quota_usages.add(quota_usage)
+
     # Extensions.
     extension_1 = {"name": "security-group",
                    "alias": "security-group",
@@ -789,7 +803,8 @@ def data(TEST):
                        'ipsecsiteconnections': [],
                        'admin_state_up': True,
                        'status': 'Active',
-                       'ipsecsiteconns': TEST.ipsecsiteconnections.list()}
+                       'ipsecsiteconns': TEST.ipsecsiteconnections.list()
+                       }
     TEST.api_vpnservices.add(vpnservice_dict)
     TEST.vpnservices.add(vpn.VPNService(vpnservice_dict))
 
@@ -804,7 +819,10 @@ def data(TEST):
                        'ipsecsiteconnections': [],
                        'admin_state_up': True,
                        'status': 'Active',
-                       'ipsecsiteconns': []}
+                       'ipsecsiteconns': [],
+                       'external_v4_ip': '10.0.0.0/24',
+                       'external_v6_ip': 'fd4c:a535:831c::/64'
+                       }
     TEST.api_vpnservices.add(vpnservice_dict)
     TEST.vpnservices.add(vpn.VPNService(vpnservice_dict))
 
@@ -1037,14 +1055,15 @@ def data(TEST):
                 'firewall_policy_id':
                     'abcdef-c3eb-4fee-9763-12de3338041e',
                 'name': '',
+                'router_ids': [],
                 'description': '',
                 'status': 'PENDING_CREATE',
                 'admin_state_up': True}
-    TEST.api_firewalls.add(fw1_dict)
+    TEST.api_firewalls.add(fw2_dict)
 
     fw2 = fwaas.Firewall(copy.deepcopy(fw2_dict))
     fw2._apidict['policy'] = policy1
-    TEST.firewalls.add(fw1)
+    TEST.firewalls.add(fw2)
 
     # Additional Cisco N1K profiles.
 

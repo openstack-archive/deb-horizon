@@ -539,7 +539,6 @@ KEYPAIR_IMPORT_URL = "horizon:project:access_and_security:keypairs:import"
 
 class SetAccessControlsAction(workflows.Action):
     keypair = forms.DynamicChoiceField(label=_("Key Pair"),
-                                       required=False,
                                        help_text=_("Key pair to use for "
                                                    "authentication."),
                                        add_item_link=KEYPAIR_IMPORT_URL)
@@ -570,6 +569,7 @@ class SetAccessControlsAction(workflows.Action):
         if not api.nova.can_set_server_password():
             del self.fields['admin_pass']
             del self.fields['confirm_admin_pass']
+        self.fields['keypair'].required = api.nova.requires_keypair()
 
     def populate_keypair_choices(self, request, context):
         keypairs = instance_utils.keypair_field_data(request, True)
@@ -580,7 +580,11 @@ class SetAccessControlsAction(workflows.Action):
     def populate_groups_choices(self, request, context):
         try:
             groups = api.network.security_group_list(request)
-            security_group_list = [(sg.name, sg.name) for sg in groups]
+            if base.is_service_enabled(request, 'network'):
+                security_group_list = [(sg.id, sg.name) for sg in groups]
+            else:
+                # Nova-Network requires the groups to be listed by name
+                security_group_list = [(sg.name, sg.name) for sg in groups]
         except Exception:
             exceptions.handle(request,
                               _('Unable to retrieve list of security groups'))
@@ -871,12 +875,16 @@ class LaunchInstance(workflows.Workflow):
                     volume_source_id = context['source_id'].split(':')[0]
                     device_name = context.get('device_name', '') \
                         .strip() or None
+                    dev_source_type_mapping = {
+                        'volume_id': 'volume',
+                        'volume_snapshot_id': 'snapshot'
+                    }
                     dev_mapping_2 = [
                         {'device_name': device_name,
-                         'source_type': 'volume',
+                         'source_type': dev_source_type_mapping[source_type],
                          'destination_type': 'volume',
                          'delete_on_termination':
-                             int(bool(context['delete_on_terminate'])),
+                             bool(context['delete_on_terminate']),
                          'uuid': volume_source_id,
                          'boot_index': '0',
                          'volume_size': context['volume_size']
@@ -885,7 +893,7 @@ class LaunchInstance(workflows.Workflow):
                 else:
                     dev_mapping_1 = {context['device_name']: '%s::%s' %
                                      (context['source_id'],
-                                     int(bool(context['delete_on_terminate'])))
+                                     bool(context['delete_on_terminate']))
                                      }
             except Exception:
                 msg = _('Unable to retrieve extensions information')
@@ -898,7 +906,7 @@ class LaunchInstance(workflows.Workflow):
                  'source_type': 'image',
                  'destination_type': 'volume',
                  'delete_on_termination':
-                     int(bool(context['delete_on_terminate'])),
+                     bool(context['delete_on_terminate']),
                  'uuid': context['source_id'],
                  'boot_index': '0',
                  'volume_size': context['volume_size']
