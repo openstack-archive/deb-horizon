@@ -1,16 +1,17 @@
-Description: Fixes MANIFEST.in
+Description: Fixed horizon MANIFEST.in
 Author: Thomas Goirand <zigo@debian.org>
-Forwarded: no
-Last-Update: 2013-03-18
+Forwarded: not-needed
+Last-Update: 2015-09-26
 
---- horizon-2014.1~b3.orig/MANIFEST.in
-+++ horizon-2014.1~b3/MANIFEST.in
+--- horizon-8.0.0~rc1.orig/MANIFEST.in
++++ horizon-8.0.0~rc1/MANIFEST.in
 @@ -1,6 +1,6 @@
- recursive-include doc *.py *.rst *.css *.js *.html *.conf *.jpg *.gif *.png *.css_t
--recursive-include horizon *.html *.css *.js *.csv *.template *.tmpl *.mo *.po
--recursive-include openstack_dashboard *.html *.js *.less *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template
-+recursive-include horizon *.html *.css *.js *.csv *.template *.tmpl *.mo *.po *.py *.scss
-+recursive-include openstack_dashboard *.html *.js *.less *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template *.py *.scss
+-recursive-include doc *.py *.rst *.scss *.js *.html *.conf *.jpg *.gif *.png
+-recursive-include horizon *.html *.scss *.js *.csv *.template *.tmpl *.mo *.po
+-recursive-include openstack_dashboard *.html *.js *.scss *.mo *.po *.example *.eot *.svg *.ttf *.woff *.png *.ico *.wsgi *.gif *.csv *.template
++recursive-include doc *
++recursive-include horizon *
++recursive-include openstack_dashboard *
  recursive-include tools *.py *.sh
  
  include AUTHORS
