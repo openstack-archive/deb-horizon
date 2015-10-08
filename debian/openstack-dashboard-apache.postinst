@@ -43,6 +43,8 @@ HORIZON_USE_SSL=yes" >/etc/default/openstack-dashboard-apache
 			a2ensite openstack-dashboard.conf
 		fi
 		/usr/share/openstack-dashboard/manage.py compress --force
+		rm -f /var/lib/openstack-dashboard/secret-key/.secret_key_store
+		chown -R www-data /var/lib/openstack-dashboard/secret-key
 		invoke-rc.d --quiet apache2 reload
 	else
 		sed -i 's#[ \t]*HORIZON_ACTIVATE_VHOSTS=.*#HORIZON_ACTIVATE_VHOSTS=no#' /etc/default/openstack-dashboard-apache
@@ -54,6 +56,8 @@ HORIZON_USE_SSL=yes" >/etc/default/openstack-dashboard-apache
 		a2dissite openstack-dashboard-ssl.conf
 		a2ensite openstack-dashboard-alias-only.conf
 		/usr/share/openstack-dashboard/manage.py compress --force
+		rm -f /var/lib/openstack-dashboard/secret-key/.secret_key_store
+		chown -R www-data /var/lib/openstack-dashboard/secret-key
 		invoke-rc.d --quiet apache2 reload
 	fi
 	db_stop
