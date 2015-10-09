@@ -1,5 +1,6 @@
-horizon (2:8.0.0~rc1-2) UNRELEASED; urgency=medium
+horizon (2:8.0.0~rc2-1) experimental; urgency=medium
 
+  * New upstream release.
   * Fixed the issue with the file
     /var/lib/openstack-dashboard/secret-key/.secret_key_store not being
     writeable. What seems to happen is that compress, which is run as root,
