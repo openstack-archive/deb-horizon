@@ -1,3 +1,9 @@
+horizon (2:8.0.0~rc2-2) experimental; urgency=medium
+
+  * Do not set /etc/.../local_settings.py as CONFFILES (Closes: #801543).
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 13 Oct 2015 08:46:21 +0000
+
 horizon (2:8.0.0~rc2-1) experimental; urgency=medium
 
   * New upstream release.

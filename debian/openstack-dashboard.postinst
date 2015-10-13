@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -e
 
 if [ "$1" = "configure" ] ; then
@@ -16,7 +17,12 @@ if [ "$1" = "configure" ] ; then
 	chown www-data:www-data /var/lib/openstack-dashboard/static/js
 	chown www-data:www-data /var/lib/openstack-dashboard/secret-key
 
-    # Compress the JS and CSS with python-compressor and python-lesscpy
+	mkdir -p /etc/openstack-dashboard
+	if ! [ -f /etc/openstack-dashboard/local_settings.py ] ; then
+		cp /usr/share/openstack-dashboard/local_settings.py /etc/openstack-dashboard/local_settings.py
+	fi
+
+	# Compress the JS and CSS with python-compressor and python-lesscpy
 	/usr/share/openstack-dashboard/manage.py compress --force
 	rm /var/lib/openstack-dashboard/secret-key/.secret_key_store
 	chown -R www-data /var/lib/openstack-dashboard/secret-key

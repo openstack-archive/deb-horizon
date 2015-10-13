@@ -22,16 +22,13 @@ override_dh_auto_install:
 	done
 
 	install -d -m 755  $(CURDIR)/debian/tmp/usr/share/openstack-dashboard
-	install -d -m 755 $(CURDIR)/debian/tmp/etc/openstack-dashboard
 
 	cp -a $(CURDIR)/openstack_dashboard/ $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
 
 	# Sets memcached by default in local_settings.py
-	cp $(CURDIR)/openstack_dashboard/local/local_settings.py.example \
-		$(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
-	sed -i -e 's/os.path.join(LOCAL_PATH,/os.path.join("\/","var","lib","openstack-dashboard","secret-key",/' \
-		$(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
-	echo "COMPRESS_OFFLINE=True" >> $(CURDIR)/debian/tmp/etc/openstack-dashboard/local_settings.py
+	cp $(CURDIR)/openstack_dashboard/local/local_settings.py.example 						$(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/local_settings.py
+	sed -i -e 's/os.path.join(LOCAL_PATH,/os.path.join("\/","var","lib","openstack-dashboard","secret-key",/' 	$(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/local_settings.py
+	echo "COMPRESS_OFFLINE=True" >> 										$(CURDIR)/debian/openstack-dashboard/usr/share/openstack-dashboard/local_settings.py
 
 	cp $(CURDIR)/manage.py \
 		$(CURDIR)/debian/tmp/usr/share/openstack-dashboard/

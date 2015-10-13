@@ -3,6 +3,8 @@
 set -e
 
 if [ "${1}" = "purge" ] ; then
+	rm -f /etc/openstack-dashboard/local_settings.py
+	rmdir --ignore-fail-on-non-empty /etc/openstack-dashboard || true
 	rm -rf /var/lib/openstack-dashboard
 	rm -rf /var/lib/horizon
 	rm -rf /usr/share/openstack-dashboard
