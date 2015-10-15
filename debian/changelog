@@ -1,3 +1,9 @@
+horizon (2:8.0.0-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 15 Oct 2015 16:49:49 +0200
+
 horizon (2:8.0.0~rc2-2) experimental; urgency=medium
 
   * Do not set /etc/.../local_settings.py as CONFFILES (Closes: #801543).
