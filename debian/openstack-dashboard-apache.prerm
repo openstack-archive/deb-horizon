@@ -3,7 +3,7 @@
 set -e
 
 if [ -x /usr/sbin/a2dissite ] ; then
-	for i in openstack-dashboard openstack-dashboard-ssl-redirect openstack-dashboard-ssl ; do
+	for i in openstack-dashboard openstack-dashboard-ssl-redirect openstack-dashboard-ssl openstack-dashboard-alias-only.conf openstack-dashboard.conf openstack-dashboard-ssl.conf openstack-dashboard-ssl-redirect.conf ; do
 		if [ -L /etc/apache2/sites-enabled/${i} ] ; then
 			a2dissite ${i} || true
 		fi

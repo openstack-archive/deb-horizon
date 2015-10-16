@@ -1,3 +1,10 @@
+horizon (2:8.0.0-2) unstable; urgency=medium
+
+  * Uploading to unstable.
+  * Disabled apache config properly on removal.
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 16 Oct 2015 07:21:51 +0000
+
 horizon (2:8.0.0-1) experimental; urgency=medium
 
   * New upstream release.
