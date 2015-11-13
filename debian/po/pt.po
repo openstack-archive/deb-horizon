@@ -2,13 +2,13 @@
 # Copyright (C) 2013 THE horizon'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the horizon package.
 #
-# Américo Monteiro <a_monteiro@gmx.com>, 2013.
+# Américo Monteiro <a_monteiro@gmx.com>, 2013, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 2013.2-1\n"
+"Project-Id-Version: horizon 2:8.0.0-2\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
 "POT-Creation-Date: 2015-09-22 13:31+0000\n"
-"PO-Revision-Date: 2013-11-18 19:42+0000\n"
+"PO-Revision-Date: 2015-10-19 23:49+0100\n"
 "Last-Translator: Américo Monteiro <a_monteiro@gmx.com>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
 "Language: pt\n"
@@ -41,6 +41,8 @@ msgid ""
 "If this option is not selected, Horizon will be installed using /horizon "
 "instead of the webroot."
 msgstr ""
+"Se esta opção não for seleccionada, o Horizon será instalado usando "
+"/horizon em vez da webroot."
 
 #. Type: boolean
 #. Description
@@ -67,3 +69,4 @@ msgid ""
 msgstr ""
 "Seleccione esta opção se você desejar que o Horizon seja servido apenas por "
 "HTTPS, com um redireccionamento para HTTPS se for usado HTTP."
+
