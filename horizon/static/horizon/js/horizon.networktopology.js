@@ -242,7 +242,7 @@ horizon.network_topology = {
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('fill', 'white')
-      .on('click', function(d) {
+      .on('click', function() {
         self.delete_balloon();
       });
 
@@ -348,14 +348,14 @@ horizon.network_topology = {
             if (d.source.data.networks.length === 0) {
               return dist + 20;
             } else if (d.target.data.instances) {
-              return dist * d.source.data.networks.length  + (10 * d.target.data.instances) + 20;
+              return dist * d.source.data.networks.length + (10 * d.target.data.instances) + 20;
             }
             return dist * d.source.data.networks.length + 20;
           } else if (d.target.data.networks) {
             if (d.target.data.networks.length === 0) {
               return dist + 20;
             } else if (d.source.data.instances) {
-              return dist * d.target.data.networks.length  + (10 * d.source.data.instances) + 20;
+              return dist * d.target.data.networks.length + (10 * d.source.data.instances) + 20;
             }
             return dist * d.source.data.networks.length + 20;
           }
@@ -986,7 +986,7 @@ horizon.network_topology = {
         table2:portTmpl
       });
     } else if (d instanceof Server) {
-      htmlData.delete_label = gettext('Terminate Instance');
+      htmlData.delete_label = gettext('Delete Instance');
       htmlData.view_details_label = gettext('View Instance Details');
       htmlData.console_id = d.id;
       htmlData.ips = d.ip_addresses;

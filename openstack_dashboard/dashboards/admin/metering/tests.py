@@ -9,12 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import json
 
 from django.core.urlresolvers import reverse
 from django import http
 
 from mox3.mox import IsA  # noqa
+from oslo_serialization import jsonutils
 import six
 
 from openstack_dashboard import api
@@ -63,7 +63,7 @@ class MeteringLineChartTabTests(test.BaseAdminViewTests):
         test_utils.load_test_data(self.testdata)
 
     def _verify_series(self, series, value, date, expected_names):
-        data = json.loads(series)
+        data = jsonutils.loads(series)
         self.assertTrue('series' in data)
         self.assertEqual(len(data['series']), len(expected_names))
         for d in data['series']:

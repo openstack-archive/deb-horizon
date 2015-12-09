@@ -1,18 +1,24 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
 # Zhang Xiaowei <zero00072@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-10-04 03:27+0000\n"
+"PO-Revision-Date: 2015-11-02 09:55+0000\n"
 "Last-Translator: Zhang Xiaowei <zero00072@gmail.com>\n"
-"Language-Team: Chinese (Taiwan)\n"
 "Language: zh-TW\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Chinese (Taiwan)\n"
 
 msgid "(Max: 16Kb)"
 msgstr "(最大：16 Kb)"
@@ -23,16 +29,6 @@ msgstr "（已更改）"
 msgid "(None)"
 msgstr "（無）"
 
-msgid ""
-"<li><b>Image (with Create New Volume checked)</b>: This options uses an "
-"image to boot the instance, and creates a new volume to persist instance "
-"data. You can specify volume size and whether to delete the volume on "
-"termination of the instance.</li>"
-msgstr ""
-"<li><b>映像檔（與新增新的雲硬碟一併勾選）</b>：這個選項利用映像檔來開機雲實"
-"例，並且新增一個新的雲硬碟來維持雲實例資料。您可以指定雲硬碟容量並決定在刪除"
-"雲實例時是否一併刪除雲硬碟。</li>"
-
 msgid "<li><b>Image</b>: This option uses an image to boot the instance.</li>"
 msgstr "<li><b>映像檔</b>：這個選項用映像檔來開機雲實例。</li>"
 
@@ -40,24 +36,6 @@ msgid ""
 "<li><b>Instance Snapshot</b>: This option uses an instance snapshot to boot "
 "the instance.</li>"
 msgstr "<li><b>雲實例即時存檔</b>：這個選項用雲實例即時存檔來開機雲實例。</li>"
-
-msgid ""
-"<li><b>Volume Snapshot</b>: This option uses a volume snapshot to boot the "
-"instance, and creates a new volume to persist instance data. You can choose "
-"to delete the volume on termination of the instance.</li>"
-msgstr ""
-"<li><b>雲硬碟即時存檔</b>：這個選項利用雲硬碟即時存檔來開機雲實例，並且新增新"
-"的雲硬碟來維持雲實例資料。您可以選擇在終止雲實例時一併刪除雲硬碟。</li>"
-
-msgid ""
-"<li><b>Volume</b>: This option uses a volume that already exists. It does "
-"not create a new volume. You can choose to delete the volume on termination "
-"of the instance. <em>Note: when selecting Volume, you can only launch one "
-"instance.</em></li>"
-msgstr ""
-"<li><b>雲硬碟</b>：這個選項利用已存在的雲硬碟。它不會新增新的雲硬碟。您可以選"
-"擇在終止雲實例時一併刪除雲硬碟。<em>留意：當選擇雲硬碟，您只能發動一個雲實"
-"例。</em></li>"
 
 msgid ""
 "A floating IP allows instances to be addressable from an external network.\n"
@@ -139,17 +117,11 @@ msgstr "自動"
 msgid "Availability Zone"
 msgstr "可用區域"
 
-msgid "Boot Source"
-msgstr "開機來源"
-
 msgid "Cancel"
 msgstr "取消"
 
 msgid "Cannot get service catalog from keystone."
 msgstr "無法從 Keystone 獲得伺服器分類。"
-
-msgid "Cannot get the Nova extension list."
-msgstr "不能獲得 Nova 擴充套件列表。"
 
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
@@ -205,9 +177,6 @@ msgstr "資料來源"
 msgid "Default Value"
 msgstr "預設值"
 
-msgid "Delete Volume on Terminate"
-msgstr "在雲實例終止時刪除雲硬碟"
-
 msgid "Deleted"
 msgstr "已刪除"
 
@@ -260,6 +229,9 @@ msgstr "虛擬硬體樣板"
 msgid "Flavor Help"
 msgstr "虛擬硬體樣板說明"
 
+msgid "Flavor Name"
+msgstr "虛擬硬體樣板名稱"
+
 msgid ""
 "Flavors manage the sizing for the compute, memory and storage capacity of "
 "the instance."
@@ -307,14 +279,6 @@ msgstr ""
 "您將只可以從 VNC 主控臺存取雲實例。"
 
 msgid ""
-"If you select an availability zone and plan to use the boot from volume "
-"option, make sure that the availability zone you select for the instance is "
-"the same availability zone where your bootable volume resides."
-msgstr ""
-"若您選擇了可用區域並打算用來從雲硬碟選項開機，請確認您選擇的雲實例可用區域與"
-"您用於開機的雲硬碟是相同的。"
-
-msgid ""
 "If you want to create an instance that uses ephemeral storage, meaning the "
 "instance data is lost when the instance is deleted, then choose one of the "
 "following boot sources:"
@@ -356,14 +320,6 @@ msgstr "雲實例來源"
 
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "雲實例計數需要最少為 1 的整數"
-
-msgid ""
-"Instance source is the template used to create an instance. You can use a "
-"snapshot of an existing instance, an image, or a volume (if enabled). You "
-"can also choose to use persistent storage by creating a new volume."
-msgstr ""
-"雲實例來源是用來新增雲實例的範本。您可以使用已存在雲實例的即時存檔、映像檔或"
-"雲硬碟（若已啟用）。您也可以選擇新增新的雲硬碟來使用持續性硬碟。"
 
 msgid "Insufficient privilege level to view user information."
 msgstr "權限不足以檢視用戶資訊。"
@@ -415,6 +371,9 @@ msgstr "映射類型"
 msgid "Max Port"
 msgstr "最大端口"
 
+msgid "Metadata"
+msgstr "詮釋資料"
+
 msgid "Min Disk"
 msgstr "最小硬碟"
 
@@ -429,9 +388,6 @@ msgstr "最小隨機存取記憶體"
 
 msgid "Min RAM (MB)"
 msgstr "最小隨機存取記憶體（MB）"
-
-msgid "Min Ram"
-msgstr "最小隨機存取記憶體"
 
 msgid "Name"
 msgstr "名稱"
@@ -471,14 +427,6 @@ msgstr "等候刪除"
 
 msgid "Physical Network"
 msgstr "實體網路"
-
-msgid ""
-"Please provide the initial host name for the instance, the availability zone "
-"where it will be deployed, and the instance count. Increase the Count to "
-"create multiple instances with the same settings."
-msgstr ""
-"請提供給雲實例的初始主機名稱，然後提供可用區域來佈署，並且提供雲實例計數。增"
-"加計數來用相同的設定新增多個雲實例。"
 
 msgid "Policy check failed."
 msgstr "政策檢查失敗。"
@@ -598,12 +546,6 @@ msgstr "分段識別號"
 msgid "Select Boot Source"
 msgstr "選擇開機來源"
 
-msgid "Select Source"
-msgstr "選擇來源"
-
-msgid "Select Source Help"
-msgstr "選擇來源說明"
-
 msgid "Select a key pair from the available key pairs below."
 msgstr "從下列可用的密鑰對中選擇。"
 
@@ -670,6 +612,9 @@ msgstr "已成功新增密鑰對 %(name)s。"
 #, python-format
 msgid "Successfully imported key pair %(name)s."
 msgstr "已成功匯入密鑰對  %(name)s。"
+
+msgid "Swap Disk"
+msgstr "Swap 硬碟"
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -974,6 +919,9 @@ msgstr "用戶名稱"
 
 msgid "VCPUS"
 msgstr "虛擬處理器"
+
+msgid "VCPUs"
+msgstr "虛擬處理器數"
 
 msgid "Value Type"
 msgstr "數值類型"

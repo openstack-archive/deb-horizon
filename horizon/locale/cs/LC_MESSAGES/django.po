@@ -1,19 +1,38 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2014-2015
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-11-18 04:22+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-09-21 07:08+0000\n"
+"PO-Revision-Date: 2015-11-17 04:39+0000\n"
 "Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
-"Language-Team: Czech\n"
 "Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Generated-By: Babel 2.0\n"
 "X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+"Language-Team: Czech\n"
+
+#, python-format
+msgid ""
+"\n"
+"                Login as different user or go back to <a href=\"%(home_url)s"
+"\">home page</a>\n"
+"              "
+msgstr ""
+"\n"
+"                Přihlaste se jako jiný uživatel nebo se vraťte na <a href="
+"\"%(home_url)s\"> domovskou stránku</a>\n"
+"              "
 
 #, python-format
 msgid ""
@@ -216,27 +235,17 @@ msgstr "Neplatná verze IP adresy"
 msgid "Limit Summary"
 msgstr "Omezit souhrn"
 
-msgid "Log In"
-msgstr "Přihlásit"
+msgid "Log in"
+msgstr "Přihlášení"
 
 msgid "Login"
 msgstr "Přihlášení"
-
-#, python-format
-msgid ""
-"Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
-msgstr ""
-"Přihlaste se jako jiný uživatel nebo se vraťte na <a href=\"%(home_url)s\"> "
-"domovskou stránku</a>"
 
 msgid "Members"
 msgstr "Členové"
 
 msgid "More Actions"
 msgstr "Další činnosti"
-
-msgid "N/A"
-msgstr "Nedostupné"
 
 msgid "Navigation Item"
 msgstr "Položka navigace"
@@ -284,9 +293,6 @@ msgstr "K pokračování je nutno se přihlásit."
 msgid "Please select a row before taking that action."
 msgstr "Před provedením této činnosti prosím zvolte řádky."
 
-msgid "Port number must be integer"
-msgstr "Číslo portu musí být celé číslo"
-
 msgid "Processing..."
 msgstr "Zpracovávaní..."
 
@@ -306,9 +312,6 @@ msgstr[0] "Prodat štěně"
 msgstr[1] "Prodat štěňata"
 msgstr[2] "Prodat štěňat"
 
-msgid "Session timed out."
-msgstr "Relace vypršela."
-
 msgid "Sign In"
 msgstr "Přihlásit"
 
@@ -326,10 +329,6 @@ msgstr "Úspěch:"
 
 msgid "Summary"
 msgstr "Přehled"
-
-#, python-format
-msgid "The attribute %(attr)s doesn't exist on %(obj)s."
-msgstr "Vlastnost %(attr)s neexistuje v %(obj)s."
 
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "Datum by mělo být ve formátu RRRR-mm-dd."

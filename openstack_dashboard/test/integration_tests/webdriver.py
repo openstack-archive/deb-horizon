@@ -9,11 +9,13 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+import os
 import time
 
 from selenium.common import exceptions
 from selenium import webdriver
 from selenium.webdriver.common import by
+from selenium.webdriver.common import desired_capabilities as dc
 from selenium.webdriver.remote import webelement
 
 
@@ -144,8 +146,23 @@ class WebElementWrapper(WrapperFindOverride, webelement.WebElement):
         return result
 
 
-class WebDriverWrapper(WrapperFindOverride, webdriver.Firefox):
+# select the active webdriver based on whether we --selenium-phantomjs or not
+if os.environ.get('SELENIUM_PHANTOMJS'):
+    WebDriver = webdriver.PhantomJS
+else:
+    WebDriver = webdriver.Firefox
+
+
+class WebDriverWrapper(WrapperFindOverride, WebDriver):
     """Wrapper for webdriver to return WebElementWrapper on find_element."""
+    def __init__(self, logging_prefs=None, capabilities=None, **kwargs):
+        if capabilities is None:
+            capabilities = dc.DesiredCapabilities.FIREFOX
+        if logging_prefs is None:
+            logging_prefs = {'browser': 'ALL'}
+        capabilities['loggingPrefs'] = logging_prefs
+        super(WebDriverWrapper, self).__init__(capabilities=capabilities,
+                                               **kwargs)
 
     def reload_request(self, locator, index):
         try:

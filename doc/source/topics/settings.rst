@@ -147,6 +147,17 @@ If provided, will auto-fade the alert types specified. Valid alert types
 include: ['alert-success', 'alert-info', 'alert-warning', 'alert-error']
 Can also define the delay before the alert fades and the fade out duration.
 
+``bug_url``
+------------
+
+.. versionadded:: 9.0.0(Mitaka)
+
+Default: ``None``
+
+If provided, a "Report Bug" link will be displayed in the site header which
+links to the value of this setting (ideally a URL containing information on
+how to report issues).
+
 ``help_url``
 ------------
 
@@ -155,7 +166,7 @@ Can also define the delay before the alert fades and the fade out duration.
 Default: ``None``
 
 If provided, a "Help" link will be displayed in the site header which links
-to the value of this settings (ideally a URL containing help information).
+to the value of this setting (ideally a URL containing help information).
 
 ``exceptions``
 --------------
@@ -766,11 +777,46 @@ Default::
           ("saml2", _("Security Assertion Markup Language"))
         )
 
-This is the list of authentication mechanisms available to the user. It includes
-Keystone federation protocols such as OpenID Connect and SAML. The list of
-choices is completely configurable, so as long as the id remains intact. Do not
-remove the credentials mechanism unless you are sure. Once removed, even admins
-will have no way to log into the system via the dashboard.
+This is the list of authentication mechanisms available to the user. It
+includes Keystone federation protocols such as OpenID Connect and SAML, and
+also keys that map to specific identity provider and federation protocol
+combinations (as defined in ``WEBSSO_IDP_MAPPING``). The list of choices is
+completely configurable, so as long as the id remains intact. Do not remove
+the credentials mechanism unless you are sure. Once removed, even admins will
+have no way to log into the system via the dashboard.
+
+
+``WEBSSO_IDP_MAPPING``
+----------------------
+
+.. versionadded:: 8.0.0(Liberty)
+
+Default: ``{}``
+
+A dictionary of specific identity provider and federation protocol combinations.
+From the selected authentication mechanism, the value will be looked up as keys
+in the dictionary. If a match is found, it will redirect the user to a identity
+provider and federation protocol specific WebSSO endpoint in keystone, otherwise
+it will use the value as the protocol_id when redirecting to the WebSSO by
+protocol endpoint.
+
+Example::
+
+        WEBSSO_CHOICES =  (
+            ("credentials", _("Keystone Credentials")),
+            ("oidc", _("OpenID Connect")),
+            ("saml2", _("Security Assertion Markup Language")),
+            ("acme_oidc", "ACME - OpenID Connect"),
+            ("acme_saml2", "ACME - SAML2")
+        )
+
+        WEBSSO_IDP_MAPPING = {
+            "acme_oidc": ("acme", "oidc"),
+            "acme_saml2": ("acme", "saml2")
+        }
+
+.. note::
+  The value is expected to be a tuple formatted as: (<idp_id>, <protocol_id>).
 
 
 ``OPENSTACK_CINDER_FEATURES``
@@ -782,6 +828,21 @@ Default: ``{'enable_backup': False}``
 
 A dictionary of settings which can be used to enable optional services provided
 by cinder.  Currently only the backup service is available.
+
+
+``OPENSTACK_HEAT_STACK``
+-----------------------------
+
+.. versionadded:: 9.0.0(Mitaka)
+
+Default: ``{'enable_user_pass': True}``
+
+A dictionary of settings to use with heat stacks. Currently, the only setting
+available is "enable_user_pass", which can be used to disable the password
+field while launching the stack. Currently HEAT API needs user password to
+perform all the heat operations because in HEAT API trusts is not enabled by
+default. So, this setting can be set as "False" in-case HEAT uses trusts by
+default otherwise it needs to be set as "True".
 
 
 ``OPENSTACK_NEUTRON_NETWORK``
@@ -812,7 +873,8 @@ A dictionary of settings which can be used to enable optional services provided
 by Neutron and configure Neutron specific features.  The following options are
 available.
 
-``enable_router``:
+``enable_router``
+~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 2014.2(Juno)
 
@@ -824,7 +886,8 @@ when Neutron is enabled. If your Neutron deployment has no support for
 Layer-3 features, or you do not wish to provide the Layer-3
 features through the Dashboard, this should be set to ``False``.
 
-``enable_distributed_router``:
+``enable_distributed_router``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 2014.2(Juno)
 
@@ -837,7 +900,8 @@ when your Neutron plugin (like ML2 plugin) supports DVR feature, DVR
 feature depends on l3-agent configuration, so deployers should set this
 option appropriately depending on your deployment.
 
-``enable_ha_router``:
+``enable_ha_router``
+~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 2014.2(Juno)
 
@@ -850,7 +914,8 @@ Even when your Neutron plugin (like ML2 plugin) supports HA router mode,
 the feature depends on l3-agent configuration, so deployers should set this
 option appropriately depending on your deployment.
 
-``enable_lb``:
+``enable_lb``
+~~~~~~~~~~~~~
 
 .. versionadded:: 2013.1(Grizzly)
 
@@ -867,7 +932,8 @@ The load balancer panel is now enabled only when LBaaS feature is available in N
 and this option is no longer needed. We suggest not to use this option to disable the
 load balancer panel from now on.
 
-``enable_quotas``:
+``enable_quotas``
+~~~~~~~~~~~~~~~~~
 
 Default: ``False``
 
@@ -875,7 +941,8 @@ Enable support for Neutron quotas feature. To make this feature work
 appropriately, you need to use Neutron plugins with quotas extension support
 and quota_driver should be DbQuotaDriver (default config).
 
-``enable_firewall``:
+``enable_firewall``
+~~~~~~~~~~~~~~~~~~~
 
 (Deprecated)
 
@@ -892,7 +959,8 @@ when FWaaS feature is available in Neutron and this option is no
 longer needed. We suggest not to use this option to disable the
 firewall panel from now on.
 
-``enable_vpn``:
+``enable_vpn``
+~~~~~~~~~~~~~~
 
 (Deprecated)
 
@@ -908,7 +976,8 @@ when VPNaaS feature is available in Neutron and this option is no
 longer needed. We suggest not to use this option to disable the
 VPN panel from now on.
 
-``profile_support``:
+``profile_support``
+~~~~~~~~~~~~~~~~~~~
 
 Default: ``None``
 
@@ -916,7 +985,8 @@ This option specifies a type of network port profile support. Currently the
 available value is either ``None`` or ``"cisco"``. ``None`` means to disable
 port profile support. ``cisco`` can be used with Neutron Cisco plugins.
 
-``supported_provider_types``:
+``supported_provider_types``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 2014.2(Juno)
 
@@ -930,7 +1000,8 @@ be available to choose from.
 
 Example: ``['local', 'flat', 'gre']``
 
-``supported_vnic_types``:
+``supported_vnic_types``
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 2015.1(Kilo)
 
@@ -945,7 +1016,8 @@ Example ``['normal', 'direct']``
 
 To disable VNIC type selection, set an empty list or None.
 
-``segmentation_id_range``:
+``segmentation_id_range``
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 2014.2(Juno)
 
@@ -960,7 +1032,8 @@ and maximum value will be the default for the provider network type.
 
 Example: ``{'vlan': [1024, 2048], 'gre': [4094, 65536]}``
 
-``enable_fip_topology_check``:
+``enable_fip_topology_check``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Default: ``True``
 
@@ -976,7 +1049,8 @@ subnet with no router if your Neutron backend allows it.
 
 .. versionadded:: 8.0.0(Liberty)
 
-``default_ipv4_subnet_pool_label``:
+``default_ipv4_subnet_pool_label``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 8.0.0(Liberty)
 
@@ -986,7 +1060,8 @@ Neutron can be configured with a default Subnet Pool to be used for IPv4
 subnet-allocation. Specify the label you wish to display in the Address pool
 selector on the create subnet step if you want to use this feature.
 
-``default_ipv6_subnet_pool_label``:
+``default_ipv6_subnet_pool_label``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. versionadded:: 8.0.0(Liberty)
 
@@ -1077,10 +1152,12 @@ define the policy rules actions are verified against.
 
 .. versionadded:: 2013.2(Havana)
 
-Default: ``"1800"``
+Default: ``"3600"``
 
-Specifies the timespan in seconds inactivity, until a user is considered as
- logged out.
+This SESSION_TIMEOUT is a method to supercede the token timeout with a shorter
+horizon session timeout (in seconds).  So if your token expires in 60 minutes,
+a value of 1800 will log users out after 30 minutes.
+
 
 ``SAHARA_AUTO_IP_ALLOCATION_ENABLED``
 -------------------------------------

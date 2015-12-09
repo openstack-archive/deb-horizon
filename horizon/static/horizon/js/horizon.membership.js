@@ -72,10 +72,9 @@ horizon.membership = {
   init_current_membership: function(step_slug) {
     horizon.membership.current_membership[step_slug] = [];
     var members_list = [];
-    var role_name, role_id, selected_members;
+    var role_id, selected_members;
     angular.forEach(this.get_role_element(step_slug, ''), function(value) {
       role_id = horizon.membership.get_field_id($(value).attr('id'));
-      role_name = $('label[for="id_' + step_slug + '_role_' + role_id + '"]').text();
 
       // get the array of members who are selected in this list
       selected_members = $(value).find("option:selected");
@@ -140,7 +139,7 @@ horizon.membership = {
       for (role in membership) {
         if (membership.hasOwnProperty(role)) {
           horizon.membership.remove_member(
-            step_slug, data_id, role,  membership[role]
+            step_slug, data_id, role, membership[role]
           );
         }
       }
@@ -249,7 +248,7 @@ horizon.membership = {
     $(".available_" + step_slug + ", ." + step_slug + "_members").on('click', ".btn-group a[href='#add_remove']", function (evt) {
       evt.preventDefault();
       var available = $(".available_" + step_slug).has($(this)).length;
-      var data_id = horizon.membership.get_field_id($(this).parent().siblings().attr('data-' + step_slug +  '-id'));
+      var data_id = horizon.membership.get_field_id($(this).parent().siblings().attr('data-' + step_slug + '-id'));
       var member_el = $(this).parent().parent();
 
       if (available) {
@@ -284,7 +283,7 @@ horizon.membership = {
    * displays a message to the user.
    **/
   detect_no_results: function (step_slug) {
-    $('.' + step_slug +  '_filterable').each( function () {
+    $('.' + step_slug + '_filterable').each( function () {
       var css_class = $(this).find('ul').attr('class');
       // Example value: members step_slug_members
       // Pick the class name that contains the step_slug
@@ -350,8 +349,8 @@ horizon.membership = {
       $("input.filter").val("");
 
       // fix styling
-      $("." +  step_slug + "_members .btn-group").removeClass('last_stripe');
-      $("." +  step_slug + "_members .btn-group:last").addClass('last_stripe');
+      $("." + step_slug + "_members .btn-group").removeClass('last_stripe');
+      $("." + step_slug + "_members .btn-group:last").addClass('last_stripe');
     });
   },
 
@@ -455,7 +454,7 @@ horizon.membership = {
 
 
       // initially hide role dropdowns for available member list
-      $form.find(".available_" +  step_slug + " .role_options").hide();
+      $form.find(".available_" + step_slug + " .role_options").hide();
 
       // hide the dropdown for members too if we don't need to show it
       if (!horizon.membership.has_roles[step_slug]) {

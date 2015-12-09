@@ -1,18 +1,24 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: Kashmiri\n"
+"PO-Revision-Date: 2015-09-08 11:14+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language: ks\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Kashmiri\n"
 
 #, python-format
 msgid ""
@@ -578,15 +584,6 @@ msgstr "جمع کئریو رول"
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "جغمع کئریو/ کئڈیو ہوسٹ ایگریگیٹ سیتھ"
 
-msgid "AddFirewall"
-msgstr "فآئر وال کئریو جمع"
-
-msgid "AddPolicy"
-msgstr "جمع کئریو پآلیسی"
-
-msgid "AddRule"
-msgstr "جمع کئریو رول"
-
 #, python-format
 msgid "Added Firewall \"%s\"."
 msgstr "فآئر وال کئور جمع \"%s\"."
@@ -738,9 +735,6 @@ msgstr "اِجازت دِیو ہوسٹ(ٲپشنِل)"
 
 msgid "Amount of energy"
 msgstr "اینرجی ہُند تعداد"
-
-msgid "An external (HTTP) URL to load the image from."
-msgstr "اَکھ نیبرُم (HTTP) URLشکل اَپلوڈ کرنہ کآطرہ"
 
 msgid "An external (HTTP) URL to load the template from."
 msgstr "اَکھ نیبرِم  (HTTP) URL لوڈ کئرنہٕ خآطرہ ٹیپلیٹ پئٹھ "
@@ -1108,9 +1102,6 @@ msgstr "سِنڈر والیوم"
 msgid "Cipher"
 msgstr "سطپیہر"
 
-msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
-msgstr "کلاس کم  اینٹر ڈمین راوٹِنگ(e.g. 192.168.0.0/24)"
-
 msgid "Clear Domain Context"
 msgstr "صآف کئریو ڈومین کئنٹیکسٹ"
 
@@ -1123,23 +1114,14 @@ msgstr "بَند"
 msgid "Cluster"
 msgstr "کِلسٹر"
 
-msgid "Cluster Details"
-msgstr "کِلسٹر تَفصیل"
-
 msgid "Cluster Instances"
 msgstr "کِلسٹر اِنسٹنسِز"
 
 msgid "Cluster Name"
 msgstr "کِلسٹر نآو"
 
-msgid "Cluster Overview"
-msgstr "کِلسٹر اوور ویو"
-
 msgid "Cluster Template"
 msgstr "کلسٹر ٹیمپلیٹ"
-
-msgid "Cluster Template Details"
-msgstr "کلسٹر ٹیمپلیٹ تَفصیل"
 
 msgid "Cluster Template Name"
 msgstr "ٹیمپلیٹ کِلسٹر نآو"
@@ -1533,34 +1515,6 @@ msgid "Create a Volume Type"
 msgstr "بَنایئو اَکھ والیوم قِسم"
 
 msgid ""
-"Create a firewall based on a policy.\n"
-"\n"
-"A policy must be selected. Other fields are optional."
-msgstr ""
-"بَنایو اَکھ فآیر وال رول  پآلیسی  پیٹھ \n"
-"\n"
-"اَکھ  پآلیسی گژہ ین ژارنہ۔ بآقی فیلڈس چھ آپشنلآرڈر  فآیر والرولز لِسٹ مَنز"
-
-msgid ""
-"Create a firewall policy with an ordered list of firewall rules.\n"
-"\n"
-"A name must be given. Firewall rules are added in the order placed under the "
-"Rules tab."
-msgstr ""
-"بَنایو اَکھ فآیر وال رول  پآلیسی آرڈر  فآیر والرولز لِسٹ مَنز\n"
-"\n"
-"  فآیر وال  رولز چھ جمع کریتھ رولز ٹیب مُطابِق اَکھ نآو گژہ یون دِنہ۔ "
-
-msgid ""
-"Create a firewall rule.\n"
-"\n"
-"Protocol and action must be specified. Other fields are optional."
-msgstr ""
-"بَنایو اَکھ فآیر وال رول \n"
-"\n"
-"پروٹوکال تہ ایکشن گژہ وَضاحت آسون۔  بآق فیلڈ چھ آپشنل"
-
-msgid ""
 "Create a monitor template.\n"
 "\n"
 "Select type of monitoring. Specify delay, timeout, and retry limits required "
@@ -1743,15 +1697,6 @@ msgstr "حآلی سآیز (GB)"
 msgid "Current password"
 msgstr "حآلی  پآس وئرڈ "
 
-msgid ""
-"Currently only images available via an HTTP URL are supported. The image "
-"location must be accessible to the Image Service. Compressed image binaries "
-"are supported (.zip and .tar.gz.)"
-msgstr ""
-"وِنکئس چھ صِرف شکل دَستِیاب ضریعئ اَکئ  HTTP URLتعاُون سیتھ ۔ شکلئ ہنز جٲے گئژہ "
-"ٲسین ایکسئسبِل شکل سئروِس تٲن ۔ لَکئٹ شکل بئنیری چھ تعاُون سیتھ (.zip and .tar."
-"gz.)"
-
 msgid "Custom ICMP Rule"
 msgstr "قسٹم ICMP رول"
 
@@ -1798,9 +1743,6 @@ msgstr "ڈیٹا پروسیسِنگ"
 msgid "Data Processing Plugin Details"
 msgstr "ڈیٹآ پروسیسِنگ پِلگ اِن تَفصیل"
 
-msgid "Data Processing Plugin Overview"
-msgstr "ڈیٹآ پروسیسِنگ پِلگ اِن اوور ویو"
-
 msgid "Data Processing Plugins"
 msgstr "ڈیٹآ پروسیسِنگ پِلگ اِن"
 
@@ -1813,12 +1755,6 @@ msgid ""
 msgstr ""
 "ڈیٹا پروسیسِنگ چُھ دِوان اَلگ جآے ٲپشنز ۔ توہیہ ہیکو ژاریتھ یا اَکھ سِنڈر والیم "
 "اِنسٹنس جوڈنہ خآطرہ ایپحیمیرل ڈریو"
-
-msgid "Data Source Details"
-msgstr "ڈیٹآ سورس تَفصیل"
-
-msgid "Data Source Overview"
-msgstr "ڈیٹآ سورس اوور ویو"
 
 msgid "Data Source Type"
 msgstr "ڈیٹا سورس قِسم"
@@ -1892,15 +1828,9 @@ msgstr "ڈیفالٹ"
 msgid "Delay"
 msgstr "ژیئر"
 
-msgid "Delete on Terminate"
-msgstr "مِٹایئو  ٹئرمِنیٹ پئٹھ "
-
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
 msgstr "مِٹایئو بٔناومُت نیٹ وئرک \"%s\"  کیازکہٖ سب نیٹ کئریشن چھ ناکامیاب"
-
-msgid "Delete volume on instance terminate"
-msgstr "مِٹایئو والیوم اِنسٹئنس ٹئرمِنیٹ پئٹھ "
 
 msgid "Deleted"
 msgstr "مِٹاویتھ"
@@ -1914,36 +1844,8 @@ msgid "Deleted"
 msgstr "مِٹاویتھ"
 
 #, python-format
-msgid "Deleted IKE Policy %s"
-msgstr "مِٹاویتھ    IKE پآلیسی: %s"
-
-#, python-format
-msgid "Deleted IPSec Policy %s"
-msgstr "مِٹاویتھ   IP  سیک سآئٹ پآلیسی: %s"
-
-#, python-format
-msgid "Deleted IPSec Site Connection %s"
-msgstr "مِٹاویتھ   IP  سیک سآئٹ کئنیکشن: %s"
-
-#, python-format
 msgid "Deleted VIP %s"
 msgstr "VIPمِٹائو %s"
-
-#, python-format
-msgid "Deleted VPN Service %s"
-msgstr "مِٹاویتھVPN   سئروِس %s"
-
-#, python-format
-msgid "Deleted member %s"
-msgstr "میمبر مِٹائو%s"
-
-#, python-format
-msgid "Deleted monitor %s"
-msgstr "مآنیٹر مِٹائو%s"
-
-#, python-format
-msgid "Deleted pool %s"
-msgstr "میمبر مِٹائو%s"
 
 msgid "Deleting"
 msgstr "مِٹاوان"
@@ -2514,10 +2416,6 @@ msgctxt "current status of router"
 msgid "Error"
 msgstr "غَلطی"
 
-msgctxt "status of a neteork port"
-msgid "Error"
-msgstr "غَلطی"
-
 msgid "Error Deleting"
 msgstr "غَلطی مِٹاونہٖ وَقتہٕ"
 
@@ -2867,17 +2765,8 @@ msgstr "اُنگجین ہِند نِشآن"
 msgid "Firewall %s was successfully updated."
 msgstr "فآئر وال  %s  گئو کامیابی سآن اَپڈیٹ  "
 
-msgid "Firewall Details"
-msgstr "فآئر وال تَفصیل"
-
 msgid "Firewall Policies"
 msgstr "فآئر وال پآلیسی"
-
-msgid "Firewall Policy Details"
-msgstr "فآئر وال پآلیسی  تَفصیل"
-
-msgid "Firewall Rule Details"
-msgstr "فآئر وال رول  تَفصیل"
 
 msgid "Firewall Rules"
 msgstr "فآئر وال رولز"
@@ -3344,16 +3233,6 @@ msgstr ""
 "اگر کاہ کئنٹینر نآو چُھ نہِ دَستِیاب، اَکھ ڈیفالٹ  کئنٹینر نآو والیوم بیک اَپس یئہٕ "
 "توہیہٕ دَستِیاب کئرنہٕ ۔ بیک اَپس  آسہِ ہیو  سآئز یُس والیوم تِم بِناوان"
 
-msgid ""
-"If you select an image via an HTTP URL, the Image Location field MUST be a "
-"valid and direct URL to the image binary; it must also be accessible to the "
-"Image Service. URLs that redirect or serve error pages will result in "
-"unusable images."
-msgstr ""
-"گئژہ ٲسین ایکسئسبِل شکلسروِس  اگر تہی ہی ژارِن چھ اَکھ شَکل HTTP URL ضریعہ، شکل "
-"جٲؠ فیلڈ گژہ آسین واجِب تہ سیودی شکل بینری خآطرہURL؛ URLs یِم ریڈیریکٹ کیر یا "
-"سَرور پیج یَم فَضول شکلہ بَناون"
-
 msgid "Image"
 msgstr "شکل"
 
@@ -3363,9 +3242,6 @@ msgstr "شکل"
 
 msgid "Image (Glance)"
 msgstr "شکل (أکھ نظر)"
-
-msgid "Image Details"
-msgstr "شکل تَفصیل"
 
 msgid "Image File"
 msgstr "شکل فآیل"
@@ -3381,9 +3257,6 @@ msgstr "شکل نآو"
 
 msgid "Image Name ="
 msgstr "شکل نآو ="
-
-msgid "Image Overview"
-msgstr "شکل اوور ویو"
 
 msgid "Image Registry"
 msgstr "شکل ریجسٹری"
@@ -3416,13 +3289,6 @@ msgstr "شئکل گئو کامیابی سآن اَپڈیٹ  "
 
 msgid "Images"
 msgstr "شکل"
-
-msgid ""
-"Images can be provided via an HTTP URL or be uploaded from your local file "
-"system. Compressed image binaries are supported (.zip and .tar.gz.)"
-msgstr ""
-"ضریعئ دَستِیاب چھ   HTTP URL یَم  ۔ شکلئیا ہیکو اَپلوڈ کریتھ لوکل فآیل سِسٹم "
-"سیتھ  لَکئٹ شکل بئنیری چھ تعاُون سیتھ(.zip and .tar.gz.)"
 
 msgid "Import Key Pair"
 msgstr "در آمد کریو کی جورہ"
@@ -3521,9 +3387,6 @@ msgstr "اِنسٹئنس کئنسول لاگ"
 msgid "Instance Count"
 msgstr "اِنسٹئنس گئنتی"
 
-msgid "Instance Details"
-msgstr "اِنسٹنسِ تَفصیل"
-
 msgid "Instance ID"
 msgstr "اِنسٹئنس ID"
 
@@ -3608,20 +3471,8 @@ msgstr "جآب"
 msgid "Job Binaries"
 msgstr "جآب بینری"
 
-msgid "Job Binary Details"
-msgstr "جآب بینری تَفصیل"
-
-msgid "Job Binary Overview"
-msgstr "جآب بینری اوور ویو"
-
 msgid "Job Configuration"
 msgstr "جآب کنفِگریشن"
-
-msgid "Job Details"
-msgstr "جآب تَفصیل"
-
-msgid "Job Execution Details"
-msgstr "جآب ایکزیکوشن تَفصیل"
 
 msgid "Job Execution ID"
 msgstr "جآب ایکزیکوشن ID"
@@ -3941,9 +3792,6 @@ msgstr " (1~10) زیادہ خوتھ زیادہ"
 msgid "Max."
 msgstr "زیادہ خوتہٕ زیادہ"
 
-msgid "Max. Size (MB)"
-msgstr "زیادہ خوتہ زیادہ  سآئز  (MB)"
-
 msgid "Maximum Transmission Unit size for the connection"
 msgstr "زیادہ خوتہٕ زیادہ ٹرانسمیشن یونِٹ سآئز کئنیکشن  خآطرہ"
 
@@ -4012,9 +3860,6 @@ msgstr "کم از کمRAM"
 
 msgid "Min."
 msgstr "کم از کم"
-
-msgid "Min. Size (MB)"
-msgstr "کم از کم سآئز  (MB)"
 
 msgid "Minimum Disk (GB)"
 msgstr "کم از کم ڈِسک (GB)"
@@ -4386,9 +4231,6 @@ msgstr "کاہ والیوم چُھنہٕ دَستِیاب"
 msgid "Node Configurations"
 msgstr "نوڈ   کئنفِگریشن"
 
-msgid "Node Group Template Details"
-msgstr "نوڈ گروپ ٹیمپلیٹ تَفصیل"
-
 #, python-format
 msgid "Node Group Template copy %s created"
 msgstr "نوڈ گروپ ٹیمپلیٹ کاپی %s بَناومِت"
@@ -4414,9 +4256,6 @@ msgstr "نوڈ گروپ کلیسٹر"
 
 msgid "Node processes are not specified"
 msgstr "نوڈ پراسیس چُھ نہ وَضاحت کئریتھ "
-
-msgid "Nodegroup Template Details"
-msgstr "نوڈ گروپ ٹیمپلیٹ تَفصیل"
 
 msgid "Nodes Count"
 msgstr "نوڈ گنتی"
@@ -4767,9 +4606,6 @@ msgstr "پورٹ %sآو کامیابی سآن بَناونہٕ"
 msgid "Port %s was successfully updated."
 msgstr "پورٹ  %s  گئو کامیابی سآن اَپڈیٹ  "
 
-msgid "Port Details"
-msgstr "پورٹ تَفصیل"
-
 msgid "Port ID"
 msgstr "پورٹ ID"
 
@@ -5081,9 +4917,6 @@ msgstr "دوبآرہ  سآیز والیوم \"%s\""
 msgid "Resource"
 msgstr "زخیرزہ"
 
-msgid "Resource Details"
-msgstr "زَخیرہ تَفصیل"
-
 msgid "Resource ID"
 msgstr "ریسوئرس ID"
 
@@ -5176,9 +5009,6 @@ msgstr "راوٹر%s گئوہ کامیابی سآن بَناونہٕ"
 #, python-format
 msgid "Router %s was successfully updated."
 msgstr "رآوٹر%s گئو کامیابی سآن اَپڈیٹ"
-
-msgid "Router Details"
-msgstr "راوٹرِک  تَفصیل"
 
 msgid "Router ID"
 msgstr "راوٹر  ID"
@@ -5728,9 +5558,6 @@ msgstr "وَضاحت   کئریتھ نوہ والیوم سآیز  اِنسٹنس
 msgid "Specs"
 msgstr "سِپیکس"
 
-msgid "Stack Details"
-msgstr "سِٹیک تَفصیل"
-
 msgid "Stack Events"
 msgstr "سِٹیک ایوینٹس"
 
@@ -5739,9 +5566,6 @@ msgstr "سِٹیک ID"
 
 msgid "Stack Name"
 msgstr "سِٹیک نٲو"
-
-msgid "Stack Overview"
-msgstr "سِٹیک نَظارہ"
 
 msgid "Stack Parameters"
 msgstr "سِٹیک پیرامیٹر"
@@ -5844,9 +5668,6 @@ msgstr "سب نیٹ آئی ڈی"
 
 msgid "Subnet Name"
 msgstr "سب نیٹ نٲو"
-
-msgid "Subnet Overview"
-msgstr "سب نیٹ اوور ویو"
 
 msgid "Subnet list can not be retrieved."
 msgstr "سب نیٹ  لِسٹ ہیکو نہٖ واپس اَنیتھ"
@@ -6019,9 +5840,6 @@ msgstr "ٹیمپلیٹ فآئل"
 
 msgid "Template Name"
 msgstr " نآو ٹیمپلیٹ"
-
-msgid "Template Overview"
-msgstr "ٹیمپلیٹ  اوور ویو"
 
 msgid "Template Source"
 msgstr "ٹیمپلیٹ ضریعہٕ"
@@ -6630,24 +6448,8 @@ msgid "Unable to create volume."
 msgstr "نا قابِل والوم بَناونہٕ ٕ خآطرہ "
 
 #, python-format
-msgid "Unable to delete IKE Policy: %s"
-msgstr "ناکامیابٕ مِٹاونہٕ   خآطرہ   IKE   پآلیسی : %s"
-
-#, python-format
-msgid "Unable to delete IPSec Policy: %s"
-msgstr "ناکامیابٕ مِٹاونہٕ   خآطرہ   IP  سیک پآلیسی : %s"
-
-#, python-format
-msgid "Unable to delete IPSec Site Connection: %s"
-msgstr "ناکامیابٕ مِٹاونہٕ   خآطرہ   IP  سیک سآئٹ کئنیکشن: %s"
-
-#, python-format
 msgid "Unable to delete VIP. %s"
 msgstr " ناقابِل VIPمِٹاونہٕ خآطرہ %s"
-
-#, python-format
-msgid "Unable to delete VPN Service: %s"
-msgstr "مِٹاویتھ   VPN  سئروِس: %s"
 
 msgid "Unable to delete container."
 msgstr "نا قابِل کئنٹینرمِٹاونہٕ خآطرہ"
@@ -7958,13 +7760,6 @@ msgstr "والیوم(سِنڈر)"
 msgid "Volume Backup"
 msgstr "والیوم بیک اَپ"
 
-msgid "Volume Backup Details"
-msgstr " والیوم بیک اَپ تَفصیل"
-
-#, python-format
-msgid "Volume Backup Overview: %(backup_display_name)s"
-msgstr "والیوم بیک اَپ اوور ویو  :: %(backup_display_name)s"
-
 msgid "Volume Backup:"
 msgstr "بَناوان  بیک اَپ"
 
@@ -7978,26 +7773,17 @@ msgstr ""
 " والیوم  بیک اَپ چھ جمع کئریتھ اِستعمال کئریتھ آبجیکٹ سِٹوریج سئروِستوہیہٕ گئژہ "
 "آسین یہِ سئروِس تٲکہٕ بیک اَپ بَنہٕ "
 
-msgid "Volume Details"
-msgstr "والیوم تَفصیل"
-
 msgid "Volume Limits"
 msgstr "والیوم حد"
 
 msgid "Volume Name"
 msgstr "والیوم  نآو"
 
-msgid "Volume Overview"
-msgstr "والیوم اوور ویو"
-
 msgid "Volume Size"
 msgstr "والیوم سآیز"
 
 msgid "Volume Snapshot"
 msgstr "والیوم سِنیپ شآئٹس"
-
-msgid "Volume Snapshot Details"
-msgstr "والیوم سِنیپشآٹس تَفصیل"
 
 msgid "Volume Snapshot Overview"
 msgstr "والیوم  سِنیپ شآٹس اوور ویو"

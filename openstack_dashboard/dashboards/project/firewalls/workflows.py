@@ -13,6 +13,7 @@
 #    under the License.
 
 from django.utils.translation import ugettext_lazy as _
+import netaddr
 
 from horizon import exceptions
 from horizon import forms
@@ -42,7 +43,8 @@ class AddRuleAction(workflows.Action):
     action = forms.ChoiceField(
         label=_("Action"),
         choices=[('allow', _('ALLOW')),
-                 ('deny', _('DENY'))],)
+                 ('deny', _('DENY')),
+                 ('reject', _('REJECT'))],)
     source_ip_address = forms.IPField(
         label=_("Source IP Address/Subnet"),
         version=forms.IPv4 | forms.IPv6,
@@ -61,6 +63,9 @@ class AddRuleAction(workflows.Action):
         label=_("Destination Port/Port Range"),
         required=False,
         validators=[port_validator])
+    ip_version = forms.ChoiceField(
+        label=_("IP Version"), required=False,
+        choices=[('4', '4'), ('6', '6')])
     shared = forms.BooleanField(
         label=_("Shared"), initial=False, required=False)
     enabled = forms.BooleanField(
@@ -69,12 +74,41 @@ class AddRuleAction(workflows.Action):
     def __init__(self, request, *args, **kwargs):
         super(AddRuleAction, self).__init__(request, *args, **kwargs)
 
+    def _check_ip_addr_and_ip_version(self, cleaned_data):
+        ip_version = int(str(cleaned_data.get('ip_version')))
+        src_ip = cleaned_data.get('source_ip_address')
+        dst_ip = cleaned_data.get('destination_ip_address')
+        msg = _('Source/Destination Network Address and IP version '
+                'are inconsistent. Please make them consistent.')
+        if (src_ip and
+                netaddr.IPNetwork(src_ip).version != ip_version):
+                self._errors['ip_version'] = self.error_class([msg])
+
+        elif (dst_ip and
+              netaddr.IPNetwork(dst_ip).version != ip_version):
+            self._errors['ip_version'] = self.error_class([msg])
+
+    def clean(self):
+        cleaned_data = super(AddRuleAction, self).clean()
+        self._check_ip_addr_and_ip_version(cleaned_data)
+
     class Meta(object):
-        name = _("AddRule")
+        name = _("Rule")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall rule.\n\n"
-                      "Protocol and action must be specified. "
-                      "Other fields are optional.")
+                      "A Firewall rule is an association of the following "
+                      "attributes:\n\n"
+                      "<li>IP Addresses: The addresses from/to which the "
+                      "traffic filtration needs to be applied.</li>"
+                      "<li>IP Version: The type of IP packets (IP V4/V6) "
+                      "that needs to be filtered.</li>"
+                      "<li>Protocol: Type of packets (UDP, ICMP, TCP, Any) "
+                      "that needs to be checked.</li>"
+                      "<li>Action: Action is the type of filtration "
+                      "required, it can be Reject/Deny/Allow data "
+                      "packets.</li>\n"
+                      "The protocol and action fields are required, all "
+                      "others are optional.")
 
 
 class AddRuleStep(workflows.Step):
@@ -82,7 +116,7 @@ class AddRuleStep(workflows.Step):
     contributes = ("name", "description", "protocol", "action",
                    "source_ip_address", "source_port",
                    "destination_ip_address", "destination_port",
-                   "enabled", "shared")
+                   "enabled", "shared", "ip_version")
 
     def contribute(self, data, context):
         context = super(AddRuleStep, self).contribute(data, context)
@@ -230,12 +264,27 @@ class AddPolicyAction(workflows.Action):
         super(AddPolicyAction, self).__init__(request, *args, **kwargs)
 
     class Meta(object):
-        name = _("AddPolicy")
+        name = _("Policy")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall policy with an ordered list "
                       "of firewall rules.\n\n"
-                      "A name must be given. Firewall rules are "
-                      "added in the order placed under the Rules tab.")
+                      "A firewall policy is an ordered collection of firewall "
+                      "rules. So if the traffic matches the first rule, the "
+                      "other rules are not executed. If the traffic does not "
+                      "match the current rule, then the next rule is "
+                      "executed. A firewall policy has the following "
+                      "attributes:\n\n"
+                      "<li>Shared: A firewall policy can be shared across "
+                      "tenants. Thus it can also be made part of an audit "
+                      "workflow wherein the firewall policy can be audited "
+                      "by the relevant entity that is authorized.</li>"
+                      "<li>Audited: When audited is set to True, it indicates "
+                      "that the firewall policy has been audited. "
+                      "Each time the firewall policy or the associated "
+                      "firewall rules are changed, this attribute will be "
+                      "set to False and will have to be explicitly set to "
+                      "True through an update operation.</li>\n"
+                      "The name field is required, all others are optional.")
 
 
 class AddPolicyStep(workflows.Step):
@@ -301,11 +350,13 @@ class AddFirewallAction(workflows.Action):
         self.fields['firewall_policy_id'].choices = firewall_policy_id_choices
 
     class Meta(object):
-        name = _("AddFirewall")
+        name = _("Firewall")
         permissions = ('openstack.services.network',)
         help_text = _("Create a firewall based on a policy.\n\n"
-                      "A policy must be selected. "
-                      "Other fields are optional.")
+                      "A firewall represents a logical firewall resource that "
+                      "a tenant can instantiate and manage. A firewall must "
+                      "be associated with one policy, all other fields are "
+                      "optional.")
 
 
 class AddFirewallStep(workflows.Step):

@@ -1,3 +1,17 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Andreas Jaeger <jaegerandi@gmail.com>, 2015
+# avarx <a.vonarx@frappant.ch>, 2015
+# Christian Berendt <berendt@b1-systems.de>, 2015
+# Ettore Atalan <atalanttore@googlemail.com>, 2015
+# Eva Vo <eva.vonderheidt@gmail.com>, 2015
+# Frank Kloeker <eumel@arcor.de>, 2014-2015
+# Robert Simai, 2015
+# Thorsten Michels, 2014
+# Uwe Krieg, 2015
 # Andreas Jaeger <jaegerandi@gmail.com>, 2015. #zanata
 # Carsten Duch <carsten.duch@posteo.de>, 2015. #zanata
 # Frank Kloeker <eumel@arcor.de>, 2015. #zanata
@@ -7,16 +21,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-09-26 03:25+0000\n"
-"Last-Translator: Andreas Jaeger <jaegerandi@gmail.com>\n"
-"Language-Team: German\n"
+"PO-Revision-Date: 2015-11-20 11:07+0000\n"
+"Last-Translator: Robert Simai <robert.simai@suse.com>\n"
 "Language: de\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: German\n"
 
 msgid ""
 "\n"
@@ -438,9 +453,6 @@ msgid ""
 msgstr ""
 "\"Einige Varianten erfüllen nicht die Mindestanforderungen des Images und "
 "sind deaktiviert worden.\""
-
-msgid "\"Users\""
-msgstr "\"Benutzer\""
 
 #, python-format
 msgid "%(conf_name)s: %(conf_val)s"
@@ -1003,15 +1015,6 @@ msgstr ""
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "Hinzufügen/Entfernen von Hosts zum/vom Aggregat"
 
-msgid "AddFirewall"
-msgstr "Firewall hinzufügen"
-
-msgid "AddPolicy"
-msgstr "Richtlinie hinzufügen"
-
-msgid "AddRule"
-msgstr "Regel hinzufügen"
-
 #, python-format
 msgid "Added Firewall \"%s\"."
 msgstr "Firewall \"%s\" hinzugefügt."
@@ -1223,11 +1226,11 @@ msgstr "Erlaubter Host (optional)"
 msgid "Amount of energy"
 msgstr "Energiemenge"
 
-msgid "An external (HTTP) URL to load the image from."
-msgstr "Eine externe Adresse (HTTP URL) von der das Abbild geladen wird."
-
 msgid "An external (HTTP) URL to load the template from."
 msgstr "Eine externe (HTTP) URL, von der die Vorlage geladen wird."
+
+msgid "An external (HTTP/HTTPS) URL to load the image from."
+msgstr "Externe URL (HTTP/HTTPS), von der das Abbild geladen werden soll."
 
 msgid ""
 "An instance can be launched with varying types of attached storage. You may "
@@ -1256,6 +1259,9 @@ msgid ""
 msgstr ""
 "Ein unerwarteter Fehler ist aufgetreten. Versuchen Sie die Seite neu zu "
 "lagen. Wenn das nicht hilft, kontaktieren Sie Ihren lokalen Administrator."
+
+msgid "Another Plugin-based Panel"
+msgstr "Eine weitere Plugin-basierte Tafel"
 
 msgid "Anti-affinity enabled for"
 msgstr "Anti-Affinität erlaubt für"
@@ -1404,6 +1410,9 @@ msgstr "Name der Verfügbarkeitszone"
 
 msgid "Availability Zones"
 msgstr "Verfügbarkeitszonen"
+
+msgid "Availability zone"
+msgstr "Verfügbarkeitszone"
 
 msgid "Available"
 msgstr "Verfügbar"
@@ -1577,6 +1586,10 @@ msgstr "Baue"
 msgctxt "Current status of a Database Backup"
 msgid "Building"
 msgstr "Aufbauend"
+
+msgctxt "Current status of an Instance"
+msgid "Building"
+msgstr "Bauend"
 
 msgctxt "Power state of an Instance"
 msgid "Building"
@@ -1831,8 +1844,9 @@ msgstr "Cinder Datenträger"
 msgid "Cipher"
 msgstr "Chiffre"
 
-msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
-msgstr "Klassenloses Inter-Domain Routing (z.B. 192.168.0.0/24)"
+msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24, or 2001:db8::/128)"
+msgstr ""
+"Klassenloses Inter-Domain Routing (z.B. 192.168.0.0/24, oder 2001:db8::/128)"
 
 msgid "Clear Domain Context"
 msgstr "Domänen-Kontext löschen"
@@ -1862,15 +1876,6 @@ msgstr "Anzahl Cluster"
 msgid "Cluster Creation Guide"
 msgstr "Clustererstellungsassistent"
 
-msgid "Cluster Detail"
-msgstr "Clusterdetails"
-
-msgid "Cluster Details"
-msgstr "Cluster Details"
-
-msgid "Cluster Details: {{ cluster.name }}"
-msgstr "Cluster Details: {{ cluster.name }}"
-
 msgid "Cluster Events"
 msgstr "Cluster Ereignisse"
 
@@ -1883,9 +1888,6 @@ msgstr "Cluster Instanzen"
 msgid "Cluster Name"
 msgstr "Cluster Name"
 
-msgid "Cluster Overview"
-msgstr "Cluster Übersicht"
-
 msgid "Cluster Size"
 msgstr "Clustergröße"
 
@@ -1895,9 +1897,6 @@ msgstr "Clustervorlage"
 #, python-format
 msgid "Cluster Template %s updated"
 msgstr "Clustervorlage %s aktualisiert"
-
-msgid "Cluster Template Details"
-msgstr "Clustervorlage Details"
 
 msgid "Cluster Template Name"
 msgstr "Name der Clustervorlage"
@@ -2403,32 +2402,72 @@ msgstr "Erzeugen einer Datenquelle"
 msgid ""
 "Create a firewall based on a policy.\n"
 "\n"
-"A policy must be selected. Other fields are optional."
+"A firewall represents a logical firewall resource that a tenant can "
+"instantiate and manage. A firewall must be associated with one policy, all "
+"other fields are optional."
 msgstr ""
-"Legen Sie einen Firewall, auf einem Firewall-Regelwerk basierend, an.\n"
+"Erzeugen einer Firewall auf Basis einer Richtlinie\n"
 "\n"
-"Ein Regelwerk muss ausgewählt werden. Die anderen Felder sind optional."
+"Eine Firewall repräsentiert eine logische Firewall-Ressource, die ein "
+"Mandant instanzieren und verwalten kann. Eine Firewall muss mit einer "
+"Richtlinie verbunden werden, all anderen Felder sind optional."
 
 msgid ""
 "Create a firewall policy with an ordered list of firewall rules.\n"
 "\n"
-"A name must be given. Firewall rules are added in the order placed under the "
-"Rules tab."
-msgstr ""
-"Erzeugen Sie ein Firewall-Regelwerk mit einer sortierten Liste an Firewall-"
-"Regeln.\n"
+"A firewall policy is an ordered collection of firewall rules. So if the "
+"traffic matches the first rule, the other rules are not executed. If the "
+"traffic does not match the current rule, then the next rule is executed. A "
+"firewall policy has the following attributes:\n"
 "\n"
-"Ein Name muss vergeben werden. Firewall-Regeln werden in der Reihenfolge, in "
-"der sie eingegeben werden, unter dem Regel-Tab angeordnet."
+"<li>Shared: A firewall policy can be shared across tenants. Thus it can also "
+"be made part of an audit workflow wherein the firewall policy can be audited "
+"by the relevant entity that is authorized.</li><li>Audited: When audited is "
+"set to True, it indicates that the firewall policy has been audited. Each "
+"time the firewall policy or the associated firewall rules are changed, this "
+"attribute will be set to False and will have to be explicitly set to True "
+"through an update operation.</li>\n"
+"The name field is required, all others are optional."
+msgstr ""
+"Erzeugen einer Firewall-Richtlinie mit einer geordneten Liste von Regeln.\n"
+"\n"
+"Eine Firewall-Richtlinie ist eine geordnete Sammlung von Firewall-Regeln. "
+"Sobald eine Regel auf den Datenverkehr zutrifft, werden die weiteren Regeln "
+"nicht mehr ausgeführt. Solange die Regeln nicht zutreffen, werden weitere "
+"Regeln ausgeführt. Eine Firewall-Richtlinie hat die folgenden Attribute:\n"
+"\n"
+"<li>Geteilt/Shared: eine Firewall-Richtlinie kann mit mehreren Mandanten "
+"geteilt werden. Dadurch kann sie auch als Teil eines Audit-Workflows "
+"verwendet werden, um von einer berechtigten Einheit/Organisation/Person "
+"geprüft zu werden.</li><li>Auditiert/Audited: wenn dies auf wahr/true "
+"gesetzt ist, zeigt es an, dass die Richtlinie geprüft wurde. Jedes Mal, wenn "
+"eine Richtlinie oder eine der Regeln darin geändert wird, wird der Indikator "
+"wieder auf falsch/false gesetzt und muss durch eine Update-Operation "
+"explizit wieder auf wahr/true gesetzt werden.</li>\n"
+"Das Namensfeld ist erforderlich, alle anderen sind optional."
 
 msgid ""
 "Create a firewall rule.\n"
 "\n"
-"Protocol and action must be specified. Other fields are optional."
+"A Firewall rule is an association of the following attributes:\n"
+"\n"
+"<li>IP Addresses: The addresses from/to which the traffic filtration needs "
+"to be applied.</li><li>IP Version: The type of IP packets (IP V4/V6) that "
+"needs to be filtered.</li><li>Protocol: Type of packets (UDP, ICMP, TCP, "
+"Any) that needs to be checked.</li><li>Action: Action is the type of "
+"filtration required, it can be Reject/Deny/Allow data packets.</li>\n"
+"The protocol and action fields are required, all others are optional."
 msgstr ""
-"Erzeugen Sie eine Firewallregel.\n"
-"Das Protokoll und eine Aktion müssen spezifiziert werden. Die anderen Felder "
-"sind optional."
+"Firewall-Regel anlegen\n"
+"\n"
+"Eine Firewall-Regel bezieht sich auf die folgenden Attribute:\n"
+"\n"
+"<li>IP-Adresse: die Adresse, auf zu/von der der Datenverkehr gefiltert wird."
+"</li><li>IP-Version: der IP Pakettyp (IPV4/6) der gefiltert wird.</"
+"li><li>Protokoll: der Pakettyp (UDP, ICMP, TCP, Any) der kontrolliert wird.</"
+"li><li>Aktion: die vorhergesehene Filteraktion, möglich ist Reject/Deny/"
+"Allow für Datenpakete.</li>\n"
+"Die Protokoll- und Aktionsfelder sind erforderlich, andere optional."
 
 msgid "Create a firewall with selected routers."
 msgstr "Erstellen einer Firewall mit den ausgewählten Routern."
@@ -2664,13 +2703,13 @@ msgid "Current type:"
 msgstr "Aktueller Typ:"
 
 msgid ""
-"Currently only images available via an HTTP URL are supported. The image "
-"location must be accessible to the Image Service. Compressed image binaries "
-"are supported (.zip and .tar.gz.)"
+"Currently only images available via an HTTP/HTTPS URL are supported. The "
+"image location must be accessible to the Image Service. Compressed image "
+"binaries are supported (.zip and .tar.gz.)"
 msgstr ""
-"Momentan werden nur Abbilder unterstützt, die über eine HTTP URL erreichbar "
-"sind. Die URL muss für den Dienst zugänglich sein. Komprimierte Abbilder (."
-"zip und .tar.gz) werden unterstützt."
+"Zur Zeit werden nur Abbilder, die über eine HTTP/HTTPS URL verfügbar sind "
+"unterstützt. Der Abbild-Ort muss vom Abbild-Dienst aus erreichbar sein. "
+"Komprimierte Binär-Abbilder werden unterstützt (.zip und .tar.gz)"
 
 msgid "Custom ICMP Rule"
 msgstr "Angepasste ICMP-Regel"
@@ -2757,9 +2796,6 @@ msgstr "Datenverarbeitung Assistenten"
 msgid "Data Processing Plugin Details"
 msgstr "Datenverarbeitungsplugins Details"
 
-msgid "Data Processing Plugin Overview"
-msgstr "Datenverarbeitungsplugins Übersicht"
-
 msgid "Data Processing Plugins"
 msgstr "Datenverarbeitungsplugins"
 
@@ -2776,12 +2812,6 @@ msgstr ""
 
 msgid "Data Source"
 msgstr "Datenquelle"
-
-msgid "Data Source Details"
-msgstr "Datenquellendetails"
-
-msgid "Data Source Overview"
-msgstr "Datenquellenübersicht"
 
 msgid "Data Source Type"
 msgstr "Datenquellentyp"
@@ -2846,6 +2876,10 @@ msgstr "Datumsangaben können nicht erkannt werden."
 
 msgid "Day"
 msgstr "Tag"
+
+msgctxt "Current status of an Image"
+msgid "Deactivated"
+msgstr "Inaktiv"
 
 msgid "Dead peer detection action"
 msgstr "Action zum Aufspüren von toten Peers"
@@ -3147,16 +3181,10 @@ msgid_plural "Delete Volume Types"
 msgstr[0] "Datenträgertyp löschen"
 msgstr[1] "Datenträgertypen löschen"
 
-msgid "Delete on Terminate"
-msgstr "Löschen beim Beenden"
-
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
 msgstr ""
 "Lösche das Netzwerk \"%s\" wegen eines Fehlers beim Erzeugen des Subnetzes."
-
-msgid "Delete volume on instance terminate"
-msgstr "Lösche Datenträger beim Beenden der Instanz"
 
 msgid "Deleted"
 msgstr "Gelöscht"
@@ -3228,18 +3256,6 @@ msgid "Deleted Host Aggregate"
 msgid_plural "Deleted Host Aggregates"
 msgstr[0] "Gelöschtes Hostaggregat"
 msgstr[1] "Gelöschte Hostaggregate"
-
-#, python-format
-msgid "Deleted IKE Policy %s"
-msgstr "IKE Richtlinie löschen: %s"
-
-#, python-format
-msgid "Deleted IPSec Policy %s"
-msgstr "IPSec Richtlinie löschen: %s"
-
-#, python-format
-msgid "Deleted IPSec Site Connection %s"
-msgstr "IPSec Site Verbindung %s gelöscht"
 
 msgid "Deleted Image"
 msgid_plural "Deleted Images"
@@ -3355,10 +3371,6 @@ msgstr[1] "Gelöschte Benutzer"
 msgid "Deleted VIP %s"
 msgstr "VIP %s gelöscht"
 
-#, python-format
-msgid "Deleted VPN Service %s"
-msgstr "VPN Dienst %s gelöscht."
-
 msgid "Deleted Volume Type"
 msgid_plural "Deleted Volume Types"
 msgstr[0] "Gelöschter Datenträgertyp"
@@ -3366,18 +3378,6 @@ msgstr[1] "Gelöschte Datenträgertypen"
 
 msgid "Deleted images are not recoverable."
 msgstr "Gelöschte Abbilder können nicht wieder hergestellt werden."
-
-#, python-format
-msgid "Deleted member %s"
-msgstr "Mitglied %s gelöscht "
-
-#, python-format
-msgid "Deleted monitor %s"
-msgstr "Monitor gelöscht: %s"
-
-#, python-format
-msgid "Deleted pool %s"
-msgstr "Pool gelöscht: %s"
 
 msgid "Deleting"
 msgstr "Löscht"
@@ -4115,7 +4115,7 @@ msgctxt "current status of router"
 msgid "Error"
 msgstr "Fehler"
 
-msgctxt "status of a neteork port"
+msgctxt "status of a network port"
 msgid "Error"
 msgstr "Fehler"
 
@@ -4258,6 +4258,9 @@ msgstr "Erweitern"
 #, python-format
 msgid "Extending volume: \"%s\""
 msgstr "Erweitere Datenträger: \"%s\""
+
+msgid "External"
+msgstr "Extern"
 
 msgid "External Fixed IPs"
 msgstr "Externe feste IPs"
@@ -4635,21 +4638,15 @@ msgctxt "Task status of an Instance"
 msgid "Finishing Resize or Migrate"
 msgstr "Größenänderung oder Migration wird abgeschlossen"
 
+msgid "Firewall"
+msgstr "Firewall"
+
 #, python-format
 msgid "Firewall %s was successfully updated."
 msgstr "Firewall %s wurde wurde erfolgreich aktualisiert."
 
-msgid "Firewall Details"
-msgstr "Firewalldetails"
-
 msgid "Firewall Policies"
 msgstr "Firewallrichtlinien"
-
-msgid "Firewall Policy Details"
-msgstr "Firewall Richtlinien Details"
-
-msgid "Firewall Rule Details"
-msgstr "Details der Firewallregeln"
 
 msgid "Firewall Rules"
 msgstr "Firewallregeln"
@@ -4730,6 +4727,10 @@ msgstr "Floating IP"
 
 msgid "Floating IP Pool"
 msgstr "Floating IP Pool"
+
+#, python-format
+msgid "Floating IP will be removed from VIP \"%s\"."
+msgstr "Floating IP wird von VIP \"%s\" entfernt."
 
 msgid "Floating IP:"
 msgstr "Floating IP:"
@@ -5092,6 +5093,9 @@ msgstr "IP-Protokoll"
 msgid "IP Version"
 msgstr "IP Version"
 
+msgid "IP Version for Firewall Rule"
+msgstr "IP-Version der Firewall-Regel"
+
 msgid "IP address"
 msgstr "IP-Adresse"
 
@@ -5197,14 +5201,6 @@ msgstr "Der Identitäts-Service erlaubt das Editieren von Benutzerdaten nicht."
 msgid "Identity service does not allow editing user password."
 msgstr "Der Identitätsdienst erlaubt nicht das Ändern des Benutzerpasswortes."
 
-#, python-format
-msgid ""
-"If \"No volume type\" is selected, the default volume type \"%(name)s\" will "
-"be set for the created volume."
-msgstr ""
-"Wenn \"Kein Datenträger-Typ\" ausgewählt ist, der Standard-Datenträger-Typ "
-"\"%(name)s\" wird für die Erstellung des Datenträgers verwendet."
-
 msgid ""
 "If \"No volume type\" is selected, the volume will be created without a "
 "volume type."
@@ -5245,15 +5241,15 @@ msgstr ""
 "gewählt werden."
 
 msgid ""
-"If you select an image via an HTTP URL, the Image Location field MUST be a "
-"valid and direct URL to the image binary; it must also be accessible to the "
-"Image Service. URLs that redirect or serve error pages will result in "
+"If you select an image via an HTTP/HTTPS URL, the Image Location field MUST "
+"be a valid and direct URL to the image binary; it must also be accessible to "
+"the Image Service. URLs that redirect or serve error pages will result in "
 "unusable images."
 msgstr ""
-"Wenn sie ein Abbild über einen HTTP URL auswählen, MUSS die Abbild Lokation "
-"ein gültiger und direkter URL zum Abbild-Binary sein. Es muss ebenfalls für "
-"den Abbild-Dienst erreichbar sein. URLs die umleiten oder Fehlerseiten "
-"ausliefern führen zu unbrauchbaren Abbildern."
+"Wenn Sie ein Abbild über eine HTTP/HTTPS URL angeben, muss der Abbild-Ort "
+"eine gültige direkte URL sein, die vom Abbild-Dienst erreichbar ist. URLs "
+"mit einer Weiterleitung oder die eine Fehlerseite ausgeben führen zu "
+"unbenutzbaren Abbildern."
 
 msgid "Image"
 msgstr "Abbild"
@@ -5269,14 +5265,11 @@ msgctxt "Task status of an Instance"
 msgid "Image Backup"
 msgstr "Abbild-Sicherungskopie"
 
-msgid "Image Details"
-msgstr "Abbilddetails"
-
-msgid "Image Details: {{ image.name }}"
-msgstr "Abbild Details: {{ image.name }}"
-
 msgid "Image File"
 msgstr "Abbilddatei"
+
+msgid "Image ID"
+msgstr "Abbild ID"
 
 msgid "Image ID ="
 msgstr "Abbild ID ="
@@ -5289,9 +5282,6 @@ msgstr "Abbildname"
 
 msgid "Image Name ="
 msgstr "Abbildname ="
-
-msgid "Image Overview"
-msgstr "Abbildübersicht"
 
 msgctxt "Task status of an Instance"
 msgid "Image Pending Upload"
@@ -5340,12 +5330,12 @@ msgid "Images"
 msgstr "Abbilder"
 
 msgid ""
-"Images can be provided via an HTTP URL or be uploaded from your local file "
-"system. Compressed image binaries are supported (.zip and .tar.gz.)"
+"Images can be provided via an HTTP/HTTPS URL or be uploaded from your local "
+"file system. Compressed image binaries are supported (.zip and .tar.gz.)"
 msgstr ""
-"Abbilder können per HTTP URL bereitgestellt werden oder von ihrem lokalen "
-"Dateisystem hochgelagen werden. Komprimierte Abbild-Binaries werden "
-"unterstützt (.zip und .tar.gz)."
+"Abbilder können über eine HTTP/HTTPS URL bereit gestellt oder aus dem "
+"lokalen Dateisystem hochgeladen werden. Komprimierte Binär-Abbilder werden "
+"unterstützt (.zip und .tar.gz)"
 
 msgid "Implementation"
 msgstr "Implementierung"
@@ -5484,12 +5474,6 @@ msgstr "Instanz Konsolen-Log"
 msgid "Instance Count"
 msgstr "Instanzenanzahl"
 
-msgid "Instance Details"
-msgstr "Instanzdetails"
-
-msgid "Instance Details: {{ instance.name }}"
-msgstr "Instanz Details: {{ instance.name }}"
-
 msgid "Instance ID"
 msgstr "Instanz-ID"
 
@@ -5604,20 +5588,8 @@ msgstr "Aufgabe"
 msgid "Job Binaries"
 msgstr "Aufgaben-Binärprogramme"
 
-msgid "Job Binary Details"
-msgstr "Aufgaben-Binärprogramm Details"
-
-msgid "Job Binary Overview"
-msgstr "Aufgaben-Binärprogramm Übersicht"
-
 msgid "Job Configuration"
 msgstr "Aufgaben Konfiguration"
-
-msgid "Job Details"
-msgstr "Aufgaben Details"
-
-msgid "Job Execution Details"
-msgstr "Aufgaben Ausführungsdetails"
 
 msgid "Job Execution Guide"
 msgstr "Aufgabenausführungsassistent"
@@ -5628,14 +5600,8 @@ msgstr "Aufgaben Ausführungs-ID"
 msgid "Job Guide"
 msgstr "Aufgabenassistent"
 
-msgid "Job Overview"
-msgstr "Aufgaben Überblick"
-
 msgid "Job Template"
 msgstr "Aufgabenvorlage"
-
-msgid "Job Template Details"
-msgstr "Aufgabenvorlage Details."
 
 msgid "Job Templates"
 msgstr "Aufgabenvorlagen"
@@ -5993,6 +5959,13 @@ msgstr "Main Class"
 msgid "Mains"
 msgstr "Mains"
 
+msgid "Maintenance"
+msgstr "Wartung"
+
+msgctxt "Current status of a Volume"
+msgid "Maintenance"
+msgstr "Wartung"
+
 msgid "Make Private"
 msgstr "Privat machen"
 
@@ -6092,9 +6065,6 @@ msgstr "Maximale Versuche (1~10)"
 
 msgid "Max."
 msgstr "Max."
-
-msgid "Max. Size (MB)"
-msgstr "Max. Größe (MB)"
 
 msgid "Maximum Transmission Unit size for the connection"
 msgstr "Maximale Übertragungseinheitsgröße für die Verbindung"
@@ -6211,9 +6181,6 @@ msgstr "Min RAM"
 
 msgid "Min."
 msgstr "Min."
-
-msgid "Min. Size (MB)"
-msgstr "Min. Größe (MB)"
 
 msgid "Minimum Disk (GB)"
 msgstr "Minimum Festplatte (GB)"
@@ -6352,12 +6319,6 @@ msgstr "Namensraum %s wurde erstellt."
 
 msgid "Namespace Definition Source"
 msgstr "Namensraum Definitionsquelle"
-
-msgid "Namespace Details"
-msgstr "Namensraum Details"
-
-msgid "Namespace Details: {{ namespace.namespace }}"
-msgstr "Namensraum Details: {{ namespace.namespace }}"
 
 msgid "Namespace JSON"
 msgstr "Namensraum JSON"
@@ -6755,9 +6716,6 @@ msgstr "Node Gruppe"
 msgid "Node Group Template %s updated"
 msgstr "Knotengruppenvorlage %s aktualisiert"
 
-msgid "Node Group Template Details"
-msgstr "Knotengruppenvorlagendetails"
-
 #, python-format
 msgid "Node Group Template copy %s created"
 msgstr "Knotengruppenvorlagenkopie %s erstellt"
@@ -6783,9 +6741,6 @@ msgstr "Knotengruppencluster"
 
 msgid "Node processes are not specified"
 msgstr "Node Prozesse wurden nicht angegeben"
-
-msgid "Nodegroup Template Details"
-msgstr "Node Gruppen Vorlagen Details"
 
 msgid "Nodes Count"
 msgstr "Nodeanzahl"
@@ -7333,9 +7288,6 @@ msgstr "Port %s wurde erfolgreich erstellt."
 msgid "Port %s was successfully updated."
 msgstr "Port %s wurde erfolgreich aktualisiert."
 
-msgid "Port Details"
-msgstr "Portdetails"
-
 msgid "Port ID"
 msgstr "Port ID"
 
@@ -7436,10 +7388,6 @@ msgstr "Projekt ="
 msgid "Project Details"
 msgstr "Projektdetails"
 
-#, python-format
-msgid "Project Details: %s"
-msgstr "Projektdetails: %s"
-
 msgid "Project Groups"
 msgstr "Projektgruppen"
 
@@ -7460,9 +7408,6 @@ msgstr "Projektmitglieder"
 
 msgid "Project Name"
 msgstr "Projektname"
-
-msgid "Project Overview"
-msgstr "Projektübersicht"
 
 msgid "Project Quotas"
 msgstr "Projektkontingente"
@@ -7560,6 +7505,10 @@ msgid ""
 msgstr ""
 "Der Wert für den Verbraucher der QOS Spezifikation muss ein anderer als der "
 "derzeitige sein."
+
+#, python-format
+msgid "QoS Spec name \"%s\" already exists."
+msgstr "QoS Spezifikation mit dem Namen \"%s\" existiert bereits."
 
 msgid "QoS Spec to be associated"
 msgstr "Zu verbindende QoS Spezifikation"
@@ -7819,6 +7768,9 @@ msgstr "Repliziere aus Instanz"
 msgid "Replication"
 msgstr "Replikation"
 
+msgid "Report Bug"
+msgstr "Bug melden"
+
 msgid "Request ID"
 msgstr "Anfrage ID"
 
@@ -7842,6 +7794,10 @@ msgstr "Wird für die Persistenz des APP_COOKIE verwendet; ansonsten ignoriert."
 msgctxt "Current status of an Instance"
 msgid "Rescue"
 msgstr "Rette"
+
+msgctxt "Current status of an Instance"
+msgid "Rescued"
+msgstr "Gerettet"
 
 msgctxt "Task status of an Instance"
 msgid "Rescuing"
@@ -7889,6 +7845,10 @@ msgctxt "Current status of an Instance"
 msgid "Resize/Migrate"
 msgstr "Größenänderung/Migration"
 
+msgctxt "Current status of an Instance"
+msgid "Resized"
+msgstr "Größe geändert"
+
 msgctxt "Task status of an Instance"
 msgid "Resized or Migrated"
 msgstr "Größenänderung oder Migration ausgeführt"
@@ -7908,12 +7868,6 @@ msgstr "Ändere Größe des Datenträgers \"%s\""
 msgid "Resource"
 msgstr "Ressource"
 
-msgid "Resource Details"
-msgstr "Ressourcendetails"
-
-msgid "Resource Details: {{ resource.resource_name }}"
-msgstr "Ressource Details: {{ resource.resource_name }}"
-
 msgid "Resource ID"
 msgstr "Ressourcenkennung"
 
@@ -7922,12 +7876,6 @@ msgstr "Ressource Metadaten"
 
 msgid "Resource Overview"
 msgstr "Ressourcenübersicht"
-
-msgid "Resource Type"
-msgstr "Ressourcentyp"
-
-msgid "Resource Type Details"
-msgstr "Ressourcentype Details"
 
 msgid "Resource Types"
 msgstr "Ressourcentypen"
@@ -8126,9 +8074,6 @@ msgstr "Router %s wurde erfolgreich angelegt."
 #, python-format
 msgid "Router %s was successfully updated."
 msgstr "Router %s wurde erfolgreich aktualisiert."
-
-msgid "Router Details"
-msgstr "Router-Details"
 
 msgid "Router ID"
 msgstr "Router-ID"
@@ -8343,16 +8288,6 @@ msgstr[1] "Geplante Migration von Instanzen (wartet auf Bestätigung)"
 #, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr "Geplante Größenänderung der Instanz \"%s\"."
-
-msgid "Scheduled termination of Cluster"
-msgid_plural "Scheduled termination of Clusters"
-msgstr[0] "Geplante Beendigung des Clusters"
-msgstr[1] "Geplante Beendigungen der Cluster"
-
-msgid "Scheduled termination of Instance"
-msgid_plural "Scheduled termination of Instances"
-msgstr[0] "Geplante Beendigung der Instanz"
-msgstr[1] "Geplante Beendigungen von Instanzen"
 
 msgctxt "Task status of an Instance"
 msgid "Scheduling"
@@ -8706,6 +8641,9 @@ msgstr "Servergruppen"
 msgid "Server error"
 msgstr "Serverfehler"
 
+msgid "Servers"
+msgstr "Server"
+
 msgid "Service"
 msgstr "Dienst"
 
@@ -8965,6 +8903,13 @@ msgstr "Quellport (Ganzzahl aus [1, 65535] oder Bereich als a:b)"
 msgid "Source username"
 msgstr "Quelle Benutzername"
 
+msgid ""
+"Source/Destination Network Address and IP version are inconsistent. Please "
+"make them consistent."
+msgstr ""
+"Quelle/Ziel Netzwekadresse und IP-Version sind nicht konsistent. Bitte "
+"ändern Sie dies."
+
 msgid "Source:"
 msgstr "Quelle:"
 
@@ -9073,12 +9018,6 @@ msgstr ""
 msgid "Specs"
 msgstr "Spezifikationen"
 
-msgid "Stack Details"
-msgstr "Stapeldetails"
-
-msgid "Stack Details: {{ stack.stack_name }}"
-msgstr "Stack Details: {{ stack.stack_name }}"
-
 msgid "Stack Events"
 msgstr "Stackereignisse"
 
@@ -9087,9 +9026,6 @@ msgstr "Stack-ID"
 
 msgid "Stack Name"
 msgstr "Stack Name"
-
-msgid "Stack Overview"
-msgstr "Stack Übersicht"
 
 msgid "Stack Parameters"
 msgstr "Stack Parameter"
@@ -9200,6 +9136,10 @@ msgctxt "Action log of an instance"
 msgid "Stop"
 msgstr "Stopp"
 
+msgctxt "Current status of an Instance"
+msgid "Stopped"
+msgstr "Gestoppt"
+
 msgid "Storage location"
 msgstr "Storage Lokation"
 
@@ -9234,9 +9174,6 @@ msgstr "Subnetz-ID"
 
 msgid "Subnet Name"
 msgstr "Subnetzname"
-
-msgid "Subnet Overview"
-msgstr "Subnetzübersicht"
 
 msgid "Subnet list can not be retrieved."
 msgstr "Subnetzliste kann nicht abgerufen werden."
@@ -9510,9 +9447,6 @@ msgstr "Vorlagendatei"
 msgid "Template Name"
 msgstr "Vorlage Name"
 
-msgid "Template Overview"
-msgstr "Vorlagenübersicht"
-
 msgid "Template Source"
 msgstr "Vorlagenquelle"
 
@@ -9521,22 +9455,6 @@ msgstr "Vorlage URL"
 
 msgid "Template not specified"
 msgstr "Vorlage nicht spezifiziert"
-
-msgid "Terminate Cluster"
-msgid_plural "Terminate Clusters"
-msgstr[0] "Cluster beenden"
-msgstr[1] "Cluster beenden"
-
-msgid "Terminate Instance"
-msgid_plural "Terminate Instances"
-msgstr[0] "Instanz beenden"
-msgstr[1] "Instanzen beenden"
-
-msgid "Terminated cluster is not recoverable."
-msgstr "Der beendete Cluster kann nicht wiederhergestellt werden."
-
-msgid "Terminated instances are not recoverable."
-msgstr "Beendete Instanzen können nicht wiederhergestellt werden."
 
 msgid ""
 "The \"Bootable\" flag specifies that this volume can be used to launch an "
@@ -10455,15 +10373,15 @@ msgid "Unable to create volume."
 msgstr "Datenträger konnte nicht erstellt werden."
 
 #, python-format
-msgid "Unable to delete IKE Policy: %s"
+msgid "Unable to delete IKE Policy. %s"
 msgstr "IKE Richtlinie %s konnte nicht gelöscht werden."
 
 #, python-format
-msgid "Unable to delete IPSec Policy: %s"
+msgid "Unable to delete IPSec Policy. %s"
 msgstr "IPSec Richtlinie %s konnte nicht gelöscht werden."
 
 #, python-format
-msgid "Unable to delete IPSec Site Connection: %s"
+msgid "Unable to delete IPSec Site Connection. %s"
 msgstr "IPSec Site Verbindung konnte nicht gelöscht werden: %s"
 
 #, python-format
@@ -10471,7 +10389,7 @@ msgid "Unable to delete VIP. %s"
 msgstr "VIP %s kann nicht gelöscht werden."
 
 #, python-format
-msgid "Unable to delete VPN Service: %s"
+msgid "Unable to delete VPN Service. %s"
 msgstr "VPN Dienst %s konnte nicht gelöscht werden."
 
 msgid "Unable to delete container."
@@ -11200,6 +11118,9 @@ msgstr "Schlüsselpaare können nicht abgerufen werden."
 msgid "Unable to retrieve limit information."
 msgstr "Limit-Informationen können nicht abgerufen werden."
 
+msgid "Unable to retrieve list of routers."
+msgstr "Liste der Router kann nicht abgerufen werden."
+
 msgid "Unable to retrieve list of security groups"
 msgstr "Die Liste der Sicherheitsgruppen kann nicht abgerufen werden."
 
@@ -11648,9 +11569,6 @@ msgid "Unable to upload volume to image for volume: \"%s\""
 msgstr ""
 "Hochladen des Datenträgers zum Abbild fehlgeschlagen für Datenträger: \"%s\""
 
-msgid "Undefined"
-msgstr "Undefiniert"
-
 msgid "Unit"
 msgstr "Einheit"
 
@@ -11984,17 +11902,11 @@ msgstr "Benutzeranmeldedatendetails"
 msgid "User Details"
 msgstr "Benutzerdetails"
 
-msgid "User Details: {{ user.name }}"
-msgstr "Benutzerdetails: {{ user.name }}"
-
 msgid "User ID"
 msgstr "Benutzer ID"
 
 msgid "User Name"
 msgstr "Benutzername"
-
-msgid "User Overview"
-msgstr "Benutzerübersicht"
 
 msgid "User Settings"
 msgstr "Benutzer Einstellungen"
@@ -12178,16 +12090,6 @@ msgstr "Datenträger (Cinder)"
 msgid "Volume Backup"
 msgstr "Datenträger Sicherungskopie"
 
-msgid "Volume Backup Details"
-msgstr "Datenträger Sicherungskopie Details"
-
-msgid "Volume Backup Details: {{ backup.name }}"
-msgstr "Datenträger Sicherungskopie Details: {{ backup.name }}"
-
-#, python-format
-msgid "Volume Backup Overview: %(backup_display_name)s"
-msgstr "Datenträger Sicherungskopien Übersicht: %(backup_display_name)s"
-
 msgid "Volume Backup:"
 msgstr "Datenträger Sicherungskopie:"
 
@@ -12201,12 +12103,6 @@ msgstr ""
 "Datenträger-Sicherungskopien werden mit Hilfe des Object Storage Dienstes "
 "gespeichert.  Dieser Dienst muss aktiviert sein, um Sicherungen "
 "durchzuführen."
-
-msgid "Volume Details"
-msgstr "Datenträgerdetails"
-
-msgid "Volume Details: {{ volume.name }}"
-msgstr "Datenträger Details: {{ volume.name }}"
 
 msgid "Volume Encryption Details"
 msgstr "Datenträger Verschlüsselungsdetails"
@@ -12227,20 +12123,11 @@ msgstr "Datenträger-Begrenzungen"
 msgid "Volume Name"
 msgstr "Datenträger Name"
 
-msgid "Volume Overview"
-msgstr "Volume-Übersicht"
-
 msgid "Volume Size"
 msgstr "Datenträgergröße"
 
 msgid "Volume Snapshot"
 msgstr "Schattenkopie"
-
-msgid "Volume Snapshot Details"
-msgstr "Schattenkopiedetails"
-
-msgid "Volume Snapshot Details: {{ snapshot.name }}"
-msgstr "Datenträger Schattenkopie Details: {{ snapshot.name }}"
 
 msgid "Volume Snapshot Overview"
 msgstr "Schattenkopieübersicht"
@@ -12794,3 +12681,6 @@ msgstr "v1"
 
 msgid "v2"
 msgstr "v2"
+
+msgid "yes,no,-"
+msgstr "ja,nein,-"

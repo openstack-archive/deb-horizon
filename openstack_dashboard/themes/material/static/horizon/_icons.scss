@@ -31,7 +31,7 @@ $icon-swap: (
   cloud-upload: 'cloud-upload',
   upload: 'upload',
   download: 'download',
-  times: 'close',
+  times-circle: 'close',
   close: 'close',
   remove: 'close',
   random: 'shuffle',
@@ -54,6 +54,7 @@ $icon-swap: (
   share-square-o: 'share',
   link: 'link-variant',
   exchange: 'swap-horizontal',
+  asterisk: 'star',
 );
 
 @each $fa-icon, $mdi-icon in $icon-swap {

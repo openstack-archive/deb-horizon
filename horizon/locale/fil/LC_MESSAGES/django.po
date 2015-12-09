@@ -1,18 +1,24 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-11-18 04:22+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: Filipino\n"
+"PO-Revision-Date: 2015-08-20 05:13+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language: fil\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Generated-By: Babel 2.0\n"
 "X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=n > 1\n"
+"Language-Team: Filipino\n"
 
 #, python-format
 msgctxt "past"
@@ -107,24 +113,11 @@ msgstr "Maling bersyon para sa IP address"
 msgid "Limit Summary"
 msgstr "Buod ng Limitasyon"
 
-msgid "Log In"
-msgstr "Long In"
-
 msgid "Login"
 msgstr "Login"
 
-#, python-format
-msgid ""
-"Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
-msgstr ""
-"Mag-login bilang ibang user o bumalik sa <a href=\"%(home_url)s\"> home "
-"page</a>"
-
 msgid "Members"
 msgstr "Mga Miyembro"
-
-msgid "N/A"
-msgstr "N/A"
 
 msgid "Navigation Item"
 msgstr "Navigation Item"
@@ -169,9 +162,6 @@ msgstr "Mangyaring mag-log in upang magpatuloy."
 msgid "Please select a row before taking that action."
 msgstr "Mangyaring pumili ng isang hilera bago simulan ang aksiyon."
 
-msgid "Port number must be integer"
-msgstr "Ang Port number ay dapat isang integer"
-
 msgid "Processing..."
 msgstr "Nagpoproseso..."
 
@@ -181,9 +171,6 @@ msgstr "I-Save"
 #, python-format
 msgid "Select a %s to browse."
 msgstr "Pumili ng %s upang mag browse."
-
-msgid "Session timed out."
-msgstr "Ang sesyon ay nag time out."
 
 msgid "Sign In"
 msgstr "Mag Sign In"
@@ -196,10 +183,6 @@ msgstr "Tagumpay:"
 
 msgid "Summary"
 msgstr "Buod"
-
-#, python-format
-msgid "The attribute %(attr)s doesn't exist on %(obj)s."
-msgstr "Ang katangian %(attr)s ay hindi umiiral sa %(obj)s."
 
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "Ang petsa ay dapat nasa YYYY-mm-dd format."

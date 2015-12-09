@@ -1,19 +1,31 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Adriana Chisco Landazábal <achisco94@gmail.com>, 2015
+# Alberto Molina Coballes <alb.molina@gmail.com>, 2015
+# cametiope <aldohcasa@hotmail.com>, 2014
+# Marian Tort <marian.tort@gmail.com>, 2015
+# Miriam Godinez <miriamgc@hotmail.com>, 2015
+# Sergio Cuellar Valdes <scuellarv@kionetworks.com>, 2015
 # Eduardo Gonzalez Gutierrez <dabarren@gmail.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2015-09-21 04:20+0000\n"
 "Last-Translator: Eduardo Gonzalez Gutierrez <dabarren@gmail.com>\n"
-"Language-Team: Spanish\n"
 "Language: es\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Spanish\n"
 
 #, python-format
 msgid "%s GB"
@@ -311,9 +323,6 @@ msgstr "Éxito"
 msgid "Success: "
 msgstr "Correcto:"
 
-msgid "Terminate Instance"
-msgstr "Terminar instancia"
-
 msgid "Text"
 msgstr "Texto"
 
@@ -355,17 +364,6 @@ msgstr "Trabajando"
 
 msgid "Yes"
 msgstr "Sí"
-
-msgid ""
-"You can specify resource metadata by moving items from the left column to "
-"the right column. In the left columns there are metadata definitions from "
-"the Glance Metadata Catalog. Use the \"Other\" option to add metadata with "
-"the key of your choice."
-msgstr ""
-"Puede especificar los metadatos de los recursos moviendo los ítems de la "
-"columna de la izquierda a la de la derecha. En las columnas de la izquierda "
-"hay definiciones de metadatos del Glance Metadata Catalog. Utilice la opcion "
-"\"Otro\" para añadir metadatos con la clave que desee. "
 
 #, python-format
 msgid "You have selected %s. "

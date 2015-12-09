@@ -1,20 +1,33 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Akihiro Motoki <amotoki@gmail.com>, 2015
+# myamamot <myamamot@redhat.com>, 2015
+# Shu Muto <shu-mutou@rf.jp.nec.com>, 2015
+# Tom Fifield <tom@openstack.org>, 2014
+# Tomoyuki KATO <tomo@dream.daynight.jp>, 2015
+# ykatabam <ykatabam@redhat.com>, 2015
 # Akihiro Motoki <amotoki@gmail.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
+# Shu Muto <shu-mutou@rf.jp.nec.com>, 2015. #zanata
 # Yuko Katabami <yukokatabami@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-10-04 03:02+0000\n"
-"Last-Translator: Akihiro Motoki <amotoki@gmail.com>\n"
-"Language-Team: Japanese\n"
+"PO-Revision-Date: 2015-12-03 12:51+0000\n"
+"Last-Translator: Shu Muto <shu-mutou@rf.jp.nec.com>\n"
 "Language: ja\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Japanese\n"
 
 msgid ""
 "\n"
@@ -444,9 +457,6 @@ msgid ""
 "\"Some flavors not meeting minimum image requirements have been disabled.\""
 msgstr "イメージの最小限の要件を満たしていないフレーバーが無効になっています。"
 
-msgid "\"Users\""
-msgstr "ユーザー"
-
 #, python-format
 msgid "%(conf_name)s: %(conf_val)s"
 msgstr "%(conf_name)s: %(conf_val)s"
@@ -694,11 +704,11 @@ msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon カーネルイメージ"
 
 msgid "ALLOW"
-msgstr "ALLOW"
+msgstr "許可"
 
 msgctxt "Action Name of a Firewall Rule"
 msgid "ALLOW"
-msgstr "ALLOW"
+msgstr "許可"
 
 #, python-format
 msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
@@ -1004,15 +1014,6 @@ msgstr ""
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "アグリゲートのホストを追加・削除"
 
-msgid "AddFirewall"
-msgstr "ファイアウォールの追加"
-
-msgid "AddPolicy"
-msgstr "ポリシーの追加"
-
-msgid "AddRule"
-msgstr "ルールの追加"
-
 #, python-format
 msgid "Added Firewall \"%s\"."
 msgstr "ファイアウォール \"%s\" を追加しました。"
@@ -1223,11 +1224,11 @@ msgstr "許可ホスト (省略可)"
 msgid "Amount of energy"
 msgstr "総エネルギー量"
 
-msgid "An external (HTTP) URL to load the image from."
-msgstr "イメージを読み込む外部 (HTTP) URL。"
-
 msgid "An external (HTTP) URL to load the template from."
 msgstr "テンプレートを読み込む外部 (HTTP) URL"
+
+msgid "An external (HTTP/HTTPS) URL to load the image from."
+msgstr "イメージを読み込む外部 (HTTP/HTTPS) URL。"
 
 msgid ""
 "An instance can be launched with varying types of attached storage. You may "
@@ -1255,6 +1256,9 @@ msgid ""
 msgstr ""
 "予期しないエラーが発生しました。ページの再読み込みを試してください。解決しな"
 "ければ、管理者に連絡してください。"
+
+msgid "Another Plugin-based Panel"
+msgstr "他のプラグインによるパネル"
 
 msgid "Anti-affinity enabled for"
 msgstr "anti-affinity の指定"
@@ -1402,6 +1406,9 @@ msgid "Availability Zone Name"
 msgstr "アベイラビリティーゾーン名"
 
 msgid "Availability Zones"
+msgstr "アベイラビリティーゾーン"
+
+msgid "Availability zone"
 msgstr "アベイラビリティーゾーン"
 
 msgid "Available"
@@ -1570,6 +1577,10 @@ msgid "Build"
 msgstr "作成中"
 
 msgctxt "Current status of a Database Backup"
+msgid "Building"
+msgstr "作成中"
+
+msgctxt "Current status of an Instance"
 msgid "Building"
 msgstr "作成中"
 
@@ -1821,8 +1832,8 @@ msgstr "Cinder ボリューム"
 msgid "Cipher"
 msgstr "暗号"
 
-msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
-msgstr "ネットワークアドレス (例: 192.168.0.0/24)"
+msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24, or 2001:db8::/128)"
+msgstr "ネットワークアドレス (例: 192.168.0.0/24、2001:db8::/128)"
 
 msgid "Clear Domain Context"
 msgstr "ドメインコンテキストのクリア"
@@ -1850,15 +1861,6 @@ msgstr "クラスター数"
 msgid "Cluster Creation Guide"
 msgstr "クラスター作成のガイド"
 
-msgid "Cluster Detail"
-msgstr "クラスターの詳細"
-
-msgid "Cluster Details"
-msgstr "クラスターの詳細"
-
-msgid "Cluster Details: {{ cluster.name }}"
-msgstr "クラスターの詳細: {{ cluster.name }}"
-
 msgid "Cluster Events"
 msgstr "クラスターのイベント"
 
@@ -1871,9 +1873,6 @@ msgstr "クラスターインスタンス"
 msgid "Cluster Name"
 msgstr "クラスター名"
 
-msgid "Cluster Overview"
-msgstr "クラスターの概要"
-
 msgid "Cluster Size"
 msgstr "クラスターサイズ"
 
@@ -1883,9 +1882,6 @@ msgstr "クラスターテンプレート"
 #, python-format
 msgid "Cluster Template %s updated"
 msgstr " クラスターテンプレート %s が更新されました。"
-
-msgid "Cluster Template Details"
-msgstr "クラスターテンプレートの詳細"
 
 msgid "Cluster Template Name"
 msgstr "クラスターテンプレート名"
@@ -2387,33 +2383,72 @@ msgstr "データソースの作成"
 msgid ""
 "Create a firewall based on a policy.\n"
 "\n"
-"A policy must be selected. Other fields are optional."
+"A firewall represents a logical firewall resource that a tenant can "
+"instantiate and manage. A firewall must be associated with one policy, all "
+"other fields are optional."
 msgstr ""
 "ポリシーを元にファイアウォールを作成します。\n"
 "\n"
-"ポリシーは選択しなければなりません。他のフィールドは省略可能です。"
+"ファイアウォールは、テナントがインスタンス化して管理することができる論理的な"
+"ファイアウォールリソースを表します。一つのファイアウォールは一つのポリシーと"
+"関連付けられる必要があり、他のフィールドはすべて省略可能です。"
 
 msgid ""
 "Create a firewall policy with an ordered list of firewall rules.\n"
 "\n"
-"A name must be given. Firewall rules are added in the order placed under the "
-"Rules tab."
-msgstr ""
-"ルールを指定してファイアウォールポリシーを作成します。ファイアウォールルール"
-"は順序付きリストです。\n"
+"A firewall policy is an ordered collection of firewall rules. So if the "
+"traffic matches the first rule, the other rules are not executed. If the "
+"traffic does not match the current rule, then the next rule is executed. A "
+"firewall policy has the following attributes:\n"
 "\n"
-"名前は必須項目です。ファイアウォールルールは「ルール」タブで指定した順序で追"
-"加されます。"
+"<li>Shared: A firewall policy can be shared across tenants. Thus it can also "
+"be made part of an audit workflow wherein the firewall policy can be audited "
+"by the relevant entity that is authorized.</li><li>Audited: When audited is "
+"set to True, it indicates that the firewall policy has been audited. Each "
+"time the firewall policy or the associated firewall rules are changed, this "
+"attribute will be set to False and will have to be explicitly set to True "
+"through an update operation.</li>\n"
+"The name field is required, all others are optional."
+msgstr ""
+"ファイアウォールルールの順序付けられた一覧でファイアウォールポリシーを作成し"
+"ます。\n"
+"\n"
+"ファイアウォールポリシーは、順序付けられたファイアウォールルールの集合です。"
+"従って、もし通信が最初のルールに合致したら、他のルールは実行されません。もし"
+"通信が現在の合致しなかったら、次のルールが実行されます。ファイアウォールポリ"
+"シーは以下の属性を持ちます。\n"
+"\n"
+"<li>共有: ファイアウォールポリシーをテナント間で共有できます。つまり、それを"
+"また、監査ワークフローの一部とすることができ、このファイアウォールポリシーを"
+"関連するエンティティによって監査することができるように許可します。</li><li>監"
+"査: 監査が True に設定されたときは、ファイアウォールポリシーが監査されること"
+"を示します。ファイアウォールポリシーまたは関連付けられたファイアウォールルー"
+"ルが変更されるたびに、この属性は False に設定され、更新操作で明示的に True に"
+"設定する必要があります。</li>\n"
+"名前は必須項目であり、他のフィールドはすべて省略可能です。"
 
 msgid ""
 "Create a firewall rule.\n"
 "\n"
-"Protocol and action must be specified. Other fields are optional."
+"A Firewall rule is an association of the following attributes:\n"
+"\n"
+"<li>IP Addresses: The addresses from/to which the traffic filtration needs "
+"to be applied.</li><li>IP Version: The type of IP packets (IP V4/V6) that "
+"needs to be filtered.</li><li>Protocol: Type of packets (UDP, ICMP, TCP, "
+"Any) that needs to be checked.</li><li>Action: Action is the type of "
+"filtration required, it can be Reject/Deny/Allow data packets.</li>\n"
+"The protocol and action fields are required, all others are optional."
 msgstr ""
 "ファイアウォールルールを作成します。\n"
 "\n"
-"プロトコルとアクションは指定しなければいけません。他のフィールドは省略可能で"
-"す。"
+"ファイアウォールルールは、以下の属性の組み合わせです。\n"
+"\n"
+"<li>IP アドレス : 通信フィルタが適用される必要があるアドレス (送信元/送信先) "
+"です。</li><li>IP バージョン : フィルタリングされる必要がある IP パケットの種"
+"別 (IP V4/V6) です。</li><li>プロトコル: チェックされる必要があるパケットの種"
+"別 (UDP, ICMP, TCP, Any) です。</li><li>アクション: アクションは必要なフィル"
+"ターの種別で、データパケットを拒否/破棄/許可できます。</li>\n"
+"プロトコルとアクションは必須項目であり、他のフィールドはすべて省略可能です。"
 
 msgid "Create a firewall with selected routers."
 msgstr "適用するルーターを指定してファイアウォールを作成します。"
@@ -2644,13 +2679,13 @@ msgid "Current type:"
 msgstr "現在の種別:"
 
 msgid ""
-"Currently only images available via an HTTP URL are supported. The image "
-"location must be accessible to the Image Service. Compressed image binaries "
-"are supported (.zip and .tar.gz.)"
+"Currently only images available via an HTTP/HTTPS URL are supported. The "
+"image location must be accessible to the Image Service. Compressed image "
+"binaries are supported (.zip and .tar.gz.)"
 msgstr ""
-"現在、HTTP URLから取得できるイメージのみがサポートされています。イメージの場"
-"所から Image Service へアクセスできるようにしてください。また、圧縮イメージが"
-"サポートされています(.zip および .tar.gz.)。"
+"現在、HTTP/HTTPS URLから取得できるイメージのみがサポートされています。イメー"
+"ジの場所から Image Service へアクセスできるようにしてください。また、圧縮イ"
+"メージがサポートされています(.zip および .tar.gz.)。"
 
 msgid "Custom ICMP Rule"
 msgstr "カスタム ICMP ルール"
@@ -2671,11 +2706,11 @@ msgid "DATABASE"
 msgstr "DATABASE"
 
 msgid "DENY"
-msgstr "DENY"
+msgstr "破棄"
 
 msgctxt "Action Name of a Firewall Rule"
 msgid "DENY"
-msgstr "DENY"
+msgstr "破棄"
 
 msgid "DHCP Agents"
 msgstr "DHCP エージェント"
@@ -2738,9 +2773,6 @@ msgstr "データ処理のガイド"
 msgid "Data Processing Plugin Details"
 msgstr "データ処理プラグインの詳細"
 
-msgid "Data Processing Plugin Overview"
-msgstr "データ処理プラグインの概要"
-
 msgid "Data Processing Plugins"
 msgstr "データ処理プラグイン"
 
@@ -2756,12 +2788,6 @@ msgstr ""
 
 msgid "Data Source"
 msgstr "データソース"
-
-msgid "Data Source Details"
-msgstr "データソースの詳細"
-
-msgid "Data Source Overview"
-msgstr "データソースの概要"
 
 msgid "Data Source Type"
 msgstr "データソース種別"
@@ -2828,6 +2854,10 @@ msgstr "日付を認識できません"
 
 msgid "Day"
 msgstr "日"
+
+msgctxt "Current status of an Image"
+msgid "Deactivated"
+msgstr "非アクティブ"
 
 msgid "Dead peer detection action"
 msgstr "Dead Peer 検出時のアクション"
@@ -2966,6 +2996,10 @@ msgctxt "current status of stack"
 msgid "Delete In Progress"
 msgstr "削除中"
 
+msgid "Delete Instance"
+msgid_plural "Delete Instances"
+msgstr[0] "インスタンスの削除"
+
 msgid "Delete Interface"
 msgid_plural "Delete Interfaces"
 msgstr[0] "インタフェースの削除"
@@ -3085,16 +3119,16 @@ msgid "Delete Volume Type"
 msgid_plural "Delete Volume Types"
 msgstr[0] "ボリューム種別の削除"
 
-msgid "Delete on Terminate"
-msgstr "インスタンス削除時に削除"
+msgid "Delete Volume on Instance Delete"
+msgstr "インスタンス削除時のボリュームを削除します"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
 msgstr ""
 "サブネット作成に失敗したため、作成したネットワーク \"%s\" を削除しました。"
 
-msgid "Delete volume on instance terminate"
-msgstr "インスタンス削除時にボリュームを削除します"
+msgid "Delete volume when the instance is deleted"
+msgstr "インスタンスが削除された時にボリュームを削除します"
 
 msgid "Deleted"
 msgstr "削除"
@@ -3154,18 +3188,6 @@ msgstr[0] "グループを削除しました"
 msgid "Deleted Host Aggregate"
 msgid_plural "Deleted Host Aggregates"
 msgstr[0] "ホストアグリゲートを削除しました"
-
-#, python-format
-msgid "Deleted IKE Policy %s"
-msgstr "IKE ポリシー %s を削除しました。"
-
-#, python-format
-msgid "Deleted IPSec Policy %s"
-msgstr "IPSec ポリシー %s を削除しました。"
-
-#, python-format
-msgid "Deleted IPSec Site Connection %s"
-msgstr "IPSec サイト間接続 %s を削除しました。"
 
 msgid "Deleted Image"
 msgid_plural "Deleted Images"
@@ -3259,28 +3281,18 @@ msgstr[0] "ユーザーを削除しました"
 msgid "Deleted VIP %s"
 msgstr "仮想 IP %s を削除しました。"
 
-#, python-format
-msgid "Deleted VPN Service %s"
-msgstr "VPN サービス %s を削除しました。"
-
 msgid "Deleted Volume Type"
 msgid_plural "Deleted Volume Types"
 msgstr[0] "ボリューム種別を削除しました"
 
+msgid "Deleted cluster is not recoverable."
+msgstr "削除されたクラスターは元に戻すことはできません。"
+
 msgid "Deleted images are not recoverable."
 msgstr "削除されたイメージは元に戻せません。"
 
-#, python-format
-msgid "Deleted member %s"
-msgstr "メンバー %s を削除しました。"
-
-#, python-format
-msgid "Deleted monitor %s"
-msgstr "モニター %s を削除しました。"
-
-#, python-format
-msgid "Deleted pool %s"
-msgstr "プール %s を削除しました。"
+msgid "Deleted instances are not recoverable."
+msgstr "削除されたインスタンスは元に戻すことはできません。"
 
 msgid "Deleting"
 msgstr "削除中"
@@ -3302,7 +3314,7 @@ msgid "Deleting VIP %s from this pool cannot be undone."
 msgstr "プールからの仮想 IP %s の削除は元に戻すことはできません。"
 
 msgid "Deny"
-msgstr "拒否"
+msgstr "破棄"
 
 msgid "Description"
 msgstr "説明"
@@ -3993,7 +4005,7 @@ msgctxt "current status of router"
 msgid "Error"
 msgstr "エラー"
 
-msgctxt "status of a neteork port"
+msgctxt "status of a network port"
 msgid "Error"
 msgstr "エラー"
 
@@ -4137,6 +4149,9 @@ msgstr "拡張中"
 #, python-format
 msgid "Extending volume: \"%s\""
 msgstr "ボリューム %s を拡張しています。"
+
+msgid "External"
+msgstr "外部"
 
 msgid "External Fixed IPs"
 msgstr "外部 IP アドレス"
@@ -4506,21 +4521,15 @@ msgctxt "Task status of an Instance"
 msgid "Finishing Resize or Migrate"
 msgstr "リサイズ/マイグレーションの終了中"
 
+msgid "Firewall"
+msgstr "ファイアウォール"
+
 #, python-format
 msgid "Firewall %s was successfully updated."
 msgstr "ファイアウォール %s が正常に更新されました。"
 
-msgid "Firewall Details"
-msgstr "ファイアウォールの詳細"
-
 msgid "Firewall Policies"
 msgstr "ファイアウォールポリシー"
-
-msgid "Firewall Policy Details"
-msgstr "ファイアウォールポリシーの詳細"
-
-msgid "Firewall Rule Details"
-msgstr "ファイアウォールルールの詳細"
 
 msgid "Firewall Rules"
 msgstr "ファイアウォールルール"
@@ -4602,6 +4611,10 @@ msgstr "Floating IP"
 
 msgid "Floating IP Pool"
 msgstr "Floating IP プール"
+
+#, python-format
+msgid "Floating IP will be removed from VIP \"%s\"."
+msgstr "Floating IP は 仮想 IP \"%s\" から削除されます。"
 
 msgid "Floating IP:"
 msgstr "Floating IP:"
@@ -4965,6 +4978,9 @@ msgstr "IP プロトコル"
 msgid "IP Version"
 msgstr "IP バージョン"
 
+msgid "IP Version for Firewall Rule"
+msgstr "ファイアウォールルールの IP バージョン"
+
 msgid "IP address"
 msgstr "IP アドレス"
 
@@ -5068,14 +5084,6 @@ msgstr "Identity Service ではユーザーデータの編集が許可されて�
 msgid "Identity service does not allow editing user password."
 msgstr "Identity Service ではユーザーパスワードの編集ができません。"
 
-#, python-format
-msgid ""
-"If \"No volume type\" is selected, the default volume type \"%(name)s\" will "
-"be set for the created volume."
-msgstr ""
-"もし「ボリューム種別の指定なし」が選択された場合、作成されるボリュームにデ"
-"フォルトのボリューム種別 \"%(name)s\" が設定されます。"
-
 msgid ""
 "If \"No volume type\" is selected, the volume will be created without a "
 "volume type."
@@ -5115,13 +5123,13 @@ msgstr ""
 "ます。選択しない場合は、設定値を手動で指定する必要があります。"
 
 msgid ""
-"If you select an image via an HTTP URL, the Image Location field MUST be a "
-"valid and direct URL to the image binary; it must also be accessible to the "
-"Image Service. URLs that redirect or serve error pages will result in "
+"If you select an image via an HTTP/HTTPS URL, the Image Location field MUST "
+"be a valid and direct URL to the image binary; it must also be accessible to "
+"the Image Service. URLs that redirect or serve error pages will result in "
 "unusable images."
 msgstr ""
-"HTTP URL で指定する場合、イメージの場所のフィールドには、イメージ（バイナ"
-"リー）への有効かつ直接の URL を入力する必要があります。イメージの場所へ "
+"HTTP/HTTPS URL で指定する場合、イメージの場所のフィールドには、イメージ（バイ"
+"ナリー）への有効かつ直接の URL を入力する必要があります。イメージの場所へ "
 "Image Service がアクセスできるようにしてください。URL がリダイレクトのページ"
 "の場合や、エラーページが返ってきた場合には、登録されたイメージは使用できない"
 "可能性があります。"
@@ -5140,14 +5148,11 @@ msgctxt "Task status of an Instance"
 msgid "Image Backup"
 msgstr "イメージバックアップ"
 
-msgid "Image Details"
-msgstr "イメージの詳細"
-
-msgid "Image Details: {{ image.name }}"
-msgstr "イメージの詳細: {{ image.name }}"
-
 msgid "Image File"
 msgstr "イメージファイル"
+
+msgid "Image ID"
+msgstr "イメージID"
 
 msgid "Image ID ="
 msgstr "イメージ ID ="
@@ -5160,9 +5165,6 @@ msgstr "イメージ名"
 
 msgid "Image Name ="
 msgstr "イメージ名 ="
-
-msgid "Image Overview"
-msgstr "イメージの概要"
 
 msgctxt "Task status of an Instance"
 msgid "Image Pending Upload"
@@ -5211,12 +5213,12 @@ msgid "Images"
 msgstr "イメージ"
 
 msgid ""
-"Images can be provided via an HTTP URL or be uploaded from your local file "
-"system. Compressed image binaries are supported (.zip and .tar.gz.)"
+"Images can be provided via an HTTP/HTTPS URL or be uploaded from your local "
+"file system. Compressed image binaries are supported (.zip and .tar.gz.)"
 msgstr ""
-"イメージの作成は HTTP URL 経由で指定する方法と、ローカルファイルシステムから"
-"アップロードする方法があります。圧縮イメージがサポートされています (.zip およ"
-"び .tar.gz)。"
+"イメージの作成は HTTP/HTTPS URL 経由で指定する方法と、ローカルファイルシステ"
+"ムからアップロードする方法があります。圧縮イメージがサポートされています (."
+"zip および .tar.gz)。"
 
 msgid "Implementation"
 msgstr "実装"
@@ -5355,17 +5357,14 @@ msgstr "インスタンスのコンソールログ"
 msgid "Instance Count"
 msgstr "インスタンス数"
 
-msgid "Instance Details"
-msgstr "インスタンスの詳細"
-
-msgid "Instance Details: {{ instance.name }}"
-msgstr "インスタンスの詳細: {{ instance.name }}"
-
 msgid "Instance ID"
 msgstr "インスタンス ID"
 
 msgid "Instance Name"
 msgstr "インスタンス名"
+
+msgid "Instance Name ="
+msgstr "インスタンス名 = "
 
 msgid "Instance Overview"
 msgstr "インスタンスの概要"
@@ -5470,20 +5469,8 @@ msgstr "ジョブ"
 msgid "Job Binaries"
 msgstr "ジョブバイナリー"
 
-msgid "Job Binary Details"
-msgstr "ジョブバイナリーの詳細"
-
-msgid "Job Binary Overview"
-msgstr "ジョブバイナリーの概要"
-
 msgid "Job Configuration"
 msgstr "ジョブ設定"
-
-msgid "Job Details"
-msgstr "ジョブ詳細"
-
-msgid "Job Execution Details"
-msgstr "ジョブ実行の詳細"
 
 msgid "Job Execution Guide"
 msgstr "ジョブ実行のガイド"
@@ -5494,14 +5481,8 @@ msgstr "ジョブ実行 ID"
 msgid "Job Guide"
 msgstr "ジョブのガイド"
 
-msgid "Job Overview"
-msgstr "ジョブの概要"
-
 msgid "Job Template"
 msgstr "ジョブテンプレート"
-
-msgid "Job Template Details"
-msgstr "ジョブテンプレートの詳細"
 
 msgid "Job Templates"
 msgstr "ジョブテンプレート"
@@ -5856,6 +5837,13 @@ msgstr "Main クラス"
 msgid "Mains"
 msgstr "メイン"
 
+msgid "Maintenance"
+msgstr "メンテナンス"
+
+msgctxt "Current status of a Volume"
+msgid "Maintenance"
+msgstr "メンテナンス"
+
 msgid "Make Private"
 msgstr "プライベートに変更"
 
@@ -5956,8 +5944,8 @@ msgstr "最大試行回数 (1〜10)"
 msgid "Max."
 msgstr "最大値"
 
-msgid "Max. Size (MB)"
-msgstr "最大サイズ (MB)"
+msgid "Max. Size (MB) ="
+msgstr "最大サイズ (MB) = "
 
 msgid "Maximum Transmission Unit size for the connection"
 msgstr "この接続の MTU （最大転送単位）の大きさ"
@@ -6072,8 +6060,8 @@ msgstr "最小メモリー"
 msgid "Min."
 msgstr "最小値"
 
-msgid "Min. Size (MB)"
-msgstr "最小サイズ (MB)"
+msgid "Min. Size (MB) ="
+msgstr "最小サイズ (MB) = "
 
 msgid "Minimum Disk (GB)"
 msgstr "最小ディスク (GB)"
@@ -6170,6 +6158,9 @@ msgstr "なし"
 msgid "Name"
 msgstr "名前"
 
+msgid "Name ="
+msgstr "名前 = "
+
 msgid ""
 "Name may only contain letters, numbers, underscores, periods and hyphens."
 msgstr "名前は、英数字、アンダースコア、ピリオド、ハイフンだけが使用できます。"
@@ -6207,12 +6198,6 @@ msgstr "名前空間 %s が作成されました。"
 
 msgid "Namespace Definition Source"
 msgstr "名前空間定義の入力方法"
-
-msgid "Namespace Details"
-msgstr "名前空間の詳細"
-
-msgid "Namespace Details: {{ namespace.namespace }}"
-msgstr "名前空間の詳細: {{ namespace.namespace }}"
 
 msgid "Namespace JSON"
 msgstr "名前空間のJSON"
@@ -6615,9 +6600,6 @@ msgstr "ノードグループ"
 msgid "Node Group Template %s updated"
 msgstr "ノードグループテンプレート %s が更新されました。"
 
-msgid "Node Group Template Details"
-msgstr "ノードグループテンプレートの詳細"
-
 #, python-format
 msgid "Node Group Template copy %s created"
 msgstr "ノードグループテンプレートのコピー %s を作成しました"
@@ -6643,9 +6625,6 @@ msgstr "ノードグループクラスター"
 
 msgid "Node processes are not specified"
 msgstr "ノードプロセスは指定されていません"
-
-msgid "Nodegroup Template Details"
-msgstr "ノードグループテンプレートの詳細"
 
 msgid "Nodes Count"
 msgstr "ノード数"
@@ -7187,9 +7166,6 @@ msgstr "ポート %s が正常に作成されました。"
 msgid "Port %s was successfully updated."
 msgstr "ポート %s が正常に更新されました。"
 
-msgid "Port Details"
-msgstr "ポートの詳細"
-
 msgid "Port ID"
 msgstr "ポート ID"
 
@@ -7290,10 +7266,6 @@ msgstr "プロジェクト ="
 msgid "Project Details"
 msgstr "プロジェクトの詳細"
 
-#, python-format
-msgid "Project Details: %s"
-msgstr "プロジェクトの詳細: %s"
-
 msgid "Project Groups"
 msgstr "プロジェクトグループ"
 
@@ -7314,9 +7286,6 @@ msgstr "プロジェクトメンバー"
 
 msgid "Project Name"
 msgstr "プロジェクト名"
-
-msgid "Project Overview"
-msgstr "プロジェクトの概要"
 
 msgid "Project Quotas"
 msgstr "プロジェクトのクォータ"
@@ -7410,6 +7379,10 @@ msgid ""
 "QoS Spec consumer value must be different than the current consumer value."
 msgstr "新しい QOS スペックの使用者は現在と異なる値でなければいけません。"
 
+#, python-format
+msgid "QoS Spec name \"%s\" already exists."
+msgstr "QoS 仕様 \"%s\" は既に存在します。"
+
 msgid "QoS Spec to be associated"
 msgstr "関連付ける QoS スペック"
 
@@ -7457,6 +7430,13 @@ msgstr "メモリー (使用中)"
 #, python-format
 msgid "RAM(Available: %(avail)s, Requested: %(req)s)"
 msgstr "メモリー (利用可能: %(avail)s, 要求: %(req)s)"
+
+msgid "REJECT"
+msgstr "拒否"
+
+msgctxt "Action Name of a Firewall Rule"
+msgid "REJECT"
+msgstr "拒否"
 
 msgid "Ramdisk"
 msgstr "RAM ディスク"
@@ -7660,6 +7640,9 @@ msgstr "インスタンスから複製"
 msgid "Replication"
 msgstr "レプリケーション"
 
+msgid "Report Bug"
+msgstr "バグ報告"
+
 msgid "Request ID"
 msgstr "リクエスト ID"
 
@@ -7686,6 +7669,10 @@ msgstr ""
 msgctxt "Current status of an Instance"
 msgid "Rescue"
 msgstr "レスキュー中"
+
+msgctxt "Current status of an Instance"
+msgid "Rescued"
+msgstr "レスキュー済み"
 
 msgctxt "Task status of an Instance"
 msgid "Rescuing"
@@ -7733,6 +7720,10 @@ msgctxt "Current status of an Instance"
 msgid "Resize/Migrate"
 msgstr "リサイズ/マイグレーション中"
 
+msgctxt "Current status of an Instance"
+msgid "Resized"
+msgstr "リサイズ済み"
+
 msgctxt "Task status of an Instance"
 msgid "Resized or Migrated"
 msgstr "リサイズ/マイグレーション済み"
@@ -7752,12 +7743,6 @@ msgstr "ボリューム \"%s\" をリサイズ中"
 msgid "Resource"
 msgstr "リソース"
 
-msgid "Resource Details"
-msgstr "リソースの詳細"
-
-msgid "Resource Details: {{ resource.resource_name }}"
-msgstr "リソースの詳細: {{ resource.resource_name }}"
-
 msgid "Resource ID"
 msgstr "リソース ID"
 
@@ -7766,12 +7751,6 @@ msgstr "リソースのメタデータ"
 
 msgid "Resource Overview"
 msgstr "リソースの概要"
-
-msgid "Resource Type"
-msgstr "リソース種別"
-
-msgid "Resource Type Details"
-msgstr "リソース種別の詳細"
 
 msgid "Resource Types"
 msgstr "リソース種別"
@@ -7965,9 +7944,6 @@ msgstr "ルーター %s が正常に作成されました。"
 msgid "Router %s was successfully updated."
 msgstr "ルーター %s が正常に更新されました。"
 
-msgid "Router Details"
-msgstr "ルーターの詳細"
-
 msgid "Router ID"
 msgstr "ルーター ID"
 
@@ -8110,6 +8086,10 @@ msgstr "バックアップ \"%(name)s\" の作成を予約しました。"
 msgid "Scheduled deletion of %(data_type)s"
 msgstr "%(data_type)s の削除を予約しました。"
 
+msgid "Scheduled deletion of Cluster"
+msgid_plural "Scheduled deletion of Clusters"
+msgstr[0] "クラスターの削除を予約しました"
+
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "ファイアウォールの削除を予約しました"
@@ -8125,6 +8105,10 @@ msgstr[0] "IPSec ポリシーの削除を予約しました"
 msgid "Scheduled deletion of IPSec Site Connection"
 msgid_plural "Scheduled deletion of IPSec Site Connections"
 msgstr[0] "IPSec サイト間接続の削除を予約しました"
+
+msgid "Scheduled deletion of Instance"
+msgid_plural "Scheduled deletion of Instances"
+msgstr[0] "インスタンスの削除を予約しました"
 
 msgid "Scheduled deletion of Member"
 msgid_plural "Scheduled deletion of Members"
@@ -8165,14 +8149,6 @@ msgstr[0] "(確認待ちでの) インスタンスのマイグレーションを
 #, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr "インスタンス \"%s\" のリサイズを予約しました。"
-
-msgid "Scheduled termination of Cluster"
-msgid_plural "Scheduled termination of Clusters"
-msgstr[0] "クラスターの削除を予約しました"
-
-msgid "Scheduled termination of Instance"
-msgid_plural "Scheduled termination of Instances"
-msgstr[0] "インスタンスの終了を予約しました。"
 
 msgctxt "Task status of an Instance"
 msgid "Scheduling"
@@ -8527,6 +8503,9 @@ msgstr "サーバーグループ"
 msgid "Server error"
 msgstr "内部サーバーエラー"
 
+msgid "Servers"
+msgstr "サーバー"
+
 msgid "Service"
 msgstr "サービス"
 
@@ -8780,6 +8759,13 @@ msgstr "送信元ポート ([1, 65535] の整数か a:b 形式の範囲)"
 msgid "Source username"
 msgstr "データソースのユーザー名"
 
+msgid ""
+"Source/Destination Network Address and IP version are inconsistent. Please "
+"make them consistent."
+msgstr ""
+"送信元 / 送信先のネットワークアドレスと IP バージョンが一致していません。これ"
+"らを一致させてください。"
+
 msgid "Source:"
 msgstr "送信元:"
 
@@ -8887,12 +8873,6 @@ msgstr ""
 msgid "Specs"
 msgstr "スペック"
 
-msgid "Stack Details"
-msgstr "スタックの詳細"
-
-msgid "Stack Details: {{ stack.stack_name }}"
-msgstr "スタックの詳細: {{ stack.stack_name }}"
-
 msgid "Stack Events"
 msgstr "スタックイベント"
 
@@ -8901,9 +8881,6 @@ msgstr "スタック ID"
 
 msgid "Stack Name"
 msgstr "スタック名"
-
-msgid "Stack Overview"
-msgstr "スタックの概要"
 
 msgid "Stack Parameters"
 msgstr "スタックのパラメーター"
@@ -9012,6 +8989,10 @@ msgctxt "Action log of an instance"
 msgid "Stop"
 msgstr "停止"
 
+msgctxt "Current status of an Instance"
+msgid "Stopped"
+msgstr "停止"
+
 msgid "Storage location"
 msgstr "ストレージの場所"
 
@@ -9046,9 +9027,6 @@ msgstr "サブネット ID"
 
 msgid "Subnet Name"
 msgstr "サブネット名"
-
-msgid "Subnet Overview"
-msgstr "サブネットの概要"
 
 msgid "Subnet list can not be retrieved."
 msgstr "サブネット一覧を取得できません。"
@@ -9314,9 +9292,6 @@ msgstr "テンプレートファイル"
 msgid "Template Name"
 msgstr "テンプレート名"
 
-msgid "Template Overview"
-msgstr "テンプレートの概要"
-
 msgid "Template Source"
 msgstr "テンプレートの指定方法"
 
@@ -9325,20 +9300,6 @@ msgstr "テンプレート URL"
 
 msgid "Template not specified"
 msgstr "テンプレートは指定されていません"
-
-msgid "Terminate Cluster"
-msgid_plural "Terminate Clusters"
-msgstr[0] "クラスターの削除"
-
-msgid "Terminate Instance"
-msgid_plural "Terminate Instances"
-msgstr[0] "インスタンスの削除"
-
-msgid "Terminated cluster is not recoverable."
-msgstr "削除されたクラスターは元に戻すことはできません。"
-
-msgid "Terminated instances are not recoverable."
-msgstr "削除されたインスタンスは元に戻すことはできません。"
 
 msgid ""
 "The \"Bootable\" flag specifies that this volume can be used to launch an "
@@ -10220,24 +10181,24 @@ msgid "Unable to create volume."
 msgstr "ボリュームを作成できません。"
 
 #, python-format
-msgid "Unable to delete IKE Policy: %s"
-msgstr "IKE ポリシーを削除できません: %s"
+msgid "Unable to delete IKE Policy. %s"
+msgstr "IKE ポリシーを削除できません。%s"
 
 #, python-format
-msgid "Unable to delete IPSec Policy: %s"
-msgstr "IPSec ポリシーを削除できません: %s"
+msgid "Unable to delete IPSec Policy. %s"
+msgstr "IPSec ポリシーを削除できません。%s"
 
 #, python-format
-msgid "Unable to delete IPSec Site Connection: %s"
-msgstr "IPSec サイト間接続を削除できません: %s"
+msgid "Unable to delete IPSec Site Connection. %s"
+msgstr "IPSec サイト間接続を削除できません。%s"
 
 #, python-format
 msgid "Unable to delete VIP. %s"
-msgstr "仮想 IP を削除できません。 %s"
+msgstr "仮想 IP を削除できません。%s"
 
 #, python-format
-msgid "Unable to delete VPN Service: %s"
-msgstr "VPN サービスを削除できません: %s"
+msgid "Unable to delete VPN Service. %s"
+msgstr "VPN サービスを削除できません。%s"
 
 msgid "Unable to delete container."
 msgstr "コンテナーを削除できません。"
@@ -10252,7 +10213,7 @@ msgstr "メンバーを削除できません。 %s"
 
 #, python-format
 msgid "Unable to delete monitor. %s"
-msgstr "モニターを削除できません。 %s"
+msgstr "モニターを削除できません。%s"
 
 #, python-format
 msgid "Unable to delete policy. %s"
@@ -10260,7 +10221,7 @@ msgstr "ポリシーを削除できません: %s"
 
 #, python-format
 msgid "Unable to delete pool. %s"
-msgstr "プールを削除できません。 %s"
+msgstr "プールを削除できません。%s"
 
 #, python-format
 msgid "Unable to delete router \"%s\""
@@ -10949,6 +10910,9 @@ msgstr "キーペアの一覧を取得できません。"
 msgid "Unable to retrieve limit information."
 msgstr "リソース上限情報を取得できません。"
 
+msgid "Unable to retrieve list of routers."
+msgstr "ルーターの一覧を取得できません。"
+
 msgid "Unable to retrieve list of security groups"
 msgstr "セキュリティーグループの一覧を取得できません"
 
@@ -11275,7 +11239,7 @@ msgid "Unable to retrieve volume/instance attachment information"
 msgstr "ボリューム / インスタンスの接続情報を取得できません。"
 
 msgid "Unable to retrieve volumes availability zones."
-msgstr "ボリュームアベイラビリティゾーンを取得できません。"
+msgstr "ボリュームアベイラビリティーゾーンを取得できません。"
 
 msgid "Unable to set Domain Context."
 msgstr "ドメインコンテキストを設定できません。"
@@ -11384,9 +11348,6 @@ msgstr "オブジェクトをアップロードできません。"
 #, python-format
 msgid "Unable to upload volume to image for volume: \"%s\""
 msgstr "ボリューム %s をイメージにアップロードできません。"
-
-msgid "Undefined"
-msgstr "未定義"
 
 msgid "Unit"
 msgstr "単位"
@@ -11711,17 +11672,11 @@ msgstr "ユーザー認証情報の詳細"
 msgid "User Details"
 msgstr "ユーザーの詳細"
 
-msgid "User Details: {{ user.name }}"
-msgstr "ユーザーの詳細: {{ user.name }}"
-
 msgid "User ID"
 msgstr "ユーザー ID"
 
 msgid "User Name"
 msgstr "ユーザー名"
-
-msgid "User Overview"
-msgstr "ユーザーの概要"
 
 msgid "User Settings"
 msgstr "ユーザー設定"
@@ -11904,16 +11859,6 @@ msgstr "ボリューム (Cinder)"
 msgid "Volume Backup"
 msgstr "ボリュームバックアップ"
 
-msgid "Volume Backup Details"
-msgstr "ボリュームバックアップの詳細"
-
-msgid "Volume Backup Details: {{ backup.name }}"
-msgstr "ボリュームバックアップの詳細: {{ backup.name }}"
-
-#, python-format
-msgid "Volume Backup Overview: %(backup_display_name)s"
-msgstr "ボリュームバックアップの概要: %(backup_display_name)s"
-
 msgid "Volume Backup:"
 msgstr "ボリュームバックアップ:"
 
@@ -11927,12 +11872,6 @@ msgstr ""
 "ボリュームバックアップはオブジェクトストレージサービスを使って格納されます。"
 "バックアップを作成するには、オブジェクトストレージサービスを有効しなければい"
 "けません。"
-
-msgid "Volume Details"
-msgstr "ボリュームの詳細"
-
-msgid "Volume Details: {{ volume.name }}"
-msgstr "ボリュームの詳細: {{ volume.name }}"
 
 msgid "Volume Encryption Details"
 msgstr "ボリュームの暗号化の詳細"
@@ -11953,20 +11892,11 @@ msgstr "ボリュームの上限"
 msgid "Volume Name"
 msgstr "ボリューム名"
 
-msgid "Volume Overview"
-msgstr "ボリュームの概要"
-
 msgid "Volume Size"
 msgstr "ボリュームサイズ"
 
 msgid "Volume Snapshot"
 msgstr "ボリュームスナップショット"
-
-msgid "Volume Snapshot Details"
-msgstr "ボリュームスナップショットの詳細"
-
-msgid "Volume Snapshot Details: {{ snapshot.name }}"
-msgstr "ボリュームスナップショットの詳細: {{ snapshot.name }}"
 
 msgid "Volume Snapshot Overview"
 msgstr "ボリュームスナップショットの概要"
@@ -12098,7 +12028,7 @@ msgid "Volumes Attached"
 msgstr "接続されているボリューム"
 
 msgid "Volumes Availability Zone"
-msgstr "ボリュームアベイラビリティゾーン"
+msgstr "ボリュームアベイラビリティーゾーン"
 
 msgid "Volumes local to instance"
 msgstr "ボリュームをインスタンスと同じホストに配置"
@@ -12499,3 +12429,6 @@ msgstr "v1"
 
 msgid "v2"
 msgstr "v2"
+
+msgid "yes,no,-"
+msgstr "はい,いいえ,-"

@@ -1,18 +1,24 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-11-18 04:22+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: Hungarian\n"
+"PO-Revision-Date: 2015-08-20 05:13+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
 "X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language-Team: Hungarian\n"
 
 #, python-format
 msgctxt "past"
@@ -101,24 +107,11 @@ msgstr "Érvénytelen alhálózati maszk"
 msgid "Invalid version for IP address"
 msgstr "Érvénytelen IP-cím változat"
 
-msgid "Log In"
-msgstr "Bejelentkezés"
-
 msgid "Login"
 msgstr "Bejelentkezés"
 
-#, python-format
-msgid ""
-"Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
-msgstr ""
-"Bejelentkezés másik felhasználóval vagy visszatérés a <a href=\"%(home_url)s"
-"\"> főoldalra</a>"
-
 msgid "Members"
 msgstr "Tagok"
-
-msgid "N/A"
-msgstr "---"
 
 msgid "Navigation Item"
 msgstr "Navigációs elem"
@@ -157,9 +150,6 @@ msgstr "Lépjen be a folytatáshoz."
 msgid "Please select a row before taking that action."
 msgstr "Válasszon ki egy sort a művelet végrehajtása előtt."
 
-msgid "Port number must be integer"
-msgstr "Port számnak egész számnak kell lennie"
-
 msgid "Processing..."
 msgstr "Feldolgozás…"
 
@@ -169,9 +159,6 @@ msgstr "Mentés"
 #, python-format
 msgid "Select a %s to browse."
 msgstr "A böngészéshez válasszon egy %s elemet"
-
-msgid "Session timed out."
-msgstr "Munkamenet időtúllépés."
 
 msgid "Sign In"
 msgstr "Bejelentkezés"
@@ -184,10 +171,6 @@ msgstr "Siker: "
 
 msgid "Summary"
 msgstr "Összegzés"
-
-#, python-format
-msgid "The attribute %(attr)s doesn't exist on %(obj)s."
-msgstr "A(z) %(attr)s attribútum nem létezik ezen: %(obj)s."
 
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "A dátum formátuma ÉÉÉÉ-hh-nn."

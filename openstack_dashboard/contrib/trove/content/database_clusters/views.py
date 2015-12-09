@@ -24,6 +24,8 @@ from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
+import six
+
 from horizon import exceptions
 from horizon import forms as horizon_forms
 from horizon import tables as horizon_tables
@@ -54,7 +56,8 @@ class IndexView(horizon_tables.DataTableView):
             flavors = []
             msg = _('Unable to retrieve database size information.')
             exceptions.handle(self.request, msg)
-        return OrderedDict((unicode(flavor.id), flavor) for flavor in flavors)
+        return OrderedDict((six.text_type(flavor.id), flavor)
+                           for flavor in flavors)
 
     def _extra_data(self, cluster):
         try:
@@ -94,12 +97,12 @@ class LaunchClusterView(horizon_forms.ModalFormView):
 
 class DetailView(horizon_tabs.TabbedTableView):
     tab_group_class = tabs.ClusterDetailTabs
-    template_name = 'project/database_clusters/detail.html'
-
-    page_title = _("Cluster Details: {{ cluster.name }}")
+    template_name = 'horizon/common/_detail.html'
+    page_title = "{{ cluster.name|default:cluster.id }}"
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
+        context["url"] = reverse('horizon:project:database_clusters:index')
         context["cluster"] = self.get_data()
         return context
 

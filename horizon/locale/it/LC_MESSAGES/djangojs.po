@@ -1,0 +1,378 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Alessandra <alessandra@translated.net>, 2015. #zanata
+# Mattia Gandolfi <mgandolf@redhat.com>, 2015. #zanata
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-10-19 02:29+0000\n"
+"Last-Translator: Alessandra <alessandra@translated.net>\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Italian\n"
+
+#, python-format
+msgid "%s GB"
+msgstr "%s GB"
+
+#, python-format
+msgid "%s KB"
+msgstr "%s KB"
+
+#, python-format
+msgid "%s MB"
+msgstr "%s MB"
+
+#, python-format
+msgid "%s TB"
+msgstr "%s TB"
+
+#, python-format
+msgid "%s bytes"
+msgstr "%s bytes"
+
+msgid "-"
+msgstr "-"
+
+msgid "Active"
+msgstr "Attivo"
+
+msgid "Add Interface"
+msgstr "Aggiungi interfaccia"
+
+msgid "Added"
+msgstr "Aggiunto"
+
+msgid "Allocated"
+msgstr "Allocato"
+
+msgid "An error occurred while updating."
+msgstr "Si è verificato un errore durante l'aggiornamento."
+
+msgid "An error occurred. Please try again later."
+msgstr "Si è verificato un errore. Per favore riprova più tardi."
+
+msgid "Available"
+msgstr "Disponibile"
+
+msgid "Available Metadata"
+msgstr "Metadati disponibili"
+
+msgid "Back"
+msgstr "Indietro"
+
+msgid "Cancel"
+msgstr "Annulla"
+
+msgid "Click here for filters."
+msgstr "Fare clic qui per i filtri."
+
+msgid "Click here to expand the row and view the errors."
+msgstr "Fare clic qui per espandere la riga e visualizzare gli errori."
+
+msgid "Click to see more details"
+msgstr "Fare clic per visualizzare ulteriori dettagli"
+
+msgid "Click to show or hide"
+msgstr "Fare clic per visualizzare o nascondere"
+
+msgid "Closed"
+msgstr "Chiuso"
+
+msgid "Closing"
+msgstr "Chiusura"
+
+#, python-format
+msgid "Confirm %s"
+msgstr "Conferma %s"
+
+msgid "Connecting"
+msgstr "Connessione"
+
+msgid "Could not decrypt the password"
+msgstr "Impossibile decodificare la password"
+
+msgid "Could not read the file"
+msgstr "Impossibile leggere il file"
+
+msgid "Create Subnet"
+msgstr "Crea sottorete"
+
+msgid "Current Usage"
+msgstr "Utilizzo attuale"
+
+msgid "Custom"
+msgstr "Personalizzato"
+
+msgid "Danger"
+msgstr "Pericolo"
+
+msgid "Danger: "
+msgstr "Pericolo:"
+
+msgid "Decimal required"
+msgstr "Numero decimale richiesto"
+
+msgid "Delete"
+msgstr "Elimina"
+
+msgid "Delete Interface"
+msgstr "Elimina interfaccia"
+
+msgid "Delete Network"
+msgstr "Elimina rete"
+
+msgid "Delete Router"
+msgstr "Elimina router"
+
+msgid "Delete Subnet"
+msgstr "Elimina sottorete"
+
+msgid "Detail Information"
+msgstr "Informazioni dettagliate"
+
+#, python-format
+msgid "Displaying %(count)s of %(total)s items"
+msgstr "Visualizzazione di %(count)s di %(total)s elementi"
+
+#, python-format
+msgid "Displaying %s item"
+msgid_plural "Displaying %s items"
+msgstr[0] "Mostrando %s oggetti"
+msgstr[1] "Mostrando %s oggetti"
+
+msgid "Duplicate keys are not allowed"
+msgstr "Le chiavi duplicate non sono consentite"
+
+msgid "Error"
+msgstr "Errore"
+
+msgid "Error: "
+msgstr "Errore:"
+
+msgid "Existing Metadata"
+msgstr "Metadati esistenti"
+
+msgid "Expand to see allocated items"
+msgstr "Espandi per visualizzare gli elementi allocati"
+
+msgid "Expand to see available items"
+msgstr "Espandi per visualizzare gli elementi disponibili"
+
+msgid "Filter"
+msgstr "Filtro"
+
+msgid "Finish"
+msgstr "Fine"
+
+msgid "Flavor"
+msgstr "Sapore"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "IP Addresses"
+msgstr "Indirizzi IP"
+
+msgid "In current results"
+msgstr "Nei risultati correnti"
+
+msgid "Info"
+msgstr "Informazioni"
+
+msgid "Integer required"
+msgstr "Numero intero richiesto"
+
+msgid "Interfaces"
+msgstr "Interfacce"
+
+msgid "Loading"
+msgstr "Caricamento"
+
+msgid "Max"
+msgstr "Massimo"
+
+msgid "Max length"
+msgstr "Lunghezza massima"
+
+msgid "Min"
+msgstr "Min"
+
+msgid "Min length"
+msgstr "Lunghezza minima"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Next"
+msgstr "Prossimo"
+
+msgid "No"
+msgstr "No"
+
+msgid "No available items"
+msgstr "Nessun elemento disponibile"
+
+msgid "No available metadata"
+msgstr "Nessun metadato disponibile"
+
+msgid "No data available."
+msgstr "Nessun dato disponibile."
+
+msgid "No description available."
+msgstr "Nessuna descrizione disponibile."
+
+msgid "No existing metadata"
+msgstr "Nessun metadato esistente"
+
+msgid "No items to display."
+msgstr "Nessun elemento da visualizzare"
+
+msgid "No roles"
+msgstr "Nessun ruolo"
+
+msgid "None"
+msgstr "None"
+
+msgid "Not authorized to do this operation."
+msgstr "Non si è autorizzati a eseguire questa operazione."
+
+msgid "Notice: "
+msgstr "Avviso:"
+
+msgid "Open"
+msgstr "Apri"
+
+msgid "Open Console"
+msgstr "Apri console"
+
+msgid "Passwords do not match."
+msgstr "La password non coincide."
+
+msgid "Pattern mismatch"
+msgstr "Mancata corrispondenza del modello"
+
+msgid "Please confirm your selection. "
+msgstr "Confermare la selezione."
+
+msgid "Prompt"
+msgstr "Prompt"
+
+msgid "Re-order items using drag and drop"
+msgstr "Riordina gli elementi utilizzando la funzione di trascinamento"
+
+msgid "Remaining"
+msgstr "Restante"
+
+msgid "Remove"
+msgstr "Rimuovere"
+
+msgid "Required"
+msgstr "Richiesto"
+
+msgid "Roles"
+msgstr "Ruoli"
+
+msgid "STATUS"
+msgstr "STATO"
+
+msgid "Select an item from Available items below"
+msgstr "Selezionare un elemento dagli elementi disponibili in basso"
+
+msgid "Select one"
+msgstr "Seleziona uno"
+
+msgid "Server Name"
+msgstr "Nome server"
+
+msgid "Shutdown"
+msgstr "Chiusura"
+
+msgid "Status"
+msgstr "Stato"
+
+#, python-format
+msgid "Status: %s"
+msgstr "Stato: %s"
+
+msgid "Submit"
+msgstr "Invia"
+
+msgid "Subnets"
+msgstr "Sottoreti"
+
+msgid "Success"
+msgstr "Riuscito"
+
+msgid "Success: "
+msgstr "Successo:"
+
+msgid "Text"
+msgstr "Testo"
+
+msgid ""
+"The action cannot be performed. The contents of this row have errors or are "
+"missing information."
+msgstr ""
+"L'azione non può essere eseguita. Il contenuto di questa riga contiene o "
+"errori o informazioni mancanti"
+
+msgid "There was a problem communicating with the server, please try again."
+msgstr "Si è verificato un errore di comunicazione con il server, riprova."
+
+msgid "There was an error submitting the form. Please try again."
+msgstr "Si è verificato un errore durante l'invio dei dati. Riprova."
+
+msgid "Total"
+msgstr "Totale"
+
+msgid "View Details"
+msgstr "Visualizza dettagli"
+
+msgid "View Instance Details"
+msgstr "Visualizza dettagli istanza"
+
+msgid "View Router Details"
+msgstr "Visualizza dettagli router"
+
+msgid "Warning"
+msgstr "Avvertenza"
+
+msgid "Warning: "
+msgstr "Attenzione:"
+
+msgid "Working"
+msgstr "In corso"
+
+msgid "Yes"
+msgstr "Si"
+
+#, python-format
+msgid "You have selected %s. "
+msgstr "Hai selezionato %s."
+
+msgid "description"
+msgstr "descrizione"
+
+msgid "m1.small"
+msgstr "m1.small"
+
+msgid "m1.tiny"
+msgstr "m1.tiny"
+
+msgid "no quota"
+msgstr "nessuna quota"
+
+msgid "pool default"
+msgstr "pool predefinito"

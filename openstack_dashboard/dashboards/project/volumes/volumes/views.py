@@ -34,6 +34,7 @@ from openstack_dashboard import api
 from openstack_dashboard.api import cinder
 from openstack_dashboard import exceptions as dashboard_exception
 from openstack_dashboard.usage import quotas
+from openstack_dashboard.utils import filters
 
 from openstack_dashboard.dashboards.project.volumes \
     .volumes import forms as project_forms
@@ -46,8 +47,8 @@ from openstack_dashboard.dashboards.project.volumes \
 
 class DetailView(tabs.TabView):
     tab_group_class = project_tabs.VolumeDetailTabs
-    template_name = 'project/volumes/volumes/detail.html'
-    page_title = _("Volume Details: {{ volume.name }}")
+    template_name = 'horizon/common/_detail.html'
+    page_title = "{{ volume.name|default:volume.id }}"
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
@@ -56,13 +57,8 @@ class DetailView(tabs.TabView):
         context["volume"] = volume
         context["url"] = self.get_redirect_url()
         context["actions"] = table.render_row_actions(volume)
-        status_label = [label for (value, label) in
-                        project_tables.VolumesTableBase.STATUS_DISPLAY_CHOICES
-                        if value.lower() == (volume.status or '').lower()]
-        if status_label:
-            volume.status_label = status_label[0]
-        else:
-            volume.status_label = volume.status
+        choices = project_tables.VolumesTableBase.STATUS_DISPLAY_CHOICES
+        volume.status_label = filters.get_display_label(choices, volume.status)
         return context
 
     @memoized.memoized_method
@@ -97,6 +93,15 @@ class CreateView(forms.ModalFormView):
     success_url = reverse_lazy('horizon:project:volumes:volumes_tab')
     page_title = _("Create a Volume")
 
+    def get_initial(self):
+        initial = super(CreateView, self).get_initial()
+        try:
+            self.default_vol_type = cinder.volume_type_default(self.request)
+            initial['type'] = self.default_vol_type.name
+        except dashboard_exception.NOT_FOUND:
+            pass
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         try:
@@ -115,21 +120,8 @@ class CreateView(forms.ModalFormView):
 
         # check if we have default volume type so we can present the
         # description of no volume type differently
-        default_type = None
-        try:
-            default_type = cinder.volume_type_default(self.request)
-        except dashboard_exception.NOT_FOUND:
-            pass
-
-        if default_type is not None:
-            d_name = getattr(default_type, "name", "")
-            message =\
-                _("If \"No volume type\" is selected, the default "
-                  "volume type \"%(name)s\" will be set for the "
-                  "created volume.")
-            params = {'name': d_name}
-            no_type_description = encoding.force_text(message % params)
-        else:
+        no_type_description = None
+        if self.default_vol_type is None:
             message = \
                 _("If \"No volume type\" is selected, the volume will be "
                   "created without a volume type.")

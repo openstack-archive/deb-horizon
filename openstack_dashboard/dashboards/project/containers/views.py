@@ -22,11 +22,11 @@ Views for managing Swift containers.
 
 import os
 
-import django
 from django import http
 from django.utils.functional import cached_property  # noqa
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
+import six
 
 from horizon import browsers
 from horizon import exceptions
@@ -207,15 +207,10 @@ def object_download(request, container_name, object_path):
     if not os.path.splitext(obj.name)[1] and obj.orig_name:
         name, ext = os.path.splitext(obj.orig_name)
         filename = "%s%s" % (filename, ext)
-    # NOTE(tsufiev): StreamingHttpResponse class had been introduced in
-    # Django 1.5 specifically for the purpose streaming and/or transferring
-    # large files, it's less fragile than standard HttpResponse and should be
-    # used when available.
-    if django.VERSION >= (1, 5):
-        response = http.StreamingHttpResponse(obj.data)
-    else:
-        response = http.HttpResponse(obj.data)
-    safe_name = filename.replace(",", "").encode('utf-8')
+    response = http.StreamingHttpResponse(obj.data)
+    safe_name = filename.replace(",", "")
+    if six.PY2:
+        safe_name = safe_name.encode('utf-8')
     response['Content-Disposition'] = 'attachment; filename="%s"' % safe_name
     response['Content-Type'] = 'application/octet-stream'
     response['Content-Length'] = obj.bytes

@@ -81,31 +81,31 @@ def is_deleting(instance):
     return task_state.lower() == "deleting"
 
 
-class TerminateInstance(policy.PolicyTargetMixin, tables.BatchAction):
-    name = "terminate"
+class DeleteInstance(policy.PolicyTargetMixin, tables.BatchAction):
+    name = "delete"
     classes = ("btn-danger",)
     icon = "remove"
     policy_rules = (("compute", "compute:delete"),)
-    help_text = _("Terminated instances are not recoverable.")
+    help_text = _("Deleted instances are not recoverable.")
 
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Terminate Instance",
-            u"Terminate Instances",
+            u"Delete Instance",
+            u"Delete Instances",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Scheduled termination of Instance",
-            u"Scheduled termination of Instances",
+            u"Scheduled deletion of Instance",
+            u"Scheduled deletion of Instances",
             count
         )
 
     def allowed(self, request, instance=None):
-        """Allow terminate action if instance not currently being deleted."""
+        """Allow delete action if instance not currently being deleted."""
         return not is_deleting(instance)
 
     def action(self, request, obj_id):
@@ -998,12 +998,16 @@ STATUS_DISPLAY_CHOICES = (
                                 u"Migrating")),
     ("build", pgettext_lazy("Current status of an Instance", u"Build")),
     ("rescue", pgettext_lazy("Current status of an Instance", u"Rescue")),
-    ("deleted", pgettext_lazy("Current status of an Instance", u"Deleted")),
-    ("soft_deleted", pgettext_lazy("Current status of an Instance",
-                                   u"Soft Deleted")),
+    ("soft-delete", pgettext_lazy("Current status of an Instance",
+                                  u"Soft Deleted")),
     ("shelved", pgettext_lazy("Current status of an Instance", u"Shelved")),
     ("shelved_offloaded", pgettext_lazy("Current status of an Instance",
                                         u"Shelved Offloaded")),
+    # these vm states are used when generating CSV usage summary
+    ("building", pgettext_lazy("Current status of an Instance", u"Building")),
+    ("stopped", pgettext_lazy("Current status of an Instance", u"Stopped")),
+    ("rescued", pgettext_lazy("Current status of an Instance", u"Rescued")),
+    ("resized", pgettext_lazy("Current status of an Instance", u"Resized")),
 )
 
 TASK_DISPLAY_NONE = pgettext_lazy("Task status of an Instance", u"None")
@@ -1102,7 +1106,7 @@ POWER_DISPLAY_CHOICES = (
 
 class InstancesFilterAction(tables.FilterAction):
     filter_type = "server"
-    filter_choices = (('name', _("Instance Name"), True),
+    filter_choices = (('name', _("Instance Name ="), True),
                       ('status', _("Status ="), True),
                       ('image', _("Image ID ="), True),
                       ('flavor', _("Flavor ID ="), True))
@@ -1131,9 +1135,7 @@ class InstancesTable(tables.DataTable):
     ip = tables.Column(get_ips,
                        verbose_name=_("IP Address"),
                        attrs={'data-type': "ip"})
-    size = tables.Column(get_size,
-                         verbose_name=_("Size"),
-                         attrs={'data-type': 'size'})
+    size = tables.Column(get_size, sortable=False, verbose_name=_("Size"))
     keypair = tables.Column(get_keyname, verbose_name=_("Key Pair"))
     status = tables.Column("status",
                            filters=(title, filters.replace_underscores),
@@ -1170,7 +1172,7 @@ class InstancesTable(tables.DataTable):
             launch_actions = (LaunchLink,) + launch_actions
         if getattr(settings, 'LAUNCH_INSTANCE_NG_ENABLED', False):
             launch_actions = (LaunchLinkNG,) + launch_actions
-        table_actions = launch_actions + (TerminateInstance,
+        table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,
                        CreateSnapshot, SimpleAssociateIP, AssociateIP,
@@ -1180,4 +1182,4 @@ class InstancesTable(tables.DataTable):
                        ConsoleLink, LogLink, TogglePause, ToggleSuspend,
                        ToggleShelve, ResizeLink, LockInstance, UnlockInstance,
                        SoftRebootInstance, RebootInstance,
-                       StopInstance, RebuildInstance, TerminateInstance)
+                       StopInstance, RebuildInstance, DeleteInstance)

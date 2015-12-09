@@ -1,18 +1,24 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-11-18 04:22+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: Catalan\n"
+"PO-Revision-Date: 2015-08-20 05:13+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
 "X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language-Team: Catalan\n"
 
 #, python-format
 msgctxt "past"
@@ -98,17 +104,11 @@ msgstr "Versió incorrecta de l'adreça IP"
 msgid "Limit Summary"
 msgstr "Resum Límit"
 
-msgid "Log In"
-msgstr "Inicia la sessió"
-
 msgid "Login"
 msgstr "Login"
 
 msgid "Members"
 msgstr "Membres"
-
-msgid "N/A"
-msgstr "N/D"
 
 msgid "Navigation Item"
 msgstr "Article de navegació"
@@ -147,9 +147,6 @@ msgstr "Identifiqueu-vos per continuar."
 msgid "Please select a row before taking that action."
 msgstr "Heu de seleccionar una fila abans de dur a terme aquesta acció."
 
-msgid "Port number must be integer"
-msgstr "El nombre de port ha de ser un nombre enter"
-
 msgid "Processing..."
 msgstr "Processant..."
 
@@ -159,9 +156,6 @@ msgstr "Desa"
 #, python-format
 msgid "Select a %s to browse."
 msgstr "Seleccionar un %s per navegar."
-
-msgid "Session timed out."
-msgstr "S'ha acabat la sessió."
 
 msgid "Sign In"
 msgstr "Entrar"
@@ -174,10 +168,6 @@ msgstr "Èxit:"
 
 msgid "Summary"
 msgstr "Resum"
-
-#, python-format
-msgid "The attribute %(attr)s doesn't exist on %(obj)s."
-msgstr "L'atribut %(attr)s no existeix a %(obj)s"
 
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "La data ha d'estar en YYYY-mm-dd format."

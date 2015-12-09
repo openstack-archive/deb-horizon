@@ -1,23 +1,43 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Alfred <alfredhuang211@qq.com>, 2015
+# Allerson Yao, 2015
+# blkart <blkart.org@gmail.com>, 2015
+# ChangBo Guo(gcb) <glongwave@gmail.com>, 2014
+# johnwoo_lee <lijiangsheng1@gmail.com>, 2015
+# LIU Yulong <dragon889@163.com>, 2015
+# Lucas H. Xu <xuh@bu.edu>, 2015
+# Tom Fifield <tom@openstack.org>, 2014
+# Xiao Xi LIU <liuxx@cn.ibm.com>, 2014
+# Ying Chun Guo <daisy.ycguo@gmail.com>, 2015
+# 刘俊朋 <liujunpeng@inspur.com>, 2015
+# 颜海峰 <yanheven@gmail.com>, 2015
 # Andreas Jaeger <jaegerandi@gmail.com>, 2015. #zanata
 # Daisy <guoyingc@cn.ibm.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Xu Yang <xuyang@cn.fujitsu.com>, 2015. #zanata
+# Yang Hongyang <hongyang.yang@easystack.cn>, 2015. #zanata
 # Yu Zhiuguo <yuzg@cn.fujitsu.com>, 2015. #zanata
+# yan haifeng <yanheven@qq.com>, 2015. #zanata
 # zhangjingwen <zhangjingwen@cn.fujitsu.com>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-10-01 04:48+0000\n"
-"Last-Translator: Daisy <guoyingc@cn.ibm.com>\n"
-"Language-Team: Chinese (China)\n"
+"PO-Revision-Date: 2015-11-26 07:07+0000\n"
+"Last-Translator: zhangjingwen <zhangjingwen@cn.fujitsu.com>\n"
 "Language: zh-CN\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Chinese (China)\n"
 
 msgid ""
 "\n"
@@ -356,8 +376,8 @@ msgid ""
 "  "
 msgstr ""
 "\n"
-"通过使用在拓扑上的你的鼠标/触控板上下滚动来调整画布。\n"
-"通过单击并拖拽拓扑后的空间来在画布周围平移。\n"
+"在拓扑图上上下滚动你的鼠标/触控板来调整画布大小。\n"
+"在拓扑图空白处点击并拖拽来移动浏览。\n"
 "  "
 
 msgid " - End"
@@ -410,9 +430,6 @@ msgstr ""
 msgid ""
 "\"Some flavors not meeting minimum image requirements have been disabled.\""
 msgstr "\"一些未能达到image最低要求的特性已被禁用。\""
-
-msgid "\"Users\""
-msgstr "\"用户\""
 
 #, python-format
 msgid "%(conf_name)s: %(conf_val)s"
@@ -943,15 +960,6 @@ msgstr "添加、修改、删除该类型的块设备卷对应的 QoS 策略。"
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "添加/删除集合中的主机"
 
-msgid "AddFirewall"
-msgstr "添加防火墙"
-
-msgid "AddPolicy"
-msgstr "增加策略"
-
-msgid "AddRule"
-msgstr "添加规则"
-
 #, python-format
 msgid "Added Firewall \"%s\"."
 msgstr "防火墙 \"%s\" 已添加。"
@@ -1156,9 +1164,6 @@ msgstr "允许主机(可选)"
 
 msgid "Amount of energy"
 msgstr "能源数量"
-
-msgid "An external (HTTP) URL to load the image from."
-msgstr "使用外部(HTTP)URL加载镜像。"
 
 msgid "An external (HTTP) URL to load the template from."
 msgstr "一个用于加载模板的外部(HTTP) URL。"
@@ -1732,8 +1737,8 @@ msgstr "Cinder卷"
 msgid "Cipher"
 msgstr "Cipher"
 
-msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
-msgstr "无类别域间路由(e.g. 192.168.0.0/24)"
+msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24, or 2001:db8::/128)"
+msgstr "无类别域间路由(e.g. 192.168.0.0/24，或者2001:db8::/128)"
 
 msgid "Clear Domain Context"
 msgstr "清除域上下文。"
@@ -1761,15 +1766,6 @@ msgstr "集群数量"
 msgid "Cluster Creation Guide"
 msgstr "创建集群向导"
 
-msgid "Cluster Detail"
-msgstr "集群详细信息"
-
-msgid "Cluster Details"
-msgstr "集群详细信息"
-
-msgid "Cluster Details: {{ cluster.name }}"
-msgstr "集群详细信息： {{ cluster.name }}"
-
 msgid "Cluster Events"
 msgstr "集群事件"
 
@@ -1782,9 +1778,6 @@ msgstr "集群实例"
 msgid "Cluster Name"
 msgstr "集群名称"
 
-msgid "Cluster Overview"
-msgstr "集群概要"
-
 msgid "Cluster Size"
 msgstr "集群大小"
 
@@ -1794,9 +1787,6 @@ msgstr "集群模板"
 #, python-format
 msgid "Cluster Template %s updated"
 msgstr "集群模板%s已更新"
-
-msgid "Cluster Template Details"
-msgstr "集群模板详情"
 
 msgid "Cluster Template Name"
 msgstr "集群模板名称"
@@ -2291,32 +2281,26 @@ msgid "Create a data source"
 msgstr "创建一数据源"
 
 msgid ""
-"Create a firewall based on a policy.\n"
-"\n"
-"A policy must be selected. Other fields are optional."
-msgstr ""
-"基于策略创建防火墙。\n"
-"\n"
-"策略必须被选定。其他域为可选。"
-
-msgid ""
-"Create a firewall policy with an ordered list of firewall rules.\n"
-"\n"
-"A name must be given. Firewall rules are added in the order placed under the "
-"Rules tab."
-msgstr ""
-"使用一个按序的防火墙规则列表来创建防火墙策略。\n"
-"\n"
-"此处必须指定一个策略名称。在\"规则\"选项卡下按顺序添加防火墙规则。"
-
-msgid ""
 "Create a firewall rule.\n"
 "\n"
-"Protocol and action must be specified. Other fields are optional."
+"A Firewall rule is an association of the following attributes:\n"
+"\n"
+"<li>IP Addresses: The addresses from/to which the traffic filtration needs "
+"to be applied.</li><li>IP Version: The type of IP packets (IP V4/V6) that "
+"needs to be filtered.</li><li>Protocol: Type of packets (UDP, ICMP, TCP, "
+"Any) that needs to be checked.</li><li>Action: Action is the type of "
+"filtration required, it can be Reject/Deny/Allow data packets.</li>\n"
+"The protocol and action fields are required, all others are optional."
 msgstr ""
 "创建防火墙规则。\n"
 "\n"
-"必须指定协议和动作。其他域可选。"
+"防火墙规则由以下属性关联形成：\n"
+"\n"
+"<li>IP地址：来自/去到需要被应用的交通过滤地址。</li><li>IP版本：需要被过滤的"
+"IP包(IP V4/V6)的累类型。</li><li>协议:：需要被检查的数据包(UDP, ICMP, TCP, "
+"Any)的类型。</li><li>动作：动作是Action is the type of filtration required, "
+"it can be Reject/Deny/Allow data packets.</li>\n"
+"The protocol and action fields are required, all others are optional."
 
 msgid "Create a firewall with selected routers."
 msgstr "为所选择的路由创建一防火墙。"
@@ -2538,12 +2522,12 @@ msgid "Current type:"
 msgstr "当前类型"
 
 msgid ""
-"Currently only images available via an HTTP URL are supported. The image "
-"location must be accessible to the Image Service. Compressed image binaries "
-"are supported (.zip and .tar.gz.)"
+"Currently only images available via an HTTP/HTTPS URL are supported. The "
+"image location must be accessible to the Image Service. Compressed image "
+"binaries are supported (.zip and .tar.gz.)"
 msgstr ""
-"目前只支持HTTP URL可用镜像。镜像服务必须能够访问到镜像地址。支持镜像的二进制"
-"压缩格式(.zip,.tar,.gz.)"
+"目前只支持HTTP/HTTPS URL可用镜像。镜像服务必须能够访问到镜像地址。支持镜像的"
+"二进制压缩格式(.zip,.tar,.gz.)"
 
 msgid "Custom ICMP Rule"
 msgstr "定制ICMP规则"
@@ -2628,9 +2612,6 @@ msgstr "数据处理向导"
 msgid "Data Processing Plugin Details"
 msgstr "数据处理插件详细信息"
 
-msgid "Data Processing Plugin Overview"
-msgstr "数据处理插件概要"
-
 msgid "Data Processing Plugins"
 msgstr "数据处理插件"
 
@@ -2646,12 +2627,6 @@ msgstr ""
 
 msgid "Data Source"
 msgstr "数据源"
-
-msgid "Data Source Details"
-msgstr "数据源详细信息"
-
-msgid "Data Source Overview"
-msgstr "数据源概要"
 
 msgid "Data Source Type"
 msgstr "数据源类型"
@@ -2716,6 +2691,10 @@ msgstr "日期不能被识别"
 
 msgid "Day"
 msgstr "天"
+
+msgctxt "Current status of an Image"
+msgid "Deactivated"
+msgstr "无效的"
 
 msgid "Dead peer detection action"
 msgstr "已失效伙伴探测动作"
@@ -2972,15 +2951,9 @@ msgid "Delete Volume Type"
 msgid_plural "Delete Volume Types"
 msgstr[0] "删除云硬盘类型"
 
-msgid "Delete on Terminate"
-msgstr "终止后删除"
-
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
 msgstr "创建子网时删除网络\"%s\"失败"
-
-msgid "Delete volume on instance terminate"
-msgstr "终止云主机后删除云硬盘"
 
 msgid "Deleted"
 msgstr "删除"
@@ -3040,18 +3013,6 @@ msgstr[0] "已删除的组"
 msgid "Deleted Host Aggregate"
 msgid_plural "Deleted Host Aggregates"
 msgstr[0] "已删除的主机聚合"
-
-#, python-format
-msgid "Deleted IKE Policy %s"
-msgstr "IKE策略 %s 已删除"
-
-#, python-format
-msgid "Deleted IPSec Policy %s"
-msgstr "IPSec策略 %s 已删除"
-
-#, python-format
-msgid "Deleted IPSec Site Connection %s"
-msgstr "IPSec站点连接 %s 已删除"
 
 msgid "Deleted Image"
 msgid_plural "Deleted Images"
@@ -3145,28 +3106,12 @@ msgstr[0] "已删除的用户"
 msgid "Deleted VIP %s"
 msgstr "已删除VIP %s"
 
-#, python-format
-msgid "Deleted VPN Service %s"
-msgstr "VPN服务 %s 已删除"
-
 msgid "Deleted Volume Type"
 msgid_plural "Deleted Volume Types"
 msgstr[0] "已删除的云硬盘类型"
 
 msgid "Deleted images are not recoverable."
 msgstr "删除的镜像均无法恢复。"
-
-#, python-format
-msgid "Deleted member %s"
-msgstr "已删除成员%s"
-
-#, python-format
-msgid "Deleted monitor %s"
-msgstr "监控程序%s已删除"
-
-#, python-format
-msgid "Deleted pool %s"
-msgstr "已删除资源池%s"
 
 msgid "Deleting"
 msgstr "删除中"
@@ -3874,7 +3819,7 @@ msgctxt "current status of router"
 msgid "Error"
 msgstr "错误"
 
-msgctxt "status of a neteork port"
+msgctxt "status of a network port"
 msgid "Error"
 msgstr "错误"
 
@@ -4016,6 +3961,9 @@ msgstr "扩展中..."
 #, python-format
 msgid "Extending volume: \"%s\""
 msgstr "扩展硬盘大小: \"%s\""
+
+msgid "External"
+msgstr "外部"
 
 msgid "External Fixed IPs"
 msgstr "额外固定IP"
@@ -4361,21 +4309,15 @@ msgctxt "Task status of an Instance"
 msgid "Finishing Resize or Migrate"
 msgstr "正在完成重建或者迁移"
 
+msgid "Firewall"
+msgstr "防火墙"
+
 #, python-format
 msgid "Firewall %s was successfully updated."
 msgstr "防火墙 %s 被成功更新。"
 
-msgid "Firewall Details"
-msgstr "防火墙详情"
-
 msgid "Firewall Policies"
 msgstr "防火墙策略"
-
-msgid "Firewall Policy Details"
-msgstr "防火墙策略详情"
-
-msgid "Firewall Rule Details"
-msgstr "防火墙规则详情"
 
 msgid "Firewall Rules"
 msgstr "防火墙规则"
@@ -4454,6 +4396,10 @@ msgstr "浮动IP"
 
 msgid "Floating IP Pool"
 msgstr "浮动IP池"
+
+#, python-format
+msgid "Floating IP will be removed from VIP \"%s\"."
+msgstr "浮动IP 将被从 VIP \"%s\" 上移除."
 
 msgid "Floating IP:"
 msgstr "浮动IP:"
@@ -4796,6 +4742,9 @@ msgstr "IP协议"
 msgid "IP Version"
 msgstr "IP版本"
 
+msgid "IP Version for Firewall Rule"
+msgstr "防火墙的IP版本"
+
 msgid "IP address"
 msgstr "IP地址::"
 
@@ -4898,12 +4847,6 @@ msgstr "认证服务不允许编辑用户数据。"
 msgid "Identity service does not allow editing user password."
 msgstr "认证服务不允许编辑用户密码。"
 
-#, python-format
-msgid ""
-"If \"No volume type\" is selected, the default volume type \"%(name)s\" will "
-"be set for the created volume."
-msgstr "如果\"No volume type\"被选中, 默认的卷类型 \"%(name)s\"  将被设定。"
-
 msgid ""
 "If \"No volume type\" is selected, the volume will be created without a "
 "volume type."
@@ -4935,15 +4878,6 @@ msgid ""
 msgstr ""
 "如果已选择，节点组的实例将自动在集群创建的时候被配置。否则你需要手动配置。"
 
-msgid ""
-"If you select an image via an HTTP URL, the Image Location field MUST be a "
-"valid and direct URL to the image binary; it must also be accessible to the "
-"Image Service. URLs that redirect or serve error pages will result in "
-"unusable images."
-msgstr ""
-"如果你通过HTTP URL上传镜像，URL必须直接指向一个可用的镜像文件；并且镜像服务必"
-"须能访问这个URL。URL重定向或者服务页面错误会导致镜像无法使用。"
-
 msgid "Image"
 msgstr "镜像"
 
@@ -4958,14 +4892,11 @@ msgctxt "Task status of an Instance"
 msgid "Image Backup"
 msgstr "镜像备份"
 
-msgid "Image Details"
-msgstr "镜像详情 "
-
-msgid "Image Details: {{ image.name }}"
-msgstr "镜像详情： {{ image.name }}"
-
 msgid "Image File"
 msgstr "镜像文件"
+
+msgid "Image ID"
+msgstr "镜像ID"
 
 msgid "Image ID ="
 msgstr "镜像ID ="
@@ -4978,9 +4909,6 @@ msgstr "镜像名称"
 
 msgid "Image Name ="
 msgstr "镜像名称 ="
-
-msgid "Image Overview"
-msgstr "镜像概况"
 
 msgctxt "Task status of an Instance"
 msgid "Image Pending Upload"
@@ -5025,13 +4953,6 @@ msgstr "镜像更新成功。"
 
 msgid "Images"
 msgstr "镜像"
-
-msgid ""
-"Images can be provided via an HTTP URL or be uploaded from your local file "
-"system. Compressed image binaries are supported (.zip and .tar.gz.)"
-msgstr ""
-"镜像可以通过HTTP URL或从您的本地文件系统上传。支持压缩的二进制镜像文件(.zip "
-"和.tar.gz.)"
 
 msgid "Implementation"
 msgstr "实现"
@@ -5168,12 +5089,6 @@ msgstr "云主机控制台日志"
 msgid "Instance Count"
 msgstr "云主机数量"
 
-msgid "Instance Details"
-msgstr "实例详情"
-
-msgid "Instance Details: {{ instance.name }}"
-msgstr "实例详情：{{ instance.name }}"
-
 msgid "Instance ID"
 msgstr "云主机ID"
 
@@ -5283,20 +5198,8 @@ msgstr "任务"
 msgid "Job Binaries"
 msgstr "任务二进制"
 
-msgid "Job Binary Details"
-msgstr "任务二进制文件详情"
-
-msgid "Job Binary Overview"
-msgstr "任务二进制文件概览"
-
 msgid "Job Configuration"
 msgstr "任务配置"
-
-msgid "Job Details"
-msgstr "任务详情"
-
-msgid "Job Execution Details"
-msgstr "任务执行详细信息"
 
 msgid "Job Execution Guide"
 msgstr "任务执行向导"
@@ -5307,14 +5210,8 @@ msgstr "任务执行ID"
 msgid "Job Guide"
 msgstr "任务指南"
 
-msgid "Job Overview"
-msgstr "任务概览"
-
 msgid "Job Template"
 msgstr "任务模板"
-
-msgid "Job Template Details"
-msgstr "任务模板详情"
 
 msgid "Job Templates"
 msgstr "任务模板"
@@ -5660,6 +5557,9 @@ msgstr "主类"
 msgid "Mains"
 msgstr "Mains"
 
+msgid "Maintenance"
+msgstr "维护"
+
 msgid "Make Private"
 msgstr "私有化"
 
@@ -5756,9 +5656,6 @@ msgstr "最大重试次数(1~10)"
 
 msgid "Max."
 msgstr "最大"
-
-msgid "Max. Size (MB)"
-msgstr "容量最大值 (MB)"
 
 msgid "Maximum Transmission Unit size for the connection"
 msgstr "这个连接的最大传输单元大小"
@@ -5867,9 +5764,6 @@ msgstr "最小内存"
 
 msgid "Min."
 msgstr "最小"
-
-msgid "Min. Size (MB)"
-msgstr "容量最小值 (MB)"
 
 msgid "Minimum Disk (GB)"
 msgstr "最小磁盘（GB）"
@@ -5999,12 +5893,6 @@ msgstr "命名空间 %s 已经被创建。"
 
 msgid "Namespace Definition Source"
 msgstr "命名空间定义源"
-
-msgid "Namespace Details"
-msgstr "命名空间细节"
-
-msgid "Namespace Details: {{ namespace.namespace }}"
-msgstr "命名空间细节：{{ namespace.namespace }}"
 
 msgid "Namespace JSON"
 msgstr "命名空间JSON"
@@ -6396,9 +6284,6 @@ msgstr "节点组"
 msgid "Node Group Template %s updated"
 msgstr "节点组模板 %s 已更新"
 
-msgid "Node Group Template Details"
-msgstr "节点组模板详细信息"
-
 #, python-format
 msgid "Node Group Template copy %s created"
 msgstr "节点组模板复制 %s 已创建"
@@ -6424,9 +6309,6 @@ msgstr "节点组集群"
 
 msgid "Node processes are not specified"
 msgstr "节点处理没有被指定"
-
-msgid "Nodegroup Template Details"
-msgstr "节点组模板详细信息"
 
 msgid "Nodes Count"
 msgstr "节点数量"
@@ -6952,9 +6834,6 @@ msgstr "成功创建%s端口"
 msgid "Port %s was successfully updated."
 msgstr "端口%s更新成功"
 
-msgid "Port Details"
-msgstr "端口详情"
-
 msgid "Port ID"
 msgstr "端口ID"
 
@@ -7055,10 +6934,6 @@ msgstr "项目 ="
 msgid "Project Details"
 msgstr "项目详情"
 
-#, python-format
-msgid "Project Details: %s"
-msgstr "项目详情: %s"
-
 msgid "Project Groups"
 msgstr "项目组"
 
@@ -7079,9 +6954,6 @@ msgstr "项目成员"
 
 msgid "Project Name"
 msgstr "项目名称"
-
-msgid "Project Overview"
-msgstr "项目概览"
 
 msgid "Project Quotas"
 msgstr "项目配额"
@@ -7174,6 +7046,10 @@ msgid ""
 "QoS Spec consumer value must be different than the current consumer value."
 msgstr "QoS规格消费者的值必须与当前消费者不同。"
 
+#, python-format
+msgid "QoS Spec name \"%s\" already exists."
+msgstr "QoS Spec 名字 \"%s\" 已存在."
+
 msgid "QoS Spec to be associated"
 msgstr "要关联的QoS规格"
 
@@ -7221,6 +7097,13 @@ msgstr "内存(已使用)"
 #, python-format
 msgid "RAM(Available: %(avail)s, Requested: %(req)s)"
 msgstr "RAM(可用: %(avail)s, 已请求: %(req)s)"
+
+msgid "REJECT"
+msgstr "拒绝"
+
+msgctxt "Action Name of a Firewall Rule"
+msgid "REJECT"
+msgstr "拒绝"
 
 msgid "Ramdisk"
 msgstr "内存盘"
@@ -7504,12 +7387,6 @@ msgstr "正在调整卷 \"%s\" 的大小"
 msgid "Resource"
 msgstr "资源"
 
-msgid "Resource Details"
-msgstr "资源详情"
-
-msgid "Resource Details: {{ resource.resource_name }}"
-msgstr "资源详情：{{ resource.resource_name }}"
-
 msgid "Resource ID"
 msgstr "资源ID"
 
@@ -7518,12 +7395,6 @@ msgstr "资源元数据"
 
 msgid "Resource Overview"
 msgstr "资源概况"
-
-msgid "Resource Type"
-msgstr "资源类型"
-
-msgid "Resource Type Details"
-msgstr "资源类型详情"
 
 msgid "Resource Types"
 msgstr "资源类型"
@@ -7714,9 +7585,6 @@ msgstr "路由器 %s 创建成功。"
 #, python-format
 msgid "Router %s was successfully updated."
 msgstr "路由 %s 成功更新"
-
-msgid "Router Details"
-msgstr "路由详情"
 
 msgid "Router ID"
 msgstr "路由id"
@@ -7912,14 +7780,6 @@ msgstr[0] "已安排的实例迁移(待确认)"
 #, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr "定期调整实例\"%s\"."
-
-msgid "Scheduled termination of Cluster"
-msgid_plural "Scheduled termination of Clusters"
-msgstr[0] "已安排集群的终止"
-
-msgid "Scheduled termination of Instance"
-msgid_plural "Scheduled termination of Instances"
-msgstr[0] "已安排实例的终止"
 
 msgctxt "Task status of an Instance"
 msgid "Scheduling"
@@ -8268,6 +8128,9 @@ msgstr "主机组"
 msgid "Server error"
 msgstr "服务器报错"
 
+msgid "Servers"
+msgstr "服务器"
+
 msgid "Service"
 msgstr "服务"
 
@@ -8518,6 +8381,11 @@ msgstr "源端口([1, 65535]区间内的整数或者以a:b形式表示的范围)
 msgid "Source username"
 msgstr "源用户名"
 
+msgid ""
+"Source/Destination Network Address and IP version are inconsistent. Please "
+"make them consistent."
+msgstr "源/目的网络地址和IP版本不一致。请确保它们一致。"
+
 msgid "Source:"
 msgstr "源"
 
@@ -8614,12 +8482,6 @@ msgstr ""
 msgid "Specs"
 msgstr "规格"
 
-msgid "Stack Details"
-msgstr "栈详情"
-
-msgid "Stack Details: {{ stack.stack_name }}"
-msgstr "栈详情：{{ stack.stack_name }}"
-
 msgid "Stack Events"
 msgstr "栈事件"
 
@@ -8628,9 +8490,6 @@ msgstr "栈ID"
 
 msgid "Stack Name"
 msgstr "栈名"
-
-msgid "Stack Overview"
-msgstr "栈概况"
 
 msgid "Stack Parameters"
 msgstr "栈参数"
@@ -8773,9 +8632,6 @@ msgstr "子网ID"
 
 msgid "Subnet Name"
 msgstr "子网名称"
-
-msgid "Subnet Overview"
-msgstr "子网概况"
 
 msgid "Subnet list can not be retrieved."
 msgstr "无法获取子网列表"
@@ -9036,9 +8892,6 @@ msgstr "模板文件"
 msgid "Template Name"
 msgstr "模板名称"
 
-msgid "Template Overview"
-msgstr "模板概要"
-
 msgid "Template Source"
 msgstr "模板源"
 
@@ -9047,20 +8900,6 @@ msgstr "模板URL"
 
 msgid "Template not specified"
 msgstr "没有指定模板"
-
-msgid "Terminate Cluster"
-msgid_plural "Terminate Clusters"
-msgstr[0] "终止集群"
-
-msgid "Terminate Instance"
-msgid_plural "Terminate Instances"
-msgstr[0] "终止实例"
-
-msgid "Terminated cluster is not recoverable."
-msgstr "终止的实例无法恢复。"
-
-msgid "Terminated instances are not recoverable."
-msgstr "终止的实例均无法恢复。"
 
 msgid ""
 "The \"Bootable\" flag specifies that this volume can be used to launch an "
@@ -9564,7 +9403,7 @@ msgid "To:"
 msgstr "至："
 
 msgid "Toggle Network Collapse"
-msgstr "切换网络瘫痪"
+msgstr "切换网络折叠模式"
 
 msgid "Toggle labels"
 msgstr "切换标签"
@@ -9893,24 +9732,24 @@ msgid "Unable to create volume."
 msgstr "不能创建云硬盘。"
 
 #, python-format
-msgid "Unable to delete IKE Policy: %s"
-msgstr "无法删除IKE策略: %s"
+msgid "Unable to delete IKE Policy. %s"
+msgstr "无法删除 IKE 策略 %s"
 
 #, python-format
-msgid "Unable to delete IPSec Policy: %s"
-msgstr "无法删除IPSec策略: %s"
+msgid "Unable to delete IPSec Policy. %s"
+msgstr "无法删除IPSec 策略. %s"
 
 #, python-format
-msgid "Unable to delete IPSec Site Connection: %s"
-msgstr "无法删除IPSec站点连接: %s"
+msgid "Unable to delete IPSec Site Connection. %s"
+msgstr "无法删除IPSec 对点链接. %s"
 
 #, python-format
 msgid "Unable to delete VIP. %s"
 msgstr "无法删除VIP %s"
 
 #, python-format
-msgid "Unable to delete VPN Service: %s"
-msgstr "无法删除VPN服务: %s"
+msgid "Unable to delete VPN Service. %s"
+msgstr "无法删除VPN服务 %s"
 
 msgid "Unable to delete container."
 msgstr "无法删除容器。"
@@ -10618,6 +10457,9 @@ msgstr "找不到密钥对。"
 msgid "Unable to retrieve limit information."
 msgstr "无法获取限制信息。"
 
+msgid "Unable to retrieve list of routers."
+msgstr "无法取回路由列表。"
+
 msgid "Unable to retrieve list of security groups"
 msgstr "无法获取安全组列表"
 
@@ -10759,7 +10601,7 @@ msgid "Unable to retrieve router details."
 msgstr "无法获取路由详情"
 
 msgid "Unable to retrieve router list."
-msgstr "无法获取路优列表"
+msgstr "无法获取路由列表"
 
 msgid "Unable to retrieve router."
 msgstr "无法重新获得路由"
@@ -11050,9 +10892,6 @@ msgstr "无法上传对象。"
 #, python-format
 msgid "Unable to upload volume to image for volume: \"%s\""
 msgstr "无法为卷: \"%s\"上传卷到镜像"
-
-msgid "Undefined"
-msgstr "无定义"
 
 msgid "Unit"
 msgstr "单元"
@@ -11368,17 +11207,11 @@ msgstr "用户凭证详细信息"
 msgid "User Details"
 msgstr "用户详情"
 
-msgid "User Details: {{ user.name }}"
-msgstr "用户详情： {{ user.name }}"
-
 msgid "User ID"
 msgstr "用户ID"
 
 msgid "User Name"
 msgstr "用户名"
-
-msgid "User Overview"
-msgstr "用户概览"
 
 msgid "User Settings"
 msgstr "用户设置"
@@ -11558,16 +11391,6 @@ msgstr "云硬盘 (Cinder)"
 msgid "Volume Backup"
 msgstr "卷备份"
 
-msgid "Volume Backup Details"
-msgstr "卷备份详情"
-
-msgid "Volume Backup Details: {{ backup.name }}"
-msgstr "备份卷详情： {{ backup.name }}"
-
-#, python-format
-msgid "Volume Backup Overview: %(backup_display_name)s"
-msgstr "云硬盘备份概要：%(backup_display_name)s"
-
 msgid "Volume Backup:"
 msgstr "卷备份:"
 
@@ -11578,12 +11401,6 @@ msgid ""
 "Volume Backups are stored using the Object Storage service. You must have "
 "this service activated in order to create a backup."
 msgstr "卷备份使用的是对象存储服务。你必须激活这个对象存储服务才能创建备份。"
-
-msgid "Volume Details"
-msgstr "云硬盘详情"
-
-msgid "Volume Details: {{ volume.name }}"
-msgstr "卷详细信息:{{ volume.name }}"
 
 msgid "Volume Encryption Details"
 msgstr "存储卷加密详情"
@@ -11604,20 +11421,11 @@ msgstr "云硬盘限度"
 msgid "Volume Name"
 msgstr "云硬盘名称"
 
-msgid "Volume Overview"
-msgstr "云硬盘概览"
-
 msgid "Volume Size"
 msgstr "云硬盘大小"
 
 msgid "Volume Snapshot"
 msgstr "云硬盘快照"
-
-msgid "Volume Snapshot Details"
-msgstr "云硬盘快照详情"
-
-msgid "Volume Snapshot Details: {{ snapshot.name }}"
-msgstr "卷快照详情: {{ snapshot.name }}"
 
 msgid "Volume Snapshot Overview"
 msgstr "云硬盘快照概览"

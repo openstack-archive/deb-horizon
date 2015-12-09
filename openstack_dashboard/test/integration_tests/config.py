@@ -68,12 +68,24 @@ SeleniumGroup = [
     cfg.IntOpt('page_timeout',
                default=30,
                help="Page load timeout in seconds"),
+    cfg.StrOpt('screenshots_directory',
+               default="integration_tests_screenshots",
+               help="Output screenshot directory"),
 ]
 
 ScenarioGroup = [
     cfg.StrOpt('ssh_user',
                default='cirros',
                help='ssh username for image file'),
+]
+
+InstancesGroup = [
+    cfg.StrOpt('available_zone',
+               default='nova',
+               help="Zone to be selected for launch Instances"),
+    cfg.StrOpt('image_name',
+               default='cirros-0.3.4-x86_64-uec (24.0 MB)',
+               help="Boot Source to be selected for launch Instances"),
 ]
 
 
@@ -95,5 +107,6 @@ def get_config():
     cfg.CONF.register_opts(SeleniumGroup, group="selenium")
     cfg.CONF.register_opts(ImageGroup, group="image")
     cfg.CONF.register_opts(ScenarioGroup, group="scenario")
+    cfg.CONF.register_opts(InstancesGroup, group="launch_instances")
 
     return cfg.CONF

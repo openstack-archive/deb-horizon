@@ -1,3 +1,13 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Ian Y. Choi <ianyrchoi@gmail.com>, 2015
+# jaekwon.park <jaekwon.park@rockplace.co.kr>, 2014
+# Sungjin Kang <potopro@gmail.com>, 2015
+# whitekid <whitekid@gmail.com>, 2015
+# Yongbok Kim <ruo91@yongbok.net>, 2014
 # Ian Y. Choi <ianyrchoi@gmail.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Sungjin Kang <gang.sungjin@gmail.com>, 2015. #zanata
@@ -5,16 +15,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-10-05 04:26+0000\n"
+"PO-Revision-Date: 2015-10-12 12:58+0000\n"
 "Last-Translator: Ian Y. Choi <ianyrchoi@gmail.com>\n"
-"Language-Team: Korean (South Korea)\n"
 "Language: ko-KR\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Korean (South Korea)\n"
 
 msgid ""
 "\n"
@@ -423,9 +434,6 @@ msgstr ""
 msgid ""
 "\"Some flavors not meeting minimum image requirements have been disabled.\""
 msgstr "\"최소 이미지를 만족하지 못하는 일부 flavor를 비활성되었습니다.\""
-
-msgid "\"Users\""
-msgstr "\"사용자\""
 
 #, python-format
 msgid "%(conf_name)s: %(conf_val)s"
@@ -969,15 +977,6 @@ msgstr "이 볼륨 타입에 QoS 스팩과 관련된 것을 추가, 수정, 제�
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "호스트 집합에 호스트 추가/삭제"
 
-msgid "AddFirewall"
-msgstr "방화벽 추가"
-
-msgid "AddPolicy"
-msgstr "정책 추가"
-
-msgid "AddRule"
-msgstr "규칙 추가"
-
 #, python-format
 msgid "Added Firewall \"%s\"."
 msgstr "방화벽 \"%s\"를 추가하였습니다."
@@ -1186,9 +1185,6 @@ msgstr "허용한 호스트 (선택적)"
 
 msgid "Amount of energy"
 msgstr "전력 합계"
-
-msgid "An external (HTTP) URL to load the image from."
-msgstr "이미지를 외부 (HTTP) URL로 불러옵니다."
 
 msgid "An external (HTTP) URL to load the template from."
 msgstr "템플릿을 외부 (HTTP) URL로 불러옵니다."
@@ -1776,9 +1772,6 @@ msgstr "Cinder 볼륨"
 msgid "Cipher"
 msgstr "암호화 방식"
 
-msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
-msgstr "내부 도메인 라우팅 클레스가 정해지지 않았습니다. (예. 192.168.0.0/24)"
-
 msgid "Clear Domain Context"
 msgstr "도메인 컨텍스트 삭제"
 
@@ -1805,15 +1798,6 @@ msgstr "클러스터 개수"
 msgid "Cluster Creation Guide"
 msgstr "클러스터 생성 가이드"
 
-msgid "Cluster Detail"
-msgstr "클러스터 세부 정보"
-
-msgid "Cluster Details"
-msgstr "클러스터 세부 정보"
-
-msgid "Cluster Details: {{ cluster.name }}"
-msgstr "클러스터 세부 정보: {{ cluster.name }}"
-
 msgid "Cluster Events"
 msgstr "클러스터 이벤트"
 
@@ -1826,9 +1810,6 @@ msgstr "클러스터 인스턴스"
 msgid "Cluster Name"
 msgstr "클러스터 이름"
 
-msgid "Cluster Overview"
-msgstr "클러스터 개요"
-
 msgid "Cluster Size"
 msgstr "클러스터 크기"
 
@@ -1838,9 +1819,6 @@ msgstr "클러스터 템플릿"
 #, python-format
 msgid "Cluster Template %s updated"
 msgstr "업데이트된 클러스터 템플릿 %s"
-
-msgid "Cluster Template Details"
-msgstr "클러스터 템플릿 세부 정보"
 
 msgid "Cluster Template Name"
 msgstr "클러스터 템플릿 이름"
@@ -2339,35 +2317,6 @@ msgstr "작업자 노드 그룹 템플릿 생성"
 msgid "Create a data source"
 msgstr "데이터 소스 생성"
 
-msgid ""
-"Create a firewall based on a policy.\n"
-"\n"
-"A policy must be selected. Other fields are optional."
-msgstr ""
-"정책을 기반으로 방화벽을 생성합니다.\n"
-"\n"
-"정책은 꼭 선택해야 합니다. 다른 항목은 옵션입니다."
-
-msgid ""
-"Create a firewall policy with an ordered list of firewall rules.\n"
-"\n"
-"A name must be given. Firewall rules are added in the order placed under the "
-"Rules tab."
-msgstr ""
-"방화벽 규칙의 명령 목록에서 방화벽 정책을 생성할 수 있습니다.\n"
-"\n"
-"이름을 입력해야 합니다. 방화벽 규칙은 규칙 탭 아래에 배치된 순서대로 추가됩니"
-"다."
-
-msgid ""
-"Create a firewall rule.\n"
-"\n"
-"Protocol and action must be specified. Other fields are optional."
-msgstr ""
-"방화벽 규칙을 생성합니다.\n"
-"\n"
-"프로토콜과 행동을 지정해야 합니다. 다른 필드는 옵션입니다."
-
 msgid "Create a firewall with selected routers."
 msgstr "선택된 라우터와 함께 방화벽 생성합니다."
 
@@ -2593,15 +2542,6 @@ msgstr "현재 비밀번호"
 msgid "Current type:"
 msgstr "현재 유형:"
 
-msgid ""
-"Currently only images available via an HTTP URL are supported. The image "
-"location must be accessible to the Image Service. Compressed image binaries "
-"are supported (.zip and .tar.gz.)"
-msgstr ""
-"현재 HTTP URL을 통해서만 사용 이미지가 지원됩니다. 이미지 위치는 반드시 이미"
-"지 서비스로만 접근하여야 합니다. 압축된 이미지 바이너리를 지원합니다. (.zip "
-"및 .tar.gz.)"
-
 msgid "Custom ICMP Rule"
 msgstr "사용자 정의 ICMP 규칙"
 
@@ -2687,9 +2627,6 @@ msgstr "데이터 프로세싱 가이드"
 msgid "Data Processing Plugin Details"
 msgstr "데이터 처리 플러그인 세부 정보"
 
-msgid "Data Processing Plugin Overview"
-msgstr "데이터 프로세싱 플러그인 개요"
-
 msgid "Data Processing Plugins"
 msgstr "데이터 프로세싱 플러그인"
 
@@ -2705,12 +2642,6 @@ msgstr ""
 
 msgid "Data Source"
 msgstr "데이터 원본"
-
-msgid "Data Source Details"
-msgstr "데이터 소스에 대한 세부 설명"
-
-msgid "Data Source Overview"
-msgstr "데이터 소스 개요"
 
 msgid "Data Source Type"
 msgstr "데이터 소스 타입"
@@ -2776,6 +2707,10 @@ msgstr "날짜를 인식 할 수 없습니다."
 
 msgid "Day"
 msgstr "일"
+
+msgctxt "Current status of an Image"
+msgid "Deactivated"
+msgstr "비활성화됨"
 
 msgid "Dead peer detection action"
 msgstr "죽은 피어 감지 동작"
@@ -3032,15 +2967,9 @@ msgid "Delete Volume Type"
 msgid_plural "Delete Volume Types"
 msgstr[0] "볼륨 타입 삭제"
 
-msgid "Delete on Terminate"
-msgstr "종료 후 삭제"
-
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
 msgstr "서브넷 생성 실패로 생성한 네트워크 \"%s\" 삭제."
-
-msgid "Delete volume on instance terminate"
-msgstr "인스턴스 종료시 볼륨 삭제"
 
 msgid "Deleted"
 msgstr "삭제됨"
@@ -3100,18 +3029,6 @@ msgstr[0] "그룹 삭제함"
 msgid "Deleted Host Aggregate"
 msgid_plural "Deleted Host Aggregates"
 msgstr[0] "삭제된 호스트 집합"
-
-#, python-format
-msgid "Deleted IKE Policy %s"
-msgstr "IKE 정책 %s를 삭제하였습니다."
-
-#, python-format
-msgid "Deleted IPSec Policy %s"
-msgstr "IPSec 정책 %s를 삭제하였습니다."
-
-#, python-format
-msgid "Deleted IPSec Site Connection %s"
-msgstr "IPSec 사이트 연결 %s를 삭제하였습니다."
 
 msgid "Deleted Image"
 msgid_plural "Deleted Images"
@@ -3205,28 +3122,12 @@ msgstr[0] "사용자 삭제함"
 msgid "Deleted VIP %s"
 msgstr "VIP %s를 삭제하였습니다."
 
-#, python-format
-msgid "Deleted VPN Service %s"
-msgstr "VPN 서비스 %s를 삭제하였습니다."
-
 msgid "Deleted Volume Type"
 msgid_plural "Deleted Volume Types"
 msgstr[0] "볼륨 타입 삭제됨"
 
 msgid "Deleted images are not recoverable."
 msgstr "삭제된 이미지는 복구 불가능합니다."
-
-#, python-format
-msgid "Deleted member %s"
-msgstr "멤버 %s를 삭제하였습니다."
-
-#, python-format
-msgid "Deleted monitor %s"
-msgstr "모니터 %s를 삭제하였습니다."
-
-#, python-format
-msgid "Deleted pool %s"
-msgstr "Pool %s를 삭제하였습니다."
 
 msgid "Deleting"
 msgstr "삭제 중"
@@ -3939,9 +3840,9 @@ msgctxt "current status of router"
 msgid "Error"
 msgstr "Error"
 
-msgctxt "status of a neteork port"
+msgctxt "status of a network port"
 msgid "Error"
-msgstr "Error"
+msgstr "오류"
 
 msgid "Error Deleting"
 msgstr "삭제중 오류"
@@ -4081,6 +3982,9 @@ msgstr "확장"
 #, python-format
 msgid "Extending volume: \"%s\""
 msgstr "선택한 볼륨 확장중: \"%s\""
+
+msgid "External"
+msgstr "외부"
 
 msgid "External Fixed IPs"
 msgstr "외부 고정 IP"
@@ -4447,17 +4351,8 @@ msgstr "Finishing Resize or Migrate"
 msgid "Firewall %s was successfully updated."
 msgstr "방화벽 %s를 성공적으로 업데이트하지 못하였습니다."
 
-msgid "Firewall Details"
-msgstr "방화벽 세부 정보"
-
 msgid "Firewall Policies"
 msgstr "방화벽 정책"
-
-msgid "Firewall Policy Details"
-msgstr "방화벽 정책 세부 정보"
-
-msgid "Firewall Rule Details"
-msgstr "방화벽 Rule 세부 정보"
 
 msgid "Firewall Rules"
 msgstr "방화벽 Rule"
@@ -4538,6 +4433,10 @@ msgstr "유동 IP"
 
 msgid "Floating IP Pool"
 msgstr "유동 IP Pool"
+
+#, python-format
+msgid "Floating IP will be removed from VIP \"%s\"."
+msgstr "유동 IP는 VIP \"%s\"에서 제거될 것입니다."
 
 msgid "Floating IP:"
 msgstr "유동 IP:"
@@ -4998,14 +4897,6 @@ msgstr "Identity 서비스는 사용자 데이터를 편집할 수 없습니다.
 msgid "Identity service does not allow editing user password."
 msgstr "Identity 서비스는 사용자 암호를 편집할 수 없습니다."
 
-#, python-format
-msgid ""
-"If \"No volume type\" is selected, the default volume type \"%(name)s\" will "
-"be set for the created volume."
-msgstr ""
-"\"볼륨 타입 없음\"을 선택하면, 기본 볼륨 형식인 \"%(name)s\"으로 생성된 볼륨"
-"이 설정됩니다."
-
 msgid ""
 "If \"No volume type\" is selected, the volume will be created without a "
 "volume type."
@@ -5040,17 +4931,6 @@ msgstr ""
 "선택한 경우, 클러스터 생성시 노드 그룹에 대한 인스턴스가 자동으로 구성될 것입"
 "니다. 그렇지 않으면 수동으로 구성 값을 지정해야 합니다."
 
-msgid ""
-"If you select an image via an HTTP URL, the Image Location field MUST be a "
-"valid and direct URL to the image binary; it must also be accessible to the "
-"Image Service. URLs that redirect or serve error pages will result in "
-"unusable images."
-msgstr ""
-"HTTP URL을 통해서 이미지를 선택하면, 이미지 위치 필드는 유효해야하고 이미지 "
-"바이너리에 직접 연결된 URL이어야 합니다. 또한 이미지 서비스에서 접근할 수 있"
-"어야합니다. 리다이렉션 URL이거나 오류 페이지를 지원하는 경우, 이미지를 가져"
-"올 수 없습니다."
-
 msgid "Image"
 msgstr "이미지"
 
@@ -5064,12 +4944,6 @@ msgstr "이미지 (Glance)"
 msgctxt "Task status of an Instance"
 msgid "Image Backup"
 msgstr "Image Backup"
-
-msgid "Image Details"
-msgstr "이미지 세부 정보"
-
-msgid "Image Details: {{ image.name }}"
-msgstr "이미지 세부 정보: {{ image.name }}"
 
 msgid "Image File"
 msgstr "이미지 파일"
@@ -5085,9 +4959,6 @@ msgstr "이미지 이름"
 
 msgid "Image Name ="
 msgstr "Image Name ="
-
-msgid "Image Overview"
-msgstr "이미지 개요"
 
 msgctxt "Task status of an Instance"
 msgid "Image Pending Upload"
@@ -5134,13 +5005,6 @@ msgstr "이미지를 성공적으로 업데이트 하였습니다."
 
 msgid "Images"
 msgstr "이미지"
-
-msgid ""
-"Images can be provided via an HTTP URL or be uploaded from your local file "
-"system. Compressed image binaries are supported (.zip and .tar.gz.)"
-msgstr ""
-"이미지를 HTTP URL을 통해서 제공하는 것을 사용하거나 로컬 파일 시스템에서 업로"
-"드할 수 있습니다. 압축 이미지 바이너리도 지원합니다. (.zip과 .tar.gz)"
 
 msgid "Implementation"
 msgstr "구현"
@@ -5279,12 +5143,6 @@ msgstr "인스턴스 콘솔 로그"
 msgid "Instance Count"
 msgstr "인스턴스 카운트"
 
-msgid "Instance Details"
-msgstr "인스턴스 세부 정보"
-
-msgid "Instance Details: {{ instance.name }}"
-msgstr "인스턴스 세부 정보: {{ instance.name }}"
-
 msgid "Instance ID"
 msgstr "인스턴스 ID"
 
@@ -5397,20 +5255,8 @@ msgstr "Job"
 msgid "Job Binaries"
 msgstr "Job 바이너리"
 
-msgid "Job Binary Details"
-msgstr "Job 바이너리에 대한 세부 정보"
-
-msgid "Job Binary Overview"
-msgstr "Job 바이너리 개요"
-
 msgid "Job Configuration"
 msgstr "Job 구성"
-
-msgid "Job Details"
-msgstr "Job에 대한 세부 정보"
-
-msgid "Job Execution Details"
-msgstr "Job 실행에 대한 세부 정보"
 
 msgid "Job Execution Guide"
 msgstr "Job 실행 가이드"
@@ -5421,14 +5267,8 @@ msgstr "Job 실행 ID"
 msgid "Job Guide"
 msgstr "Job 가이드"
 
-msgid "Job Overview"
-msgstr "Job 개요"
-
 msgid "Job Template"
 msgstr "Job 템플릿"
-
-msgid "Job Template Details"
-msgstr "Job 템플릿 세부 정보"
 
 msgid "Job Templates"
 msgstr "Job 템플릿"
@@ -5877,9 +5717,6 @@ msgstr "최대 재시도 (1~10)"
 msgid "Max."
 msgstr "최대"
 
-msgid "Max. Size (MB)"
-msgstr "최대 크기 (MB)"
-
 msgid "Maximum Transmission Unit size for the connection"
 msgstr "연결에 대한 최대 전달 단위 크기"
 
@@ -5988,9 +5825,6 @@ msgstr "최소 RAM"
 
 msgid "Min."
 msgstr "최소"
-
-msgid "Min. Size (MB)"
-msgstr "최소 크기 (MB)"
 
 msgid "Minimum Disk (GB)"
 msgstr "최소 디스크 (GB)"
@@ -6123,12 +5957,6 @@ msgstr "%s의 네임스페이스가 생성 되었습니다."
 
 msgid "Namespace Definition Source"
 msgstr "소스의 네임스페이스를 정의"
-
-msgid "Namespace Details"
-msgstr "네임스페이스 세부 정보"
-
-msgid "Namespace Details: {{ namespace.namespace }}"
-msgstr "네임스페이스 세부 정보: {{ namespace.namespace }}"
 
 msgid "Namespace JSON"
 msgstr "JSON 네임스페이스"
@@ -6527,9 +6355,6 @@ msgstr "노드 그룹"
 msgid "Node Group Template %s updated"
 msgstr "업데이트된 노드 그룹 템플릿 %s"
 
-msgid "Node Group Template Details"
-msgstr "노드 그룹 템플릿에 대한 세부 정보"
-
 #, python-format
 msgid "Node Group Template copy %s created"
 msgstr "노드 그룹 템플릿 복사본 %s를 생성함"
@@ -6555,9 +6380,6 @@ msgstr "노드 그룹 클러스터"
 
 msgid "Node processes are not specified"
 msgstr "노드 프로세스를 선택하지 않았습니다."
-
-msgid "Nodegroup Template Details"
-msgstr "노드 그룹 템플릿에 대한 세부 정보"
 
 msgid "Nodes Count"
 msgstr "노드 개수"
@@ -7095,9 +6917,6 @@ msgstr "포트 %s를 성공적으로 생성하였습니다."
 msgid "Port %s was successfully updated."
 msgstr "포트 %s를 성공적으로 업데이트 하였습니다."
 
-msgid "Port Details"
-msgstr "포트 세부 정보들"
-
 msgid "Port ID"
 msgstr "포트 ID"
 
@@ -7198,10 +7017,6 @@ msgstr "Project ="
 msgid "Project Details"
 msgstr "프로젝트 세부 정보"
 
-#, python-format
-msgid "Project Details: %s"
-msgstr "프로젝트 세부 정보: %s"
-
 msgid "Project Groups"
 msgstr "프로젝트 그룹"
 
@@ -7222,9 +7037,6 @@ msgstr "프로젝트 멤버"
 
 msgid "Project Name"
 msgstr "프로젝트 이름"
-
-msgid "Project Overview"
-msgstr "프로젝트 개요"
 
 msgid "Project Quotas"
 msgstr "프로젝트 Quotas"
@@ -7653,12 +7465,6 @@ msgstr "볼륨 \"%s\" 크기 조정"
 msgid "Resource"
 msgstr "리소스"
 
-msgid "Resource Details"
-msgstr "리소스 세부 정보"
-
-msgid "Resource Details: {{ resource.resource_name }}"
-msgstr "리소스 세부 정보: {{ resource.resource_name }}"
-
 msgid "Resource ID"
 msgstr "리소스 ID"
 
@@ -7667,12 +7473,6 @@ msgstr "리소스 메타데이터"
 
 msgid "Resource Overview"
 msgstr "리소스 개요"
-
-msgid "Resource Type"
-msgstr "자원 유형"
-
-msgid "Resource Type Details"
-msgstr "자원 유형 세부 정보"
 
 msgid "Resource Types"
 msgstr "자원 유형"
@@ -7865,9 +7665,6 @@ msgstr "라우터 %s를 성공적으로 생성하였습니다."
 #, python-format
 msgid "Router %s was successfully updated."
 msgstr "라우터 %s를 성공적으로 업데이트 했습니다."
-
-msgid "Router Details"
-msgstr "라우터 세부 정보"
 
 msgid "Router ID"
 msgstr "라우터 ID"
@@ -8065,14 +7862,6 @@ msgstr[0] "인스턴스 예약 마이그레이션 (확인 대기중)"
 #, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr "인스턴스  \"%s\" 예약된 크기 조정."
-
-msgid "Scheduled termination of Cluster"
-msgid_plural "Scheduled termination of Clusters"
-msgstr[0] "클러스터 예약 종료"
-
-msgid "Scheduled termination of Instance"
-msgid_plural "Scheduled termination of Instances"
-msgstr[0] "인스턴스 예약 종료"
 
 msgctxt "Task status of an Instance"
 msgid "Scheduling"
@@ -8775,12 +8564,6 @@ msgstr ""
 msgid "Specs"
 msgstr "사양"
 
-msgid "Stack Details"
-msgstr "스택 세부 정보들"
-
-msgid "Stack Details: {{ stack.stack_name }}"
-msgstr "스택 세부 정보: {{ stack.stack_name }}"
-
 msgid "Stack Events"
 msgstr "스택 이벤트"
 
@@ -8789,9 +8572,6 @@ msgstr "스택 ID"
 
 msgid "Stack Name"
 msgstr "스택 이름"
-
-msgid "Stack Overview"
-msgstr "스택 개요"
 
 msgid "Stack Parameters"
 msgstr "스택 매개 변수"
@@ -8934,9 +8714,6 @@ msgstr "서브넷 ID"
 
 msgid "Subnet Name"
 msgstr "서브넷 이름"
-
-msgid "Subnet Overview"
-msgstr "서브넷 개요"
 
 msgid "Subnet list can not be retrieved."
 msgstr "서브넷 목록을 찾을 수 없습니다."
@@ -9202,9 +8979,6 @@ msgstr "템플릿 파일"
 msgid "Template Name"
 msgstr "템플릿 이름"
 
-msgid "Template Overview"
-msgstr "템플릿 개요"
-
 msgid "Template Source"
 msgstr "템플릿 소스"
 
@@ -9213,20 +8987,6 @@ msgstr "템플릿 URL"
 
 msgid "Template not specified"
 msgstr "템플릿이 선택되지 않았습니다."
-
-msgid "Terminate Cluster"
-msgid_plural "Terminate Clusters"
-msgstr[0] "클러스터 종료"
-
-msgid "Terminate Instance"
-msgid_plural "Terminate Instances"
-msgstr[0] "인스턴스 종료"
-
-msgid "Terminated cluster is not recoverable."
-msgstr "종료된 클러스터는 복구할 수 없습니다."
-
-msgid "Terminated instances are not recoverable."
-msgstr "종료된 인스턴스는 복구 불가능합니다."
 
 msgid ""
 "The \"Bootable\" flag specifies that this volume can be used to launch an "
@@ -10094,24 +9854,24 @@ msgid "Unable to create volume."
 msgstr "볼륨을 생성할 수 없습니다."
 
 #, python-format
-msgid "Unable to delete IKE Policy: %s"
-msgstr "IKE 정책을 삭제할 수 없습니다: %s"
+msgid "Unable to delete IKE Policy. %s"
+msgstr "IKE 정책을 삭제할 수 없습니다. %s"
 
 #, python-format
-msgid "Unable to delete IPSec Policy: %s"
-msgstr "IPSec 정책을 삭제할 수 없습니다: %s"
+msgid "Unable to delete IPSec Policy. %s"
+msgstr "IPSec 정책을 삭제할 수 없습니다. %s"
 
 #, python-format
-msgid "Unable to delete IPSec Site Connection: %s"
-msgstr "IPSec Site 연결을 삭제할 수 없습니다: %s"
+msgid "Unable to delete IPSec Site Connection. %s"
+msgstr "IPSec 사이트 연결을 삭제할 수 없습니다. %s"
 
 #, python-format
 msgid "Unable to delete VIP. %s"
 msgstr "VIP를 삭제할 수 없습니다. %s"
 
 #, python-format
-msgid "Unable to delete VPN Service: %s"
-msgstr "VPN 서비스를 삭제할 수 없습니다: %s"
+msgid "Unable to delete VPN Service. %s"
+msgstr "VPN 서비스를 삭제할 수 없습니다. %s"
 
 msgid "Unable to delete container."
 msgstr "컨테이너를 삭제할 수 없습니다."
@@ -11256,9 +11016,6 @@ msgstr "오브젝트를 업로드 할 수 없습니다."
 msgid "Unable to upload volume to image for volume: \"%s\""
 msgstr "볼륨에대한 이미지를 볼륨 업로드를 할 수 없습니다: \"%s\""
 
-msgid "Undefined"
-msgstr "정의되지 않음"
-
 msgid "Unit"
 msgstr "유닛"
 
@@ -11580,17 +11337,11 @@ msgstr "사용자 인증서 세부 정보"
 msgid "User Details"
 msgstr "사용자 세부 정보"
 
-msgid "User Details: {{ user.name }}"
-msgstr "사용자 세부 사항: {{ user.name }}"
-
 msgid "User ID"
 msgstr "사용자 ID"
 
 msgid "User Name"
 msgstr "사용자 이름"
-
-msgid "User Overview"
-msgstr "사용자 개요"
 
 msgid "User Settings"
 msgstr "사용자 설정"
@@ -11772,16 +11523,6 @@ msgstr "볼륨 (Cinder)"
 msgid "Volume Backup"
 msgstr "볼륨 백업"
 
-msgid "Volume Backup Details"
-msgstr "볼륨 백업 상세 정보"
-
-msgid "Volume Backup Details: {{ backup.name }}"
-msgstr "볼륨 백업 세부 정보: {{ backup.name }}"
-
-#, python-format
-msgid "Volume Backup Overview: %(backup_display_name)s"
-msgstr "볼륨 백업 개요: %(backup_display_name)s"
-
 msgid "Volume Backup:"
 msgstr "볼륨 백업"
 
@@ -11794,12 +11535,6 @@ msgid ""
 msgstr ""
 "볼륨 백업은 오브젝트 스토리지 서비스를 사용하여 저장됩니다. 백업을 생성하기 "
 "위해 활성화된 서비스가 있어야합니다."
-
-msgid "Volume Details"
-msgstr "볼륨 세부 정보"
-
-msgid "Volume Details: {{ volume.name }}"
-msgstr "볼륨 세부 정보: {{ volume.name }}"
 
 msgid "Volume Encryption Details"
 msgstr "볼륨 암호화 세부 정보"
@@ -11820,20 +11555,11 @@ msgstr "볼륨 제한"
 msgid "Volume Name"
 msgstr "볼륨 이름"
 
-msgid "Volume Overview"
-msgstr "볼륨 개요"
-
 msgid "Volume Size"
 msgstr "볼륨 크기"
 
 msgid "Volume Snapshot"
 msgstr "볼륨 스냅샷"
-
-msgid "Volume Snapshot Details"
-msgstr "볼륨 스냅샷 세부 정보"
-
-msgid "Volume Snapshot Details: {{ snapshot.name }}"
-msgstr "볼륨 스냅샷 세부 정보: {{ snapshot.name }}"
 
 msgid "Volume Snapshot Overview"
 msgstr "볼륨 스냅샷 개요"

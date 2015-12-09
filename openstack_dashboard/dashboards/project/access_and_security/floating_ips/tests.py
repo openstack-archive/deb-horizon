@@ -25,8 +25,6 @@ from mox3.mox import IsA  # noqa
 import six
 
 from openstack_dashboard import api
-from openstack_dashboard.dashboards.project.access_and_security \
-    .floating_ips import tables
 from openstack_dashboard.test import helpers as test
 from openstack_dashboard.usage import quotas
 
@@ -222,6 +220,68 @@ class FloatingIpViewTests(test.TestCase):
                                    'server_list',),
                         quotas: ('tenant_quota_usages',),
                         api.base: ('is_service_enabled',)})
+    def test_allocate_button_attributes(self):
+        keypairs = self.keypairs.list()
+        floating_ips = self.floating_ips.list()
+        floating_pools = self.pools.list()
+        quota_data = self.quota_usages.first()
+        quota_data['floating_ips']['available'] = 10
+        sec_groups = self.security_groups.list()
+
+        api.network.floating_ip_supported(
+            IsA(http.HttpRequest)) \
+            .AndReturn(True)
+        api.network.tenant_floating_ip_list(
+            IsA(http.HttpRequest)) \
+            .AndReturn(floating_ips)
+        api.network.security_group_list(
+            IsA(http.HttpRequest)).MultipleTimes()\
+            .AndReturn(sec_groups)
+        api.network.floating_ip_pools_list(
+            IsA(http.HttpRequest)) \
+            .AndReturn(floating_pools)
+        api.nova.keypair_list(
+            IsA(http.HttpRequest)) \
+            .AndReturn(keypairs)
+        api.nova.server_list(
+            IsA(http.HttpRequest)) \
+            .AndReturn([self.servers.list(), False])
+        quotas.tenant_quota_usages(
+            IsA(http.HttpRequest)).MultipleTimes() \
+            .AndReturn(quota_data)
+
+        api.base.is_service_enabled(
+            IsA(http.HttpRequest),
+            'network').MultipleTimes() \
+            .AndReturn(True)
+        api.base.is_service_enabled(
+            IsA(http.HttpRequest),
+            'ec2').MultipleTimes() \
+            .AndReturn(False)
+
+        self.mox.ReplayAll()
+
+        res = self.client.get(INDEX_URL +
+                              "?tab=access_security_tabs__floating_ips_tab")
+
+        allocate_action = self.getAndAssertTableAction(res, 'floating_ips',
+                                                       'allocate')
+        self.assertEqual(set(['ajax-modal']), set(allocate_action.classes))
+        self.assertEqual('Allocate IP To Project',
+                         six.text_type(allocate_action.verbose_name))
+        self.assertEqual(None, allocate_action.policy_rules)
+
+        url = 'horizon:project:access_and_security:floating_ips:allocate'
+        self.assertEqual(url, allocate_action.url)
+
+    @test.create_stubs({api.network: ('floating_ip_supported',
+                                      'tenant_floating_ip_list',
+                                      'security_group_list',
+                                      'floating_ip_pools_list',),
+                        api.nova: ('keypair_list',
+                                   'server_list',),
+                        quotas: ('tenant_quota_usages',),
+                        api.base: ('is_service_enabled',)})
     def test_allocate_button_disabled_when_quota_exceeded(self):
         keypairs = self.keypairs.list()
         floating_ips = self.floating_ips.list()
@@ -266,19 +326,12 @@ class FloatingIpViewTests(test.TestCase):
         res = self.client.get(INDEX_URL +
                               "?tab=access_security_tabs__floating_ips_tab")
 
-        allocate_link = tables.AllocateIP()
-        url = allocate_link.get_link_url()
-        classes = (list(allocate_link.get_default_classes())
-                   + list(allocate_link.classes))
-        link_name = "%s (%s)" % (six.text_type(allocate_link.verbose_name),
-                                 "Quota exceeded")
-        expected_string = ("<a href='%s' title='%s' class='%s disabled' "
-                           "id='floating_ips__action_allocate'>"
-                           "<span class='fa fa-link'>"
-                           "</span>%s</a>"
-                           % (url, link_name, " ".join(classes), link_name))
-        self.assertContains(res, expected_string, html=True,
-                            msg_prefix="The create button is not disabled")
+        allocate_action = self.getAndAssertTableAction(res, 'floating_ips',
+                                                       'allocate')
+        self.assertTrue('disabled' in allocate_action.classes,
+                        'The create button should be disabled')
+        self.assertEqual('Allocate IP To Project (Quota exceeded)',
+                         six.text_type(allocate_action.verbose_name))
 
 
 class FloatingIpNeutronViewTests(FloatingIpViewTests):
@@ -331,6 +384,66 @@ class FloatingIpNeutronViewTests(FloatingIpViewTests):
         api.neutron.subnet_list(IsA(http.HttpRequest)) \
             .AndReturn(self.subnets.list())
         api.neutron.network_list(IsA(http.HttpRequest), shared=False) \
+            .AndReturn(self.networks.list())
+        api.neutron.network_list(IsA(http.HttpRequest), shared=True) \
+            .AndReturn(list())
+        api.network.floating_ip_supported(IsA(http.HttpRequest)) \
+            .AndReturn(True)
+        api.network.tenant_floating_ip_list(IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(self.floating_ips.list())
+        api.network.floating_ip_pools_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.pools.list())
+        api.network.security_group_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.security_groups.list())
+        self.mox.ReplayAll()
+
+        url = reverse('%s:allocate' % NAMESPACE)
+        res = self.client.get(url)
+        self.assertEqual(res.context['usages']['floating_ips']['quota'],
+                         self.neutron_quotas.first().get('floatingip').limit)
+
+    @test.create_stubs({api.nova: ('tenant_quota_get', 'flavor_list',
+                                   'server_list'),
+                        api.network: ('floating_ip_pools_list',
+                                      'floating_ip_supported',
+                                      'security_group_list',
+                                      'tenant_floating_ip_list'),
+                        api.neutron: ('is_extension_supported',
+                                      'tenant_quota_get',
+                                      'network_list',
+                                      'router_list',
+                                      'subnet_list'),
+                        api.base: ('is_service_enabled',)})
+    @test.update_settings(OPENSTACK_NEUTRON_NETWORK={'enable_quotas': True})
+    def test_correct_quotas_displayed_shared_networks(self):
+        servers = [s for s in self.servers.list()
+                   if s.tenant_id == self.request.user.tenant_id]
+
+        api.base.is_service_enabled(IsA(http.HttpRequest), 'volume') \
+            .AndReturn(False)
+        api.base.is_service_enabled(IsA(http.HttpRequest), 'network') \
+            .MultipleTimes().AndReturn(True)
+        api.nova.tenant_quota_get(IsA(http.HttpRequest), '1') \
+            .AndReturn(self.quotas.first())
+        api.nova.flavor_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.flavors.list())
+        search_opts = {'tenant_id': self.request.user.tenant_id}
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts,
+                             all_tenants=True) \
+            .AndReturn([servers, False])
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest), 'security-group').AndReturn(True)
+        api.neutron.is_extension_supported(IsA(http.HttpRequest), 'quotas') \
+            .AndReturn(True)
+        api.neutron.tenant_quota_get(IsA(http.HttpRequest), self.tenant.id) \
+            .AndReturn(self.neutron_quotas.first())
+        api.neutron.router_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.routers.list())
+        api.neutron.subnet_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.subnets.list())
+        api.neutron.network_list(IsA(http.HttpRequest), shared=False) \
+            .AndReturn(list())
+        api.neutron.network_list(IsA(http.HttpRequest), shared=True) \
             .AndReturn(self.networks.list())
         api.network.floating_ip_supported(IsA(http.HttpRequest)) \
             .AndReturn(True)

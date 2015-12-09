@@ -1,20 +1,27 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Wiktor Jezioro <wikjezioro@op.pl>, 2015
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Łukasz Jernas <deejay1@srem.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-09-27 07:33+0000\n"
+"PO-Revision-Date: 2015-09-27 07:29+0000\n"
 "Last-Translator: Łukasz Jernas <deejay1@srem.org>\n"
-"Language-Team: Polish (Poland)\n"
 "Language: pl-PL\n"
-"X-Generator: Zanata 3.7.1\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2)\n"
+"|| n%100>=20) ? 1 : 2);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Polish (Poland)\n"
 
 msgid "(Max: 16Kb)"
 msgstr "(Max: 16Kb)"
@@ -24,17 +31,6 @@ msgstr "(Zmodyfikowano)"
 
 msgid "(None)"
 msgstr "(brak)"
-
-msgid ""
-"<li><b>Image (with Create New Volume checked)</b>: This options uses an "
-"image to boot the instance, and creates a new volume to persist instance "
-"data. You can specify volume size and whether to delete the volume on "
-"termination of the instance.</li>"
-msgstr ""
-"<li><b>Obraz (z zaznaczoną opcją Utwórz nowy wolumen)</b>: Wykorzystuję "
-"obraz do uruchomienia instancji i tworzy nowy wolumen by przechowywać dane. "
-"Można podać rozmiar wolumenu oraz to czy usunąć wolumen po usunięciu "
-"instancji.</li>"
 
 msgid "<li><b>Image</b>: This option uses an image to boot the instance.</li>"
 msgstr ""
@@ -46,26 +42,6 @@ msgid ""
 msgstr ""
 "<li><b>Migawka instancji</b>: Wykorzystuje migawkę jako źródło uruchomienia "
 "instancji.</li>"
-
-msgid ""
-"<li><b>Volume Snapshot</b>: This option uses a volume snapshot to boot the "
-"instance, and creates a new volume to persist instance data. You can choose "
-"to delete the volume on termination of the instance.</li>"
-msgstr ""
-"<li><b>Migawka wolumenu</b>: Wykorzystuję istniejącą migawkę wolumenu do "
-"uruchomienia instancji i tworzy nowy wolumen do przechowywania danych. Można "
-"wybrać czy należy usunąć wolumen po usunięciu instancji.</li>"
-
-msgid ""
-"<li><b>Volume</b>: This option uses a volume that already exists. It does "
-"not create a new volume. You can choose to delete the volume on termination "
-"of the instance. <em>Note: when selecting Volume, you can only launch one "
-"instance.</em></li>"
-msgstr ""
-"<li><b>Wolumen</b>: Wykorzystuje już istniejący wolumen. Nie tworzy nowego "
-"wolumenu. Można wybrać czy należy usunąć wolumen po usunięciu instancji. "
-"<em>Uwaga: po wybraniu wolumenu można uruchomić z niego tylko jedną "
-"instancję.</em></li>"
 
 msgid ""
 "A floating IP allows instances to be addressable from an external network.\n"
@@ -161,17 +137,11 @@ msgstr "Automatyczne"
 msgid "Availability Zone"
 msgstr "Strefa dostępności"
 
-msgid "Boot Source"
-msgstr "Źródło uruchamiania:"
-
 msgid "Cancel"
 msgstr "Anuluj"
 
 msgid "Cannot get service catalog from keystone."
 msgstr "Nie można pobrać katalogu usług z keystone."
-
-msgid "Cannot get the Nova extension list."
-msgstr "Nie można pobrać listy rozszerzeń Nova."
 
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
@@ -229,9 +199,6 @@ msgstr "źródło danych"
 
 msgid "Default Value"
 msgstr "Domyślna wartość"
-
-msgid "Delete Volume on Terminate"
-msgstr "Usuń wolumen podczas niszczenia"
 
 msgid "Deleted"
 msgstr "Usunięto"
@@ -342,16 +309,6 @@ msgstr ""
 "się dostać do instancji tylko poprzez konsolę VNC."
 
 msgid ""
-"If you select an availability zone and plan to use the boot from volume "
-"option, make sure that the availability zone you select for the instance is "
-"the same availability zone where your bootable volume resides."
-msgstr ""
-"Jeśli wybrano strefę dostępności i planowane jest wykorzystanie opcji "
-"uruchamiania z wolumenu, należy upewnić się, że wybrana strefa dostępności "
-"dla instancji jest taka sama jak strefa dostępności, w której znajduje się "
-"wolumen."
-
-msgid ""
 "If you want to create an instance that uses ephemeral storage, meaning the "
 "instance data is lost when the instance is deleted, then choose one of the "
 "following boot sources:"
@@ -397,16 +354,6 @@ msgid "Instance count is required and must be an integer of at least 1"
 msgstr ""
 "Liczba instancji jest wymagana, powinna być liczbą całkowitą większą lub "
 "równą 1"
-
-msgid ""
-"Instance source is the template used to create an instance. You can use a "
-"snapshot of an existing instance, an image, or a volume (if enabled). You "
-"can also choose to use persistent storage by creating a new volume."
-msgstr ""
-"Źródło instancji to szablon wykorzystywany do jej utworzenia. Można "
-"wykorzystać migawkę istniejącej instancji, obraz lub wolumen (jeśli opcja ta "
-"jest dostępna). Można również wybrać stałe miejsce przechowywania, poprzez "
-"utworzenie nowego wolumenu."
 
 msgid "Insufficient privilege level to view user information."
 msgstr "Brak uprawnień do przeglądania informacji o użytkowniku."
@@ -474,9 +421,6 @@ msgstr "Min. RAM"
 msgid "Min RAM (MB)"
 msgstr "Min. RAM (MB)"
 
-msgid "Min Ram"
-msgstr "Min. Ram"
-
 msgid "Name"
 msgstr "Nazwa"
 
@@ -515,15 +459,6 @@ msgstr "Oczekuje na usunięcie"
 
 msgid "Physical Network"
 msgstr "Sieć fizyczna"
-
-msgid ""
-"Please provide the initial host name for the instance, the availability zone "
-"where it will be deployed, and the instance count. Increase the Count to "
-"create multiple instances with the same settings."
-msgstr ""
-"Należy podać początkową nazwę hosta dla instancji, strefę dostępności gdzie "
-"ma ona zostać uruchomiona oraz liczbę instancji. Można zwiększyć liczbę "
-"instancji, aby utworzyć wiele instancji z tymi samymi ustawieniami."
 
 msgid "Policy check failed."
 msgstr "Sprawdzenie polityki się nie powiodło."
@@ -647,12 +582,6 @@ msgstr "ID segmentacji"
 
 msgid "Select Boot Source"
 msgstr "Wybór źródła uruchamiania"
-
-msgid "Select Source"
-msgstr "Wybierz źródło"
-
-msgid "Select Source Help"
-msgstr "Pomoc wyboru źródła"
 
 msgid "Select a key pair from the available key pairs below."
 msgstr "Należy wybrać parę kluczy z listy dostępnych poniżej."

@@ -2,8 +2,7 @@
   'use strict';
 
   describe('horizon.framework.util.filters', function () {
-    beforeEach(module('horizon.framework.util.i18n'));
-    beforeEach(module('horizon.framework.util.filters'));
+    beforeEach(module('horizon.framework'));
 
     describe('yesno', function () {
       var yesnoFilter;
@@ -47,6 +46,7 @@
 
       it('returns given numeric value properly', function () {
         expect(gbFilter(12)).toBe('12 GB');
+        expect(gbFilter(1200)).toBe('1.17 TB');
         expect(gbFilter(-12)).toBe('-12 GB');
         expect(gbFilter(12.12)).toBe('12.12 GB');
       });
@@ -68,6 +68,7 @@
 
       it('returns given numeric value properly', function () {
         expect(mbFilter(12)).toBe('12 MB');
+        expect(mbFilter(1200)).toBe('1.17 GB');
         expect(mbFilter(-12)).toBe('-12 MB');
         expect(mbFilter(12.12)).toBe('12.12 MB');
       });

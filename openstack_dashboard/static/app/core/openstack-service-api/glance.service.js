@@ -18,9 +18,9 @@
 
   angular
     .module('horizon.app.core.openstack-service-api')
-    .factory('horizon.app.core.openstack-service-api.glance', GlanceAPI);
+    .factory('horizon.app.core.openstack-service-api.glance', glanceAPI);
 
-  GlanceAPI.$inject = [
+  glanceAPI.$inject = [
     'horizon.framework.util.http.service',
     'horizon.framework.widgets.toast.service'
   ];
@@ -30,9 +30,13 @@
    * @name horizon.app.core.openstack-service-api.glance
    * @description Provides direct pass through to Glance with NO abstraction.
    */
-  function GlanceAPI(apiService, toastService) {
+  function glanceAPI(apiService, toastService) {
     var service = {
+      getVersion: getVersion,
       getImage: getImage,
+      createImage: createImage,
+      updateImage: updateImage,
+      deleteImage: deleteImage,
       getImageProps: getImageProps,
       editImageProps: editImageProps,
       getImages: getImages,
@@ -43,20 +47,161 @@
 
     ///////////////
 
+    // Version
+
+    /**
+     * @name horizon.app.core.openstack-service-api.glance.getVersion
+     * @description
+     * Get the version of the Glance API
+     */
+    function getVersion() {
+      return apiService.get('/api/glance/version/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to get the Glance service version.'));
+        });
+    }
+
     // Images
 
     /**
      * @name horizon.app.core.openstack-service-api.glance.getImage
      * @description
      * Get a single image by ID
+     *
      * @param {string} id
      * Specifies the id of the image to request.
+     *
      */
     function getImage(id) {
       return apiService.get('/api/glance/images/' + id)
         .error(function () {
           toastService.add('error', gettext('Unable to retrieve the image.'));
         });
+    }
+
+    /**
+     * @name horizon.app.core.openstack-service-api.glance.createImage
+     * @description
+     * Create a new image. This returns the new image object on success.
+     *
+     * @param {object} image
+     * The image to create
+     *
+     * @param {string} image.name
+     * Name of the image. Required.
+     *
+     * @param {string} image.description
+     * Description of the image. Optional.
+     *
+     * @param {string} image.source_type
+     * Source Type for the image. Only 'url' is supported. Required.
+     *
+     * @param {string} image.disk_format
+     * Format of the image. Required.
+     *
+     * @param {string} image.kernel
+     * Kernel to use for the image. Optional.
+     *
+     * @param {string} image.ramdisk
+     * RamDisk to use for the image. Optional.
+     *
+     * @param {string} image.architecture
+     * Architecture the image. Optional.
+     *
+     * @param {string} image.min_disk
+     * The minimum disk size required to boot the image. Optional.
+     *
+     * @param {string} image.min_ram
+     * The minimum memory size required to boot the image. Optional.
+     *
+     * @param {boolean} image.visibility
+     * values of 'public', 'private', and 'shared' are valid. Required.
+     *
+     * @param {boolean} image.protected
+     * True if the image is protected, false otherwise. Required.
+     *
+     * @param {boolean} image.import_data
+     * True to import the image data to the image service otherwise
+     * image data will be used in its current location
+     *
+     * Any parameters not listed above will be assigned as custom properites.
+     *
+     */
+    function createImage(image) {
+      return apiService.post('/api/glance/images/', image)
+        .error(function () {
+          toastService.add('error', gettext('Unable to create the image.'));
+        });
+    }
+
+    /**
+     * @name horizon.app.core.openstack-service-api.glance.getImage
+     * @description
+     * Update an existing image.
+     *
+     * @param {object} image
+     * The image to update
+     *
+     * @param {string} image.id
+     * ID of the image to update. Required. Read Only.
+     *
+     * @param {string} image.name
+     * Name of the image. Required.
+     *
+     * @param {string} image.description
+     * Description of the image. Optional.
+     *
+     * @param {string} image.disk_format
+     * Disk format of the image. Required.
+     *
+     * @param {string} image.kernel
+     * Kernel to use for the image. Optional.
+     *
+     * @param {string} image.ramdisk
+     * RamDisk to use for the image. Optional.
+     *
+     * @param {string} image.architecture
+     * Architecture the image. Optional.
+     *
+     * @param {string} image.min_disk
+     * The minimum disk size required to boot the image. Optional.
+     *
+     * @param {string} image.min_ram
+     * The minimum memory size required to boot the image. Optional.
+     *
+     * @param {boolean} image.visibility
+     * Values of 'public', 'private', and 'shared' are valid. Required.
+     *
+     * @param {boolean} image.protected
+     * True if the image is protected, false otherwise. Required.
+     *
+     * Any parameters not listed above will be assigned as custom properites.
+     */
+    function updateImage(image) {
+      return apiService.patch('/api/glance/images/' + image.id + '/', image)
+        .error(function () {
+          toastService.add('error', gettext('Unable to update the image.'));
+        });
+    }
+
+    /**
+     * @name horizon.app.core.openstack-service-api.glance.deleteImage
+     * @description
+     * Deletes single Image by ID.
+     *
+     * @param {string} imageId
+     * The Id of the image to delete.
+     *
+     * @param {boolean} suppressError
+     * If passed in, this will not show the default error handling
+     *
+     */
+    function deleteImage(imageId, suppressError) {
+      var promise = apiService.delete('/api/glance/images/' + imageId);
+
+      return suppressError ? promise : promise.error(function() {
+        toastService.add('error', gettext('Unable to delete the image with id: ') + imageId);
+      });
     }
 
     /**

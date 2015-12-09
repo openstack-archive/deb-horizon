@@ -42,7 +42,8 @@ class UpdateRule(forms.SelfHandlingForm):
         help_text=_('Protocol for the firewall rule'))
     action = forms.ChoiceField(
         label=_("Action"), required=False,
-        choices=[('ALLOW', _('ALLOW')), ('DENY', _('DENY'))],
+        choices=[('ALLOW', _('ALLOW')), ('DENY', _('DENY')),
+                 ('REJECT', _('REJECT'))],
         help_text=_('Action for the firewall rule'))
     source_ip_address = forms.IPField(
         label=_("Source IP Address/Subnet"),
@@ -67,6 +68,10 @@ class UpdateRule(forms.SelfHandlingForm):
         validators=[port_validator],
         help_text=_('Destination port (integer in [1, 65535] or range'
                     ' in a:b)'))
+    ip_version = forms.ChoiceField(
+        label=_("IP Version"), required=False,
+        choices=[('4', '4'), ('6', '6')],
+        help_text=_('IP Version for Firewall Rule'))
     shared = forms.BooleanField(label=_("Shared"), required=False)
     enabled = forms.BooleanField(label=_("Enabled"), required=False)
 

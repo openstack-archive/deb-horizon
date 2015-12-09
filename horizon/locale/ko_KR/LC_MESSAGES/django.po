@@ -1,18 +1,27 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Ian Y. Choi <ianyrchoi@gmail.com>, 2015
+# jaekwon.park <jaekwon.park@rockplace.co.kr>, 2014
+# Sungjin Kang <potopro@gmail.com>, 2015
 # Sungjin Kang <gang.sungjin@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-11-18 04:22+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-10-01 11:17+0000\n"
+"PO-Revision-Date: 2015-10-06 02:02+0000\n"
 "Last-Translator: Sungjin Kang <gang.sungjin@gmail.com>\n"
-"Language-Team: Korean (South Korea)\n"
 "Language: ko-KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.0\n"
 "X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Team: Korean (South Korea)\n"
 
 #, python-format
 msgid ""
@@ -206,26 +215,14 @@ msgstr "IP 주소 버전이 잘못되었습니다."
 msgid "Limit Summary"
 msgstr "간략한 요약"
 
-msgid "Log In"
-msgstr "로그인"
-
 msgid "Login"
 msgstr "로그인"
-
-#, python-format
-msgid ""
-"Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
-msgstr ""
-"다른 사용자로 로그인하거나 <a href=\"%(home_url)s\">홈페이지</a>로 되돌아가기"
 
 msgid "Members"
 msgstr "구성원"
 
 msgid "More Actions"
 msgstr "기타 작업"
-
-msgid "N/A"
-msgstr "N/A"
 
 msgid "Navigation Item"
 msgstr "네비게이션 항목"
@@ -273,9 +270,6 @@ msgstr "계속 진행하려면 로그인하십시오."
 msgid "Please select a row before taking that action."
 msgstr "해당 작업을 실행하기 전에 열(row)을 선택하십시오."
 
-msgid "Port number must be integer"
-msgstr "포트 번호는 정수이어야 합니다."
-
 msgid "Processing..."
 msgstr "작업 중..."
 
@@ -293,9 +287,6 @@ msgid "Sell Puppy"
 msgid_plural "Sell Puppies"
 msgstr[0] "강아지 판매"
 
-msgid "Session timed out."
-msgstr "세션 타임 아웃."
-
 msgid "Sign In"
 msgstr "로그인"
 
@@ -311,10 +302,6 @@ msgstr "완료:"
 
 msgid "Summary"
 msgstr "요약"
-
-#, python-format
-msgid "The attribute %(attr)s doesn't exist on %(obj)s."
-msgstr "%(obj)s 에 %(attr)s 속성이 없습니다."
 
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "날짜는 YYYY-mm-dd 형식이어야 합니다."

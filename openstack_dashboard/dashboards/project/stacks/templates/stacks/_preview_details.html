@@ -1,6 +1,5 @@
 {% extends "horizon/common/_modal.html" %}
 {% load i18n %}
-{% load url from future %}
 
 {% block modal-header %}{% trans "Stack Preview" %}{% endblock %}
 
@@ -55,5 +54,5 @@
 {% endblock %}
 
 {% block modal-footer %}
-  <a href="{% url 'horizon:project:access_and_security:index' %}" class="btn btn-default secondary cancel close">{% trans "Close" %}</a>
+  <a href="{% url 'horizon:project:stack:index' %}" class="btn btn-default secondary cancel close">{% trans "Close" %}</a>
 {% endblock %}

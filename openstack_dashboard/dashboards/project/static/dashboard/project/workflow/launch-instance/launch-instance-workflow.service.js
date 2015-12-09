@@ -31,18 +31,28 @@
 
       steps: [
         {
-          title: gettext('Select Source'),
+          id: 'details',
+          title: gettext('Details'),
+          templateUrl: basePath + 'details/details.html',
+          helpUrl: basePath + 'details/details.help.html',
+          formName: 'launchInstanceDetailsForm'
+        },
+        {
+          id: 'source',
+          title: gettext('Source'),
           templateUrl: basePath + 'source/source.html',
           helpUrl: basePath + 'source/source.help.html',
           formName: 'launchInstanceSourceForm'
         },
         {
+          id: 'flavor',
           title: gettext('Flavor'),
           templateUrl: basePath + 'flavor/flavor.html',
           helpUrl: basePath + 'flavor/flavor.help.html',
           formName: 'launchInstanceFlavorForm'
         },
         {
+          id: 'networks',
           title: gettext('Networks'),
           templateUrl: basePath + 'network/network.html',
           helpUrl: basePath + 'network/network.help.html',
@@ -50,18 +60,21 @@
           requiredServiceTypes: ['network']
         },
         {
+          id: 'secgroups',
           title: gettext('Security Groups'),
           templateUrl: basePath + 'security-groups/security-groups.html',
           helpUrl: basePath + 'security-groups/security-groups.help.html',
           formName: 'launchInstanceAccessAndSecurityForm'
         },
         {
+          id: 'keypair',
           title: gettext('Key Pair'),
           templateUrl: basePath + 'keypair/keypair.html',
           helpUrl: basePath + 'keypair/keypair.help.html',
           formName: 'launchInstanceKeypairForm'
         },
         {
+          id: 'configuration',
           title: gettext('Configuration'),
           templateUrl: basePath + 'configuration/configuration.html',
           helpUrl: basePath + 'configuration/configuration.help.html',

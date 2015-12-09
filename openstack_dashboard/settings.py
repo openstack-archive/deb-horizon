@@ -60,6 +60,7 @@ HORIZON_CONFIG = {
         'fade_duration': 1500,
         'types': ['alert-success', 'alert-info']
     },
+    'bug_url': None,
     'help_url': "http://docs.openstack.org",
     'exceptions': {'recoverable': exceptions.RECOVERABLE,
                    'not_found': exceptions.NOT_FOUND,
@@ -179,13 +180,11 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_SECURE = False
-SESSION_TIMEOUT = 1800
-# A token can be near the end of validity when a page starts loading, and
-# invalid during the rendering which can cause errors when a page load.
-# TOKEN_TIMEOUT_MARGIN defines a time in seconds we retrieve from token
-# validity to avoid this issue. You can adjust this time depending on the
-# performance of the infrastructure.
-TOKEN_TIMEOUT_MARGIN = 10
+
+# SESSION_TIMEOUT is a method to supersede the token timeout with a shorter
+# horizon session timeout (in seconds).  So if your token expires in 60
+# minutes, a value of 1800 will log users out after 30 minutes
+SESSION_TIMEOUT = 3600
 
 # When using cookie-based sessions, log error when the session cookie exceeds
 # the following size (common browsers drop cookies above a certain size):
@@ -201,8 +200,10 @@ LANGUAGES = (
     ('de', 'German'),
     ('en', 'English'),
     ('en-au', 'Australian English'),
+    ('en-gb', 'British English'),
     ('es', 'Spanish'),
     ('fr', 'French'),
+    ('it', 'Italian'),
     ('ja', 'Japanese'),
     ('ko', 'Korean (Korea)'),
     ('pl', 'Polish'),
@@ -354,8 +355,8 @@ if not SECRET_KEY:
     SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
                                                        '.secret_key_store'))
 
-from openstack_dashboard import policy_backend
-POLICY_CHECK_FUNCTION = policy_backend.check
+from openstack_auth import policy
+POLICY_CHECK_FUNCTION = policy.check
 
 # Add HORIZON_CONFIG to the context information for offline compression
 COMPRESS_OFFLINE_CONTEXT = {
@@ -373,3 +374,5 @@ if DEBUG:
 # below may be omitted, though it should not be harmful
 from openstack_auth import utils as auth_utils
 auth_utils.patch_middleware_get_user()
+
+CSRF_COOKIE_AGE = None

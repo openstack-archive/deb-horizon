@@ -12,13 +12,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import json
-
 from django.core.urlresolvers import reverse
 from django import http
 import django.test
 
 from mox3.mox import IsA  # noqa
+from oslo_serialization import jsonutils
 
 from openstack_dashboard import api
 from openstack_dashboard.test import helpers as test
@@ -76,7 +75,7 @@ class NetworkTopologyTests(test.TestCase):
 
         res = self.client.get(JSON_URL)
         self.assertEqual('text/json', res['Content-Type'])
-        data = json.loads(res.content)
+        data = jsonutils.loads(res.content)
 
         # servers
         # result_server_urls = [(server['id'], server['url'])
@@ -90,7 +89,7 @@ class NetworkTopologyTests(test.TestCase):
             for server in self.servers.list()]
         self.assertEqual(expect_server_urls, data['servers'])
 
-        # rotuers
+        # routers
         # result_router_urls = [(router['id'], router['url'])
         #                       for router in data['routers']]
         if router_enable:

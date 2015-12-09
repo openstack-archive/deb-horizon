@@ -11,8 +11,6 @@
     var $scope, $element;
 
     beforeEach(module('horizon.framework'));
-    beforeEach(module('horizon.framework.widgets'));
-    beforeEach(module('horizon.framework.util.bind-scope'));
 
     beforeEach(module('horizon.framework.util.bind-scope', function ($compileProvider) {
       /* eslint-disable angular/ng_module_getter */
@@ -39,9 +37,9 @@
       $scope = $injector.get('$rootScope').$new();
 
       $scope.fakeData = [
-          { id: '1', animal: 'cat' },
-          { id: '2', animal: 'dog' },
-          { id: '3', animal: 'fish' }
+        { id: '1', animal: 'cat' },
+        { id: '2', animal: 'dog' },
+        { id: '3', animal: 'fish' }
       ];
 
       var markup = '<test-bind-scope item-list="fakeData">{$ item.animal $}</test-bind-scope>';

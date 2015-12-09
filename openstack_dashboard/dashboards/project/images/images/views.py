@@ -29,6 +29,7 @@ from horizon import tabs
 from horizon.utils import memoized
 
 from openstack_dashboard import api
+from openstack_dashboard.utils import filters
 
 from openstack_dashboard.dashboards.project.images.images \
     import forms as project_forms
@@ -116,8 +117,8 @@ class UpdateView(forms.ModalFormView):
 
 class DetailView(tabs.TabView):
     tab_group_class = project_tabs.ImageDetailTabs
-    template_name = 'project/images/images/detail.html'
-    page_title = _("Image Details: {{ image.name }}")
+    template_name = 'horizon/common/_detail.html'
+    page_title = "{{ image.name }}"
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
@@ -126,13 +127,8 @@ class DetailView(tabs.TabView):
         context["image"] = image
         context["url"] = self.get_redirect_url()
         context["actions"] = table.render_row_actions(image)
-        status_label = [label for (value, label) in
-                        project_tables.ImagesTable.STATUS_DISPLAY_CHOICES
-                        if value.lower() == (image.status or '').lower()]
-        if status_label:
-            image.status_label = status_label[0]
-        else:
-            image.status_label = image.status
+        choices = project_tables.ImagesTable.STATUS_DISPLAY_CHOICES
+        image.status_label = filters.get_display_label(choices, image.status)
         return context
 
     @staticmethod

@@ -1,18 +1,24 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: Bengali (India)\n"
+"PO-Revision-Date: 2015-09-08 11:14+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language: bn-IN\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Bengali (India)\n"
 
 #, python-format
 msgid ""
@@ -582,15 +588,6 @@ msgstr "নিয়ম যোগ করুন"
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "সমুহতে হোস্ট যোগ করুন/সরিয়ে ফেলুন"
 
-msgid "AddFirewall"
-msgstr "ফায়ারওয়াল যোগ করুন"
-
-msgid "AddPolicy"
-msgstr "নীতি যোগ করুন"
-
-msgid "AddRule"
-msgstr "নিয়ম যোগ করুন"
-
 #, python-format
 msgid "Added Firewall \"%s\"."
 msgstr "যোগ করা ফায়ারওয়াল \"%s\"."
@@ -743,9 +740,6 @@ msgstr "অনুমোদিত হোস্ট (বৈকল্পিক)"
 
 msgid "Amount of energy"
 msgstr "শক্তির পরিমাণ"
-
-msgid "An external (HTTP) URL to load the image from."
-msgstr "থেকে ইমেজ লোড করতে একটি বাহ্যিক (HTTP) URL."
 
 msgid "An external (HTTP) URL to load the template from."
 msgstr "থেকে টেমপ্লেট লোড করতে একটি বাহ্যিক (HTTP) URL."
@@ -1112,9 +1106,6 @@ msgstr "সিন্ডার ভলিয়্যুম"
 msgid "Cipher"
 msgstr "সিফার"
 
-msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
-msgstr "শ্রেণিহীন ইন্টার-ডোমেন রাউটিং (যেমন 192.168.0.0/24)"
-
 msgid "Clear Domain Context"
 msgstr "ডোমেন প্রসঙ্গ পরিষ্কার করুন"
 
@@ -1127,23 +1118,14 @@ msgstr "বন্ধ করুন"
 msgid "Cluster"
 msgstr "ক্লস্টার"
 
-msgid "Cluster Details"
-msgstr "ক্লস্টার বিশদ"
-
 msgid "Cluster Instances"
 msgstr "ক্লস্টার উদাহরণ"
 
 msgid "Cluster Name"
 msgstr "ক্লস্টার নাম"
 
-msgid "Cluster Overview"
-msgstr "ক্লস্টার একনজর"
-
 msgid "Cluster Template"
 msgstr "ক্লস্টার টেমপ্লেট"
-
-msgid "Cluster Template Details"
-msgstr "ক্লস্টার টেমপ্লেট বিশদ"
 
 msgid "Cluster Template Name"
 msgstr "ক্লস্টার টেমপ্লেট নাম"
@@ -1540,35 +1522,6 @@ msgid "Create a Volume Type"
 msgstr "ভলিয়্যুম প্রকার তৈরি করুন"
 
 msgid ""
-"Create a firewall based on a policy.\n"
-"\n"
-"A policy must be selected. Other fields are optional."
-msgstr ""
-"নীতির ভিত্তিতে একটি ফায়ারওয়াল তৈরি করুন.\n"
-"\n"
-"একটি নীতি নির্বাচিত হওয়া চাই. অন্যান্য ক্ষেত্রগুলি বৈকল্পিক."
-
-msgid ""
-"Create a firewall policy with an ordered list of firewall rules.\n"
-"\n"
-"A name must be given. Firewall rules are added in the order placed under the "
-"Rules tab."
-msgstr ""
-"ফায়ারওয়াল নিয়মের আদেশ দেওয়া তালিকা সহ একটি ফায়ারওয়াল নীতি তৈরি করুন.\n"
-"\n"
-"একটি নাম অবশ্যই দেওয়া চাই. ফায়ারওয়াল নিয়মগুলি নিয়ম ট্যাবের অধীনে রাখা ক্রমে যুক্ত "
-"হয়."
-
-msgid ""
-"Create a firewall rule.\n"
-"\n"
-"Protocol and action must be specified. Other fields are optional."
-msgstr ""
-"ফায়ারওয়াল নিয়ম তৈরি করুন.\n"
-"\n"
-"প্রোটোকল ও ক্রিয়া নির্দিষ্ট হওয়া চাই. অন্যান্য ক্ষেত্রগুলি বৈকল্পিক."
-
-msgid ""
 "Create a monitor template.\n"
 "\n"
 "Select type of monitoring. Specify delay, timeout, and retry limits required "
@@ -1751,14 +1704,6 @@ msgstr "বর্তমান আয়তন (GB)"
 msgid "Current password"
 msgstr "বর্তমান পাসওয়ার্ড"
 
-msgid ""
-"Currently only images available via an HTTP URL are supported. The image "
-"location must be accessible to the Image Service. Compressed image binaries "
-"are supported (.zip and .tar.gz.)"
-msgstr ""
-"বর্তমানে HTTP URL এর মাধ্যমে লভ্য  ইমেজগুলিই সমর্থিত. ইমেজ স্থান ইমেজ সেবাতে "
-"প্রবেশযোগ্য হওয়া চাই. সংকুচিত ইমেজ বাইনারী সমর্থিত (.zip এবং .tar.gz.)"
-
 msgid "Custom ICMP Rule"
 msgstr "ব্যবহর্তা-বিহিত ICMP নিয়ম"
 
@@ -1805,9 +1750,6 @@ msgstr "ডেটা প্রক্রিয়ণ"
 msgid "Data Processing Plugin Details"
 msgstr "ডেটা প্রক্রিয়ণ প্লাগইন বিশদ"
 
-msgid "Data Processing Plugin Overview"
-msgstr "ডেটা প্রক্রিয়ণ প্লাগইন একনজর"
-
 msgid "Data Processing Plugins"
 msgstr "ডেটা প্রক্রিয়ণ প্লাগইন"
 
@@ -1820,12 +1762,6 @@ msgid ""
 msgstr ""
 "ডেটা প্রক্রিয়ণ বিভিন্ন ভাণ্ডার অবস্থান বিকল্প প্রদান করে. আপনি উদাহরণে সংযুক্ত অস্থায়ী "
 "ড্রাইভ বা সিন্ডার ভলিয়্যুম বাছতে পারেন."
-
-msgid "Data Source Details"
-msgstr "ডেটা উত্স বিশদ"
-
-msgid "Data Source Overview"
-msgstr "ডেটা উত্স একনজর"
 
 msgid "Data Source Type"
 msgstr "ডেটা উত্স প্রকার"
@@ -1899,15 +1835,9 @@ msgstr "স্থিতক"
 msgid "Delay"
 msgstr "দেরী"
 
-msgid "Delete on Terminate"
-msgstr "সমাপ্তিতে মুছে ফেলুন"
-
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
 msgstr "সাবনেট নির্মাণ ব্যর্থের কারণে তৈরি করা নেটওয়ার্ক \"%s\" মুছে ফেলুন."
-
-msgid "Delete volume on instance terminate"
-msgstr "উদাহরণ সমাপ্তিতে ভলিয়্যুম মুছে ফেলুন"
 
 msgid "Deleted"
 msgstr "মোছা"
@@ -1921,36 +1851,8 @@ msgid "Deleted"
 msgstr "মোছা"
 
 #, python-format
-msgid "Deleted IKE Policy %s"
-msgstr "মুছে ফেলা IKE নীতি %s"
-
-#, python-format
-msgid "Deleted IPSec Policy %s"
-msgstr "মুছে ফেলা IPSec নীতি %s"
-
-#, python-format
-msgid "Deleted IPSec Site Connection %s"
-msgstr "মুছে ফেলা IPSec সাইট সংযোগ %s"
-
-#, python-format
 msgid "Deleted VIP %s"
 msgstr "মোছা VIP %s"
-
-#, python-format
-msgid "Deleted VPN Service %s"
-msgstr "মুছে ফেলা VPN সেবা %s"
-
-#, python-format
-msgid "Deleted member %s"
-msgstr "মোছা সদস্য %s"
-
-#, python-format
-msgid "Deleted monitor %s"
-msgstr "মোছা মনিটর %s"
-
-#, python-format
-msgid "Deleted pool %s"
-msgstr "মোছা পুল %s"
 
 msgid "Deleting"
 msgstr "মুছে ফেলছে"
@@ -2515,10 +2417,6 @@ msgctxt "current status of router"
 msgid "Error"
 msgstr "ভুল"
 
-msgctxt "status of a neteork port"
-msgid "Error"
-msgstr "ভুল"
-
 msgid "Error Deleting"
 msgstr "মুছতে ভুল"
 
@@ -2865,17 +2763,8 @@ msgstr "ফিঙ্গারপ্রিন্ট"
 msgid "Firewall %s was successfully updated."
 msgstr "ফায়ারওয়াল %s সফলভাবে আপডেট হয়েছিল."
 
-msgid "Firewall Details"
-msgstr "ফায়ারওয়াল বিশদ"
-
 msgid "Firewall Policies"
 msgstr "ফায়ারওয়াল নীতিগুলি"
-
-msgid "Firewall Policy Details"
-msgstr "ফায়ারওয়াল নীতি বিশদ"
-
-msgid "Firewall Rule Details"
-msgstr "ফায়ারওয়াল নিয়ম বিশদ"
 
 msgid "Firewall Rules"
 msgstr "ফায়ারওয়াল নিয়মগুলি"
@@ -3342,16 +3231,6 @@ msgstr ""
 "কোনো কন্টেনার নাম না দেওয়া থাকলে, আপনার জন্য ভলিয়্যুমব্যাকআপ নামে একটি ডিফল্ট "
 "কন্টেনার দেওয়া হবে. ব্যাকআপ ভলিয়্যুমের মতো একই আয়তনের হবে যেখানে এর উত্স."
 
-msgid ""
-"If you select an image via an HTTP URL, the Image Location field MUST be a "
-"valid and direct URL to the image binary; it must also be accessible to the "
-"Image Service. URLs that redirect or serve error pages will result in "
-"unusable images."
-msgstr ""
-"HTTP URL এর মাধ্যমে আপনি যদি একটি ইমেজ নির্বাচন করে থাকেন, ইমেজ অবস্থান ক্ষেত্রে "
-"বৈধ হওয়া চাই এবং ইমেজ বাইনারীতে ডাইরেক্ট URL; এটি ইমেজ সেবাতে প্রবেশযোগ্য হওয়া "
-"চাই. URL যা রিডাইরেক্ট করে বা ভুল পাতা সেবা দেয়, এর ফলাফল হবে অব্যবহারযোগ্য ইমেজ."
-
 msgid "Image"
 msgstr "ইমেজ"
 
@@ -3361,9 +3240,6 @@ msgstr "ইমেজ"
 
 msgid "Image (Glance)"
 msgstr "ইমেজ (গ্ল্যান্স)"
-
-msgid "Image Details"
-msgstr "ইমেজ বিশদ"
 
 msgid "Image File"
 msgstr "ইমেজ ফাইল"
@@ -3379,9 +3255,6 @@ msgstr "ইমেজের নাম"
 
 msgid "Image Name ="
 msgstr "ইমেজ নাম ="
-
-msgid "Image Overview"
-msgstr "ইমেজ একনজর"
 
 msgid "Image Registry"
 msgstr "ইমেজ রেজিষ্ট্রি"
@@ -3415,13 +3288,6 @@ msgstr "ইমেজ সফলভাবে আপডেট হয়েছিল."
 
 msgid "Images"
 msgstr "ইমেজ"
-
-msgid ""
-"Images can be provided via an HTTP URL or be uploaded from your local file "
-"system. Compressed image binaries are supported (.zip and .tar.gz.)"
-msgstr ""
-"ইমেজ একটি HTTP URLএর মাধ্যমে বা আপনার স্থানীয় ফাইস সিস্টেম থেকে আপলোড করা যেতে "
-"পারে. সংক্ষিপ্ত ইমেজ বাইনারী সমর্থিত (.zip এবং .tar.gz.)"
 
 msgid "Import Key Pair"
 msgstr "কী যুগ্ম আমদানি করুন"
@@ -3520,9 +3386,6 @@ msgstr "উদাহরণ কনসোল লগ"
 msgid "Instance Count"
 msgstr "উদাহরণ গণনা"
 
-msgid "Instance Details"
-msgstr "উদাহরণ বিশদ"
-
 msgid "Instance ID"
 msgstr "উদাহরণ ID"
 
@@ -3608,20 +3471,8 @@ msgstr "কাজ"
 msgid "Job Binaries"
 msgstr "কার্য বাইনারী"
 
-msgid "Job Binary Details"
-msgstr "কার্য বাইনারী বিশদ"
-
-msgid "Job Binary Overview"
-msgstr "কার্য বাইনারী একনজর"
-
 msgid "Job Configuration"
 msgstr "কার্য রূপাকৃতি"
-
-msgid "Job Details"
-msgstr "কাজের বিশদ"
-
-msgid "Job Execution Details"
-msgstr "কার্য সম্পাদন বিশদ"
 
 msgid "Job Execution ID"
 msgstr "কার্য সম্পাদন ID"
@@ -3943,9 +3794,6 @@ msgstr "অধিকতম প্রচেষ্টা (1~10)"
 msgid "Max."
 msgstr "সর্বাধিক"
 
-msgid "Max. Size (MB)"
-msgstr "সর্বাধিক  আয়তন (MB)"
-
 msgid "Maximum Transmission Unit size for the connection"
 msgstr "সংযোগটির জন্য সর্বাধিক সঞ্চার ইউনিট আয়তন"
 
@@ -4013,9 +3861,6 @@ msgstr "ন্যূনতম RAM"
 
 msgid "Min."
 msgstr "ন্যূনতম"
-
-msgid "Min. Size (MB)"
-msgstr "ন্যূনতম আয়তন (MB)"
 
 msgid "Minimum Disk (GB)"
 msgstr "ন্যূনতম ডিস্ক (GB)"
@@ -4385,9 +4230,6 @@ msgstr "কোনো ভলিয়্যুম লভ্য নয়"
 msgid "Node Configurations"
 msgstr "নোড রূপাকৃতি"
 
-msgid "Node Group Template Details"
-msgstr "নোড শ্রেণি টেমপ্লেট বিশদ"
-
 #, python-format
 msgid "Node Group Template copy %s created"
 msgstr "নোড শ্রেণি টেমপ্লেট কপি %s তৈরি করা"
@@ -4413,9 +4255,6 @@ msgstr "নোড শ্রেণি ক্লস্টার"
 
 msgid "Node processes are not specified"
 msgstr "নোড প্রক্রিয়া  নির্দিষ্ট নয়"
-
-msgid "Nodegroup Template Details"
-msgstr "নোডশ্রেণি টেমপ্লেট বিশদ"
 
 msgid "Nodes Count"
 msgstr "নোডের গণনা"
@@ -4766,9 +4605,6 @@ msgstr "পোর্ট %s সফলভাবে তৈরি হয়েছিল
 msgid "Port %s was successfully updated."
 msgstr "পোর্ট %s সফলভাবে আপডেট হয়েছিল."
 
-msgid "Port Details"
-msgstr "পোর্ট বিশদ"
-
 msgid "Port ID"
 msgstr "পোর্ট ID"
 
@@ -5080,9 +4916,6 @@ msgstr "ভলিয়্যুম \"%s\" পুনঃআয়তন করছে"
 msgid "Resource"
 msgstr "উত্স"
 
-msgid "Resource Details"
-msgstr "উত্স বিশদ"
-
 msgid "Resource ID"
 msgstr "উত্স ID"
 
@@ -5175,9 +5008,6 @@ msgstr "রাউটার %s সফলভাবে তৈরি হয়েছি
 #, python-format
 msgid "Router %s was successfully updated."
 msgstr "রাউটার %s সফলভাবে আপডেট হয়েছিল."
-
-msgid "Router Details"
-msgstr "রাউটার বিশদ"
 
 msgid "Router ID"
 msgstr "রাউটার ID"
@@ -5724,9 +5554,6 @@ msgstr "ডেটাবেস উদাহরণের জন্য নতুন
 msgid "Specs"
 msgstr "স্পেক"
 
-msgid "Stack Details"
-msgstr "স্টেক বিশদ"
-
 msgid "Stack Events"
 msgstr "স্ট্যাক ঘটনা"
 
@@ -5735,9 +5562,6 @@ msgstr "স্ট্যাক ID"
 
 msgid "Stack Name"
 msgstr "স্ট্যাক নাম"
-
-msgid "Stack Overview"
-msgstr "স্ট্যাক একনজর"
 
 msgid "Stack Parameters"
 msgstr "স্ট্যাক পরিশর্ত"
@@ -5840,9 +5664,6 @@ msgstr "সাবনেট ID"
 
 msgid "Subnet Name"
 msgstr "সাবনেট নাম"
-
-msgid "Subnet Overview"
-msgstr "সাবনেট একনজর"
 
 msgid "Subnet list can not be retrieved."
 msgstr "সাবনেট তালিকা পুনরুদ্ধার করা যেতে পারে না."
@@ -6015,9 +5836,6 @@ msgstr "টেনপ্লেট ফাইল"
 
 msgid "Template Name"
 msgstr "টেমপ্লেটের নাম"
-
-msgid "Template Overview"
-msgstr "টেমপ্লেট একনজর"
 
 msgid "Template Source"
 msgstr "টেমপ্লেট উত্স"
@@ -6630,24 +6448,8 @@ msgid "Unable to create volume."
 msgstr "ভলিয়্যুম তৈরি করতে অসমর্থ."
 
 #, python-format
-msgid "Unable to delete IKE Policy: %s"
-msgstr "IKE নীতি মুছে ফেলতে অসমর্থ: %s"
-
-#, python-format
-msgid "Unable to delete IPSec Policy: %s"
-msgstr "IPSec নীতি মুছে ফেলতে অসমর্থ: %s"
-
-#, python-format
-msgid "Unable to delete IPSec Site Connection: %s"
-msgstr "IPSec সাইট সংযোগ মুছে ফেলতে অসমর্থ: %s"
-
-#, python-format
 msgid "Unable to delete VIP. %s"
 msgstr "VIP মুছে ফেলতে অসমর্থ. %s"
-
-#, python-format
-msgid "Unable to delete VPN Service: %s"
-msgstr "VPN সেবা মুছে ফেলতে অসমর্থ: %s"
 
 msgid "Unable to delete container."
 msgstr "কন্টেনার মুছে ফেলতে অসমর্থ."
@@ -7953,13 +7755,6 @@ msgstr "ভলিয়্যুম (সিন্ডার)"
 msgid "Volume Backup"
 msgstr "ভলিয়্যুম ব্যাকআপ"
 
-msgid "Volume Backup Details"
-msgstr "ভলিয়্যুম ব্যাকআপ বিশদ"
-
-#, python-format
-msgid "Volume Backup Overview: %(backup_display_name)s"
-msgstr "ভলিয়্যুম ব্যাকআপ একনজর: %(backup_display_name)s"
-
 msgid "Volume Backup:"
 msgstr "ভলিয়্যুম ব্যাকআপ:"
 
@@ -7973,26 +7768,17 @@ msgstr ""
 "বস্তু ভাণ্ডার সেবা ব্যবহার করে ভলিয়্যুম ব্যাকআপ সঞ্চিত. একটি ব্যাকআপ তৈরি করার "
 "উদ্দেশ্যে এই সেবা অবশ্যই সক্রিয় থাকা চাই."
 
-msgid "Volume Details"
-msgstr "ভলিয়্যুম বিশদ"
-
 msgid "Volume Limits"
 msgstr "ভলিয়্যুম সীমা"
 
 msgid "Volume Name"
 msgstr "ভলিয়্যুম নাম"
 
-msgid "Volume Overview"
-msgstr "ভলিয়্যুম একনজর"
-
 msgid "Volume Size"
 msgstr "ভলিয়্যুম আয়তন"
 
 msgid "Volume Snapshot"
 msgstr "ভলিয়্যুম স্ন্যাপশট"
-
-msgid "Volume Snapshot Details"
-msgstr "ভলিয়্যুম স্ন্যাপশট বিশদ"
 
 msgid "Volume Snapshot Overview"
 msgstr "ভলিয়্যুম স্ন্যাপশট একনজর"

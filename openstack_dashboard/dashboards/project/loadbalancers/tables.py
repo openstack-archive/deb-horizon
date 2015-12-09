@@ -86,12 +86,10 @@ class DeleteVipLink(policy.PolicyTargetMixin, tables.Action):
     policy_rules = (("network", "delete_vip"),)
     classes = ('btn-danger',)
 
-    def get_help_text(self, vip_id):
-        return _("Deleting VIP %s from this pool cannot be undone.") % vip_id
-
     def allowed(self, request, datum=None):
         if datum and datum.vip_id:
-            self.help_text = self.get_help_text(datum.vip_id)
+            self.help_text = _("Deleting VIP %s from this pool "
+                               "cannot be undone.") % datum.vip_id
             return True
         return False
 
@@ -139,7 +137,6 @@ class DeletePoolLink(policy.PolicyTargetMixin, tables.DeleteAction):
     def delete(self, request, obj_id):
         try:
             api.lbaas.pool_delete(request, obj_id)
-            messages.success(request, _('Deleted pool %s') % obj_id)
         except Exception as e:
             exceptions.handle(request,
                               _('Unable to delete pool. %s') % e)
@@ -169,7 +166,6 @@ class DeleteMonitorLink(policy.PolicyTargetMixin,
     def delete(self, request, obj_id):
         try:
             api.lbaas.pool_health_monitor_delete(request, obj_id)
-            messages.success(request, _('Deleted monitor %s') % obj_id)
         except Exception as e:
             exceptions.handle(request,
                               _('Unable to delete monitor. %s') % e)
@@ -198,7 +194,6 @@ class DeleteMemberLink(policy.PolicyTargetMixin, tables.DeleteAction):
     def delete(self, request, obj_id):
         try:
             api.lbaas.member_delete(request, obj_id)
-            messages.success(request, _('Deleted member %s') % obj_id)
         except Exception as e:
             exceptions.handle(request,
                               _('Unable to delete member. %s') % e)
@@ -316,7 +311,7 @@ class AddVIPFloatingIP(policy.PolicyTargetMixin, tables.LinkAction):
         if hasattr(pool, "vip") and pool.vip:
             vip = pool.vip
             return not (hasattr(vip, "fip") and vip.fip)
-        return True
+        return False
 
     def get_link_url(self, datum):
         base_url = reverse(self.url)
@@ -351,7 +346,9 @@ class RemoveVIPFloatingIP(policy.PolicyTargetMixin, tables.Action):
             return False
         if hasattr(pool, "vip") and pool.vip:
             vip = pool.vip
-            return (hasattr(vip, "fip") and vip.fip)
+            self.help_text = _('Floating IP will be removed '
+                               'from VIP "%s".') % vip.name
+            return hasattr(vip, "fip") and vip.fip
         return False
 
     def single(self, table, request, pool_id):

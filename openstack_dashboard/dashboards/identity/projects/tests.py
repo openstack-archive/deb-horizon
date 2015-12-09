@@ -29,10 +29,10 @@ from mox3.mox import IsA  # noqa
 
 from horizon import exceptions
 from horizon.workflows import views
+from openstack_auth import policy as policy_backend
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.identity.projects import workflows
-from openstack_dashboard import policy_backend
 from openstack_dashboard.test import helpers as test
 from openstack_dashboard import usage
 from openstack_dashboard.usage import quotas
@@ -1586,8 +1586,6 @@ class DetailProjectViewTests(test.BaseAdminViewTests):
         self.assertTemplateUsed(res, 'identity/projects/detail.html')
         self.assertEqual(res.context['project'].name, project.name)
         self.assertEqual(res.context['project'].id, project.id)
-        self.assertContains(res, "Project Details: %s" % project.name,
-                            1, 200)
 
     @test.create_stubs({api.keystone: ('tenant_get',)})
     def test_detail_view_with_exception(self):

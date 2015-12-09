@@ -60,8 +60,8 @@ class IndexView(r_views.IndexView, n_views.IndexView):
 
 class DetailView(r_views.DetailView):
     tab_group_class = rtabs.RouterDetailTabs
-    template_name = 'admin/routers/detail.html'
     failure_url = reverse_lazy('horizon:admin:routers:index')
+    network_url = 'horizon:admin:networks:detail'
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)

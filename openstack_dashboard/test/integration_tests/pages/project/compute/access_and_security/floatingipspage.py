@@ -30,8 +30,8 @@ class FloatingipsPage(basepage.BaseNavigationPage):
     _floatingips_fadein_popup_locator = (
         by.By.CSS_SELECTOR, '.alert.alert-success.alert-dismissable.fade.in>p')
 
-    FLOATING_IPS_TABLE_ACTIONS = ("allocate_ip_to_project",
-                                  "release_floating_ips")
+    FLOATING_IPS_TABLE_NAME = 'floating_ips'
+    FLOATING_IPS_TABLE_ACTIONS = ("allocate", "release")
     FLOATING_IPS_TABLE_ROW_ACTION = {
         tables.ComplexActionRowRegion.PRIMARY_ACTION: "associate",
         tables.ComplexActionRowRegion.SECONDARY_ACTIONS: (
@@ -51,6 +51,7 @@ class FloatingipsPage(basepage.BaseNavigationPage):
         src_elem = self._get_element(*self._floating_ips_table_locator)
         return tables.ComplexActionTableRegion(
             self.driver, self.conf, src_elem,
+            self.FLOATING_IPS_TABLE_NAME,
             self.FLOATING_IPS_TABLE_ACTIONS,
             self.FLOATING_IPS_TABLE_ROW_ACTION)
 
@@ -59,7 +60,7 @@ class FloatingipsPage(basepage.BaseNavigationPage):
         return forms.BaseFormRegion(self.driver, self.conf, None)
 
     def allocate_floatingip(self):
-        self.floatingips_table.allocate_ip_to_project.click()
+        self.floatingips_table.allocate.click()
         self.floatingip_form.submit.click()
         ip = re.compile('(([2][5][0-5]\.)|([2][0-4][0-9]\.)'
                         + '|([0-1]?[0-9]?[0-9]\.)){3}(([2][5][0-5])|'
@@ -67,13 +68,15 @@ class FloatingipsPage(basepage.BaseNavigationPage):
         match = ip.search((self._get_element(
             *self._floatingips_fadein_popup_locator)).text)
         floatingip = str(match.group())
+        self.wait_till_popups_disappear()
         return floatingip
 
     def release_floatingip(self, floatingip):
         row = self._get_row_with_floatingip(floatingip)
         row.mark()
-        self.floatingips_table.release_floating_ips.click()
+        self.floatingips_table.release.click()
         self.floatingip_form.submit.click()
+        self.wait_till_popups_disappear()
 
     def is_floatingip_present(self, floatingip):
         return bool(self._get_row_with_floatingip(floatingip))

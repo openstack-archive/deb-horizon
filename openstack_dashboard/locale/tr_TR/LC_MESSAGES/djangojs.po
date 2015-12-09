@@ -1,18 +1,26 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# ADİL REŞİT DURSUN <ardursun@deltanoc.com>, 2015
+# Mücahit Büyükyılmaz <mucahit@konya.edu.tr>, 2015
 # Mücahit Büyükyılmaz <mucahit@deltanoc.com>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-10-03 11:44+0000\n"
+"PO-Revision-Date: 2015-10-06 02:06+0000\n"
 "Last-Translator: Mücahit Büyükyılmaz <mucahit@deltanoc.com>\n"
-"Language-Team: Turkish (Turkey)\n"
 "Language: tr-TR\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n>1)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Turkish (Turkey)\n"
 
 msgid "(Max: 16Kb)"
 msgstr "(Mak: 16Kb)"
@@ -22,17 +30,6 @@ msgstr "(Düzenlendi)"
 
 msgid "(None)"
 msgstr "(Hiçbiri)"
-
-msgid ""
-"<li><b>Image (with Create New Volume checked)</b>: This options uses an "
-"image to boot the instance, and creates a new volume to persist instance "
-"data. You can specify volume size and whether to delete the volume on "
-"termination of the instance.</li>"
-msgstr ""
-"<li><b>İmaj (Yeni Birim Oluştur seçeneği ile birlikte)</b>: Bu seçenek "
-"sunucuyu başlatmak için bir imaj kullanır ve kalıcı sunucu verisi için yeni "
-"bir birim oluşturur. Birim boyutunu belirleyebilir ve instance silindiğinde "
-"birimin silinip silinmeyeceğini belirtebilirsiniz.</li>"
 
 msgid "<li><b>Image</b>: This option uses an image to boot the instance.</li>"
 msgstr ""
@@ -44,27 +41,6 @@ msgid ""
 msgstr ""
 "<li><b>Instance Anlık Görüntüsü</b>: Bu seçenek sunucuyu başlatmak için bir "
 "instance anlık görüntüsü kullanır.</li>"
-
-msgid ""
-"<li><b>Volume Snapshot</b>: This option uses a volume snapshot to boot the "
-"instance, and creates a new volume to persist instance data. You can choose "
-"to delete the volume on termination of the instance.</li>"
-msgstr ""
-"<li><b>Birim Anlık Görüntüsü</b>: Bu seçenek sunucuyu başlatmak için bir "
-"birimin anlık görüntüsünü kullanır ve kalıcı instance verisi için yeni bir "
-"birim oluşturur. Instance yok edildiğinde hacmin de yok edilmesini "
-"tanımlayabilirsiniz.</li>"
-
-msgid ""
-"<li><b>Volume</b>: This option uses a volume that already exists. It does "
-"not create a new volume. You can choose to delete the volume on termination "
-"of the instance. <em>Note: when selecting Volume, you can only launch one "
-"instance.</em></li>"
-msgstr ""
-"<li><b>Birim</b>: Bu seçenek mevcut bir birimi kullanır. Yeni bir birim "
-"oluşturmaz. Instance yok edildiğinde hacmin de yok edilmesini "
-"tanımlayabilirsiniz. <em>Not: Birim seçerseniz sadece bir sunucu "
-"başlatabilirsiniz.</em></li>"
 
 msgid ""
 "A floating IP allows instances to be addressable from an external network.\n"
@@ -159,17 +135,11 @@ msgstr "Otomatik"
 msgid "Availability Zone"
 msgstr "Kullanılabilirlik Bölgesi"
 
-msgid "Boot Source"
-msgstr "Önyükleme Kaynağı"
-
 msgid "Cancel"
 msgstr "İptal"
 
 msgid "Cannot get service catalog from keystone."
 msgstr "Servis kataloğu keystone'den getirilemedi."
-
-msgid "Cannot get the Nova extension list."
-msgstr "Nova eklenti listesi alınamadı."
 
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
@@ -226,9 +196,6 @@ msgstr "Veri Kaynağı"
 
 msgid "Default Value"
 msgstr "Öntanımlı Değer"
-
-msgid "Delete Volume on Terminate"
-msgstr "Yokedildiğinde Birimi Sil"
 
 msgid "Deleted"
 msgstr "Silindi"
@@ -338,15 +305,6 @@ msgstr ""
 "bulunabilirsiniz."
 
 msgid ""
-"If you select an availability zone and plan to use the boot from volume "
-"option, make sure that the availability zone you select for the instance is "
-"the same availability zone where your bootable volume resides."
-msgstr ""
-"Bir kullanılabilirlik bölgesi seçer ve birimden başlatma seçeneğini "
-"kullanmak isterseniz instance ve başlatılabilir birimin aynı "
-"kullanılabilirlik bölgesinde olduğundan emin olun."
-
-msgid ""
 "If you want to create an instance that uses ephemeral storage, meaning the "
 "instance data is lost when the instance is deleted, then choose one of the "
 "following boot sources:"
@@ -390,16 +348,6 @@ msgstr "Instance Kaynağı"
 
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "Instance sayısı girilmelidir ve bu tamsayı 1'den büyük olmalıdır."
-
-msgid ""
-"Instance source is the template used to create an instance. You can use a "
-"snapshot of an existing instance, an image, or a volume (if enabled). You "
-"can also choose to use persistent storage by creating a new volume."
-msgstr ""
-"Instance kaynağı onu oluşturmak için kullanılan şablondur. Mevcut bir "
-"Instance anlık görüntüsünü, bir imajı veya (etkinleştirilmişse) bir birimi "
-"de kullanabilirsiniz. Yeni bir birim oluşturarak kalıcı bir depolama alanını "
-"da kullanabilirsiniz."
 
 msgid "Insufficient privilege level to view user information."
 msgstr "Kullanıcı bilgisi görüntülemek için yetersiz yetki seviyesi."
@@ -469,9 +417,6 @@ msgstr "Minimum RAM"
 msgid "Min RAM (MB)"
 msgstr "Minimum RAM (MB)"
 
-msgid "Min Ram"
-msgstr "Minimum Ram"
-
 msgid "Name"
 msgstr "Ad"
 
@@ -510,15 +455,6 @@ msgstr "Silme Beklemede"
 
 msgid "Physical Network"
 msgstr "Fiziksel Ağ"
-
-msgid ""
-"Please provide the initial host name for the instance, the availability zone "
-"where it will be deployed, and the instance count. Increase the Count to "
-"create multiple instances with the same settings."
-msgstr ""
-"Lütfen instance için bir başlangıç ismi, kullanılabilirlik bölgesi ve "
-"instance sayısı belirtin. Aynı instancedan birden çok oluşturmak için "
-"instance sayısını arttırabilirsiniz."
 
 msgid "Policy check failed."
 msgstr "Politika kontrolü yapılamadı."
@@ -639,12 +575,6 @@ msgstr "Segmentation ID"
 
 msgid "Select Boot Source"
 msgstr "Başlatma Kaynağını Seçin"
-
-msgid "Select Source"
-msgstr "Kaynağı Seç"
-
-msgid "Select Source Help"
-msgstr "Kaynak Seçim Yardımı"
 
 msgid "Select a key pair from the available key pairs below."
 msgstr "Aşağıdaki kullanılabilir anahtar çiftlerinden birini seçin."

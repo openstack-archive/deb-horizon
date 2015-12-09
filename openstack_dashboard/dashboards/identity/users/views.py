@@ -122,7 +122,8 @@ class UpdateView(forms.ModalFormView):
                 'id': user.id,
                 'name': user.name,
                 'project': user.project_id,
-                'email': getattr(user, 'email', None)}
+                'email': getattr(user, 'email', None),
+                'description': getattr(user, 'description', None)}
 
 
 class CreateView(forms.ModalFormView):
@@ -164,7 +165,7 @@ class CreateView(forms.ModalFormView):
 
 class DetailView(views.HorizonTemplateView):
     template_name = 'identity/users/detail.html'
-    page_title = _("User Details: {{ user.name }}")
+    page_title = "{{ user.name }}"
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)

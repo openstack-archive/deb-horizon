@@ -21,7 +21,7 @@
     .module('horizon.framework.util.promise-toggle')
     .directive('hzPromiseToggleMock', hzPromiseToggleMock);
 
-  hzPromiseToggleMock.$inject =  [
+  hzPromiseToggleMock.$inject = [
     'hzPromiseToggleTemplateDirective',
     'mockService'
   ];
@@ -51,11 +51,11 @@
    */
   function hzPromiseToggleMock(hzPromiseToggleTemplateDirective, mockService) {
     return angular.extend(
-        hzPromiseToggleTemplateDirective[0],
-        {
-          singlePromiseResolver: mockService.mockResolver,
-          name: 'hzPromiseToggleMock'
-        }
+      hzPromiseToggleTemplateDirective[0],
+      {
+        singlePromiseResolver: mockService.mockResolver,
+        name: 'hzPromiseToggleMock'
+      }
     );
   }
 

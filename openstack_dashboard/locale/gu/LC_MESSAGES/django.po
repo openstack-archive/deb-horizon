@@ -1,18 +1,24 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: Gujarati\n"
+"PO-Revision-Date: 2015-09-08 11:14+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language: gu\n"
-"X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Gujarati\n"
 
 #, python-format
 msgid ""
@@ -584,15 +590,6 @@ msgstr "નિયમ ઉમેરો"
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "સમુહમાં યજમાનો ઉમેરો/દૂર કરો"
 
-msgid "AddFirewall"
-msgstr "ફાયરવોલ ઉમેરો"
-
-msgid "AddPolicy"
-msgstr "પોલિસી ઉમેરો"
-
-msgid "AddRule"
-msgstr "નિયમ ઉમેરો"
-
 #, python-format
 msgid "Added Firewall \"%s\"."
 msgstr "ઉમેરવામાં આવેલ ફાયરવોલ \"%s\"."
@@ -744,9 +741,6 @@ msgstr "મંજૂરી આપવામાં આવેલ યજમાન (�
 
 msgid "Amount of energy"
 msgstr "ઊર્જાની માત્રા"
-
-msgid "An external (HTTP) URL to load the image from."
-msgstr "બાહ્ય (HTTP) URL માંથી ઇમેજ લોડ કરવા માટે."
 
 msgid "An external (HTTP) URL to load the template from."
 msgstr "બાહ્ય (HTTP) URL માંથી ટેમ્પલેટ લોડ કરવા માટે."
@@ -1154,9 +1148,6 @@ msgstr "સિન્ડેર વોલ્યુમો"
 msgid "Cipher"
 msgstr "સીફર"
 
-msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
-msgstr "ક્લાસલેસ ઇન્ટર-ડોમેન રાઉંટીંગ (દા.ત. 192.168.0.0/24)"
-
 msgid "Clear Domain Context"
 msgstr "સ્પષ્ટ ડોમેન સંદર્ભ"
 
@@ -1169,23 +1160,14 @@ msgstr "બંધ કરો"
 msgid "Cluster"
 msgstr "ક્લસ્ટર"
 
-msgid "Cluster Details"
-msgstr "ક્લસ્ટર વિગતો"
-
 msgid "Cluster Instances"
 msgstr "ક્લસ્ટર ઉદાહરણો"
 
 msgid "Cluster Name"
 msgstr "ક્લસ્ટર નામ"
 
-msgid "Cluster Overview"
-msgstr "ક્લસ્ટર અવલોકન"
-
 msgid "Cluster Template"
 msgstr "ક્લસ્ટર ટેમ્પલેટ"
-
-msgid "Cluster Template Details"
-msgstr "ક્લસ્ટર ટેમ્પલેટ વિગતો"
 
 msgid "Cluster Template Name"
 msgstr "ક્લસ્ટર ટેમ્પલેટ નામ"
@@ -1588,35 +1570,6 @@ msgid "Create a Volume Type"
 msgstr "વોલ્યુમ પ્રકાર બનાવો"
 
 msgid ""
-"Create a firewall based on a policy.\n"
-"\n"
-"A policy must be selected. Other fields are optional."
-msgstr ""
-"પૉલિસી પર આધારિત ફાયરવોલ બનાવો.\n"
-"\n"
-"પોલિસી પસંદ કરેલ હોવી જ જોઈએ. અન્ય ક્ષેત્રો વૈકલ્પિક છે."
-
-msgid ""
-"Create a firewall policy with an ordered list of firewall rules.\n"
-"\n"
-"A name must be given. Firewall rules are added in the order placed under the "
-"Rules tab."
-msgstr ""
-"ફાયરવોલ નિયમોની આદેશ આપેલ યાદી સાથે ફાયરવોલ પોલિસી બનાવો.\n"
-"\n"
-"નામ આપવામાં આવેલ હોવા જ જોઈએ.ફાયરવોલ નિયમોને ક્રમમાં ઉમેરી નિયમોના ટેબ હેઠળ મૂકવામાં "
-"આવે છે."
-
-msgid ""
-"Create a firewall rule.\n"
-"\n"
-"Protocol and action must be specified. Other fields are optional."
-msgstr ""
-"ફાયરવોલ નિયમ બનાવો.\n"
-"\n"
-"પ્રોટોકોલ અને ક્રિયા સ્પષ્ટ કરેલ હોવા જ જોઈએ.અન્ય ક્ષેત્રો વૈકલ્પિક છે."
-
-msgid ""
 "Create a monitor template.\n"
 "\n"
 "Select type of monitoring. Specify delay, timeout, and retry limits required "
@@ -1796,14 +1749,6 @@ msgstr "હાલનાં માપ (GB)"
 msgid "Current password"
 msgstr "વર્તમાન પાસવર્ડ"
 
-msgid ""
-"Currently only images available via an HTTP URL are supported. The image "
-"location must be accessible to the Image Service. Compressed image binaries "
-"are supported (.zip and .tar.gz.)"
-msgstr ""
-"આધારભૂત HTTP URL મારફતે હાલમાં માત્ર ઈમેજો ઉપલબ્ધ છે. ઇમેજ સ્થાન ઇમેજ સેવા માટે સુલભ હોવા "
-"જ જોઈએ. સંકુચિત ઇમેજ બાઈનરીઓ (ઝિપ અને .tar.gz.) ને આધારભૂત છે"
-
 msgid "Custom ICMP Rule"
 msgstr "કસ્ટમ ICMP નિયમ"
 
@@ -1850,9 +1795,6 @@ msgstr "ડેટા પ્રોસેસીંગ"
 msgid "Data Processing Plugin Details"
 msgstr "માહિતી પ્રક્રિયા પ્લગઇન વિગતો"
 
-msgid "Data Processing Plugin Overview"
-msgstr "માહિતી પ્રક્રિયા પ્લગઇન અવલોકન"
-
 msgid "Data Processing Plugins"
 msgstr "માહિતી પ્રક્રિયા પ્લગઇન "
 
@@ -1865,12 +1807,6 @@ msgid ""
 msgstr ""
 "ડેટા પ્રક્રિયા વિવિધ સંગ્રહ સ્થાનના વિકલ્પો પૂરા પાડે છે. ઉદાહરણો સાથે જોડવા માટે તમે "
 "ક્ષણિક ડ્રાઇવ અથવા સિન્ડેર વોલ્યુમ પસંદ કરી શકો છો."
-
-msgid "Data Source Details"
-msgstr "માહિતી સ્રોત વિગતો"
-
-msgid "Data Source Overview"
-msgstr "માહિતી સ્રોત અવલોકન"
 
 msgid "Data Source Type"
 msgstr "માહિતી સ્રોત પ્રકાર"
@@ -1944,15 +1880,9 @@ msgstr "મૂળભૂત"
 msgid "Delay"
 msgstr "વિલંબ"
 
-msgid "Delete on Terminate"
-msgstr "સમાપ્ત પર કાઢી નાખો"
-
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
 msgstr "સબનેટ બનાવવાની નિષ્ફળતા ના કારણે બનાવેલ \"%s\" નેટવર્ક કાઢી નાખો."
-
-msgid "Delete volume on instance terminate"
-msgstr "સમાપ્ત ઇન્સ્ટન્સ પર વોલ્યુમ કાઢી નાખો"
 
 msgid "Deleted"
 msgstr "કાઢી નાખો"
@@ -1966,36 +1896,8 @@ msgid "Deleted"
 msgstr "કાઢી નાખો"
 
 #, python-format
-msgid "Deleted IKE Policy %s"
-msgstr "કાઢી નાખવામાં આવેલ IKE પોલિસી%s"
-
-#, python-format
-msgid "Deleted IPSec Policy %s"
-msgstr "કાઢી નાખવામાં આવેલ IPSec પોલિસી %s"
-
-#, python-format
-msgid "Deleted IPSec Site Connection %s"
-msgstr "કાઢી નાખવામાં આવેલ IPSec સાઇટ જોડાણ %s"
-
-#, python-format
 msgid "Deleted VIP %s"
 msgstr "કાઢી નાખવામાં આવેલ VIP %s"
-
-#, python-format
-msgid "Deleted VPN Service %s"
-msgstr "કાઢી નાખવામાં આવેલ VPN સેવા %s"
-
-#, python-format
-msgid "Deleted member %s"
-msgstr "કાઢી નાખવામાં આવેલ સભ્ય %s"
-
-#, python-format
-msgid "Deleted monitor %s"
-msgstr "કાઢી નાખવામાં આવેલ મોનીટર %s"
-
-#, python-format
-msgid "Deleted pool %s"
-msgstr "કાઢી નાખવામાં આવેલ પૂલ %s"
 
 msgid "Deleting"
 msgstr "કાઢી રહ્યા છીએ"
@@ -2563,10 +2465,6 @@ msgctxt "current status of router"
 msgid "Error"
 msgstr "ભૂલ"
 
-msgctxt "status of a neteork port"
-msgid "Error"
-msgstr "ભૂલ"
-
 msgid "Error Deleting"
 msgstr "ભૂલ કાઢી રહ્યા છીએ"
 
@@ -2934,17 +2832,8 @@ msgstr "માપ બદલી અથવા સ્થળાંતર સમા�
 msgid "Firewall %s was successfully updated."
 msgstr "ફાયરવોલ% s સફળતાપૂર્વક અદ્યતન કરવામાં આવી."
 
-msgid "Firewall Details"
-msgstr "ફાયરવોલ વિગતો"
-
 msgid "Firewall Policies"
 msgstr "ફાયરવોલ પૉલિસીઓ"
-
-msgid "Firewall Policy Details"
-msgstr "ફાયરવોલ પોલિસી વિગતો"
-
-msgid "Firewall Rule Details"
-msgstr "ફાયરવોલ નિયમની વિગતો"
 
 msgid "Firewall Rules"
 msgstr "ફાયરવોલ નિયમો"
@@ -3419,16 +3308,6 @@ msgstr ""
 "વોલ્યુમ બેકઅપની તમારા માટે જોગવાઈ કરવામાં આવશે. બેકઅપ સમાન માપના થશે વોલ્યુમ જેવા કે "
 "જેમાંથી તેઓ ઉત્તપન થયેલ હશે."
 
-msgid ""
-"If you select an image via an HTTP URL, the Image Location field MUST be a "
-"valid and direct URL to the image binary; it must also be accessible to the "
-"Image Service. URLs that redirect or serve error pages will result in "
-"unusable images."
-msgstr ""
-"જો તમે HTTP URL મારફતે ઇમેજ પસંદ કરી હોય તો,ઈમેજ સ્થાન ક્ષેત્રના ઇમેજ બાઈનરી માટે માન્ય "
-"અને સીધા URL હોવા જ જોઈએ;તે પણ ઇમેજ સેવા માટે સુલભ હોવા જ જોઈએ.ભૂલ પૃષ્ઠો પુનઃદિશામાન "
-"અથવા સેવા આપવા કે જે URL ના બિનઉપયોગી ઈમેજોમા પરિણમશે."
-
 msgid "Image"
 msgstr "ઈમેજ"
 
@@ -3442,9 +3321,6 @@ msgstr "ઈમેજ (નજર)"
 msgctxt "Task status of an Instance"
 msgid "Image Backup"
 msgstr "ઇમેજ બૅકઅપ"
-
-msgid "Image Details"
-msgstr "ઇમેજની વિગતો"
 
 msgid "Image File"
 msgstr "ઈમેજ ફાઈલ"
@@ -3460,9 +3336,6 @@ msgstr "ઈમેજ નામ"
 
 msgid "Image Name ="
 msgstr "ઈમેજ નામ ="
-
-msgid "Image Overview"
-msgstr "ઇમેજ અવલોકન"
 
 msgctxt "Task status of an Instance"
 msgid "Image Pending Upload"
@@ -3508,13 +3381,6 @@ msgstr "ઇમેજ સફળતાપૂર્વક સુધારવામ�
 
 msgid "Images"
 msgstr "ઈમેજો"
-
-msgid ""
-"Images can be provided via an HTTP URL or be uploaded from your local file "
-"system. Compressed image binaries are supported (.zip and .tar.gz.)"
-msgstr ""
-"ઈમેજો HTTP URL મારફતે પૂરી પાડી શકાય અથવા તમારી સ્થાનિક ફાઈલ સિસ્ટમ માંથી અપલોડ "
-"કરી શકાય. કમ્પ્રેસ્ડ ઇમેજ બાઈનરીઓ (.zip અને .tar.gz.) આધારભૂત છે"
 
 msgid "Import Key Pair"
 msgstr "કી જોડ આયાત કરો "
@@ -3612,9 +3478,6 @@ msgstr "ઇન્સ્ટન્સ કન્સોલ લોગ"
 msgid "Instance Count"
 msgstr "ઇન્સ્ટન્સ ગણક"
 
-msgid "Instance Details"
-msgstr "ઉદાહરણની વિગતો"
-
 msgid "Instance ID"
 msgstr "ઇન્સ્ટન્સ ID"
 
@@ -3699,20 +3562,8 @@ msgstr "જોબ"
 msgid "Job Binaries"
 msgstr "જોબ(નોકરી) બાઇનરી"
 
-msgid "Job Binary Details"
-msgstr "જોબ બાઈનરી વિગતો"
-
-msgid "Job Binary Overview"
-msgstr "જોબ બાઈનરી અવલોકન"
-
 msgid "Job Configuration"
 msgstr "જોબ રૂપરેખાંકન"
-
-msgid "Job Details"
-msgstr "નોકરીની વિગતો"
-
-msgid "Job Execution Details"
-msgstr "જોબ એક્ઝેક્યુશન વિગતો"
 
 msgid "Job Execution ID"
 msgstr "જોબ એક્ઝેક્યુશન ID"
@@ -4032,9 +3883,6 @@ msgstr "મહત્તમ પુનઃપ્રયાસો (1 ~ 10)"
 msgid "Max."
 msgstr "મહત્તમ"
 
-msgid "Max. Size (MB)"
-msgstr "મહત્તમ. માપ (MB)"
-
 msgid "Maximum Transmission Unit size for the connection"
 msgstr "જોડાણ માટે મહત્તમ પ્રસારણ એકમ માપ"
 
@@ -4104,9 +3952,6 @@ msgstr "ન્યુનત્તમ રેમ"
 
 msgid "Min."
 msgstr "ન્યુનત્તમ"
-
-msgid "Min. Size (MB)"
-msgstr "ન્યુનત્તમ માપ (MB)"
 
 msgid "Minimum Disk (GB)"
 msgstr "ન્યુનત્તમ ડિસ્ક (GB)"
@@ -4481,9 +4326,6 @@ msgstr "કોઈ વોલ્યુમો ઉપલબ્ધ નથી"
 msgid "Node Configurations"
 msgstr "નોડ રૂપરેખાંકનો"
 
-msgid "Node Group Template Details"
-msgstr "નોડ ગ્રુપ ટેમ્પલેટ વિગતો"
-
 #, python-format
 msgid "Node Group Template copy %s created"
 msgstr "નોડ ગ્રુપ ટેમ્પલેટ નકલ %s બનાવેલ"
@@ -4509,9 +4351,6 @@ msgstr "નોડ જૂથ ક્લસ્ટર"
 
 msgid "Node processes are not specified"
 msgstr "નોડ પ્રક્રિયાઓ સ્પષ્ટ કરવામાં આવેલ નથી"
-
-msgid "Nodegroup Template Details"
-msgstr "Nodegroup ટેમ્પલેટ વિગતો"
 
 msgid "Nodes Count"
 msgstr "નોડ્સ કાઉન્ટ"
@@ -4869,9 +4708,6 @@ msgstr "પોર્ટ% s સફળતાપૂર્વક બનાવવા�
 #, python-format
 msgid "Port %s was successfully updated."
 msgstr "પોર્ટ %s સફળતાપૂર્વક અદ્યતન કરવામાં આવ્યા."
-
-msgid "Port Details"
-msgstr "પોર્ટ વિગતો"
 
 msgid "Port ID"
 msgstr "પોર્ટ ID (આઈડી)"
@@ -5256,9 +5092,6 @@ msgstr "વોલ્યુમ માપ બદલી રહ્યા છે \"%s
 msgid "Resource"
 msgstr "સંસાધન"
 
-msgid "Resource Details"
-msgstr "સંસાધનની વિગતો"
-
 msgid "Resource ID"
 msgstr "સંસાધન ID"
 
@@ -5367,9 +5200,6 @@ msgstr "રૂટર %s સફળતાપૂર્વક બનાવવામ�
 #, python-format
 msgid "Router %s was successfully updated."
 msgstr "રૂટર %s સફળતાપૂર્વક સુધારવામાં આવ્યું હતું."
-
-msgid "Router Details"
-msgstr "રૂટર વિગતો"
 
 msgid "Router ID"
 msgstr "રૂટર ID"
@@ -5975,9 +5805,6 @@ msgstr "ડેટાબેઝ ઉદાહરણ માટે નવા વો�
 msgid "Specs"
 msgstr "સ્પેક્સ"
 
-msgid "Stack Details"
-msgstr "સ્ટેક વિગતો"
-
 msgid "Stack Events"
 msgstr "સ્ટેક ઘટનાઓ"
 
@@ -5986,9 +5813,6 @@ msgstr "સ્ટેક ID"
 
 msgid "Stack Name"
 msgstr "સ્ટેક નામ"
-
-msgid "Stack Overview"
-msgstr "સ્ટેક અવલોકન"
 
 msgid "Stack Parameters"
 msgstr "સ્ટેક પરિમાણો"
@@ -6094,9 +5918,6 @@ msgstr "સબનેટ ID"
 
 msgid "Subnet Name"
 msgstr "સબનેટ નામ"
-
-msgid "Subnet Overview"
-msgstr "સબનેટ અવલોકન"
 
 msgid "Subnet list can not be retrieved."
 msgstr "ઉપનેટ યાદી પુનઃપ્રાપ્ત કરી શકાઈ નથી."
@@ -6273,9 +6094,6 @@ msgstr "ટેમ્પલેટ ફાઇલ"
 
 msgid "Template Name"
 msgstr "ટેમ્પલેટ નામ"
-
-msgid "Template Overview"
-msgstr "ટેમ્પલેટ અવલોકન"
 
 msgid "Template Source"
 msgstr "ટેમ્પલેટ સ્રોત"
@@ -6886,24 +6704,8 @@ msgid "Unable to create volume."
 msgstr "વોલ્યુમ બનાવવામાં અસક્ષમ."
 
 #, python-format
-msgid "Unable to delete IKE Policy: %s"
-msgstr "IKE પોલિસી કાઢી નાખવામાં અક્ષમ:  %s"
-
-#, python-format
-msgid "Unable to delete IPSec Policy: %s"
-msgstr "IPSec પોલિસી કાઢી નાખવામાં અક્ષમ: %s"
-
-#, python-format
-msgid "Unable to delete IPSec Site Connection: %s"
-msgstr "IPSec સાઇટ જોડાણ કાઢી નાખવામાં અક્ષમ:  %s"
-
-#, python-format
 msgid "Unable to delete VIP. %s"
 msgstr "VIPને કાઢી નાખવામાં અક્ષમ. %s"
-
-#, python-format
-msgid "Unable to delete VPN Service: %s"
-msgstr "VPN સેવા કાઢી નાખવામાં અક્ષમ: %s"
 
 msgid "Unable to delete container."
 msgstr "કન્ટેનર કાઢી નાખવામાં અસક્ષમ."
@@ -8222,13 +8024,6 @@ msgstr "વોલ્યુમ (સિન્ડેર)"
 msgid "Volume Backup"
 msgstr "વોલ્યુમ બેકઅપ"
 
-msgid "Volume Backup Details"
-msgstr "વોલ્યુમ બેકઅપની વિગતો"
-
-#, python-format
-msgid "Volume Backup Overview: %(backup_display_name)s"
-msgstr "વોલ્યુમ બેકઅપનું અવલોકન: %(backup_display_name)s"
-
 msgid "Volume Backup:"
 msgstr "વોલ્યુમ બેકઅપ:"
 
@@ -8242,26 +8037,17 @@ msgstr ""
 "વોલ્યુમ બેકઅપ આ Object સંગ્રહ સેવા ઉપયોગ કરીને સંગ્રહવામાં આવે છે. બેકઅપ બનાવવા માટે તમારી "
 "પાસે સેવા સક્રિય હોવી જ જોઈએ."
 
-msgid "Volume Details"
-msgstr "વોલ્યુમ વિગતો"
-
 msgid "Volume Limits"
 msgstr "વોલ્યુમની મર્યાદાઓ"
 
 msgid "Volume Name"
 msgstr "વોલ્યુમનું નામ"
 
-msgid "Volume Overview"
-msgstr "વોલ્યુમના અવલોકન"
-
 msgid "Volume Size"
 msgstr "વોલ્યુમ માપ"
 
 msgid "Volume Snapshot"
 msgstr "વોલ્યુમ સ્નેપશોટ"
-
-msgid "Volume Snapshot Details"
-msgstr "વોલ્યુમ સ્નેપશોટની વિગતો"
 
 msgid "Volume Snapshot Overview"
 msgstr "વોલ્યુમ સ્નેપશોટ અવલોકન"

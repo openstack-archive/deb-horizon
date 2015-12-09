@@ -142,7 +142,7 @@ Editing Horizon's Source
 
 Although DevStack installs and configures an instance of Horizon when running
 stack.sh, the preferred development setup follows the instructions above on the
-server/VM running DevStack. The are several advantages to maintaining a
+server/VM running DevStack. There are several advantages to maintaining a
 separate copy of the Horizon repo, rather than editing the devstack installed
 copy.
 
@@ -181,11 +181,6 @@ virtualenv and installs all the necessary packages.
 If dependencies are added to either ``horizon`` or ``openstack_dashboard``,
 they should be added to ``requirements.txt``.
 
-  .. important::
-
-    If you do anything which changes the environment (adding new dependencies
-    or renaming directories are both great examples) be sure to increment the
-    ``environment_version`` counter in :doc:`run_tests.sh <ref/run_tests>`.
 
 Project
 =======

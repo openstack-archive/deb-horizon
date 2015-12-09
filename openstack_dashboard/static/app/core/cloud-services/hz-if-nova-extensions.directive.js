@@ -21,7 +21,7 @@
     .module('horizon.app.core.cloud-services')
     .directive('hzIfNovaExtensions', hzNovaExtensions);
 
-  hzNovaExtensions.$inject =  [
+  hzNovaExtensions.$inject = [
     'hzPromiseToggleTemplateDirective',
     'horizon.app.core.openstack-service-api.novaExtensions'
   ];
@@ -65,11 +65,11 @@
    */
   function hzNovaExtensions(hzPromiseToggleTemplateDirective, novaExtensions) {
     return angular.extend(
-        hzPromiseToggleTemplateDirective[0],
-        {
-          singlePromiseResolver: novaExtensions.ifNameEnabled,
-          name: 'hzIfNovaExtensions'
-        }
+      hzPromiseToggleTemplateDirective[0],
+      {
+        singlePromiseResolver: novaExtensions.ifNameEnabled,
+        name: 'hzIfNovaExtensions'
+      }
     );
   }
 

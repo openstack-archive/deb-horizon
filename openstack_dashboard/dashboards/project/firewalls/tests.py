@@ -240,7 +240,56 @@ class FirewallTests(test.TestCase):
                      'destination_ip_address': rule1.destination_ip_address,
                      'destination_port': rule1.destination_port,
                      'shared': rule1.shared,
-                     'enabled': rule1.enabled
+                     'enabled': rule1.enabled,
+                     'ip_version': rule1.ip_version
+                     }
+
+        api.fwaas.rule_create(
+            IsA(http.HttpRequest), **form_data).AndReturn(rule1)
+
+        self.mox.ReplayAll()
+
+        res = self.client.post(reverse(self.ADDRULE_PATH), form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, str(self.INDEX_URL))
+
+    @test.create_stubs({api.fwaas: ('rule_create',), })
+    def test_add_rule_post_src_None(self):
+        rule1 = self.fw_rules.first()
+        form_data = {'name': rule1.name,
+                     'description': rule1.description,
+                     'protocol': rule1.protocol,
+                     'action': rule1.action,
+                     'destination_ip_address': rule1.destination_ip_address,
+                     'destination_port': rule1.destination_port,
+                     'shared': rule1.shared,
+                     'enabled': rule1.enabled,
+                     'ip_version': rule1.ip_version
+                     }
+
+        api.fwaas.rule_create(
+            IsA(http.HttpRequest), **form_data).AndReturn(rule1)
+
+        self.mox.ReplayAll()
+
+        res = self.client.post(reverse(self.ADDRULE_PATH), form_data)
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, str(self.INDEX_URL))
+
+    @test.create_stubs({api.fwaas: ('rule_create',), })
+    def test_add_rule_post_dest_None(self):
+        rule1 = self.fw_rules.first()
+        form_data = {'name': rule1.name,
+                     'description': rule1.description,
+                     'protocol': rule1.protocol,
+                     'action': rule1.action,
+                     'source_ip_address': rule1.source_ip_address,
+                     'source_port': rule1.source_port,
+                     'shared': rule1.shared,
+                     'enabled': rule1.enabled,
+                     'ip_version': rule1.ip_version
                      }
 
         api.fwaas.rule_create(
@@ -265,14 +314,15 @@ class FirewallTests(test.TestCase):
                      'destination_ip_address': rule1.destination_ip_address,
                      'destination_port': rule1.destination_port,
                      'shared': rule1.shared,
-                     'enabled': rule1.enabled
+                     'enabled': rule1.enabled,
+                     'ip_version': 6
                      }
 
         self.mox.ReplayAll()
 
         res = self.client.post(reverse(self.ADDRULE_PATH), form_data)
 
-        self.assertFormErrors(res, 2)
+        self.assertFormErrors(res, 3)
 
     @test.create_stubs({api.fwaas: ('policy_create',
                                     'rule_list_for_tenant'), })
@@ -434,6 +484,7 @@ class FirewallTests(test.TestCase):
                 'action': 'ALLOW',
                 'shared': False,
                 'enabled': True,
+                'ip_version': rule.ip_version,
                 'source_ip_address': rule.source_ip_address,
                 'destination_ip_address': None,
                 'source_port': None,
@@ -468,6 +519,7 @@ class FirewallTests(test.TestCase):
                 'action': 'ALLOW',
                 'shared': False,
                 'enabled': True,
+                'ip_version': rule.ip_version,
                 'source_ip_address': rule.source_ip_address,
                 'destination_ip_address': None,
                 'source_port': None,
@@ -501,6 +553,7 @@ class FirewallTests(test.TestCase):
                 'action': 'ALLOW',
                 'shared': False,
                 'enabled': True,
+                'ip_version': rule.ip_version,
                 'source_ip_address': rule.source_ip_address,
                 'destination_ip_address': None,
                 'source_port': None,

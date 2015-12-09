@@ -1,19 +1,45 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# Bruno Cornec <bruno.cornec@hp.com>, 2015
+# zopanix <christophe.vandekerchove-ext@cloudwatt.com>, 2015
+# François Bureau, 2015
+# François Bureau, 2015
+# Frédéric <frosmont@free.fr>, 2014
+# JF Taltavull <jftalta@gmail.com>, 2015
+# Maxime COQUEREL <max.coquerel@gmail.com>, 2015
 # Corinne Verheyde <cverheyd@gmail.com>, 2015. #zanata
+# Gael Rehault <gael01@gmail.com>, 2015. #zanata
 # Kevin Tibi <kodokuu@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-11-18 04:22+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-09-16 10:48+0000\n"
-"Last-Translator: Corinne Verheyde <cverheyd@gmail.com>\n"
-"Language-Team: French\n"
+"PO-Revision-Date: 2015-11-17 11:11+0000\n"
+"Last-Translator: Gael Rehault <gael01@gmail.com>\n"
 "Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Generated-By: Babel 2.0\n"
 "X-Generator: Zanata 3.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Language-Team: French\n"
+
+#, python-format
+msgid ""
+"\n"
+"                Login as different user or go back to <a href=\"%(home_url)s"
+"\">home page</a>\n"
+"              "
+msgstr ""
+"\n"
+"                Connectez-vous avec un autre nom d'utilisateur ou revenez à "
+"<a href=\"%(home_url)s\">home page</a>\n"
+"              "
 
 #, python-format
 msgid ""
@@ -213,27 +239,17 @@ msgstr "Version d'adresse IP invalide"
 msgid "Limit Summary"
 msgstr "Synthèse  des Quotas"
 
-msgid "Log In"
+msgid "Log in"
 msgstr "Se connecter"
 
 msgid "Login"
 msgstr "Identifiant"
-
-#, python-format
-msgid ""
-"Login as different user or go back to <a href=\"%(home_url)s\"> home page</a>"
-msgstr ""
-"Connectez-vous avec un autre nom d'utilisateur ou revenez à <a href="
-"\"%(home_url)s\"> la page d’accueil</a>"
 
 msgid "Members"
 msgstr "Membres"
 
 msgid "More Actions"
 msgstr "Plus d'Actions"
-
-msgid "N/A"
-msgstr "N/D"
 
 msgid "Navigation Item"
 msgstr "Elément de navigation"
@@ -281,9 +297,6 @@ msgstr "Merci de vous connecter pour continuer."
 msgid "Please select a row before taking that action."
 msgstr "Merci de sélectionner une ligne avant de faire cette action."
 
-msgid "Port number must be integer"
-msgstr "Le numéro de port doit être un nombre entier"
-
 msgid "Processing..."
 msgstr "Traitement en cours..."
 
@@ -302,9 +315,6 @@ msgid_plural "Sell Puppies"
 msgstr[0] "Chiot à vendre"
 msgstr[1] "Chiots à vendre"
 
-msgid "Session timed out."
-msgstr "La session a expiré."
-
 msgid "Sign In"
 msgstr "Se connecter"
 
@@ -321,10 +331,6 @@ msgstr "Succès :"
 
 msgid "Summary"
 msgstr "Résumé"
-
-#, python-format
-msgid "The attribute %(attr)s doesn't exist on %(obj)s."
-msgstr "L'attribut %(attr)s n'existe pas sur %(obj)s."
 
 msgid "The date should be in YYYY-mm-dd format."
 msgstr "La date doit être au format AAAA-mm-jj"

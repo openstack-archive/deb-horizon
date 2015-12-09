@@ -26,12 +26,10 @@
   describe('pie chart directive', function () {
 
     var $scope, $elementMax, $elementTotal, $elementOverMax,
-        $elementNoQuota, donutChartSettings, quotaChartDefaults;
+      $elementNoQuota, quotaChartDefaults;
 
     beforeEach(module('templates'));
     beforeEach(module('horizon.framework'));
-    beforeEach(module('horizon.framework.widgets'));
-    beforeEach(module('horizon.framework.widgets.charts'));
 
     function cleanSpaces(string) {
       return string.trim().replace(/\s+/, ' ');
@@ -40,7 +38,6 @@
     beforeEach(inject(function ($injector) {
       var $compile = $injector.get('$compile');
       $scope = $injector.get('$rootScope').$new();
-      donutChartSettings = $injector.get('horizon.framework.widgets.charts.donutChartSettings');
       quotaChartDefaults = $injector.get('horizon.framework.widgets.charts.quotaChartDefaults');
 
       $scope.testDataTotal = {
@@ -141,8 +138,8 @@
       expect($elementTotal.find('svg').length).toBe(1);
     });
 
-    it('Unlimited quota chart should have no svg element', function () {
-      expect($elementNoQuota.find('svg').length).toBe(0);
+    it('Unlimited quota chart should have hidden svg element', function () {
+      expect($elementNoQuota.find('svg').is(':hidden')).toBe(true);
     });
 
     it('Max chart should have 3 path elements', function () {

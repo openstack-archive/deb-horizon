@@ -212,8 +212,8 @@ class ImageViewTests(test.TestCase):
 
     @test.create_stubs({api.glance: ('image_create',)})
     def test_image_create_post_upload(self):
-        temp_file = tempfile.TemporaryFile()
-        temp_file.write('123')
+        temp_file = tempfile.NamedTemporaryFile()
+        temp_file.write(b'123')
         temp_file.flush()
         temp_file.seek(0)
 
@@ -225,8 +225,8 @@ class ImageViewTests(test.TestCase):
 
     @test.create_stubs({api.glance: ('image_create',)})
     def test_image_create_post_with_kernel_ramdisk(self):
-        temp_file = tempfile.TemporaryFile()
-        temp_file.write('123')
+        temp_file = tempfile.NamedTemporaryFile()
+        temp_file.write(b'123')
         temp_file.flush()
         temp_file.seek(0)
 
@@ -298,11 +298,9 @@ class ImageViewTests(test.TestCase):
                                       args=[image.id]))
 
         self.assertTemplateUsed(res,
-                                'project/images/images/detail.html')
+                                'horizon/common/_detail.html')
         self.assertEqual(res.context['image'].name, image.name)
         self.assertEqual(res.context['image'].protected, image.protected)
-        self.assertContains(res, "<h1>Image Details: %s</h1>" % image.name,
-                            1, 200)
 
     @test.create_stubs({api.glance: ('image_get',)})
     def test_image_detail_custom_props_get(self):
@@ -343,7 +341,7 @@ class ImageViewTests(test.TestCase):
             reverse('horizon:project:images:images:detail',
                     args=[image.id]))
         self.assertTemplateUsed(res,
-                                'project/images/images/detail.html')
+                                'horizon/common/_detail.html')
         self.assertEqual(res.context['image'].protected, image.protected)
 
     @test.create_stubs({api.glance: ('image_get',)})
@@ -417,12 +415,12 @@ class OwnerFilterTests(test.TestCase):
         special = map(lambda t: t['tenant'], self.filter_tenants)
 
         if filter_string == 'public':
-            return filter(lambda im: im.is_public, images)
+            return [im for im in images if im.is_public]
         if filter_string == 'shared':
-            return filter(lambda im: (not im.is_public and
-                                      im.owner != my_tenant_id and
-                                      im.owner not in special),
-                          images)
+            return [im for im in images
+                    if (not im.is_public and
+                        im.owner != my_tenant_id and
+                        im.owner not in special)]
         if filter_string == 'project':
             filter_string = my_tenant_id
-        return filter(lambda im: im.owner == filter_string, images)
+        return [im for im in images if im.owner == filter_string]

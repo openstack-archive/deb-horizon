@@ -44,6 +44,9 @@
     $scope.initPromise = initTask.promise;
     $scope.currentIndex = -1;
     $scope.workflow = $scope.workflow || {};
+    if ($scope.workflow.initControllers) {
+      $scope.workflow.initControllers($scope);
+    }
     var steps = $scope.steps = $scope.workflow.steps || [];
     $scope.wizardForm = {};
 
@@ -56,6 +59,7 @@
     viewModel.showSpinner = false;
     viewModel.hasError = false;
     viewModel.onClickFinishBtn = onClickFinishBtn;
+    viewModel.isSubmitting = false;
 
     $scope.initPromise.then(onInitSuccess, onInitError);
 
@@ -84,6 +88,7 @@
       viewModel.showSpinner = false;
       viewModel.errorMessage = errorMessage;
       viewModel.hasError = true;
+      viewModel.isSubmitting = false;
     }
 
     function beforeSubmit() {
@@ -98,6 +103,8 @@
     }
 
     function onClickFinishBtn() {
+      // prevent the finish button from being clicked again
+      viewModel.isSubmitting = true;
       beforeSubmit();
       $scope.submit().then(afterSubmit, showError);
     }

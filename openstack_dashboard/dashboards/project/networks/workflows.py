@@ -50,6 +50,8 @@ class CreateNetworkInfoAction(workflows.Action):
                                     required=False,
                                     help_text=_("The state to start"
                                                 " the network in."))
+    shared = forms.BooleanField(label=_("Shared"), initial=False,
+                                required=False)
     with_subnet = forms.BooleanField(label=_("Create Subnet"),
                                      widget=forms.CheckboxInput(attrs={
                                          'class': 'switchable',
@@ -98,7 +100,8 @@ class CreateNetworkInfoAction(workflows.Action):
 
 class CreateNetworkInfo(workflows.Step):
     action_class = CreateNetworkInfoAction
-    contributes = ("net_name", "admin_state", "net_profile_id", "with_subnet")
+    contributes = ("net_name", "admin_state", "net_profile_id", "with_subnet",
+                   "shared")
 
 
 class CreateSubnetInfoAction(workflows.Action):
@@ -280,7 +283,7 @@ class CreateSubnetInfoAction(workflows.Action):
         address_source = cleaned_data.get('address_source')
 
         # When creating network from a pool it is allowed to supply empty
-        # subnetpool_id signalling that Neutron should choose the default
+        # subnetpool_id signaling that Neutron should choose the default
         # pool configured by the operator. This is also part of the IPv6
         # Prefix Delegation Workflow.
         if not cidr and address_source != 'subnetpool':
@@ -470,7 +473,8 @@ class CreateNetwork(workflows.Workflow):
     def _create_network(self, request, data):
         try:
             params = {'name': data['net_name'],
-                      'admin_state_up': (data['admin_state'] == 'True')}
+                      'admin_state_up': (data['admin_state'] == 'True'),
+                      'shared': data['shared']}
             if api.neutron.is_port_profiles_supported():
                 params['net_profile_id'] = data['net_profile_id']
             network = api.neutron.network_create(request, **params)

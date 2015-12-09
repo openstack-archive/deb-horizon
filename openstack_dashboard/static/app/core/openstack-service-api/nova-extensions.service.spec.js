@@ -77,7 +77,7 @@
 
       deferred.reject.calls.reset();
       func2();
-      expect(deferred.reject).toHaveBeenCalledWith('Cannot get the Nova extension list.');
+      expect(deferred.reject).toHaveBeenCalledWith('Cannot get the extension list.');
     });
 
   });

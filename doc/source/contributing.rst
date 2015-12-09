@@ -470,7 +470,7 @@ CSS library to Horizon, follow those steps:
     the right version, contact the original packager.
  2. Package the library as an Xstatic package by following the instructions in
     Xstatic documentation_.
- 3. `Create a new repository on StackForge`_. Use "xstatic-core" and
+ 3. `Create a new repository under OpenStack`_. Use "xstatic-core" and
     "xstatic-ptl" groups for the ACLs. Make sure to include the
     ``publish-to-pypi`` job.
  4. `Setup PyPi`_ to allow OpenStack to publish your package.
@@ -492,7 +492,7 @@ CSS library to Horizon, follow those steps:
     newer package.
 
 .. _documentation: http://xstatic.rtfd.org/en/latest/packaging.html
-.. _`Create a new repository on StackForge`: http://docs.openstack.org/infra/manual/creators.html
+.. _`Create a new repository under OpenStack`: http://docs.openstack.org/infra/manual/creators.html
 .. _`Tag your release`: http://docs.openstack.org/infra/manual/drivers.html#tagging-a-release
 .. _`Setup PyPi`: http://docs.openstack.org/infra/manual/creators.html#give-openstack-permission-to-publish-releases
 .. _global-requirements: https://github.com/openstack/requirements/blob/master/global-requirements.txt
@@ -524,6 +524,14 @@ Unexpected warnings often appear when building the documentation, and slight
 reST syntax errors frequently cause links or cross-references not to work
 correctly.
 
+Documentation is generated with Sphinx using the tox command. To create HTML docs and man pages:
+
+.. code-block:: bash
+
+    $ tox -e docs
+
+The results are in the doc/build/html and doc/build/man directories respectively.
+
 Conventions
 -----------
 
@@ -536,3 +544,45 @@ Simply by convention, we have a few rules about naming:
   * The term "dashboard" refers to a top-level dashboard class, and "panel" to
     the sub-items within a dashboard. Referring to a panel as a dashboard is
     both confusing and incorrect.
+
+Release Notes
+=============
+
+Release notes for a patch should be included in the patch with the
+associated changes whenever possible. This allow for simpler tracking. It also
+enables a single cherry pick to be done if the change is backported to a
+previous release. In some cases, such as a feature that is provided via
+multiple patches, release notes can be done in a follow-on review.
+
+If the following applies to the patch, a release note is required:
+
+* The deployer needs to take an action when upgrading
+* A new feature is implemented
+* Function was removed (hopefully it was deprecated)
+* Current behavior is changed
+* A new config option is added that the deployer should consider changing from
+  the default
+* A security bug is fixed
+
+A release note is suggested if a long-standing or important bug is fixed.
+Otherwise, a release note is not required.
+
+Horizon uses `reno <http://docs.openstack.org/developer/reno/usage.html>`_ to
+generate release notes. Please read the docs for details. In summary, use
+
+.. code-block:: bash
+
+  $ tox -e venv -- reno new <bug-,bp-,whatever>
+
+Then edit the sample file that was created and push it with your change.
+
+To see the results:
+
+.. code-block:: bash
+
+  $ git commit  # Commit the change because reno scans git log.
+
+  $ tox -e releasenotes
+
+Then look at the generated release notes files in releasenotes/build/html in
+your favorite browser.

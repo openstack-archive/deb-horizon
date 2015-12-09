@@ -43,8 +43,7 @@ class DataProcessingJobTests(test.TestCase):
             .MultipleTimes().AndReturn(self.jobs.first())
         self.mox.ReplayAll()
         res = self.client.get(DETAILS_URL)
-        self.assertTemplateUsed(res,
-                                'project/data_processing.jobs/details.html')
+        self.assertTemplateUsed(res, 'horizon/common/_detail.html')
         self.assertContains(res, 'pigjob')
 
     @test.create_stubs({api.sahara: ('job_binary_list',
@@ -156,7 +155,7 @@ class DataProcessingJobTests(test.TestCase):
         cluster = self.clusters.first()
         input_ds = self.data_sources.first()
         output_ds = self.data_sources.first()
-        api.sahara.job_get(IsA(http.HttpRequest), IsA(unicode)) \
+        api.sahara.job_get(IsA(http.HttpRequest), IsA(six.text_type)) \
             .AndReturn(job)
         api.sahara.job_get_configs(IsA(http.HttpRequest), job.type) \
             .AndReturn(job)
@@ -166,13 +165,13 @@ class DataProcessingJobTests(test.TestCase):
             .MultipleTimes().AndReturn(self.data_sources.list())
         api.sahara.job_list(IsA(http.HttpRequest)) \
             .AndReturn(self.jobs.list())
-        api.sahara.job_get(IsA(http.HttpRequest), IsA(unicode)) \
+        api.sahara.job_get(IsA(http.HttpRequest), IsA(six.text_type)) \
             .AndReturn(job)
         api.sahara.job_execution_create(IsA(http.HttpRequest),
-                                        IsA(unicode),
-                                        IsA(unicode),
-                                        IsA(unicode),
-                                        IsA(unicode),
+                                        IsA(six.text_type),
+                                        IsA(six.text_type),
+                                        IsA(six.text_type),
+                                        IsA(six.text_type),
                                         IsA(dict),
                                         IsA(dict)).AndReturn(job_execution)
         self.mox.ReplayAll()

@@ -19,6 +19,18 @@ from openstack_dashboard.test import helpers as test
 
 
 class ImagesRestTestCase(test.TestCase):
+    #
+    # Version
+    #
+    @mock.patch.object(glance.api, 'glance')
+    def test_version_get(self, gc):
+        request = self.mock_rest_request()
+        gc.get_version.return_value = '2.0'
+        response = glance.Version().get(request)
+        self.assertStatusCode(response, 200)
+        self.assertEqual(response.json, {"version": "2.0"})
+        gc.get_version.assert_called_once_with()
+
     @mock.patch.object(glance.api, 'glance')
     def test_image_get_single(self, gc):
         request = self.mock_rest_request()
@@ -35,7 +47,7 @@ class ImagesRestTestCase(test.TestCase):
 
         response = glance.ImageProperties().get(request, "1")
         self.assertStatusCode(response, 200)
-        self.assertEqual(response.content, '{"a": "1", "b": "2"}')
+        self.assertEqual(response.json, {"a": "1", "b": "2"})
         gc.image_get.assert_called_once_with(request, "1")
 
     @mock.patch.object(glance.api, 'glance')
@@ -46,10 +58,47 @@ class ImagesRestTestCase(test.TestCase):
 
         response = glance.ImageProperties().patch(request, '1')
         self.assertStatusCode(response, 204)
-        self.assertEqual(response.content, '')
+        self.assertEqual(response.content, b'')
         gc.image_update_properties.assert_called_once_with(
             request, '1', ['c', 'd'], a='1', b='2'
         )
+
+    @mock.patch.object(glance.api, 'glance')
+    def test_image_delete(self, gc):
+        request = self.mock_rest_request()
+        glance.Image().delete(request, "1")
+        gc.image_delete.assert_called_once_with(request, "1")
+
+    @mock.patch.object(glance.api, 'glance')
+    def test_image_edit(self, gc):
+        request = self.mock_rest_request(body='''{"name": "Test",
+            "disk_format": "aki", "container_format": "aki",
+            "visibility": "public", "protected": false,
+            "image_url": "test.com",
+            "source_type": "url", "architecture": "testArch",
+            "description": "description", "kernel": "kernel",
+            "min_disk": 10, "min_ram": 5, "ramdisk": 10 }
+        ''')
+
+        metadata = {'name': 'Test',
+                    'disk_format': 'aki',
+                    'container_format': 'aki',
+                    'is_public': True,
+                    'protected': False,
+                    'min_disk': 10,
+                    'min_ram': 5,
+                    'properties': {
+                        'description': 'description',
+                        'architecture': 'testArch',
+                        'ramdisk_id': 10,
+                        'kernel_id': 'kernel',
+                    },
+                    'purge_props': False}
+
+        response = glance.Image().patch(request, "1")
+        self.assertStatusCode(response, 204)
+        self.assertEqual(response.content.decode('utf-8'), '')
+        gc.image_update.assert_called_once_with(request, '1', **metadata)
 
     @mock.patch.object(glance.api, 'glance')
     def test_image_get_list_detailed(self, gc):
@@ -69,12 +118,189 @@ class ImagesRestTestCase(test.TestCase):
 
         response = glance.Images().get(request)
         self.assertStatusCode(response, 200)
-        self.assertEqual(response.content,
-                         '{"items": [{"name": "fedora"}, {"name": "cirros"}]'
-                         ', "has_more_data": false, "has_prev_data": false}')
+        self.assertEqual(response.json,
+                         {"items": [{"name": "fedora"}, {"name": "cirros"}],
+                          "has_more_data": False, "has_prev_data": False})
         gc.image_list_detailed.assert_called_once_with(request,
                                                        filters=filters,
                                                        **kwargs)
+
+    @mock.patch.object(glance.api, 'glance')
+    def test_image_create_basic(self, gc):
+        request = self.mock_rest_request(body='''{"name": "Test",
+            "disk_format": "aki", "import_data": false,
+            "visibility": "public", "container_format": "aki",
+            "protected": false, "image_url": "test.com",
+            "source_type": "url", "architecture": "testArch",
+            "description": "description", "kernel": "kernel",
+            "min_disk": 10, "min_ram": 5, "ramdisk": 10 }
+        ''')
+        new = gc.image_create.return_value
+        new.to_dict.return_value = {'name': 'testimage'}
+        new.name = 'testimage'
+
+        metadata = {'name': 'Test',
+                    'disk_format': 'aki',
+                    'container_format': 'aki',
+                    'is_public': True,
+                    'protected': False,
+                    'min_disk': 10,
+                    'min_ram': 5,
+                    'location': 'test.com',
+                    'properties': {
+                        'description': 'description',
+                        'architecture': 'testArch',
+                        'ramdisk_id': 10,
+                        'kernel_id': 'kernel',
+                    }}
+
+        response = glance.Images().post(request)
+        self.assertStatusCode(response, 201)
+        self.assertEqual(response.content.decode('utf-8'),
+                         '{"name": "testimage"}')
+        self.assertEqual(response['location'], '/api/glance/images/testimage')
+        gc.image_create.assert_called_once_with(request, **metadata)
+
+    @mock.patch.object(glance.api, 'glance')
+    def test_image_create_shared(self, gc):
+        request = self.mock_rest_request(body='''{"name": "Test",
+            "disk_format": "aki", "import_data": false,
+            "visibility": "shared", "container_format": "aki",
+            "protected": false, "image_url": "test.com",
+            "source_type": "url", "architecture": "testArch",
+            "description": "description", "kernel": "kernel",
+            "min_disk": 10, "min_ram": 5, "ramdisk": 10 }
+        ''')
+        new = gc.image_create.return_value
+        new.to_dict.return_value = {'name': 'testimage'}
+        new.name = 'testimage'
+
+        metadata = {'name': 'Test',
+                    'disk_format': 'aki',
+                    'container_format': 'aki',
+                    'is_public': False,
+                    'protected': False,
+                    'min_disk': 10,
+                    'min_ram': 5,
+                    'location': 'test.com',
+                    'properties': {
+                        'description': 'description',
+                        'architecture': 'testArch',
+                        'ramdisk_id': 10,
+                        'kernel_id': 'kernel',
+                    }}
+
+        response = glance.Images().post(request)
+        self.assertStatusCode(response, 201)
+        self.assertEqual(response.content.decode('utf-8'),
+                         '{"name": "testimage"}')
+        self.assertEqual(response['location'], '/api/glance/images/testimage')
+        gc.image_create.assert_called_once_with(request, **metadata)
+
+    @mock.patch.object(glance.api, 'glance')
+    def test_image_create_private(self, gc):
+        request = self.mock_rest_request(body='''{"name": "Test",
+            "disk_format": "aki", "import_data": false,
+            "visibility": "private", "container_format": "aki",
+            "protected": false, "image_url": "test.com",
+            "source_type": "url", "architecture": "testArch",
+            "description": "description", "kernel": "kernel",
+            "min_disk": 10, "min_ram": 5, "ramdisk": 10 }
+        ''')
+        new = gc.image_create.return_value
+        new.to_dict.return_value = {'name': 'testimage'}
+        new.name = 'testimage'
+
+        metadata = {'name': 'Test',
+                    'disk_format': 'aki',
+                    'container_format': 'aki',
+                    'is_public': False,
+                    'protected': False,
+                    'min_disk': 10,
+                    'min_ram': 5,
+                    'location': 'test.com',
+                    'properties': {
+                        'description': 'description',
+                        'architecture': 'testArch',
+                        'ramdisk_id': 10,
+                        'kernel_id': 'kernel',
+                    }}
+
+        response = glance.Images().post(request)
+        self.assertStatusCode(response, 201)
+        self.assertEqual(response.content.decode('utf-8'),
+                         '{"name": "testimage"}')
+        self.assertEqual(response['location'], '/api/glance/images/testimage')
+        gc.image_create.assert_called_once_with(request, **metadata)
+
+    @mock.patch.object(glance.api, 'glance')
+    def test_image_create_bad_visibility(self, gc):
+        request = self.mock_rest_request(body='''{"name": "Test",
+            "disk_format": "aki", "import_data": false,
+            "visibility": "verybad", "container_format": "aki",
+            "protected": false, "image_url": "test.com",
+            "source_type": "url", "architecture": "testArch",
+            "description": "description", "kernel": "kernel",
+            "min_disk": 10, "min_ram": 5, "ramdisk": 10 }
+        ''')
+
+        response = glance.Images().post(request)
+        self.assertStatusCode(response, 400)
+        self.assertEqual(response.content.decode('utf-8'),
+                         '"invalid visibility option: verybad"')
+
+    @mock.patch.object(glance.api, 'glance')
+    def test_image_create_required(self, gc):
+        request = self.mock_rest_request(body='''{"name": "Test",
+            "disk_format": "raw", "import_data": true,
+            "container_format": "docker",
+            "visibility": "public", "protected": false,
+            "source_type": "url", "image_url": "test.com" }''')
+        new = gc.image_create.return_value
+        new.to_dict.return_value = {'name': 'testimage'}
+        new.name = 'testimage'
+
+        metadata = {'name': 'Test',
+                    'disk_format': 'raw',
+                    'container_format': 'docker',
+                    'copy_from': 'test.com',
+                    'is_public': True,
+                    'protected': False,
+                    'min_disk': 0,
+                    'min_ram': 0,
+                    'properties': {}
+                    }
+        response = glance.Images().post(request)
+        self.assertStatusCode(response, 201)
+        self.assertEqual(response['location'], '/api/glance/images/testimage')
+        gc.image_create.assert_called_once_with(request, **metadata)
+
+    @mock.patch.object(glance.api, 'glance')
+    def test_image_create_additional_props(self, gc):
+        request = self.mock_rest_request(body='''{"name": "Test",
+            "disk_format": "raw", "import_data": true,
+            "container_format": "docker",
+            "visibility": "public", "protected": false,
+            "arbitrary": "property", "another": "prop",
+            "source_type": "url", "image_url": "test.com" }''')
+        new = gc.image_create.return_value
+        new.to_dict.return_value = {'name': 'testimage'}
+        new.name = 'testimage'
+
+        metadata = {'name': 'Test',
+                    'disk_format': 'raw',
+                    'container_format': 'docker',
+                    'copy_from': 'test.com',
+                    'is_public': True,
+                    'protected': False,
+                    'min_disk': 0,
+                    'min_ram': 0,
+                    'properties': {'arbitrary': 'property', 'another': 'prop'}
+                    }
+        response = glance.Images().post(request)
+        self.assertStatusCode(response, 201)
+        self.assertEqual(response['location'], '/api/glance/images/testimage')
+        gc.image_create.assert_called_once_with(request, **metadata)
 
     @mock.patch.object(glance.api, 'glance')
     def test_namespace_get_list(self, gc):
@@ -85,9 +311,9 @@ class ImagesRestTestCase(test.TestCase):
 
         response = glance.MetadefsNamespaces().get(request)
         self.assertStatusCode(response, 200)
-        self.assertEqual(response.content,
-                         '{"items": [{"namespace": "1"}, {"namespace": "2"}]'
-                         ', "has_more_data": false, "has_prev_data": false}')
+        self.assertEqual(response.json,
+                         {"items": [{"namespace": "1"}, {"namespace": "2"}],
+                          "has_more_data": False, "has_prev_data": False})
         gc.metadefs_namespace_full_list.assert_called_once_with(
             request, filters={}
         )
@@ -109,9 +335,9 @@ class ImagesRestTestCase(test.TestCase):
 
         response = glance.MetadefsNamespaces().get(request)
         self.assertStatusCode(response, 200)
-        self.assertEqual(response.content,
-                         '{"items": [{"namespace": "1"}, {"namespace": "2"}]'
-                         ', "has_more_data": false, "has_prev_data": false}')
+        self.assertEqual(response.json,
+                         {"items": [{"namespace": "1"}, {"namespace": "2"}],
+                          "has_more_data": False, "has_prev_data": False})
         gc.metadefs_namespace_full_list.assert_called_once_with(
             request, filters=filters, **kwargs
         )

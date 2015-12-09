@@ -13,6 +13,7 @@
 import json
 import logging
 
+from django.conf import settings
 from django.utils import html
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_variables  # noqa
@@ -281,18 +282,24 @@ class CreateStackForm(forms.SelfHandlingForm):
     def __init__(self, *args, **kwargs):
         parameters = kwargs.pop('parameters')
         # special case: load template data from API, not passed in params
-        if(kwargs.get('validate_me')):
+        if kwargs.get('validate_me'):
             parameters = kwargs.pop('validate_me')
         super(CreateStackForm, self).__init__(*args, **kwargs)
+
+        if self._stack_password_enabled():
+            self.fields['password'] = forms.CharField(
+                label=_('Password for user "%s"') % self.request.user.username,
+                help_text=_('This is required for operations to be performed '
+                            'throughout the lifecycle of the stack'),
+                widget=forms.PasswordInput())
+
         self._build_parameter_fields(parameters)
 
-    def _build_parameter_fields(self, template_validate):
-        self.fields['password'] = forms.CharField(
-            label=_('Password for user "%s"') % self.request.user.username,
-            help_text=_('This is required for operations to be performed '
-                        'throughout the lifecycle of the stack'),
-            widget=forms.PasswordInput())
+    def _stack_password_enabled(self):
+        stack_settings = getattr(settings, 'OPENSTACK_HEAT_STACK', {})
+        return stack_settings.get('enable_user_pass', True)
 
+    def _build_parameter_fields(self, template_validate):
         self.help_text = template_validate['Description']
 
         params = template_validate.get('Parameters', {})
@@ -335,7 +342,7 @@ class CreateStackForm(forms.SelfHandlingForm):
             elif param_type in ('CommaDelimitedList', 'String', 'Json'):
                 if 'MinLength' in param:
                     field_args['min_length'] = int(param['MinLength'])
-                    field_args['required'] = param.get('MinLength', 0) > 0
+                    field_args['required'] = field_args['min_length'] > 0
                 if 'MaxLength' in param:
                     field_args['max_length'] = int(param['MaxLength'])
                 if hidden:
@@ -368,8 +375,9 @@ class CreateStackForm(forms.SelfHandlingForm):
             'timeout_mins': data.get('timeout_mins'),
             'disable_rollback': not(data.get('enable_rollback')),
             'parameters': dict(params_list),
-            'password': data.get('password')
         }
+        if data.get('password'):
+            fields['password'] = data.get('password')
 
         if data.get('template_data'):
             fields['template'] = data.get('template_data')
@@ -422,8 +430,9 @@ class EditStackForm(CreateStackForm):
             'timeout_mins': data.get('timeout_mins'),
             'disable_rollback': not(data.get('enable_rollback')),
             'parameters': dict(params_list),
-            'password': data.get('password')
         }
+        if data.get('password'):
+            fields['password'] = data.get('password')
 
         # if the user went directly to this form, resubmit the existing
         # template data. otherwise, submit what they had from the first form

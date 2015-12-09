@@ -72,11 +72,16 @@ class CreateQosSpec(forms.SelfHandlingForm):
                              _('Successfully created QoS Spec: %s')
                              % data['name'])
             return qos_spec
-        except Exception:
-            redirect = reverse("horizon:admin:volumes:index")
-            exceptions.handle(request,
-                              _('Unable to create QoS Spec.'),
-                              redirect=redirect)
+        except Exception as ex:
+            if getattr(ex, 'code', None) == 409:
+                msg = _('QoS Spec name "%s" already '
+                        'exists.') % data['name']
+                self._errors['name'] = self.error_class([msg])
+            else:
+                redirect = reverse("horizon:admin:volumes:index")
+                exceptions.handle(request,
+                                  _('Unable to create QoS Spec.'),
+                                  redirect=redirect)
 
 
 class CreateVolumeTypeEncryption(forms.SelfHandlingForm):
@@ -102,7 +107,7 @@ class CreateVolumeTypeEncryption(forms.SelfHandlingForm):
             if data['cipher'] is u'':
                 data['cipher'] = None
 
-            # Create encyrption for the volume type
+            # Create encryption for the volume type
             volume_type = cinder.\
                 volume_encryption_type_create(request,
                                               data['volume_type_id'],

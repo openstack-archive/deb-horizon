@@ -50,10 +50,8 @@ class DataProcessingDataSourceTests(test.TestCase):
             .MultipleTimes().AndReturn(self.data_sources.first())
         self.mox.ReplayAll()
         res = self.client.get(DETAILS_URL)
-        self.assertTemplateUsed(
-            res, 'project/data_processing.data_sources/details.html')
+        self.assertTemplateUsed(res, 'horizon/common/_detail.html')
         self.assertContains(res, 'sampleOutput')
-        self.assertContains(res, 'Data Source Details')
 
     @test.create_stubs({api.sahara: ('data_source_list',
                                      'data_source_delete')})
@@ -106,10 +104,10 @@ class DataProcessingDataSourceTests(test.TestCase):
             'description': data_source.description
         }
         api.sahara.data_source_get(IsA(http.HttpRequest),
-                                   IsA(unicode)) \
+                                   IsA(six.text_type)) \
             .AndReturn(self.data_sources.first())
         api.sahara.data_source_update(IsA(http.HttpRequest),
-                                      IsA(unicode),
+                                      IsA(six.text_type),
                                       api_data) \
             .AndReturn(self.data_sources.first())
         self.mox.ReplayAll()

@@ -1,19 +1,26 @@
+# Translations template for PROJECT.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+#
+# Translators:
+# darioristic <office@darioristic.com>, 2015
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-26 08:59+0000\n"
+"POT-Creation-Date: 2015-12-02 23:42+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: Serbian\n"
+"PO-Revision-Date: 2015-09-08 11:14+0000\n"
+"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
 "Language: sr\n"
-"X-Generator: Zanata 3.7.1\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
+"Language-Team: Serbian\n"
 
 msgid " - End"
 msgstr "- Kraj"
@@ -307,15 +314,6 @@ msgstr "Dodaj pravilo"
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "Dodaj/Izbaci host iz skupa"
 
-msgid "AddFirewall"
-msgstr "AddFirewall"
-
-msgid "AddPolicy"
-msgstr "AddPolicy"
-
-msgid "AddRule"
-msgstr "AddRule"
-
 #, python-format
 msgid "Added Firewall \"%s\"."
 msgstr "Dodat firewall \"%s\"."
@@ -447,9 +445,6 @@ msgstr ""
 
 msgid "Amount of energy"
 msgstr "Količina energije"
-
-msgid "An external (HTTP) URL to load the image from."
-msgstr "Spoljni (HTTP) URL odakle se preuzima image."
 
 msgid "An external (HTTP) URL to load the template from."
 msgstr "Spoljni (HTTP) URL odakle se učitava šablon."
@@ -742,9 +737,6 @@ msgstr "Odaberite pravilo koje želite da uklonite."
 msgid "Cinder"
 msgstr "Cinder"
 
-msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
-msgstr "Inter-Domain rutiranje bez klase (npr. 192.168.0.0/24)"
-
 msgid "Clear Domain Context"
 msgstr "Obriši Domen kontekst"
 
@@ -1000,35 +992,6 @@ msgid "Create a Volume Type"
 msgstr "Kreiranje tipa volume-a"
 
 msgid ""
-"Create a firewall based on a policy.\n"
-"\n"
-"A policy must be selected. Other fields are optional."
-msgstr ""
-"Kreirajte firewall baziran na politici.\n"
-"\n"
-"Politika mora biti odabrana. Ostala polja su neobavezna."
-
-msgid ""
-"Create a firewall policy with an ordered list of firewall rules.\n"
-"\n"
-"A name must be given. Firewall rules are added in the order placed under the "
-"Rules tab."
-msgstr ""
-"Kreirajte politiku firewall-a sa naručenom listom pravila firewall-a.\n"
-"\n"
-"Ime mora biti dodeljeno. Pravila firewll-a su dodata po redosledu "
-"postavljenom u masci za pravila - Rules tab."
-
-msgid ""
-"Create a firewall rule.\n"
-"\n"
-"Protocol and action must be specified. Other fields are optional."
-msgstr ""
-"Kreirajte pravila firewall-a.\n"
-"\n"
-"Protokol i akcija moraju biti uneti. Ostala polja su neobavezna."
-
-msgid ""
 "Create a monitor template.\n"
 "\n"
 "Select type of monitoring. Specify delay, timeout, and retry limits required "
@@ -1140,15 +1103,6 @@ msgstr "Trenutni Host"
 msgid "Current password"
 msgstr "Trenutna lozinka"
 
-msgid ""
-"Currently only images available via an HTTP URL are supported. The image "
-"location must be accessible to the Image Service. Compressed image binaries "
-"are supported (.zip and .tar.gz.)"
-msgstr ""
-"Trenutno samo image-i dostupni preko HTTP URL su podržani. Pozicija image-a "
-"mora biti dostupna image servisu. Komprimovani image-i su podržani (.zip i ."
-"tar.gz.)"
-
 msgid "Custom ICMP Rule"
 msgstr "Prilagođeno ICMP pravilo"
 
@@ -1231,15 +1185,9 @@ msgstr "Podrazumevano"
 msgid "Delay"
 msgstr "Kašnjenje"
 
-msgid "Delete on Terminate"
-msgstr "Brisanje kod ukidanja"
-
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
 msgstr "Obrišite kreiranu mrežu \"%s\" zbog greške u kreiranju podmreže."
-
-msgid "Delete volume on instance terminate"
-msgstr "Breisanje volume-a kod ukidanja instance"
 
 msgid "Deleted"
 msgstr "Obrisano"
@@ -1253,36 +1201,8 @@ msgid "Deleted"
 msgstr "Obrisano"
 
 #, python-format
-msgid "Deleted IKE Policy %s"
-msgstr "Obrisana IKE politika %s"
-
-#, python-format
-msgid "Deleted IPSec Policy %s"
-msgstr "Obrisana IPSec politika %s"
-
-#, python-format
-msgid "Deleted IPSec Site Connection %s"
-msgstr "Obrisana veza sa IPSec site-om %s"
-
-#, python-format
 msgid "Deleted VIP %s"
 msgstr "Obrisan VIP %s"
-
-#, python-format
-msgid "Deleted VPN Service %s"
-msgstr "Obrisan VPN servis %s"
-
-#, python-format
-msgid "Deleted member %s"
-msgstr "Obrisan član %s"
-
-#, python-format
-msgid "Deleted monitor %s"
-msgstr "Obrisan nadzor %s"
-
-#, python-format
-msgid "Deleted pool %s"
-msgstr "Obrisana grupa %s"
 
 msgid "Deleting"
 msgstr "Brišem"
@@ -1726,10 +1646,6 @@ msgctxt "current status of router"
 msgid "Error"
 msgstr "Greška"
 
-msgctxt "status of a neteork port"
-msgid "Error"
-msgstr "Greška"
-
 msgid "Error Deleting"
 msgstr "Greška u brisanju"
 
@@ -2053,17 +1969,8 @@ msgstr "Završena promena veličine ili seoba"
 msgid "Firewall %s was successfully updated."
 msgstr "Firewall %s je uspešno izmenjen."
 
-msgid "Firewall Details"
-msgstr "Detalji firewall-a"
-
 msgid "Firewall Policies"
 msgstr "Politike Firewall-a"
-
-msgid "Firewall Policy Details"
-msgstr "Detalji politika Firewall-a"
-
-msgid "Firewall Rule Details"
-msgstr "Detalji pravila firewall-a"
 
 msgid "Firewall Rules"
 msgstr "Pravila Firewall-a"
@@ -2400,9 +2307,6 @@ msgstr "Image"
 msgid "Image (Glance)"
 msgstr "Otisak sadržine diska (Glance)"
 
-msgid "Image Details"
-msgstr "Detalji image-a"
-
 msgid "Image File"
 msgstr "Image File"
 
@@ -2417,9 +2321,6 @@ msgstr "Ime image-a"
 
 msgid "Image Name ="
 msgstr "Ime image-a"
-
-msgid "Image Overview"
-msgstr "Pregled image-a"
 
 msgid "Image Source"
 msgstr "Izvor Image-a"
@@ -2504,9 +2405,6 @@ msgstr "Log konzole instance"
 
 msgid "Instance Count"
 msgstr "Broj instanci"
-
-msgid "Instance Details"
-msgstr "Detalji instance"
 
 msgid "Instance ID"
 msgstr "ID instance"
@@ -2771,9 +2669,6 @@ msgstr "Najveći broj pokušaja (1~10)"
 msgid "Max."
 msgstr "Max."
 
-msgid "Max. Size (MB)"
-msgstr "Max. Veličina (MB)"
-
 msgid "Maximum Transmission Unit size for the connection"
 msgstr "Maksimalna jedinica prenosa za vezu"
 
@@ -2826,9 +2721,6 @@ msgstr "Minimalni RAM"
 
 msgid "Min."
 msgstr "Min."
-
-msgid "Min. Size (MB)"
-msgstr "Min. Veličina (MB)"
 
 msgid "Minimum Disk (GB)"
 msgstr "Najmanji disk (GB)"
@@ -3755,9 +3647,6 @@ msgstr "Ruter"
 msgid "Router %s was successfully created."
 msgstr "Ruter %s je uspešno kreiran."
 
-msgid "Router Details"
-msgstr "Detalji rutera"
-
 msgid "Router ID"
 msgstr "ID rutera"
 
@@ -4141,9 +4030,6 @@ msgstr "ID stack-a"
 msgid "Stack Name"
 msgstr "Ime stack-a"
 
-msgid "Stack Overview"
-msgstr "Pregled stack-a"
-
 msgid "Stack Parameters"
 msgstr "Parametri stack-a"
 
@@ -4227,9 +4113,6 @@ msgstr "ID podmreže"
 
 msgid "Subnet Name"
 msgstr "Ime podmreže"
-
-msgid "Subnet Overview"
-msgstr "Pregled podmreže"
 
 msgid "Subnet list can not be retrieved."
 msgstr "Nije moguće izvući listu Subnet-ova"
@@ -4759,24 +4642,8 @@ msgid "Unable to create volume."
 msgstr "Ne može se kreirati Volume."
 
 #, python-format
-msgid "Unable to delete IKE Policy: %s"
-msgstr "Nemoguće obrisati IKE Policy: %s"
-
-#, python-format
-msgid "Unable to delete IPSec Policy: %s"
-msgstr "Nemoguće je obrisati IPSec politiku: %s"
-
-#, python-format
-msgid "Unable to delete IPSec Site Connection: %s"
-msgstr "Nemoguće je obrisati vezu IPSec Site: %s"
-
-#, python-format
 msgid "Unable to delete VIP. %s"
 msgstr "Nemoguće je obrisati VIP. %s"
-
-#, python-format
-msgid "Unable to delete VPN Service: %s"
-msgstr "Nemguće obrisati VPN Servis: %s"
 
 #, python-format
 msgid "Unable to delete firewall. %s"
@@ -5729,26 +5596,17 @@ msgstr "Volume"
 msgid "Volume (Cinder)"
 msgstr "Volume (Cinder)"
 
-msgid "Volume Details"
-msgstr "Detalji volume-a"
-
 msgid "Volume Limits"
 msgstr "Ograničenja volume-a"
 
 msgid "Volume Name"
 msgstr "Ime volume-a"
 
-msgid "Volume Overview"
-msgstr "Pregled Volume-a"
-
 msgid "Volume Size"
 msgstr "Veličina Volume-a"
 
 msgid "Volume Snapshot"
 msgstr "Snapshot volume-a"
-
-msgid "Volume Snapshot Details"
-msgstr "Detalji snapshot-a volume-a"
 
 msgid "Volume Snapshot Overview"
 msgstr "Pregled snapshot-a volume-a"

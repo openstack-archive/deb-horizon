@@ -24,12 +24,11 @@
 
   describe('wizard directive', function () {
     var $compile,
-        $scope,
-        element;
+      $scope,
+      element;
 
     beforeEach(module('templates'));
-    beforeEach(module('horizon.framework.widgets'));
-    beforeEach(module('horizon.framework.widgets.wizard'));
+    beforeEach(module('horizon.framework'));
     beforeEach(inject(function ($injector) {
       $scope = $injector.get('$rootScope').$new();
       $compile = $injector.get('$compile');
@@ -173,6 +172,14 @@
       expect(element[0].querySelector('button.finish').hasAttribute('disabled')).toBe(false);
     });
 
+    it('should have finish button disabled if isSubmitting is set', function () {
+      $scope.viewModel = { };
+      $scope.$apply();
+      $scope.viewModel.isSubmitting = true;
+      $scope.$apply();
+      expect(element[0].querySelector('button.finish').hasAttribute('disabled')).toBe(true);
+    });
+
     it('should show error message after calling method showError', function () {
       var errorMessage = 'some error message';
       $scope.$apply();
@@ -197,7 +204,7 @@
   describe("ModalContainerController", function() {
     var ctrl, scope, modalInstance, launchContext;
 
-    beforeEach(module('horizon.framework.widgets.wizard'));
+    beforeEach(module('horizon.framework'));
 
     beforeEach(inject(function($controller) {
       scope = {};
