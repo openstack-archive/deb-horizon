@@ -144,11 +144,12 @@ expressed in milliseconds.
 Defaults: ``{'delay': [3000], 'fade_duration': [1500], 'types': []}``
 
 If provided, will auto-fade the alert types specified. Valid alert types
-include: ['alert-success', 'alert-info', 'alert-warning', 'alert-error']
-Can also define the delay before the alert fades and the fade out duration.
+include: ['alert-default', 'alert-success', 'alert-info', 'alert-warning',
+'alert-danger']  Can also define the delay before the alert fades and the fade
+out duration.
 
 ``bug_url``
-------------
+-----------
 
 .. versionadded:: 9.0.0(Mitaka)
 
@@ -404,6 +405,7 @@ This example sorts flavors by vcpus in descending order::
          'reverse': True,
     }
 
+.. _custom_theme_path:
 
 ``CUSTOM_THEME_PATH``
 ---------------------
@@ -516,7 +518,8 @@ Default::
     {
         "data-processing": 1.1,
         "identity": 2.0,
-        "volume": 2
+        "volume": 2,
+        "compute": 2
     }
 
 Overrides for OpenStack API versions. Use this setting to force the
@@ -532,7 +535,8 @@ OpenStack dashboard to use a specific API version for a given service API.
         OPENSTACK_API_VERSIONS = {
             "data-processing": 1.1,
             "identity": 3,
-            "volume": 2
+            "volume": 2,
+            "compute": 2
         }
 
 ``OPENSTACK_ENABLE_PASSWORD_RETRIEVE``
@@ -1318,6 +1322,8 @@ IP address, that should be added. The setting may contain more than one entry.
     set this with the list of host/domain names that the application can serve.
     For more information see:
     https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
+
+.. _debug_setting:
 
 ``DEBUG`` and ``TEMPLATE_DEBUG``
 --------------------------------

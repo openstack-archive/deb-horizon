@@ -39,18 +39,38 @@
       getLimits: getLimits,
       createServer: createServer,
       getServer: getServer,
+      getServers: getServers,
       getExtensions: getExtensions,
       getFlavors: getFlavors,
       getFlavor: getFlavor,
       getFlavorExtraSpecs: getFlavorExtraSpecs,
       editFlavorExtraSpecs: editFlavorExtraSpecs,
       getAggregateExtraSpecs: getAggregateExtraSpecs,
-      editAggregateExtraSpecs: editAggregateExtraSpecs
+      editAggregateExtraSpecs: editAggregateExtraSpecs,
+      getServices: getServices,
+      getInstanceMetadata: getInstanceMetadata,
+      editInstanceMetadata: editInstanceMetadata
     };
 
     return service;
 
     ///////////
+
+    // Nova Services
+
+    /**
+     * @name horizon.openstack-service-api.nova.getServices
+     * @description Get the list of Nova services.
+     *
+     * @returns The listing result is an object with property "services." Each item is
+     * a service.
+     */
+    function getServices() {
+      return apiService.get('/api/nova/services/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve the nova services.'));
+        });
+    }
 
     // Keypairs
 
@@ -188,6 +208,21 @@
       return apiService.get('/api/nova/servers/' + id)
         .error(function () {
           toastService.add('error', gettext('Unable to retrieve the server.'));
+        });
+    }
+
+    /**
+     * @name horizon.app.core.openstack-service-api.nova.getServers
+     * @description
+     * Get a list of servers.
+     *
+     * The listing result is an object with property "items". Each item is
+     * a server.
+     */
+    function getServers() {
+      return apiService.get('/api/nova/servers/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve instances.'));
         });
     }
 
@@ -349,6 +384,40 @@
         }
       ).error(function () {
         toastService.add('error', gettext('Unable to edit the aggregate extra specs.'));
+      });
+    }
+
+    /**
+     * @name horizon.app.core.openstack-service-api.nova.getInstanceMetadata
+     * @description
+     * Get a single instance's metadata by ID.
+     * @param {string} id
+     * Specifies the id of the instance to request the metadata.
+     */
+    function getInstanceMetadata(id) {
+      return apiService.get('/api/nova/servers/' + id + '/metadata')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve instance metadata.'));
+        });
+    }
+
+    /**
+     * @name horizon.openstack-service-api.nova.editInstanceMetadata
+     * @description
+     * Update a single instance's metadata by ID.
+     * @param {string} id
+     * @param {object} updated New metadata.
+     * @param {[]} removed Names of removed metadata items.
+     */
+    function editInstanceMetadata(id, updated, removed) {
+      return apiService.patch(
+        '/api/nova/servers/' + id + '/metadata',
+        {
+          updated: updated,
+          removed: removed
+        }
+      ).error(function () {
+        toastService.add('error', gettext('Unable to edit instance metadata.'));
       });
     }
   }

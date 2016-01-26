@@ -220,7 +220,7 @@
     describe('hzExpandDetail directive', function() {
 
       it('should have summary row with class "expanded" when expanded', function() {
-        var expandIcon = $element.find('i.fa').first();
+        var expandIcon = $element.find('.fa').first();
         expandIcon.click();
 
         var summaryRow = expandIcon.closest('tr');
@@ -228,20 +228,20 @@
       });
 
       it('should have summary row without class "expanded" when not expanded', function(done) {
-        var expandIcon = $element.find('i.fa').first();
+        var expandIcon = $element.find('.fa').first();
 
         // Click twice to mock expand and collapse
         expandIcon.click();
         expandIcon.click();
 
-        /*eslint-disable angular/ng_timeout_service */
+        /*eslint-disable angular/timeout-service */
         // Wait for the slide down animation to complete before test
         setTimeout(function() {
           var summaryRow = expandIcon.closest('tr');
           expect(summaryRow.hasClass('expanded')).toBe(false);
           done();
         }, 2000);
-        /*eslint-enable angular/ng_timeout_service */
+        /*eslint-enable angular/timeout-service */
       });
     });
 

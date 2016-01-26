@@ -58,7 +58,7 @@ from openstack_dashboard.test.test_data import utils as test_utils
 wsgi.WSGIRequest.__repr__ = lambda self: "<class 'django.http.HttpRequest'>"
 
 
-def create_stubs(stubs_to_create={}):
+def create_stubs(stubs_to_create=None):
     """decorator to simplify setting up multiple stubs at once via mox
 
     :param stubs_to_create: methods to stub in one or more modules
@@ -89,7 +89,8 @@ def create_stubs(stubs_to_create={}):
         }
 
     """
-
+    if stubs_to_create is None:
+        stubs_to_create = {}
     if not isinstance(stubs_to_create, dict):
         raise TypeError("create_stub must be passed a dict, but a %s was "
                         "given." % type(stubs_to_create).__name__)
@@ -181,6 +182,7 @@ class TestCase(horizon_helpers.TestCase):
                            token=self.token,
                            username=self.user.name,
                            domain_id=self.domain.id,
+                           user_domain_name=self.domain.name,
                            tenant_id=self.tenant.id,
                            service_catalog=self.service_catalog,
                            authorized_tenants=tenants)
@@ -206,12 +208,14 @@ class TestCase(horizon_helpers.TestCase):
 
     def setActiveUser(self, id=None, token=None, username=None, tenant_id=None,
                       service_catalog=None, tenant_name=None, roles=None,
-                      authorized_tenants=None, enabled=True, domain_id=None):
+                      authorized_tenants=None, enabled=True, domain_id=None,
+                      user_domain_name=None):
         def get_user(request):
             return user.User(id=id,
                              token=token,
                              user=username,
                              domain_id=domain_id,
+                             user_domain_name=user_domain_name,
                              tenant_id=tenant_id,
                              service_catalog=service_catalog,
                              roles=roles,
@@ -283,23 +287,25 @@ class TestCase(horizon_helpers.TestCase):
     def getAndAssertTableRowAction(self, response, table_name,
                                    action_name, row_id):
         table = response.context[table_name + '_table']
-        full_row_id = '%s__row__%s' % (table_name, row_id)
-        rows = list(moves.filter(lambda x: x.id == full_row_id,
-                                 table.get_rows()))
+        rows = list(moves.filter(lambda x: x.id == row_id,
+                                 table.data))
         self.assertEqual(1, len(rows),
                          "Did not find a row matching id '%s'" % row_id)
         row_actions = table.get_row_actions(rows[0])
+        actions = list(moves.filter(lambda x: x.name == action_name,
+                                    row_actions))
 
-        msg_args = (table_name, action_name, row_id)
+        msg_args = (action_name, table_name, row_id)
         self.assertTrue(
-            len(row_actions) > 0,
-            "No action named '%s' found in table '%s' row '%s'" % msg_args)
+            len(actions) > 0,
+            "No action named '%s' found in '%s' table for id '%s'" % msg_args)
 
         self.assertEqual(
-            1, len(row_actions),
-            "Multiple actions '%s' found in table '%s' row '%s'" % msg_args)
+            1, len(actions),
+            "Multiple actions named '%s' found in '%s' table for id '%s'"
+            % msg_args)
 
-        return row_actions[0]
+        return actions[0]
 
     def getAndAssertTableAction(self, response, table_name, action_name):
 
@@ -307,14 +313,14 @@ class TestCase(horizon_helpers.TestCase):
         table_actions = table.get_table_actions()
         actions = list(moves.filter(lambda x: x.name == action_name,
                                     table_actions))
-        msg_args = (table_name, action_name)
+        msg_args = (action_name, table_name)
         self.assertTrue(
             len(actions) > 0,
-            "No action named '%s' found in table '%s'" % msg_args)
+            "No action named '%s' found in '%s' table" % msg_args)
 
         self.assertEqual(
             1, len(actions),
-            "More than one action named '%s' found in table '%s'" % msg_args)
+            "More than one action named '%s' found in '%s' table" % msg_args)
 
         return actions[0]
 

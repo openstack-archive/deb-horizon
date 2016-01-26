@@ -10,7 +10,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 from selenium.common import exceptions
-from selenium.webdriver.common import by
 
 from openstack_dashboard.test.integration_tests.pages import basepage
 from openstack_dashboard.test.integration_tests.regions import forms
@@ -28,13 +27,11 @@ class InstancesPage(basepage.BaseNavigationPage):
     DEFAULT_VOL_DELETE_ON_INSTANCE_DELETE = False
     DEFAULT_SECURITY_GROUP = True
 
-    _instances_table_locator = (by.By.CSS_SELECTOR, 'table#instances')
-
     INSTANCES_TABLE_NAME = "instances"
     INSTANCES_TABLE_ACTIONS = ("launch_ng", "launch", "delete",
                                ('start', 'stop', "reboot"))
-    INSTANCES_TABLE_NAME_COLUMN_INDEX = 0
-    INSTANCES_TABLE_STATUS_COLUMN_INDEX = 5
+    INSTANCES_TABLE_NAME_COLUMN = 'name'
+    INSTANCES_TABLE_STATUS_COLUMN = 'status'
     INSTANCES_TABLE_ROW_ACTIONS = {
         tables.ComplexActionRowRegion.PRIMARY_ACTION: "create_snapshot",
         tables.ComplexActionRowRegion.SECONDARY_ACTIONS: (
@@ -59,14 +56,12 @@ class InstancesPage(basepage.BaseNavigationPage):
         self._page_title = "Instances"
 
     def _get_row_with_instance_name(self, name):
-        return self.instances_table.get_row(
-            self.INSTANCES_TABLE_NAME_COLUMN_INDEX, name)
+        return self.instances_table.get_row(self.INSTANCES_TABLE_NAME_COLUMN,
+                                            name)
 
     @property
     def instances_table(self):
-        src_elem = self._get_element(*self._instances_table_locator)
-        return tables.ComplexActionTableRegion(self.driver,
-                                               self.conf, src_elem,
+        return tables.ComplexActionTableRegion(self.driver, self.conf,
                                                self.INSTANCES_TABLE_NAME,
                                                self.INSTANCES_TABLE_ACTIONS,
                                                self.INSTANCES_TABLE_ROW_ACTIONS
@@ -138,7 +133,7 @@ class InstancesPage(basepage.BaseNavigationPage):
         row = self._get_row_with_instance_name(name)
 
         def cell_getter():
-            return row.cells[self.INSTANCES_TABLE_STATUS_COLUMN_INDEX]
+            return row.cells[self.INSTANCES_TABLE_STATUS_COLUMN]
         try:
             self._wait_till_text_present_in_element(cell_getter, 'Active')
         except exceptions.TimeoutException:

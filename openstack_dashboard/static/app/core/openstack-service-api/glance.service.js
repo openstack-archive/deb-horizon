@@ -197,7 +197,7 @@
      *
      */
     function deleteImage(imageId, suppressError) {
-      var promise = apiService.delete('/api/glance/images/' + imageId);
+      var promise = apiService.delete('/api/glance/images/' + imageId + '/');
 
       return suppressError ? promise : promise.error(function() {
         toastService.add('error', gettext('Unable to delete the image with id: ') + imageId);
@@ -290,7 +290,7 @@
      * http://docs.openstack.org/developer/glance/metadefs-concepts.html
      *
      * The listing result is an object with property "items". Each item is
-     * an namespace.
+     * a namespace.
      *
      * @description
      * Get a list of namespaces.

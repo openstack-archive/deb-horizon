@@ -21,12 +21,12 @@
     '$log',
     'horizon.app.core.openstack-service-api.cinder',
     'horizon.app.core.openstack-service-api.glance',
-    'horizon.app.core.openstack-service-api.keystone',
     'horizon.app.core.openstack-service-api.neutron',
     'horizon.app.core.openstack-service-api.nova',
     'horizon.app.core.openstack-service-api.novaExtensions',
     'horizon.app.core.openstack-service-api.security-group',
-    'horizon.app.core.openstack-service-api.serviceCatalog'
+    'horizon.app.core.openstack-service-api.serviceCatalog',
+    'horizon.framework.widgets.toast.service'
   ];
 
   /**
@@ -46,12 +46,12 @@
     $log,
     cinderAPI,
     glanceAPI,
-    keystoneAPI,
     neutronAPI,
     novaAPI,
     novaExtensions,
     securityGroup,
-    serviceCatalog
+    serviceCatalog,
+    toast
   ) {
 
     var initPromise;
@@ -113,7 +113,8 @@
       metadataDefs: {
         flavor: null,
         image: null,
-        volume: null
+        volume: null,
+        instance: null
       },
       networks: [],
       neutronEnabled: false,
@@ -123,6 +124,7 @@
       volumeBootable: false,
       volumes: [],
       volumeSnapshots: [],
+      metadataTree: null,
 
       /**
        * api methods for UI controllers
@@ -244,8 +246,15 @@
       setFinalSpecNetworks(finalSpec);
       setFinalSpecKeyPairs(finalSpec);
       setFinalSpecSecurityGroups(finalSpec);
+      setFinalSpecMetadata(finalSpec);
 
-      return novaAPI.createServer(finalSpec);
+      return novaAPI.createServer(finalSpec).then(successMessage);
+    }
+
+    function successMessage() {
+      var numberInstances = model.newInstanceSpec.instance_count;
+      var message = ngettext('%s instance launched.', '%s instances launched.', numberInstances);
+      toast.add('success', interpolate(message, [numberInstances]));
     }
 
     function cleanNullProperties(finalSpec) {
@@ -322,15 +331,6 @@
     function onGetSecurityGroups(data) {
       model.securityGroups.length = 0;
       push.apply(model.securityGroups, data.data.items);
-      // set initial default
-      if (model.newInstanceSpec.security_groups.length === 0 &&
-          model.securityGroups.length > 0) {
-        model.securityGroups.forEach(function (securityGroup) {
-          if (securityGroup.name === 'default') {
-            model.newInstanceSpec.security_groups.push(securityGroup);
-          }
-        });
-      }
     }
 
     function setFinalSpecSecurityGroups(finalSpec) {
@@ -516,13 +516,25 @@
       angular.extend(model.novaLimits, data.data);
     }
 
+    // Instance metadata
+
+    function setFinalSpecMetadata(finalSpec) {
+      if (model.metadataTree) {
+        var meta = model.metadataTree.getExisting();
+        if (!angular.equals({}, meta)) {
+          angular.forEach(meta, function(value, key) {
+            meta[key] = value + '';
+          });
+          finalSpec.meta = meta;
+        }
+      }
+    }
+
     // Metadata Definitions
 
     /**
-     * Metadata definitions provide supplemental information in detail
-     * rows and should not slow down any of the other load processes.
-     * All code should be written to treat metadata definitions as
-     * optional, because they are never guaranteed to exist.
+     * Metadata definitions provide supplemental information in source image detail
+     * rows and are used on the metadata tab for adding metadata to the instance.
      */
     function getMetadataDefinitions() {
       // Metadata definitions often apply to multiple
@@ -531,7 +543,8 @@
       var resourceTypes = {
         flavor: 'OS::Nova::Flavor',
         image: 'OS::Glance::Image',
-        volume: 'OS::Cinder::Volumes'
+        volume: 'OS::Cinder::Volumes',
+        instance: 'OS::Nova::Instance'
       };
 
       angular.forEach(resourceTypes, applyForResourceType);

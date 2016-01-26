@@ -10,8 +10,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from selenium.webdriver.common import by
-
 from openstack_dashboard.test.integration_tests.pages import basepage
 from openstack_dashboard.test.integration_tests.regions import forms
 from openstack_dashboard.test.integration_tests.regions import tables
@@ -19,9 +17,7 @@ from openstack_dashboard.test.integration_tests.regions import tables
 
 class UsersPage(basepage.BaseNavigationPage):
 
-    _users_table_locator = (by.By.CSS_SELECTOR, 'table#users')
-
-    USERS_TABLE_NAME_COLUMN_INDEX = 0
+    USERS_TABLE_NAME_COLUMN = 'name'
 
     USERS_TABLE_NAME = "users"
     USERS_TABLE_ACTIONS = ("create", "delete")
@@ -40,18 +36,14 @@ class UsersPage(basepage.BaseNavigationPage):
         self._page_title = "Users"
 
     def _get_row_with_user_name(self, name):
-        return self.users_table.get_row(
-            self.USERS_TABLE_NAME_COLUMN_INDEX, name)
+        return self.users_table.get_row(self.USERS_TABLE_NAME_COLUMN, name)
 
     @property
     def users_table(self):
-        src_elem = self._get_element(*self._users_table_locator)
-        return tables.ComplexActionTableRegion(self.driver,
-                                               self.conf, src_elem,
+        return tables.ComplexActionTableRegion(self.driver, self.conf,
                                                self.USERS_TABLE_NAME,
                                                self.USERS_TABLE_ACTIONS,
-                                               self.USERS_TABLE_ROW_ACTIONS
-                                               )
+                                               self.USERS_TABLE_ROW_ACTIONS)
 
     @property
     def create_user_form(self):

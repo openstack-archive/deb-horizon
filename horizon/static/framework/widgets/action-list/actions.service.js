@@ -22,19 +22,34 @@
   actionsService.$inject = [
     '$compile',
     '$http',
+    '$parse',
     '$q',
     '$templateCache',
-    'horizon.framework.widgets.basePath'
+    'horizon.framework.widgets.basePath',
+    'horizon.framework.util.q.extensions'
   ];
 
-  function actionsService($compile, $http, $q, $templateCache, basePath) {
+  function actionsService(
+    $compile,
+    $http,
+    $parse,
+    $q,
+    $templateCache,
+    basePath,
+    $qExtensions
+  ) {
     return function(spec) {
-      return createService(spec.scope, spec.element, spec.listType);
+      return createService(
+        spec.scope,
+        spec.element,
+        spec.ctrl,
+        spec.listType,
+        spec.item);
     };
 
     ///////////////
 
-    function createService(scope, element, listType) {
+    function createService(scope, element, ctrl, listType, item) {
       var service = {
         renderActions: renderActions
       };
@@ -42,39 +57,20 @@
       return service;
 
       function renderActions(allowedActions) {
-        getPermittedActions(allowedActions).then(renderPermittedActions);
-      }
+        allowedActions.forEach(function(allowedAction) {
+          allowedAction.promise = getPermissions(allowedAction);
+          allowedAction.context = allowedAction;
+        });
 
-      /**
-       * Get the permitted actions from the list of allowed actions
-       * by resolving the promises in the permissions object.
-       */
-      function getPermittedActions(allowedActions) {
-        var deferred = $q.defer();
-        var permittedActions = [];
-        var promises = allowedActions.map(actionPermitted);
+        $qExtensions.allSettled(allowedActions).then(renderPermittedActions);
 
-        $q.all(promises).then(onResolved);
-
-        return deferred.promise;
-
-        function actionPermitted(action) {
-          var deferredInner = $q.defer();
-          action.permissions.then(onSuccess, onError);
-          return deferredInner.promise;
-
-          function onSuccess() {
-            permittedActions.push(action);
-            deferredInner.resolve();
+        function getPermissions(allowedAction) {
+          if (listType === 'batch') {
+            return allowedAction.service.allowed();
+          } else {
+            var itemVal = $parse(item)(scope);
+            return allowedAction.service.allowed(itemVal);
           }
-
-          function onError() {
-            deferredInner.resolve();
-          }
-        }
-
-        function onResolved() {
-          deferred.resolve(permittedActions);
         }
       }
 
@@ -82,10 +78,11 @@
        * Render permitted actions as per the list type
        */
       function renderPermittedActions(permittedActions) {
-        if (permittedActions.length > 0) {
-          var templateFetch = $q.all(permittedActions.map(getTemplate));
 
-          if (listType === 'batch' || permittedActions.length === 1) {
+        if (permittedActions.pass.length > 0) {
+          var templateFetch = $q.all(permittedActions.pass.map(getTemplate));
+
+          if (listType === 'batch' || permittedActions.pass.length === 1) {
             element.addClass('btn-addon');
             templateFetch.then(addButtons);
           } else {
@@ -156,7 +153,7 @@
       function getSplitButton(actionTemplate) {
         var actionElement = angular.element(actionTemplate.template);
         actionElement.attr('button-type', 'split-button');
-        actionElement.attr('action-classes', '"btn btn-default"');
+        actionElement.attr('action-classes', actionElement.attr('action-classes'));
         actionElement.attr('callback', actionTemplate.callback);
         return actionElement;
       }
@@ -183,17 +180,59 @@
       /**
        * Fetch the HTML Template for the Action
        */
-      function getTemplate(action) {
+      function getTemplate(permittedAction, index, permittedActions) {
         var defered = $q.defer();
-        $http.get(getTemplateUrl(action), {cache: $templateCache}).then(onTemplateGet);
+        var action = permittedAction.context;
+        $http.get(getTemplateUrl(action, permittedActions.length), {cache: $templateCache})
+          .then(onTemplateGet);
         return defered.promise;
 
         function onTemplateGet(response) {
+          var callback = ctrl.generateDynamicCallback(action.service, index);
           var template = response.data
-                .replace('$action-classes$', action.template.actionClasses || '')
+                .replace(
+                  '$action-classes$', getActionClasses(action, index, permittedActions.length)
+                )
                 .replace('$text$', action.template.text)
-                .replace('$item$', action.template.item);
-          defered.resolve({template: template, callback: action.callback});
+                .replace('$item$', item);
+          defered.resolve({
+            template: template,
+            callback: callback
+          });
+        }
+      }
+
+      /**
+       * Get the ActionClasses for the Action
+       *
+       * This returns 'btn-danger' for the 'delete' and 'danger'
+       * action types for row and 'btn-default' for other action
+       * type for row.
+       *
+       * For batch types, the classes are determined as given in the template.
+       *
+       */
+      function getActionClasses(action, index, numPermittedActions) {
+        var actionClassesParam = action.template.actionClasses || "";
+        if (listType === 'row') {
+          if (numPermittedActions === 1 || index === 0) {
+            var actionClasses = "btn btn-sm pull-right ";
+            if (action.template.type === "delete" || action.template.type === 'danger') {
+              actionClasses += "btn-danger ";
+            } else {
+              actionClasses += "btn-default ";
+            }
+            return actionClasses + actionClassesParam;
+          } else {
+            if (action.template.type === "delete" || action.template.type === 'danger') {
+              return 'text-danger' + actionClassesParam;
+            } else {
+              return actionClassesParam;
+            }
+          }
+          return "text-danger";
+        } else {
+          return actionClassesParam;
         }
       }
 

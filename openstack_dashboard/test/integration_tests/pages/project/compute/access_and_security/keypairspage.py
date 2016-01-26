@@ -13,8 +13,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from selenium.webdriver.common import by
-
 from openstack_dashboard.test.integration_tests.pages import basepage
 from openstack_dashboard.test.integration_tests.regions import forms
 from openstack_dashboard.test.integration_tests.regions import tables
@@ -22,12 +20,10 @@ from openstack_dashboard.test.integration_tests.regions import tables
 
 class KeypairsPage(basepage.BaseNavigationPage):
 
-    _key_pairs_table_locator = (by.By.ID, 'keypairs')
-
     KEY_PAIRS_TABLE_NAME = "keypairs"
     KEY_PAIRS_TABLE_ACTIONS = ("create", "import", "delete")
     KEY_PAIRS_TABLE_ROW_ACTION = "delete"
-    KEY_PAIRS_TABLE_NAME_COLUMN_INDEX = 0
+    KEY_PAIRS_TABLE_NAME_COLUMN = 'name'
 
     CREATE_KEY_PAIR_FORM_FIELDS = ('name',)
 
@@ -36,14 +32,12 @@ class KeypairsPage(basepage.BaseNavigationPage):
         self._page_title = "Access & Security"
 
     def _get_row_with_keypair_name(self, name):
-        return self.keypairs_table.get_row(
-            self.KEY_PAIRS_TABLE_NAME_COLUMN_INDEX, name)
+        return self.keypairs_table.get_row(self.KEY_PAIRS_TABLE_NAME_COLUMN,
+                                           name)
 
     @property
     def keypairs_table(self):
-        src_elem = self._get_element(*self._key_pairs_table_locator)
         return tables.SimpleActionsTableRegion(self.driver, self.conf,
-                                               src_elem,
                                                self.KEY_PAIRS_TABLE_NAME,
                                                self.KEY_PAIRS_TABLE_ACTIONS,
                                                self.KEY_PAIRS_TABLE_ROW_ACTION)

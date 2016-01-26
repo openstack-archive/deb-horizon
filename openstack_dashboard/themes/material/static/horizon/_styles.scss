@@ -1,5 +1,6 @@
 @import "icons";
 @import "components/hamburger";
+@import "components/magic_search";
 @import "components/sidebar";
 
 
@@ -20,8 +21,10 @@
   }
 }
 
-#main-content {
+#main_content {
   display: block;
+  min-width: unset;
+  width: 100%;
 }
 
 

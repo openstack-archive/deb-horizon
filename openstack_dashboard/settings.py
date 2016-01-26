@@ -70,6 +70,7 @@ HORIZON_CONFIG = {
     'js_files': [],
     'js_spec_files': [],
     'external_templates': [],
+    'plugins': []
 }
 
 # Set to True to allow users to upload images to glance via Horizon server.
@@ -127,9 +128,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    'horizon.loaders.TemplateLoader',
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+        'horizon.loaders.TemplateLoader',
+    )),
 )
 
 TEMPLATE_DIRS = (
@@ -327,6 +330,18 @@ if os.path.exists(os.path.join(CUSTOM_THEME, 'img')):
 # specs files and external templates.
 find_static_files(HORIZON_CONFIG)
 
+# Ensure that we always have a SECRET_KEY set, even when no local_settings.py
+# file is present. See local_settings.py.example for full documentation on the
+# horizon.utils.secret_key module and its use.
+if not SECRET_KEY:
+    if not LOCAL_PATH:
+        LOCAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  'local')
+
+    from horizon.utils import secret_key
+    SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
+                                                       '.secret_key_store'))
+
 # Load the pluggable dashboard settings
 import openstack_dashboard.enabled
 import openstack_dashboard.local.enabled
@@ -342,18 +357,6 @@ settings.update_dashboards(
     INSTALLED_APPS,
 )
 INSTALLED_APPS[0:0] = ADD_INSTALLED_APPS
-
-# Ensure that we always have a SECRET_KEY set, even when no local_settings.py
-# file is present. See local_settings.py.example for full documentation on the
-# horizon.utils.secret_key module and its use.
-if not SECRET_KEY:
-    if not LOCAL_PATH:
-        LOCAL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                  'local')
-
-    from horizon.utils import secret_key
-    SECRET_KEY = secret_key.generate_or_read_from_file(os.path.join(LOCAL_PATH,
-                                                       '.secret_key_store'))
 
 from openstack_auth import policy
 POLICY_CHECK_FUNCTION = policy.check

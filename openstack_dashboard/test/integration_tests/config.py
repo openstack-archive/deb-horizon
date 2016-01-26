@@ -19,9 +19,6 @@ DashboardGroup = [
     cfg.StrOpt('dashboard_url',
                default='http://localhost/',
                help="Where the dashboard can be found"),
-    cfg.StrOpt('login_url',
-               default='http://localhost/auth/login/',
-               help="Login page for the dashboard"),
     cfg.StrOpt('help_url',
                default='http://docs.openstack.org/',
                help="Dashboard help page url"),
@@ -50,12 +47,6 @@ ImageGroup = [
                default='http://download.cirros-cloud.net/0.3.1/'
                        'cirros-0.3.1-x86_64-uec.tar.gz',
                help='http accessible image'),
-]
-
-AvailableServiceGroup = [
-    cfg.BoolOpt('sahara',
-                default=True,
-                help='Whether is Sahara expected to be available')
 ]
 
 SeleniumGroup = [
@@ -88,6 +79,17 @@ InstancesGroup = [
                help="Boot Source to be selected for launch Instances"),
 ]
 
+PluginGroup = [
+    cfg.BoolOpt('is_plugin',
+                default='False',
+                help="Set to true if this is a plugin"),
+    cfg.MultiStrOpt('plugin_page_path',
+                    default='',
+                    help='Additional path to look for plugin page content'),
+    cfg.MultiStrOpt('plugin_page_structure',
+                    default='')
+]
+
 
 def _get_config_files():
     conf_dir = os.path.join(
@@ -103,10 +105,10 @@ def get_config():
 
     cfg.CONF.register_opts(DashboardGroup, group="dashboard")
     cfg.CONF.register_opts(IdentityGroup, group="identity")
-    cfg.CONF.register_opts(AvailableServiceGroup, group="service_available")
     cfg.CONF.register_opts(SeleniumGroup, group="selenium")
     cfg.CONF.register_opts(ImageGroup, group="image")
     cfg.CONF.register_opts(ScenarioGroup, group="scenario")
     cfg.CONF.register_opts(InstancesGroup, group="launch_instances")
+    cfg.CONF.register_opts(PluginGroup, group="plugin")
 
     return cfg.CONF

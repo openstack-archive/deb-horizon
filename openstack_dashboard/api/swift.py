@@ -16,9 +16,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
-from oslo_utils import timeutils
+from datetime import datetime
 import six.moves.urllib.parse as urlparse
 import swiftclient
 
@@ -31,7 +29,6 @@ from horizon.utils.memoized import memoized  # noqa
 from openstack_dashboard.api import base
 
 
-LOG = logging.getLogger(__name__)
 FOLDER_DELIMITER = "/"
 CHUNK_SIZE = getattr(settings, 'SWIFT_FILE_TRANSFER_CHUNK_SIZE', 512 * 1024)
 # Swift ACL
@@ -167,7 +164,7 @@ def swift_get_container(request, container_name, with_data=True):
             parameters = urlparse.quote(container_name.encode('utf8'))
             public_url = swift_endpoint + '/' + parameters
         ts_float = float(headers.get('x-timestamp'))
-        timestamp = timeutils.iso8601_from_timestamp(ts_float)
+        timestamp = datetime.utcfromtimestamp(ts_float).isoformat()
     except Exception:
         pass
     container_info = {
@@ -345,7 +342,7 @@ def swift_get_object(request, container_name, object_name, with_data=True,
     timestamp = None
     try:
         ts_float = float(headers.get('x-timestamp'))
-        timestamp = timeutils.iso8601_from_timestamp(ts_float)
+        timestamp = datetime.utcfromtimestamp(ts_float).isoformat()
     except Exception:
         pass
     obj_info = {

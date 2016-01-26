@@ -41,6 +41,12 @@
 
     var tests = [
       {
+        "func": "getServices",
+        "method": "get",
+        "path": "/api/nova/services/",
+        "error": "Unable to retrieve the nova services."
+      },
+      {
         "func": "getKeypairs",
         "method": "get",
         "path": "/api/nova/keypairs/",
@@ -100,6 +106,12 @@
         "testInput": [
           42
         ]
+      },
+      {
+        "func": "getServers",
+        "method": "get",
+        "path": "/api/nova/servers/",
+        "error": "Unable to retrieve instances."
       },
       {
         "func": "getExtensions",
@@ -238,6 +250,28 @@
           "removed": ['c', 'd']
         },
         "error": "Unable to edit the aggregate extra specs.",
+        "testInput": [
+          42, {a: '1', b: '2'}, ['c', 'd']
+        ]
+      },
+      {
+        "func": "getInstanceMetadata",
+        "method": "get",
+        "path": "/api/nova/servers/42/metadata",
+        "error": "Unable to retrieve instance metadata.",
+        "testInput": [
+          42
+        ]
+      },
+      {
+        "func": "editInstanceMetadata",
+        "method": "patch",
+        "path": "/api/nova/servers/42/metadata",
+        "data": {
+          "updated": {a: '1', b: '2'},
+          "removed": ['c', 'd']
+        },
+        "error": "Unable to edit instance metadata.",
         "testInput": [
           42, {a: '1', b: '2'}, ['c', 'd']
         ]

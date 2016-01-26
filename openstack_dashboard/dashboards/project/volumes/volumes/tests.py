@@ -494,7 +494,7 @@ class VolumeViewTests(test.TestCase):
         self.assertEqual(res.redirect_chain, [])
         self.assertFormError(res, 'form', None,
                              "The volume size cannot be less than the "
-                             "snapshot size (40GB)")
+                             "snapshot size (40GiB)")
 
     @test.create_stubs({cinder: ('volume_create',
                                  'volume_type_list',
@@ -725,7 +725,7 @@ class VolumeViewTests(test.TestCase):
         self.assertEqual(res.redirect_chain, [])
         self.assertFormError(res, 'form', None,
                              "The volume size cannot be less than the "
-                             "image minimum disk size (30GB)")
+                             "image minimum disk size (30GiB)")
 
     def test_create_volume_from_image_under_image_min_disk_size(self):
         image = self.images.get(name="protected_images")
@@ -791,8 +791,8 @@ class VolumeViewTests(test.TestCase):
         url = reverse('horizon:project:volumes:volumes:create')
         res = self.client.post(url, formData)
 
-        expected_error = [u'A volume of 5000GB cannot be created as you only'
-                          ' have 20GB of your quota available.']
+        expected_error = [u'A volume of 5000GiB cannot be created as you only'
+                          ' have 20GiB of your quota available.']
         self.assertEqual(res.context['form'].errors['__all__'], expected_error)
 
     @test.create_stubs({cinder: ('volume_snapshot_list',
@@ -943,8 +943,8 @@ class VolumeViewTests(test.TestCase):
         self.assertEqual(len(form.fields['instance']._choices),
                          1)
         self.assertEqual(res.status_code, 200)
-        self.assertTrue(isinstance(form.fields['device'].widget,
-                                   widgets.TextInput))
+        self.assertIsInstance(form.fields['device'].widget,
+                              widgets.TextInput)
         self.assertFalse(form.fields['device'].required)
 
     @test.create_stubs({cinder: ('volume_get',), api.nova: ('server_list',)})
@@ -969,8 +969,8 @@ class VolumeViewTests(test.TestCase):
                       args=[volume.id])
         res = self.client.get(url)
         form = res.context['form']
-        self.assertTrue(isinstance(form.fields['device'].widget,
-                                   widgets.TextInput))
+        self.assertIsInstance(form.fields['device'].widget,
+                              widgets.TextInput)
         self.assertFalse(form.fields['device'].required)
 
     @test.create_stubs({cinder: ('volume_get',), api.nova: ('server_list',)})
@@ -989,8 +989,8 @@ class VolumeViewTests(test.TestCase):
         res = self.client.get(url)
         # Assert the device field is hidden.
         form = res.context['form']
-        self.assertTrue(isinstance(form.fields['device'].widget,
-                                   widgets.HiddenInput))
+        self.assertIsInstance(form.fields['device'].widget,
+                              widgets.HiddenInput)
 
     @test.create_stubs({cinder: ('volume_get',),
                         api.nova: ('server_list',)})
@@ -1200,8 +1200,7 @@ class VolumeViewTests(test.TestCase):
         res = self.client.get(url)
 
         self.assertContains(res,
-                            "<h1>Volume Encryption Details: "
-                            "%s</h1>" % volume.name,
+                            "Volume Encryption Details: %s" % volume.name,
                             1, 200)
         self.assertContains(res, "<dd>%s</dd>" % volume.volume_type, 1, 200)
         self.assertContains(res, "<dd>%s</dd>" % enc_meta.provider, 1, 200)
@@ -1229,8 +1228,7 @@ class VolumeViewTests(test.TestCase):
         res = self.client.get(url)
 
         self.assertContains(res,
-                            "<h1>Volume Encryption Details: "
-                            "%s</h1>" % volume.name,
+                            "Volume Encryption Details: %s" % volume.name,
                             1, 200)
         self.assertContains(res, "<h3>Volume is Unencrypted</h3>", 1, 200)
 
@@ -1578,8 +1576,8 @@ class VolumeViewTests(test.TestCase):
                       args=[volume.id])
         res = self.client.post(url, formData)
         self.assertFormError(res, "form", "new_size",
-                             "Volume cannot be extended to 1000GB as you only "
-                             "have 80GB of your quota available.")
+                             "Volume cannot be extended to 1000GiB as you "
+                             "only have 80GiB of your quota available.")
 
     @test.create_stubs({cinder: ('volume_backup_supported',
                                  'volume_list',

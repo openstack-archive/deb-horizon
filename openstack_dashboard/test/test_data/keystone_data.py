@@ -127,23 +127,7 @@ SERVICE_CATALOG = [
          {"region": "RegionOne",
           "adminURL": "http://admin.heat.example.com:8004/v1",
           "publicURL": "http://public.heat.example.com:8004/v1",
-          "internalURL": "http://int.heat.example.com:8004/v1"}]},
-    {"type": "database",
-     "name": "Trove",
-     "endpoints_links": [],
-     "endpoints": [
-         {"region": "RegionOne",
-          "adminURL": "http://admin.trove.example.com:8779/v1.0",
-          "publicURL": "http://public.trove.example.com:8779/v1.0",
-          "internalURL": "http://int.trove.example.com:8779/v1.0"}]},
-    {"type": "data-processing",
-     "name": "Sahara",
-     "endpoints_links": [],
-     "endpoints": [
-         {"region": "RegionOne",
-          "adminURL": "http://admin.sahara.example.com:8386/v1.1",
-          "publicURL": "http://public.sahara.example.com:8386/v1.1",
-          "internalURL": "http://int.sahara.example.com:8386/v1.1"}]}
+          "internalURL": "http://int.heat.example.com:8004/v1"}]}
 ]
 
 
@@ -185,7 +169,7 @@ def data(TEST):
 
     user_dict = {'id': "1",
                  'name': 'test_user',
-                 'description': 'test_decription',
+                 'description': 'test_description',
                  'email': 'test@example.com',
                  'password': 'password',
                  'token': 'test_token',
@@ -195,7 +179,7 @@ def data(TEST):
     user = users.User(None, user_dict)
     user_dict = {'id': "2",
                  'name': 'user_two',
-                 'description': 'test_decription',
+                 'description': 'test_description',
                  'email': 'two@example.com',
                  'password': 'password',
                  'token': 'test_token',
@@ -205,7 +189,7 @@ def data(TEST):
     user2 = users.User(None, user_dict)
     user_dict = {'id': "3",
                  'name': 'user_three',
-                 'description': 'test_decription',
+                 'description': 'test_description',
                  'email': 'three@example.com',
                  'password': 'password',
                  'token': 'test_token',
@@ -215,7 +199,7 @@ def data(TEST):
     user3 = users.User(None, user_dict)
     user_dict = {'id': "4",
                  'name': 'user_four',
-                 'description': 'test_decription',
+                 'description': 'test_description',
                  'email': 'four@example.com',
                  'password': 'password',
                  'token': 'test_token',
@@ -225,7 +209,7 @@ def data(TEST):
     user4 = users.User(None, user_dict)
     user_dict = {'id': "5",
                  'name': 'user_five',
-                 'description': 'test_decription',
+                 'description': 'test_description',
                  'email': None,
                  'password': 'password',
                  'token': 'test_token',

@@ -136,7 +136,7 @@ def image_update(request, image_id, **kwargs):
                 msg = (('Failed to remove temporary image file '
                         '%(file)s (%(e)s)') %
                        dict(file=filename, e=str(e)))
-                LOG.warn(msg)
+                LOG.warning(msg)
 
 
 def image_create(request, **kwargs):
@@ -153,7 +153,7 @@ def image_create(request, **kwargs):
     asynchronously.
 
     In the case of 'data' the process of uploading the data may take
-    some time and is handed off to a seperate thread.
+    some time and is handed off to a separate thread.
     """
     data = kwargs.pop('data', None)
 
@@ -242,7 +242,7 @@ def metadefs_namespace_get(request, namespace, resource_type=None, wrap=False):
 
 
 def metadefs_namespace_list(request,
-                            filters={},
+                            filters=None,
                             sort_dir='asc',
                             sort_key='namespace',
                             marker=None,
@@ -275,6 +275,8 @@ def metadefs_namespace_list(request,
     if get_version() < 2:
         return [], False, False
 
+    if filters is None:
+        filters = {}
     limit = getattr(settings, 'API_RESULT_LIMIT', 1000)
     page_size = utils.get_page_size(request)
 
@@ -316,8 +318,9 @@ def metadefs_namespace_list(request,
     return namespaces, has_more_data, has_prev_data
 
 
-def metadefs_namespace_full_list(request, resource_type, filters={},
+def metadefs_namespace_full_list(request, resource_type, filters=None,
                                  *args, **kwargs):
+    filters = filters or {}
     filters['resource_types'] = [resource_type]
     namespaces, has_more_data, has_prev_data = metadefs_namespace_list(
         request, filters, *args, **kwargs

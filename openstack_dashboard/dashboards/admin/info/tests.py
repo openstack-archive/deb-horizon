@@ -72,8 +72,7 @@ class SystemInfoViewTests(test.BaseAdminViewTests):
              '<Service: ec2>',
              '<Service: metering>',
              '<Service: orchestration>',
-             '<Service: database>',
-             '<Service: data-processing>', ])
+             ])
 
         self.mox.VerifyAll()
 
