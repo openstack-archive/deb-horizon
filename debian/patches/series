@@ -1,4 +1,5 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
-enable_identity_users_panel.patch
+#enable_identity_users_panel.patch
+Provide_2_simple_methods_to_check_for_disabled_panels.patch
