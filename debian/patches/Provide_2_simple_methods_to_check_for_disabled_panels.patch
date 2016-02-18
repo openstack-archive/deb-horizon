@@ -16,10 +16,10 @@ Closes-Bug: #1541489
  openstack_dashboard/utils/settings.py                | 11 +++++++++++
  3 files changed, 28 insertions(+)
 
-diff --git a/openstack_dashboard/dashboards/admin/images/tests.py b/openstack_dashboard/dashboards/admin/images/tests.py
-index d4298fb..619dc6c 100644
---- a/openstack_dashboard/dashboards/admin/images/tests.py
-+++ b/openstack_dashboard/dashboards/admin/images/tests.py
+Index: horizon/openstack_dashboard/dashboards/admin/images/tests.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/admin/images/tests.py
++++ horizon/openstack_dashboard/dashboards/admin/images/tests.py
 @@ -16,6 +16,7 @@ from django.conf import settings
  from django.core.urlresolvers import reverse
  from django import http
@@ -28,7 +28,7 @@ index d4298fb..619dc6c 100644
  
  from mox3.mox import IsA  # noqa
  
-@@ -25,6 +26,8 @@ from openstack_dashboard.test import helpers as test
+@@ -25,6 +26,8 @@ from openstack_dashboard.test import hel
  from openstack_dashboard.dashboards.admin.images import tables
  
  
@@ -37,7 +37,7 @@ index d4298fb..619dc6c 100644
  class ImageCreateViewTest(test.BaseAdminViewTests):
      @test.create_stubs({api.glance: ('image_list_detailed',)})
      def test_admin_image_create_view_uses_admin_template(self):
-@@ -42,6 +45,8 @@ class ImageCreateViewTest(test.BaseAdminViewTests):
+@@ -42,6 +45,8 @@ class ImageCreateViewTest(test.BaseAdmin
          self.assertTemplateUsed(res, 'admin/images/create.html')
  
  
@@ -46,11 +46,11 @@ index d4298fb..619dc6c 100644
  class ImagesViewTest(test.BaseAdminViewTests):
      @test.create_stubs({api.glance: ('image_list_detailed',),
                          api.keystone: ('tenant_list',)})
-diff --git a/openstack_dashboard/test/helpers.py b/openstack_dashboard/test/helpers.py
-index 5dfa295..7c8a7fb 100644
---- a/openstack_dashboard/test/helpers.py
-+++ b/openstack_dashboard/test/helpers.py
-@@ -631,3 +631,15 @@ class update_settings(django_test_utils.override_settings):
+Index: horizon/openstack_dashboard/test/helpers.py
+===================================================================
+--- horizon.orig/openstack_dashboard/test/helpers.py
++++ horizon/openstack_dashboard/test/helpers.py
+@@ -632,3 +632,15 @@ class update_settings(django_test_utils.
                      copied.update(new_value)
                      kwargs[key] = copied
          super(update_settings, self).__init__(**kwargs)
@@ -66,11 +66,11 @@ index 5dfa295..7c8a7fb 100644
 +            panel in settings.HORIZON_CONFIG['disabled_panels'].get(dashboard)
 +        )
 +    return False
-diff --git a/openstack_dashboard/utils/settings.py b/openstack_dashboard/utils/settings.py
-index 6a6d16d..894f833 100644
---- a/openstack_dashboard/utils/settings.py
-+++ b/openstack_dashboard/utils/settings.py
-@@ -101,6 +101,7 @@ def update_dashboards(modules, horizon_config, installed_apps):
+Index: horizon/openstack_dashboard/utils/settings.py
+===================================================================
+--- horizon.orig/openstack_dashboard/utils/settings.py
++++ horizon/openstack_dashboard/utils/settings.py
+@@ -100,6 +100,7 @@ def update_dashboards(modules, horizon_c
  
      enabled_dashboards = []
      disabled_dashboards = []
@@ -78,7 +78,7 @@ index 6a6d16d..894f833 100644
      exceptions = horizon_config.get('exceptions', {})
      apps = []
      angular_modules = []
-@@ -110,7 +111,15 @@ def update_dashboards(modules, horizon_config, installed_apps):
+@@ -109,7 +110,15 @@ def update_dashboards(modules, horizon_c
      panel_customization = []
      update_horizon_config = {}
      for key, config in import_dashboard_config(modules):
@@ -94,7 +94,7 @@ index 6a6d16d..894f833 100644
              if config.get('DASHBOARD'):
                  disabled_dashboards.append(config.get('DASHBOARD'))
              continue
-@@ -154,6 +163,8 @@ def update_dashboards(modules, horizon_config, installed_apps):
+@@ -153,6 +162,8 @@ def update_dashboards(modules, horizon_c
  
      horizon_config['panel_customization'] = panel_customization
      horizon_config['dashboards'] = tuple(dashboards)
@@ -103,6 +103,3 @@ index 6a6d16d..894f833 100644
      horizon_config.setdefault('exceptions', {}).update(exceptions)
      horizon_config.update(update_horizon_config)
      horizon_config.setdefault('angular_modules', []).extend(angular_modules)
--- 
-1.9.1
-

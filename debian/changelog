@@ -3,6 +3,7 @@ horizon (2:9.0.0~b2+2016.02.18.git.cda9604792-1) experimental; urgency=medium
   * New upstream release, based on commit cda9604792.
   * Fixed (build-)depends for this release.
   * Added patch: Provide_2_simple_methods_to_check_for_disabled_panels.patch
+  * Added patch: 0100-add-openstack_auth-in-INSTALLED_APPS.patch
 
  -- Thomas Goirand <zigo@debian.org>  Wed, 09 Dec 2015 11:37:40 +0100
 
