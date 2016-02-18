@@ -1,3 +1,4 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
+enable_identity_users_panel.patch
