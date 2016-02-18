@@ -4,3 +4,4 @@ fixed-horizon-MANIFEST.in.patch
 #enable_identity_users_panel.patch
 Provide_2_simple_methods_to_check_for_disabled_panels.patch
 0100-add-openstack_auth-in-INSTALLED_APPS.patch
+0090-explicitly-declare-app_label.patch

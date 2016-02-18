@@ -1,0 +1,29 @@
+Description: Explicitly declares app_label
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2016-02-19
+
+--- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/horizon/test/settings.py
++++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/horizon/test/settings.py
+@@ -170,3 +170,5 @@ LOGGING = {
+         }
+     }
+ }
++
++APP_LABEL = 'horizon'
+--- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/local/local_settings.py.example
++++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/local/local_settings.py.example
+@@ -710,3 +710,5 @@ REST_API_REQUIRED_SETTINGS = ['OPENSTACK
+ # For more information see:
+ # http://tinyurl.com/anticlickjack
+ #DISALLOW_IFRAME_EMBED = True
++
++APP_LABEL = 'horizon'
+--- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/test/settings.py
++++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/test/settings.py
+@@ -232,3 +232,5 @@ REST_API_SETTING_2 = 'bar'
+ REST_API_SECURITY = 'SECURITY'
+ REST_API_REQUIRED_SETTINGS = ['REST_API_SETTING_1']
+ REST_API_ADDITIONAL_SETTINGS = ['REST_API_SETTING_2']
++
++APP_LABEL = 'horizon'
