@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,12 +24,6 @@ msgstr ""
 "Generated-By: Babel 2.0\n"
 "X-Generator: Zanata 3.7.3\n"
 "Language-Team: German\n"
-
-msgid "(Max: 16Kb)"
-msgstr "(Max: 16 kB)"
-
-msgid "(Modified)"
-msgstr "(Verändert)"
 
 msgid "(None)"
 msgstr "(Kein)"
@@ -231,9 +225,6 @@ msgstr ""
 "samp> nicht in einem Gastbetriebssystem installieren können, so können Sie "
 "ein angepasstes Skript verwenden, um einen öffentlichen Schlüssel zu holen "
 "und ihn dem Benutzerkonto hinzuzufügen."
-
-msgid "Customization Script"
-msgstr "Anpassungsskript"
 
 msgid "Danger"
 msgstr "Gefahr"
@@ -440,14 +431,6 @@ msgstr ""
 "öffentlichen SSH\n"
 " Schlüssel im angebotenen Feld ein."
 
-msgid ""
-"Key Pairs are how you login to your instance after it is launched.\n"
-"        Choose a key pair name you will recognize."
-msgstr ""
-"Mit Schlüsselpaaren erhalten Sie Zugriff auf Ihre Instanz nachdem sie "
-"gestartet wurde.\n"
-" Wählen Sie einen Schlüsselpaar-Namen."
-
 msgid "Killed"
 msgstr "Getötet"
 
@@ -456,9 +439,6 @@ msgstr "Instanz starten"
 
 msgid "Left"
 msgstr "Links"
-
-msgid "Load script from a file"
-msgstr "Skript aus einer Datei laden"
 
 msgid "Manual"
 msgstr "Manuell"
@@ -516,9 +496,6 @@ msgstr "Keine verfügbaren Positionen"
 msgid "Number"
 msgstr "Zahl"
 
-msgid "OK"
-msgstr "OK"
-
 msgid "Pending Delete"
 msgstr "Geplante Löschung"
 
@@ -540,9 +517,6 @@ msgstr "Richtlinienüberprüfung fehlgeschlagen."
 
 msgid "Private"
 msgstr "Privat"
-
-msgid "Private Key"
-msgstr "Privater Schlüssel"
 
 msgid "Profile"
 msgstr "Profil"
@@ -606,9 +580,6 @@ msgstr "Speichern"
 
 msgid "Saving"
 msgstr "Speichern"
-
-msgid "Script size"
-msgstr "Skriptgröße"
 
 msgid "Security Groups"
 msgstr "Sicherheitsgruppen"
@@ -703,10 +674,6 @@ msgid "Subnets Associated"
 msgstr "Subnetze zugewiesen"
 
 #, python-format
-msgid "Successfully created key pair %(name)s."
-msgstr "Erstellung der Schlüsselpaares %(name)s erfolgreich."
-
-#, python-format
 msgid "Successfully imported key pair %(name)s."
 msgstr "Importieren des Schlüsselpaares %(name)s erfolgreich."
 
@@ -738,25 +705,6 @@ msgid ""
 msgstr ""
 "Die Anzahl der Instanzen darf nicht die durch Ihr Kontingent verfügbaren "
 "%(maxInstanceCount)s Instanzen übersteigen"
-
-#, python-format
-msgid ""
-"The selected image source requires a flavor with at least %(minDisk)s GB of "
-"root disk. Select a flavor with a larger root disk or use a different image "
-"source."
-msgstr ""
-"Die ausgewählte Abbildquelle benötigt eine Variante mit mindestens "
-"%(minDisk)s GB Root-Festplatte. Wählen Sie eine Variante mit einer größeren "
-"Root-Festplatte oder verwenden Sie eine andere Abbildquelle."
-
-#, python-format
-msgid ""
-"The selected image source requires a flavor with at least %(minRam)s MB of "
-"RAM. Select a flavor with more RAM or use a different image source."
-msgstr ""
-"Die ausgewählte Abbildquelle benötigt eine Variante mit mindestens "
-"%(minRam)s MB RAM. Wählen Sie eine Variante mit mehr RAM oder verwenden Sie "
-"eine andere Abbildquelle."
 
 msgid "The status indicates whether the network has an active connection."
 msgstr "Der Status zeigt an, ob das Netzwerk eine aktive Verbindung hat."
@@ -802,11 +750,6 @@ msgid ""
 msgstr ""
 "Diese Variante benötigt mehr VCPU als Ihr Kontingent erlaubt. Bitte wählen "
 "Sie eine kleinere Variante oder verringern Sie die Anzahl der Instanzen."
-
-msgid "This is your new key pair. Copy this information and keep it secure."
-msgstr ""
-"Dies ist Ihr neues Schlüsselpaar. Kopieren Sie die Information und halten "
-"Sie sie geschützt."
 
 msgid "Total Disk"
 msgstr "Festplatte gesamt"
@@ -864,9 +807,6 @@ msgstr "Die Domäne kann nicht gelöscht werden."
 
 msgid "Unable to delete the domains."
 msgstr "Die Domänen können nicht gelöscht werden."
-
-msgid "Unable to delete the image with id: "
-msgstr "Abbild mit folgender ID kann nicht gelöscht werden:"
 
 msgid "Unable to delete the project."
 msgstr "Das Projekt kann nicht gelöscht werden."
@@ -1101,9 +1041,6 @@ msgstr ""
 
 msgid "Yes"
 msgstr "Ja"
-
-msgid "bytes"
-msgstr "Bytes"
 
 msgid "{$ row['provider:network_type'] $}"
 msgstr "{$ row['provider:network_type'] $}"

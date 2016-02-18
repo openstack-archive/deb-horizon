@@ -24,11 +24,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-13 03:52+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-01-12 03:14+0000\n"
+"PO-Revision-Date: 2016-02-08 10:20+0000\n"
 "Last-Translator: Eugen Block <eblock@nde.ag>\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -78,6 +78,26 @@ msgstr ""
 "\n"
 "      <a href=\"%(instance_url)s\">%(instance_name)s</a> auf %(device)s\n"
 "      "
+
+#, python-format
+msgid ""
+"\n"
+"      <span class=\"pull-right\">%(used)s of %(quota)s MB Used</span>\n"
+"    "
+msgstr ""
+"\n"
+"      <span class=\"pull-right\">%(used)s von %(quota)s MB verwendet</span>\n"
+"    "
+
+#, python-format
+msgid ""
+"\n"
+"      <span class=\"pull-right\">%(used)s of %(quota)s Used</span>\n"
+"    "
+msgstr ""
+"\n"
+"      <span class=\"pull-right\">%(used)s von %(quota)s verwendet</span>\n"
+"    "
 
 msgid ""
 "\n"
@@ -542,6 +562,13 @@ msgstr ""
 msgid "A new uploaded file will replace the content of the current object"
 msgstr ""
 "Eine neu hochgeladene Datei wird den Inhalt des aktuellen Objektes ersetzen"
+
+msgid ""
+"A port is a connection point for attaching a single device, such as the NIC "
+"of a virtual server, to a virtual network."
+msgstr ""
+"Ein Port ist ein Verbindungspunkt zwischen einem einzelnen Gerät und einem "
+"virtuellen Netzwerk, z.B. die Netzwerkkarte eines virtuellen Servers."
 
 msgid ""
 "A script or set of commands to be executed after the instance has been built "
@@ -1327,6 +1354,9 @@ msgstr "Von Schattenkopie starten (erzeugt neuen Datenträger)"
 msgid "Bootable"
 msgstr "Bootfähig"
 
+msgid "Bootstrap Theme Preview"
+msgstr "Themenvorschau vorbereiten"
+
 msgctxt "Current status of a Network"
 msgid "Build"
 msgstr "Baue"
@@ -1782,6 +1812,9 @@ msgstr "Erzeugung im Gang"
 msgid "Create Key Pair"
 msgstr "Schlüsselpaar erzeugen"
 
+msgid "Create Mapping"
+msgstr "Zuordnung erstellen"
+
 msgid "Create Network"
 msgstr "Netzwerk erstellen"
 
@@ -1963,6 +1996,9 @@ msgstr ""
 msgid "Create a firewall with selected routers."
 msgstr "Erstellen einer Firewall mit den ausgewählten Routern."
 
+msgid "Create a mapping."
+msgstr "Zuordnung erstellen."
+
 msgid ""
 "Create a monitor template.\n"
 "\n"
@@ -1992,10 +2028,10 @@ msgstr ""
 
 msgid ""
 "Create a new network. In addition, a subnet associated with the network can "
-"be created in the next panel."
+"be created in the following steps of this wizard."
 msgstr ""
-"Neues Netzwerk erzeugen. Ein mit dem Netzwerk verbundenes Subnetz kann in "
-"der nächsten Maske erzeugt werden."
+"Ein neues Netzwerk erzeugen. Im weiteren Verlauf dieses Assistenten kann ein "
+"mit diesem Netzwerk verbundenes Subnetz erzeugt werden."
 
 msgid "Create a new role."
 msgstr "Neue Rolle erstellen."
@@ -2086,6 +2122,20 @@ msgstr "Datenträgertransfer erstellt: \"%s\"."
 
 msgid "Creates a router with specified parameters."
 msgstr "Erzeugt einen Router mit den angegebenen Parametern."
+
+msgid ""
+"Creates a subnet associated with the network. You need to enter a valid "
+"\"Network Address\" and \"Gateway IP\". If you did not enter the \"Gateway IP"
+"\", the first value of a network will be assigned by default. If you do not "
+"want gateway please check the \"Disable Gateway\" checkbox. Advanced "
+"configuration is available by clicking on the \"Subnet Details\" tab."
+msgstr ""
+"Erzeugen eines mit dem Netzwerk verbundenen Subnetzes. Sie müssen eine "
+"gültige Netzwerkadresse sowie eine Gateway-IP angeben. Ohne Angabe einer "
+"Gateway-IP wird der erste Wert des Netzwerkes als Voreinstellung gewählt. "
+"Wenn Sie kein Gateway verwenden wollen markieren Sie die Gateway abschalten "
+"option. Die fortgeschrittene Konfiguration ist über den \"Subnetz Details\" "
+"Reiter verfügbar."
 
 msgid "Creating"
 msgstr "Erzeuge"
@@ -2200,19 +2250,19 @@ msgid "DNS name server"
 msgstr "DNS Nameserver"
 
 msgid "DOWN"
-msgstr "RUNTER"
+msgstr "GESTOPPT"
 
 msgctxt "Admin state of a Firewall"
 msgid "DOWN"
-msgstr "RUNTER"
+msgstr "GESTOPPT"
 
 msgctxt "Admin state of a Load balancer"
 msgid "DOWN"
-msgstr "RUNTER"
+msgstr "GESTOPPT"
 
 msgctxt "Admin state of a Network"
 msgid "DOWN"
-msgstr "RUNTER"
+msgstr "GESTOPPT"
 
 msgctxt "Admin state of a Port"
 msgid "DOWN"
@@ -2372,6 +2422,11 @@ msgid_plural "Delete Key Pairs"
 msgstr[0] "Schlüsselpaar löschen"
 msgstr[1] "Schlüsselpaare löschen"
 
+msgid "Delete Mapping"
+msgid_plural "Delete Mappings"
+msgstr[0] "Zuordnung löschen"
+msgstr[1] "Zuordnungen löschen"
+
 msgid "Delete Member"
 msgid_plural "Delete Members"
 msgstr[0] "Mitglied löschen"
@@ -2447,6 +2502,11 @@ msgid_plural "Delete Security Groups"
 msgstr[0] "Sicherheitsgruppe löschen"
 msgstr[1] "Sicherheitsgruppen löschen"
 
+msgid "Delete Spec"
+msgid_plural "Delete Specs"
+msgstr[0] "Spezifikation löschen"
+msgstr[1] "Spezifikationen löschen"
+
 msgid "Delete Stack"
 msgid_plural "Delete Stacks"
 msgstr[0] "Stack löschen"
@@ -2479,6 +2539,11 @@ msgid "Delete Volume"
 msgid_plural "Delete Volumes"
 msgstr[0] "Datenträger löschen"
 msgstr[1] "Datenträger löschen"
+
+msgid "Delete Volume Backup"
+msgid_plural "Delete Volume Backups"
+msgstr[0] "Datenträgersicherung löschen"
+msgstr[1] "Datenträgersicherungen löschen"
 
 msgid "Delete Volume Snapshot"
 msgid_plural "Delete Volume Snapshots"
@@ -2567,6 +2632,11 @@ msgid_plural "Deleted Key Pairs"
 msgstr[0] "Gelöschtes Schlüsselpaar"
 msgstr[1] "Gelöschte Schlüsselpaare"
 
+msgid "Deleted Mapping"
+msgid_plural "Deleted Mappings"
+msgstr[0] "Gelöschte Zuordnung"
+msgstr[1] "Gelöschte Zuordnungen"
+
 msgid "Deleted Namespace"
 msgid_plural "Deleted Namespaces"
 msgstr[0] "Gelöschter Namensraum"
@@ -2621,6 +2691,11 @@ msgid "Deleted Security Group"
 msgid_plural "Deleted Security Groups"
 msgstr[0] "Gelöschte Sicherheitsgruppe"
 msgstr[1] "Gelöschte Sicherheitsgruppen"
+
+msgid "Deleted Spec"
+msgid_plural "Deleted Specs"
+msgstr[0] "Gelöschte Spezifikation"
+msgstr[1] "Gelöschte Spezifikationen"
 
 msgid "Deleted Stack"
 msgid_plural "Deleted Stacks"
@@ -2938,27 +3013,27 @@ msgid "Domains:"
 msgstr "Domänen:"
 
 msgid "Down"
-msgstr "Runter"
+msgstr "Gestoppt"
 
 msgctxt "Current state of a Hypervisor"
 msgid "Down"
-msgstr "Runter"
+msgstr "Gestoppt"
 
 msgctxt "Current status of a Firewall"
 msgid "Down"
-msgstr "Runter"
+msgstr "Gestoppt"
 
 msgctxt "Current status of a Floating IP"
 msgid "Down"
-msgstr "Runter"
+msgstr "Gestoppt"
 
 msgctxt "Current status of a Network"
 msgid "Down"
-msgstr "Runter"
+msgstr "Gestoppt"
 
 msgctxt "Current status of a Pool"
 msgid "Down"
-msgstr "Runter"
+msgstr "Gestoppt"
 
 msgctxt "Current status of a VPN Service"
 msgid "Down"
@@ -2997,10 +3072,6 @@ msgstr "OpenStack RC Datei v3 herunterladen"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "Schlüsselpaar &quot;%(keypair_name)s&quot; herunterladen"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "Dauer der Instanz Typ %s (OpenStack Variante)"
 
 msgid "EC2 Access Key"
 msgstr "EC2-Zugriffsschlüssel"
@@ -3148,6 +3219,9 @@ msgstr "Abbild-Details bearbeiten."
 
 msgid "Edit the instance details."
 msgstr "Bearbeiten der Instanzdetails."
+
+msgid "Edit the mapping's details."
+msgstr "Zuordnungsdetails ändern."
 
 msgid "Edit the project details."
 msgstr "Bearbeiten der Projektdetails."
@@ -3392,7 +3466,9 @@ msgstr "Host evakuieren"
 
 msgid ""
 "Evacuate the servers from the selected down host to an active target host."
-msgstr "Evakuiere die Server vom ausgewählten Host auf einen aktiven Zielhost."
+msgstr ""
+"Evakuiere die Server vom ausgewählten gestoppten Host auf einen aktiven "
+"Zielhost."
 
 msgid "Events"
 msgstr "Ereignisse"
@@ -4714,6 +4790,9 @@ msgstr "Starte Instanz in diesen Sicherheitsgruppen."
 msgid "Launch instance with these networks"
 msgstr "Instanz mit diesen Netzwerken starten"
 
+msgid "Launch instance with these ports"
+msgstr "Starte Instanzen mit diesen Ports"
+
 msgid "Launch instance with this policy profile"
 msgstr "Instanz mit diesen Datenschutz Profilen starten"
 
@@ -4915,6 +4994,15 @@ msgstr "Manuell"
 
 msgid "Mapped Fixed IP Address"
 msgstr "Zugewiesene feste IP-Adresse"
+
+msgid "Mapping created successfully."
+msgstr "Zuordnung erfolgreich erstellt."
+
+msgid "Mapping updated successfully."
+msgstr "Zuordnung erfolgreich aktulisiert."
+
+msgid "Mappings"
+msgstr "Zuordnungen"
 
 msgid "Max Retries"
 msgstr "Maximale Versuche"
@@ -5227,9 +5315,6 @@ msgstr "Netzwerkagenten"
 msgid "Network Details"
 msgstr "Netzwerkdetails"
 
-msgid "Network Details: {{ network.name }}"
-msgstr "Netzwerk Details: {{ network.name }}"
-
 msgid "Network ID"
 msgstr "Netzwerk-ID"
 
@@ -5241,6 +5326,9 @@ msgstr "Netzwerkname"
 
 msgid "Network Overview"
 msgstr "Netzwerkübersicht"
+
+msgid "Network Ports"
+msgstr "Netzwerk-Ports"
 
 msgid "Network Profile"
 msgstr "Netzwerkprofile"
@@ -5551,12 +5639,13 @@ msgstr "Anzahl der eingehenden Pakete für eine VM-Schnittstelle"
 msgid "Number of instances to launch."
 msgstr "Anzahl der zu startenden Instanzen."
 
+#, python-format
 msgid ""
 "Number of items to show per page (applies to the pages that have API "
-"supported pagination)"
+"supported pagination, Max Value: %s)"
 msgstr ""
-"Anzahl der anzuzeigenden Einträge pro Seite (betrifft Seiten mit von der API "
-"unterstützten Nummerierung)"
+"Anzahl der anzuzeigenden Elemente (trifft auf Seiten mit API-unterstütztem "
+"Seitenumbruch zu, maximaler Wert: %s)"
 
 msgid "Number of log lines to be shown per instance"
 msgstr "Anzahl der zu zeigenden Log-Zeilen pro Instanz"
@@ -6111,15 +6200,6 @@ msgstr "Öffentliche URL"
 
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU Emulator"
-
-msgid "QoS Spec Consumer"
-msgstr "Verbraucher der QoS Spezifikation"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr ""
-"Der Wert für den Verbraucher der QoS Spezifikation muss ein anderer als der "
-"derzeitige sein."
 
 #, python-format
 msgid "QoS Spec name \"%s\" already exists."
@@ -6692,10 +6772,6 @@ msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "Speichern"
 
-#, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "Geplante Löschung von %(data_type)s"
-
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "Geplante Löschung der Firewall"
@@ -6755,6 +6831,11 @@ msgid "Scheduled deletion of Volume"
 msgid_plural "Scheduled deletion of Volumes"
 msgstr[0] "Geplante Löschung eines Datenträgers"
 msgstr[1] "Geplante Löschung von Datenträgern"
+
+msgid "Scheduled deletion of Volume Backup"
+msgid_plural "Scheduled deletion of Volume Backups"
+msgstr[0] "Geplante Löschung der Datenträgersicherung"
+msgstr[1] "Geplante Löschung der Datenträgersicherungen"
 
 msgid "Scheduled deletion of Volume Snapshot"
 msgid_plural "Scheduled deletion of Volume Snapshots"
@@ -7110,7 +7191,7 @@ msgstr "Zurückstellen und entladen"
 
 msgctxt "Power state of an Instance"
 msgid "Shut Down"
-msgstr "Stillgelegt"
+msgstr "Heruntergefahren"
 
 msgctxt "Power state of an Instance"
 msgid "Shut Off"
@@ -7271,9 +7352,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "wird erzeugt"
 
-msgid "Spec"
-msgstr "Spezifikation"
-
 msgid "Spec: {{ qos_spec_name }}"
 msgstr "Spezifikationen: {{ qos_spec_name }}"
 
@@ -7301,13 +7379,13 @@ msgid "Specify \"Network Address\""
 msgstr "\"Netzwerkadresse\" angeben"
 
 msgid ""
-"Specify \"Network Address\", \"Address pool\" or clear \"Create Subnet\" "
-"checkbox."
+"Specify \"Network Address\" or clear \"Create Subnet\" checkbox in previous "
+"step."
 msgstr ""
-"Spezifiziere \"Netzwerkadresse\", \"Adresspool\" oder lösche \"Erstelle "
-"Subnetz\" Checkbox."
+"Geben Sie eine Netzwerkadresse an oder entfernen Sie die Markierung "
+"\"Erzeuge Subnetz\" im vorherigen Schritt."
 
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
+msgid "Specify IP address of gateway or check \"Disable Gateway\" checkbox."
 msgstr ""
 "Geben Sie die IP-Adresse des Gateways an oder wählen Sie \"Gateway abschalten"
 "\"."
@@ -7373,9 +7451,6 @@ msgstr "Stack-Ressourcentyp"
 
 msgid "Stack Resources"
 msgstr "Stackressourcen"
-
-msgid "Stack Template"
-msgstr "Stack-Vorlage"
 
 msgid "Stack creation started."
 msgstr "Erzeugung des Stacks gestartet."
@@ -7871,20 +7946,23 @@ msgstr ""
 msgid ""
 "The color and icon of an intersection indicates whether or not traffic is "
 "permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
+"     Clicking the <span class=\"fa fa-random\"></span> button in the "
+"intersection will install a rule to switch the traffic behavior.<br/>\n"
 "\n"
 "     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
 "direction is outlined when hovering over an intersection.\n"
 " "
 msgstr ""
-"Die Farbe und das Icon in einem Zwischenraum zeigt, ob Datenverkehr von der "
-"Quelle (Zeile) zum Bestimmungsort (Spalte) erlaubt ist. Klicken des <i class="
-"\"fa fa-random\"></i> Buttons im Zwischenraum installiert eine Regel, um das "
-"Verhalten des Datenverkehrs umzuschalten.<br/>\n"
-"<b>Beachten Sie:</b> Regeln beeinflussen nur eine Richtung des "
-"Datenverkehrs. Die entgegengesetzte Richtung wird angezeigt wenn Sie den "
-"Zeiger über den Zwischenraum bewegen."
+"Die Farbe und das Symbol einer Kreuzung gibt an, ob Datenverkehr von der "
+"Quelle (Zeile) zum Ziel (Spalte) erlaubt ist oder nicht.\n"
+"     Mit einem Klick auf die <span class=\"fa fa-random\"></span> "
+"Schaltfläche der Kreuzung wird eine Regel installiert, die das Verhalten des "
+"Datenverkehrs ändert.<br/>\n"
+"\n"
+"     <b>Hinweis:</b> Regeln betreffen nur eine Datenrichtung. Die "
+"gegensätzliche Richtung wird gezeigt, wenn Sie den Mauszeiger über eine "
+"Kreuzung bewegen.\n"
+" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "Der Container kann nicht gelöscht werden, denn er ist nicht leer."
@@ -7999,6 +8077,13 @@ msgstr ""
 "Der physikalische Mechanismus, durch den das virtuelle Netzwerk "
 "implementiert wurde."
 
+msgid ""
+"The port also describes the associated network configuration, such as the "
+"MAC and IP addresses to be used on that port."
+msgstr ""
+"Der Port beschreibt außerdem die zugeordnete Netzwerkkonfiguration, wie etwa "
+"die zu nutzenden MAC- und IP-Adressen auf diesem Port."
+
 msgid "The pre-defined key string between the two peers of the VPN connection"
 msgstr ""
 "Die vordefinierte Schlüssel-Zeichenkette zwischen den beiden Gegenstellen "
@@ -8099,6 +8184,9 @@ msgid "The volume size cannot be less than the source volume size (%sGiB)"
 msgstr ""
 "Die Datenträgergröße kann nicht kleiner sein als die Quell-Datenträgergröße "
 "(%sGiB)"
+
+msgid "Theme Preview"
+msgstr "Themenvorschau"
 
 msgid "There are no meters defined yet."
 msgstr "Es sind noch keine Zähler definiert worden."
@@ -8474,6 +8562,9 @@ msgstr "Hostaggregat kann nicht erstellt werden."
 #, python-format
 msgid "Unable to create key pair: %(exc)s"
 msgstr "Schlüsselpaar kann nicht erzeugt werden: %(exc)s"
+
+msgid "Unable to create mapping."
+msgstr "Zuordnung kann nicht erstellt werden."
 
 #, python-format
 msgid "Unable to create network \"%s\"."
@@ -9454,6 +9545,9 @@ msgstr "Gruppe kann nicht aktualisiert werden."
 msgid "Unable to update image \"%s\"."
 msgstr "Abbild \"%s\" konnte nicht aktualisiert werden."
 
+msgid "Unable to update mapping."
+msgstr "Zuordnung kann nicht aktulisiert werden."
+
 msgid "Unable to update object."
 msgstr "Objekt kann nicht aktualisiert werden."
 
@@ -9598,12 +9692,12 @@ msgstr "Aktualisierung fehlgeschlagen"
 msgid "Update Group"
 msgstr "Gruppe aktualisieren"
 
-msgid "Update Image"
-msgstr "Abbild aktualisieren"
-
 msgctxt "current status of stack"
 msgid "Update In Progress"
 msgstr "Aktualisierung im Gang"
+
+msgid "Update Mapping"
+msgstr "Zuordnung aktualisieren"
 
 msgid "Update Metadata"
 msgstr "Aktualisiere Metadaten"
@@ -9962,9 +10056,6 @@ msgstr "Datenträger %(volume_name)s an Instanz %(instance_name)s"
 
 msgid "Volume (Cinder)"
 msgstr "Datenträger (Cinder)"
-
-msgid "Volume Backup"
-msgstr "Datenträger Sicherungskopie"
 
 msgid "Volume Backup:"
 msgstr "Datenträger Sicherungskopie:"

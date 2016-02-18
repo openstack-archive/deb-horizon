@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2065,13 +2065,6 @@ msgstr ""
 msgid "Create a new network for any project as you need."
 msgstr "Vytvoře novou síť pro jakýkoliv projekt dle potřeby."
 
-msgid ""
-"Create a new network. In addition, a subnet associated with the network can "
-"be created in the next panel."
-msgstr ""
-"Vytvořte novou síť. Dále můžete v následujícím panelu vytvořit podsíť "
-"přidruženou k této síti."
-
 msgid "Create a new role."
 msgstr "Vytvořit novou roli."
 
@@ -3138,10 +3131,6 @@ msgstr "Stáhnout RC soubor OpenStack v3"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "Stáhnout pár klíče &quot;%(keypair_name)s&quot;"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "Trvání typu instance %s (konfigurace openstack)"
 
 msgid "EC2 Access Key"
 msgstr "Přístupový klíč EC2"
@@ -5347,9 +5336,6 @@ msgstr "Síťoví agenti"
 msgid "Network Details"
 msgstr "Podrobnosti sítě"
 
-msgid "Network Details: {{ network.name }}"
-msgstr "Podrobnosti sítě: {{ network.name }}"
-
 msgid "Network ID"
 msgstr "ID sítě"
 
@@ -5671,13 +5657,6 @@ msgstr "Počet příchozích paketů pro rozhraní VM"
 
 msgid "Number of instances to launch."
 msgstr "Počet instancí ke spuštění."
-
-msgid ""
-"Number of items to show per page (applies to the pages that have API "
-"supported pagination)"
-msgstr ""
-"Počet položek zobrazených na stránce (týká se stránek, které podporují "
-"stránkování pomocí API)"
 
 msgid "Number of log lines to be shown per instance"
 msgstr "Počet řádků záznamu zobrazených na instanci"
@@ -6225,14 +6204,6 @@ msgstr "Veřejná URL"
 
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - Emulátor QEMU"
-
-msgid "QoS Spec Consumer"
-msgstr "Spotřebitel specifikace QoS"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr ""
-"Hodnota spotřebitele specifikace QoS musí být jiná, než současná hodnota."
 
 #, python-format
 msgid "QoS Spec name \"%s\" already exists."
@@ -6809,10 +6780,6 @@ msgstr "Specifikace \"%s\" uložena."
 msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "Ukládání"
-
-#, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "Naplánováné smazání %(data_type)s"
 
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
@@ -7404,9 +7371,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "Spouštění"
 
-msgid "Spec"
-msgstr "Specifikace"
-
 msgid "Spec: {{ qos_spec_name }}"
 msgstr "Specifikace: {{ qos_spec_name }}"
 
@@ -7429,16 +7393,6 @@ msgstr "Udává, že svazek může být použit ke spuštění instance"
 
 msgid "Specify \"Network Address\""
 msgstr "Zadejte \"Síťovou adresu\""
-
-msgid ""
-"Specify \"Network Address\", \"Address pool\" or clear \"Create Subnet\" "
-"checkbox."
-msgstr ""
-"Zadejte \"Síťová adresa\", \"Zásoba adres\" nebo odškrtněte políčko "
-"\"Vytvořit podsíť\"."
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "Zadejte IP adresu brány nebo zaškrtněte \"Zakázat bránu\"."
 
 msgid "Specify VIP"
 msgstr "Zadejte VIP"
@@ -7501,9 +7455,6 @@ msgstr "Typ zdroje zásobníku"
 
 msgid "Stack Resources"
 msgstr "Zdroje zásobníku"
-
-msgid "Stack Template"
-msgstr "Šablona zásobníku"
 
 msgid "Stack creation started."
 msgstr "Zahájeno vytváření zásobníku."
@@ -7993,25 +7944,6 @@ msgid ""
 msgstr ""
 "Graf níže zobrazuje zdroje používané tímto projektem v souvislosti s kvótami "
 "projektu."
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"Barva a ikona křižovatky označuje povolení přenosů ze zdroje (řádek) do cíle "
-"(sloupec).\n"
-"     Kliknutím na tlačítko <i class=\"fa fa-random\"></i> v křižovatce "
-"vytvoříte pravidlo pro změnu chování přenosů.<br/>\n"
-"\n"
-"    <b>Poznámka:</b> Pravidla mají vliv pouze na jeden jejich směr. Opačný "
-"směr je uveden při najetí myší na křižovatku.\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "Kontejner nelze smazat protože není prázdný."
@@ -9678,9 +9610,6 @@ msgstr "Aktualizace selhala."
 msgid "Update Group"
 msgstr "Aktualizovat skupinu"
 
-msgid "Update Image"
-msgstr "Aktualizovat obraz"
-
 msgctxt "current status of stack"
 msgid "Update In Progress"
 msgstr "Probíhá aktualizace"
@@ -10043,9 +9972,6 @@ msgstr "Svazek %(volume_name)s ona instanci %(instance_name)s"
 
 msgid "Volume (Cinder)"
 msgstr "Svazek (Cinder)"
-
-msgid "Volume Backup"
-msgstr "Záloha svazku"
 
 msgid "Volume Backup:"
 msgstr "Záloha svazku:"

@@ -354,8 +354,6 @@ def user_update(request, user, **data):
 
     # The v2 API updates user model and default project separately
     if VERSIONS.active < 3:
-        project = data.pop('project')
-
         # Update user details
         try:
             user = manager.update(user, **data)
@@ -364,21 +362,24 @@ def user_update(request, user, **data):
         except Exception:
             error = exceptions.handle(request, ignore=True)
 
-        # Update default tenant
-        try:
-            user_update_tenant(request, user, project)
-            user.tenantId = project
-        except Exception:
-            error = exceptions.handle(request, ignore=True)
+        if "project" in data:
+            project = data.pop('project')
 
-        # Check for existing roles
-        # Show a warning if no role exists for the project
-        user_roles = roles_for_user(request, user, project)
-        if not user_roles:
-            messages.warning(request,
-                             _('User %s has no role defined for '
-                               'that project.')
-                             % data.get('name', None))
+            # Update default tenant
+            try:
+                user_update_tenant(request, user, project)
+                user.tenantId = project
+            except Exception:
+                error = exceptions.handle(request, ignore=True)
+
+            # Check for existing roles
+            # Show a warning if no role exists for the project
+            user_roles = roles_for_user(request, user, project)
+            if not user_roles:
+                messages.warning(request,
+                                 _('User %s has no role defined for '
+                                   'that project.')
+                                 % data.get('name', None))
 
         if error is not None:
             raise error
@@ -752,3 +753,102 @@ def keystone_backend_name():
 
 def get_version():
     return VERSIONS.active
+
+
+def is_federation_management_enabled():
+    return getattr(settings, 'OPENSTACK_KEYSTONE_FEDERATION_MANAGEMENT', False)
+
+
+def identity_provider_create(request, idp_id, description=None,
+                             enabled=False, remote_ids=None):
+    manager = keystoneclient(request, admin=True).federation.identity_providers
+    try:
+        return manager.create(id=idp_id,
+                              description=description,
+                              enabled=enabled,
+                              remote_ids=remote_ids)
+    except keystone_exceptions.Conflict:
+        raise exceptions.Conflict()
+
+
+def identity_provider_get(request, idp_id):
+    manager = keystoneclient(request, admin=True).federation.identity_providers
+    return manager.get(idp_id)
+
+
+def identity_provider_update(request, idp_id, description=None,
+                             enabled=False, remote_ids=None):
+    manager = keystoneclient(request, admin=True).federation.identity_providers
+    try:
+        return manager.update(idp_id,
+                              description=description,
+                              enabled=enabled,
+                              remote_ids=remote_ids)
+    except keystone_exceptions.Conflict:
+        raise exceptions.Conflict()
+
+
+def identity_provider_delete(request, idp_id):
+    manager = keystoneclient(request, admin=True).federation.identity_providers
+    return manager.delete(idp_id)
+
+
+def identity_provider_list(request):
+    manager = keystoneclient(request, admin=True).federation.identity_providers
+    return manager.list()
+
+
+def mapping_create(request, mapping_id, rules):
+    manager = keystoneclient(request, admin=True).federation.mappings
+    try:
+        return manager.create(mapping_id=mapping_id, rules=rules)
+    except keystone_exceptions.Conflict:
+        raise exceptions.Conflict()
+
+
+def mapping_get(request, mapping_id):
+    manager = keystoneclient(request, admin=True).federation.mappings
+    return manager.get(mapping_id)
+
+
+def mapping_update(request, mapping_id, rules):
+    manager = keystoneclient(request, admin=True).federation.mappings
+    return manager.update(mapping_id, rules=rules)
+
+
+def mapping_delete(request, mapping_id):
+    manager = keystoneclient(request, admin=True).federation.mappings
+    return manager.delete(mapping_id)
+
+
+def mapping_list(request):
+    manager = keystoneclient(request, admin=True).federation.mappings
+    return manager.list()
+
+
+def protocol_create(request, protocol_id, identity_provider, mapping):
+    manager = keystoneclient(request).federation.protocols
+    try:
+        return manager.create(protocol_id, identity_provider, mapping)
+    except keystone_exceptions.Conflict:
+        raise exceptions.Conflict()
+
+
+def protocol_get(request, identity_provider, protocol):
+    manager = keystoneclient(request).federation.protocols
+    return manager.get(identity_provider, protocol)
+
+
+def protocol_update(request, identity_provider, protocol, mapping):
+    manager = keystoneclient(request).federation.protocols
+    return manager.update(identity_provider, protocol, mapping)
+
+
+def protocol_delete(request, identity_provider, protocol):
+    manager = keystoneclient(request).federation.protocols
+    return manager.delete(identity_provider, protocol)
+
+
+def protocol_list(request, identity_provider):
+    manager = keystoneclient(request).federation.protocols
+    return manager.list(identity_provider)

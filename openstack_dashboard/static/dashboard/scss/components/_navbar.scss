@@ -3,18 +3,42 @@
   margin: 0;
   display: block;
 
-  // These allow the vertical centering to work properly
-  line-height: $navbar-height;
-  font-size: 0;
-
   img {
     max-height: $navbar-height;
     vertical-align: middle;
   }
 }
 
+//Specifity Required
+.navbar-header .navbar-brand {
+
+  // These allow the vertical centering to work properly
+  line-height: $navbar-height;
+  font-size: 0;
+}
+
 .topbar {
   .navbar {
     margin-bottom: 1px;
   }
+
+  .dropdown-toggle > .fa {
+    padding-left: $padding-small-vertical;
+    padding-right: $padding-small-vertical;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+.context-delimiter {
+  font-size: $padding-small-vertical;
+  vertical-align: middle;
+  padding-right: $padding-small-vertical;
+  padding-left: $padding-small-vertical;
 }

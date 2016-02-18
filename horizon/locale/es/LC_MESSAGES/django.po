@@ -11,21 +11,56 @@
 # Veruska Perinotto <reaching.out@gmail.com>, 2015
 # Marian Tort <marian.tort@gmail.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
+# Alberto Molina Coballes <alb.molina@gmail.com>, 2016. #zanata
+# Pablo Iranzo Gómez <Pablo.Iranzo@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-12-17 05:35+0000\n"
+"POT-Creation-Date: 2016-01-31 10:08+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-09-11 01:52+0000\n"
-"Last-Translator: Marian Tort <marian.tort@gmail.com>\n"
+"PO-Revision-Date: 2016-01-20 08:54+0000\n"
+"Last-Translator: Alberto Molina Coballes <alb.molina@gmail.com>\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.0\n"
 "X-Generator: Zanata 3.7.3\n"
 "Language-Team: Spanish\n"
+
+#, python-format
+msgid ""
+"\n"
+"                Login as different user or go back to <a href=\"%(home_url)s"
+"\">home page</a>\n"
+"              "
+msgstr ""
+"\n"
+"                Conectarse como otro usuario o volver atrás a la <a href="
+"\"%(home_url)s\">página principal</a>\n"
+"              "
+
+#, python-format
+msgid ""
+"\n"
+"                Used <span> %(used)s </span>(No Limit)\n"
+"              "
+msgstr ""
+"\n"
+"                Usados <span> %(used)s </span>(Ilimitado)\n"
+"              "
+
+#, python-format
+msgid ""
+"\n"
+"                Used <span> %(used)s </span>of<span> %(available)s </span>\n"
+"              "
+msgstr ""
+"\n"
+"                Usados <span> %(used)s </span>de<span> %(available)s </"
+"span>\n"
+"              "
 
 #, python-format
 msgid ""
@@ -51,7 +86,8 @@ msgid ""
 msgstr ""
 "\n"
 "Si no está seguro del método de autenticación a utilizar, contacte con su "
-"administrador."
+"administrador.\n"
+" "
 
 #, python-format
 msgctxt "past"
@@ -195,7 +231,7 @@ msgid "Info: "
 msgstr "Info:"
 
 msgid "Invalid metadata entry. Use comma-separated key=value pairs"
-msgstr "Entrada de metadata invalida, pares clave=valor separado por coma"
+msgstr "Entrada de metadata inválida, pares clave=valor separados por coma"
 
 msgid "Invalid subnet mask"
 msgstr "Máscara de red no válida"
@@ -205,6 +241,9 @@ msgstr "Versión de dirección IP no válida"
 
 msgid "Limit Summary"
 msgstr "Resumen"
+
+msgid "Log in"
+msgstr "Conectarse"
 
 msgid "Login"
 msgstr "Usuario"
@@ -247,7 +286,7 @@ msgid "Not a valid port number"
 msgstr "Número de puerto no válido"
 
 msgid "One colon allowed in port range"
-msgstr "Un punto permitido en el rango de puerto"
+msgstr "Está permitido usar dos puntos en el rango de puerto"
 
 msgid "Other"
 msgstr "Otro"
@@ -302,6 +341,16 @@ msgstr "La fecha debe estar en formato AAAA-MM-DD."
 msgid "The string may only contain ASCII printable characters."
 msgstr "La cadena sólo puede incluir caracteres imprimibles ASCII."
 
+#, python-format
+msgid ""
+"The value of %(resource)s is %(name)s inside the template. When launching a "
+"stack from this interface, the value must start with \"http://\" or "
+"\"https://\""
+msgstr ""
+"El valor de  %(resource)s es %(name)s dentro de la plantilla.  Al lanzar un "
+"stack desde este interfaz, el valor debe comenzar por  \"http://\" o "
+"\"https://\""
+
 msgid "This Period's GB-Hours:"
 msgstr "Este periodo en horas GB:"
 
@@ -324,12 +373,6 @@ msgstr "No autorizado. Inicie sesión de nuevo."
 #, python-format
 msgid "Unauthorized: %s"
 msgstr "No autorizado: %s"
-
-msgid "Update"
-msgstr "Actualizar"
-
-msgid "Updated"
-msgstr "Actualizada"
 
 msgid "Usage Summary"
 msgstr "Resumen del uso"

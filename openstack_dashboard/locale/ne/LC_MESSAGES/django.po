@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1716,10 +1716,6 @@ msgstr "चाबी जोडा डाउनलोड गर्नुहोस
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "चाबी जोडा &quot;%(keypair_name)s&quot; डाउनलोड गर्नुहोस्"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "इन्सटेन्स प्रकार %s (ओपनस्टेक फ्लेवर) को अवधि"
 
 msgid "EC2 Access Key"
 msgstr "EC2 प्रवेश चाबी"
@@ -3983,13 +3979,6 @@ msgstr "पब्लिक URL"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "Qcow2 - QEMU यन्त्र"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS स्पेक उपभोक्ता"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "QoS स्पेक उपभोक्ता मूल्य वर्तमान उपभोक्ता मूल्यभन्दा नितान्त भिन्न हुनुपर्छ।"
-
 msgid "QoS Spec to be associated"
 msgstr "सम्बन्धित राख्‍नुपर्ने QoS स्पेक"
 
@@ -4291,10 +4280,6 @@ msgstr "सेभ गरिएको अतिरिक्त स्पेक \"
 #, python-format
 msgid "Saved spec \"%s\"."
 msgstr "सेभ गरिएको स्पेक \"%s\"."
-
-#, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "%(data_type)sको अनुसूचित मेटाइ"
 
 #, python-format
 msgid "Scheduled resize of instance \"%s\"."
@@ -4612,9 +4597,6 @@ msgstr "स्रोत पोर्ट( पूर्णाङ्क [1, 65535] 
 msgid "Source:"
 msgstr "स्रोतः"
 
-msgid "Spec"
-msgstr "स्पेक"
-
 msgid ""
 "Specifies how IPv6 addresses and additional information are configured. We "
 "can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
@@ -4628,9 +4610,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "\"नेटवर्क ठेकाना\" निश्चित गर्नुहोस्"
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "गेटवेको IP ठेकाना निश्चित गर्नुहोस् वा  \" गेटवे निस्क्रीय गर्नु \" जाँच गर्नुहोस्"
 
 msgid "Specify VIP"
 msgstr "VIP निश्चित गर्नुहोस्"
@@ -4679,9 +4658,6 @@ msgstr "स्टेक रिसोर्स प्रकार"
 
 msgid "Stack Resources"
 msgstr "स्टेक रिसोर्सहरू"
-
-msgid "Stack Template"
-msgstr "स्टेक टेम्प्लेट "
 
 msgid "Stack creation started."
 msgstr "स्टेक बनाउने शुरू गरिएको छ।"
@@ -5002,25 +4978,6 @@ msgid ""
 msgstr ""
 "तलका चार्टले प्रोजेक्ट कोटासित सम्बन्धित यो प्रोजेक्टद्वारा प्रयोग गरिने सामग्रीहरू प्रस्तुत "
 "गर्छ।"
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"इन्टरसेक्सनको रंग र आइकनले निर्देश गर्छ कि ट्राफिस स्रोत(काँचो) बाट लक्ष्यमा अनुमति प्रदान "
-"गरिन्छ कि गरिन्न\n"
-"इन्टरसेक्सनमा <i class=\"fa fa-random\"></i>  बटन क्लिक गर्नाले  ट्राफिक विहेभियरमा "
-"स्विच गर्नका लागि नियम इन्सटल <br/>\n"
-"\n"
-"     <b>Note:</b> नियमहरूले ट्राफिकको एउटा दिशालाई मात्र प्रभावित पार्दछ। बिपरित "
-"दिखा इन्टरसेक्सनमा होभरिङ गर्ने क्रमामा लाइनबाट बाहिर राखिन्छ।\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "भाँडो मेटाउन सकिएन कारण यो खाली छैन"
@@ -6243,9 +6200,6 @@ msgstr "डिफल्ट अपडेट गर्नुहोस्"
 msgid "Update Group"
 msgstr "समूह अपडेट गर्नुहोस"
 
-msgid "Update Image"
-msgstr "चित्र अपडेट गर्नुहोस्"
-
 msgid "Update Metadata"
 msgstr "मेटाडाटा अपडेट गर्नुहोस्"
 
@@ -6549,9 +6503,6 @@ msgstr "इन्सटेन्स %(instance_name)sमा भोल्यु�
 
 msgid "Volume (Cinder)"
 msgstr "आकार(सिन्डर)"
-
-msgid "Volume Backup"
-msgstr "भोल्युम बेकअप"
 
 msgid "Volume Backup:"
 msgstr "भोल्युम बेकअपः"

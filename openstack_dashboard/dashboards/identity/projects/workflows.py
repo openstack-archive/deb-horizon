@@ -33,6 +33,7 @@ from openstack_dashboard.api import cinder
 from openstack_dashboard.api import keystone
 from openstack_dashboard.api import nova
 from openstack_dashboard.usage import quotas
+from openstack_dashboard.utils.identity import IdentityMixIn
 
 INDEX_URL = "horizon:identity:projects:index"
 ADD_USER_URL = "horizon:identity:projects:create_user"
@@ -40,6 +41,18 @@ PROJECT_GROUP_ENABLED = keystone.VERSIONS.active >= 3
 PROJECT_USER_MEMBER_SLUG = "update_members"
 PROJECT_GROUP_MEMBER_SLUG = "update_group_members"
 COMMON_HORIZONTAL_TEMPLATE = "identity/projects/_common_horizontal_form.html"
+
+# NOTE(ZhengYue): Mapping for differents between keys from neutron usage
+# and tenant_quota_usages
+NEUTRON_USAGE_FIELDS_MAP = {
+    'network': 'networks',
+    'subnet': 'subnets',
+    'port': 'ports',
+    'router': 'routers',
+    'floatingip': 'floating_ips',
+    'security_group': 'security_groups',
+    'security_group_rule': 'security_group_rules'
+}
 
 
 class ProjectQuotaAction(workflows.Action):
@@ -94,7 +107,12 @@ class UpdateProjectQuotaAction(ProjectQuotaAction):
         # Validate the quota values before updating quotas.
         bad_values = []
         for key, value in cleaned_data.items():
-            used = usages[key].get('used', 0)
+            # NOTE(ZhengYue): Because the keys of network quota not match
+            # with fields from tenant_quota_usages, do some amend at here.
+            item_key = key
+            if key in NEUTRON_USAGE_FIELDS_MAP:
+                item_key = NEUTRON_USAGE_FIELDS_MAP[key]
+            used = usages[item_key].get('used', 0)
             if value is not None and value >= 0 and used > value:
                 bad_values.append(_('%(used)s %(key)s used') %
                                   {'used': used,
@@ -572,7 +590,7 @@ class UpdateProjectInfo(workflows.Step):
                    "enabled")
 
 
-class UpdateProject(CommonQuotaWorkflow):
+class UpdateProject(CommonQuotaWorkflow, IdentityMixIn):
     slug = "update_project"
     name = _("Edit Project")
     finalize_button_name = _("Save")
@@ -662,8 +680,9 @@ class UpdateProject(CommonQuotaWorkflow):
                                      available_roles, current_role_ids):
         is_current_user = user_id == request.user.id
         is_current_project = project_id == request.user.tenant_id
+        _admin_roles = self.get_admin_roles()
         available_admin_role_ids = [role.id for role in available_roles
-                                    if role.name.lower() == 'admin']
+                                    if role.name.lower() in _admin_roles]
         admin_roles = [role for role in current_role_ids
                        if role in available_admin_role_ids]
         if len(admin_roles):

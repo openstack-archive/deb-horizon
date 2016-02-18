@@ -10,8 +10,8 @@
 
     <tr>
       <th colspan="100" class="search-header">
-        <hz-search-bar group-classes="input-group-sm" icon-classes="fa-search">
-        </hz-search-bar>
+        <hz-magic-search-bar group-classes="input-group-sm" icon-classes="fa-search" filter-facets="table.searchFacets">
+        </hz-magic-search-bar>
       </th>
     </tr>
 
@@ -52,6 +52,9 @@
       <td class="rsp-p2">
       </td>
     </tr>
+
+    <tr hz-no-items items="table.iflavors"></tr>
+
   </tbody>
 
   <tfoot hz-table-footer items="table.iflavors"></tfoot>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1765,10 +1765,6 @@ msgstr "कुँजी युग्म डाउनलोड करू"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "&quot;%(keypair_name)s&quot; कुँजी युग्म डाउनलोड करू"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "इंस्टेंस प्रकार क अवधि %s (ओपेनस्टैक फ्लेवर)"
 
 msgid "EC2 Access Key"
 msgstr "EC2 पहुँच कुँजी"
@@ -4095,13 +4091,6 @@ msgstr "सार्वजनिक यूआरएल"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU एमुलेटर"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS विनिर्देश उपभोक्ता"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "QoS विनिर्देश उपभोक्ता मूल्य वर्तमान उपभोक्ता मूल्य क तुलना मे अलग होनाइ चाही."
-
 msgid "QoS Spec to be associated"
 msgstr "जोड़े जाए बला QoS विनिर्देश"
 
@@ -4481,10 +4470,6 @@ msgid "Saved spec \"%s\"."
 msgstr "स्पेक \"%s\" सहेजलक."
 
 #, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "%(data_type)s क अनुसूचित विलोपन"
-
-#, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr "इंस्टेंस \"%s\" क अनुसूचित आकार परिवर्तन."
 
@@ -4856,9 +4841,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "परिणाम देब जाए रहल अछि"
 
-msgid "Spec"
-msgstr "Spec"
-
 msgid ""
 "Specifies how IPv6 addresses and additional information are configured. We "
 "can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
@@ -4873,9 +4855,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "\"संजालक पता\" निर्दिष्ट करू"
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "प्रवेश द्वार क आईपी पता निर्दिष्ट अथवा \"अक्षम गेटवे\" क जाँच करू."
 
 msgid "Specify VIP"
 msgstr "VIP निर्दिष्ट करू"
@@ -4926,9 +4905,6 @@ msgstr "ढेर संसाधन प्रकार"
 
 msgid "Stack Resources"
 msgstr "ढेर संसाधन"
-
-msgid "Stack Template"
-msgstr "स्टैक नमूना"
 
 msgid "Stack creation started."
 msgstr "ढेर निर्माण शुरू कए देलक."
@@ -5255,25 +5231,6 @@ msgid ""
 msgstr ""
 "नीच्चाँ देल गेल चार्ट परियोजना क लेल कोटा क संबंध मे एहि प्रोजेक्ट क द्वारा प्रयुक्त संसाधन सँ "
 "पता चलैत अछि."
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"एकटा प्रतिच्छेदन क रँग आओर आइकन सँ पता चलैत अछि जे क स्रोत (पंक्ति) सँ गंतव्य (स्तंभ) मे "
-"ट्रैफिक क अनुमति अछि अथवा नहि.\n"
-"     प्रतिच्छेदन मे <i class=\"fa fa-random\"></i> बटन केँ क्लिक करब सँ ट्रैफिक क "
-"व्यवहार केँ स्विच करबाक लेल एकटा नियम इंस्टॉल भ' जएताह.<br/>\n"
-"\n"
-"     <b>नोट:</b> नियम ट्रैफिक क केवल एकटा दिशा केँ प्रभावित करैत अछि. विपरीत दिशा केँ "
-"एकटा प्रतिच्छेदन पर हाथ घुमाबैत समय दर्शाया जाइत अछि.\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "ई कंटेनर केँ हटाएल नहि जाए सकैत अछि किएक ई खाली नहि अछि."
@@ -6503,9 +6460,6 @@ msgstr "पूर्वनिर्धारित अद्यतन करू"
 msgid "Update Group"
 msgstr "समूह अपडेट करू"
 
-msgid "Update Image"
-msgstr "बिंब अद्यतन करू"
-
 msgid "Update Metadata"
 msgstr "मेटाडाटा अद्यतन करू"
 
@@ -6814,9 +6768,6 @@ msgstr "दृष्टांत %(instance_name)s पर वाल्यूम 
 
 msgid "Volume (Cinder)"
 msgstr "वाल्यूम (सिंडर)"
-
-msgid "Volume Backup"
-msgstr "वाल्यूम बैकअप"
 
 msgid "Volume Backup:"
 msgstr "वाल्यूम बैकअप:"

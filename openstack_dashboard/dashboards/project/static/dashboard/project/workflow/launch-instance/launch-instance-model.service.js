@@ -26,6 +26,7 @@
     'horizon.app.core.openstack-service-api.novaExtensions',
     'horizon.app.core.openstack-service-api.security-group',
     'horizon.app.core.openstack-service-api.serviceCatalog',
+    'horizon.app.core.openstack-service-api.settings',
     'horizon.framework.widgets.toast.service'
   ];
 
@@ -51,6 +52,7 @@
     novaExtensions,
     securityGroup,
     serviceCatalog,
+    settings,
     toast
   ) {
 
@@ -204,7 +206,8 @@
           novaAPI.getLimits().then(onGetNovaLimits, noop),
           securityGroup.query().then(onGetSecurityGroups, noop),
           serviceCatalog.ifTypeEnabled('network').then(getNetworks, noop),
-          serviceCatalog.ifTypeEnabled('volume').then(getVolumes, noop)
+          serviceCatalog.ifTypeEnabled('volume').then(getVolumes, noop),
+          settings.getSetting('LAUNCH_INSTANCE_DEFAULTS').then(setDefaultValues, noop)
         ]);
 
         promise.then(onInitSuccess, onInitFail);
@@ -225,6 +228,13 @@
     function onInitFail() {
       model.initializing = false;
       model.initialized = false;
+    }
+
+    function setDefaultValues(defaults) {
+      if (!defaults) { return; }
+      if ('config_drive' in defaults) {
+        model.newInstanceSpec.config_drive = defaults.config_drive;
+      }
     }
 
     /**
@@ -275,12 +285,12 @@
       push.apply(
         model.availabilityZones,
         data.data.items.filter(function (zone) {
-                    return zone.zoneState && zone.zoneState.available;
-                  })
-                  .map(function (zone) {
-                    return zone.zoneName;
-                  })
-                );
+          return zone.zoneState && zone.zoneState.available;
+        })
+        .map(function (zone) {
+          return zone.zoneName;
+        })
+      );
 
       if (model.availabilityZones.length > 0) {
         model.newInstanceSpec.availability_zone = model.availabilityZones[0];
@@ -421,7 +431,9 @@
 
       // Can only boot image to volume if the Nova extension is enabled.
       novaExtensions.ifNameEnabled('BlockDeviceMappingV2Boot')
-        .then(function() { model.allowCreateVolumeFromImage = true; });
+        .then(function() {
+          model.allowCreateVolumeFromImage = true;
+        });
 
       return $q.all(volumePromises);
     }
@@ -537,14 +549,14 @@
      * rows and are used on the metadata tab for adding metadata to the instance.
      */
     function getMetadataDefinitions() {
-      // Metadata definitions often apply to multiple
-      // resource types. It is optimal to make a single
-      // request for all desired resource types.
+      // Metadata definitions often apply to multiple resource types. It is optimal to make a
+      // single request for all desired resource types.
+      //   <key>: [<resource_type>, <properties_target>]
       var resourceTypes = {
-        flavor: 'OS::Nova::Flavor',
-        image: 'OS::Glance::Image',
-        volume: 'OS::Cinder::Volumes',
-        instance: 'OS::Nova::Instance'
+        flavor: ['OS::Nova::Flavor', ''],
+        image: ['OS::Glance::Image', ''],
+        volume: ['OS::Cinder::Volumes', ''],
+        instance: ['OS::Nova::Server', 'metadata']
       };
 
       angular.forEach(resourceTypes, applyForResourceType);
@@ -552,16 +564,15 @@
 
     function applyForResourceType(resourceType, key) {
       glanceAPI
-        .getNamespaces({'resource_type': resourceType}, true)
+        .getNamespaces({ resource_type: resourceType[0],
+                         properties_target: resourceType[1] }, true)
         .then(function(data) {
           var namespaces = data.data.items;
           // This will ensure that the metaDefs model object remains
           // unchanged until metadefs are fully loaded. Otherwise,
           // partial results are loaded and can result in some odd
           // display behavior.
-          if (namespaces.length) {
-            model.metadataDefs[key] = namespaces;
-          }
+          model.metadataDefs[key] = namespaces;
         });
     }
 

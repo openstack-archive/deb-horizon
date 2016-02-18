@@ -508,6 +508,43 @@ This setting can be used in the case where a separate panel is used for
 managing a custom property or if a certain custom property should never be
 edited.
 
+``LAUNCH_INSTANCE_DEFAULTS``
+----------------------------
+
+.. versionadded:: 9.0.0(Mitaka)
+
+Default::
+
+    {
+        "config_drive": False
+    }
+
+A dictionary of settings which can be used to provide the default values for
+properties found in the Launch Instance modal.
+
+The ``config_drive`` setting specifies the default value for the Configuration
+Drive property.
+
+``MESSAGES_PATH``
+-----------------
+
+.. versionadded:: 9.0.0(Mitaka)
+
+Default: ``None``
+
+The absolute path to the directory where message files are collected.
+
+When the user logins to horizon, the message files collected are processed
+and displayed to the user. Each message file should contain a JSON formatted
+data and must have a .json file extension. For example::
+
+    {
+        "level": "info",
+        "message": "message of the day here"
+    }
+
+Possible values for level are: success, info, warning and error.
+
 ``OPENSTACK_API_VERSIONS``
 --------------------------
 
@@ -743,6 +780,19 @@ Default: ``"http://%s:5000/v2.0" % OPENSTACK_HOST``
 The full URL for the Keystone endpoint used for authentication. Unless you
 are using HTTPS, running your Keystone server on a nonstandard port, or using
 a nonstandard URL scheme you shouldn't need to touch this setting.
+
+
+``OPENSTACK_KEYSTONE_FEDERATION_MANAGEMENT``
+--------------------------------------------
+
+.. versionadded:: 9.0.0(Mitaka)
+
+Default: ``False``
+
+Set this to True to enable panels that provide the ability for users to manage
+Identity Providers (IdPs) and establish a set of rules to map federation protocol
+attributes to Identity API attributes. This extension requires v3.0+ of the
+Identity API.
 
 
 ``WEBSSO_ENABLED``
@@ -1249,12 +1299,8 @@ This value is also available in the scss namespace with the variable name
 $static_url.  Make sure you run ``python manage.py collectstatic`` and
 ``python manage.py compress`` after any changes to this value in settings.py.
 
-For your convenience, a custom theme for only setting the static url has been
-provided see: ``"/horizon/openstack_dashboard/themes/webroot"``
-
 For more information see:
 https://docs.djangoproject.com/en/1.7/ref/settings/#static-url
-
 
 ``DISALLOW_IFRAME_EMBED``
 -------------------------

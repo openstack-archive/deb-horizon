@@ -125,6 +125,65 @@
         expect(ctrl.currentBootSource).toBe('image');
       });
 
+      describe('facets', function() {
+        it('should set facets for search by default', function() {
+          expect(ctrl.sourceFacets).toBeDefined();
+
+          expect(ctrl.sourceFacets.length).toEqual(5);
+          expect(ctrl.sourceFacets[0].name).toEqual('name');
+          expect(ctrl.sourceFacets[1].name).toEqual('updated_at');
+          expect(ctrl.sourceFacets[2].name).toEqual('size');
+          expect(ctrl.sourceFacets[3].name).toEqual('disk_format');
+          expect(ctrl.sourceFacets[4].name).toEqual('is_public');
+        });
+
+        it('should broadcast event when source type is changed', function() {
+          spyOn(scope, '$broadcast').and.callThrough();
+          ctrl.updateBootSourceSelection('volume');
+          ctrl.updateBootSourceSelection('snapshot');
+          expect(scope.$broadcast).toHaveBeenCalledWith('facetsChanged');
+        });
+
+        it('should change facets for snapshot source type', function() {
+          expect(ctrl.sourceFacets).toBeDefined();
+
+          ctrl.updateBootSourceSelection('snapshot');
+
+          expect(ctrl.sourceFacets.length).toEqual(5);
+          expect(ctrl.sourceFacets[0].name).toEqual('name');
+          expect(ctrl.sourceFacets[1].name).toEqual('updated_at');
+          expect(ctrl.sourceFacets[2].name).toEqual('size');
+          expect(ctrl.sourceFacets[3].name).toEqual('disk_format');
+          expect(ctrl.sourceFacets[4].name).toEqual('is_public');
+        });
+
+        it('should change facets for volume source type', function() {
+          expect(ctrl.sourceFacets).toBeDefined();
+
+          ctrl.updateBootSourceSelection('volume');
+
+          expect(ctrl.sourceFacets.length).toEqual(5);
+          expect(ctrl.sourceFacets[0].name).toEqual('name');
+          expect(ctrl.sourceFacets[1].name).toEqual('description');
+          expect(ctrl.sourceFacets[2].name).toEqual('size');
+          expect(ctrl.sourceFacets[3].name).toEqual('volume_image_metadata.disk_format');
+          expect(ctrl.sourceFacets[4].name).toEqual('encrypted');
+        });
+
+        it('should change facets for volume_snapshot source type', function() {
+          expect(ctrl.sourceFacets).toBeDefined();
+
+          ctrl.updateBootSourceSelection('volume_snapshot');
+
+          expect(ctrl.sourceFacets.length).toEqual(5);
+          expect(ctrl.sourceFacets[0].name).toEqual('name');
+          expect(ctrl.sourceFacets[1].name).toEqual('description');
+          expect(ctrl.sourceFacets[2].name).toEqual('size');
+          expect(ctrl.sourceFacets[3].name).toEqual('created_at');
+          expect(ctrl.sourceFacets[4].name).toEqual('status');
+        });
+      });
+
       describe('Scope Functions', function() {
 
         describe('updateBootSourceSelection', function() {
@@ -217,8 +276,8 @@
 
       describe('diskFormat', function() {
 
-        it("returns 'FORMAT' if given 'format' in value", function() {
-          expect(diskFormatFilter({ disk_format: 'format' })).toBe('FORMAT');
+        it("returns 'format' if given 'format' in value", function() {
+          expect(diskFormatFilter({ disk_format: 'format' })).toBe('format');
         });
 
         it("returns empty string if given null input", function() {
@@ -227,6 +286,13 @@
 
         it("returns empty string if given input is empty object", function() {
           expect(diskFormatFilter({})).toBe('');
+        });
+
+        it("returns 'docker' if container format is docker and disk format is raw", function() {
+          expect(diskFormatFilter({disk_format: 'raw', container_format: 'docker'})).toBe('docker');
+          expect(diskFormatFilter({disk_format: 'ami', container_format: 'docker'})).toBe('ami');
+          expect(diskFormatFilter({disk_format: 'raw', container_format: 'raw'})).toBe('raw');
+          expect(diskFormatFilter({disk_format: 'raw', container_format: null})).toBe('raw');
         });
       });
     });

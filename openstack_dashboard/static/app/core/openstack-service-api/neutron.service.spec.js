@@ -1,4 +1,4 @@
-/*
+/**
  *    (c) Copyright 2015 Hewlett-Packard Development Company, L.P.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,10 +81,16 @@
         "func": "getPorts",
         "method": "get",
         "path": "/api/neutron/ports/",
-        "data": 42,
+        "data": {
+          params: {
+            network_id: 42
+          }
+        },
         "error": "Unable to retrieve the ports.",
         "testInput": [
-          42
+          {
+            network_id: 42
+          }
         ]
       },
       {
@@ -92,6 +98,12 @@
         "method": "get",
         "path": "/api/neutron/agents/",
         "error": "Unable to retrieve the agents."
+      },
+      {
+        "func": "getExtensions",
+        "method": "get",
+        "path": "/api/neutron/extensions/",
+        "error": "Unable to retrieve the extensions."
       }
     ];
 

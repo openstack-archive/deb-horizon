@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1735,10 +1735,6 @@ msgstr "كلید ك جوڑی ڈاؤن لوڈ كریں"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr " &quot;%(keypair_name)s&quot; کلید مجموعہ ڈاؤن لوڈ كریں"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "مثال کے طور پر قسم کی مدت%s (آپن اسٹاك فلیور)"
 
 msgid "EC2 Access Key"
 msgstr "EC2 رسائی كلید"
@@ -4030,14 +4026,6 @@ msgstr "پبلك URL"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QEMU QCOW2 ایملیٹر"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS كی تصریح کنزیومر"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr ""
-"QoS تصریح صارفین کی قیمت موجودہ صارفین قیمت کے مقابلے میں مختلف ہونا چاہئے."
-
 msgid "QoS Spec to be associated"
 msgstr "شامل جانے والے QoS تصریح"
 
@@ -4339,10 +4327,6 @@ msgstr "اضافی تصریح \"%s\" محفوظ كیا"
 #, python-format
 msgid "Saved spec \"%s\"."
 msgstr "تصریح \"%s\" محفوظ كیا ۔"
-
-#, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "%(data_type)s کے شیڈول کی منسوخی"
 
 #, python-format
 msgid "Scheduled resize of instance \"%s\"."
@@ -4668,9 +4652,6 @@ msgstr "منزل پورٹ (integer in [1, 65535] or range in a:b)"
 msgid "Source:"
 msgstr "ماخذ :"
 
-msgid "Spec"
-msgstr "تصریح"
-
 msgid ""
 "Specifies how IPv6 addresses and additional information are configured. We "
 "can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
@@ -4685,9 +4666,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "وضاحت کریں \"نیٹ ورک ایڈریس\""
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "دروازے کے IP ایڈریس کی وضاحت یا \"غیر فعال گیٹ وے\" چیک کریں."
 
 msgid "Specify VIP"
 msgstr "VIP واضح كریں"
@@ -4740,9 +4718,6 @@ msgstr "اسٹاك ماخذ ٹائپ"
 
 msgid "Stack Resources"
 msgstr "اسٹاك ماخذات"
-
-msgid "Stack Template"
-msgstr "اسٹاك ٹیمپلیٹ"
 
 msgid "Stack creation started."
 msgstr "اسٹاك كی تخلیق شروع كردی گئی۔"
@@ -5070,25 +5045,6 @@ msgid ""
 msgstr ""
 "ذیل كی چارٹ پروجیكٹ کے لئے کوٹہ کے سلسلے میں اس پروجیکٹ کی طرف سے استعمال "
 "کیا وسائل سے پتہ چلتا ہے."
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"ایک چوراہا کے رنگ اور آئکن ٹریفک منزل (کالم) کو ذریعہ (قطار) سے جائز ہے یا "
-"نہیں اس طرف اشارہ کرتا ہے.\n"
-"          چوراہے<i class=\"fa fa-random\"></i>   بٹن كلك كرنے پر ٹریفك رویے "
-"تبدیل كرنے والے اصول انسٹال كیے جائے گے۔<br/>\n"
-"\n"
-"          <b>نوٹ : </b> ٹریفك قوانین صرف ایك سمت پر اثر انداز كرتی ہے۔ ایك "
-"چوراہا کے اوپر معلق جب مخالف سمت میں خاكہ تیار كیا جاتا ہے۔.\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "اس کنٹینر کو ہٹایا نہیں جا سکتا ہے کیونکہ یہ خالی نہیں ہے."
@@ -6322,9 +6278,6 @@ msgstr "ڈیفالٹس اپ ڈیٹ کریں"
 msgid "Update Group"
 msgstr "گروپ كو اپ ڈیٹ كریں"
 
-msgid "Update Image"
-msgstr "امیج اپ ڈیٹ کریں"
-
 msgid "Update Metadata"
 msgstr "میٹا ڈیٹا کو اپ ڈیٹ کریں"
 
@@ -6629,9 +6582,6 @@ msgstr "ولیوم %(volume_name)s پر انسٹانس %(instance_name)s"
 
 msgid "Volume (Cinder)"
 msgstr "حجم (سڈر)"
-
-msgid "Volume Backup"
-msgstr "ولیوم بیك اپ"
 
 msgid "Volume Backup:"
 msgstr "ولیوم بیك اپ :"

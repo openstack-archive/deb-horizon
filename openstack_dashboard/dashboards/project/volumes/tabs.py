@@ -30,10 +30,21 @@ from openstack_dashboard.dashboards.project.volumes.volumes \
 
 
 class VolumeTableMixIn(object):
+    _has_more_data = False
+    _has_prev_data = False
+
     def _get_volumes(self, search_opts=None):
         try:
-            return api.cinder.volume_list(self.request,
-                                          search_opts=search_opts)
+            marker, sort_dir = self._get_marker()
+            volumes, self._has_more_data, self._has_prev_data = \
+                api.cinder.volume_list_paged(self.request, marker=marker,
+                                             search_opts=search_opts,
+                                             sort_dir=sort_dir, paginate=True)
+
+            if sort_dir == "asc":
+                volumes.reverse()
+
+            return volumes
         except Exception:
             exceptions.handle(self.request,
                               _('Unable to retrieve volume list.'))
@@ -79,7 +90,31 @@ class VolumeTableMixIn(object):
                 att['instance'] = instances.get(server_id, None)
 
 
-class VolumeTab(tabs.TableTab, VolumeTableMixIn):
+class PagedTableMixin(object):
+    def __init__(self, *args, **kwargs):
+        super(PagedTableMixin, self).__init__(*args, **kwargs)
+        self._has_prev_data = False
+        self._has_more_data = False
+
+    def has_prev_data(self, table):
+        return self._has_prev_data
+
+    def has_more_data(self, table):
+        return self._has_more_data
+
+    def _get_marker(self):
+        meta = self.table_classes[0]._meta
+        prev_marker = self.request.GET.get(meta.prev_pagination_param, None)
+        if prev_marker:
+            return prev_marker, "asc"
+        else:
+            marker = self.request.GET.get(meta.pagination_param, None)
+            if marker:
+                return marker, "desc"
+            return None, "desc"
+
+
+class VolumeTab(PagedTableMixin, tabs.TableTab, VolumeTableMixIn):
     table_classes = (volume_tables.VolumesTable,)
     name = _("Volumes")
     slug = "volumes_tab"
@@ -95,7 +130,7 @@ class VolumeTab(tabs.TableTab, VolumeTableMixIn):
         return volumes
 
 
-class SnapshotTab(tabs.TableTab):
+class SnapshotTab(PagedTableMixin, tabs.TableTab):
     table_classes = (vol_snapshot_tables.VolumeSnapshotsTable,)
     name = _("Volume Snapshots")
     slug = "snapshots_tab"
@@ -103,27 +138,28 @@ class SnapshotTab(tabs.TableTab):
     preload = False
 
     def get_volume_snapshots_data(self):
-        if api.base.is_service_enabled(self.request, 'volume'):
-            try:
-                snapshots = api.cinder.volume_snapshot_list(self.request)
-                volumes = api.cinder.volume_list(self.request)
-                volumes = dict((v.id, v) for v in volumes)
-            except Exception:
-                snapshots = []
-                volumes = {}
-                exceptions.handle(self.request, _("Unable to retrieve "
-                                                  "volume snapshots."))
-
-            for snapshot in snapshots:
-                volume = volumes.get(snapshot.volume_id)
-                setattr(snapshot, '_volume', volume)
-
-        else:
+        try:
+            marker, sort_dir = self._get_marker()
+            snapshots, self._has_more_data, self._has_prev_data = \
+                api.cinder.volume_snapshot_list_paged(
+                    self.request, paginate=True, marker=marker,
+                    sort_dir=sort_dir)
+            volumes = api.cinder.volume_list(self.request)
+            volumes = dict((v.id, v) for v in volumes)
+        except Exception:
             snapshots = []
+            volumes = {}
+            exceptions.handle(self.request, _("Unable to retrieve "
+                                              "volume snapshots."))
+
+        for snapshot in snapshots:
+            volume = volumes.get(snapshot.volume_id)
+            setattr(snapshot, '_volume', volume)
+
         return snapshots
 
 
-class BackupsTab(tabs.TableTab, VolumeTableMixIn):
+class BackupsTab(PagedTableMixin, tabs.TableTab, VolumeTableMixIn):
     table_classes = (backups_tables.BackupsTable,)
     name = _("Volume Backups")
     slug = "backups_tab"
@@ -135,7 +171,11 @@ class BackupsTab(tabs.TableTab, VolumeTableMixIn):
 
     def get_volume_backups_data(self):
         try:
-            backups = api.cinder.volume_backup_list(self.request)
+            marker, sort_dir = self._get_marker()
+            backups, self._has_more_data, self._has_prev_data = \
+                api.cinder.volume_backup_list_paged(
+                    self.request, marker=marker, sort_dir=sort_dir,
+                    paginate=True)
             volumes = api.cinder.volume_list(self.request)
             volumes = dict((v.id, v) for v in volumes)
             for backup in backups:

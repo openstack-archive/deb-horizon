@@ -109,7 +109,7 @@ class Column(html.HTMLElement):
 
             status_choices = (
                     ('enabled', True),
-                    ('true', True)
+                    ('true', True),
                     ('up', True),
                     ('active', True),
                     ('yes', True),
@@ -166,7 +166,7 @@ class Column(html.HTMLElement):
        column 'format')::
 
             helpText = {
-              'ARI':'Amazon Ramdisk Image'
+              'ARI':'Amazon Ramdisk Image',
               'QCOW2':'QEMU' Emulator'
               }
 
@@ -1685,9 +1685,7 @@ class DataTable(object):
         By default, this returns a ``name`` attribute from the given object,
         but this can be overridden to return other values.
         """
-        if hasattr(datum, 'name'):
-            return datum.name
-        return None
+        return getattr(datum, 'name', None)
 
     def has_prev_data(self):
         """Returns a boolean value indicating whether there is previous data

@@ -10,16 +10,17 @@
 # Fedor Tarasenko <feodor.tarasenko@gmail.com>, 2015. #zanata
 # Ilya Alekseyev <ilyaalekseyev@acm.org>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
+# Denis Gubanov <v12aml@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-12-30 06:40+0000\n"
-"Last-Translator: Antonio Kless <antoniok.spb@gmail.com>\n"
+"PO-Revision-Date: 2016-01-22 07:21+0000\n"
+"Last-Translator: Denis Gubanov <v12aml@gmail.com>\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
@@ -30,12 +31,6 @@ msgstr ""
 
 msgid "#"
 msgstr "#"
-
-msgid "(Max: 16Kb)"
-msgstr "(Максимум: 16Кб)"
-
-msgid "(Modified)"
-msgstr "(Изменено)"
 
 msgid "(None)"
 msgstr "(нет)"
@@ -231,9 +226,6 @@ msgstr ""
 "системе, вы можете использовать пользовательские скрипты для получения "
 "открытого ключа и добавления его к аккаунту пользователя."
 
-msgid "Customization Script"
-msgstr "Настройки скрипта"
-
 msgid "Danger"
 msgstr "Опасность"
 
@@ -428,13 +420,6 @@ msgstr ""
 "вставьте ваш \n"
 "        публичный SSH ключ в поле ниже."
 
-msgid ""
-"Key Pairs are how you login to your instance after it is launched.\n"
-"        Choose a key pair name you will recognize."
-msgstr ""
-"Связки ключей позволяют подключаться к инстансу после его запуска.\n"
-"        Выберите имя для связки ключей, которое вы сможете запомнить."
-
 msgid "Killed"
 msgstr "Убито"
 
@@ -443,9 +428,6 @@ msgstr "Запустить инстанс"
 
 msgid "Link"
 msgstr "Ссылка"
-
-msgid "Load script from a file"
-msgstr "Загрузить скрипт из файла"
 
 msgid "Manual"
 msgstr "Вручную"
@@ -498,9 +480,6 @@ msgstr "Нет доступных элементов"
 msgid "Number"
 msgstr "Число"
 
-msgid "OK"
-msgstr "ОК"
-
 msgid "Pagination"
 msgstr "Пагинация"
 
@@ -518,9 +497,6 @@ msgstr "Проверка политики не удалась."
 
 msgid "Private"
 msgstr "Частный"
-
-msgid "Private Key"
-msgstr "Закрытый ключ"
 
 msgid "Profile"
 msgstr "Профиль"
@@ -586,9 +562,6 @@ msgstr "Сохранить изменения"
 
 msgid "Saving"
 msgstr "Сохранение"
-
-msgid "Script size"
-msgstr "Размер скрипта"
 
 msgid "Security Groups"
 msgstr "Группы безопасности"
@@ -688,10 +661,6 @@ msgid "Success"
 msgstr "Успешно"
 
 #, python-format
-msgid "Successfully created key pair %(name)s."
-msgstr "Успешно создана связка ключей %(name)s."
-
-#, python-format
 msgid "Successfully imported key pair %(name)s."
 msgstr "Успешно импортирована связка ключей %(name)s."
 
@@ -724,25 +693,6 @@ msgid ""
 "The instance count must not exceed your quota available of "
 "%(maxInstanceCount)s instances"
 msgstr "Количество инстансов не должно превышать %(maxInstanceCount)s "
-
-#, python-format
-msgid ""
-"The selected image source requires a flavor with at least %(minDisk)s GB of "
-"root disk. Select a flavor with a larger root disk or use a different image "
-"source."
-msgstr ""
-"Выбранный образ требует тип инстанса минимум с корневым диском размером не "
-"менее %(minDisk)s GB. Выберите тип инстанса с большим размером корневого "
-"диска или используйте другой источник для образа."
-
-#, python-format
-msgid ""
-"The selected image source requires a flavor with at least %(minRam)s MB of "
-"RAM. Select a flavor with more RAM or use a different image source."
-msgstr ""
-"Выбранный образ требует тип инстанса минимум с %(minRam)s MB ОЗУ. Выберите "
-"тип инстанса с большим размером ОЗУ или используйте другой источник для "
-"образа."
 
 msgid "The status indicates whether the network has an active connection."
 msgstr "Статус показывает, есть ли активные подключения в данной сети."
@@ -789,8 +739,12 @@ msgstr ""
 "Пожалуйста, выберите тип инстанса с меньшим количеством vCPU или уменьшите "
 "количество инстансов."
 
-msgid "This is your new key pair. Copy this information and keep it secure."
-msgstr "Это новая связка ключей. Скопируйте эту информацию в безопасное место."
+msgid ""
+"To view source code, hover over a section, then click the <a><span></span></"
+"a> button in the top right of that section."
+msgstr ""
+"Для просмотра исходного кода наведите курсор на блок и нажмите <a><span></"
+"span></a> кнопку в правом верхнем углу секции."
 
 msgid "Total Disk"
 msgstr "Объем диска"
@@ -851,9 +805,6 @@ msgstr "Не удалось удалить домен."
 
 msgid "Unable to delete the domains."
 msgstr "Не удалось удалить домены."
-
-msgid "Unable to delete the image with id: "
-msgstr "Не удалось удалить образ с id:"
 
 msgid "Unable to delete the project."
 msgstr "Не удалось удалить проект."
@@ -1110,9 +1061,6 @@ msgstr ""
 
 msgid "Yes"
 msgstr "Да"
-
-msgid "bytes"
-msgstr "байты"
 
 msgid "{$ row['provider:network_type'] $}"
 msgstr "{$ row['provider:network_type'] $}"

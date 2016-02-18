@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1767,10 +1767,6 @@ msgstr "साबि जराखौ डाउनल'ड खालाम"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "साबि जरा &quot;%(keypair_name)s&quot; खौ डाउनल'ड खालाम"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "%s बिदिन्थि रोखोमनि समसिमा (openstack फ्लेभार)"
 
 msgid "EC2 Access Key"
 msgstr "EC2 हाबनाय साबि"
@@ -4106,13 +4102,6 @@ msgstr "राइजो-राजा URL"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU एमिउलेटर"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS Spec ग्राहक"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "QoS Spec ग्राहकआ दानि ग्राहक बेसेन निफ्राय आलादा जाथारनांगोन।"
-
 msgid "QoS Spec to be associated"
 msgstr "थाफाहोनो गोनां QoS Spec"
 
@@ -4493,10 +4482,6 @@ msgid "Saved spec \"%s\"."
 msgstr "spec \"%s\" खौ थिना दोनबाय।"
 
 #, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "%(data_type)s नि थि खोमोरनाय"
-
-#, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr "बिदिन्थि \"%s\" नि थि फिन महर"
 
@@ -4869,9 +4854,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "दिहुनगासिनो दं"
 
-msgid "Spec"
-msgstr "Spec"
-
 msgid ""
 "Specifies how IPv6 addresses and additional information are configured. We "
 "can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
@@ -4885,9 +4867,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "\"नेटवार्क थं\"खौ थिक खालाम"
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "गेटवेनि IP थंखौ थिक खालाम एबा \"गेटवेखौ लोरबां खालाम\"खौ आनजाद खालाम।"
 
 msgid "Specify VIP"
 msgstr "VIPखौ थिक खालाम"
@@ -4936,9 +4915,6 @@ msgstr "स्टेक सम्पद रोखोम"
 
 msgid "Stack Resources"
 msgstr "स्टेक सम्पद"
-
-msgid "Stack Template"
-msgstr "स्टेक टेमप्लेट"
 
 msgid "Stack creation started."
 msgstr "स्टेक सोरजिनाया जागायबाय"
@@ -5263,25 +5239,6 @@ msgid ""
 "The chart below shows the resources used by this project in relation to the "
 "project's quotas."
 msgstr "गाहायनि सार्टआ बे प्रजेक्ट आरो प्रजेक्टनि क'टाजों बाहायजानाय सम्पदखौ दिन्थियो।"
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"ट्राफिकखौ फुंखा (सारि) निफ्राय थांखि (खाम्फा) सिम गनायथि होनाय जायो ना जाया "
-"दानलायनाय (intersection)नि गाब आरो आइकनआ दिन्थियो।\n"
-"      दानलायनाय (intersection)आव <i class=\"fa fa-random\"></i> बुथामखौ क्लिक "
-"खालामोब्ला ट्राफिक बेब'हारआव थांनो नियमखौ इनष्टल खालामगोन।<br/>\n"
-"\n"
-"     <b>नायनो गोनां:</b>नियमआ ट्राफिकनि मोनसे दिकखौल' गोहोम खोख्लैयो। दानलायनाय "
-"(intersection) आव थांनाय समाव उल्था दिकखौ दिन्थियो।\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "कन्टेनारखौ खोमोरनो हाया मानोना बेयो लांदां नङा।"
@@ -6512,9 +6469,6 @@ msgstr "आपडेट डिफल्ट"
 msgid "Update Group"
 msgstr "हानजाखौ आपडेट खालाम"
 
-msgid "Update Image"
-msgstr "मुसुखा आपडेट खालाम"
-
 msgid "Update Metadata"
 msgstr "मेटाडाटाखौ आपडेट खालाम"
 
@@ -6823,9 +6777,6 @@ msgstr "बिदिन्थि %(instance_name)s आव भलिउम %(volu
 
 msgid "Volume (Cinder)"
 msgstr "भलिउम (सिन्डार)"
-
-msgid "Volume Backup"
-msgstr "भलिउम बेकआप"
 
 msgid "Volume Backup:"
 msgstr "भलिउम बेकआप:"

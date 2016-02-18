@@ -36,6 +36,7 @@ from novaclient.v2 import security_groups as nova_security_groups
 from novaclient.v2 import servers as nova_servers
 
 from horizon import conf
+from horizon import exceptions as horizon_exceptions
 from horizon.utils import functions as utils
 from horizon.utils.memoized import memoized  # noqa
 
@@ -121,7 +122,8 @@ class Server(base.APIResourceWrapper):
             try:
                 image = glance.image_get(self.request, self.image['id'])
                 return image.name
-            except glance_exceptions.ClientException:
+            except (glance_exceptions.ClientException,
+                    horizon_exceptions.ServiceCatalogException):
                 return _("-")
 
     @property
@@ -284,12 +286,16 @@ class SecurityGroupManager(network_base.SecurityGroupManager):
                     ip_protocol=None, from_port=None, to_port=None,
                     cidr=None, group_id=None):
         # Nova Security Group API does not use direction and ethertype fields.
-        sg = self.client.security_group_rules.create(parent_group_id,
-                                                     ip_protocol,
-                                                     from_port,
-                                                     to_port,
-                                                     cidr,
-                                                     group_id)
+        try:
+            sg = self.client.security_group_rules.create(parent_group_id,
+                                                         ip_protocol,
+                                                         from_port,
+                                                         to_port,
+                                                         cidr,
+                                                         group_id)
+        except nova_exceptions.BadRequest:
+            raise horizon_exceptions.Conflict(
+                _('Security group rule already exists.'))
         return SecurityGroupRule(sg)
 
     def rule_delete(self, security_group_rule_id):
@@ -483,11 +489,13 @@ def server_serial_console(request, instance_id, console_type='serial'):
 
 
 def flavor_create(request, name, memory, vcpu, disk, flavorid='auto',
-                  ephemeral=0, swap=0, metadata=None, is_public=True):
+                  ephemeral=0, swap=0, metadata=None, is_public=True,
+                  rxtx_factor=1):
     flavor = novaclient(request).flavors.create(name, memory, vcpu, disk,
                                                 flavorid=flavorid,
                                                 ephemeral=ephemeral,
-                                                swap=swap, is_public=is_public)
+                                                swap=swap, is_public=is_public,
+                                                rxtx_factor=rxtx_factor)
     if (metadata):
         flavor_extra_set(request, flavor.id, metadata)
     return flavor

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1760,10 +1760,6 @@ msgstr "કી પેર(જોડ) ડાઉનલોડ કરો"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "કી પેર(જોડ) ડાઉનલોડ કરો  &quot;%(keypair_name)s&quot;"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "ઉદાહરણના પ્રકાર %s ની અવધિ (ઓપનસ્ટેક ફ્લેવર)"
 
 msgid "EC2 Access Key"
 msgstr "EC2 ઍક્સેસ કી"
@@ -4083,13 +4079,6 @@ msgstr "જાહેર URL"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU ઇમ્યુલેટર"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS સ્પેક ઉપભોક્તા"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "QoS સ્પેક ઉપભોક્તા મૂલ્ય વર્તમાન ઉપભોક્તા મૂલ્ય કરતાં અલગ હોવા જ જોઈએ."
-
 msgid "QoS Spec to be associated"
 msgstr "QoS સ્પેક સંકળાયેલ હોઈ"
 
@@ -4469,10 +4458,6 @@ msgid "Saved spec \"%s\"."
 msgstr "સાચવેલા સ્પેક \"% s\"."
 
 #, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "%(data_type)s  શેડ્યુલ કરેલ કાઢી નાંખવામા આવ્યુ"
-
-#, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr " \"%s\" ઇન્સ્ટન્સના માપ બદલવા શેડ્યુલ કરેલ."
 
@@ -4844,9 +4829,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "વિસ્તરતા"
 
-msgid "Spec"
-msgstr "સ્પેક"
-
 msgid ""
 "Specifies how IPv6 addresses and additional information are configured. We "
 "can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
@@ -4860,9 +4842,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "સ્પષ્ટ કરો \"નેટવર્ક સરનામા\""
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "ગેટવે IP સરનામા સ્પષ્ટ કરો અથવા \"અક્ષમ ગેટવે \" તપાસો."
 
 msgid "Specify VIP"
 msgstr "VIP સ્પષ્ટ કરો"
@@ -4911,9 +4890,6 @@ msgstr "સ્ટેક સંસાધન પ્રકાર"
 
 msgid "Stack Resources"
 msgstr "સ્ટેક સંસાધનો"
-
-msgid "Stack Template"
-msgstr "સ્ટેક ટેમ્પલેટ"
 
 msgid "Stack creation started."
 msgstr "સ્ટેક બનાવવાનું શરૂ કર્યું."
@@ -5240,25 +5216,6 @@ msgid ""
 "project's quotas."
 msgstr ""
 "નીચે ચાર્ટ પ્રોજેક્ટના ક્વોટા સંબંધમાં આ પ્રોજેક્ટ દ્વારા ઉપયોગમાં લેવાતા સ્રોતો બતાવે છે."
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"આંતરછેદના રંગ અને ચિહ્ન ટ્રાફિક ગંતવ્ય માટે સ્રોત (પંક્તિ) પાસેથી પરવાનગી છે કે નહીં તે સૂચવે છે "
-"(કોલમ).\n"
-"      <i class=\"fa fa-random\"></i> ટ્રાફિક વર્તણૂક સ્વિચ કરવા માટે આંતરછેદ નિયમ "
-"સ્થાપિત કરશે બટન કિલક કરીને.<br/>\n"
-"\n"
-"  <b> નોંધ: </ b> નિયમો માત્ર ટ્રાફિકની એક જ દિશામાં અસર કરે છે.  વિરુદ્ધ દિશામાં "
-"રૂપરેખા આપવામાં આવી છે જ્યારે આંતરછેદ પર ફેલાયેલ હોય ત્યારે.\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "કન્ટેનર કાઢી શકાતા નથી કારણકે તે ખાલી નથી."
@@ -6491,9 +6448,6 @@ msgstr "મૂળભૂતોને સુધારો"
 msgid "Update Group"
 msgstr "જૂથ અદ્યતન કરો"
 
-msgid "Update Image"
-msgstr "ઈમેજ સુધારો"
-
 msgid "Update Metadata"
 msgstr "મેટાડેટા સુધારો"
 
@@ -6801,9 +6755,6 @@ msgstr "વોલ્યુમ %(volume_name)s પર ઇન્સ્ટન્સ
 
 msgid "Volume (Cinder)"
 msgstr "વોલ્યુમ (સિન્ડેર)"
-
-msgid "Volume Backup"
-msgstr "વોલ્યુમ બેકઅપ"
 
 msgid "Volume Backup:"
 msgstr "વોલ્યુમ બેકઅપ:"

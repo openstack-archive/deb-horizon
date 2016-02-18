@@ -17,7 +17,7 @@
 # 颜海峰 <yanheven@gmail.com>, 2015
 # Daisy <guoyingc@cn.ibm.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
-# Xu Yang <xuyang@cn.fujitsu.com>, 2015. #zanata
+# Xu Yang <yizhongchuanqi@163.com>, 2015. #zanata
 # Yang Hongyang <hongyang.yang@easystack.cn>, 2015. #zanata
 # yan haifeng <yanheven@qq.com>, 2015. #zanata
 # zhangjingwen <zhangjingwen@cn.fujitsu.com>, 2015. #zanata
@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1812,11 +1812,6 @@ msgstr "为QoS规格\"%(qos_spec_name)s\"创建新\"spec\"（规格）的键-值
 msgid "Create a new network for any project as you need."
 msgstr "根据需要创建新网络"
 
-msgid ""
-"Create a new network. In addition, a subnet associated with the network can "
-"be created in the next panel."
-msgstr "创建新网络。另外，关联到网络的子网在下一面板中被创建。"
-
 msgid "Create a new role."
 msgstr "创建新角色。"
 
@@ -2690,10 +2685,6 @@ msgstr "下载密钥对"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "下载密钥对&quot;%(keypair_name)s&quot;"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "实例类型%s (openstack flavor)的持续时间"
 
 msgid "EC2 Access Key"
 msgstr "EC2访问码"
@@ -4775,9 +4766,6 @@ msgstr "网络代理"
 msgid "Network Details"
 msgstr "网络详情"
 
-msgid "Network Details: {{ network.name }}"
-msgstr "网络详情： {{ network.name }}"
-
 msgid "Network ID"
 msgstr "网络ID"
 
@@ -5089,11 +5077,6 @@ msgstr "流入虚拟机网络接口的包数目"
 
 msgid "Number of instances to launch."
 msgstr "启动云主机的个数"
-
-msgid ""
-"Number of items to show per page (applies to the pages that have API "
-"supported pagination)"
-msgstr "每页显示的项目数(将会应用到支持分页功能的API中)"
 
 msgid "Number of log lines to be shown per instance"
 msgstr "每个实例所显示的日志行数"
@@ -5626,13 +5609,6 @@ msgstr "公共URL"
 
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU 模拟器"
-
-msgid "QoS Spec Consumer"
-msgstr "QoS规格消费者"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "QoS规格消费者的值必须与当前消费者不同。"
 
 #, python-format
 msgid "QoS Spec name \"%s\" already exists."
@@ -6173,10 +6149,6 @@ msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "保存中"
 
-#, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "已计划删除%(data_type)s"
-
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "已安排防火墙的删除"
@@ -6716,9 +6688,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "孵化中"
 
-msgid "Spec"
-msgstr "规格"
-
 msgid "Spec: {{ qos_spec_name }}"
 msgstr "说明书: {{ qos_spec_name }}"
 
@@ -6740,14 +6709,6 @@ msgstr "指定该存储卷可以用于启动实例"
 
 msgid "Specify \"Network Address\""
 msgstr "指定“网络地址”"
-
-msgid ""
-"Specify \"Network Address\", \"Address pool\" or clear \"Create Subnet\" "
-"checkbox."
-msgstr "指定\"网络地址\",\"地址资源池\"或者清空\"创建子网\"的复选框。"
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "填写网关ip或者选择\"禁用网关\""
 
 msgid "Specify VIP"
 msgstr "指定VIP"
@@ -6808,9 +6769,6 @@ msgstr "栈资源类型"
 
 msgid "Stack Resources"
 msgstr "栈资源"
-
-msgid "Stack Template"
-msgstr "栈模板"
 
 msgid "Stack creation started."
 msgstr "栈创建开始。"
@@ -7271,24 +7229,6 @@ msgid ""
 "project's quotas."
 msgstr ""
 "详细说明启动云主机的情况,下面的图表显示此项目所使用的资源和关联的项目配额。"
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"交叉点的颜色和图标指示了从来源(行)到目标(列)的流量是否允许。\n"
-"点击交叉点的<i class=\"fa fa-random\"></i>按钮，将安装一个规则，用于改变流量"
-"行为。<br/>\n"
-"\n"
-"<b>注意：</b>规则只影响一个方向的流量。当鼠标悬停在交叉点上时，反方向的流量行"
-"为将被展示。\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "由于此容器非空，因此不能被删除。"
@@ -8858,9 +8798,6 @@ msgstr "更新失败"
 msgid "Update Group"
 msgstr "更新组"
 
-msgid "Update Image"
-msgstr "上传镜像"
-
 msgctxt "current status of stack"
 msgid "Update In Progress"
 msgstr "正在更新"
@@ -9211,9 +9148,6 @@ msgstr "实例%(instance_name)s的附加卷%(volume_name)s"
 
 msgid "Volume (Cinder)"
 msgstr "云硬盘 (Cinder)"
-
-msgid "Volume Backup"
-msgstr "卷备份"
 
 msgid "Volume Backup:"
 msgstr "卷备份:"

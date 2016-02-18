@@ -14,11 +14,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-12 03:53+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-01-12 01:08+0000\n"
+"PO-Revision-Date: 2016-02-01 12:53+0000\n"
 "Last-Translator: Shu Muto <shu-mutou@rf.jp.nec.com>\n"
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
@@ -33,12 +33,6 @@ msgstr "#"
 msgid "%s instance launched."
 msgid_plural "%s instances launched."
 msgstr[0] "インスタンスを %s 個起動しました。"
-
-msgid "(Max: 16Kb)"
-msgstr "(最大 16 Kb)"
-
-msgid "(Modified)"
-msgstr "(変更済み)"
 
 msgid "(None)"
 msgstr "(なし)"
@@ -405,9 +399,6 @@ msgstr ""
 "で  <samp>cloud-init</samp> をインストールできない場合には、カスタムスクリプ"
 "トを使用して公開鍵を取得し、ユーザーアカウントに追加することができます。"
 
-msgid "Customization Script"
-msgstr "カスタマイズスクリプト"
-
 msgid "Danger"
 msgstr "危険"
 
@@ -737,13 +728,6 @@ msgstr ""
 "自分で認識できるキーペア名を付けて、\n"
 "SSH 公開鍵を指定された欄に貼り付けてください。"
 
-msgid ""
-"Key Pairs are how you login to your instance after it is launched.\n"
-"        Choose a key pair name you will recognize."
-msgstr ""
-"キーペアはインスタンスを起動した後でインスタンスへのログインに使用します。\n"
-"自分で認識できるキーペア名を指定してください。"
-
 msgid "Killed"
 msgstr "強制終了"
 
@@ -777,8 +761,8 @@ msgstr "グループ一覧のアイテムの見出し"
 msgid "List groups"
 msgstr "グループの一覧表示"
 
-msgid "Load script from a file"
-msgstr "ファイルからのスクリプト読み込み"
+msgid "Loading"
+msgstr "読み込み中"
 
 msgid "Look, I'm in a large well!"
 msgstr "見て、私は大きいウェルの中にいるよ！"
@@ -800,6 +784,9 @@ msgstr "メッセージ <span>3</span>"
 
 msgid "Metadata"
 msgstr "メタデータ"
+
+msgid "Metadata Help"
+msgstr "メタデータのヘルプ"
 
 msgid "Middle"
 msgstr "中央"
@@ -869,9 +856,6 @@ msgstr "利用できるアイテムがありません。"
 
 msgid "Number"
 msgstr "数字"
-
-msgid "OK"
-msgstr "OK"
 
 msgid "Older"
 msgstr "古い"
@@ -955,9 +939,6 @@ msgstr "主要"
 msgid "Private"
 msgstr "プライベート"
 
-msgid "Private Key"
-msgstr "秘密鍵"
-
 msgid "Profile"
 msgstr "プロファイル"
 
@@ -1036,9 +1017,6 @@ msgstr "変更の保存"
 
 msgid "Saving"
 msgstr "保存中"
-
-msgid "Script size"
-msgstr "スクリプトサイズ"
 
 msgid "Search"
 msgstr "検索"
@@ -1171,10 +1149,6 @@ msgid "Success"
 msgstr "成功"
 
 #, python-format
-msgid "Successfully created key pair %(name)s."
-msgstr "キーペア %(name)s を正常に作成できました。"
-
-#, python-format
 msgid "Successfully imported key pair %(name)s."
 msgstr "キーペア %(name)s を正常に取り込みました"
 
@@ -1230,25 +1204,6 @@ msgstr ""
 "インスタンス数は、クォータ内で利用できる %(maxInstanceCount)s を上回ってはい"
 "けません。"
 
-#, python-format
-msgid ""
-"The selected image source requires a flavor with at least %(minDisk)s GB of "
-"root disk. Select a flavor with a larger root disk or use a different image "
-"source."
-msgstr ""
-"選択したイメージソースには、ルートディスクが少なくとも %(minDisk)s  GB あるフ"
-"レーバーが必要です。ルートディスクがより大きいフレーバーを選択するか、別のイ"
-"メージソースを使ってください。"
-
-#, python-format
-msgid ""
-"The selected image source requires a flavor with at least %(minRam)s MB of "
-"RAM. Select a flavor with more RAM or use a different image source."
-msgstr ""
-"選択したイメージソースでは、メモリー少なくとも %(minRam)s  MB あるフレーバー"
-"が必要です。メモリーがより大きいフレーバーを選択するか、別のイメージソースを"
-"使ってください。"
-
 msgid "The status indicates whether the network has an active connection."
 msgstr "ステータスは、ネットワークにアクティブな接続があるかを示します。"
 
@@ -1301,10 +1256,6 @@ msgid ""
 msgstr ""
 "これは、シンプルな突出したユニットで、注目のコンテンツや情報に特別な注意を喚"
 "起するためのシンプルなジャンボトロンスタイルのコンポーネントです。"
-
-msgid "This is your new key pair. Copy this information and keep it secure."
-msgstr ""
-"以下が新しいキーペアです。この情報をコピーして、安全に保管してください。"
 
 msgid "Time"
 msgstr "時刻"
@@ -1393,9 +1344,6 @@ msgstr "ドメインを削除できません。"
 
 msgid "Unable to delete the domains."
 msgstr "ドメインを削除できません。"
-
-msgid "Unable to delete the image with id: "
-msgstr "次の ID のイメージを削除できません: "
 
 msgid "Unable to delete the project."
 msgstr "プロジェクトを削除できません。"
@@ -1548,6 +1496,9 @@ msgstr "プロジェクトを取得できません。"
 msgid "Unable to retrieve the projects."
 msgstr "プロジェクト一覧を取得できません。"
 
+msgid "Unable to retrieve the resource types."
+msgstr "リソース種別の一覧を取得できません。"
+
 msgid "Unable to retrieve the role."
 msgstr "ロールを取得できません。"
 
@@ -1682,6 +1633,17 @@ msgstr "はい"
 msgid "You are not allowed to delete images: %s"
 msgstr "イメージの削除は許可されていません: %s"
 
+msgid ""
+"You can add arbitrary metadata to your instance so that you can more easily "
+"identify it among other running instances. Metadata is a collection of key-"
+"value pairs associated with an instance. The maximum length for each "
+"metadata key and value is 255 characters."
+msgstr ""
+"他の実行中のインスタンスと区別しやすくするために、インスタンスにメタデータを"
+"追加することができます。メタデータはインスタンスに関連付けられたキーとバ"
+"リューのペアのコレクションです。メタデータのキーとバリューの最大長は、それぞ"
+"れ 255 文字です。"
+
 #, python-format
 msgid ""
 "You have selected \"%s\". Please confirm your selection. Deleted images are "
@@ -1689,9 +1651,6 @@ msgid ""
 msgstr ""
 "\"%s\" を選択しました。選択内容を確認してください。削除されたイメージは元に戻"
 "せません。"
-
-msgid "bytes"
-msgstr "バイト"
 
 #, python-format
 msgid "selected \"%s\""

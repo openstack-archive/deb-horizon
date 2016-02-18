@@ -1,8 +1,15 @@
 @import "icons";
+@import "components/context_selection";
+@import "components/messages";
 @import "components/hamburger";
 @import "components/magic_search";
+@import "components/navbar";
+@import "components/selection_menu";
 @import "components/sidebar";
 
+.login .splash-logo {
+  width: 215px;
+}
 
 // General Layout Changes
 #sidebar {
@@ -11,14 +18,9 @@
 }
 
 #content_body {
-  padding-top: $navbar-height;
   transition: padding-left $sidebar-animation;
   display: block;
-  padding-left: $sidebar-width + $content-body-padding;
-
-  @media (max-width: $screen-lg) {
-    padding-left: $content-body-padding;
-  }
+  padding-left: $sidebar-width;
 }
 
 #main_content {
@@ -28,11 +30,18 @@
 }
 
 
-// The top nav is fixed, even when the page scrolls
-.topbar {
-  width: 100%;
-  position: fixed;
-  z-index: 4;
+// Border radius is unattractive here
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-brand {
+  svg {
+    fill: $navbar-inverse-link-active-color;
+    height: $navbar-height - $padding-small-horizontal*2;
+    margin-top: $padding-small-horizontal;
+    display: inline-block;
+  }
 }
 
 

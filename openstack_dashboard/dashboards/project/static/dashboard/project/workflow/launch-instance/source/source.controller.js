@@ -115,6 +115,20 @@
       }
     };
 
+    var diskFormats = [
+      { label: gettext('AKI'), key: 'aki' },
+      { label: gettext('AMI'), key: 'ami' },
+      { label: gettext('ARI'), key: 'ari' },
+      { label: gettext('Docker'), key: 'docker' },
+      { label: gettext('ISO'), key: 'iso' },
+      { label: gettext('OVA'), key: 'ova' },
+      { label: gettext('QCOW2'), key: 'qcow2' },
+      { label: gettext('RAW'), key: 'raw' },
+      { label: gettext('VDI'), key: 'vdi' },
+      { label: gettext('VHD'), key: 'vhd' },
+      { label: gettext('VMDK'), key: 'vmdk' }
+    ];
+
     // Mapping for dynamic table headers
     var tableHeadCellsMap = {
       image: [
@@ -156,7 +170,8 @@
         { key: 'name', classList: ['hi-light'] },
         { key: 'updated_at', filter: dateFilter, filterArg: 'short' },
         { key: 'size', filter: bytesFilter, classList: ['number'] },
-        { key: 'disk_format', style: { 'text-transform': 'uppercase' } },
+        { key: 'disk_format', style: { 'text-transform': 'uppercase' },
+          filter: diskFormatFilter, filterRawData: true },
         { key: 'is_public', filter: decodeFilter, filterArg: _visibilitymap,
           style: { 'text-transform': 'capitalize' } }
       ],
@@ -164,7 +179,8 @@
         { key: 'name', classList: ['hi-light'] },
         { key: 'updated_at', filter: dateFilter, filterArg: 'short' },
         { key: 'size', filter: bytesFilter, classList: ['number'] },
-        { key: 'disk_format', style: { 'text-transform': 'uppercase' } },
+        { key: 'disk_format', style: { 'text-transform': 'uppercase' },
+          filter: diskFormatFilter, filterRawData: true },
         { key: 'is_public', filter: decodeFilter, filterArg: _visibilitymap,
           style: { 'text-transform': 'capitalize' } }
       ],
@@ -182,6 +198,98 @@
         { key: 'size', filter: gbFilter, classList: ['number'] },
         { key: 'created_at', filter: dateFilter, filterArg: 'short' },
         { key: 'status', style: { 'text-transform': 'capitalize' } }
+      ]
+    };
+
+    /**
+     * Filtering - client-side MagicSearch
+     */
+    ctrl.sourceFacets = [];
+
+    // All facets for source step
+    var facets = {
+      created: {
+        label: gettext('Created'),
+        name: 'created_at',
+        singleton: true
+      },
+      description: {
+        label: gettext('Description'),
+        name: 'description',
+        singleton: true
+      },
+      encrypted: {
+        label: gettext('Encrypted'),
+        name: 'encrypted',
+        singleton: true,
+        options: [
+          { label: gettext('Yes'), key: 'true' },
+          { label: gettext('No'), key: 'false' }
+        ]
+      },
+      name: {
+        label: gettext('Name'),
+        name: 'name',
+        singleton: true
+      },
+      size: {
+        label: gettext('Size'),
+        name: 'size',
+        singleton: true
+      },
+      status: {
+        label: gettext('Status'),
+        name: 'status',
+        singleton: true,
+        options: [
+          { label: gettext('Available'), key: 'available' },
+          { label: gettext('Creating'), key: 'creating' },
+          { label: gettext('Deleting'), key: 'deleting' },
+          { label: gettext('Error'), key: 'error' },
+          { label: gettext('Error Deleting'), key: 'error_deleting' }
+        ]
+      },
+      type: {
+        label: gettext('Type'),
+        name: 'disk_format',
+        singleton: true,
+        options: diskFormats
+      },
+      updated: {
+        label: gettext('Updated'),
+        name: 'updated_at',
+        singleton: true
+      },
+      visibility: {
+        label: gettext('Visibility'),
+        name: 'is_public',
+        singleton: true,
+        options: [
+          { label: gettext('Public'), key: 'true' },
+          { label: gettext('Private'), key: 'false' }
+        ]
+      },
+      volumeType: {
+        label: gettext('Type'),
+        name: 'volume_image_metadata.disk_format',
+        singleton: true,
+        options: diskFormats
+      }
+    };
+
+    // Mapping for filter facets based on boot source type
+    var sourceTypeFacets = {
+      image: [
+        facets.name, facets.updated, facets.size, facets.type, facets.visibility
+      ],
+      snapshot: [
+        facets.name, facets.updated, facets.size, facets.type, facets.visibility
+      ],
+      volume: [
+        facets.name, facets.description, facets.size, facets.volumeType, facets.encrypted
+      ],
+      volume_snapshot: [
+        facets.name, facets.description, facets.size, facets.created, facets.status
       ]
     };
 
@@ -251,6 +359,7 @@
       updateHelpText(key);
       updateTableHeadCells(key);
       updateTableBodyCells(key);
+      updateFacets(key);
     }
 
     function updateDataSource(key, preSelection) {
@@ -277,6 +386,11 @@
 
     function updateTableBodyCells(key) {
       refillArray(ctrl.tableBodyCells, tableBodyCellsMap[key]);
+    }
+
+    function updateFacets(key) {
+      refillArray(ctrl.sourceFacets, sourceTypeFacets[key]);
+      $scope.$broadcast('facetsChanged');
     }
 
     function refillArray(arrayToRefill, contentArray) {

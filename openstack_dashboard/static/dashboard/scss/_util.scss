@@ -2,8 +2,11 @@
 
 .row .horizontal-center,
 .horizontal-center {
-  float: none;
-  margin: 0 auto;
+  @include horizontal-center();
+}
+
+.vertical-center {
+  @include vertical-center();
 }
 
 /* new clearfix */
@@ -47,4 +50,11 @@ input::-ms-clear, input::-ms-reveal {
 .word-wrap {
   width: 100%;
   word-wrap: break-word;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }

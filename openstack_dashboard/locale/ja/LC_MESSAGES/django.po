@@ -13,16 +13,17 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Shu Muto <shu-mutou@rf.jp.nec.com>, 2015. #zanata
 # Yuko Katabami <yukokatabami@gmail.com>, 2015. #zanata
+# Mie Yamamoto <myamamot@redhat.com>, 2016. #zanata
 # Shu Muto <shu-mutou@rf.jp.nec.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-12 03:53+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-01-12 01:03+0000\n"
+"PO-Revision-Date: 2016-02-01 12:52+0000\n"
 "Last-Translator: Shu Muto <shu-mutou@rf.jp.nec.com>\n"
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
@@ -1553,6 +1554,9 @@ msgstr "コード"
 msgid "Cold Migrate"
 msgstr "コールドマイグレーション"
 
+msgid "Comma-delimited list of valid remote IDs from the identity provider."
+msgstr "認証プロバイダーからの有効な接続相手 ID のコンマ区切りリスト。"
+
 msgid "Comma-separated key=value pairs"
 msgstr "コンマ区切りの key=value ペア"
 
@@ -2063,10 +2067,10 @@ msgstr "任意のプロジェクトに新しいネットワークを作成でき
 
 msgid ""
 "Create a new network. In addition, a subnet associated with the network can "
-"be created in the next panel."
+"be created in the following steps of this wizard."
 msgstr ""
 "新しいネットワークを作成できます。合わせて、このネットワークに割り当てるサブ"
-"ネットを次のパネルで作成できます。"
+"ネットをこのウィザードの次のステップで作成できます。"
 
 msgid "Create a new role."
 msgstr "新しいロールを作成します。"
@@ -2156,6 +2160,19 @@ msgstr "ボリュームの譲渡 \"%s\" を作成しました。"
 
 msgid "Creates a router with specified parameters."
 msgstr "指定したパラメーターでルーターを作成します。"
+
+msgid ""
+"Creates a subnet associated with the network. You need to enter a valid "
+"\"Network Address\" and \"Gateway IP\". If you did not enter the \"Gateway IP"
+"\", the first value of a network will be assigned by default. If you do not "
+"want gateway please check the \"Disable Gateway\" checkbox. Advanced "
+"configuration is available by clicking on the \"Subnet Details\" tab."
+msgstr ""
+"ネットワークに割り当てられたサブネットを作成できます。有効な「ネットワークア"
+"ドレス」と「ゲートウェイ IP」を入力する必要があります。「ゲートウェイ IP」を"
+"入力しなかった場合、デフォルトでネットワークの最初の値が設定されます。ゲート"
+"ウェイが不要な場合は、「ゲートウェイなし」チェックボックスをチェックしてくだ"
+"さい。「サブネットの詳細」タブで高度な設定ができます。"
 
 msgid "Creating"
 msgstr "作成中"
@@ -2485,6 +2502,10 @@ msgid "Delete Security Group"
 msgid_plural "Delete Security Groups"
 msgstr[0] "セキュリティーグループの削除"
 
+msgid "Delete Spec"
+msgid_plural "Delete Specs"
+msgstr[0] "スペックの削除"
+
 msgid "Delete Stack"
 msgid_plural "Delete Stacks"
 msgstr[0] "スタックの削除"
@@ -2629,6 +2650,10 @@ msgstr[0] "ルールを削除しました"
 msgid "Deleted Security Group"
 msgid_plural "Deleted Security Groups"
 msgstr[0] "セキュリティーグループを削除しました"
+
+msgid "Deleted Spec"
+msgid_plural "Deleted Specs"
+msgstr[0] "スペックを削除しました"
 
 msgid "Deleted Stack"
 msgid_plural "Deleted Stacks"
@@ -2990,10 +3015,6 @@ msgstr "OpenStack RC v3 ファイルのダウンロード"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "キーペア &quot;%(keypair_name)s&quot; のダウンロード"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "インスタンスタイプ %s (openstack フレーバー) の存在期間"
 
 msgid "EC2 Access Key"
 msgstr "EC2 アクセスキー"
@@ -4275,6 +4296,9 @@ msgstr "識別子の種別"
 msgid "Identity"
 msgstr "ユーザー管理"
 
+msgid "Identity Provider ID"
+msgstr "識別情報プロバイダー ID"
+
 msgid "Identity service does not allow editing user data."
 msgstr "Identity Service ではユーザーデータの編集が許可されていません。"
 
@@ -5189,9 +5213,6 @@ msgstr "ネットワークエージェント"
 msgid "Network Details"
 msgstr "ネットワークの詳細"
 
-msgid "Network Details: {{ network.name }}"
-msgstr "ネットワークの詳細: {{ network.name }}"
-
 msgid "Network ID"
 msgstr "ネットワーク ID"
 
@@ -5515,11 +5536,13 @@ msgstr "VM インタフェースでのネットワーク受信パケット数"
 msgid "Number of instances to launch."
 msgstr "起動するインスタンス数。"
 
+#, python-format
 msgid ""
 "Number of items to show per page (applies to the pages that have API "
-"supported pagination)"
+"supported pagination, Max Value: %s)"
 msgstr ""
-"ページあたりの表示項目数 (API がページ繰りに対応しているページで使用されます)"
+"ページあたりの表示項目数 (API がページ繰りに対応しているページで使用されま"
+"す。最大値: %s)"
 
 msgid "Number of log lines to be shown per instance"
 msgstr "インスタンスの表示ログ行数"
@@ -5603,7 +5626,7 @@ msgid "Only definitions in raw JSON format are supported."
 msgstr "RAW の JSON 形式での定義だけがサポートされています。"
 
 msgid "Open Port"
-msgstr "解放するポート"
+msgstr "開放するポート"
 
 msgid "Open Port/Port Range:"
 msgstr "開放するポート/ポート範囲:"
@@ -6065,13 +6088,6 @@ msgstr "公開URL"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU エミュレーター"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS スペックの使用者"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "新しい QOS スペックの使用者は現在と異なる値でなければいけません。"
-
 #, python-format
 msgid "QoS Spec name \"%s\" already exists."
 msgstr "QoS 仕様 \"%s\" は既に存在します。"
@@ -6244,6 +6260,9 @@ msgstr "再読み込み"
 
 msgid "Remote"
 msgstr "接続相手"
+
+msgid "Remote IDs"
+msgstr "接続相手 ID"
 
 msgid "Remote IP Prefix"
 msgstr "接続相手の IP 範囲"
@@ -6633,10 +6652,6 @@ msgstr "スペック \"%s\" を保存しました。"
 msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "保存中"
-
-#, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "%(data_type)s の削除を予約しました。"
 
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
@@ -7191,9 +7206,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "起動中"
 
-msgid "Spec"
-msgstr "スペック"
-
 msgid "Spec: {{ qos_spec_name }}"
 msgstr "スペック: {{ qos_spec_name }}"
 
@@ -7219,16 +7231,16 @@ msgid "Specify \"Network Address\""
 msgstr "「ネットワークアドレス」を指定してください"
 
 msgid ""
-"Specify \"Network Address\", \"Address pool\" or clear \"Create Subnet\" "
-"checkbox."
+"Specify \"Network Address\" or clear \"Create Subnet\" checkbox in previous "
+"step."
 msgstr ""
-"「ネットワークアドレス」か「アドレスプール」を指定するか、「サブネットの作"
-"成」のチェックを外してください。"
+"前のステップで「ネットワークアドレス」を指定するか、「サブネットの作成」の"
+"チェックを外してください。"
 
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
+msgid "Specify IP address of gateway or check \"Disable Gateway\" checkbox."
 msgstr ""
-"ゲートウェイの IP アドレスを指定するか、「ゲートウェイなし」をチェックしてく"
-"ださい。"
+"ゲートウェイの IP アドレスを指定するか、「ゲートウェイなし」チェックボックス"
+"をチェックしてください。"
 
 msgid "Specify VIP"
 msgstr "仮想 IP の指定"
@@ -7292,9 +7304,6 @@ msgstr "スタックリソース種別"
 
 msgid "Stack Resources"
 msgstr "スタックリソース"
-
-msgid "Stack Template"
-msgstr "スタックテンプレート"
 
 msgid "Stack creation started."
 msgstr "スタックの作成を開始しました。"
@@ -7776,8 +7785,8 @@ msgstr ""
 msgid ""
 "The color and icon of an intersection indicates whether or not traffic is "
 "permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
+"     Clicking the <span class=\"fa fa-random\"></span> button in the "
+"intersection will install a rule to switch the traffic behavior.<br/>\n"
 "\n"
 "     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
 "direction is outlined when hovering over an intersection.\n"
@@ -7785,8 +7794,8 @@ msgid ""
 msgstr ""
 "交点の色とアイコンは、送信元 (行) から宛先 (列) へのトラフィックが許可される"
 "かどうかを示します。\n"
-"交点の <i class=\"fa fa-random\"></i> ボタンをクリックすると、トラフィックの"
-"挙動を切り替えるルールが設定されます。<br>\n"
+"交点の <span class=\"fa fa-random\"></span> ボタンをクリックすると、トラ"
+"フィックの挙動を切り替えるルールが設定されます。<br>\n"
 "\n"
 "<b>注意:</b> ルールは一方向のトラフィックにのみ適用されます。交点にカーソルを"
 "合わせると、反対方向の設定の概要が表示されます。\n"
@@ -9455,9 +9464,6 @@ msgstr "更新に失敗"
 msgid "Update Group"
 msgstr "グループの更新"
 
-msgid "Update Image"
-msgstr "イメージの更新"
-
 msgctxt "current status of stack"
 msgid "Update In Progress"
 msgstr "更新中"
@@ -9819,9 +9825,6 @@ msgstr "インスタンス %(instance_name)s のボリューム %(volume_name)s"
 
 msgid "Volume (Cinder)"
 msgstr "ボリューム (Cinder)"
-
-msgid "Volume Backup"
-msgstr "ボリュームバックアップ"
 
 msgid "Volume Backup:"
 msgstr "ボリュームバックアップ:"

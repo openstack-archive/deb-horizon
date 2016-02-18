@@ -34,10 +34,45 @@ can inherit the variables needed in the default theme and only override those
 that you need to customize. To inherit from the default theme, put this in your
 theme's ``_variables.scss``::
 
-   @import "../themes/default/variables";
+   @import "/themes/default/variables";
 
 Once you have made your changes you must re-generate the static files with
  ``./run_tests.py -m collectstatic``.
+
+The Default Theme
+~~~~~~~~~~~~~~~~~
+
+By default, only the themes configured by the settings: `DEFAULT_THEME_PATH`
+and `CUSTOM_THEME_PATH` are collected during the `collectstatic` process into
+the dynamic `static` directory into the following directories::
+
+  CUSTOM_THEME_PATH: /custom
+  DEFAULT_THEME_PATH: /themes/default
+
+
+.. NOTE::
+
+    However, if `DEFAULT_THEME_PATH` and `CUSTOM_THEME_PATH` are equal, then the
+    only directory that will be collected into `static` is `/custom`.
+
+By default, `DEFAULT_THEME_PATH` is set to the 'default' theme path, therefore
+if you wish to inherit from another theme (i.e. `material`) that will need to
+be collected from the Horizon code base, then you just update
+`DEFAULT_THEME_PATH` to ensure that the theme you wish to inherit from is
+available in the `static` directory.
+
+If you need to inherit from a Bootswatch theme, no further changes to settings
+are necessary.  This is due to the fact that Bootswatch is loaded as a 3rd
+party static asset, and therefore is automatically collected into the `static`
+directory in `/horizon/lib/`.  Just add @imports to your theme's scss files::
+
+  @import "/horizon/lib/bootswatch/darkly/variables";
+  @import "/horizon/lib/bootswatch/darkly/bootswatch";
+
+.. NOTE::
+
+    The above only shows how to import the 'darkly' theme as an example, but any
+    of the Bootswatch theme can be imported this way.
 
 Organizing Your Theme Directory
 -------------------------------
@@ -88,6 +123,9 @@ For a complete list of the images that can be overridden this way, see:
 Customizing the Logo
 --------------------
 
+Simple
+~~~~~~
+
 If you wish to customize the logo that is used on the splash screen or in the
 top navigation bar, then you need to create an ``img`` directory under your
 theme's static root directory and place your custom ``logo.png`` or
@@ -104,6 +142,22 @@ vertically in the available space.
 Prior to the Kilo release the images files inside of Horizon needed to be
 replaced by your images files or the Horizon stylesheets needed to be altered
 to point to the location of your image.
+
+Advanced
+~~~~~~~~
+
+If you need to do more to customize the logo than simply replacing the existing
+PNG, then you can also override the _brand.html through a custom theme.  To use
+this technique, simply add a ``templates/header/_brand.html`` to the root of
+your custom theme, and add markup directly to the file.  For an example of how
+to do this, see
+``openstack_dashboard/themes/material/templates/header/_brand.html``.
+
+The splash / login panel can also be customized by adding
+``templates/auth/_splash.html``.  See
+``openstack_dashboard/themes/material/templates/auth/_splash.html`` for an
+example.
+
 
 Branding Horizon
 ================
@@ -258,6 +312,19 @@ implementation of Material Design and is used by ``material``.
 Bootswatch provides a number of other themes, that once Horizon is fully theme
 compliant, will allow easy toggling and customizations for darker or
 accessibility driven experiences.
+
+Development Tips
+----------------
+
+When developing a new theme for Horizon, it is required that the dynamically
+generated `static` directory be cleared after each change and the server
+restarted.  This is not always ideal.  If you wish to develop and not have
+to restart the server each time, it is recommended that you configure your
+development environment to not run in OFFLINE mode.  Simply verify the
+following settings in your local_settings.py::
+
+  COMPRESS_OFFLINE = False
+  COMPRESS_ENABLED = False
 
 Changing the Site Title
 =======================

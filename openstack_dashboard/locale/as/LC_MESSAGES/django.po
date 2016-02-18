@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1776,10 +1776,6 @@ msgstr "মুখ্য যোৰা ডাউনলোড কৰক"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "&quot;%(keypair_name)s&quot; মুখ্য যোৰা ডাউনলোড কৰক"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "%s উদাহৰণ প্ৰকাৰৰ সময়সীমা (মুক্ত ষ্টেক ফ্লেভাৰ)"
 
 msgid "EC2 Access Key"
 msgstr "EC2 প্ৰৱেশ কী"
@@ -4121,13 +4117,6 @@ msgstr "ৰাজহুৱা URL"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU ইমুলেটৰ"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS স্পেক উপভোক্তা"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "QoS স্পেক উপভোক্তা মানটো চলিত উপভোক্তা মানটোতকৈ পৃথক হোৱাটো অপৰিহাৰ্য."
-
 msgid "QoS Spec to be associated"
 msgstr "জড়িত হবলগীয়া QoS স্পেক"
 
@@ -4507,10 +4496,6 @@ msgid "Saved spec \"%s\"."
 msgstr "স্পেক \"%s\" ছেভ কৰা হল."
 
 #, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "%(data_type)s ৰ নিৰ্ধাৰিত ডিলিটকৰণ"
-
-#, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr " \"%s\" উদাহৰণৰ পুনৰ আকাৰ কৰাটো নিৰ্ধাৰণ কৰা হল."
 
@@ -4883,9 +4868,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "স্পাৱনিং"
 
-msgid "Spec"
-msgstr "স্পেক"
-
 msgid ""
 "Specifies how IPv6 addresses and additional information are configured. We "
 "can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
@@ -4899,9 +4881,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "\"Network Address\" নিৰ্ধাৰণ কৰক"
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "গেটৱেৰ IP ঠিকনা নিৰ্দিষ্ট কৰক বা \"Disable Gateway\" পৰীক্ষা কৰক."
 
 msgid "Specify VIP"
 msgstr "VIP নিৰ্ধাৰণ কৰক"
@@ -4951,9 +4930,6 @@ msgstr "ষ্টেক সম্পদ প্ৰকাৰ"
 
 msgid "Stack Resources"
 msgstr "ষ্টেক সম্পদবোৰ"
-
-msgid "Stack Template"
-msgstr "ষ্টেক নমুনা"
 
 msgid "Stack creation started."
 msgstr "ষ্টেক তৈয়াৰী আৰম্ভ হল."
@@ -5281,25 +5257,6 @@ msgid ""
 msgstr ""
 "তলৰ তালিকাখনে প্ৰকল্পৰ কোটাবোৰ সম্পৰ্কত এই প্ৰকল্পটোৰ দ্বাৰা ব্যৱহাৰ কৰা সম্পদবোৰ "
 "দেখুৱায়."
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"দ্বিখণ্ডিত এটাৰ ৰং আৰু আইকনটোৱে উত্সৰ (শাৰী) পৰা গন্তব্যস্থানলৈ (স্তম্ভ) ট্ৰেফিকৰ "
-"অনুমতি দিয়া হয়নে নহয় সূচিত কৰে.\n"
-"     দ্বিখণ্ডিতটোত <i class=\"fa fa-random\"></i> বাটনটোত ক্লিক কৰাটোৱে ট্ৰেফিকৰ "
-"আচৰণটো সলনি কৰিবলৈ নিয়ম এটা ইনষ্টল কৰিব.<br/>\n"
-"\n"
-"     <b>টোকা:</b> নিয়মবোৰে কেৱল ট্ৰেফিকৰ এটা দিশত ক্ষতি কৰিব. বিপৰীত দিশটো "
-"আউটলাইন কৰা হয় যেতিয়া দ্বিখণ্ডিত এটাৰ ওপৰ হভাৰ কৰা হয়.\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "ধাৰকটো ডিলিট কৰিব নোৱাৰি যিহেতু এইটো খালী নহয়."
@@ -6534,9 +6491,6 @@ msgstr "ডিফল্টবোৰ আপডেট কৰক"
 msgid "Update Group"
 msgstr "গোট আপডেট কৰক"
 
-msgid "Update Image"
-msgstr "ছবি আপডেট কৰক"
-
 msgid "Update Metadata"
 msgstr "মেটাডাটা আপডেট কৰক"
 
@@ -6845,9 +6799,6 @@ msgstr "%(instance_name)s উদাহৰণত %(volume_name)s আয়তন"
 
 msgid "Volume (Cinder)"
 msgstr "আয়তন (ছাইণ্ডাৰ)"
-
-msgid "Volume Backup"
-msgstr "আয়তন বেকআপ"
 
 msgid "Volume Backup:"
 msgstr "আয়তন বেকআপ:"

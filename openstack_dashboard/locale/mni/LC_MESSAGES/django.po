@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1731,10 +1731,6 @@ msgstr "কী পেয়র দাউনলোদ তৌ"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "কী পেয়র &quot;%(keypair_name)s&quot; দাউনলোদ তৌ"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "ইন্সতেন্স মখল %sগী (ওপনস্তেক ফ্লেবর) দ্যুরেসন"
 
 msgid "EC2 Access Key"
 msgstr "EC2 এক্সেস কী"
@@ -4025,13 +4021,6 @@ msgstr "পব্লিক URL"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU এম্যুলেতর"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS স্পেক কঞ্জ্যুমর"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "QoS স্পেক কঞ্জ্যুমর ভেল্যু অদুনা হৌজিক্কী কঞ্জ্যুমর ভেল্যুদগী তোঙানবা ওইগদবনি।"
-
 msgid "QoS Spec to be associated"
 msgstr "এসোসিএত তৌগদবা QoS"
 
@@ -4338,10 +4327,6 @@ msgstr "অহেনবা স্পেক \"%s\" সেভ তৌরে।"
 #, python-format
 msgid "Saved spec \"%s\"."
 msgstr "স্পেক \"%s\" সেভ তৌরে।"
-
-#, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "সেদ্যুল শেম্লবা %(data_type)sগী দিলিসন"
 
 #, python-format
 msgid "Scheduled resize of instance \"%s\"."
@@ -4660,9 +4645,6 @@ msgstr "সোর্স পোর্ত ([1, 65535]দা লৈবা ইন্
 msgid "Source:"
 msgstr "সোর্স:"
 
-msgid "Spec"
-msgstr "স্পেক"
-
 msgid ""
 "Specifies how IPv6 addresses and additional information are configured. We "
 "can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
@@ -4676,9 +4658,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "\"নেতৱার্ক এদ্রেস\" তাকউ"
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "গেতৱেগী IP এদ্রেস তাকউ নত্ত্রগা \"গেতৱে দিসএবল তৌ\" চেক তৌ।"
 
 msgid "Specify VIP"
 msgstr "VIP তাকউ"
@@ -4727,9 +4706,6 @@ msgstr "ষ্টেক রিসোর্স তাইপ"
 
 msgid "Stack Resources"
 msgstr "ষ্টেক রিসোর্সশীং"
-
-msgid "Stack Template"
-msgstr "ষ্টেক তেমপ্লেত"
 
 msgid "Stack creation started."
 msgstr "ষ্টেক শেম্বা হৌরে।"
@@ -5055,25 +5031,6 @@ msgid ""
 msgstr ""
 "মখাগী চার্ত অদুনা প্রোজেক্তকী ক্যুওতাশীংগা মরি লৈননা প্রোজেক্ত অসিনা শীজিন্নরিবা "
 "রিসোর্সশীং অদু উৎলি।"
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"ইন্তর্সেক্সন অমগী মচু অমসুং আইকোন অদুনা ত্রাফিক অদু সোর্সতগী (রো) দেষ্টিনেসন্দা (কলম) "
-"অয়াবা পীরে নত্ত্রগা পীদে হায়বা তাকই।\n"
-"     ইন্তর্সেক্সন্দা লৈবা <i class=\"fa fa-random\"></i> বতন অদু ক্লিক তৌবনা "
-"ত্রাফিক বিহেভিয়র অদু ওন্থোক্নবা রুল অমা ইন্সতোল তৌগনি।<br/>\n"
-"\n"
-"     <b>খংজিনগদবা:</b> রুলশীংনা ত্রাফিক্কী মায়কৈ অমখক এফেক্ত তৌই। ইন্তর্সেক্সন অমগী "
-"মথক্তা হোভর তৌরিঙৈদা ওন্ন-তৈনবা নাকল অদুদি আউতলাইন তৌই।\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "কন্তেনর অদু হাংদবনা মরম ওইদুনা দিলিত তৌবা য়াদ্রে।"
@@ -6301,9 +6258,6 @@ msgstr "দিফোল্টশীং অপদেত তৌ"
 msgid "Update Group"
 msgstr "গ্রুপ অপদেত তৌ"
 
-msgid "Update Image"
-msgstr "ইমেজ অপদেত তৌ"
-
 msgid "Update Metadata"
 msgstr "মেতাদেতা অপদেত তৌ"
 
@@ -6608,9 +6562,6 @@ msgstr "ইন্সতেন্স %(instance_name)sদা ভোল্যু�
 
 msgid "Volume (Cinder)"
 msgstr "ভোল্যুম (সিন্দর)"
-
-msgid "Volume Backup"
-msgstr "ভোল্যুম বেকঅপ"
 
 msgid "Volume Backup:"
 msgstr "ভোল্যুম বেকঅপ:"

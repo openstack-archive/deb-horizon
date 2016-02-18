@@ -50,7 +50,7 @@ INDEX_URL = reverse('horizon:project:instances:index')
 SEC_GROUP_ROLE_PREFIX = \
     workflows.update_instance.INSTANCE_SEC_GROUP_SLUG + "_role_"
 AVAILABLE = api.cinder.VOLUME_STATE_AVAILABLE
-VOLUME_SEARCH_OPTS = dict(status=AVAILABLE, bootable=1)
+VOLUME_SEARCH_OPTS = dict(status=AVAILABLE, bootable=True)
 SNAPSHOT_SEARCH_OPTS = dict(status=AVAILABLE)
 
 
@@ -1468,7 +1468,8 @@ class InstanceTests(helpers.TestCase):
                            cinder: ('volume_snapshot_list',
                                     'volume_list',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            api.glance: ('image_list_detailed',)})
     def test_launch_instance_get(self,
                                  expect_password_fields=True,
@@ -1477,6 +1478,7 @@ class InstanceTests(helpers.TestCase):
                                  only_one_network=False,
                                  disk_config=True,
                                  config_drive=True,
+                                 config_drive_default=False,
                                  test_with_profile=False):
         image = self.images.first()
 
@@ -1509,6 +1511,19 @@ class InstanceTests(helpers.TestCase):
             api.neutron.network_list(IsA(http.HttpRequest),
                                      shared=True) \
                 .AndReturn(self.networks.list()[1:])
+
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
+
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             api.neutron.profile_list(IsA(http.HttpRequest),
@@ -1549,6 +1564,7 @@ class InstanceTests(helpers.TestCase):
             ['<SetInstanceDetails: setinstancedetailsaction>',
              '<SetAccessControls: setaccesscontrolsaction>',
              '<SetNetwork: setnetworkaction>',
+             '<SetNetworkPorts: setnetworkportsaction>',
              '<PostCreationStep: customizeaction>',
              '<SetAdvanced: setadvancedaction>'])
 
@@ -1619,6 +1635,10 @@ class InstanceTests(helpers.TestCase):
         else:
             self.assertNotContains(res, config_drive_field_label)
 
+        step = workflow.get_step("setadvancedaction")
+        self.assertEqual(step.action.initial['config_drive'],
+                         config_drive_default)
+
     @django.test.utils.override_settings(
         OPENSTACK_HYPERVISOR_FEATURES={'can_set_password': False})
     def test_launch_instance_get_without_password(self):
@@ -1633,6 +1653,11 @@ class InstanceTests(helpers.TestCase):
         image.min_disk = flavor.disk
         self._test_launch_form_instance_requirement_error(image, flavor,
                                                           keypair_require=True)
+
+    @django.test.utils.override_settings(
+        LAUNCH_INSTANCE_DEFAULTS={'config_drive': True})
+    def test_launch_instance_get_with_config_drive_default(self):
+        self.test_launch_instance_get(config_drive_default=True)
 
     def test_launch_instance_get_no_block_device_mapping_v2_supported(self):
         self.test_launch_instance_get(block_device_mapping_v2=False)
@@ -1693,7 +1718,8 @@ class InstanceTests(helpers.TestCase):
                            cinder: ('volume_snapshot_list',
                                     'volume_list',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            api.glance: ('image_list_detailed',)})
     def test_launch_instance_get_bootable_volumes(self,
                                                   block_device_mapping_v2=True,
@@ -1732,7 +1758,17 @@ class InstanceTests(helpers.TestCase):
             api.neutron.network_list(IsA(http.HttpRequest),
                                      shared=True) \
                 .AndReturn(self.networks.list()[1:])
-
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             api.neutron.profile_list(IsA(http.HttpRequest),
@@ -1785,7 +1821,8 @@ class InstanceTests(helpers.TestCase):
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
                                          'profile_list',
-                                         'port_create',),
+                                         'port_create',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -1837,6 +1874,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             policy_profile_id = self.policy_profiles.first().id
@@ -1985,7 +2033,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
-
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         policy_profiles = self.policy_profiles.list()
         policy_profile_id = self.policy_profiles.first().id
         port_one = self.ports.first()
@@ -2060,7 +2118,8 @@ class InstanceTests(helpers.TestCase):
                            api.neutron: ('network_list',
                                          'profile_list',
                                          'port_create',
-                                         'port_delete',),
+                                         'port_delete',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -2078,7 +2137,8 @@ class InstanceTests(helpers.TestCase):
                            api.neutron: ('network_list',
                                          'profile_list',
                                          'port_create',
-                                         'port_delete',),
+                                         'port_delete',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -2094,7 +2154,8 @@ class InstanceTests(helpers.TestCase):
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
                                          'profile_list',
-                                         'port_create',),
+                                         'port_create',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -2165,6 +2226,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         if test_with_profile:
@@ -2253,7 +2325,8 @@ class InstanceTests(helpers.TestCase):
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
                                          'profile_list',
-                                         'port_create'),
+                                         'port_create',
+                                         'port_list'),
                            api.nova: ('server_create',
                                       'extension_supported',
                                       'flavor_list',
@@ -2308,6 +2381,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         if test_with_profile:
@@ -2393,7 +2477,8 @@ class InstanceTests(helpers.TestCase):
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -2436,6 +2521,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         if test_with_profile:
@@ -2495,7 +2591,8 @@ class InstanceTests(helpers.TestCase):
         api.glance: ('image_list_detailed',),
         api.neutron: ('network_list',
                       'profile_list',
-                      'port_create',),
+                      'port_create',
+                      'port_list'),
         api.nova: ('extension_supported',
                    'flavor_list',
                    'keypair_list',
@@ -2567,6 +2664,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         if test_with_profile:
@@ -2657,7 +2765,8 @@ class InstanceTests(helpers.TestCase):
         api.glance: ('image_list_detailed',),
         api.neutron: ('network_list',
                       'profile_list',
-                      'port_create',),
+                      'port_create',
+                      'port_list'),
         api.nova: ('extension_supported',
                    'flavor_list',
                    'keypair_list',
@@ -2698,6 +2807,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         api.nova.keypair_list(IsA(http.HttpRequest)) \
@@ -2749,7 +2869,8 @@ class InstanceTests(helpers.TestCase):
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            cinder: ('volume_list',
                                     'volume_snapshot_list',),
                            api.network: ('security_group_list',),
@@ -2785,6 +2906,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             api.neutron.profile_list(IsA(http.HttpRequest),
@@ -2823,7 +2955,8 @@ class InstanceTests(helpers.TestCase):
                            api.neutron: ('network_list',
                                          'profile_list',
                                          'port_create',
-                                         'port_delete'),
+                                         'port_delete',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -2880,6 +3013,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             policy_profile_id = self.policy_profiles.first().id
@@ -2956,7 +3100,8 @@ class InstanceTests(helpers.TestCase):
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -3007,6 +3152,18 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             api.neutron.profile_list(IsA(http.HttpRequest),
@@ -3058,7 +3215,8 @@ class InstanceTests(helpers.TestCase):
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -3114,6 +3272,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             api.neutron.profile_list(IsA(http.HttpRequest),
@@ -3189,7 +3358,8 @@ class InstanceTests(helpers.TestCase):
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -3239,6 +3409,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             api.neutron.profile_list(IsA(http.HttpRequest),
@@ -3330,7 +3511,8 @@ class InstanceTests(helpers.TestCase):
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -3380,6 +3562,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(
             IsA(http.HttpRequest),
             shared=True).AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         api.nova.extension_supported(
             'DiskConfig', IsA(http.HttpRequest)).AndReturn(True)
         api.nova.extension_supported(
@@ -3449,7 +3642,8 @@ class InstanceTests(helpers.TestCase):
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
-                                         'profile_list',),
+                                         'profile_list',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -3502,6 +3696,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             api.neutron.profile_list(IsA(http.HttpRequest),
@@ -3681,7 +3886,8 @@ class InstanceTests(helpers.TestCase):
                          six.text_type(launch_action.verbose_name))
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
-                           api.neutron: ('network_list',),
+                           api.neutron: ('network_list',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -3739,6 +3945,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         api.nova.extension_supported('DiskConfig',
                                      IsA(http.HttpRequest)) \
             .AndReturn(True)
@@ -3845,7 +4062,8 @@ class InstanceTests(helpers.TestCase):
                            cinder: ('volume_snapshot_list',
                                     'volume_list',),
                            api.neutron: ('network_list',
-                                         'profile_list'),
+                                         'profile_list',
+                                         'port_list'),
                            api.glance: ('image_list_detailed',)})
     def test_select_default_keypair_if_only_one(self,
                                                 test_with_profile=False):
@@ -3873,6 +4091,17 @@ class InstanceTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         if test_with_profile:
             policy_profiles = self.policy_profiles.list()
             api.neutron.profile_list(IsA(http.HttpRequest),
@@ -4507,6 +4736,7 @@ class InstanceAjaxTests(helpers.TestCase):
     @helpers.create_stubs({api.nova: ("server_get",
                                       "flavor_get",
                                       "extension_supported"),
+                           api.network: ('servers_update_addresses',),
                            api.neutron: ("is_extension_supported",)})
     def test_row_update(self):
         server = self.servers.first()
@@ -4540,7 +4770,8 @@ class InstanceAjaxTests(helpers.TestCase):
     @helpers.create_stubs({api.nova: ("server_get",
                                       "flavor_get",
                                       "extension_supported"),
-                           api.neutron: ("is_extension_supported",)})
+                           api.neutron: ("is_extension_supported",),
+                           api.network: ('servers_update_addresses',)})
     def test_row_update_instance_error(self):
         server = self.servers.first()
         instance_id = server.id
@@ -4594,7 +4825,8 @@ class InstanceAjaxTests(helpers.TestCase):
     @helpers.create_stubs({api.nova: ("server_get",
                                       "flavor_get",
                                       "extension_supported"),
-                           api.neutron: ("is_extension_supported",)})
+                           api.neutron: ("is_extension_supported",
+                                         "servers_update_addresses",)})
     def test_row_update_flavor_not_found(self):
         server = self.servers.first()
         instance_id = server.id
@@ -4846,7 +5078,8 @@ class ConsoleManagerTests(helpers.TestCase):
                            api.neutron: ('network_list',
                                          'profile_list',
                                          'port_create',
-                                         'port_delete'),
+                                         'port_delete',
+                                         'port_list'),
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
@@ -4901,6 +5134,17 @@ class ConsoleManagerTests(helpers.TestCase):
         api.neutron.network_list(IsA(http.HttpRequest),
                                  shared=True) \
             .AndReturn(self.networks.list()[1:])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 tenant_id=self.tenant.id,
+                                 shared=False) \
+            .AndReturn(self.networks.list()[:1])
+        api.neutron.network_list(IsA(http.HttpRequest),
+                                 shared=True) \
+            .AndReturn(self.networks.list()[1:])
+        for net in self.networks.list():
+            api.neutron.port_list(IsA(http.HttpRequest),
+                                  network_id=net.id) \
+                .AndReturn(self.ports.list())
         policy_profiles = self.policy_profiles.list()
         policy_profile_id = self.policy_profiles.first().id
         port = self.ports.first()

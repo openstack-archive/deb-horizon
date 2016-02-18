@@ -40,7 +40,8 @@
       getImageProps: getImageProps,
       editImageProps: editImageProps,
       getImages: getImages,
-      getNamespaces: getNamespaces
+      getNamespaces: getNamespaces,
+      getResourceTypes: getResourceTypes
     };
 
     return service;
@@ -200,7 +201,8 @@
       var promise = apiService.delete('/api/glance/images/' + imageId + '/');
 
       return suppressError ? promise : promise.error(function() {
-        toastService.add('error', gettext('Unable to delete the image with id: ') + imageId);
+        var msg = gettext('Unable to delete the image with id: %(id)s');
+        toastService.add('error', interpolate(msg, { id: imageId }, true));
       });
     }
 
@@ -304,6 +306,11 @@
      * @param {string} params.resource_type
      * Namespace resource type.
      *
+     * @param {string} params.properties_target
+     * The properties target, if the resource type has more than one type
+     * of property. For example, the OS::Nova::Server resource type has
+     * "metadata" and "scheduler_hints" properties targets.
+     *
      * @param {boolean} params.paginate
      * True to paginate automatically.
      *
@@ -340,6 +347,31 @@
 
       return suppressError ? promise : promise.error(function() {
           toastService.add('error', gettext('Unable to retrieve the namespaces.'));
+        });
+    }
+
+    /**
+     * @name horizon.app.core.openstack-service-api.glance.getResourceTypes
+     * @description
+     * Get a list of metadata definition resource types.
+     *
+     * http://docs.openstack.org/developer/glance/metadefs-concepts.html
+     *
+     * The listing result is an object with property "items".
+     * Each item is a resource type. Resource types are Strings that
+     * correlate to Heat and Searchlight resource types.
+     * For example: OS::Glance::Image and OS::Nova::Server.
+     *
+     */
+    function getResourceTypes() {
+      var config = {
+        cache: true
+      };
+
+      return apiService
+        .get('/api/glance/metadefs/resourcetypes/', config)
+        .error(function() {
+          toastService.add('error', gettext('Unable to retrieve the resource types.'));
         });
     }
 

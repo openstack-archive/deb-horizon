@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1797,11 +1797,6 @@ msgstr "為 QoS 規格「%(qos_spec_name)s」新增新的「規格」鍵值對"
 msgid "Create a new network for any project as you need."
 msgstr "給所有您所需要的專案新增新的網路。"
 
-msgid ""
-"Create a new network. In addition, a subnet associated with the network can "
-"be created in the next panel."
-msgstr "新增新的網路。另外，可以在下一個面板新增子網路與這個網路的聯結。"
-
 msgid "Create a new role."
 msgstr "新增新的角色。"
 
@@ -2671,10 +2666,6 @@ msgstr "下載密鑰對"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "下載密鑰對「%(keypair_name)s」"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "雲實例類型 %s 的使用時間（Openstack 虛擬硬體樣板）"
 
 msgid "EC2 Access Key"
 msgstr "EC2 存取鑰"
@@ -4752,9 +4743,6 @@ msgstr "網路媒介"
 msgid "Network Details"
 msgstr "網路詳細資訊"
 
-msgid "Network Details: {{ network.name }}"
-msgstr "網路詳細資訊：{{ network.name }}"
-
 msgid "Network ID"
 msgstr "網路識別號"
 
@@ -5067,11 +5055,6 @@ msgstr "虛擬機器網路卡在網路上的流入封包數量"
 
 msgid "Number of instances to launch."
 msgstr "要發動的雲實例數量。"
-
-msgid ""
-"Number of items to show per page (applies to the pages that have API "
-"supported pagination)"
-msgstr "每一頁要顯示的項目數（套用到有支援分頁功能 API 的頁面）"
 
 msgid "Number of log lines to be shown per instance"
 msgstr "要為每個雲實例顯示多少行數的記錄"
@@ -5608,13 +5591,6 @@ msgstr "公開網址"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU 模擬器"
 
-msgid "QoS Spec Consumer"
-msgstr "QoS 規格規範用戶"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "QoS 規格規範用戶值必須與目前的規範用戶值不同。"
-
 msgid "QoS Spec to be associated"
 msgstr "欲聯結的 QoS 規格"
 
@@ -6148,10 +6124,6 @@ msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "正在儲存"
 
-#, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "已排程%(data_type)s的刪除"
-
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "已排程防火牆的刪除"
@@ -6682,9 +6654,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "正在生成"
 
-msgid "Spec"
-msgstr "規格"
-
 msgid "Spec: {{ qos_spec_name }}"
 msgstr "規格：{{ qos_spec_name }}"
 
@@ -6706,14 +6675,6 @@ msgstr "指定可用於發動雲實例的雲硬碟。"
 
 msgid "Specify \"Network Address\""
 msgstr "指定「網路位址」"
-
-msgid ""
-"Specify \"Network Address\", \"Address pool\" or clear \"Create Subnet\" "
-"checkbox."
-msgstr "指定「網路位址」、「位址倉庫」或清空「新增子網路」空格。"
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "指定閘道的 IP 位址或勾選「關閉閘道」。"
 
 msgid "Specify VIP"
 msgstr "指定虛擬 IP"
@@ -6775,9 +6736,6 @@ msgstr "機櫃資源類型"
 
 msgid "Stack Resources"
 msgstr "機櫃資源"
-
-msgid "Stack Template"
-msgstr "機櫃範本"
 
 msgid "Stack creation started."
 msgstr "已開始建立機櫃。"
@@ -7236,24 +7194,6 @@ msgid ""
 "The chart below shows the resources used by this project in relation to the "
 "project's quotas."
 msgstr "下列的圖表顯示此專案的專案配額中資源的使用情形。"
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"路口的顏色及圖示表示著是否允許從來源（列）到目標（欄）的交通。\n"
-"     在路口點擊<i class=\"fa fa-random\"></i>按鍵將會套用規則來交換交通的偏好"
-"設定。<br/>\n"
-"\n"
-"     <b>留意：</b>規則只會影響單向的交通。將滑鼠移到路口上會列出相反的方向的"
-"概要。\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "容器仍然不是空的，不能刪除。"
@@ -8808,9 +8748,6 @@ msgstr "更新失敗"
 msgid "Update Group"
 msgstr "更新群組"
 
-msgid "Update Image"
-msgstr "更新映像檔"
-
 msgctxt "current status of stack"
 msgid "Update In Progress"
 msgstr "正在更新"
@@ -9163,9 +9100,6 @@ msgstr "雲硬碟 %(volume_name)s 於雲實例 %(instance_name)s 上"
 
 msgid "Volume (Cinder)"
 msgstr "雲硬碟（Cinder）"
-
-msgid "Volume Backup"
-msgstr "雲硬碟備份"
 
 msgid "Volume Backup:"
 msgstr "雲硬碟備份："

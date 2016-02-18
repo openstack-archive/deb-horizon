@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-01-09 00:51+0000\n"
+"POT-Creation-Date: 2016-02-18 02:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1765,10 +1765,6 @@ msgstr "कळ जोडी डाउनलोड करा"
 #, python-format
 msgid "Download key pair &quot;%(keypair_name)s&quot;"
 msgstr "कळ जोडी डाउनलोड करा &quot;%(keypair_name)s&quot;"
-
-#, python-format
-msgid "Duration of instance type %s (openstack flavor)"
-msgstr "%s प्रकारच्या इंस्टेंस चा कालावधी (ओपनस्टॅक फ्लेवर)"
 
 msgid "EC2 Access Key"
 msgstr "ईसी२ उपलब्धता कळ"
@@ -4098,13 +4094,6 @@ msgstr "सार्वजनिक यूआरएल"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "क्यूसीओडब्ल्यू२- क्यूईएमयू प्रतिकृती कर्ता"
 
-msgid "QoS Spec Consumer"
-msgstr "क्यूओएस निर्देश ग्राहक"
-
-msgid ""
-"QoS Spec consumer value must be different than the current consumer value."
-msgstr "सध्याच्या ग्राहक मूल्यापेक्षा क्यूओएस निर्देश ग्राहक मूल्य वेगळे असले पाहिजे."
-
 msgid "QoS Spec to be associated"
 msgstr "जोडायचे क्यूओएस निर्देश "
 
@@ -4484,10 +4473,6 @@ msgid "Saved spec \"%s\"."
 msgstr "साठवलेले निर्देश \"%s\"."
 
 #, python-format
-msgid "Scheduled deletion of %(data_type)s"
-msgstr "नियोजितपणे नष्ट करणे %(data_type)s"
-
-#, python-format
 msgid "Scheduled resize of instance \"%s\"."
 msgstr "घटकाचा नियोजित आकार बदलणे \"%s\"."
 
@@ -4860,9 +4845,6 @@ msgctxt "Task status of an Instance"
 msgid "Spawning"
 msgstr "स्पॉनिंग"
 
-msgid "Spec"
-msgstr "निर्देश"
-
 msgid ""
 "Specifies how IPv6 addresses and additional information are configured. We "
 "can specify SLAAC/DHCPv6 stateful/DHCPv6 stateless provided by OpenStack, or "
@@ -4877,9 +4859,6 @@ msgstr ""
 
 msgid "Specify \"Network Address\""
 msgstr "नमूद करा\"नेटवर्क पत्ता\""
-
-msgid "Specify IP address of gateway or check \"Disable Gateway\"."
-msgstr "गेटवेचा आयपी पत्ता नमूद करा किंवा \"गेटवे असमर्थ करा\" वर बरोबरची खूण करा."
 
 msgid "Specify VIP"
 msgstr "व्हीआयपी नमूद करा"
@@ -4928,9 +4907,6 @@ msgstr "मर्यादित डाटा रचना संसाधन �
 
 msgid "Stack Resources"
 msgstr "मर्यादित डाटा रचना संसाधने"
-
-msgid "Stack Template"
-msgstr "मर्यादित डाटा रचना साचा"
 
 msgid "Stack creation started."
 msgstr "मर्यादित डाटा रचना निर्मिती सुरु."
@@ -5255,25 +5231,6 @@ msgid ""
 "project's quotas."
 msgstr ""
 "खालील तक्ता या प्रकल्पाच्या वाट्याच्या संबंधी या प्रकल्पाने वापरलेली संसाधने दाखवतो. "
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <i class=\"fa fa-random\"></i> button in the intersection "
-"will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"छेदनबिंदूचा रंग व चित्र स्रोताकडून (ओळ) इच्छित ठिकाणाकडे (स्तंभ) रहदारीला परवानी आहे "
-"किंवा नाही हे दर्शवतात.\n"
-"  छेदनबिंदूवरील<i वर्ग=\"फा फा- स्वै\"></i> बटण क्लिक केल्याने रहदारीचे वर्तन बदलणारा "
-"नियम स्थापित केला जाईल.<br/>\n"
-"\n"
-"     <b>नोंद घ्या:</b> नियम रहदारीच्या केवळ एका दिशेवर परिणाम करतात. एका छेदनबिंदूवर "
-"तरंगताना विरुद्ध दिशेची रुपरेखा तयार केली जाते.\n"
-" "
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "हे पात्र नष्ट करता येत नाही कारण ते रिकामे नाही."
@@ -6507,9 +6464,6 @@ msgstr "पूर्वनिर्धारित सुधारित कर�
 msgid "Update Group"
 msgstr "गट सुधारित करा"
 
-msgid "Update Image"
-msgstr "चित्र सुधारित करा"
-
 msgid "Update Metadata"
 msgstr "मेटाडाटा सुधारित करा"
 
@@ -6817,9 +6771,6 @@ msgstr "%(volume_name)s घटकावरील %(instance_name)s"
 
 msgid "Volume (Cinder)"
 msgstr "प्रमाण (सिंडर)"
-
-msgid "Volume Backup"
-msgstr "खंड राखीव साठा"
 
 msgid "Volume Backup:"
 msgstr "खंड राखीव साठा:"

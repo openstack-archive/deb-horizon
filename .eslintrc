@@ -29,13 +29,8 @@ rules:
   no-undefined: 1
   brace-style: 1
   no-extra-parens: 1
-  consistent-return: 1
   callback-return: 1
-  guard-for-in: 1
   block-scoped-var: 1
-  semi-spacing: 1
-  no-redeclare: 1
-  no-new: 1
 
   #############################################################################
   # Angular Plugin Customization
