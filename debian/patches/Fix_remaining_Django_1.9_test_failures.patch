@@ -8,8 +8,10 @@ Partially-Implements: blueprint drop-dj17
 Origin: upstream, https://review.openstack.org/#/c/280222/
 Last-Update: 2016-02-19
 
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/horizon/forms/base.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/horizon/forms/base.py
+Index: horizon/horizon/forms/base.py
+===================================================================
+--- horizon.orig/horizon/forms/base.py
++++ horizon/horizon/forms/base.py
 @@ -41,7 +41,7 @@ class SelfHandlingForm(SelfHandlingMixin
          wish for API errors to appear as errors on the form rather than
          using the messages framework.
@@ -19,8 +21,10 @@ Last-Update: 2016-02-19
  
      def set_warning(self, message):
          """Sets a warning on the form.
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/horizon/test/settings.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/horizon/test/settings.py
+Index: horizon/horizon/test/settings.py
+===================================================================
+--- horizon.orig/horizon/test/settings.py
++++ horizon/horizon/test/settings.py
 @@ -59,7 +59,8 @@ INSTALLED_APPS = (
      'horizon',
      'horizon.test',
@@ -31,8 +35,10 @@ Last-Update: 2016-02-19
  )
  
  MIDDLEWARE_CLASSES = (
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/horizon/test/tests/base.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/horizon/test/tests/base.py
+Index: horizon/horizon/test/tests/base.py
+===================================================================
+--- horizon.orig/horizon/test/tests/base.py
++++ horizon/horizon/test/tests/base.py
 @@ -17,6 +17,7 @@
  #    License for the specific language governing permissions and limitations
  #    under the License.
@@ -53,8 +59,10 @@ Last-Update: 2016-02-19
  
          # Set SSL settings for test server
          settings.SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL',
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/horizon/test/tests/forms.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/horizon/test/tests/forms.py
+Index: horizon/horizon/test/tests/forms.py
+===================================================================
+--- horizon.orig/horizon/test/tests/forms.py
++++ horizon/horizon/test/tests/forms.py
 @@ -27,6 +27,8 @@ class FormMixinTests(test.TestCase):
          view.args = args
          view.kwargs = kwargs
@@ -75,8 +83,10 @@ Last-Update: 2016-02-19
  
      def _render_form(self):
          return shortcuts.render(self.request, self.template,
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/horizon/test/tests/middleware.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/horizon/test/tests/middleware.py
+Index: horizon/horizon/test/tests/middleware.py
+===================================================================
+--- horizon.orig/horizon/test/tests/middleware.py
++++ horizon/horizon/test/tests/middleware.py
 @@ -13,8 +13,8 @@
  #    License for the specific language governing permissions and limitations
  #    under the License.
@@ -99,8 +109,10 @@ Last-Update: 2016-02-19
  
      def test_process_response_redirect_on_ajax_request(self):
          url = settings.LOGIN_URL
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/dashboards/admin/networks/tests.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/dashboards/admin/networks/tests.py
+Index: horizon/openstack_dashboard/dashboards/admin/networks/tests.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/admin/networks/tests.py
++++ horizon/openstack_dashboard/dashboards/admin/networks/tests.py
 @@ -390,8 +390,9 @@ class NetworkTests(test.BaseAdminViewTes
          tenant_id = self.tenants.first().id
          network = self.networks.first()
@@ -140,8 +152,10 @@ Last-Update: 2016-02-19
          api.neutron.list_extensions(
              IsA(http.HttpRequest)).AndReturn(extensions)
          self.mox.ReplayAll()
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/dashboards/admin/volumes/tabs.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/dashboards/admin/volumes/tabs.py
+Index: horizon/openstack_dashboard/dashboards/admin/volumes/tabs.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/admin/volumes/tabs.py
++++ horizon/openstack_dashboard/dashboards/admin/volumes/tabs.py
 @@ -36,7 +36,7 @@ class VolumeTab(volumes_tabs.PagedTableM
      name = _("Volumes")
      slug = "volumes_tab"
@@ -169,19 +183,38 @@ Last-Update: 2016-02-19
  
      def get_volume_snapshots_data(self):
          if api.base.is_service_enabled(self.request, 'volume'):
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/dashboards/admin/volumes/tests.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/dashboards/admin/volumes/tests.py
-@@ -181,7 +181,7 @@ class VolumeTests(test.BaseAdminViewTest
+Index: horizon/openstack_dashboard/dashboards/admin/volumes/tests.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/admin/volumes/tests.py
++++ horizon/openstack_dashboard/dashboards/admin/volumes/tests.py
+@@ -176,6 +176,11 @@ class VolumeTests(test.BaseAdminViewTest
+         self.assertItemsEqual(qos_specs, self.cinder_qos_specs.list())
+ 
+     @test.create_stubs({cinder: ('volume_list',
++                                 'volume_list_paged',
++                                 'volume_snapshot_list',
++                                 'volume_type_list_with_qos_associations',
++                                 'volume_encryption_type_list',
++                                 'qos_spec_list',
+                                  'volume_snapshot_list_paged',),
+                         keystone: ('tenant_list',)})
      def test_snapshots_tab(self):
-         cinder.volume_snapshot_list_paged(
-             IsA(http.HttpRequest), paginate=True, marker=None, sort_dir='desc',
--            search_opts={'all_tenants': True},).AndReturn(
-+            search_opts={'all_tenants': True},).MultipleTimes().AndReturn(
-             [self.cinder_volume_snapshots.list(), False, False])
-         cinder.volume_list(IsA(http.HttpRequest), search_opts={
-             'all_tenants': True}).\
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/dashboards/project/stacks/forms.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/dashboards/project/stacks/forms.py
+@@ -198,6 +203,11 @@ class VolumeTests(test.BaseAdminViewTest
+         self.assertItemsEqual(snapshots, self.cinder_volume_snapshots.list())
+ 
+     @test.create_stubs({cinder: ('volume_list',
++                                 'volume_list_paged',
++                                 'volume_snapshot_list',
++                                 'volume_type_list_with_qos_associations',
++                                 'volume_encryption_type_list',
++                                 'qos_spec_list',
+                                  'volume_snapshot_list_paged',),
+                         keystone: ('tenant_list',)})
+     def _test_snapshots_index_paginated(self, marker, sort_dir, snapshots, url,
+Index: horizon/openstack_dashboard/dashboards/project/stacks/forms.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/project/stacks/forms.py
++++ horizon/openstack_dashboard/dashboards/project/stacks/forms.py
 @@ -13,6 +13,7 @@
  import json
  import logging
@@ -217,8 +250,10 @@ Last-Update: 2016-02-19
      parameters = forms.CharField(
          widget=forms.widgets.HiddenInput)
      stack_name = forms.RegexField(
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/dashboards/project/volumes/backups/tests.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/dashboards/project/volumes/backups/tests.py
+Index: horizon/openstack_dashboard/dashboards/project/volumes/backups/tests.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/project/volumes/backups/tests.py
++++ horizon/openstack_dashboard/dashboards/project/volumes/backups/tests.py
 @@ -70,21 +70,17 @@ class VolumeBackupsViewTests(test.TestCa
              AndReturn(volumes)
          api.cinder.volume_backup_delete(IsA(http.HttpRequest), backup.id)
@@ -245,8 +280,10 @@ Last-Update: 2016-02-19
  
      @test.create_stubs({api.cinder: ('volume_backup_get', 'volume_get')})
      def test_volume_backup_detail_get(self):
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/dashboards/project/volumes/snapshots/tests.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/dashboards/project/volumes/snapshots/tests.py
+Index: horizon/openstack_dashboard/dashboards/project/volumes/snapshots/tests.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/project/volumes/snapshots/tests.py
++++ horizon/openstack_dashboard/dashboards/project/volumes/snapshots/tests.py
 @@ -108,7 +108,8 @@ class VolumeSnapshotsViewTests(test.Test
      @test.create_stubs({api.cinder: ('volume_snapshot_list_paged',
                                       'volume_list',
@@ -280,8 +317,10 @@ Last-Update: 2016-02-19
  
      @test.create_stubs({api.cinder: ('volume_snapshot_get', 'volume_get')})
      def test_volume_snapshot_detail_get(self):
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/dashboards/project/volumes/tabs.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/dashboards/project/volumes/tabs.py
+Index: horizon/openstack_dashboard/dashboards/project/volumes/tabs.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/project/volumes/tabs.py
++++ horizon/openstack_dashboard/dashboards/project/volumes/tabs.py
 @@ -119,7 +119,7 @@ class VolumeTab(PagedTableMixin, tabs.Ta
      name = _("Volumes")
      slug = "volumes_tab"
@@ -317,8 +356,55 @@ Last-Update: 2016-02-19
  
      def allowed(self, request):
          return api.cinder.volume_backup_supported(self.request)
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/settings.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/settings.py
+Index: horizon/openstack_dashboard/dashboards/project/volumes/test.py
+===================================================================
+--- horizon.orig/openstack_dashboard/dashboards/project/volumes/test.py
++++ horizon/openstack_dashboard/dashboards/project/volumes/test.py
+@@ -96,6 +96,11 @@ class VolumeAndSnapshotsAndBackupsTests(
+     @test.create_stubs({api.cinder: ('tenant_absolute_limits',
+                                      'volume_list_paged',
+                                      'volume_backup_supported',
++                                     'volume_snapshot_list',
++                                     'volume_type_list_with_qos_associations',
++                                     'volume_encryption_type_list',
++                                     'qos_spec_list',
++                                     'volume_snapshot_list_paged'
+                                      ),
+                         api.nova: ('server_list',)})
+     def _test_index_paginated(self, marker, sort_dir, volumes, url,
+@@ -188,12 +193,17 @@ class VolumeAndSnapshotsAndBackupsTests(
+                                      'volume_snapshot_list_paged',
+                                      'volume_list',
+                                      'volume_backup_supported',
++                                     'volume_snapshot_list',
++                                     'volume_type_list_with_qos_associations',
++                                     'volume_encryption_type_list',
++                                     'qos_spec_list',
+                                      ),
+                         api.nova: ('server_list',)})
+     def _test_snapshots_index_paginated(self, marker, sort_dir, snapshots, url,
+                                         has_more, has_prev):
+         backup_supported = True
+-
++        api.cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
++            MultipleTimes().AndReturn(self.cinder_limits['absolute'])
+         api.cinder.volume_backup_supported(IsA(http.HttpRequest)).\
+             MultipleTimes().AndReturn(backup_supported)
+         api.cinder.volume_snapshot_list_paged(
+@@ -282,7 +292,8 @@ class VolumeAndSnapshotsAndBackupsTests(
+     def _test_backups_index_paginated(self, marker, sort_dir, backups, url,
+                                       has_more, has_prev):
+         backup_supported = True
+-
++        api.cinder.tenant_absolute_limits(IsA(http.HttpRequest)).\
++            MultipleTimes().AndReturn(self.cinder_limits['absolute'])
+         api.cinder.volume_backup_supported(IsA(http.HttpRequest)).\
+             MultipleTimes().AndReturn(backup_supported)
+         api.cinder.volume_backup_list_paged(
+Index: horizon/openstack_dashboard/settings.py
+===================================================================
+--- horizon.orig/openstack_dashboard/settings.py
++++ horizon/openstack_dashboard/settings.py
 @@ -351,8 +351,14 @@ settings.update_dashboards(
  )
  INSTALLED_APPS[0:0] = ADD_INSTALLED_APPS
@@ -353,8 +439,10 @@ Last-Update: 2016-02-19
 +# auth_utils.patch_middleware_get_user()
  
  CSRF_COOKIE_AGE = None
---- horizon-9.0.0~b2+2016.02.18.git.cda9604792.orig/openstack_dashboard/test/helpers.py
-+++ horizon-9.0.0~b2+2016.02.18.git.cda9604792/openstack_dashboard/test/helpers.py
+Index: horizon/openstack_dashboard/test/helpers.py
+===================================================================
+--- horizon.orig/openstack_dashboard/test/helpers.py
++++ horizon/openstack_dashboard/test/helpers.py
 @@ -29,6 +29,7 @@ from django.core.handlers import wsgi
  from django.core import urlresolvers
  from django.test.client import RequestFactory  # noqa
