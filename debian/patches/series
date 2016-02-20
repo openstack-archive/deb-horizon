@@ -6,5 +6,5 @@ enable_identity_users_panel.patch
 #0100-add-openstack_auth-in-INSTALLED_APPS.patch
 0090-explicitly-declare-app_label.patch
 Fix_remaining_Django_1.9_test_failures.patch
-Only_import_selenium_if_WITH_SELENIUM_is_set.patch
-1.patch
+#Only_import_selenium_if_WITH_SELENIUM_is_set.patch
+#1.patch
