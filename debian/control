@@ -79,8 +79,8 @@ Build-Depends-Indep: gettext,
                      python-yaml,
 Standards-Version: 3.9.6
 Homepage: http://horizon.openstack.org
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/horizon.git;a=summary
-Vcs-Git: git://anonscm.debian.org/openstack/horizon.git
+Vcs-Browser: https://anonscm.debian.org/cgit/openstack/horizon.git/
+Vcs-Git: https://anonscm.debian.org/git/openstack/horizon.git
 
 Package: python-django-horizon
 Section: python
