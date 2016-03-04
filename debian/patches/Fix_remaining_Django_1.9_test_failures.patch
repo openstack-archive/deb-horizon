@@ -95,9 +95,9 @@ Index: horizon/horizon/test/tests/middleware.py
  from django.conf import settings
 -
  from django.http import HttpResponseRedirect  # noqa
+ from django.utils import timezone
  
- from horizon import exceptions
-@@ -31,7 +31,10 @@ class MiddlewareTests(test.TestCase):
+@@ -41,7 +41,10 @@ class MiddlewareTests(test.TestCase):
          resp = mw.process_exception(request, exceptions.NotAuthorized())
          resp.client = self.client
  
@@ -156,7 +156,7 @@ Index: horizon/openstack_dashboard/dashboards/admin/volumes/tabs.py
 ===================================================================
 --- horizon.orig/openstack_dashboard/dashboards/admin/volumes/tabs.py
 +++ horizon/openstack_dashboard/dashboards/admin/volumes/tabs.py
-@@ -36,7 +36,7 @@ class VolumeTab(volumes_tabs.PagedTableM
+@@ -35,7 +35,7 @@ class VolumeTab(volumes_tabs.PagedTableM
      name = _("Volumes")
      slug = "volumes_tab"
      template_name = "admin/volumes/volumes/volumes_tables.html"
@@ -165,7 +165,7 @@ Index: horizon/openstack_dashboard/dashboards/admin/volumes/tabs.py
  
      def get_volumes_data(self):
          volumes = self._get_volumes(search_opts={'all_tenants': True})
-@@ -69,7 +69,7 @@ class VolumeTypesTab(tabs.TableTab, volu
+@@ -68,7 +68,7 @@ class VolumeTypesTab(tabs.TableTab, volu
      name = _("Volume Types")
      slug = "volume_types_tab"
      template_name = "admin/volumes/volume_types/volume_types_tables.html"
@@ -174,7 +174,7 @@ Index: horizon/openstack_dashboard/dashboards/admin/volumes/tabs.py
  
      def get_volume_types_data(self):
          try:
-@@ -116,7 +116,7 @@ class SnapshotTab(volumes_tabs.PagedTabl
+@@ -115,7 +115,7 @@ class SnapshotTab(volumes_tabs.PagedTabl
      name = _("Volume Snapshots")
      slug = "snapshots_tab"
      template_name = ("horizon/common/_detail_table.html")
@@ -182,12 +182,12 @@ Index: horizon/openstack_dashboard/dashboards/admin/volumes/tabs.py
 +    preload = True
  
      def get_volume_snapshots_data(self):
-         if api.base.is_service_enabled(self.request, 'volume'):
+         if cinder.is_volume_service_enabled(self.request):
 Index: horizon/openstack_dashboard/dashboards/admin/volumes/tests.py
 ===================================================================
 --- horizon.orig/openstack_dashboard/dashboards/admin/volumes/tests.py
 +++ horizon/openstack_dashboard/dashboards/admin/volumes/tests.py
-@@ -176,6 +176,11 @@ class VolumeTests(test.BaseAdminViewTest
+@@ -180,6 +180,11 @@ class VolumeTests(test.BaseAdminViewTest
          self.assertItemsEqual(qos_specs, self.cinder_qos_specs.list())
  
      @test.create_stubs({cinder: ('volume_list',
@@ -199,7 +199,7 @@ Index: horizon/openstack_dashboard/dashboards/admin/volumes/tests.py
                                   'volume_snapshot_list_paged',),
                          keystone: ('tenant_list',)})
      def test_snapshots_tab(self):
-@@ -198,6 +203,11 @@ class VolumeTests(test.BaseAdminViewTest
+@@ -202,6 +207,11 @@ class VolumeTests(test.BaseAdminViewTest
          self.assertItemsEqual(snapshots, self.cinder_volume_snapshots.list())
  
      @test.create_stubs({cinder: ('volume_list',
@@ -338,8 +338,8 @@ Index: horizon/openstack_dashboard/dashboards/project/volumes/tabs.py
 +    preload = True
  
      def get_volume_snapshots_data(self):
-         try:
-@@ -155,7 +155,6 @@ class SnapshotTab(PagedTableMixin, tabs.
+         snapshots = []
+@@ -156,7 +156,6 @@ class SnapshotTab(PagedTableMixin, tabs.
          for snapshot in snapshots:
              volume = volumes.get(snapshot.volume_id)
              setattr(snapshot, '_volume', volume)
@@ -347,7 +347,7 @@ Index: horizon/openstack_dashboard/dashboards/project/volumes/tabs.py
          return snapshots
  
  
-@@ -164,7 +163,7 @@ class BackupsTab(PagedTableMixin, tabs.T
+@@ -165,7 +164,7 @@ class BackupsTab(PagedTableMixin, tabs.T
      name = _("Volume Backups")
      slug = "backups_tab"
      template_name = ("horizon/common/_detail_table.html")
@@ -360,22 +360,15 @@ Index: horizon/openstack_dashboard/dashboards/project/volumes/test.py
 ===================================================================
 --- horizon.orig/openstack_dashboard/dashboards/project/volumes/test.py
 +++ horizon/openstack_dashboard/dashboards/project/volumes/test.py
-@@ -96,6 +96,11 @@ class VolumeAndSnapshotsAndBackupsTests(
-     @test.create_stubs({api.cinder: ('tenant_absolute_limits',
-                                      'volume_list_paged',
+@@ -191,12 +191,22 @@ class VolumeAndSnapshotsAndBackupsTests(
+                                      'volume_snapshot_list_paged',
+                                      'volume_list',
                                       'volume_backup_supported',
 +                                     'volume_snapshot_list',
 +                                     'volume_type_list_with_qos_associations',
 +                                     'volume_encryption_type_list',
 +                                     'qos_spec_list',
 +                                     'volume_snapshot_list_paged'
-                                      ),
-                         api.nova: ('server_list',)})
-     def _test_index_paginated(self, marker, sort_dir, volumes, url,
-@@ -188,12 +193,17 @@ class VolumeAndSnapshotsAndBackupsTests(
-                                      'volume_snapshot_list_paged',
-                                      'volume_list',
-                                      'volume_backup_supported',
 +                                     'volume_snapshot_list',
 +                                     'volume_type_list_with_qos_associations',
 +                                     'volume_encryption_type_list',
@@ -391,7 +384,7 @@ Index: horizon/openstack_dashboard/dashboards/project/volumes/test.py
          api.cinder.volume_backup_supported(IsA(http.HttpRequest)).\
              MultipleTimes().AndReturn(backup_supported)
          api.cinder.volume_snapshot_list_paged(
-@@ -282,7 +292,8 @@ class VolumeAndSnapshotsAndBackupsTests(
+@@ -285,7 +295,8 @@ class VolumeAndSnapshotsAndBackupsTests(
      def _test_backups_index_paginated(self, marker, sort_dir, backups, url,
                                        has_more, has_prev):
          backup_supported = True
@@ -405,7 +398,7 @@ Index: horizon/openstack_dashboard/settings.py
 ===================================================================
 --- horizon.orig/openstack_dashboard/settings.py
 +++ horizon/openstack_dashboard/settings.py
-@@ -351,8 +351,14 @@ settings.update_dashboards(
+@@ -376,8 +376,14 @@ settings.update_dashboards(
  )
  INSTALLED_APPS[0:0] = ADD_INSTALLED_APPS
  
@@ -420,9 +413,9 @@ Index: horizon/openstack_dashboard/settings.py
 +
 +POLICY_CHECK_FUNCTION = check
  
- # Add HORIZON_CONFIG to the context information for offline compression
- COMPRESS_OFFLINE_CONTEXT = {
-@@ -364,11 +370,14 @@ COMPRESS_OFFLINE_CONTEXT = {
+ # This base context objects gets added to the offline context generator
+ # for each theme configured.
+@@ -392,11 +398,14 @@ COMPRESS_OFFLINE_CONTEXT = 'horizon.them
  if DEBUG:
      logging.basicConfig(level=logging.DEBUG)
  
