@@ -1,7 +1,3 @@
-/* This import is required for using the current theme variables as value
-to our variables */
-@import "/custom/variables";
-
 /* When used with Horizon via Django, this value is set automatically from
    settings.py and is added dynamically to the namespace through
    horizon/utils/scss_filter.py */
@@ -10,7 +6,6 @@ $static_url: "/static/" !default;
 
 /* Horizon Custom Variables */
 
-$code-font-family: Menlo, Monaco, Consolas, 'Courier New' !default;
 $main-content-min-width: 900px !default;
 $sidebar-width: 220px !default;
 $border-color: #dddddd !default;
@@ -130,14 +125,12 @@ $batch-action-padding: $batch-action-width + 1em !default;
 $detail-row-padding: 1em !default;
 $expander-width: 1.5em !default;
 $reorder-border: 2px solid #1f83c6 !default;
-$select-col-width: 2.5em !default;
 $table-col-avg-width: 150px !default;
 $table-border-color: #cccccc !default;
 $table-border: 1px solid $table-border-color !default;
 $table-gap-height: 0.5em !default;
 $table-padding: 0.5em !default;
 $table-stripe-bgcolor: #f9f9f9 !default;
-$table-action-col-width: 15em;
 
 /* Tooltip */
 $tooltip-bg-color: #fefefe !default;
@@ -150,7 +143,6 @@ $tooltip-key-weight: 600 !default;
 $tooltip-padding: 0.3em 0.8em !default;
 
 /* Transfer Tables */
-$badge-info-color: #0084d1 !default;
 $invalid-color: #f0ad4e !default;
 $transfer-btn-width: 3em !default;
 $transfer-help-text-color: #999999 !default;

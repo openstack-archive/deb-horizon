@@ -28,7 +28,8 @@
     .filter('decode', decodeFilter)
     .filter('bytes', bytesFilter)
     .filter('itemCount', itemCountFilter)
-    .filter('toIsoDate', toIsoDateFilter);
+    .filter('toIsoDate', toIsoDateFilter)
+    .filter('limit', limitFilter);
 
   /**
    * @ngdoc filter
@@ -126,13 +127,14 @@
    * @ngdoc filter
    * @name noValue
    * @description
-   * Replaces null / undefined / empty string with translated '-'.
+   * Replaces null / undefined / empty string with translated '-' or the optional
+   * default value provided.
    */
   function noValueFilter() {
-    return function (input) {
+    return function (input, def) {
       if (input === null || angular.isUndefined(input) ||
         (angular.isString(input) && '' === input.trim())) {
-        return gettext('-');
+        return def || gettext('-');
       } else {
         return input;
       }
@@ -235,6 +237,22 @@
   function toIsoDateFilter() {
     return function(input) {
       return new Date(input).toISOString();
+    };
+  }
+
+  /**
+   * @ngdoc filter
+   * @name limit
+   * @description
+   * If input is a number greater than or equal to zero, returns the number. Otherwise
+   * returns the optional string argument or "Unlimited". Use for number values where
+   * anything negative has a special meaning, such as limits where -1 typically means
+   * unlimited.
+   */
+  limitFilter.$inject = ['horizon.framework.util.i18n.gettext'];
+  function limitFilter(gettext) {
+    return function (input, value) {
+      return angular.isNumber(input) && input >= 0 ? input : value || gettext('Unlimited');
     };
   }
 

@@ -25,6 +25,11 @@
    * @ngdoc controller
    * @name horizon.framework.widgets.table.controller:TableController
    * @description Controller used by `hzTable`
+   * This controller extends the Smart-Table module to provide support for
+   * saving the checkbox selection state of each row in the table.
+   * The states are stored in `selections` property and is accessible through
+   * the controller.
+   *
    * Note that clearSelected is private and event driven.
    * To clear all of the selected checkboxes after an action, such as
    * delete, emit the event `hzTable:clearSelected` from your table
@@ -34,7 +39,7 @@
 
     var ctrl = this;
     ctrl.isSelected = isSelected;
-    ctrl.select = select;
+    ctrl.toggleSelect = toggleSelect;
 
     clearSelected();
 
@@ -51,32 +56,27 @@
      * return true if the row is selected
      */
     function isSelected(row) {
-      var rowState = $scope.selected[row.id];
+      var rowState = ctrl.selections[row.id];
       return angular.isDefined(rowState) && rowState.checked;
     }
 
     function clearSelected() {
-      /*eslint-disable angular/controller-as */
-      $scope.selected = {};
-      $scope.numSelected = 0;
-      /*eslint-enable angular/controller-as */
+      ctrl.selected = [];
+      ctrl.selections = {};
+    }
+
+    function getSelected(map) {
+      return Object.keys(map)
+        .filter(function isChecked(k) { return map[k].checked; })
+        .map(function getItem(k) { return map[k].item; });
     }
 
     /*
-     * set the row selection state
+     * Toggle the row selection state
      */
-    function select(row, checkedState, broadcast) {
-      $scope.selected[row.id] = {
-        checked: checkedState,
-        item: row
-      };
-
-      if (checkedState) {
-        $scope.numSelected++;
-      } else {
-        $scope.numSelected--;
-      }
-
+    function toggleSelect(row, checkedState, broadcast) {
+      ctrl.selections[row.id] = { checked: checkedState, item: row };
+      ctrl.selected = getSelected(ctrl.selections);
       if (broadcast) {
         /*
          * should only walk down scope tree that has

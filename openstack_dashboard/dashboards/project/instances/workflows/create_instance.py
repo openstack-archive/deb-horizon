@@ -156,7 +156,7 @@ class SetInstanceDetailsAction(workflows.Action):
             ("image_id", _("Boot from image")),
             ("instance_snapshot_id", _("Boot from snapshot")),
         ]
-        if base.is_service_enabled(request, 'volume'):
+        if cinder.is_volume_service_enabled(request):
             source_type_choices.append(("volume_id", _("Boot from volume")))
 
             try:
@@ -467,8 +467,7 @@ class SetInstanceDetailsAction(workflows.Action):
     def populate_volume_id_choices(self, request, context):
         volumes = []
         try:
-            if (base.is_service_enabled(request, 'volume')
-                    or base.is_service_enabled(request, 'volumev2')):
+            if cinder.is_volume_service_enabled(request):
                 available = api.cinder.VOLUME_STATE_AVAILABLE
                 volumes = [self._get_volume_display_name(v)
                            for v in cinder.volume_list(self.request,
@@ -485,8 +484,7 @@ class SetInstanceDetailsAction(workflows.Action):
     def populate_volume_snapshot_id_choices(self, request, context):
         snapshots = []
         try:
-            if (base.is_service_enabled(request, 'volume')
-                    or base.is_service_enabled(request, 'volumev2')):
+            if cinder.is_volume_service_enabled(request):
                 available = api.cinder.VOLUME_STATE_AVAILABLE
                 snapshots = [self._get_volume_display_name(s)
                              for s in cinder.volume_snapshot_list(
@@ -553,12 +551,13 @@ class SetAccessControlsAction(workflows.Action):
         label=_("Confirm Admin Password"),
         required=False,
         widget=forms.PasswordInput(render_value=False))
-    groups = forms.MultipleChoiceField(label=_("Security Groups"),
-                                       required=False,
-                                       initial=["default"],
-                                       widget=forms.CheckboxSelectMultiple(),
-                                       help_text=_("Launch instance in these "
-                                                   "security groups."))
+    groups = forms.MultipleChoiceField(
+        label=_("Security Groups"),
+        required=False,
+        initial=["default"],
+        widget=forms.ThemableCheckboxSelectMultiple(),
+        help_text=_("Launch instance in these "
+                    "security groups."))
 
     class Meta(object):
         name = _("Access & Security")
@@ -703,14 +702,15 @@ class PostCreationStep(workflows.Step):
 
 
 class SetNetworkAction(workflows.Action):
-    network = forms.MultipleChoiceField(label=_("Networks"),
-                                        widget=forms.CheckboxSelectMultiple(),
-                                        error_messages={
-                                            'required': _(
-                                                "At least one network must"
-                                                " be specified.")},
-                                        help_text=_("Launch instance with"
-                                                    " these networks"))
+    network = forms.MultipleChoiceField(
+        label=_("Networks"),
+        widget=forms.ThemableCheckboxSelectMultiple(),
+        error_messages={
+            'required': _(
+                "At least one network must"
+                " be specified.")},
+        help_text=_("Launch instance with"
+                    " these networks"))
     if api.neutron.is_port_profiles_supported():
         widget = None
     else:

@@ -151,6 +151,15 @@
         expect(noValueFilter('')).toBe('-');
         expect(noValueFilter('     ')).toBe('-');
       });
+
+      it('replaces undefined, null, blank with provided value', function () {
+        expect(noValueFilter(null, 'default')).toBe('default');
+        expect(noValueFilter(undefined, 'default')).toBe('default');
+        expect(noValueFilter('', 'default')).toBe('default');
+        expect(noValueFilter('     ', 'default')).toBe('default');
+        expect(noValueFilter('value', 'default')).toBe('value');
+        expect(noValueFilter(false, 'default')).toBe(false);
+      });
     });
 
     describe('noName', function () {
@@ -285,6 +294,34 @@
       it('should convert to ISO-8610 from milliseconds', function() {
         var actual = toIsoDateFilter(1442919600000);
         expect(actual).toBe('2015-09-22T11:00:00.000Z');
+      });
+    });
+
+    describe('limit', function() {
+      var limitFilter;
+
+      beforeEach(inject(function(_limitFilter_) {
+        limitFilter = _limitFilter_;
+      }));
+
+      it('should return valid number as is', function() {
+        var limit = limitFilter(0);
+        expect(limit).toBe(0);
+      });
+
+      it('should return non-numeric value as "Unlimited"', function() {
+        var limit = limitFilter('foo');
+        expect(limit).toBe('Unlimited');
+      });
+
+      it('should return negative number as "Unlimited"', function() {
+        var limit = limitFilter(-1);
+        expect(limit).toBe('Unlimited');
+      });
+
+      it('should return negative number as custom value', function() {
+        var limit = limitFilter(-1, 'foo');
+        expect(limit).toBe('foo');
       });
     });
 

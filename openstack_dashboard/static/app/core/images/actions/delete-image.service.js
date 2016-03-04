@@ -22,7 +22,7 @@
   deleteImageService.$inject = [
     '$q',
     'horizon.app.core.openstack-service-api.glance',
-    'horizon.app.core.openstack-service-api.keystone',
+    'horizon.app.core.openstack-service-api.userSession',
     'horizon.app.core.openstack-service-api.policy',
     'horizon.framework.util.i18n.gettext',
     'horizon.framework.util.q.extensions',
@@ -44,7 +44,7 @@
   function deleteImageService(
     $q,
     glance,
-    keystone,
+    userSessionService,
     policy,
     gettext,
     $qExtensions,
@@ -52,10 +52,8 @@
     toast,
     events
   ) {
-    var scope, context;
+    var scope, context, deleteImagePromise;
     var notAllowedMessage = gettext("You are not allowed to delete images: %s");
-    var deleteImagePromise = policy.ifAllowed({rules: [['image', 'delete_image']]});
-    var userSessionPromise = createUserSessionPromise();
 
     var service = {
       initScope: initScope,
@@ -67,26 +65,33 @@
 
     //////////////
 
-    function initScope(newScope, actionContext) {
+    function initScope(newScope) {
       scope = newScope;
-      context = {
-        labels: actionContext,
-        successEvent: events.DELETE_SUCCESS
-      };
+      context = { successEvent: events.DELETE_SUCCESS };
+      deleteImagePromise = policy.ifAllowed({rules: [['image', 'delete_image']]});
     }
 
-    function perform(images) {
+    function perform(items) {
+      var images = angular.isArray(items) ? items : [items];
+      context.labels = labelize(images.length);
       context.deleteEntity = deleteImage;
       $qExtensions.allSettled(images.map(checkPermission)).then(afterCheck);
     }
 
     function allowed(image) {
-      return $q.all([
-        notProtected(image),
-        deleteImagePromise,
-        ownedByUser(image),
-        notDeleted(image)
-      ]);
+      // only row actions pass in image
+      // otherwise, assume it is a batch action
+      if (image) {
+        return $q.all([
+          notProtected(image),
+          deleteImagePromise,
+          userSessionService.isCurrentProject(image.owner),
+          notDeleted(image)
+        ]);
+      }
+      else {
+        return policy.ifAllowed({ rules: [['image', 'delete_image']] });
+      }
     }
 
     function checkPermission(image) {
@@ -102,30 +107,29 @@
       }
     }
 
-    function createUserSessionPromise() {
-      var deferred = $q.defer();
-      keystone.getCurrentUserSession().success(onUserSessionGet);
-      return deferred.promise;
+    function labelize(count) {
+      return {
 
-      function onUserSessionGet(userSession) {
-        deferred.resolve(userSession);
-      }
-    }
+        title: ngettext(
+          'Confirm Delete Image',
+          'Confirm Delete Images', count),
 
-    function ownedByUser(image) {
-      var deferred = $q.defer();
+        message: ngettext(
+          'You have selected "%s". Deleted image is not recoverable.',
+          'You have selected "%s". Deleted images are not recoverable.', count),
 
-      userSessionPromise.then(onUserSessionGet);
+        submit: ngettext(
+          'Delete Image',
+          'Delete Images', count),
 
-      return deferred.promise;
+        success: ngettext(
+          'Deleted Image: %s.',
+          'Deleted Images: %s.', count),
 
-      function onUserSessionGet(userSession) {
-        if (userSession.project_id === image.owner) {
-          deferred.resolve();
-        } else {
-          deferred.reject();
-        }
-      }
+        error: ngettext(
+          'Unable to delete Image: %s.',
+          'Unable to delete Images: %s.', count)
+      };
     }
 
     function notDeleted(image) {

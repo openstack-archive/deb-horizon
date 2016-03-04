@@ -54,6 +54,8 @@ class InstancesPage(basepage.BaseNavigationPage):
 
     INSTANCES_TABLE_NAME_COLUMN = 'name'
     INSTANCES_TABLE_STATUS_COLUMN = 'status'
+    INSTANCES_TABLE_IP_COLUMN = 'ip'
+    INSTANCES_TABLE_IMAGE_NAME_COLUMN = 'image_name'
 
     def __init__(self, driver, conf):
         super(InstancesPage, self).__init__(driver, conf)
@@ -135,3 +137,12 @@ class InstancesPage(basepage.BaseNavigationPage):
         elif 'volume snapshot (creates a new volume)' in boot_source:
             return (instance.volume_snapshot_id,
                     self.DEFAULT_VOLUME_SNAPSHOT_NAME)
+
+    def get_image_name(self, instance_name):
+        row = self._get_row_with_instance_name(instance_name)
+        return row.cells[self.INSTANCES_TABLE_IMAGE_NAME_COLUMN].text
+
+    def get_fixed_ipv4(self, name):
+        row = self._get_row_with_instance_name(name)
+        ips = row.cells[self.INSTANCES_TABLE_IP_COLUMN].text
+        return ips.split()[0]

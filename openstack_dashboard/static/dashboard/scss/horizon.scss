@@ -1,6 +1,3 @@
-// Custom Theme Variables
-@import "/custom/variables";
-
 // Horizon Variables
 @import "variables";
 
@@ -20,8 +17,11 @@
 // Dashboard Components
 @import "components/bar_charts";
 @import "components/charts";
+@import "components/checkboxes";
 @import "components/datepicker";
 @import "components/forms";
+@import "components/help_panel";
+@import "components/icons";
 @import "components/inline_edit";
 @import "components/login";
 @import "components/membership";
@@ -38,6 +38,8 @@
 @import "components/sidebar";
 @import "components/table_actions";
 @import "components/tables";
+@import "components/transfer_tables";
+@import "components/wizard";
 @import "components/workflow";
 
 // Framework
