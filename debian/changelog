@@ -5,6 +5,7 @@ horizon (2:9.0.0~b3-1) experimental; urgency=medium
 
   [ Thomas Goirand ]
   * New upstream release.
+  * Fixed (build-)depends for this release.
 
  -- Thomas Goirand <zigo@debian.org>  Fri, 04 Mar 2016 16:56:53 +0800
 
