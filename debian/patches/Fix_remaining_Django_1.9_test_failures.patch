@@ -461,6 +461,43 @@ index 4e5e357..389e909 100644
  
      @test.create_stubs({api.cinder: ('volume_backup_get', 'volume_get')})
      def test_volume_backup_detail_get(self):
+diff --git a/openstack_dashboard/dashboards/project/volumes/cgroups/tests.py b/openstack_dashboard/dashboards/project/volumes/cgroups/tests.py
+index b0eacb3..b608cca 100644
+--- a/openstack_dashboard/dashboards/project/volumes/cgroups/tests.py
++++ b/openstack_dashboard/dashboards/project/volumes/cgroups/tests.py
+@@ -10,8 +10,10 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
++import django
+ from django.core.urlresolvers import reverse
+ from django import http
++from django.utils.http import urlunquote  # noqa
+ from mox3.mox import IsA  # noqa
+ 
+ from openstack_dashboard.api import cinder
+@@ -19,7 +21,8 @@ from openstack_dashboard.test import helpers as test
+ 
+ 
+ VOLUME_INDEX_URL = reverse('horizon:project:volumes:index')
+-VOLUME_CGROUPS_TAB_URL = reverse('horizon:project:volumes:cgroups_tab')
++VOLUME_CGROUPS_TAB_URL = urlunquote(reverse(
++    'horizon:project:volumes:cgroups_tab'))
+ 
+ 
+ class ConsistencyGroupTests(test.TestCase):
+@@ -111,8 +114,9 @@ class ConsistencyGroupTests(test.TestCase):
+             AndReturn(cgroups)
+         cinder.volume_cgroup_delete(IsA(http.HttpRequest), cgroup.id,
+                                     force=False)
+-        cinder.volume_cgroup_list_with_vol_type_names(IsA(http.HttpRequest)).\
+-            AndReturn(cgroups)
++        if django.VERSION < (1, 9):
++            cinder.volume_cgroup_list_with_vol_type_names(
++                IsA(http.HttpRequest)).AndReturn(cgroups)
+ 
+         self.mox.ReplayAll()
+ 
 diff --git a/openstack_dashboard/dashboards/project/volumes/snapshots/tests.py b/openstack_dashboard/dashboards/project/volumes/snapshots/tests.py
 index a8cc741..d7975b5 100644
 --- a/openstack_dashboard/dashboards/project/volumes/snapshots/tests.py
