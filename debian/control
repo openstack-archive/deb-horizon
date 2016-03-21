@@ -78,7 +78,7 @@ Build-Depends-Indep: gettext,
                      python-xstatic-term.js,
                      python-xvfbwrapper,
                      python-yaml,
-Standards-Version: 3.9.6
+Standards-Version: 3.9.7
 Homepage: http://horizon.openstack.org
 Vcs-Browser: https://anonscm.debian.org/cgit/openstack/horizon.git/
 Vcs-Git: https://anonscm.debian.org/git/openstack/horizon.git

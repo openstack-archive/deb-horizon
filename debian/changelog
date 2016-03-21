@@ -9,6 +9,7 @@ horizon (2:9.0.0~rc1-1) experimental; urgency=medium
   * Added python-selenium as build-depends, to satisfy the imports.
   * Fixed debian/copyright.
   * Added patch: Fix_remaining_Django_1.9_test_failures.patch
+  * Standards-Version: 3.9.7 (no change).
 
  -- Thomas Goirand <zigo@debian.org>  Fri, 04 Mar 2016 16:56:53 +0800
 
