@@ -1,5 +1,4 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
-#enable_identity_users_panel.patch
 Fix_remaining_Django_1.9_test_failures.patch
