@@ -17,7 +17,7 @@ Index: horizon/openstack_dashboard/local/local_settings.py.example
 ===================================================================
 --- horizon.orig/openstack_dashboard/local/local_settings.py.example
 +++ horizon/openstack_dashboard/local/local_settings.py.example
-@@ -716,3 +716,5 @@ REST_API_REQUIRED_SETTINGS = ['OPENSTACK
+@@ -720,3 +720,5 @@ REST_API_REQUIRED_SETTINGS = ['OPENSTACK
  # For more information see:
  # http://tinyurl.com/anticlickjack
  #DISALLOW_IFRAME_EMBED = True
@@ -27,7 +27,7 @@ Index: horizon/openstack_dashboard/test/settings.py
 ===================================================================
 --- horizon.orig/openstack_dashboard/test/settings.py
 +++ horizon/openstack_dashboard/test/settings.py
-@@ -232,3 +232,5 @@ REST_API_SETTING_2 = 'bar'
+@@ -236,3 +236,5 @@ REST_API_SETTING_2 = 'bar'
  REST_API_SECURITY = 'SECURITY'
  REST_API_REQUIRED_SETTINGS = ['REST_API_SETTING_1']
  REST_API_ADDITIONAL_SETTINGS = ['REST_API_SETTING_2']
