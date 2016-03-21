@@ -10,7 +10,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from selenium.common import exceptions
 from selenium.webdriver.common import by
 
 from openstack_dashboard.test.integration_tests.pages import basepage
@@ -22,6 +21,8 @@ from openstack_dashboard.test.integration_tests.regions import tables
 
 class VolumesnapshotsTable(tables.TableRegion):
     name = 'volume_snapshots'
+    marker_name = 'snapshot_marker'
+    prev_marker_name = 'prev_snapshot_marker'
 
     EDIT_SNAPSHOT_FORM_FIELDS = ("name", "description")
 
@@ -29,7 +30,14 @@ class VolumesnapshotsTable(tables.TableRegion):
         "name", "description", "snapshot_source", "type", "size")
 
     @tables.bind_table_action('delete')
-    def delete_volume_snapshot(self, delete_button):
+    def delete_volume_snapshots(self, delete_button):
+        """Batch Delete table action."""
+        delete_button.click()
+        return forms.BaseFormRegion(self.driver, self.conf)
+
+    @tables.bind_row_action('delete')
+    def delete_volume_snapshot(self, delete_button, row):
+        """Per-entity delete row action."""
         delete_button.click()
         return forms.BaseFormRegion(self.driver, self.conf)
 
@@ -76,29 +84,24 @@ class VolumesnapshotsPage(basepage.BaseNavigationPage):
 
     def delete_volume_snapshot(self, name):
         row = self._get_row_with_volume_snapshot_name(name)
-        row.mark()
-        confirm_form = self.volumesnapshots_table.delete_volume_snapshot()
+        confirm_form = self.volumesnapshots_table.delete_volume_snapshot(row)
+        confirm_form.submit()
+
+    def delete_volume_snapshots(self, names):
+        for name in names:
+            row = self._get_row_with_volume_snapshot_name(name)
+            row.mark()
+        confirm_form = self.volumesnapshots_table.delete_volume_snapshots()
         confirm_form.submit()
 
     def is_volume_snapshot_deleted(self, name):
-        try:
-            getter = lambda: self._get_row_with_volume_snapshot_name(name)
-            self.wait_till_element_disappears(getter)
-        except exceptions.TimeoutException:
-            return False
-        return True
+        return self.volumesnapshots_table.is_row_deleted(
+            lambda: self._get_row_with_volume_snapshot_name(name))
 
     def is_volume_snapshot_available(self, name):
         row = self._get_row_with_volume_snapshot_name(name)
-
-        def cell_getter():
-            return row.cells[self.SNAPSHOT_TABLE_STATUS_COLUMN]
-
-        try:
-            self._wait_till_text_present_in_element(cell_getter, 'Available')
-        except exceptions.TimeoutException:
-            return False
-        return True
+        return self.volumesnapshots_table.is_cell_status(
+            lambda: row.cells[self.SNAPSHOT_TABLE_STATUS_COLUMN], 'Available')
 
     def get_volume_name(self, snapshot_name):
         row = self._get_row_with_volume_snapshot_name(snapshot_name)

@@ -1,33 +1,89 @@
-# Translations template for PROJECT.
-# Copyright (C) 2015 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-#
-# Translators:
-# Allerson Yao, 2015
-# 刘俊朋 <liujunpeng@inspur.com>, 2015
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Xu Yang <yizhongchuanqi@163.com>, 2015. #zanata
 # Yu Zhiuguo <yuzg@cn.fujitsu.com>, 2015. #zanata
 # zhangjingwen <zhangjingwen@cn.fujitsu.com>, 2015. #zanata
-# will zhou <zzxwill@gmail.com>, 2016. #zanata
+# Gaoxiao Zhu <zhu.gaoxiao@h3c.com>, 2016. #zanata
+# Linda <duleish@cn.ibm.com>, 2016. #zanata
+# Zheng Xi Zhou <zzxwill@gmail.com>, 2016. #zanata
+# vuuv <froms2008@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-02-22 18:18+0000\n"
+"POT-Creation-Date: 2016-03-16 02:16+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-02-23 02:27+0000\n"
-"Last-Translator: will zhou <zzxwill@gmail.com>\n"
-"Language: zh-CN\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"Generated-By: Babel 2.0\n"
-"X-Generator: Zanata 3.7.3\n"
+"PO-Revision-Date: 2016-03-16 02:59+0000\n"
+"Last-Translator: vuuv <froms2008@gmail.com>\n"
 "Language-Team: Chinese (China)\n"
+"Language: zh-CN\n"
+"X-Generator: Zanata 3.7.3\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "#"
+msgstr "#"
+
+#, python-format
+msgid "%(name)s deleted."
+msgstr "%(name)s 已删除。"
+
+#, python-format
+msgid "%s instance launched."
+msgid_plural "%s instances launched."
+msgstr[0] "启动了 %s 个实例。"
 
 msgid "(None)"
 msgstr "(无)"
+
+msgid "1"
+msgstr "1"
+
+msgid "2"
+msgstr "2"
+
+msgid "3"
+msgstr "3"
+
+msgid "4"
+msgstr "4"
+
+msgid "5"
+msgstr "5"
+
+msgid "6"
+msgstr "6"
+
+msgid "7"
+msgstr "7"
+
+msgid "8"
+msgstr "8"
+
+msgid ""
+"<input>\n"
+"                Public</input>"
+msgstr ""
+"<input>\n"
+"                公开</input>"
+
+msgid ""
+"<input>\n"
+"        Configuration Drive\n"
+"      </input>"
+msgstr ""
+"<input>\n"
+"        配置驱动器\n"
+"      </input>"
+
+msgid ""
+"<li><b>Image (with Create New Volume checked)</b>: This options uses an "
+"image to boot the instance, and creates a new volume to persist instance "
+"data. You can specify volume size and whether to delete the volume on "
+"deletion of the instance.</li>"
+msgstr ""
+"<li><b>镜像 (创建新卷)</b>：这个选项使用镜像启动实例，并且创建一个新卷用来持"
+"久化实例数据。您可以指定卷大小和在销毁实例时是否删除卷。</li>"
 
 msgid "<li><b>Image</b>: This option uses an image to boot the instance.</li>"
 msgstr "<li><b>镜像</b>：本选项使用一个镜像启动实例。</li>"
@@ -36,6 +92,44 @@ msgid ""
 "<li><b>Instance Snapshot</b>: This option uses an instance snapshot to boot "
 "the instance.</li>"
 msgstr "<li><b>实例快照</b>: 本选项使用一个实例快照启动实例。</li>"
+
+msgid ""
+"<li><b>Volume Snapshot</b>: This option uses a volume snapshot to boot the "
+"instance, and creates a new volume to persist instance data. You can choose "
+"to delete the volume on deletion of the instance.</li>"
+msgstr ""
+"<li><b>卷快照</b>：这选项使用一个卷快照启动实例，并且创建一个新卷来持久化实例"
+"数据。您可以选择在销毁实例时删除这个卷。</li>"
+
+msgid ""
+"<li><b>Volume</b>: This option uses a volume that already exists. It does "
+"not create a new volume. You can choose to delete the volume on deletion of "
+"the instance. <em>Note: when selecting Volume, you can only launch one "
+"instance.</em></li>"
+msgstr ""
+"<li><b>卷</b>：这个选项使用一个已存在的卷。它不创建一个新卷。您可以选择在销毁"
+"实例时删除卷。 <em>注意：当选择卷时，您只可以启动一个实例。</em></li>"
+
+msgid ""
+"A container is a storage compartment for your data and provides a way\n"
+"          for you to organize your data. You can think of a container as a\n"
+"          folder in Windows or a directory in UNIX. The primary difference\n"
+"          between a container and these other file system concepts is that\n"
+"          containers cannot be nested. You can, however, create an "
+"unlimited\n"
+"          number of containers within your account. Data must be stored in "
+"a\n"
+"          container so you must have at least one container defined in your\n"
+"          account prior to uploading data."
+msgstr ""
+"容器是储存您数据的存储室，\n"
+"便于您组织数据。\n"
+"您可以认为容器是 Windows 的文件夹，\n"
+"或者 Unix 的目录。\n"
+"容器和这些文件系统的主要区别是容器无法嵌套。\n"
+"但是，您可以在您的账号下创建无限个容器。\n"
+"数据必须存储在容器里，\n"
+"因此您必须在上传数据前在您的账号下定义至少一个容器。"
 
 msgid ""
 "A floating IP allows instances to be addressable from an external network.\n"
@@ -55,14 +149,36 @@ msgstr ""
 
 msgid ""
 "A key pair allows you to SSH into your newly created instance.\n"
-"      You may select an existing key pair, import a key pair, or generate a "
+"    You may select an existing key pair, import a key pair, or generate a "
 "new key pair."
 msgstr ""
 "密钥对允许您SSH到您新创建的实例。\n"
-"你可以选择一个已存在的密钥对、导入一个密钥对或生成一个新的密钥对。"
+"  你可以选择一个已存在的密钥对、导入一个密钥对或生成一个新的密钥对。"
+
+msgid ""
+"A key pair named '{$ctrl.createdKeypair.name$}' was successfully created. "
+"This key pair should automatically download."
+msgstr ""
+"名为 '{$ctrl.createdKeypair.name$}' 的密钥对已经创建成功。应该已经自动下载"
+"了。"
 
 msgid "A name is required for your instance."
 msgstr "您的实例名字是必须的。"
+
+msgid "AKI"
+msgstr "AKI"
+
+msgid "AMI"
+msgstr "AMI"
+
+msgid "ARI"
+msgstr "ARI"
+
+msgid "Action"
+msgstr "操作"
+
+msgid "Actions"
+msgstr "动作"
 
 msgid "Active"
 msgstr "运行中"
@@ -113,17 +229,50 @@ msgid ""
 "instance in the dashboard."
 msgstr "实例名是必须的，用来帮助您在仪表盘中区分实例。"
 
+msgid "Another action"
+msgstr "另一操作"
+
+msgid "Architecture"
+msgstr "架构"
+
+#, python-format
+msgid "Are you sure you want to delete %(name)s?"
+msgstr "确认删除 %(name)s ？"
+
+#, python-format
+msgid "Are you sure you want to delete %(numSelected)s files?"
+msgstr "确认删除 %(numSelected)s 个文件？"
+
+#, python-format
+msgid "Are you sure you want to delete container %(name)s?"
+msgstr "确认删除容器 %(name)s ？"
+
 msgid "Automatic"
 msgstr "自动"
 
 msgid "Availability Zone"
 msgstr "可用域"
 
+msgid "Available"
+msgstr "可用"
+
+msgid "Brand"
+msgstr "品牌"
+
+msgid "Button"
+msgstr "按钮"
+
+msgid "Buttons"
+msgstr "按钮"
+
 msgid "Cancel"
 msgstr "取消"
 
 msgid "Cannot get service catalog from keystone."
 msgstr "无法从认证获取服务目录。"
+
+msgid "Cannot get the extension list."
+msgstr "无法获取扩展列表。"
 
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
@@ -133,29 +282,114 @@ msgstr ""
 "如果您想将元数据写入指定的配置驱动器中，请选中<b>配置驱动</b> 复选框。当实例"
 "启动时，就会追加<b>配置驱动</b>并访问元数据。"
 
+msgid "Checksum"
+msgstr "校验和"
+
+msgid ""
+"Clear Selection\n"
+"            <span>{$ oc.numSelected $}</span>"
+msgstr ""
+"取消选择\n"
+"            <span>{$ oc.numSelected $}</span>"
+
 msgid "Click to see more details"
 msgstr "点击查看更多细节"
+
+msgid "Color"
+msgstr "颜色"
 
 msgid "Configuration"
 msgstr "配置"
 
-msgid "Configuration Drive"
-msgstr "配置驱动器"
+msgid "Confirm Delete"
+msgstr "确认删除"
 
-msgid "Configuration Help"
-msgstr "配置帮助"
+msgid "Confirm Delete Image"
+msgid_plural "Confirm Delete Images"
+msgstr[0] "确认删除镜像"
 
-msgid "Count"
-msgstr "计数"
+msgid "Container"
+msgstr "容器"
+
+#, python-format
+msgid "Container %(name)s created."
+msgstr "容器 %(name)s 已创建。"
+
+#, python-format
+msgid "Container %(name)s deleted."
+msgstr "容器 %(name)s 已删除。"
+
+#, python-format
+msgid "Container %(name)s is now %(access)s."
+msgstr "容器 %(name)s 现在 %(access)s 了。"
+
+msgid "Container Access"
+msgstr "访问容器"
+
+msgid "Container Format"
+msgstr "容器格式"
+
+msgid "Container Name"
+msgstr "容器名称"
+
+msgid "Container name must not contain \"/\"."
+msgstr "容器名称不能包含“/”"
+
+msgid "Containers"
+msgstr "容器"
+
+msgid "Content Type"
+msgstr "内容类型"
+
+msgid ""
+"Count\n"
+"          <span></span>"
+msgstr ""
+"数量\n"
+"          <span></span>"
+
+msgid "Create"
+msgstr "创建"
+
+msgid "Create Container"
+msgstr "创建容器"
+
+msgid "Create Folder"
+msgstr "创建目录"
+
+msgid ""
+"Create Folder In: {$ ctrl.model.container.name $}\n"
+"    <span>: {$ ctrl.model.folder $}</span>"
+msgstr ""
+"创建目录： {$ ctrl.model.container.name $}，位于\n"
+"    <span>: {$ ctrl.model.folder $}</span>"
 
 msgid "Create Key Pair"
 msgstr "创建秘钥对"
 
+msgid "Create Keypair"
+msgstr "创建密钥对"
+
 msgid "Create New Volume"
 msgstr "创建新卷"
 
+msgid "Create Volume"
+msgstr "创建云硬盘"
+
 msgid "Created"
 msgstr "已创建"
+
+msgid "Created At"
+msgstr "创建于"
+
+msgid "Created keypair: "
+msgstr "已创建密钥对:"
+
+msgid "Creating"
+msgstr "创建中"
+
+msgid "Custom Properties"
+msgstr "定制属性"
 
 msgid ""
 "Custom scripts are attached to instances to perform specific actions when "
@@ -167,26 +401,98 @@ msgstr ""
 "操作系统内安装<samp>cloud-init</samp>，你可以使用自定义脚本获取一个公钥并把它"
 "添加到用户账户中。"
 
+msgid "DNS Domain"
+msgstr "DNS 域"
+
+msgid "DNS Domains"
+msgstr "DNS 域"
+
+msgid "DNS Record"
+msgstr "DNS 记录"
+
+msgid "DNS Records"
+msgstr "DNS 记录"
+
 msgid "Danger"
 msgstr "危险"
+
+msgid "Data"
+msgstr "数据"
+
+msgid "Date"
+msgstr "日期"
+
+msgid "Date Created"
+msgstr "创建时间"
+
+msgid "Default"
+msgstr "默认值"
 
 msgid "Default button"
 msgstr "默认按钮"
 
+msgid "Delete"
+msgstr "删除"
+
+msgid "Delete Container"
+msgstr "删除容器"
+
+msgid "Delete Image"
+msgid_plural "Delete Images"
+msgstr[0] "删除镜像"
+
+msgid "Delete Images"
+msgstr "删除镜像"
+
+msgid "Delete Selection"
+msgstr "删除选中"
+
+msgid "Delete Volume on Instance Delete"
+msgstr "删除云主机时删除云硬盘"
+
 msgid "Deleted"
 msgstr "删除"
+
+#, python-format
+msgid "Deleted Image: %s."
+msgid_plural "Deleted Images: %s."
+msgstr[0] "已删除的镜像： %s"
+
+msgid "Deleted."
+msgstr "已删除。"
+
+msgid "Deleting"
+msgstr "删除中"
 
 msgid "Description"
 msgstr "描述"
 
+msgid "Description:"
+msgstr "描述："
+
+msgid "Details"
+msgstr "详情"
+
 msgid "Device Name"
 msgstr "设备名称"
+
+msgid "Dialogs"
+msgstr "会话"
 
 msgid "Direction"
 msgstr "直连"
 
+msgid "Disabled"
+msgstr "禁用"
+
+msgid "Disk Format"
+msgstr "磁盘格式"
+
 msgid "Disk Partition"
 msgstr "磁盘分区"
+
+msgid "Docker"
+msgstr "Docker"
 
 msgid "Domain ID"
 msgstr "域ID"
@@ -194,14 +500,35 @@ msgstr "域ID"
 msgid "Down"
 msgstr "停止"
 
+msgid "Download"
+msgstr "下载"
+
+msgid "Dropdown"
+msgstr "下拉菜单"
+
+msgid "Dropdown header"
+msgstr "下拉菜单标题"
+
+msgid "Dropdown link"
+msgstr "下拉列表链接"
+
 msgid "Email"
 msgstr "邮箱"
 
 msgid "Enabled"
 msgstr "激活"
 
+msgid "Encrypted"
+msgstr "加密的"
+
 msgid "Ephemeral Disk"
 msgstr "临时磁盘"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Error Deleting"
+msgstr "删除时出错"
 
 msgid "Ether Type"
 msgstr "以太网类型"
@@ -213,22 +540,54 @@ msgstr "扩展没有启用：%(extension)s。"
 msgid "External Network"
 msgstr "外部网络"
 
+msgid "Failed to delete."
+msgstr "删除失败。"
+
+msgid "File"
+msgstr "文件"
+
+#, python-format
+msgid "File %(name)s uploaded."
+msgstr "文件 %(name)s 已上传。"
+
+msgid "File Name"
+msgstr "文件名"
+
+msgid "Filename"
+msgstr "文件名"
+
 msgid "Fingerprint"
 msgstr "指纹"
 
 msgid "Flavor"
 msgstr "云主机类型"
 
-msgid "Flavor Help"
-msgstr "类型帮助"
+msgid "Flavor Name"
+msgstr "云主机名称"
+
+msgid "Flavors"
+msgstr "云主机类型"
 
 msgid ""
 "Flavors manage the sizing for the compute, memory and storage capacity of "
 "the instance."
 msgstr "类型管理实例的计算、内存和存储容量的大小。"
 
+msgid "Folder"
+msgstr "目录"
+
+#, python-format
+msgid "Folder %(name)s created."
+msgstr "目录 %(name)s 已创建。"
+
+msgid "Folder Name"
+msgstr "目录名"
+
 msgid "Format"
 msgstr "镜像格式"
+
+msgid "Forms"
+msgstr "表单"
 
 msgid ""
 "From a Windows system, you can use PuTTYGen to create private/public keys.\n"
@@ -242,8 +601,37 @@ msgstr ""
 "然后复制红色高亮框中的公钥到您的\n"
 "<samp>.ssh/authorized_keys</samp>文件。"
 
+msgid "Hash"
+msgstr "Hash"
+
+msgid "Heading 1"
+msgstr "一级标题"
+
+msgid "Heading 2"
+msgstr "二级标题"
+
+msgid "Heading 3"
+msgstr "三级标题"
+
+msgid "Heading 4"
+msgstr "四级标题"
+
+msgid "Heading 5"
+msgstr "五级标题"
+
+msgid "Heading 6"
+msgstr "六级标题"
+
 msgid "ID"
 msgstr "ID"
+
+msgid "ISO"
+msgstr "ISO"
+
+msgid ""
+"If \"No volume type\" is selected, the volume will be created without a "
+"volume type."
+msgstr "如果\"No volume type\"被选中, 被创建的云硬盘将没有云硬盘类型。"
 
 msgid ""
 "If a network is shared, then all users in the project can access the network."
@@ -256,6 +644,18 @@ msgid ""
 msgstr ""
 "如果实例启动前没有绑定安全组，在实例部署后您将只有非常有限的访问权限。您只能"
 "从VNC控制台访问实例。"
+
+msgid "If not, you can manually dowload this keypair at the following link:"
+msgstr "如果没自动下载，请点击如下链接手动下载："
+
+msgid ""
+"If you select an availability zone and plan to use the 'boot from volume' "
+"option in the Source step, make sure that the availability zone you select "
+"for the instance is the same availability zone where your bootable volume "
+"resides."
+msgstr ""
+"如果您选择一个可用域并且计划在‘启动源’这步使用‘从卷启动’选项，确保您为实例选"
+"择的可用域与您启动卷所在的域相同。"
 
 msgid ""
 "If you want to create an instance that uses ephemeral storage, meaning the "
@@ -279,6 +679,9 @@ msgstr "镜像"
 msgid "Image Name"
 msgstr "镜像名称"
 
+msgid "Images"
+msgstr "镜像"
+
 msgid "Impact on your quota"
 msgstr "影响您的配额"
 
@@ -288,42 +691,68 @@ msgstr "导入秘钥对"
 msgid "Info"
 msgstr "信息"
 
-msgid "Instance Details"
-msgstr "实例详情"
-
-msgid "Instance Name"
-msgstr "实例名字"
+msgid ""
+"Instance Name\n"
+"          <span></span>"
+msgstr ""
+"实例名称\n"
+"          <span></span>"
 
 msgid "Instance Snapshot"
 msgstr "云主机快照"
 
-msgid "Instance Source"
-msgstr "云主机源"
-
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "实例数是必须的而且必须是至少为1的整数。"
+
+msgid ""
+"Instance source is the template used to create an instance. You can use a "
+"snapshot of an existing instance, an image, or a volume (if enabled).\n"
+"      You can also choose to use persistent storage by creating a new volume."
+msgstr ""
+"实例启动源是用来创建一个实例的模板。您可以用已存在实例的快照、镜像或者卷(如果"
+"能引导)。\n"
+"您也可以选择创建一个新的卷以便使用持久化存储。"
 
 msgid "Insufficient privilege level to view user information."
 msgstr "查看用户信息权限不足。"
 
+msgid "Kernel ID"
+msgstr "内核 ID"
+
 msgid "Key Pair"
 msgstr "密钥对"
 
-msgid "Key Pair Help"
-msgstr "秘钥对帮助"
+msgid ""
+"Key Pair Name\n"
+"        <span></span>"
+msgstr ""
+"密钥对名称\n"
+"        <span></span>"
 
-msgid "Key Pair Name"
-msgstr "密钥对名字"
+msgid "Key Pairs"
+msgstr "密钥对"
 
 msgid ""
 "Key Pairs are how you login to your instance after it is launched.\n"
-"        Choose a key pair name you will recognize and paste your SSH public "
+"      Choose a key pair name you will recognize and paste your SSH public "
 "key into the\n"
-"        space provided."
+"      space provided."
 msgstr ""
 "密钥对是您在实例启动后登陆进去的一种方式。\n"
 "选择一个您易于识别的密钥对名字，并把您的SSH公钥粘贴到\n"
 "空白处。"
+
+msgid ""
+"Key Pairs are how you login to your instance after it is launched.\n"
+"      Choose a key pair name you will recognize.\n"
+"      Names may only include alphanumeric characters, spaces, or dashes."
+msgstr ""
+"密钥对是您在实例启动后登陆进去的一种方式。\n"
+"选择一个您易于识别的密钥对名字，\n"
+"名字只能由半角的字母、数字、空格、减号组成。"
+
+msgid "Keypair already exists or name contains bad characters."
+msgstr "密钥对已经存在或者名称包含不安全的字符。"
 
 msgid "Killed"
 msgstr "终止"
@@ -331,17 +760,53 @@ msgstr "终止"
 msgid "Large button"
 msgstr "大按钮"
 
+msgid "Launch"
+msgstr "启动"
+
 msgid "Launch Instance"
 msgstr "启动实例"
 
 msgid "Left"
 msgstr "左"
 
+msgid "Library"
+msgstr "库"
+
+msgid "Link"
+msgstr "链接"
+
+msgid "Load Balancer Pool"
+msgstr "负载均衡器（load balancer）池"
+
+msgid "Load Balancer Pool Member"
+msgstr "负载均衡器（load balancer）池成员"
+
+msgid "Load Balancer Pool Members"
+msgstr "负载均衡器（load balancer）池成员"
+
+msgid "Load Balancer Pools"
+msgstr "负载均衡器（load balancer）池"
+
+msgid "Loading"
+msgstr "加载中"
+
 msgid "Manual"
 msgstr "手动"
 
 msgid "Max Port"
 msgstr "最大端口"
+
+msgid "Members"
+msgstr "成员"
+
+msgid "Metadata"
+msgstr "元数据"
+
+msgid "Metadata Definition"
+msgstr "元数据定义"
+
+msgid "Metadata Definitions"
+msgstr "元数据定义"
 
 msgid "Middle"
 msgstr "中"
@@ -361,6 +826,12 @@ msgstr "最小内存"
 msgid "Min RAM (MB)"
 msgstr "最小内存 (MB)"
 
+msgid "Min. Disk"
+msgstr "最小磁盘大小"
+
+msgid "Min. RAM"
+msgstr "最小内存"
+
 msgid "Mini button"
 msgstr "迷你按钮"
 
@@ -370,11 +841,35 @@ msgstr "名称"
 msgid "Navbar"
 msgstr "导航条"
 
+msgid "Navs"
+msgstr "导航"
+
 msgid "Network"
 msgstr "网络"
 
-msgid "Network Help"
-msgstr "网络帮助"
+msgid "Network Health Monitor"
+msgstr "网络健康监控"
+
+msgid "Network Health Monitors"
+msgstr "网络健康监控"
+
+msgid "Network Port"
+msgstr "网络接口"
+
+msgid "Network Ports"
+msgstr "网络接口"
+
+msgid "Network Router"
+msgstr "网络路由器"
+
+msgid "Network Routers"
+msgstr "网络路由器"
+
+msgid "Network Subnet"
+msgstr "网络子网"
+
+msgid "Network Subnets"
+msgstr "网络子网"
 
 msgid "Network characteristics"
 msgstr "网络特性"
@@ -391,14 +886,91 @@ msgstr "否"
 msgid "No available items"
 msgstr "没有可选项"
 
+msgid ""
+"Note: A Public Container will allow anyone with the Public URL to\n"
+"          gain access to your objects in the container."
+msgstr ""
+"注意：一个公有容器会允许任何人通过公共URL\n"
+"去使用你容器里面的对象。"
+
+msgid ""
+"Note: Delimiters ('{$ ctrl.model.DELIMETER $}') are allowed in the\n"
+"          file name to place the new file into a folder that will be "
+"created\n"
+"          when the file is uploaded (to any depth of folders)."
+msgstr ""
+"注意：您可以在文件名中使用路径分隔符 ('{$ ctrl.model.DELIMETER $}') \n"
+"来指定所放置的目录（深度不限），\n"
+"文件上传后会自动创建相关目录。"
+
+msgid ""
+"Note: Delimiters ('{$ ctrl.model.DELIMETER $}') are allowed in the\n"
+"          folder name to create deep folders."
+msgstr ""
+"注意：您可以使用路径分隔符 ('{$ ctrl.model.DELIMETER $}') \n"
+"来创建多层目录。"
+
+msgid "Note: you will not be able to download this later."
+msgstr "注意：今后您将无法下载此密钥对。"
+
 msgid "Number"
 msgstr "序号"
+
+msgid "OVA"
+msgstr "OVA"
+
+msgid "Object"
+msgstr "对象"
+
+msgid "Object Account"
+msgstr "对象存储账户"
+
+msgid "Object Accounts"
+msgstr "对象存储账户"
+
+msgid "Object Container"
+msgstr "对象存储容器"
+
+msgid "Object Containers"
+msgstr "对象存储容器"
+
+msgid "Object Count"
+msgstr "对象数量"
+
+msgid "Object Details"
+msgstr "对象详情"
+
+msgid "Objects"
+msgstr "对象"
+
+msgid "Other Input Types"
+msgstr "其他输入类型"
+
+msgid "Overview"
+msgstr "概览"
+
+msgid "Owner"
+msgstr "所有者"
+
+msgid "Password"
+msgstr "密码"
 
 msgid "Pending Delete"
 msgstr "等待删除完成"
 
 msgid "Physical Network"
 msgstr "物理网络"
+
+msgid ""
+"Please provide the initial hostname for the instance, the availability zone "
+"where it will be deployed, and the instance count.\n"
+"    Increase the Count to create multiple instances with the same settings."
+msgstr ""
+"请提供实例的主机名，欲部署的可用区域和数量。\n"
+"增大数量以创建多个同样配置的实例。"
+
+msgid "Please try again."
+msgstr "请重试。"
 
 msgid "Policy check failed."
 msgstr "策略检查失败。"
@@ -408,6 +980,9 @@ msgstr "私有"
 
 msgid "Profile"
 msgstr "概要"
+
+msgid "Progress bars"
+msgstr "进度条"
 
 msgid "Project"
 msgstr "项目"
@@ -441,8 +1016,21 @@ msgstr ""
 msgid "Public"
 msgstr "公有"
 
+msgid "Public Access"
+msgstr "公开访问"
+
 msgid "Public Key"
 msgstr "公钥"
+
+msgid ""
+"Public Key\n"
+"        <span></span>"
+msgstr ""
+"公钥\n"
+"        <span></span>"
+
+msgid "QCOW2"
+msgstr "QCOW2"
 
 msgid "Queued"
 msgstr "已排队"
@@ -450,14 +1038,23 @@ msgstr "已排队"
 msgid "RAM"
 msgstr "内存"
 
+msgid "RAW"
+msgstr "RAW"
+
+msgid "Ramdisk ID"
+msgstr "内存盘 ID"
+
 msgid "Re-order items using drag and drop"
 msgstr "使用拖放重新排序"
+
+msgid "Record Properties"
+msgstr "记录属性"
 
 msgid "Remote"
 msgstr "远程"
 
 msgid "Required"
-msgstr "必须"
+msgstr "必需"
 
 msgid "Root Disk"
 msgstr "根磁盘"
@@ -465,14 +1062,20 @@ msgstr "根磁盘"
 msgid "Save"
 msgstr "保存"
 
+msgid "Save changes"
+msgstr "保存变更"
+
 msgid "Saving"
 msgstr "保存中"
 
+msgid "Search"
+msgstr "搜索"
+
+msgid "Security"
+msgstr "安全"
+
 msgid "Security Groups"
 msgstr "安全组"
-
-msgid "Security Groups Help"
-msgstr "安全组帮助"
 
 msgid ""
 "Security groups are project-specific and cannot be shared across projects."
@@ -493,14 +1096,23 @@ msgstr ""
 msgid "Segmentation ID"
 msgstr "段ID"
 
+msgid "Select All"
+msgstr "全选"
+
 msgid "Select Boot Source"
 msgstr "选择源"
+
+msgid "Select a container to browse."
+msgstr "选择要浏览的容器（container）"
 
 msgid "Select a key pair from the available key pairs below."
 msgstr "从以下可用的密钥对选择一个"
 
 msgid "Select a source from those listed below."
 msgstr "从以下列表选择一个源。"
+
+msgid "Select a zone"
+msgstr "选择域"
 
 msgid "Select an item from Available items below"
 msgstr "从以下可选项中选择一项"
@@ -520,8 +1132,14 @@ msgstr "选择一个或多个"
 msgid "Select one or more security groups from the available groups below."
 msgstr "从以下可用的组中选择一个或多个安全组。"
 
-msgid "Select the security groups."
-msgstr "选择安全组。"
+msgid "Select the security groups to launch the instance in."
+msgstr "要在其中启动实例的安全组。"
+
+msgid "Server"
+msgstr "Server"
+
+msgid "Servers"
+msgstr "Servers"
 
 #, python-format
 msgid "Service type is not enabled: %(desiredType)s"
@@ -533,6 +1151,9 @@ msgstr "配置没有启用：%(setting)s"
 
 msgid "Shared"
 msgstr "共享的"
+
+msgid "Shared with Me"
+msgstr "与我共享"
 
 msgid "Size"
 msgstr "大小"
@@ -546,8 +1167,20 @@ msgstr "小按钮"
 msgid "Snapshot"
 msgstr "快照"
 
+msgid "Something else here"
+msgstr "此处为其他内容"
+
+msgid "Source"
+msgstr "源"
+
+msgid "Source Code"
+msgstr "源代码"
+
 msgid "Status"
 msgstr "状态"
+
+msgid "Submit"
+msgstr "提交"
 
 msgid "Subnets Associated"
 msgstr "子网已连接"
@@ -558,6 +1191,15 @@ msgstr "成功"
 #, python-format
 msgid "Successfully imported key pair %(name)s."
 msgstr "成功导入密钥对%(name)s"
+
+msgid "Swap Disk"
+msgstr "Swap磁盘"
+
+msgid "Tables"
+msgstr "表格"
+
+msgid "Tags"
+msgstr "标签"
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -579,6 +1221,29 @@ msgid ""
 "The instance count must not exceed your quota available of "
 "%(maxInstanceCount)s instances"
 msgstr "实例数不能超过您的最大可用%(maxInstanceCount)s 实例数"
+
+msgid ""
+"The maximum number of key-value pairs that can be supplied per instance is "
+"determined by the compute provider."
+msgstr "每个实例的密钥对数量上限由其计算服务提供者决定。"
+
+#, python-format
+msgid ""
+"The selected %(sourceType)s source requires a flavor with at least "
+"%(minDisk)s GB of root disk. Select a flavor with a larger root disk or use "
+"a different %(sourceType)s source."
+msgstr ""
+"选择的 %(sourceType)s 启动源需要一个至少 %(minDisk)s GB 根磁盘的实例类型。请"
+"选择一个根磁盘更大的类型或使用其他 %(sourceType)s 启动源。"
+
+#, python-format
+msgid ""
+"The selected %(sourceType)s source requires a flavor with at least "
+"%(minRam)s MB of RAM. Select a flavor with more RAM or use a different "
+"%(sourceType)s source."
+msgstr ""
+"选择的 %(sourceType)s 启动源需要一个至少 %(minRam)s MB 内存的实例类型。请选择"
+"一个内存更大的类型或使用其他 %(sourceType)s 启动源。"
 
 msgid "The status indicates whether the network has an active connection."
 msgstr "状态表明网络是否处于活跃连接。"
@@ -622,6 +1287,28 @@ msgstr ""
 "这个类型需要比您的配额允许的更多的虚拟处理器核数。请选择一个小的类型或减少实"
 "例数。"
 
+msgid "This limit is currently not set."
+msgstr "当前没有限制。"
+
+msgid "This limit is currently set to {$ model.novaLimits.maxServerMeta $}."
+msgstr "当前限制为 {$ model.novaLimits.maxServerMeta $} 。"
+
+msgid "This step allows you to add Metadata items to your instance."
+msgstr "此步骤允许您为实例添加元数据条目。"
+
+msgid "Time"
+msgstr "时间"
+
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgid ""
+"To view source code, hover over a section, then click the <a><span></span></"
+"a> button in the top right of that section."
+msgstr ""
+"要查看源代码，请使光标悬浮在某节上，然后单击该节右上角的 <a><span></span></"
+"a> 按钮。"
+
 msgid "Total Disk"
 msgstr "磁盘总计"
 
@@ -645,8 +1332,32 @@ msgstr ""
 "直接在自定义脚本输入框中写入您的脚本。如果您的浏览器支持HTML5文件API，你可以"
 "选择从文件加载您的脚本。您的脚本的大小不能超过16Kb。"
 
+msgid "Unable to allocate new floating IP address."
+msgstr "无法分配新浮动IP地址。"
+
+msgid "Unable to associate floating IP address."
+msgstr "无法绑定浮动IP地址。"
+
+msgid "Unable to change the container access."
+msgstr "无法更改容器访问类型。"
+
+msgid "Unable to copy the object."
+msgstr "无法复制对象。"
+
+msgid "Unable to create the container."
+msgstr "无法创建容器。"
+
 msgid "Unable to create the domain."
 msgstr "无法创建域。"
+
+msgid "Unable to create the flavor."
+msgstr "无法创建云主机类型。"
+
+msgid "Unable to create the folder."
+msgstr "无法创建文件夹。"
+
+msgid "Unable to create the image."
+msgstr "无法创建镜像。"
 
 msgid "Unable to create the keypair."
 msgstr "无法创建密钥对。"
@@ -669,11 +1380,36 @@ msgstr "无法创建子网。"
 msgid "Unable to create the user."
 msgstr "无法创建用户。"
 
+msgid "Unable to create the volume."
+msgstr "无法创建云硬盘。"
+
+#, python-format
+msgid "Unable to delete Image: %s."
+msgid_plural "Unable to delete Images: %s."
+msgstr[0] "无法删除镜像： %s 。"
+
+msgid "Unable to delete the container."
+msgstr "无法删除容器。"
+
 msgid "Unable to delete the domain."
 msgstr "无法删除域。"
 
 msgid "Unable to delete the domains."
 msgstr "无法删除域。"
+
+#, python-format
+msgid "Unable to delete the flavor with id: %(id)s"
+msgstr "无法删除 ID 为 %(id)s 的实例类型"
+
+msgid "Unable to delete the folder because it is not empty."
+msgstr "无法删除文件夹，因为它是非空的。"
+
+#, python-format
+msgid "Unable to delete the image with id: %(id)s"
+msgstr "无法删除 ID 为 %(id)s 的镜像"
+
+msgid "Unable to delete the object."
+msgstr "无法删除对象。"
 
 msgid "Unable to delete the project."
 msgstr "无法删除项目。"
@@ -692,6 +1428,12 @@ msgstr "无法删除用户。"
 
 msgid "Unable to delete the users."
 msgstr "无法删除用户。"
+
+msgid "Unable to disassociate floating IP address."
+msgstr "无法解除绑定浮动IP地址。"
+
+msgid "Unable to edit instance metadata."
+msgstr "无法编辑云主机元数据。"
 
 msgid "Unable to edit the aggregate extra specs."
 msgstr "无法编辑聚合额外的规格。"
@@ -717,8 +1459,32 @@ msgstr "无法编辑用户。"
 msgid "Unable to fetch the service catalog."
 msgstr "无法取得服务目录"
 
+msgid "Unable to fetch the services."
+msgstr "无法获取服务。"
+
+msgid "Unable to generate"
+msgstr "无法生成"
+
+msgid "Unable to get details of the object."
+msgstr "无法获取对象详情。"
+
+msgid "Unable to get the Glance service version."
+msgstr "无法获取Glance服务版本。"
+
 msgid "Unable to get the Keystone service version."
 msgstr "无法获取Keystone服务版本"
+
+msgid "Unable to get the Swift container listing."
+msgstr "无法获取Swift容器列表。"
+
+msgid "Unable to get the Swift service info."
+msgstr "无法获取Swift服务信息。"
+
+msgid "Unable to get the container details."
+msgstr "无法获取容器详情。"
+
+msgid "Unable to get the objects in container."
+msgstr "无法获取容器中的对象。"
 
 msgid "Unable to grant the role."
 msgstr "无法授予角色"
@@ -726,8 +1492,29 @@ msgstr "无法授予角色"
 msgid "Unable to import the keypair."
 msgstr "无法导入密钥对。"
 
+msgid "Unable to retrieve floating IP pools."
+msgstr "找不到浮动IP池。"
+
+msgid "Unable to retrieve floating IPs."
+msgstr "无法获取浮动IP。"
+
+msgid "Unable to retrieve instance metadata."
+msgstr "无法获取云主机元数据。"
+
+msgid "Unable to retrieve instances."
+msgstr "无法获取云主机。"
+
 msgid "Unable to retrieve settings."
 msgstr "无法获取配置。"
+
+msgid "Unable to retrieve the Absolute Limits."
+msgstr "无法获取绝对限制。"
+
+msgid "Unable to retrieve the QoS Specs."
+msgstr "无法获取QoS规格。"
+
+msgid "Unable to retrieve the agents."
+msgstr "无法获取代理。"
 
 msgid "Unable to retrieve the aggregate extra specs."
 msgstr "无法获取聚合额外的规格。"
@@ -735,8 +1522,14 @@ msgstr "无法获取聚合额外的规格。"
 msgid "Unable to retrieve the availability zones."
 msgstr "无法获取可用域。"
 
+msgid "Unable to retrieve the cinder services."
+msgstr "无法获取cinder服务。"
+
 msgid "Unable to retrieve the current user session."
 msgstr "无法获取当前用户会话。"
+
+msgid "Unable to retrieve the default volume type."
+msgstr "无法获取默认云硬盘类型。"
 
 msgid "Unable to retrieve the domain."
 msgstr "无法获取域。"
@@ -755,6 +1548,9 @@ msgstr "无法获取类型。"
 
 msgid "Unable to retrieve the flavors."
 msgstr "无法获取类型。"
+
+msgid "Unable to retrieve the heat services."
+msgstr "无法获取heat服务。"
 
 msgid "Unable to retrieve the image custom properties."
 msgstr "无法获得镜像的定制属性。"
@@ -777,6 +1573,9 @@ msgstr "无法获取命名空间。"
 msgid "Unable to retrieve the networks."
 msgstr "无法获取网络。"
 
+msgid "Unable to retrieve the nova services."
+msgstr "无法获取nova服务。"
+
 msgid "Unable to retrieve the ports."
 msgstr "无法获取端口。"
 
@@ -785,6 +1584,9 @@ msgstr "无法获取项目。"
 
 msgid "Unable to retrieve the projects."
 msgstr "无法获取项目。"
+
+msgid "Unable to retrieve the resource types."
+msgstr "无法获取资源类型。"
 
 msgid "Unable to retrieve the role."
 msgstr "无法获取角色。"
@@ -810,11 +1612,32 @@ msgstr "无法获取用户。"
 msgid "Unable to retrieve the volume snapshots."
 msgstr "无法获取卷快照。"
 
+msgid "Unable to retrieve the volume type."
+msgstr "无法获取云硬盘类型。"
+
+msgid "Unable to retrieve the volume types."
+msgstr "无法获得云硬盘类型。"
+
+msgid "Unable to retrieve the volume."
+msgstr "无法获得云硬盘。"
+
 msgid "Unable to retrieve the volumes."
 msgstr "无法获取卷。"
 
+msgid "Unable to update the flavor."
+msgstr "无法更新云主机类型。"
+
+msgid "Unable to update the image."
+msgstr "无法删除镜像。"
+
+msgid "Unable to upload the object."
+msgstr "无法上传对象。"
+
 msgid "Unable to validate the template."
 msgstr "无法验证模板。"
+
+msgid "Unknown"
+msgstr "未知"
 
 msgid "Up"
 msgstr "正常"
@@ -828,8 +1651,36 @@ msgstr "更新云主机类型的元数据"
 msgid "Update Image Metadata"
 msgstr "更新镜像元数据"
 
+msgid "Update Instance Metadata"
+msgstr "更新实例元数据"
+
+msgid "Update Metadata"
+msgstr "更新元数据"
+
 msgid "Updated"
 msgstr "已更新"
+
+msgid "Updated At"
+msgstr "更新于"
+
+msgid "Upload File"
+msgstr "上传文件"
+
+msgid ""
+"Upload File To: {$ ctrl.model.container.name $}\n"
+"    <span>: {$ ctrl.model.folder $}</span>"
+msgstr ""
+"上传文件到: {$ ctrl.model.container.name $}\n"
+"    <span>: {$ ctrl.model.folder $}</span>"
+
+msgid "Uploading"
+msgstr "上传中"
+
+msgid "Url"
+msgstr "Url"
+
+msgid "Use image as a source"
+msgstr "使用镜像作为源"
 
 msgid "User ID"
 msgstr "用户ID"
@@ -840,17 +1691,73 @@ msgstr "用户名"
 msgid "VCPUS"
 msgstr "虚拟内核"
 
+msgid "VCPUs"
+msgstr "VCPUs"
+
+msgid "VDI"
+msgstr "VDI"
+
+msgid "VHD"
+msgstr "VHD"
+
+msgid "VMDK"
+msgstr "VMDK"
+
+msgid "View Details"
+msgstr "查看详情"
+
+msgid "Virtual Size"
+msgstr "虚拟大小"
+
 msgid "Visibility"
 msgstr "可见"
 
 msgid "Volume"
 msgstr "卷"
 
+#, python-format
+msgid "Volume %s was successfully created."
+msgstr "卷 %s 创建成功。"
+
+msgid "Volume Backup"
+msgstr "卷备份"
+
+msgid "Volume Backups"
+msgstr "卷备份"
+
+msgid "Volume Details"
+msgstr "云硬盘详情"
+
+msgid "Volume Quota"
+msgstr "云硬盘配额"
+
+msgid ""
+"Volume Size (GB)\n"
+"              <span></span>"
+msgstr ""
+"卷大小 (GB)\n"
+"              <span></span>"
+
 msgid "Volume Snapshot"
 msgstr "卷快照"
 
+msgid "Volume Snapshots"
+msgstr "云硬盘快照"
+
+msgid "Volume Type Description:"
+msgstr "云硬盘类型描述："
+
+msgid "Volume and Snapshot Quota (GB)"
+msgstr "云硬盘和快照配额(GB)"
+
 msgid "Volume size is required and must be an integer"
 msgstr "卷大小是必须的而且必须为整数。"
+
+msgid "Volumes"
+msgstr "云硬盘"
+
+msgid "Volumes are block devices that can be attached to instances."
+msgstr "云硬盘是可以附加到实例的块设备。"
 
 msgid ""
 "Volumes can only be attached to 1 active instance at a time. Please either "
@@ -861,6 +1768,12 @@ msgstr ""
 
 msgid "Warning"
 msgstr "警告"
+
+msgid "Warning!"
+msgstr "警告！"
+
+msgid "Week"
+msgstr "星期"
 
 msgid ""
 "When selecting volume as boot source, please ensure the instance's "
@@ -879,6 +1792,64 @@ msgstr ""
 
 msgid "Yes"
 msgstr "是"
+
+#, python-format
+msgid "You are not allowed to delete images: %s"
+msgstr "您不被允许删除这个镜像： %s"
+
+msgid ""
+"You can add arbitrary metadata to your instance so that you can more easily "
+"identify it among other running instances. Metadata is a collection of key-"
+"value pairs associated with an instance. The maximum length for each "
+"metadata key and value is 255 characters."
+msgstr ""
+"为了便于与其他实例做区分,您可以为您的实例添加任何元数据。元数据是关联到实例的"
+"键值对的集合。每个实例的键或值的长度不能超过255字节。"
+
+msgid ""
+"You can customize your instance after it has launched using the options "
+"available here.\n"
+"    \"Customization Script\" is analogous to \"User Data\" in other systems."
+msgstr ""
+"当你的实例使用下面选项启动后，你可以定制它。\n"
+"\"定制脚本\"与其它系统中的\"用户数据\"类似."
+
+#, python-format
+msgid "You have selected \"%s\". Deleted image is not recoverable."
+msgid_plural "You have selected \"%s\". Deleted images are not recoverable."
+msgstr[0] "您选择了“%s”。删除的镜像均无法恢复。"
+
+msgid "disabled"
+msgstr "已禁用"
+
+msgid "error"
+msgid_plural "errors"
+msgstr[0] "错误"
+
+msgid "image"
+msgstr "镜像"
+
+msgid "link"
+msgstr "链接"
+
+msgid "message"
+msgid_plural "messages"
+msgstr[0] "消息"
+
+msgid "snapshot"
+msgstr "快照"
+
+msgid "submit"
+msgid_plural "submits"
+msgstr[0] "提交"
+
+msgid "success"
+msgid_plural "successs"
+msgstr[0] "成功"
+
+msgid "title"
+msgid_plural "titles"
+msgstr[0] "标题"
 
 msgid "{$ row['provider:network_type'] $}"
 msgstr "{$ row['provider:network_type'] $}"

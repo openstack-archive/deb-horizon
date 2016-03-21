@@ -630,6 +630,45 @@ properties found in the Launch Instance modal.
 The ``config_drive`` setting specifies the default value for the Configuration
 Drive property.
 
+
+``LAUNCH_INSTANCE_NG_ENABLED``
+------------------------------
+
+.. versionadded:: 8.0.0(Liberty)
+
+Default: ``True``
+
+This setting enables the AngularJS Launch Instance workflow.
+
+.. note::
+
+    The default value for this has been changed to ``True`` in 9.0.0 (Mitaka)
+
+.. note::
+
+    It is possible to run both the AngularJS and Python workflows simultaneously,
+    so the other may be need to be toggled with ``LAUNCH_INSTANCE_LEGACY_ENABLED``
+
+
+``LAUNCH_INSTANCE_LEGACY_ENABLED``
+----------------------------------
+
+.. versionadded:: 8.0.0(Liberty)
+
+Default: ``False``
+
+This setting enables the Python Launch Instance workflow.
+
+.. note::
+
+    The default value for this has been changed to ``False`` in 9.0.0 (Mitaka)
+
+.. note::
+
+    It is possible to run both the AngularJS and Python workflows simultaneously,
+    so the other may be need to be toggled with ``LAUNCH_INSTANCE_NG_ENABLED``
+
+
 ``MESSAGES_PATH``
 -----------------
 
@@ -1024,8 +1063,6 @@ Default::
             'supported_vnic_types': ["*"],
             'segmentation_id_range': {},
             'enable_fip_topology_check': True,
-            'default_ipv4_subnet_pool_label': None,
-            'default_ipv6_subnet_pool_label': None,
         }
 
 A dictionary of settings which can be used to enable optional services provided
@@ -1219,6 +1256,11 @@ Neutron can be configured with a default Subnet Pool to be used for IPv4
 subnet-allocation. Specify the label you wish to display in the Address pool
 selector on the create subnet step if you want to use this feature.
 
+This option is now marked as "deprecated" and will be removed in Newton or
+a later release. If there exists a default Subnet Pool it will be automatically
+detected through the Neutron API and the label will be set to the name of the
+default Subnet Pool.
+
 ``default_ipv6_subnet_pool_label``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1230,7 +1272,13 @@ Neutron can be configured with a default Subnet Pool to be used for IPv6
 subnet-allocation. Specify the label you wish to display in the Address pool
 selector on the create subnet step if you want to use this feature.
 
-You must set this to enable IPv6 Prefix Delegation in a PD-capable environment.
+When using Liberty Neutron you must set this to enable IPv6 Prefix Delegation
+in a PD-capable environment.
+
+This option is now marked as "deprecated" and will be removed in Newton or
+a later release. If there exists a default Subnet Pool it will be automatically
+detected through the Neutron API and the label will be set to the name of the
+default Subnet Pool.
 
 ``OPENSTACK_SSL_CACERT``
 ------------------------

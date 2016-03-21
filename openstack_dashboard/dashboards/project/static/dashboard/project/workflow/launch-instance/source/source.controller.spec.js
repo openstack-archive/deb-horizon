@@ -20,6 +20,7 @@
     var noop = angular.noop;
 
     beforeEach(module('horizon.dashboard.project'));
+    beforeEach(module('horizon.framework'));
 
     describe('LaunchInstanceSourceController', function() {
       var scope, ctrl, $browser, deferred;
@@ -49,8 +50,8 @@
           newInstanceSpec: { source: [], source_type: '' },
           images: [ { id: 'image-1' }, { id: 'image-2' } ],
           imageSnapshots: [],
-          volumes: [],
-          volumeSnapshots: [],
+          volumes: [ { id: 'volume-1' }, { id: 'volume-2' } ],
+          volumeSnapshots: [ {id: 'snapshot-2'} ],
           novaLimits: {
             maxTotalInstances: 10,
             totalInstancesUsed: 0
@@ -78,7 +79,9 @@
       it('defines the correct boot source options', function() {
         expect(ctrl.bootSourcesOptions).toBeDefined();
         var types = ['image', 'snapshot', 'volume', 'volume_snapshot'];
-        var opts = ctrl.bootSourcesOptions.map(function(x) { return x.type; });
+        var opts = ctrl.bootSourcesOptions.map(function(x) {
+          return x.type;
+        });
         types.forEach(function(key) {
           expect(opts).toContain(key);
         });
@@ -186,15 +189,37 @@
         });
       });
 
+      it('defaults source to volume-2 if launchContext.volumeId = volume-2', function() {
+        scope.launchContext = { volumeId: 'volume-2' };
+        deferred.resolve();
+
+        $browser.defer.flush();
+
+        expect(ctrl.tableData.allocated[0]).toEqual({ id: 'volume-2' });
+        expect(scope.model.newInstanceSpec.source_type.type).toBe('volume');
+        expect(ctrl.currentBootSource).toBe('volume');
+      });
+
+      it('defaults source to snapshot-2 if launchContext.snapshotId = snapshot-2', function() {
+        scope.launchContext = { snapshotId: 'snapshot-2' };
+        deferred.resolve();
+
+        $browser.defer.flush();
+
+        expect(ctrl.tableData.allocated[0]).toEqual({ id: 'snapshot-2' });
+        expect(scope.model.newInstanceSpec.source_type.type).toBe('volume_snapshot');
+        expect(ctrl.currentBootSource).toBe('volume_snapshot');
+      });
+
       describe('Scope Functions', function() {
 
         describe('watchers', function () {
-          it('establishes three watches', function() {
-            expect(scope.$watch.calls.count()).toBe(3);
+          it('establishes five watches', function() {
+            expect(scope.$watch.calls.count()).toBe(6);
           });
 
-          it("establishes one watch collections", function () {
-            expect(scope.$watchCollection.calls.count()).toBe(1);
+          it("establishes two watch collections", function () {
+            expect(scope.$watchCollection.calls.count()).toBe(3);
           });
         });
 
@@ -215,6 +240,18 @@
             expect(Object.keys(ctrl.tableData)).toEqual(tableKeys);
             expect(ctrl.tableHeadCells.length).toBeGreaterThan(0);
             expect(ctrl.tableBodyCells.length).toBeGreaterThan(0);
+          });
+
+          it('should broadcast event when boot source changes', function() {
+            spyOn(scope, '$broadcast');
+            scope.$apply();
+
+            var selSource = 'volume';
+            ctrl.updateBootSourceSelection(selSource);
+            expect(ctrl.currentBootSource).toEqual('volume');
+
+            scope.$apply();
+            expect(scope.$broadcast).toHaveBeenCalled();
           });
         });
 
@@ -277,6 +314,7 @@
           });
         });
       });
+
     });
 
     describe('diskFormatFilter', function() {

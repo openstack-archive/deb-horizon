@@ -81,10 +81,9 @@ def is_deleting(instance):
     return task_state.lower() == "deleting"
 
 
-class DeleteInstance(policy.PolicyTargetMixin, tables.BatchAction):
+class DeleteInstance(policy.PolicyTargetMixin, tables.DeleteAction):
     name = "delete"
     classes = ("btn-danger",)
-    icon = "remove"
     policy_rules = (("compute", "compute:delete"),)
     help_text = _("Deleted instances are not recoverable.")
 
@@ -414,7 +413,7 @@ class LaunchLink(tables.LinkAction):
 
     def single(self, table, request, object_id=None):
         self.allowed(request, None)
-        return HttpResponse(self.render())
+        return HttpResponse(self.render(is_table_action=True))
 
 
 class LaunchLinkNG(LaunchLink):
@@ -1199,9 +1198,9 @@ class InstancesTable(tables.DataTable):
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
         launch_actions = ()
-        if getattr(settings, 'LAUNCH_INSTANCE_LEGACY_ENABLED', True):
+        if getattr(settings, 'LAUNCH_INSTANCE_LEGACY_ENABLED', False):
             launch_actions = (LaunchLink,) + launch_actions
-        if getattr(settings, 'LAUNCH_INSTANCE_NG_ENABLED', False):
+        if getattr(settings, 'LAUNCH_INSTANCE_NG_ENABLED', True):
             launch_actions = (LaunchLinkNG,) + launch_actions
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)

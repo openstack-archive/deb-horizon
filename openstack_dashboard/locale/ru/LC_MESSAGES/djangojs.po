@@ -1,34 +1,27 @@
-# Translations template for PROJECT.
-# Copyright (C) 2015 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-#
-# Translators:
-# Ilya Alekseyev <ilyaalekseyev@acm.org>, 2015
-# Ilya Shakhat <shakhat@gmail.com>, 2015
-# kogamatranslator49 <r.podarov@yandex.ru>, 2015
 # Antonio Kless <antoniok.spb@gmail.com>, 2015. #zanata
 # Fedor Tarasenko <feodor.tarasenko@gmail.com>, 2015. #zanata
 # Ilya Alekseyev <ilyaalekseyev@acm.org>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Denis Gubanov <v12aml@gmail.com>, 2016. #zanata
 # Fedor Tarasenko <feodor.tarasenko@gmail.com>, 2016. #zanata
+# Grigory Mokhin <mokhin@gmail.com>, 2016. #zanata
+# Ilya Alekseyev <ilyaalekseyev@acm.org>, 2016. #zanata
+# Nikolay Milekhin <rusmil01@ru.ibm.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-02 06:17+0000\n"
+"POT-Creation-Date: 2016-03-16 02:16+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-02-25 10:04+0000\n"
-"Last-Translator: Antonio Kless <antoniok.spb@gmail.com>\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
-"Generated-By: Babel 2.0\n"
-"X-Generator: Zanata 3.7.3\n"
+"PO-Revision-Date: 2016-03-10 05:59+0000\n"
+"Last-Translator: Ilya Alekseyev <ilyaalekseyev@acm.org>\n"
 "Language-Team: Russian\n"
+"Language: ru\n"
+"X-Generator: Zanata 3.7.3\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 msgid "#"
 msgstr "#"
@@ -60,6 +53,28 @@ msgstr "7"
 msgid "8"
 msgstr "8"
 
+msgid ""
+"<button></button>\n"
+"          <strong>Well done!</strong>\n"
+"          You successfully read\n"
+"          <a>this important alert message</a>."
+msgstr ""
+"<button></button>\n"
+"          <strong>Отлично!</strong>\n"
+"          Вы успешно прочитали\n"
+"          <a>это важное предупреждение</a>."
+
+msgid ""
+"<li><b>Image (with Create New Volume checked)</b>: This options uses an "
+"image to boot the instance, and creates a new volume to persist instance "
+"data. You can specify volume size and whether to delete the volume on "
+"deletion of the instance.</li>"
+msgstr ""
+"<li><b>Образ (с опцией Создать новый том)</b>: образ используется для "
+"загрузки экземпляра, при этом создается новый том для хранения данных "
+"экземпляра. Можно указать размер тома и установить, будет ли том удаляться "
+"при удалении экземпляра.</li>"
+
 msgid "<li><b>Image</b>: This option uses an image to boot the instance.</li>"
 msgstr ""
 "<li><b>Образ</b>: Данная опция использует образ в качестве источника для "
@@ -71,6 +86,11 @@ msgid ""
 msgstr ""
 "<li><b>Снимок инстанса</b>: Данная опция использует снимок инстанса для его "
 "загрузки.</li>"
+
+msgid "<small>This line of text is meant to be treated as fine print.</small>"
+msgstr ""
+"<small>Это строка текста предназначена для демонстрации мелкого шрифта</"
+"small>"
 
 msgid ""
 "A floating IP allows instances to be addressable from an external network.\n"
@@ -94,12 +114,26 @@ msgstr ""
 
 msgid ""
 "A key pair allows you to SSH into your newly created instance.\n"
-"      You may select an existing key pair, import a key pair, or generate a "
+"    You may select an existing key pair, import a key pair, or generate a "
 "new key pair."
 msgstr ""
-"Связки ключей позволяют подключаться по SSH к инстансу после его запуска.\n"
-"      Вы должны выбрать существующую, импортировать или создать новую связку "
-"ключей."
+"Пара ключей позволяет войти в новый экземпляр по SSH.\n"
+"    Можно выбрать существующую пару ключей, импортировать пару ключей или "
+"сгенерировать её."
+
+msgid ""
+"A key pair named '{$ctrl.createdKeypair.name$}' was successfully created. "
+"This key pair should automatically download."
+msgstr ""
+"Пара ключей с именем '{$ctrl.createdKeypair.name$}' создана успешно. Она "
+"будет загружена автоматически."
+
+msgid ""
+"A longer block of help text that breaks onto a new line and may extend "
+"beyond one line."
+msgstr ""
+"Большой блок текста справки, который содержит переносы строк и может "
+"располагаться более чем на одной строке."
 
 msgid "A name is required for your instance."
 msgstr "Требуется указать имя инстанса."
@@ -145,6 +179,11 @@ msgstr ""
 "    Вы можете использовать раздел <b>Сетевая топология</b> чтобы подключить "
 "маршрутизатор к двум сетям."
 
+msgid "An abbreviation of the word attribute is <abbr>attr</abbr>."
+msgstr ""
+"Аббревиатура словосочетания \"теория функций компле́ксной переменной\" это "
+"<abbr>ТФКП</abbr>."
+
 msgid ""
 "An advanced option available when launching an instance is disk "
 "partitioning. There are two disk partition options. Selecting <b>Automatic</"
@@ -171,6 +210,15 @@ msgstr "Автоматически"
 
 msgid "Availability Zone"
 msgstr "Зона доступности"
+
+msgid "Basic panel"
+msgstr "Основная панель"
+
+msgid "Block level button"
+msgstr "Кнопка уровня блока"
+
+msgid "Blockquotes"
+msgstr "Цитаты"
 
 msgid "Brand"
 msgstr "Бренд"
@@ -206,20 +254,33 @@ msgstr "Нажмите для подробностей"
 msgid "Close"
 msgstr "Закрыть"
 
+msgid "Color"
+msgstr "Цвет"
+
+msgid "Column content"
+msgstr "Содержимое столбца"
+
+msgid "Column heading"
+msgstr "Заголовок столбца"
+
 msgid "Configuration"
 msgstr "Конфигурация"
 
-msgid "Configuration Drive"
-msgstr "Конфигурационный диск"
+msgid "Containers"
+msgstr "Контейнеры"
 
-msgid "Configuration Help"
-msgstr "Справка по конфигурации"
-
-msgid "Count"
-msgstr "Количество"
+msgid ""
+"Count\n"
+"          <span></span>"
+msgstr ""
+"Количество\n"
+"          <span></span>"
 
 msgid "Create Key Pair"
 msgstr "Создать связку ключей"
+
+msgid "Create Keypair"
+msgstr "Создать пару ключей"
 
 msgid "Create New Volume"
 msgstr "Создать новый диск"
@@ -245,6 +306,12 @@ msgstr "Опасность"
 msgid "Data"
 msgstr "Данные"
 
+msgid "Date"
+msgstr "Дата"
+
+msgid "Datetime"
+msgstr "Дата и время"
+
 msgid "Default"
 msgstr "Значение по умолчанию"
 
@@ -266,6 +333,9 @@ msgstr "Подробности"
 msgid "Device Name"
 msgstr "Имя устройства"
 
+msgid "Dialogs"
+msgstr "Диалоги"
+
 msgid "Direction"
 msgstr "Направление"
 
@@ -278,15 +348,8 @@ msgstr "ID домена"
 msgid "Down"
 msgstr "Выключен"
 
-msgid ""
-"Dropdown\n"
-"                <span></span>"
-msgstr ""
-"Выпадающий список\n"
-"                <span></span>"
-
-msgid "Dropdown <b></b>"
-msgstr "Выпадающий список <b></b>"
+msgid "Dropdown"
+msgstr "Выпадающий список"
 
 msgid "Dropdown header"
 msgstr "Выпадающий заголовок"
@@ -297,11 +360,17 @@ msgstr "Выпадающая ссылка"
 msgid "Email"
 msgstr "E-mail"
 
+msgid "Emphasis classes"
+msgstr "Выразительные классы"
+
 msgid "Enabled"
 msgstr "Включено"
 
 msgid "Ephemeral Disk"
 msgstr "Временный диск"
+
+msgid "Error Deleting"
+msgstr "Ошибка при удалении"
 
 msgid "Ether Type"
 msgstr "Тип сети"
@@ -322,9 +391,6 @@ msgstr "Отпечаток"
 msgid "Flavor"
 msgstr "Тип инстанса"
 
-msgid "Flavor Help"
-msgstr "Помощь"
-
 msgid ""
 "Flavors manage the sizing for the compute, memory and storage capacity of "
 "the instance."
@@ -334,6 +400,9 @@ msgstr ""
 
 msgid "Format"
 msgstr "Формат"
+
+msgid "Forms"
+msgstr "Формы"
 
 msgid ""
 "From a Windows system, you can use PuTTYGen to create private/public keys.\n"
@@ -388,6 +457,9 @@ msgstr ""
 "будет сильно ограниченный доступ к нему после развёртывания. Фактически, "
 "доступ будет только через VNC консоль."
 
+msgid "If not, you can manually dowload this keypair at the following link:"
+msgstr "Её также можно загрузить по следующей ссылке:"
+
 msgid ""
 "If you want to create an instance that uses ephemeral storage, meaning the "
 "instance data is lost when the instance is deleted, then choose one of the "
@@ -421,23 +493,21 @@ msgstr "Влияние на квоту"
 msgid "Import Key Pair"
 msgstr "Импортировать пару ключей"
 
+msgid "Indicators"
+msgstr "Индикаторы"
+
 msgid "Info"
 msgstr "Информация"
 
-msgid "Instance Details"
-msgstr "Детали инстанса"
-
-msgid "Instance Name"
-msgstr "Название инстанса"
+msgid ""
+"Instance Name\n"
+"          <span></span>"
+msgstr ""
+"Имя экземпляра\n"
+"          <span></span>"
 
 msgid "Instance Snapshot"
 msgstr "Снимок инстанса"
-
-msgid "Instance Source"
-msgstr "Источник инстанса"
-
-msgid "Instance Source Help"
-msgstr "Помощь - Источник инстанса"
 
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "Требуется указать количество инстансов (не менее 1)."
@@ -449,22 +519,25 @@ msgstr ""
 msgid "Key Pair"
 msgstr "Ключевая пара"
 
-msgid "Key Pair Help"
-msgstr "Помощь по связке ключей"
-
-msgid "Key Pair Name"
-msgstr "Имя связки ключей"
+msgid ""
+"Key Pair Name\n"
+"        <span></span>"
+msgstr ""
+"Имя пары ключей\n"
+"        <span></span>"
 
 msgid ""
 "Key Pairs are how you login to your instance after it is launched.\n"
-"        Choose a key pair name you will recognize and paste your SSH public "
-"key into the\n"
-"        space provided."
+"      Choose a key pair name you will recognize.\n"
+"      Names may only include alphanumeric characters, spaces, or dashes."
 msgstr ""
-"Связки ключей позволяют подключаться к инстансу после его запуска.\n"
-"        Выберите имя для связки ключей, которое вы сможете запомнить и "
-"вставьте ваш \n"
-"        публичный SSH ключ в поле ниже."
+"Пары ключей определяют способ входа в работающий экземпляр.\n"
+"      Выберите узнаваемое имя пары ключей.\n"
+"      Имя может содержать только буквы, цифры, символ пробела и символ "
+"дефиса."
+
+msgid "Keypair already exists or name contains bad characters."
+msgstr "Пара ключей уже существует или имя содержит недопустимые символы."
 
 msgid "Killed"
 msgstr "Убито"
@@ -475,8 +548,17 @@ msgstr "Большая кнопка"
 msgid "Launch Instance"
 msgstr "Запустить инстанс"
 
+msgid "Learn more"
+msgstr "Узнать больше"
+
 msgid "Left"
 msgstr "Слева"
+
+msgid "Legend"
+msgstr "Легенда"
+
+msgid "Library"
+msgstr "Библиотека"
 
 msgid "Link"
 msgstr "Ссылка"
@@ -511,17 +593,20 @@ msgstr "Мин. размер ОЗУ (МБ)"
 msgid "Mini button"
 msgstr "Микроскопическая кнопка"
 
+msgid "Month"
+msgstr "Месяц"
+
 msgid "Name"
 msgstr "Название"
 
 msgid "Navbar"
 msgstr "Панель навигации"
 
+msgid "Navs"
+msgstr "Элементы навигации"
+
 msgid "Network"
 msgstr "Сеть"
-
-msgid "Network Help"
-msgstr "Помощь - сеть"
 
 msgid "Network characteristics"
 msgstr "Характеристики сети"
@@ -538,14 +623,29 @@ msgstr "Нет"
 msgid "No available items"
 msgstr "Нет доступных элементов"
 
+msgid "Note: you will not be able to download this later."
+msgstr "Внимание: позднее загрузка будет недоступна."
+
 msgid "Number"
 msgstr "Число"
+
+msgid "Object Count"
+msgstr "Количество объектов"
 
 msgid "One more separated link"
 msgstr "Ещё одна отдельная ссылка"
 
 msgid "Pagination"
 msgstr "Пагинация"
+
+msgid "Panel content"
+msgstr "Содержимое панели"
+
+msgid "Panel heading"
+msgstr "Заголовок панели"
+
+msgid "Panels"
+msgstr "Панели"
 
 msgid "Password"
 msgstr "Пароль"
@@ -555,6 +655,9 @@ msgstr "Ожидает удаления"
 
 msgid "Physical Network"
 msgstr "Физическая сеть"
+
+msgid "Please try again."
+msgstr "Повторите попытку."
 
 msgid "Policy check failed."
 msgstr "Проверка политики не удалась."
@@ -567,6 +670,9 @@ msgstr "Частный"
 
 msgid "Profile"
 msgstr "Профиль"
+
+msgid "Progress bars"
+msgstr "Индикаторы прогресса"
 
 msgid "Project"
 msgstr "Проект"
@@ -603,6 +709,9 @@ msgstr "Публичный"
 msgid "Public Key"
 msgstr "Открытый ключ"
 
+msgid "QCOW2"
+msgstr "QCOW2"
+
 msgid "Queued"
 msgstr "Запланировано"
 
@@ -614,9 +723,6 @@ msgstr "Переопределите элементы перемещением"
 
 msgid "Remote"
 msgstr "Удаленный адрес"
-
-msgid "Required"
-msgstr "Требуется"
 
 msgid "Right"
 msgstr "Справа"
@@ -633,11 +739,11 @@ msgstr "Сохранить изменения"
 msgid "Saving"
 msgstr "Сохранение"
 
+msgid "Search"
+msgstr "Поиск"
+
 msgid "Security Groups"
 msgstr "Группы безопасности"
-
-msgid "Security Groups Help"
-msgstr "Подсказка по группам безопасности"
 
 msgid ""
 "Security groups are project-specific and cannot be shared across projects."
@@ -689,9 +795,6 @@ msgstr "Выберите одну или несколько"
 msgid "Select one or more security groups from the available groups below."
 msgstr "Выберите одну или более групп безопасности из доступных."
 
-msgid "Select the security groups."
-msgstr "Выберите группы безопасности."
-
 msgid "Separated link"
 msgstr "Отдельная ссылка"
 
@@ -713,16 +816,25 @@ msgid "Size (GB)"
 msgstr "Размер (Гб)"
 
 msgid "Small button"
-msgstr "Маленька кнопка"
+msgstr "Маленькая кнопка"
 
 msgid "Snapshot"
 msgstr "Снимок"
+
+msgid "Something else here"
+msgstr "Какой-то текст"
 
 msgid "Source"
 msgstr "Источник"
 
 msgid "Source Code"
 msgstr "Исходный код"
+
+msgid "Source Title"
+msgstr "Заголовок источника"
+
+msgid "Standard Table"
+msgstr "Стандартная таблица"
 
 msgid "Status"
 msgstr "Статус"
@@ -742,6 +854,12 @@ msgstr "Успешно импортирована связка ключей %(na
 
 msgid "Swap Disk"
 msgstr "Диск подкачки"
+
+msgid "Tables"
+msgstr "Таблицы"
+
+msgid "Tel"
+msgstr "Тел."
 
 msgid "Textarea"
 msgstr "Поле ввода"
@@ -763,6 +881,14 @@ msgstr ""
 "запуска инстанса, который вы пытаетесь создать. Типы инстансов, которые не "
 "предоставляют достаточное количество ресурсов, отображаются в таблице "
 "<b>Доступны</b> с жёлтым предупреждающим значком."
+
+msgid "The following snippet of text is <em>rendered as italicized text</em>."
+msgstr "Следующий фрагмент текста отображается <em>курсивом</em>."
+
+msgid ""
+"The following snippet of text is <strong>rendered as bold text</strong>."
+msgstr ""
+"Следующий фрагмент текста отображается <strong>полужирным шрифтом</strong>."
 
 #, python-format
 msgid ""
@@ -815,6 +941,9 @@ msgstr ""
 "Пожалуйста, выберите тип инстанса с меньшим количеством vCPU или уменьшите "
 "количество инстансов."
 
+msgid "Time"
+msgstr "Время"
+
 msgid ""
 "To view source code, hover over a section, then click the <a><span></span></"
 "a> button in the top right of that section."
@@ -826,7 +955,7 @@ msgid "Total Disk"
 msgstr "Объем диска"
 
 msgid "Total Instances"
-msgstr "Всего машин"
+msgstr "Всего инстансов"
 
 msgid "Total RAM"
 msgstr "Всего RAM"
@@ -1080,6 +1209,9 @@ msgstr "Обновить метаданные образа"
 msgid "Updated"
 msgstr "Обновлено"
 
+msgid "Url"
+msgstr "URL"
+
 msgid "User ID"
 msgstr "ID пользователя"
 
@@ -1091,6 +1223,12 @@ msgstr "VCPU"
 
 msgid "VCPUs"
 msgstr "VCPU"
+
+msgid "VDI"
+msgstr "VDI"
+
+msgid "VHD"
+msgstr "VHD"
 
 msgid "Visibility"
 msgstr "Видимость"
@@ -1117,6 +1255,9 @@ msgstr "Предупреждение"
 msgid "Warning!"
 msgstr "Предупреждение!"
 
+msgid "Week"
+msgstr "Неделя"
+
 msgid ""
 "When selecting volume as boot source, please ensure the instance's "
 "availability zone is compatible with your volume's availability zone."
@@ -1137,6 +1278,12 @@ msgstr ""
 
 msgid "Yes"
 msgstr "Да"
+
+msgid "image"
+msgstr "изображение"
+
+msgid "snapshot"
+msgstr "моментальная копия"
 
 msgid "{$ row['provider:network_type'] $}"
 msgstr "{$ row['provider:network_type'] $}"

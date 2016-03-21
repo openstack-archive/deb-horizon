@@ -27,7 +27,9 @@
     beforeEach(module(function($provide) {
       // we will mock scope and timeout in this test
       // because we aren't concern with rendering results
-      var timeout = function(fn) { fn(); };
+      var timeout = function(fn) {
+        fn();
+      };
 
       // we will mock parse and attrs
       // because we want to control the parameters
@@ -118,6 +120,7 @@
       it('should update allocated on reorder', testUpdateAllocated);
       it('should update allocatedIds if allocated change', testAllocatedIds);
       it('should toggle the views correctly on request', testToggleView);
+      it('should refresh items if transferTableChanged is triggered', testTransferTableChanged);
 
       //////////
 
@@ -199,6 +202,22 @@
         trCtrl.updateAllocated(null, null, orderedItems);
         expect(trCtrl.allocated.sourceItems).toEqual(orderedItems);
         expect(trCtrl.numAllocated()).toEqual(orderedItems.length);
+      }
+
+      function testTransferTableChanged() {
+        var oldAvailableCount = 10;
+        trCtrl.available.sourceItems = generateItems(oldAvailableCount);
+        expect(trCtrl.available.sourceItems.length).toEqual(oldAvailableCount);
+
+        var availableCount = 4;
+        var newItems = {
+          "data": { available: generateItems(availableCount) }
+        };
+        spyOn(scope, '$broadcast').and.callThrough();
+        scope.$broadcast('horizon.framework.widgets.transfer-table.AVAIL_CHANGED', newItems);
+        expect(scope.$broadcast).toHaveBeenCalledWith(
+          'horizon.framework.widgets.transfer-table.AVAIL_CHANGED', newItems);
+        expect(trCtrl.available.sourceItems.length).toEqual(availableCount);
       }
 
     }); // end of core functions

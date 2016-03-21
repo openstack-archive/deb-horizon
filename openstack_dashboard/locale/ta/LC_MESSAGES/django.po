@@ -1,24 +1,18 @@
-# Translations template for PROJECT.
-# Copyright (C) 2015 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-#
-# Translators:
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-02 17:22+0000\n"
+"POT-Creation-Date: 2016-03-16 02:16+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-09-08 11:14+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language: ta\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Generated-By: Babel 2.0\n"
-"X-Generator: Zanata 3.7.3\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
 "Language-Team: Tamil\n"
+"Language: ta\n"
+"X-Generator: Zanata 3.7.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #, python-format
 msgid ""
@@ -146,6 +140,7 @@ msgstr "%(instance_name)s %(fixed_ip)s"
 msgid "%(name)s - %(size)s GB (%(label)s)"
 msgstr "%(name)s - %(size)s GB (%(label)s)"
 
+#. Translators:  UTC offset and timezone label
 #, python-format
 msgid "%(offset)s: %(label)s"
 msgstr "%(offset)s: %(label)s"
@@ -184,6 +179,7 @@ msgstr "%(used)s %(key)s பயன்படுத்தப்பட்டது"
 msgid "%s (Default)"
 msgstr "%s (முன்னிருப்பு)"
 
+#. Translators: The usage is "<UUID of ext_net> (Not Found)"
 #, python-format
 msgctxt "External network not found"
 msgid "%s (Not Found)"
@@ -480,9 +476,6 @@ msgstr ""
 msgid "Add hosts to this aggregate. Hosts can be in multiple aggregates."
 msgstr "இந்த திரளில் புரவலர்களை சேர்க்கவும். புரவலர்கள் பல திரளில் இருக்க முடியும்."
 
-msgid "Add interface"
-msgstr "இடைமுகத்தை சேர்"
-
 msgid ""
 "Add member(s) to the selected pool.\n"
 "\n"
@@ -499,9 +492,6 @@ msgstr ""
 "மற்றும் துறை எண்ணை ஒதுக்கவும்; எ.கா., 80.\n"
 "\n"
 "ஒவ்வொரு நிகழ்வுக்கும் ஒரு துறையை மட்டுமே தொடர்புபடுத்த முடியும்.."
-
-msgid "Add rule"
-msgstr "விதியை சேர்"
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "திரளில் புரவலர்களை சேர்/நீக்கு"
@@ -2393,9 +2383,6 @@ msgstr "ஃபயர்வால் விதிகள்"
 msgid "Firewalls"
 msgstr "ஃபயர்வால்கள்"
 
-msgid "Fixed IP"
-msgstr "நிலையான ஐபி"
-
 msgid "Fixed IPs"
 msgstr "நிலையான ஐபிகள்"
 
@@ -2591,6 +2578,7 @@ msgstr ""
 "குழுக்கள் ஒரே நேரத்தில் பல பயனர்களின் அணுகலை மற்றும் பங்குகளை ஒதுக்கிடுவதை நிர்வகிக்க "
 "பயன்படுகின்றன. பயனர்களை சேர்க்க குழுவை திருத்தவும்."
 
+#. Translators: High Availability mode of Neutron router
 msgid "HA mode"
 msgstr "HA முறைமை"
 
@@ -5208,6 +5196,7 @@ msgstr ""
 "\"இதிலிருந்து\" துறை எண் \"இதுவரை\" துறை எண்ணை விட அதிகமாக அல்லது சமமாக இருக்க "
 "வேண்டும்."
 
+#. Translators: Only used inside Horizon code and invisible to users
 #, python-format
 msgid ""
 "The 'operation' parameter for get_feature_permission '%(feature)s' is "
@@ -5384,6 +5373,7 @@ msgstr "சுற்றுச்சூழல் கோப்பின் கச�
 msgid "The raw contents of the template."
 msgstr "வார்ப்புருவின் கச்சா உள்ளடக்கங்கள்"
 
+#. Translators: Only used inside Horizon code and invisible to users
 #, python-format
 msgid ""
 "The requested feature '%(feature)s' is unknown. Please make sure to specify "

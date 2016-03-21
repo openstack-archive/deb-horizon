@@ -92,11 +92,19 @@ horizon.datatables = {
 
               // Directly accessing the checked property of the element
               // is MUCH faster than using jQuery's helper method
-              if($row.find('.table-row-multi-select')[0].checked) {
+              var $checkbox = $row.find('.table-row-multi-select');
+              if($checkbox.length && $checkbox[0].checked) {
                 // Preserve the checkbox if it's already clicked
                 $new_row.find('.table-row-multi-select').prop('checked', true);
               }
               $row.replaceWith($new_row);
+
+              // TODO(matt-borland, tsufiev): ideally we should solve the
+              // problem with not-working angular actions in a content added
+              // by jQuery via replacing jQuery insert with Angular insert.
+              // Should address this in Newton release
+              recompileAngularContent();
+
               // Reset tablesorter's data cache.
               $table.trigger("update");
               // Reset decay constant.

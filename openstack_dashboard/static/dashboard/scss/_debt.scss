@@ -53,11 +53,6 @@ dt {
   margin-bottom: 0.5em;
 }
 
-// See Project/Volume --> Manage Volume Attachments, weird
-.no_split {
-  margin-top: -60px;
-}
-
 /* Styling for inline object creation buttons */
 .btn-inline {
   margin-bottom: 9px;
@@ -261,4 +256,15 @@ td .btn-group {
 .tooltip {
   z-index: 12000;
   word-wrap: break-word;
+}
+
+/*
+Hack to allow a <div> to be wrapped around a disabled element that
+needs to have a tooltip. The disabled element won't allow a JS tooltip
+to receive events, so we wrap it in another tag. For some reason a
+<span> also doesn't receive the events, but a <div> does. We set
+display to inline-block so that existing formatting is unaffected.
+*/
+div.tooltip-hack {
+  display: inline-block;
 }

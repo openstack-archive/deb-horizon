@@ -20,9 +20,12 @@ from horizon import exceptions
 from horizon import tabs
 
 from openstack_dashboard import api
+from openstack_dashboard import policy
 
 from openstack_dashboard.dashboards.project.volumes.backups \
     import tables as backups_tables
+from openstack_dashboard.dashboards.project.volumes.cgroups \
+    import tables as vol_cgroup_tables
 from openstack_dashboard.dashboards.project.volumes.snapshots \
     import tables as vol_snapshot_tables
 from openstack_dashboard.dashboards.project.volumes.volumes \
@@ -50,8 +53,12 @@ class VolumeTableMixIn(object):
                               _('Unable to retrieve volume list.'))
             return []
 
-    def _get_instances(self, search_opts=None):
+    def _get_instances(self, search_opts=None, instance_ids=None):
+        if not instance_ids:
+            return []
         try:
+            # TODO(tsufiev): we should pass attached_instance_ids to
+            # nova.server_list as soon as Nova API allows for this
             instances, has_more = api.nova.server_list(self.request,
                                                        search_opts=search_opts)
             return instances
@@ -75,6 +82,15 @@ class VolumeTableMixIn(object):
 
         return volume_ids
 
+    def _get_attached_instance_ids(self, volumes):
+        attached_instance_ids = []
+        for volume in volumes:
+            for att in volume.attachments:
+                server_id = att.get('server_id', None)
+                if server_id is not None:
+                    attached_instance_ids.append(server_id)
+        return attached_instance_ids
+
     # set attachment string and if volume has snapshots
     def _set_volume_attributes(self,
                                volumes,
@@ -85,9 +101,10 @@ class VolumeTableMixIn(object):
             if volume_ids_with_snapshots:
                 if volume.id in volume_ids_with_snapshots:
                     setattr(volume, 'has_snapshot', True)
-            for att in volume.attachments:
-                server_id = att.get('server_id', None)
-                att['instance'] = instances.get(server_id, None)
+            if instances:
+                for att in volume.attachments:
+                    server_id = att.get('server_id', None)
+                    att['instance'] = instances.get(server_id, None)
 
 
 class PagedTableMixin(object):
@@ -123,7 +140,8 @@ class VolumeTab(PagedTableMixin, tabs.TableTab, VolumeTableMixIn):
 
     def get_volumes_data(self):
         volumes = self._get_volumes()
-        instances = self._get_instances()
+        attached_instance_ids = self._get_attached_instance_ids(volumes)
+        instances = self._get_instances(instance_ids=attached_instance_ids)
         volume_ids_with_snapshots = self._get_volumes_ids_with_snapshots()
         self._set_volume_attributes(
             volumes, instances, volume_ids_with_snapshots)
@@ -188,7 +206,33 @@ class BackupsTab(PagedTableMixin, tabs.TableTab, VolumeTableMixIn):
         return backups
 
 
+class CGroupsTab(tabs.TableTab, VolumeTableMixIn):
+    table_classes = (vol_cgroup_tables.VolumeCGroupsTable,)
+    name = _("Volume Consistency Groups")
+    slug = "cgroups_tab"
+    template_name = ("horizon/common/_detail_table.html")
+    preload = False
+
+    def allowed(self, request):
+        return policy.check(
+            (("volume", "consistencygroup:get_all"),),
+            request
+        )
+
+    def get_volume_cgroups_data(self):
+        try:
+            cgroups = api.cinder.volume_cgroup_list_with_vol_type_names(
+                self.request)
+            for cgroup in cgroups:
+                setattr(cgroup, '_volume_tab', self.tab_group.tabs[0])
+        except Exception:
+            cgroups = []
+            exceptions.handle(self.request, _("Unable to retrieve "
+                                              "volume consistency groups."))
+        return cgroups
+
+
 class VolumeAndSnapshotTabs(tabs.TabGroup):
     slug = "volumes_and_snapshots"
-    tabs = (VolumeTab, SnapshotTab, BackupsTab)
+    tabs = (VolumeTab, SnapshotTab, BackupsTab, CGroupsTab)
     sticky = True

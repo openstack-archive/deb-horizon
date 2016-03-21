@@ -44,6 +44,12 @@
    * @param {string=} item
    * The item to pass to the 'service' when using 'row' type.
    *
+   * @param {function} result-handler
+   * (Optional) A function that is called with the return value from a clicked actions perform
+   * function. Ideally the action perform function returns a promise that resolves to some data
+   * on success, but it may return just data, or no return at all, depending on the specific action
+   * implementation.
+   *
    * @param {function} allowed
    * Returns an array of actions that can be performed on the item(s).
    *
@@ -75,6 +81,7 @@
    *      2. 'danger' - For marking an Action as dangerous. Only for 'row' type.
    *      3. 'delete-selected' - Delete multiple rows. Only for 'batch' type.
    *      4. 'create' - Create a new entity. Only for 'batch' type.
+   *      5. 'link' - Generates a link instead of button. Only for 'row' type.
    *
    *      The styling of the action button is done based on the 'listType'.
    *      The directive will be responsible for binding the correct callback.
@@ -90,10 +97,13 @@
    *      need to be resolved, you can $q.all to combine multiple promises into a single promise.
    *      When using 'row' type, the current 'item' will be passed to the function.
    *      When using 'batch' type, no arguments are provided.
-   *   2. perform: is what gets called when the button is clicked.
+   *   2. perform: is what gets called when the button is clicked. Also expected to return a
+   *      promise that resolves when the action completes.
    *      When using 'row' type, the current 'item' is evaluated and passed to the function.
    *      When using 'batch' type, 'item' is not passed.
    *      When using 'delete-selected' for 'batch' type, all selected rows are passed.
+   *      When using 'link' this is invoked during rendering with the current 'item' passed
+   *      and should return the URL for the link.
    *
    * @restrict E
    * @scope
@@ -109,9 +119,9 @@
    *     return policy.ifAllowed({ rules: [['image', 'delete_image']] });
    *   },
    *   perform: function(images) {
-   *     images.forEach(function(image){
-   *       glanceAPI.deleteImage(image.id);
-   *     });
+   *     return $q.all(images.map(function(image){
+   *       return glanceAPI.deleteImage(image.id);
+   *     }));
    *   }
    * };
    *
@@ -120,7 +130,7 @@
    *     return policy.ifAllowed({ rules: [['image', 'add_image']] });
    *   },
    *   perform: function() {
-   *     //open the modal to create
+   *     //open the modal to create volume and return the modal's result promise
    *   }
    * };
    *
@@ -147,7 +157,7 @@
    * in the list of actions that will be allowed.
    *
    * ```
-   * <actions allowed="actions" type="batch">
+   * <actions allowed="actions" type="batch" result-handler="onResult">
    * </actions>
    * ```
    *
@@ -166,7 +176,7 @@
    *     ]);
    *   },
    *   perform: function(image) {
-   *     glanceAPI.deleteImage(image.id);
+   *     return glanceAPI.deleteImage(image.id);
    *   }
    * };
    *
@@ -175,7 +185,16 @@
    *     return createVolumeFromImagePermitted(image);
    *   },
    *   perform: function(image) {
-   *     //open the modal to create volume
+   *     //open the modal to create volume and return the modal's result promise
+   *   }
+   * };
+   *
+   * var downloadService = {
+   *   allowed: function(image) {
+   *     return isPublic(image);
+   *   },
+   *   perform: function(image) {
+   *     return generateUrlFor(image);
    *   }
    * };
    *
@@ -194,6 +213,12 @@
    *       text: gettext('Create Volume')
    *     },
    *     service: createVolumeService
+   *   }, {
+   *     template: {
+   *       text: gettext('Download'),
+   *       type: 'link',
+   *     },
+   *     service: downloadService
    *   }];
    * }
    *
@@ -201,7 +226,7 @@
    * in the list of actions that will be allowed.
    *
    * ```
-   * <actions allowed="actions" type="row" item="image">
+   * <actions allowed="actions" type="row" item="image" result-handler="onResult">
    * </actions>
    *
    * ```
@@ -224,6 +249,7 @@
       var listType = attrs.type;
       var item = attrs.item;
       var allowedActions;
+      var resultHandler = $parse(attrs.resultHandler)(scope);
       var actionsParam = $parse(attrs.allowed)(scope);
       if (angular.isFunction(actionsParam)) {
         allowedActions = actionsParam();
@@ -236,7 +262,8 @@
         element: element,
         ctrl: actionsController,
         listType: listType,
-        item: item
+        item: item,
+        resultHandler: resultHandler
       });
 
       service.renderActions(allowedActions);

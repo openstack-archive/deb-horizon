@@ -2,13 +2,13 @@
 
 // This file does a 1-1 mapping of each font-awesome icon in use to
 // a corresponding Material Design Icon.
+// https://materialdesignicons.com
 
 $mdi-font-path: $static_url + "/horizon/lib/mdi/fonts";
 @import "/horizon/lib/mdi/scss/materialdesignicons.scss";
 
 .fa {
   @extend .mdi;
-  font-size: $mdi-icon-size;
 }
 
 $icon-swap: (
@@ -17,6 +17,7 @@ $icon-swap: (
   angle-left: 'arrow-left',
   ban: 'block-helper',
   bars: 'menu',
+  bug: 'bug',
   caret-down: 'menu-down',
   check: 'check',
   chevron-down: 'chevron-down',
@@ -35,6 +36,8 @@ $icon-swap: (
   exclamation-triangle: 'alert',
   eye: 'eye',
   eye-slash: 'eye-off',
+  folder: 'folder',
+  folder-o: 'folder-outline',
   group: 'account-multiple',
   home: 'home',
   link: 'link-variant',
@@ -46,7 +49,9 @@ $icon-swap: (
   plus: 'plus',
   question-circle: 'help-circle',
   random: 'shuffle',
+  refresh: 'refresh',
   remove: 'close',
+  save: 'floppy',
   search: 'magnify',
   server: 'server',
   share-square-o: 'share',
@@ -61,6 +66,7 @@ $icon-swap: (
   th: 'view-module',
   th-large: 'view-module',
   upload: 'upload',
+  unlink: 'close-circle-outline', // TODO: hurgleburgler: replace with 'link-variant-off' once we update MDI
   user: 'account',
   warning: 'alert',
 );
@@ -68,14 +74,5 @@ $icon-swap: (
 @each $fa-icon, $mdi-icon in $icon-swap {
   .fa-#{$fa-icon} {
     @extend .mdi-#{$mdi-icon};
-  }
-}
-
-.dropdown-toggle > {
-  &.btn-lg .fa-caret-down {
-    font-size: 1.2em;
-  }
-  .fa-caret-down {
-    @include vertical-center();
   }
 }

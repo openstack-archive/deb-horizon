@@ -13,11 +13,15 @@
 # limitations under the License.
 """API for the swift service.
 """
+import os
 
 from django import forms
+from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views import generic
+import six
 
+from horizon import exceptions
 from openstack_dashboard import api
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
@@ -74,7 +78,14 @@ class Container(generic.View):
         if 'is_public' in request.DATA:
             metadata['is_public'] = request.DATA['is_public']
 
-        api.swift.swift_create_container(request, container, metadata=metadata)
+        # This will raise an exception if the container already exists
+        try:
+            api.swift.swift_create_container(request, container,
+                                             metadata=metadata)
+        except exceptions.AlreadyExists as e:
+            # 409 Conflict
+            return rest_utils.JSONResponse(str(e), 409)
+
         return rest_utils.CreatedResponse(
             u'/api/swift/containers/%s' % container,
         )
@@ -181,6 +192,30 @@ class Object(generic.View):
     @rest_utils.ajax()
     def delete(self, request, container, object_name):
         api.swift.swift_delete_object(request, container, object_name)
+
+    def get(self, request, container, object_name):
+        """Get the object contents.
+        """
+        obj = api.swift.swift_get_object(
+            request,
+            container,
+            object_name
+        )
+
+        # Add the original file extension back on if it wasn't preserved in the
+        # name given to the object.
+        filename = object_name.rsplit(api.swift.FOLDER_DELIMITER)[-1]
+        if not os.path.splitext(obj.name)[1] and obj.orig_name:
+            name, ext = os.path.splitext(obj.orig_name)
+            filename = "%s%s" % (filename, ext)
+        response = StreamingHttpResponse(obj.data)
+        safe = filename.replace(",", "")
+        if six.PY2:
+            safe = safe.encode('utf-8')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % safe
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Length'] = obj.bytes
+        return response
 
 
 @urls.register

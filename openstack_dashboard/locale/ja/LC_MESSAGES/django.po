@@ -1,35 +1,23 @@
-# Translations template for PROJECT.
-# Copyright (C) 2015 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-#
-# Translators:
-# Akihiro Motoki <amotoki@gmail.com>, 2015
-# myamamot <myamamot@redhat.com>, 2015
-# Shu Muto <shu-mutou@rf.jp.nec.com>, 2015
-# Tom Fifield <tom@openstack.org>, 2014
-# Tomoyuki KATO <tomo@dream.daynight.jp>, 2015
-# ykatabam <ykatabam@redhat.com>, 2015
 # Akihiro Motoki <amotoki@gmail.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Shu Muto <shu-mutou@rf.jp.nec.com>, 2015. #zanata
 # Yuko Katabami <yukokatabami@gmail.com>, 2015. #zanata
-# Mie Yamamoto <myamamot@redhat.com>, 2016. #zanata
 # Shu Muto <shu-mutou@rf.jp.nec.com>, 2016. #zanata
+# Yuko Katabami <yukokatabami@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-02 17:22+0000\n"
+"POT-Creation-Date: 2016-03-16 02:16+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-02-01 12:52+0000\n"
-"Last-Translator: Shu Muto <shu-mutou@rf.jp.nec.com>\n"
-"Language: ja\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"Generated-By: Babel 2.0\n"
-"X-Generator: Zanata 3.7.3\n"
+"PO-Revision-Date: 2016-03-16 12:45+0000\n"
+"Last-Translator: Yuko Katabami <yukokatabami@gmail.com>\n"
 "Language-Team: Japanese\n"
+"Language: ja\n"
+"X-Generator: Zanata 3.7.3\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 #, python-format
 msgid ""
@@ -365,12 +353,24 @@ msgstr " - 末尾"
 msgid " : Next hop"
 msgstr " : ネクストホップ"
 
+msgid ""
+" A protocol entry contains information that dictates which mapping rules to "
+"use for a given incoming request. An Identity Provider may have multiple "
+"supported protocols."
+msgstr ""
+"プロトコルのエントリーには、指定した受信要求に使用するマッピングルールを決定"
+"する情報が含まれます。1 つの認証プロバイダーが複数のプロトコルをサポートする"
+"ように設定することができます。"
+
 #, python-format
 msgid " Also failed to delete port %s"
 msgstr "ポート %s の削除にも失敗しました。"
 
 msgid "\"Add Router Route\""
 msgstr "ルータールートの追加"
+
+msgid "\"Containers\""
+msgstr "\"コンテナー\""
 
 msgid ""
 "\"Customization Script\" is analogous to \"User Data\" in other systems."
@@ -419,6 +419,7 @@ msgstr "%(instance_name)s %(fixed_ip)s"
 msgid "%(name)s - %(size)s GB (%(label)s)"
 msgstr "%(name)s - %(size)s GB (%(label)s)"
 
+#. Translators:  UTC offset and timezone label
 #, python-format
 msgid "%(offset)s: %(label)s"
 msgstr "%(offset)s: %(label)s"
@@ -456,6 +457,7 @@ msgstr "%(key)sは %(used)s 使用中"
 msgid "%s (Default)"
 msgstr "%s (デフォルト)"
 
+#. Translators: The usage is "<UUID of ext_net> (Not Found)"
 #, python-format
 msgctxt "External network not found"
 msgid "%s (Not Found)"
@@ -534,13 +536,25 @@ msgid "A local environment to upload."
 msgstr "アップロードする必要のあるローカルの環境設定データ"
 
 msgid "A local image to upload."
-msgstr "手元にあるアップロードするイメージ"
+msgstr "アップロードするローカルのイメージ"
 
 msgid "A local metadata definition file to upload."
 msgstr "ローカルにあるメタデータ定義ファイルをアップロードします。"
 
 msgid "A local template to upload."
 msgstr "アップロードする必要のあるローカルのテンプレート"
+
+msgid ""
+"A mapping is a set of rules to map federation protocol attributes to "
+"Identity API objects. An identity provider can have a single mapping "
+"specified per protocol. A mapping is simply a list of rules. The only "
+"Identity API objects that will support mapping are: user and group."
+msgstr ""
+"マッピングは、フェデレーションプロトコルの属性を Identity API オブジェクトに"
+"マッピングするルールセットです。認証プロバイダーには、1 プロトコルにつき 1 つ"
+"のマッピングを指定することができます。マッピングは単なるルールの一覧です。"
+"マッピングをサポートする Identity API オブジェクトはユーザーとグループのみで"
+"す。"
 
 msgid ""
 "A more specific rule affects a portion of this traffic so a rule cannot be "
@@ -554,6 +568,18 @@ msgid "A new uploaded file will replace the content of the current object"
 msgstr ""
 "新しくファイルをアップロードすると、現在のオブジェクトの内容は置き換えられま"
 "す。"
+
+msgid ""
+"A port is a connection point for attaching a single device, such as the NIC "
+"of a virtual server, to a virtual network."
+msgstr ""
+"ポートは、仮想サーバーの NIC などの 1 つのデバイスを、仮想ネットワークに接続"
+"する接続点です。"
+
+msgid ""
+"A rule contains a remote attribute description and the destination local "
+"attribute."
+msgstr "ルールには、接続相手の属性の説明と宛先のローカル属性が含まれます。"
 
 msgid ""
 "A script or set of commands to be executed after the instance has been built "
@@ -580,11 +606,11 @@ msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon カーネルイメージ"
 
 msgid "ALLOW"
-msgstr "許可"
+msgstr "ALLOW"
 
 msgctxt "Action Name of a Firewall Rule"
 msgid "ALLOW"
-msgstr "許可"
+msgstr "ALLOW"
 
 #, python-format
 msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
@@ -767,6 +793,9 @@ msgstr "ポリシーの追加"
 msgid "Add Pool"
 msgstr "プールの追加"
 
+msgid "Add Protocol"
+msgstr "プロトコルの追加"
+
 msgid "Add Router"
 msgstr "ルーターの追加"
 
@@ -829,9 +858,6 @@ msgstr ""
 "このアグリゲートにホストを追加します。ホストは複数のアグリゲートに所属させる"
 "ことができます。"
 
-msgid "Add interface"
-msgstr "インターフェースの追加"
-
 msgid ""
 "Add member(s) to the selected pool.\n"
 "\n"
@@ -848,12 +874,6 @@ msgstr ""
 "を指定してください（例: 80）。\n"
 "\n"
 "1 つのインスタンスに関連付けられるポート番号は 1 つだけです。"
-
-msgid "Add route"
-msgstr "ルートの追加"
-
-msgid "Add rule"
-msgstr "ルールの追加"
 
 msgid "Add selected router(s) to the firewall."
 msgstr "選択したルーターをファイアウォールに追加します。"
@@ -1182,6 +1202,9 @@ msgstr ""
 
 msgid "Attachments"
 msgstr "接続状況"
+
+msgid "Attribute Mappings"
+msgstr "属性のマッピング"
 
 msgid "Attributes"
 msgstr "属性"
@@ -1555,7 +1578,7 @@ msgid "Cold Migrate"
 msgstr "コールドマイグレーション"
 
 msgid "Comma-delimited list of valid remote IDs from the identity provider."
-msgstr "認証プロバイダーからの有効な接続相手 ID のコンマ区切りリスト。"
+msgstr "認証プロバイダーからの有効な接続相手の ID のコンマ区切りリスト。"
 
 msgid "Comma-separated key=value pairs"
 msgstr "コンマ区切りの key=value ペア"
@@ -1839,6 +1862,9 @@ msgstr "作成中"
 msgid "Create Key Pair"
 msgstr "キーペアの作成"
 
+msgid "Create Mapping"
+msgstr "マッピングの作成"
+
 msgid "Create Network"
 msgstr "ネットワークの作成"
 
@@ -1850,6 +1876,9 @@ msgstr "ポートの作成"
 
 msgid "Create Project"
 msgstr "プロジェクトの作成"
+
+msgid "Create Protocol"
+msgstr "プロトコルの作成"
 
 msgid "Create Pseudo-folder"
 msgstr "疑似フォルダーの作成"
@@ -1974,10 +2003,10 @@ msgid ""
 "instantiate and manage. A firewall must be associated with one policy, all "
 "other fields are optional."
 msgstr ""
-"ポリシーを元にファイアウォールを作成します。\n"
+"ポリシーに基づいてファイアウォールを作成します。\n"
 "\n"
 "ファイアウォールは、テナントがインスタンス化して管理することができる論理的な"
-"ファイアウォールリソースを表します。一つのファイアウォールは一つのポリシーと"
+"ファイアウォールリソースを表します。1 つのファイアウォールは 1 つのポリシーと"
 "関連付けられる必要があり、他のフィールドはすべて省略可能です。"
 
 msgid ""
@@ -1997,22 +2026,23 @@ msgid ""
 "through an update operation.</li>\n"
 "The name field is required, all others are optional."
 msgstr ""
-"ファイアウォールルールの順序付けられた一覧でファイアウォールポリシーを作成し"
-"ます。\n"
+"ファイアウォールルールの順序付きリストでファイアウォールポリシーを作成しま"
+"す。\n"
 "\n"
-"ファイアウォールポリシーは、順序付けられたファイアウォールルールの集合です。"
-"従って、もし通信が最初のルールに合致したら、他のルールは実行されません。もし"
-"通信が現在の合致しなかったら、次のルールが実行されます。ファイアウォールポリ"
-"シーは以下の属性を持ちます。\n"
+"ファイアウォールポリシーは、ファイアウォールルールの順序付きコレクションなの"
+"で、トラフィックが最初のルールに一致した場合には、他のルールは実行されませ"
+"ん。トラフィックが現在のルールに一致しない場合には、次のルールが実行されま"
+"す。ファイアウォールポリシーには、以下の属性があります。\n"
 "\n"
-"<li>共有: ファイアウォールポリシーをテナント間で共有できます。つまり、それを"
-"また、監査ワークフローの一部とすることができ、このファイアウォールポリシーを"
-"関連するエンティティによって監査することができるように許可します。</li><li>監"
-"査: 監査が True に設定されたときは、ファイアウォールポリシーが監査されること"
-"を示します。ファイアウォールポリシーまたは関連付けられたファイアウォールルー"
-"ルが変更されるたびに、この属性は False に設定され、更新操作で明示的に True に"
-"設定する必要があります。</li>\n"
-"名前は必須項目であり、他のフィールドはすべて省略可能です。"
+"<li>共有: ファイアウォールポリシーをテナント間で共有できます。そのため、承認"
+"済みの関連エンティティーによってファイアウォールポリシーを監査することができ"
+"る監査ワークフローの一部にすることも可能です。</li><li>監査: 監査が True に設"
+"定されている場合には、ファイアウォールポリシーが監査されることを意味します。"
+"ファイアウォールポリシーまたは関連付けられたファイアウォールルールが変更され"
+"るたびに、この属性は False に設定され、更新操作で明示的に True に設定する必要"
+"があります。</li>\n"
+"名前のフィールドは入力する必要があり、その他のフィールドはすべて省略可能で"
+"す。"
 
 msgid ""
 "Create a firewall rule.\n"
@@ -2030,15 +2060,21 @@ msgstr ""
 "\n"
 "ファイアウォールルールは、以下の属性の組み合わせです。\n"
 "\n"
-"<li>IP アドレス : 通信フィルタが適用される必要があるアドレス (送信元/送信先) "
-"です。</li><li>IP バージョン : フィルタリングされる必要がある IP パケットの種"
-"別 (IP V4/V6) です。</li><li>プロトコル: チェックされる必要があるパケットの種"
-"別 (UDP, ICMP, TCP, Any) です。</li><li>アクション: アクションは必要なフィル"
-"ターの種別で、データパケットを拒否/破棄/許可できます。</li>\n"
+"<li>IP アドレス: トラフィックフィルターを適用する必要があるアドレス (送信元/"
+"送信先) です。</li><li>IP バージョン: フィルタリングする必要がある IP パケッ"
+"トの種別 (IP V4/V6) です。</li><li>プロトコル: チェックされる必要があるパケッ"
+"トの種別 (UDP、ICMP、TCP、Any) です。</li><li>アクション: アクションは必要な"
+"フィルターの種別で、データパケットを REJECT/DENY/ALLOW できます。</li>\n"
 "プロトコルとアクションは必須項目であり、他のフィールドはすべて省略可能です。"
 
 msgid "Create a firewall with selected routers."
 msgstr "適用するルーターを指定してファイアウォールを作成します。"
+
+msgid "Create a identity provider protocol."
+msgstr "認証プロバイダーのプロトコルを作成します。"
+
+msgid "Create a mapping."
+msgstr "マッピングの作成"
 
 msgid ""
 "Create a monitor template.\n"
@@ -2104,6 +2140,10 @@ msgstr "ボリューム種別の暗号化設定の作成"
 msgid "Create pseudo-folder in container %(container_name)s"
 msgstr "コンテナー %(container_name)s に疑似フォルダーを作成"
 
+msgid "Created"
+msgstr "作成時刻"
+
+msgctxt "Created time"
 msgid "Created"
 msgstr "作成時刻"
 
@@ -2230,6 +2270,9 @@ msgstr "現在のホスト"
 msgid "Current Size (GiB)"
 msgstr "現在のサイズ (GiB)"
 
+msgid "Current consumer"
+msgstr "現在の使用者"
+
 msgid "Current password"
 msgstr "現在のパスワード"
 
@@ -2239,6 +2282,10 @@ msgid ""
 msgstr ""
 "現在、HTTP/HTTPS URLから取得できるイメージのみがサポートされています。イメー"
 "ジの場所から Image Service へアクセスできるようにしてください。"
+
+msgctxt "Custom style theme"
+msgid "Custom"
+msgstr "カスタム"
 
 msgid "Custom ICMP Rule"
 msgstr "カスタム ICMP ルール"
@@ -2256,11 +2303,11 @@ msgid "Customization Script Source"
 msgstr "カスタマイズスクリプトの入力方法"
 
 msgid "DENY"
-msgstr "破棄"
+msgstr "DENY"
 
 msgctxt "Action Name of a Firewall Rule"
 msgid "DENY"
-msgstr "破棄"
+msgstr "DENY"
 
 msgid "DHCP Agents"
 msgstr "DHCP エージェント"
@@ -2277,6 +2324,12 @@ msgid ""
 msgstr ""
 "DHCPv6 stateless: アドレスを OpenStack ルーターから、追加情報を OpenStack "
 "DHCP から取得"
+
+msgid "DNS Assignment"
+msgstr "DNS 割り当て"
+
+msgid "DNS Name"
+msgstr "DNS 名"
 
 msgid "DNS Name Servers"
 msgstr "DNS サーバー"
@@ -2341,6 +2394,10 @@ msgstr "Dead Peer 検出タイムアウト"
 
 msgid "Decrypt Password"
 msgstr "パスワードの復号"
+
+msgctxt "Default style theme"
+msgid "Default"
+msgstr "デフォルト"
 
 msgid "Default Quotas"
 msgstr "標準のクォータ"
@@ -2442,6 +2499,10 @@ msgid "Delete Key Pair"
 msgid_plural "Delete Key Pairs"
 msgstr[0] "キーペアの削除"
 
+msgid "Delete Mapping"
+msgid_plural "Delete Mappings"
+msgstr[0] "マッピングの削除"
+
 msgid "Delete Member"
 msgid_plural "Delete Members"
 msgstr[0] "メンバーの削除"
@@ -2477,6 +2538,10 @@ msgstr[0] "ポートの削除"
 msgid "Delete Project"
 msgid_plural "Delete Projects"
 msgstr[0] "プロジェクトの削除"
+
+msgid "Delete Protocol"
+msgid_plural "Delete Protocols"
+msgstr[0] "プロトコルの削除"
 
 msgid "Delete QoS Spec"
 msgid_plural "Delete QoS Specs"
@@ -2532,6 +2597,10 @@ msgstr[0] "VPN サービスの削除"
 msgid "Delete Volume"
 msgid_plural "Delete Volumes"
 msgstr[0] "ボリュームの削除"
+
+msgid "Delete Volume Backup"
+msgid_plural "Delete Volume Backups"
+msgstr[0] "ボリュームバックアップの削除"
 
 msgid "Delete Volume Snapshot"
 msgid_plural "Delete Volume Snapshots"
@@ -2607,6 +2676,10 @@ msgid "Deleted Key Pair"
 msgid_plural "Deleted Key Pairs"
 msgstr[0] "キーペアを削除しました"
 
+msgid "Deleted Mapping"
+msgid_plural "Deleted Mappings"
+msgstr[0] "マッピングを削除しました"
+
 msgid "Deleted Namespace"
 msgid_plural "Deleted Namespaces"
 msgstr[0] "名前空間を削除しました"
@@ -2626,6 +2699,10 @@ msgstr[0] "ポートを削除しました"
 msgid "Deleted Project"
 msgid_plural "Deleted Projects"
 msgstr[0] "プロジェクトを削除しました"
+
+msgid "Deleted Protocol"
+msgid_plural "Deleted Protocols"
+msgstr[0] "プロトコルを削除しました"
 
 msgid "Deleted QoS Spec"
 msgid_plural "Deleted QoS Specs"
@@ -3157,11 +3234,17 @@ msgstr ""
 "数、その他のリソースを定義します。ユーザーがインスタンスを起動する際にはフ"
 "レーバーを選択します。"
 
+msgid "Edit the identity provider's details."
+msgstr "認証プロバイダーの詳細を編集します。"
+
 msgid "Edit the image details."
 msgstr "イメージ詳細を編集します。"
 
 msgid "Edit the instance details."
 msgstr "インスタンスの詳細を編集します。"
+
+msgid "Edit the mapping's details."
+msgstr "マッピングの詳細を編集します。"
 
 msgid "Edit the project details."
 msgstr "プロジェクトの詳細を編集します。"
@@ -3235,6 +3318,13 @@ msgstr "暗号化"
 
 msgid "Encryption algorithm"
 msgstr "暗号化アルゴリズム"
+
+msgid ""
+"Encryption information cannot be updated for a volume type if volumes are "
+"currently in use with the volume type."
+msgstr ""
+"ボリューム種別の暗号化設定の情報は、その種別がボリュームで現在使用されている"
+"場合には更新できません。"
 
 msgid "Energy (Kwapi)"
 msgstr "エネルギー (Kwapi)"
@@ -3403,6 +3493,13 @@ msgid "Events"
 msgstr "イベント"
 
 msgid ""
+"Example: For <tt>mod_shib</tt> this would be <tt>Shib-Identity-Provider</"
+"tt>, for <tt>mod_auth_openidc</tt>, this could be <tt>HTTP_OIDC_ISS</tt>."
+msgstr ""
+"例: <tt>mod_shib</tt> の場合には <tt>Shib-Identity-Provider</tt>、"
+"<tt>mod_auth_openidc</tt> の場合には <tt>HTTP_OIDC_ISS</tt> など。"
+
+msgid ""
 "Example: The prefix 'hw:' is added to OS::Nova::Flavor for the Virtual CPU "
 "Topology namespace so that the properties will be prefixed with 'hw:' when "
 "applied to flavors."
@@ -3484,6 +3581,9 @@ msgstr ""
 
 msgid "Extra Specs"
 msgstr "追加スペック"
+
+msgid "FQDN"
+msgstr "FQDN"
 
 msgctxt "Power state of an Instance"
 msgid "Failed"
@@ -3594,6 +3694,10 @@ msgstr "ホスト %s からの退避に失敗しました。"
 #, python-format
 msgid "Failed to evacuate instances: %s"
 msgstr "インスタンスの退避に失敗しました: %s"
+
+#, python-format
+msgid "Failed to get mapping list %s"
+msgstr "マッピング一覧 %s の取得に失敗しました。"
 
 #, python-format
 msgid "Failed to get network list %s"
@@ -3783,6 +3887,9 @@ msgstr "ファンの RPM"
 msgid "Fault"
 msgstr "失敗"
 
+msgid "Federation"
+msgstr "フェデレーション"
+
 msgid ""
 "Fields in this tab are optional. You can configure the detail of IPSec site "
 "connection created."
@@ -3824,9 +3931,6 @@ msgstr "ファイアウォールルール"
 
 msgid "Firewalls"
 msgstr "ファイアウォール"
-
-msgid "Fixed IP"
-msgstr "Fixed IP"
 
 msgid "Fixed IPs"
 msgstr "Fixed IP"
@@ -4046,6 +4150,7 @@ msgstr ""
 "グループを使うと、複数のユーザーに対するアクセス権やロールの割り当てを一度で"
 "行うことができます。グループに追加するユーザーを編集できます。"
 
+#. Translators: High Availability mode of Neutron router
 msgid "HA mode"
 msgstr "HA モード"
 
@@ -4069,9 +4174,21 @@ msgid "Hard Reboot Instance"
 msgid_plural "Hard Reboot Instances"
 msgstr[0] "インスタンスのハードリブート"
 
+msgctxt "Task status of an Instance"
+msgid "Hard Reboot Pending"
+msgstr "ハードリブート待ち"
+
+msgctxt "Task status of an Instance"
+msgid "Hard Reboot Started"
+msgstr "ハードリブートが開始しました"
+
 msgid "Hard Rebooted Instance"
 msgid_plural "Hard Rebooted Instances"
 msgstr[0] "インスタンスのハードリブートを行いました"
+
+msgctxt "Task status of an Instance"
+msgid "Hard Rebooting"
+msgstr "ハードリブート中"
 
 msgid "Hash"
 msgstr "ハッシュ"
@@ -4297,7 +4414,19 @@ msgid "Identity"
 msgstr "ユーザー管理"
 
 msgid "Identity Provider ID"
-msgstr "識別情報プロバイダー ID"
+msgstr "認証プロバイダー ID"
+
+msgid "Identity Providers"
+msgstr "認証プロバイダー"
+
+msgid "Identity provider protocol created successfully."
+msgstr "認証プロバイダーのプロトコルが正常に作成されました。"
+
+msgid "Identity provider registered successfully."
+msgstr "認証プロバイダーが正常に登録されました。"
+
+msgid "Identity provider updated successfully."
+msgstr "認証プロバイダーが正常に更新されました。"
 
 msgid "Identity service does not allow editing user data."
 msgstr "Identity Service ではユーザーデータの編集が許可されていません。"
@@ -4335,7 +4464,7 @@ msgid ""
 "unusable images."
 msgstr ""
 "HTTP/HTTPS URL で指定する場合、イメージの場所のフィールドには、イメージ（バイ"
-"ナリー）への有効かつ直接の URL を入力する必要があります。イメージの場所へ "
+"ナリー）への有効な直接の URL を入力する必要があります。イメージの場所へ "
 "Image Service がアクセスできるようにしてください。URL がリダイレクトのページ"
 "の場合や、エラーページが返ってきた場合には、登録されたイメージは使用できない"
 "可能性があります。"
@@ -4409,8 +4538,8 @@ msgid ""
 "Images can be provided via an HTTP/HTTPS URL or be uploaded from your local "
 "file system."
 msgstr ""
-"イメージの作成は HTTP/HTTPS URL 経由で指定する方法と、ローカルファイルシステ"
-"ムからアップロードする方法があります。"
+"イメージは HTTP/HTTPS URL で指定するか、ローカルファイルシステムからアップ"
+"ロードすることができます。"
 
 msgid "Implementation"
 msgstr "実装"
@@ -4449,6 +4578,13 @@ msgstr "非稼働"
 msgctxt "Current status of a VPN Service"
 msgid "Inactive"
 msgstr "非稼働"
+
+msgid ""
+"Indicates whether this identity provider should accept federated "
+"authentication requests."
+msgstr ""
+"この認証プロバイダーがフェデレーション認証要求を受け入れるべきかどうかを指定"
+"します。"
 
 msgid "Info"
 msgstr "情報"
@@ -4551,6 +4687,12 @@ msgstr "ドメイン情報を参照するのに必要な権限がありません
 
 msgid "Insufficient privilege level to view group information."
 msgstr "グループ情報を参照するのに必要な権限がありません。"
+
+msgid "Insufficient privilege level to view identity provider information."
+msgstr "認証プロバイダーの情報を参照するのに必要な権限がありません。"
+
+msgid "Insufficient privilege level to view mapping information."
+msgstr "マッピング情報を参照するのに必要な権限がありません。"
 
 msgid "Insufficient privilege level to view project information."
 msgstr "プロジェクト情報を参照する権限がありません。"
@@ -4706,6 +4848,9 @@ msgstr "これらのセキュリティーグループでインスタンスを起
 
 msgid "Launch instance with these networks"
 msgstr "これらのネットワークでインスタンスを起動します。"
+
+msgid "Launch instance with these ports"
+msgstr "これらのポートでインスタンスを起動します。"
 
 msgid "Launch instance with this policy profile"
 msgstr "このポリシープロファイルでインスタンスを起動します。"
@@ -4873,6 +5018,9 @@ msgstr "アグリゲートのホストの管理"
 msgid "Manage Members"
 msgstr "メンバーの管理"
 
+msgid "Manage Protocols"
+msgstr "プロトコルの管理"
+
 msgid "Manage QoS Spec Association"
 msgstr "QoS スペックの関連付けの管理"
 
@@ -4906,6 +5054,26 @@ msgstr "手動"
 
 msgid "Mapped Fixed IP Address"
 msgstr "対応する Fixed IP アドレス"
+
+msgid "Mapping ID"
+msgstr "マッピング ID"
+
+#, python-format
+msgid "Mapping ID \"%s\" is already used."
+msgstr "マッピング ID \"%s\" はすでに使用されています。"
+
+msgid "Mapping created successfully."
+msgstr "マッピングが正常に作成されました。"
+
+msgid "Mapping updated successfully."
+msgstr "マッピングが正常に更新されました。"
+
+msgid "Mappings"
+msgstr "マッピング"
+
+msgctxt "Google's Material Design style theme"
+msgid "Material"
+msgstr "マテリアル"
 
 msgid "Max Retries"
 msgstr "最大試行回数"
@@ -5122,6 +5290,10 @@ msgstr "期間の開始日は指定しなければいけません"
 msgid "N/A"
 msgstr "なし"
 
+msgctxt "current status of port"
+msgid "N/A"
+msgstr "なし"
+
 msgid "Name"
 msgstr "名前"
 
@@ -5225,6 +5397,9 @@ msgstr "ネットワーク名"
 msgid "Network Overview"
 msgstr "ネットワークの概要"
 
+msgid "Network Ports"
+msgstr "ネットワークポート"
+
 msgid "Network Profile"
 msgstr "ネットワークプロファイル"
 
@@ -5273,6 +5448,9 @@ msgstr "新しいフレーバー"
 
 msgid "New Host"
 msgstr "新規ホスト"
+
+msgid "New QoS Spec Consumer"
+msgstr "QoS スペックの新規使用者"
 
 msgid "New Size (GiB)"
 msgstr "新しいサイズ (GiB)"
@@ -5378,6 +5556,9 @@ msgstr "インスタンスがありません"
 msgid "No key pairs available"
 msgstr "キーペアがありません"
 
+msgid "No mappings available"
+msgstr "利用可能なマッピングがありません"
+
 msgid "No networks available"
 msgstr "ネットワークがありません"
 
@@ -5461,6 +5642,12 @@ msgstr "ボリュームが接続されていません。"
 
 msgid "No volumes available"
 msgstr "利用可能なボリュームがありません"
+
+msgid "Non admin users are not allowed to make images public."
+msgstr "管理ユーザー以外はイメージをパブリックに設定できません。"
+
+msgid "Non admin users are not allowed to set shared option."
+msgstr "管理ユーザー以外は、共有オプションの設定はできません。"
 
 msgid "Non-Members"
 msgstr "未参加メンバー"
@@ -5608,9 +5795,6 @@ msgstr "オブジェクト"
 
 msgid "Old Flavor"
 msgstr "現在のフレーバー"
-
-msgid "On"
-msgstr "オン"
 
 msgid "On Demand"
 msgstr "要求時"
@@ -5807,7 +5991,7 @@ msgid "Pending Update"
 msgstr "更新待ち"
 
 msgid "Per Volume Size (GiB)"
-msgstr "ボリュームサイズ (GiB) 毎"
+msgstr "1 ボリュームあたりのサイズ (GiB)"
 
 msgid "Perfect Forward Secrecy"
 msgstr "Perfect Forward Secrecy"
@@ -5897,6 +6081,9 @@ msgstr "ポート ID"
 msgid "Port Range"
 msgstr "ポート範囲"
 
+msgid "Port Security Enabled"
+msgstr "ポートセキュリティー有効"
+
 #, python-format
 msgid "Port cleanup failed for these port-ids (%s)."
 msgstr "削除できなかったポートがあります (ポート ID: %s)"
@@ -5909,6 +6096,13 @@ msgstr "IP を割り当てるポート"
 
 msgid "Ports"
 msgstr "ポート"
+
+msgid ""
+"Ports are optional and can be used with networks to add extra IP addresses "
+"to your instances or select specific types of ports."
+msgstr ""
+"ポートは省略可能です。ネットワークに使用して、インスタンスに IP アドレスを追"
+"加したり、特定の種別のポートを選択することができます。"
 
 msgid "Position in Policy"
 msgstr "ポリシー内の位置"
@@ -6040,11 +6234,21 @@ msgstr "保護"
 msgid "Protocol"
 msgstr "プロトコル"
 
+msgid "Protocol ID"
+msgstr "プロトコル ID"
+
+#, python-format
+msgid "Protocol ID \"%s\" is already used."
+msgstr "プロトコル ID \"%s\" はすでに使用されています。"
+
 msgid "Protocol Port"
 msgstr "ポート番号"
 
 msgid "Protocol for the firewall rule"
 msgstr "ファイアウォールルールのプロトコル"
+
+msgid "Protocols"
+msgstr "プロトコル"
 
 msgid "Provider"
 msgstr "プロバイダー"
@@ -6088,9 +6292,12 @@ msgstr "公開URL"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU エミュレーター"
 
+msgid "QOS Policy ID"
+msgstr "QoS ポリシー ID"
+
 #, python-format
 msgid "QoS Spec name \"%s\" already exists."
-msgstr "QoS 仕様 \"%s\" は既に存在します。"
+msgstr "QoS スペック \"%s\" はすでに存在します。"
 
 msgid "QoS Spec to be associated"
 msgstr "関連付ける QoS スペック"
@@ -6141,11 +6348,17 @@ msgid "RAM(Available: %(avail)s, Requested: %(req)s)"
 msgstr "メモリー (利用可能: %(avail)s, 要求: %(req)s)"
 
 msgid "REJECT"
-msgstr "拒否"
+msgstr "REJECT"
 
 msgctxt "Action Name of a Firewall Rule"
 msgid "REJECT"
-msgstr "拒否"
+msgstr "REJECT"
+
+msgid "RX/TX Factor"
+msgstr "RX/TX 係数"
+
+msgid "RX/TX factor"
+msgstr "RX/TX 係数"
 
 msgid "Ramdisk"
 msgstr "RAM ディスク"
@@ -6217,8 +6430,21 @@ msgstr "再作成中"
 msgid "Rebuilding instance %s."
 msgstr "インスタンス %s を再作成中。"
 
+msgid "Recreate EC2 Credentials"
+msgstr "EC2 認証情報の再作成"
+
 msgid "Regions:"
 msgstr "リージョン:"
+
+msgid "Register Identity Provider"
+msgstr "認証プロバイダーの登録"
+
+msgid ""
+"Register a identity provider that is trusted by the Identity API to "
+"authenticate identities."
+msgstr ""
+"ID を認証するために、Identity API により信頼されている認証プロバイダーを登録"
+"します。"
 
 msgid "Relative part of requests this pool member serves compared to others"
 msgstr ""
@@ -6250,7 +6476,18 @@ msgid "Remote"
 msgstr "接続相手"
 
 msgid "Remote IDs"
-msgstr "接続相手 ID"
+msgstr "接続相手の ID"
+
+msgid ""
+"Remote IDs are associated with the identity provider and are globally "
+"unique. This indicates the header attributes to use for mapping federation "
+"protocol attributes to Identity API objects. If no value is provided, the "
+"list will be set to empty."
+msgstr ""
+"接続相手の ID は認証プロバイダーに関連付けられており、グローバルで一意です。"
+"これは、フェデレーションプロトコルの属性を Identity API オブジェクトにマッピ"
+"ングするのに使用するヘッダー属性を示します。値が指定されていない場合には、一"
+"覧は空に設定されます。"
 
 msgid "Remote IP Prefix"
 msgstr "接続相手の IP 範囲"
@@ -6293,6 +6530,14 @@ msgstr[0] "ユーザーの削除"
 msgid "Removed User"
 msgid_plural "Removed Users"
 msgstr[0] "ユーザーを削除しました"
+
+msgid ""
+"Removing a key pair can leave OpenStack resources orphaned. You should not "
+"remove a key pair unless you are certain it is not being used anywhere."
+msgstr ""
+"キーペアを削除すると、OpenStack リソースが孤立する可能性があります。キーペア"
+"がどこでも使用されていないことが確認できない場合には、そのキーペアは削除すべ"
+"きではありません。"
 
 msgid "Report Bug"
 msgstr "バグ報告"
@@ -6527,6 +6772,24 @@ msgid "Router"
 msgstr "ルーター"
 
 #, python-format
+msgid ""
+"Router %(name)s was created but connecting to an external network failed. "
+"Attempts to delete the new router also failed. Router %(name)s still exists "
+"but is not connect to the desired external network."
+msgstr ""
+"ルーター %(name)s が作成されましたが、外部ネットワークへの接続に失敗しまし"
+"た。新規ルーターを削除する試みも失敗しました。ルーター %(name)s はまだ存在し"
+"ていますが、希望の外部ネットワークには接続されていません。"
+
+#, python-format
+msgid ""
+"Router %s was created but connecting to an external network failed. The "
+"created router has been deleted, as the overall operation failed."
+msgstr ""
+"ルーター %s が作成されましたが、外部ネットワークへの接続に失敗しました。操作"
+"全体が失敗したため、作成されたルーターは削除されました。"
+
+#, python-format
 msgid "Router %s was successfully created."
 msgstr "ルーター %s が正常に作成されました。"
 
@@ -6689,6 +6952,10 @@ msgid "Scheduled deletion of Volume"
 msgid_plural "Scheduled deletion of Volumes"
 msgstr[0] "ボリュームの削除を予約しました"
 
+msgid "Scheduled deletion of Volume Backup"
+msgid_plural "Scheduled deletion of Volume Backups"
+msgstr[0] "ボリュームバックアップの削除を予約しました"
+
 msgid "Scheduled deletion of Volume Snapshot"
 msgid_plural "Scheduled deletion of Volume Snapshots"
 msgstr[0] "ボリュームスナップショットの削除を予約しました"
@@ -6719,6 +6986,9 @@ msgstr "セキュリティーグループルール"
 
 msgid "Security Groups"
 msgstr "セキュリティーグループ"
+
+msgid "Security group rule already exists."
+msgstr "セキュリティーグループルールがすでに存在します。"
 
 msgid ""
 "Security groups are sets of IP filter rules that are applied to the network "
@@ -6757,6 +7027,9 @@ msgstr "イメージを選択してください"
 
 msgid "Select Instance Snapshot"
 msgstr "インスタンスのスナップショットの選択"
+
+msgid "Select Mapping"
+msgstr "マッピングの選択"
 
 msgid "Select Network"
 msgstr "ネットワークを選択してください"
@@ -6825,6 +7098,9 @@ msgstr "新しい QoS スペックを選択してください"
 
 msgid "Select a new agent"
 msgstr "新しいエージェントを選択してください"
+
+msgid "Select a new consumer"
+msgstr "新規使用者の選択"
 
 msgid "Select a new host"
 msgstr "新しいホストを選択してください"
@@ -6987,6 +7263,12 @@ msgstr "現在のプロジェクトに設定"
 
 msgid "Set maximum quotas for the project."
 msgstr "このプロジェクトの最大クォータを設定します。"
+
+msgid ""
+"Set of rules to map federation protocol attributes to Identity API objects."
+msgstr ""
+"フェデレーションプロトコルの属性を Identity API オブジェクトにマッピングする"
+"ためのルールセット"
 
 msgid "Settings"
 msgstr "設定"
@@ -7464,6 +7746,9 @@ msgstr "公開鍵 %s を正常に取り込みました"
 msgid "Successfully modified QoS Spec consumer."
 msgstr "QoS スペックの使用者を正常に更新しました。"
 
+msgid "Successfully recreated ec2 credentials."
+msgstr "EC2 認証情報の再作成に成功しました。"
+
 #, python-format
 msgid ""
 "Successfully restored backup %(backup_name)s to volume with id: %(volume_id)s"
@@ -7508,6 +7793,10 @@ msgstr "コンテナーアクセスをプライベートに変更しました。
 
 msgid "Successfully updated container access to public."
 msgstr "コンテナーアクセスをパブリックに変更しました。"
+
+#, python-format
+msgid "Successfully updated encryption for volume type: %s"
+msgstr "ボリューム種別の暗号化設定 %s を正常に更新しました。"
 
 #, python-format
 msgid "Successfully updated security group: %s"
@@ -7655,6 +7944,7 @@ msgid ""
 "number."
 msgstr "「上限」ポート番号は「下限」ポート番号以上でなければいけません。"
 
+#. Translators: Only used inside Horizon code and invisible to users
 #, python-format
 msgid ""
 "The 'operation' parameter for get_feature_permission '%(feature)s' is "
@@ -7690,6 +7980,13 @@ msgstr ""
 msgid ""
 "The <strong>Provider</strong> is the class providing encryption support (e."
 "g. LuksEncryptor)."
+msgstr ""
+"<strong>プロバイダー</strong>は暗号化対応を提供するクラスです (例: "
+"LuksEncryptor)。"
+
+msgid ""
+"The <strong>Provider</strong> is the class providing encryption support (e."
+"g., LuksEncryptor)."
 msgstr ""
 "<strong>プロバイダー</strong>は暗号化対応を提供するクラスです (例: "
 "LuksEncryptor)。"
@@ -7893,6 +8190,13 @@ msgstr "お探しのページが見つかりません"
 msgid "The physical mechanism by which the virtual network is implemented."
 msgstr "仮想ネットワークを実現する物理方式"
 
+msgid ""
+"The port also describes the associated network configuration, such as the "
+"MAC and IP addresses to be used on that port."
+msgstr ""
+"ポートは、そのポートで使用される MAC アドレスや IP アドレスなどの関連するネッ"
+"トワーク設定の表現でもあります。"
+
 msgid "The pre-defined key string between the two peers of the VPN connection"
 msgstr "VPN 接続の両端間で共有される事前定義鍵"
 
@@ -7910,6 +8214,7 @@ msgstr "環境設定ファイルの RAW データ"
 msgid "The raw contents of the template."
 msgstr "テンプレートの RAW データ。"
 
+#. Translators: Only used inside Horizon code and invisible to users
 #, python-format
 msgid ""
 "The requested feature '%(feature)s' is unknown. Please make sure to specify "
@@ -7990,7 +8295,7 @@ msgstr "ボリュームサイズはイメージサイズ (%s) 未満にはでき
 
 #, python-format
 msgid "The volume size cannot be less than the snapshot size (%sGiB)"
-msgstr "ボリューム容量はスナップショット容量 (%sGiB) 未満にはできません。"
+msgstr "ボリュームサイズはスナップショットサイズ (%sGiB) 未満にはできません。"
 
 #, python-format
 msgid "The volume size cannot be less than the source volume size (%sGiB)"
@@ -7998,6 +8303,9 @@ msgstr "ボリュームサイズは元のボリュームサイズ (%sGiB) 未満
 
 msgid "Theme Preview"
 msgstr "テーマのプレビュー"
+
+msgid "Themes:"
+msgstr "テーマ"
 
 msgid "There are no meters defined yet."
 msgstr "まだ定義されたメーターがありません。"
@@ -8022,6 +8330,13 @@ msgstr "%(prefix)s の解析中に問題がありました: %(error)s"
 
 msgid "This action cannot be undone."
 msgstr "この操作は取り消せません。"
+
+msgid ""
+"This action cannot be undone. Current EC2 credentials will be deleted and "
+"not recoverable."
+msgstr ""
+"この操作は取り消せません。現在の EC2 認証情報は削除され、元に戻すことができな"
+"くなります。"
 
 msgid "This application requires JavaScript to be enabled in your web browser."
 msgstr ""
@@ -8361,9 +8676,20 @@ msgstr "ホストアグリゲート \"%s\" が作成できません。"
 msgid "Unable to create host aggregate."
 msgstr "ホストアグリゲートを作成することができません。"
 
+msgid "Unable to create identity provider protocol."
+msgstr "認証プロバイダーのプロトコルを作成できません。"
+
 #, python-format
 msgid "Unable to create key pair: %(exc)s"
 msgstr "キーペアを作成できません: %(exc)s"
+
+msgid "Unable to create mapping."
+msgstr "マッピングを作成できません。"
+
+msgid "Unable to create mapping. Rules has malformed JSON data."
+msgstr ""
+"マッピングを作成できません。不正な形式の JSON データがルールに含まれていま"
+"す。"
 
 #, python-format
 msgid "Unable to create network \"%s\"."
@@ -8664,6 +8990,22 @@ msgstr "IPアドレス %s の解析に失敗しました。"
 msgid "Unable to rebuild instance."
 msgstr "インスタンスを再作成できません。"
 
+msgid "Unable to recreate ec2 credentials. Failed to create ec2 credentials."
+msgstr "EC2 認証情報を再作成できません。EC2 認証情報の作成に失敗しました。"
+
+msgid "Unable to recreate ec2 credentials. Failed to delete ec2 credentials."
+msgstr "EC2 認証情報を再作成できません。EC2 認証情報の削除に失敗しました。"
+
+msgid "Unable to register identity provider."
+msgstr "認証プロバイダーを登録できません。"
+
+msgid ""
+"Unable to register identity provider. Please check that the Identity "
+"Provider ID and Remote IDs provided are not already in use."
+msgstr ""
+"認証プロバイダーを登録できません。指定した認証プロバイダーの ID と接続相手の "
+"ID がすでに使用されていないかどうかを確認してください。"
+
 #, python-format
 msgid "Unable to resize instance \"%s\"."
 msgstr "インスタンス \"%s\" をリサイズできません。"
@@ -8714,6 +9056,10 @@ msgstr "IPSec サイト間接続の詳細を取得できません。 %s"
 
 msgid "Unable to retrieve IPSec Site Connections list."
 msgstr "IPSec サイト間接続の一覧を取得できません。"
+
+#, python-format
+msgid "Unable to retrieve Network information for instance \"%s\"."
+msgstr "インスタンス \"%s\" のネットワーク情報を取得できません。"
 
 msgid "Unable to retrieve Nova availability zones."
 msgstr "Nova のアベイラビリティーゾーンを取得できません。"
@@ -8819,6 +9165,9 @@ msgstr "ドメイン情報を取得できません。"
 msgid "Unable to retrieve domain list."
 msgstr "ドメインの一覧を取得できません。"
 
+msgid "Unable to retrieve encryption type."
+msgstr "  ボリューム種別の暗号化設定を取得できません。"
+
 msgid "Unable to retrieve extensions information"
 msgstr "拡張機能の情報を取得できません。"
 
@@ -8889,6 +9238,12 @@ msgstr "ハイパーバイザーのインスタンス一覧を取得できませ
 
 msgid "Unable to retrieve hypervisor statistics."
 msgstr "ハイパーバイザーの統計を取得できません。"
+
+msgid "Unable to retrieve identity provider information."
+msgstr "認証プロバイダーの情報を取得できません。"
+
+msgid "Unable to retrieve identity provider list."
+msgstr "認証プロバイダー一覧を取得できません。"
 
 msgid "Unable to retrieve image details."
 msgstr "イメージの詳細を取得できません。"
@@ -8961,6 +9316,9 @@ msgstr "ボリュームスナップショットの一覧を取得できません
 
 msgid "Unable to retrieve list of volumes."
 msgstr "ボリュームの一覧を取得できません。"
+
+msgid "Unable to retrieve mapping list."
+msgstr "マッピング一覧を取得できません。"
 
 msgid "Unable to retrieve member details."
 msgstr "メンバーの詳細を取得できません。"
@@ -9062,6 +9420,9 @@ msgstr "プロジェクト情報を取得できません。"
 
 msgid "Unable to retrieve project list."
 msgstr "プロジェクト一覧を取得できません。"
+
+msgid "Unable to retrieve protocol list."
+msgstr "プロトコル一覧を取得できません。"
 
 msgid "Unable to retrieve providers list."
 msgstr "プロバイダーの一覧を取得できません。"
@@ -9308,12 +9669,33 @@ msgstr "Nova の標準のクォータを更新できません。"
 msgid "Unable to update default quotas."
 msgstr "標準のクォータを更新できません。"
 
+msgid "Unable to update encrypted volume type."
+msgstr "ボリューム種別の暗号化設定を更新できません。"
+
 msgid "Unable to update group."
 msgstr "グループを更新できません。"
+
+msgid "Unable to update identity provider."
+msgstr "認証プロバイダーを更新できません。"
+
+msgid ""
+"Unable to update identity provider. Please check that the Remote IDs "
+"provided are not already in use."
+msgstr ""
+"認証プロバイダーを更新できません。指定した接続相手の ID がすでに使用されてい"
+"ないかどうかを確認してください。"
 
 #, python-format
 msgid "Unable to update image \"%s\"."
 msgstr "イメージ \"%s\" を更新できません。"
+
+msgid "Unable to update mapping."
+msgstr "マッピングを更新できません。"
+
+msgid "Unable to update mapping. Rules has malformed JSON data."
+msgstr ""
+"マッピングを更新できません。不正な形式の JSON データがルールに含まれていま"
+"す。"
 
 msgid "Unable to update object."
 msgstr "オブジェクトを更新できません。"
@@ -9400,6 +9782,14 @@ msgctxt "Action log of an instance"
 msgid "Unpause"
 msgstr "一時停止解除"
 
+msgid "Unregister Identity Provider"
+msgid_plural "Unregister Identity Providers"
+msgstr[0] "認証プロバイダーの登録解除"
+
+msgid "Unregistered Identity Provider"
+msgid_plural "Unregistered Identity Providers"
+msgstr[0] "認証プロバイダーが登録解除されました"
+
 msgctxt "Task status of an Instance"
 msgid "Unrescuing"
 msgstr "アンレスキュー中"
@@ -9445,6 +9835,12 @@ msgstr "標準のクォータの更新"
 msgid "Update Defaults"
 msgstr "デフォルト値の変更"
 
+msgid "Update Encrypted Volume Type"
+msgstr "ボリューム種別の暗号化設定の更新"
+
+msgid "Update Encryption"
+msgstr "暗号化設定の更新"
+
 msgctxt "current status of stack"
 msgid "Update Failed"
 msgstr "更新に失敗"
@@ -9452,9 +9848,15 @@ msgstr "更新に失敗"
 msgid "Update Group"
 msgstr "グループの更新"
 
+msgid "Update Identity Provider"
+msgstr "認証プロバイダーの更新"
+
 msgctxt "current status of stack"
 msgid "Update In Progress"
 msgstr "更新中"
+
+msgid "Update Mapping"
+msgstr "マッピングの更新"
 
 msgid "Update Metadata"
 msgstr "メタデータの更新"
@@ -9492,6 +9894,9 @@ msgstr "ボリュームスナップショットのステータスの変更"
 msgid "Update Volume Status"
 msgstr "ボリュームのステータスの変更"
 
+msgid "Update Volume Type Encryption"
+msgstr "ボリューム種別の暗号化設定の更新"
+
 msgid ""
 "Update a stack with the provided values. Please note that any encrypted "
 "parameters, such as passwords, will be reset to default if you do not change "
@@ -9507,6 +9912,9 @@ msgid ""
 msgstr ""
 "ネットワークに割り当てられたサブネットを更新します。高度な設定は「サブネット"
 "の詳細」タブにあります。"
+
+msgid "Update an Encrypted Volume Type"
+msgstr "ボリューム種別の暗号化設定の更新"
 
 msgid "Update requests for this floating ip"
 msgstr "この Floating IP の更新要求数"
@@ -9544,6 +9952,13 @@ msgstr "サブネット \"%s\" を更新しました。"
 msgctxt "Task status of an Instance"
 msgid "Updating Password"
 msgstr "パスワード更新中"
+
+msgid ""
+"Updating encryption is not implemented.  Unable to update  encrypted volume "
+"type."
+msgstr ""
+"暗号化設定の更新は実装されていません。ボリューム種別の暗号化設定を更新できま"
+"せん。"
 
 #, python-format
 msgid "Updating volume \"%s\""
@@ -9667,6 +10082,12 @@ msgstr "ユーザー名 \"%s\" はすでに使用されています。"
 
 msgid "User password has been updated successfully."
 msgstr "ユーザーのパスワードが正常に更新されました。"
+
+msgid "User-defined unique id to identify the identity provider."
+msgstr "認証プロバイダーを識別するためのユーザー定義の一意な ID"
+
+msgid "User-defined unique id to identify the mapping."
+msgstr "マッピングを識別するためのユーザー定義の一意な ID"
 
 msgid "Users"
 msgstr "ユーザー"
@@ -9961,7 +10382,7 @@ msgstr ""
 #, python-format
 msgid "Volume size must be equal to or greater than the snapshot size (%sGiB)"
 msgstr ""
-"ボリューム容量はスナップショット容量 (%sGiB) 以上でなければいけません。"
+"ボリュームサイズはスナップショットサイズ (%sGiB) 以上でなければいけません。"
 
 msgid "Volume size must be greater than 0"
 msgstr "ボリュームサイズは 0 より大きい値でなければなりません。"

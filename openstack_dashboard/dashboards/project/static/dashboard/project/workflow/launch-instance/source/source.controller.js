@@ -38,7 +38,8 @@
     'decodeFilter',
     'diskFormatFilter',
     'gbFilter',
-    'horizon.dashboard.project.workflow.launch-instance.basePath'
+    'horizon.dashboard.project.workflow.launch-instance.basePath',
+    'horizon.framework.widgets.transfer-table.events'
   ];
 
   function LaunchInstanceSourceController($scope,
@@ -48,7 +49,8 @@
     decodeFilter,
     diskFormatFilter,
     gbFilter,
-    basePath
+    basePath,
+    events
   ) {
 
     var ctrl = this;
@@ -313,11 +315,28 @@
       }
     );
 
+    // Since available transfer table for Launch Instance Source step is
+    // dynamically selected based on Boot Source, we need to update the
+    // model here accordingly. Otherwise it will only calculate the items
+    // available based on the original selection Boot Source: Image.
+    var bootSourceWatcher = $scope.$watch(
+      function getBootSource() {
+        return ctrl.currentBootSource;
+      },
+      function onBootSourceChange(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          $scope.$broadcast(events.AVAIL_CHANGED, {
+            'data': bootSources[newValue]
+          });
+        }
+      }
+    );
+
     var imagesWatcher = $scope.$watchCollection(
-      function () {
+      function getImages() {
         return $scope.model.images;
       },
-      function () {
+      function onImagesChange() {
         $scope.initPromise.then(function () {
           $scope.$applyAsync(function () {
             if ($scope.launchContext.imageId) {
@@ -328,11 +347,44 @@
       }
     );
 
+    var volumeWatcher = $scope.$watchCollection(
+      function getVolumes() {
+        return $scope.model.volumes;
+      },
+      function onVolumesChange() {
+        $scope.initPromise.then(function onInit() {
+          $scope.$applyAsync(function setDefaultVolume() {
+            if ($scope.launchContext.volumeId) {
+              setSourceVolumeWithId($scope.launchContext.volumeId);
+            }
+          });
+        });
+      }
+    );
+
+    var snapshotWatcher = $scope.$watchCollection(
+      function getSnapshots() {
+        return $scope.model.volumeSnapshots;
+      },
+      function onSnapshotsChange() {
+        $scope.initPromise.then(function onInit() {
+          $scope.$applyAsync(function setDefaultSnapshot() {
+            if ($scope.launchContext.snapshotId) {
+              setSourceSnapshotWithId($scope.launchContext.snapshotId);
+            }
+          });
+        });
+      }
+    );
+
     // Explicitly remove watchers on desruction of this controller
     $scope.$on('$destroy', function() {
       newSpecWatcher();
       allocatedWatcher();
+      bootSourceWatcher();
       imagesWatcher();
+      volumeWatcher();
+      snapshotWatcher();
     });
 
     // Initialize
@@ -407,7 +459,7 @@
      * size for validating vol_size field
      */
     function checkVolumeForImage() {
-      var source = selection ? selection[0] : undefined;
+      var source = selection[0];
 
       if (source && ctrl.currentBootSource === bootSourceTypes.IMAGE) {
         var imageGb = source.size * 1e-9;
@@ -418,7 +470,9 @@
         var volumeSizeObj = { minVolumeSize: ctrl.minVolumeSize };
         ctrl.minVolumeSizeError = interpolate(volumeSizeText, volumeSizeObj, true);
       } else {
+        /*eslint-disable no-undefined */
         ctrl.minVolumeSize = undefined;
+        /*eslint-enable no-undefined */
       }
     }
 
@@ -456,6 +510,24 @@
         changeBootSource(bootSourceTypes.IMAGE, [pre]);
         $scope.model.newInstanceSpec.source_type = ctrl.bootSourcesOptions[0];
         ctrl.currentBootSource = ctrl.bootSourcesOptions[0].type;
+      }
+    }
+
+    function setSourceVolumeWithId(id) {
+      var pre = findSourceById($scope.model.volumes, id);
+      if (pre) {
+        changeBootSource(bootSourceTypes.VOLUME, [pre]);
+        $scope.model.newInstanceSpec.source_type = ctrl.bootSourcesOptions[2];
+        ctrl.currentBootSource = ctrl.bootSourcesOptions[2].type;
+      }
+    }
+
+    function setSourceSnapshotWithId(id) {
+      var pre = findSourceById($scope.model.volumeSnapshots, id);
+      if (pre) {
+        changeBootSource(bootSourceTypes.VOLUME_SNAPSHOT, [pre]);
+        $scope.model.newInstanceSpec.source_type = ctrl.bootSourcesOptions[3];
+        ctrl.currentBootSource = ctrl.bootSourcesOptions[3].type;
       }
     }
   }

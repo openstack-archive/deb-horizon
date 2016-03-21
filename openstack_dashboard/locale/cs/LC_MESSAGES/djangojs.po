@@ -1,26 +1,19 @@
-# Translations template for PROJECT.
-# Copyright (C) 2015 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-#
-# Translators:
-# Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2015
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-02 06:17+0000\n"
+"POT-Creation-Date: 2016-03-15 01:56+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2015-12-17 11:00+0000\n"
 "Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
-"Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"Generated-By: Babel 2.0\n"
-"X-Generator: Zanata 3.7.3\n"
 "Language-Team: Czech\n"
+"Language: cs\n"
+"X-Generator: Zanata 3.7.3\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
 
 msgid "#"
 msgstr "#"
@@ -88,37 +81,6 @@ msgstr ""
 "          <a>tuto důležitou výstrahu</a>."
 
 msgid ""
-"<div>\n"
-"                  \n"
-"                    <input> Checkbox\n"
-"                  </input>\n"
-"                </div>"
-msgstr ""
-"<div>\n"
-"                  \n"
-"                    <input> Zaškrtávací políčko\n"
-"                  </input>\n"
-"                </div>"
-
-msgid ""
-"<input>\n"
-"                    Option one is this\n"
-"                  </input>"
-msgstr ""
-"<input>\n"
-"                    První volba je toto\n"
-"                  </input>"
-
-msgid ""
-"<input>\n"
-"                    Option two can be something else\n"
-"                  </input>"
-msgstr ""
-"<input>\n"
-"                    Druhá volba může být něco jiného\n"
-"                  </input>"
-
-msgid ""
 "<li><b>Image (with Create New Volume checked)</b>: This options uses an "
 "image to boot the instance, and creates a new volume to persist instance "
 "data. You can specify volume size and whether to delete the volume on "
@@ -180,16 +142,6 @@ msgstr ""
 "    <b>Instancí</b> a klikněte na nabídku <b>Činnosti</b> napravo od "
 "instance.\n"
 "    Pak zvolte volbu <b>Přidružit plovoucí IP</b> a zadejte potřebné údaje."
-
-msgid ""
-"A key pair allows you to SSH into your newly created instance.\n"
-"      You may select an existing key pair, import a key pair, or generate a "
-"new key pair."
-msgstr ""
-"Pár klíčů Vám umožňuje se připojit pomocí SSH do vaší nově vytvořené "
-"instance. \n"
-"      Zde můžete zvolit existující pár klíčů, importovat ho nebo vytvořit "
-"zcela nový."
 
 msgid ""
 "A longer block of help text that breaks onto a new line and may extend "
@@ -345,20 +297,11 @@ msgstr "Nadpis sloupce"
 msgid "Configuration"
 msgstr "Konfigurace"
 
-msgid "Configuration Drive"
-msgstr "Konfigurační jednotka"
-
-msgid "Configuration Help"
-msgstr "Nápověda pro nastavení"
-
 msgid "Containers"
 msgstr "Kontejner"
 
 msgid "Contextual alternatives"
 msgstr "Kontextové alternativy"
-
-msgid "Count"
-msgstr "Počet"
 
 msgid "Create Key Pair"
 msgstr "Vytvořit pár klíče"
@@ -431,19 +374,6 @@ msgstr "ID domény"
 msgid "Down"
 msgstr "Zavřen"
 
-msgid ""
-"Dropdown\n"
-"                <span></span>"
-msgstr ""
-"Rozbalovací seznam\n"
-"                <span></span>"
-
-msgid "Dropdown <b></b>"
-msgstr "Rozbalovací seznam <b></b>"
-
-msgid "Dropdown <span></span>"
-msgstr "Rozbalovací seznam<span></span>"
-
 msgid "Dropdown header"
 msgstr "Hlavička rozbalovacího seznamu "
 
@@ -480,9 +410,6 @@ msgstr "Otisk"
 
 msgid "Flavor"
 msgstr "Konfigurace"
-
-msgid "Flavor Help"
-msgstr "Nápověda ke konfiguracím"
 
 msgid "Flavor Name"
 msgstr "Název konfigurace"
@@ -536,9 +463,6 @@ msgstr "Nadpis 6"
 
 msgid "Home"
 msgstr "Domů"
-
-msgid "Home <span>42</span>"
-msgstr "Domů <span>42</span>"
 
 msgid "ID"
 msgstr "ID"
@@ -619,23 +543,8 @@ msgstr "Úspěšný vstup"
 msgid "Input warning"
 msgstr "Varování ve vstupu"
 
-msgid "Instance Details"
-msgstr "Podrobnosti instance"
-
-msgid "Instance Details Help"
-msgstr "Nápověda k podrobnostem instance"
-
-msgid "Instance Name"
-msgstr "Název instance"
-
 msgid "Instance Snapshot"
 msgstr "Snímek instance"
-
-msgid "Instance Source"
-msgstr "Zdroj instance"
-
-msgid "Instance Source Help"
-msgstr "Nápověda ke zdroji instance"
 
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "Počet instanci je vyžadován - musí být celé číslo a alespoň 1."
@@ -657,23 +566,6 @@ msgstr "Přes celou obrazovku"
 
 msgid "Key Pair"
 msgstr "Pár klíčů"
-
-msgid "Key Pair Help"
-msgstr "Nápověda k páru klíčů"
-
-msgid "Key Pair Name"
-msgstr "Název páru klíčů"
-
-msgid ""
-"Key Pairs are how you login to your instance after it is launched.\n"
-"        Choose a key pair name you will recognize and paste your SSH public "
-"key into the\n"
-"        space provided."
-msgstr ""
-"Pár klíčů je způsob jak se přihlásit do instance po jejím spuštění. \n"
-"        Zvolte název páru klíčů, který si zapamatujete a vložte svůj veřejný "
-"klíč SSH do\n"
-"        vyhrazeného prostoru."
 
 msgid "Killed"
 msgstr "Ukončit"
@@ -723,9 +615,6 @@ msgstr "Ručně"
 msgid "Max Port"
 msgstr "Maximální port"
 
-msgid "Messages <span>3</span>"
-msgstr "Zprávy <span>3</span>"
-
 msgid "Metadata"
 msgstr "Popisná data"
 
@@ -767,9 +656,6 @@ msgstr "Navigace"
 
 msgid "Network"
 msgstr "Síť"
-
-msgid "Network Help"
-msgstr "Nápověda k síti"
 
 msgid "Network characteristics"
 msgstr "Prvky sítě"
@@ -849,15 +735,6 @@ msgstr "Fyzická síť"
 msgid "Pills"
 msgstr "Zaoblená tlačítka"
 
-msgid ""
-"Please provide the initial hostname for the instance, the availability zone "
-"where it will be deployed, and the instance count.\n"
-"      Increase the Count to create multiple instances with the same settings."
-msgstr ""
-"Prosím zadejte název počátečního hostitele instance, zónu dostupnosti, kde "
-"bude nasazena a počet instancí.\n"
-"      Počet zvyšte pro vytvoření mnoha instanci se stejným nastavením."
-
 msgid "Policy check failed."
 msgstr "Kontrola zásady selhala."
 
@@ -875,9 +752,6 @@ msgstr "Soukromé"
 
 msgid "Profile"
 msgstr "Profil"
-
-msgid "Profile <span></span>"
-msgstr "Profil <span></span>"
 
 msgid "Progress bars"
 msgstr "Ukazatele průběhu"
@@ -932,9 +806,6 @@ msgstr "ˇ5azení položek změňte přetažením"
 msgid "Remote"
 msgstr "Vzdálené"
 
-msgid "Required"
-msgstr "Vyžadováno"
-
 msgid "Right"
 msgstr "Vpravo"
 
@@ -952,9 +823,6 @@ msgstr "Ukládání"
 
 msgid "Security Groups"
 msgstr "Bezpečnostní skupiny"
-
-msgid "Security Groups Help"
-msgstr "Nápověda pro bezpečnostní skupiny"
 
 msgid ""
 "Security groups are project-specific and cannot be shared across projects."
@@ -1008,9 +876,6 @@ msgid "Select one or more security groups from the available groups below."
 msgstr ""
 "Vyberte jednu nebo více bezpečnostních skupin ze seznamu dostupných níže."
 
-msgid "Select the security groups."
-msgstr "Vyberte bezpečnostní skupiny"
-
 msgid "Selects"
 msgstr "Výběry"
 
@@ -1042,9 +907,6 @@ msgstr "Malý vstup"
 
 msgid "Snapshot"
 msgstr "Snímek"
-
-msgid "Someone famous in <cite>Source Title</cite>"
-msgstr "Někdo známý v <cite>Názvu zdroje</cite> "
 
 msgid "Something else here"
 msgstr "Zde je něco jiného"
