@@ -5,10 +5,4 @@ set -e
 dpkg-maintscript-helper dir_to_symlink \
 	/usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static -- "$@"
 
-if [ "${1}" = "purge" ] ; then
-	if [ -f /etc/default/openstack-dashboard-apache ] ; then
-		rm -rf /etc/default/openstack-dashboard-apache
-	fi
-fi
-
 #DEBHELPER#

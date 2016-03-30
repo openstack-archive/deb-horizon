@@ -8,14 +8,16 @@ horizon (2:9.0.0~rc1-2) UNRELEASED; urgency=medium
   * d/control: Add python-xstatic-magic-search dependency.
                Move memcached and openstack-dashboard-apache to Suggests field.
   * d/openstack-dashboard-apache.postinst:
-      - Remove /usr/share/openstack-dashboard/static directory and create a link
-        to /var/lib/openstack-dashboard/static directory to make it compatible with
-        Ubuntu OpenStack Puppet manifests.
       - Delete the .secret_ket_store file if exists.
       - Make www-data the owner of /var/lib/openstack-dashboard/secret-key and
         /var/lib/openstack-dashboard/static directories.
       - Set new alias to Horizon static files.
       - Call collectstatic with --clear and --noinput options.
+  * d/openstack-dashboard.{preinst,postinst,postrm},
+      openstack-dashboard-apache.{preinst,postinst,postrm}:
+      - Remove /usr/share/openstack-dashboard/static directory and create a link
+        to /var/lib/openstack-dashboard/static directory to make it compatible with
+        Ubuntu OpenStack Puppet manifests.
   * d/rules: Do not copy/create additional files/links with/to static files. 
   * d/openstack-dashboard.links: Remove all links except a link to /usr/bin/lessc binary.
   * d/debian/apache-sites-available/*.conf:

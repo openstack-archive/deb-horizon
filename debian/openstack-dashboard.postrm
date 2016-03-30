@@ -2,6 +2,9 @@
 
 set -e
 
+dpkg-maintscript-helper dir_to_symlink \
+	/usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static -- "$@"
+
 if [ "${1}" = "purge" ] ; then
 	rm -f /etc/openstack-dashboard/local_settings.py
 	rmdir --ignore-fail-on-non-empty /etc/openstack-dashboard || true

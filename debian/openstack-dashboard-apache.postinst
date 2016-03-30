@@ -2,6 +2,10 @@
 
 set -e
 
+
+dpkg-maintscript-helper dir_to_symlink \
+	/usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static -- "$@"
+
 if [ "$1" = "configure" ] ; then
 	. /usr/share/debconf/confmodule
 	if ! [ -f /etc/default/openstack-dashboard-apache ] ; then
@@ -42,10 +46,6 @@ HORIZON_USE_SSL=yes" >/etc/default/openstack-dashboard-apache
 			a2dissite openstack-dashboard-alias-only.conf
 			a2ensite openstack-dashboard.conf
 		fi
-		if [ -d '/usr/share/openstack-dashboard/static' ] ; then
-			rm -rf /usr/share/openstack-dashboard/static
-		fi
-		ln -s /var/lib/openstack-dashboard/static /usr/share/openstack-dashboard/static
 		/usr/share/openstack-dashboard/manage.py collectstatic --clear --noinput
 		/usr/share/openstack-dashboard/manage.py compress --force
 		if [ -f '/var/lib/openstack-dashboard/secret-key/.secret_key_store' ]; then
@@ -72,10 +72,6 @@ HORIZON_USE_SSL=yes" >/etc/default/openstack-dashboard-apache
 		a2dissite openstack-dashboard-ssl-redirect.conf
 		a2dissite openstack-dashboard-ssl.conf
 		a2dissite openstack-dashboard-alias-only.conf
-		if [ -d '/usr/share/openstack-dashboard/static' ] ; then
-			rm -rf /usr/share/openstack-dashboard/static
-		fi
-		ln -s /var/lib/openstack-dashboard/static /usr/share/openstack-dashboard/static
 		/usr/share/openstack-dashboard/manage.py collectstatic --clear --noinput
 		/usr/share/openstack-dashboard/manage.py compress --force
 		if [ -f /var/lib/openstack-dashboard/secret-key/.secret_key_store ]; then
