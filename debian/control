@@ -70,6 +70,7 @@ Build-Depends-Indep: gettext,
                      python-xstatic-jquery.quicksearch,
                      python-xstatic-jquery.tablesorter (>= 2.14.5.1),
                      python-xstatic-jsencrypt,
+                     python-xstatic-magic-search (>= 0.2.5.1),
                      python-xstatic-mdi,
                      python-xstatic-rickshaw,
                      python-xstatic-roboto-fontface (>= 0.4.3.2),
@@ -133,6 +134,7 @@ Depends: python-babel,
          python-xstatic-jquery.quicksearch,
          python-xstatic-jquery.tablesorter (>= 2.14.5.1),
          python-xstatic-jsencrypt,
+         python-xstatic-magic-search (>= 0.2.5.1),
          python-xstatic-mdi,
          python-xstatic-rickshaw,
          python-xstatic-roboto-fontface (>= 0.4.3.2),
@@ -142,7 +144,7 @@ Depends: python-babel,
          python-yaml,
          ${misc:Depends},
          ${python:Depends},
-Recommends: memcached,
+Suggests: memcached,
 Description: Django module providing web interaction with OpenStack
  The OpenStack Dashboard is a web application to control an OpenStack
  cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
@@ -161,8 +163,8 @@ Depends: adduser,
          ${misc:Depends},
          ${python:Depends},
          ${shlibs:Depends},
-Recommends: memcached,
-            openstack-dashboard-apache,
+Suggests: memcached,
+          openstack-dashboard-apache,
 Description: web application to control an OpenStack cloud
  The OpenStack Dashboard is a web application to control an OpenStack
  cloud. It connects to OpenStack services such as Nova, Swift, or Keystone
@@ -171,7 +173,7 @@ Description: web application to control an OpenStack cloud
 
 Package: openstack-dashboard-apache
 Architecture: all
-Depends: apache2,
+Depends: apache2 (>= 2.4),
          debconf,
          libapache2-mod-wsgi (>= 2.3),
          openstack-dashboard,

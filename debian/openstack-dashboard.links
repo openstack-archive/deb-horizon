@@ -1,10 +1,1 @@
-/usr/bin/lessc						/usr/share/openstack-dashboard/bin/less/lessc
-
-/usr/share/openstack-dashboard/openstack_dashboard/static /usr/share/openstack-dashboard/static
-/usr/lib/python2.7/dist-packages/horizon/static/horizon		/usr/share/openstack-dashboard/openstack_dashboard/static/horizon
-/var/lib/openstack-dashboard/static/scss /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss
-/var/lib/openstack-dashboard/static/js /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
-
-/usr/share/fonts-font-awesome/fonts /usr/lib/python2.7/dist-packages/horizon/static/horizon/lib/font-awesome/fonts
-/usr/share/fonts-roboto-fontface/fonts /usr/lib/python2.7/dist-packages/horizon/static/horizon/lib/roboto_fontface/fonts
-/usr/share/fonts-materialdesignicons-webfont/fonts /usr/lib/python2.7/dist-packages/horizon/static/horizon/lib/mdi/fonts
+/usr/bin/lessc		/usr/share/openstack-dashboard/bin/less/lessc

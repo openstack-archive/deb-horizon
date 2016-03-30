@@ -9,12 +9,7 @@ if [ "$1" = "configure" ] ; then
 		--disabled-password \
 		--group horizon
 
-	mkdir -p /var/lib/openstack-dashboard/static/js
-	mkdir -p /var/lib/openstack-dashboard/static/css
 	mkdir -p /var/lib/openstack-dashboard/secret-key
-	chown www-data:www-data /var/lib/openstack-dashboard/static
-	chown www-data:www-data /var/lib/openstack-dashboard/static/css
-	chown www-data:www-data /var/lib/openstack-dashboard/static/js
 	chown www-data:www-data /var/lib/openstack-dashboard/secret-key
 
 	mkdir -p /etc/openstack-dashboard
@@ -22,16 +17,27 @@ if [ "$1" = "configure" ] ; then
 		cp /usr/share/openstack-dashboard/local_settings.py /etc/openstack-dashboard/local_settings.py
 	fi
 
+	if [ -d '/usr/share/openstack-dashboard/static' ] ; then
+		rm -rf /usr/share/openstack-dashboard/static
+	fi
+	ln -s /var/lib/openstack-dashboard/static /usr/share/openstack-dashboard/static
+
 	# Compress the JS and CSS with python-compressor and python-lesscpy
+	/usr/share/openstack-dashboard/manage.py collectstatic --clear --noinput
 	/usr/share/openstack-dashboard/manage.py compress --force
-	rm /var/lib/openstack-dashboard/secret-key/.secret_key_store
-	chown -R www-data /var/lib/openstack-dashboard/secret-key
+	if [ -f /var/lib/openstack-dashboard/secret-key/.secret_key_store ]; then
+		rm /var/lib/openstack-dashboard/secret-key/.secret_key_store
+	fi
+	chown -R www-data /var/lib/openstack-dashboard/secret-key /var/lib/openstack-dashboard/static
 fi
 
 if [ "$1" = "triggered" ] ; then
+	/usr/share/openstack-dashboard/manage.py collectstatic --clear --noinput
 	/usr/share/openstack-dashboard/manage.py compress --force
-	rm /var/lib/openstack-dashboard/secret-key/.secret_key_store
-	chown -R www-data /var/lib/openstack-dashboard/secret-key
+	if [ -f /var/lib/openstack-dashboard/secret-key/.secret_key_store ]; then
+		rm /var/lib/openstack-dashboard/secret-key/.secret_key_store
+	fi
+	chown -R www-data /var/lib/openstack-dashboard/secret-key /var/lib/openstack-dashboard/static
 fi
 
 #DEBHELPER#
