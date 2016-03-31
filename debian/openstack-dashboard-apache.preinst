@@ -29,9 +29,9 @@ dir_to_symlink_preinst() {
 
 if [ "$1" = "install" -o "$1" = "upgrade" ] ; then
 	if [ -e /usr/share/openstack-dashboard/static ] ; then
-		dir_to_symlink_preinst /usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static 9.0.0~rc1-2 openstack-dashboard -- "$@"
+		dir_to_symlink_preinst /usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static 9.0.0~rc1-2 openstack-dashboard-apache -- "$@"
 	fi
-	dir_to_symlink_preinst /usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static 9.0.0~rc1-2 openstack-dashboard -- "$@"
+	dir_to_symlink_preinst /usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static 9.0.0~rc1-2 openstack-dashboard-apache -- "$@"
 fi
 
 #DEBHELPER#
