@@ -2,7 +2,36 @@
 
 set -e
 
-dpkg-maintscript-helper dir_to_symlink \
-	/usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static -- "$@"
+error() {
+	echo "error: $1" >&2
+	exit 1
+}
+
+dir_to_symlink_preinst() {
+	local PATHNAME="$1"
+	local SYMLINK_TARGET="$2"
+	local LASTVERSION="$3"
+	local PACKAGE="$4"
+
+	# Skip remaining parameters up to --
+	while [ "$1" != "--" -a $# -gt 0 ]; do shift; done
+	shift
+
+	if [ -n "$DPKG_MAINTSCRIPT_NAME" ] || error "environment variable DPKG_MAINTSCRIPT_NAME is required"
+	[ -n "$1" ] || error "maintainer script parameters are missing"
+
+	[ -n "$2" ] && [ ! -h "$PATHNAME" ] && [ -d "$PATHNAME" ] && dpkg --compare-versions "$2" le-nl "$LASTVERSION"; then
+		mv -f "$PATHNAME" "${PATHNAME}.dpkg-backup"
+		mkdir "$PATHNAME"
+		touch "$PATHNAME/.dpkg-staging-dir"
+	fi
+}
+
+if [ "$1" = "install" -o "$1" = "upgrade" ] ; then
+	if [ -e /usr/share/openstack-dashboard/static ] ; then
+		dir_to_symlink_preinst /usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static 9.0.0~rc1-2 openstack-dashboard -- "$@"
+	fi
+	dir_to_symlink_preinst /usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static 9.0.0~rc1-2 openstack-dashboard -- "$@"
+fi
 
 #DEBHELPER#

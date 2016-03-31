@@ -3,7 +3,7 @@
 set -e
 
 dpkg-maintscript-helper dir_to_symlink \
-	/usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static -- "$@"
+	/usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static 9.0.0~rc1-2 openstack-dashboard -- "$@"
 
 if [ "${1}" = "purge" ] ; then
 	rm -f /etc/openstack-dashboard/local_settings.py

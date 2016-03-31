@@ -3,7 +3,7 @@
 set -e
 
 dpkg-maintscript-helper dir_to_symlink \
-	/usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static -- "$@"
+	/usr/share/openstack-dashboard/static /var/lib/openstack-dashboard/static 9.0.0~rc1-2 openstack-dashboard -- "$@"
 
 if [ "$1" = "configure" ] ; then
 	adduser --system \
@@ -18,6 +18,14 @@ if [ "$1" = "configure" ] ; then
 	mkdir -p /etc/openstack-dashboard
 	if ! [ -f /etc/openstack-dashboard/local_settings.py ] ; then
 		cp /usr/share/openstack-dashboard/local_settings.py /etc/openstack-dashboard/local_settings.py
+	fi
+
+	if [ -L /usr/share/openstack-dashboard/static ]; then
+		if ! [ $(readlink -s /usr/share/openstack-dashboard/static) = /var/lib/openstack-dashboard/static ]; then
+			ln -fs /var/lib/openstack-dashboard/static /usr/share/openstack-dashboard/static
+		fi
+	else
+		ln -fs /var/lib/openstack-dashboard/static /usr/share/openstack-dashboard/static
 	fi
 
 	# Compress the JS and CSS with python-compressor and python-lesscpy
