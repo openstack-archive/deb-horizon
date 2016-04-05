@@ -2,19 +2,22 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the horizon package.
 # victory <victory.deb@gmail.com>, 2013.
+# Takuma Yamada <tyamada@takumayamada.com>, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
 "POT-Creation-Date: 2015-09-22 13:31+0000\n"
-"PO-Revision-Date: 2013-07-19 23:32+0900\n"
-"Last-Translator: victory <victory.deb@gmail.com>\n"
+"PO-Revision-Date: 2016-02-22 13:28+0900\n"
+"Last-Translator: Takuma Yamada <tyamada@takumayamada.com>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #. Type: boolean
 #. Description
@@ -39,6 +42,8 @@ msgid ""
 "If this option is not selected, Horizon will be installed using /horizon "
 "instead of the webroot."
 msgstr ""
+"このオプションが選択されていない場合は、Horizon は webroot ではなく /horizon "
+"を使用してインストールされます。"
 
 #. Type: boolean
 #. Description
