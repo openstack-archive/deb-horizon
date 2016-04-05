@@ -1,6 +1,7 @@
-horizon (2:9.0.0~rc1-2) UNRELEASED; urgency=medium
+horizon (2:9.0.0~rc1-2) unstable; urgency=medium
 
   [ Thomas Goirand ]
+  * Uploading to unstable (Closes: #809575).
   * Also copy openstack_dashboard/dashboards/project/static/dashboard/project
     which were not packaged.
   * Updated nl.po debconf translation (Closes: #805465).
