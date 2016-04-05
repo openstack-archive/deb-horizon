@@ -8,6 +8,7 @@ horizon (2:9.0.0~rc2-1) unstable; urgency=medium
   * Updated nl.po debconf translation (Closes: #805465).
   * Updated ja.po debconf translation (Closes: #816070).
   * Added pt_BR.po debconf translation (Closes: #816942).
+  * Removed unused license in debian/copyright.
 
   [ Ivan Udovichenko ]
   * d/control: Add python-xstatic-magic-search dependency.
