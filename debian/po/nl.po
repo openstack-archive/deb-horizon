@@ -1,21 +1,22 @@
 # Dutch translation of horizon debconf templates.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the horizon package.
-# Frans Spiesschaert <Frans.Spiesschaert@yucom.be>, 2014.
+# Frans Spiesschaert <Frans.Spiesschaert@yucom.be>, 2014, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
 "POT-Creation-Date: 2015-09-22 13:31+0000\n"
-"PO-Revision-Date: 2014-10-08 23:05+0200\n"
+"PO-Revision-Date: 2015-10-30 22:09+0100\n"
 "Last-Translator: Frans Spiesschaert <Frans.Spiesschaert@yucom.be>\n"
-"Language-Team: Dutch <debian-l10n-dutch@lists.debian.org>\n"
+"Language-Team: Debian Dutch l10n Team <debian-l10n-dutch@lists.debian.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #. Type: boolean
 #. Description
@@ -40,6 +41,8 @@ msgid ""
 "If this option is not selected, Horizon will be installed using /horizon "
 "instead of the webroot."
 msgstr ""
+"Indien deze optie niet gekozen wordt, zal de installatie van Horizon de map /"
+"horizon gebruiken in plaats van de web-hoofdmap."
 
 #. Type: boolean
 #. Description
