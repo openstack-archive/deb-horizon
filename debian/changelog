@@ -5,6 +5,7 @@ horizon (2:9.0.0~rc1-2) UNRELEASED; urgency=medium
     which were not packaged.
   * Updated nl.po debconf translation (Closes: #805465).
   * Updated ja.po debconf translation (Closes: #816070).
+  * Added pt_BR.po debconf translation (Closes: #816942).
 
   [ Ivan Udovichenko ]
   * d/control: Add python-xstatic-magic-search dependency.
