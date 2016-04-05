@@ -20,11 +20,12 @@ horizon (2:9.0.0~rc2-1) unstable; urgency=medium
       - Call collectstatic with --clear and --noinput options.
   * d/openstack-dashboard.{preinst,postinst,postrm},
       openstack-dashboard-apache.{preinst,postinst,postrm}:
-      - Remove /usr/share/openstack-dashboard/static directory and create a link
-        to /var/lib/openstack-dashboard/static directory to make it compatible with
-        Ubuntu OpenStack Puppet manifests.
+      - Remove /usr/share/openstack-dashboard/static directory and create a
+        link to /var/lib/openstack-dashboard/static directory to make it
+        compatible with Ubuntu OpenStack Puppet manifests.
   * d/rules: Do not copy/create additional files/links with/to static files. 
-  * d/openstack-dashboard.links: Remove all links except a link to /usr/bin/lessc binary.
+  * d/openstack-dashboard.links: Remove all links except a link to
+    /usr/bin/lessc binary.
   * d/debian/apache-sites-available/*.conf:
       - Change/add alias path to static files.
       - Update permissions according to Apache 2.4 improvements.
