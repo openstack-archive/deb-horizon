@@ -1,8 +1,14 @@
 horizon (2:9.0.0-2) UNRELEASED; urgency=medium
 
+  [ Ondřej Nový ]
   * Standards-Version is 3.9.8 now (no change)
 
- -- Ondřej Nový <novy@ondrej.org>  Sat, 09 Apr 2016 19:22:59 +0200
+  [ Ivan Udovichenko ]
+  * d/openstack-dashboard-apache.postinst: Revert changes. (Closes: #820845)
+    - Do not modify provided Apache configuration files.
+    - Enable site provided by openstack-dashboard-alias-only.conf .
+
+ -- Ivan Udovichenko <iudovichenko@mirantis.com>  Wed, 13 Apr 2016 23:34:27 +0300
 
 horizon (2:9.0.0-1) unstable; urgency=medium
 

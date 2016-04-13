@@ -61,23 +61,13 @@ HORIZON_USE_SSL=yes" >/etc/default/openstack-dashboard-apache
 		invoke-rc.d --quiet apache2 reload
 	else
 		sed -i 's#[ \t]*HORIZON_ACTIVATE_VHOSTS=.*#HORIZON_ACTIVATE_VHOSTS=no#' /etc/default/openstack-dashboard-apache
-		site_configs='openstack-dashboard-ssl-redirect.conf
-			openstack-dashboard-ssl.conf
-			openstack-dashboard.conf
-			openstack-dashboard-alias-only.conf'
-		for site_config in $site_configs
-		do
-			if [ -f /etc/apache2/sites-available/$site_config ]; then
-				sed -i 's#WSGIScriptAlias / #WSGIScriptAlias /horizon #g' /etc/apache2/sites-available/$site_config
-			fi
-		done
 		a2ensite 000-default.conf || true
 		a2ensite default-ssl.conf || true
 		sed -i "s|^[ \t]*WEBROOT[ \t]=.*|WEBROOT = '/horizon'|" /etc/openstack-dashboard/local_settings.py
 		a2dissite openstack-dashboard.conf
 		a2dissite openstack-dashboard-ssl-redirect.conf
 		a2dissite openstack-dashboard-ssl.conf
-		a2dissite openstack-dashboard-alias-only.conf
+		a2ensite openstack-dashboard-alias-only.conf
 		/usr/share/openstack-dashboard/manage.py collectstatic --clear --noinput
 		/usr/share/openstack-dashboard/manage.py compress --force
 		if [ -f /var/lib/openstack-dashboard/secret-key/.secret_key_store ]; then
