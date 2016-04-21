@@ -9,6 +9,7 @@ horizon (2:9.0.0-2) unstable; urgency=medium
     - Enable site provided by openstack-dashboard-alias-only.conf .
   * d/openstack-dashboard.triggers: Trigger package configuration
                                     only once. (Closes: #821868)
+  * d/control: Fix documentation build by adding git to buld-dependencies.
   * Uploading to unstable.
 
  -- Ivan Udovichenko <iudovichenko@mirantis.com>  Wed, 13 Apr 2016 23:34:27 +0300
