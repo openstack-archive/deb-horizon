@@ -7,6 +7,8 @@ horizon (2:9.0.0-2) UNRELEASED; urgency=medium
   * d/openstack-dashboard-apache.postinst: Revert changes. (Closes: #820845)
     - Do not modify provided Apache configuration files.
     - Enable site provided by openstack-dashboard-alias-only.conf .
+  * d/openstack-dashboard.triggers: Trigger package configuration
+                                    only once. (Closes: #821868)
 
  -- Ivan Udovichenko <iudovichenko@mirantis.com>  Wed, 13 Apr 2016 23:34:27 +0300
 
