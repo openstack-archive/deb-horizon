@@ -1,8 +1,14 @@
 horizon (2:9.0.0-3) UNRELEASED; urgency=medium
 
+  [ Ondřej Nový ]
   * d/copyright: Changed source URL to https protocol
 
- -- Ondřej Nový <novy@ondrej.org>  Thu, 19 May 2016 20:56:23 +0200
+  [ Ivan Udovichenko ]
+  * d/openstack-dashboard.{preinst,postinst,postrm},
+      openstack-dashboard-apache.{preinst,postinst,postrm}:
+      - Pass the correct version to dpkg-maintscript-helper script.
+
+ -- Ivan Udovichenko <iudovichenko@mirantis.com>  Thu, 26 May 2016 02:36:51 +0300
 
 horizon (2:9.0.0-2) unstable; urgency=medium
 
