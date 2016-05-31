@@ -8,7 +8,11 @@ horizon (2:9.0.0-3) UNRELEASED; urgency=medium
       openstack-dashboard-apache.{preinst,postinst,postrm}:
       - Pass the correct version to dpkg-maintscript-helper script.
 
- -- Ivan Udovichenko <iudovichenko@mirantis.com>  Thu, 26 May 2016 02:36:51 +0300
+  [ Thomas Goirand ]
+  * Horizon doesn't build with python-django-nose in Jessie, so increasing the
+    build-depends version to >= 1.4.3.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 31 May 2016 13:43:46 +0200
 
 horizon (2:9.0.0-2) unstable; urgency=medium
 
