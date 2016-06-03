@@ -16,10 +16,13 @@ if [ "$1" = "configure" ] ; then
 	chown www-data:www-data /var/lib/openstack-dashboard/secret-key
 
 	mkdir -p /etc/openstack-dashboard
-	if ! [ -f /etc/openstack-dashboard/local_settings.py ] ; then
-		cp /usr/share/openstack-dashboard/local_settings.py /etc/openstack-dashboard/local_settings.py
+	DASHBOARD_LOCAL_SETTINGS='/etc/openstack-dashboard/local_settings.py'
+	if ! [ -f "$DASHBOARD_LOCAL_SETTINGS" ] ; then
+		cp /usr/share/openstack-dashboard/local_settings.py $DASHBOARD_LOCAL_SETTINGS
 	fi
-
+	if [ -f "$DASHBOARD_LOCAL_SETTINGS" ] && grep -q 'django.utils.log.NullHandler' $DASHBOARD_LOCAL_SETTINGS; then
+		sed -i 's/django.utils.log.NullHandler/logging.NullHandler/g' $DASHBOARD_LOCAL_SETTINGS
+	fi
 	if [ -L /usr/share/openstack-dashboard/static ]; then
 		if ! [ $(readlink -s /usr/share/openstack-dashboard/static) = /var/lib/openstack-dashboard/static ]; then
 			ln -fs /var/lib/openstack-dashboard/static /usr/share/openstack-dashboard/static

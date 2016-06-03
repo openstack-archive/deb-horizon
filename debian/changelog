@@ -1,4 +1,4 @@
-horizon (2:9.0.0-3) UNRELEASED; urgency=medium
+horizon (2:9.0.0-3) unstable; urgency=medium
 
   [ Ondřej Nový ]
   * d/copyright: Changed source URL to https protocol
@@ -7,6 +7,9 @@ horizon (2:9.0.0-3) UNRELEASED; urgency=medium
   * d/openstack-dashboard.{preinst,postinst,postrm},
       openstack-dashboard-apache.{preinst,postinst,postrm}:
       - Pass the correct version to dpkg-maintscript-helper script.
+  * d/openstack-dashboard.postinst:
+      - Check if django.utils.log.NullHandler class is being used and
+        replace it with logging.NullHandler class if it is true. (Closes: #822907)
 
   [ Thomas Goirand ]
   * Horizon doesn't build with python-django-nose in Jessie, so increasing the
