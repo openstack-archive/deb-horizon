@@ -29,6 +29,8 @@
 
   registerImageActions.$inject = [
     'horizon.framework.conf.resource-type-registry.service',
+    'horizon.app.core.images.actions.edit.service',
+    'horizon.app.core.images.actions.create.service',
     'horizon.app.core.images.actions.create-volume.service',
     'horizon.app.core.images.actions.delete-image.service',
     'horizon.app.core.images.actions.launch-instance.service',
@@ -38,12 +40,14 @@
 
   function registerImageActions(
     registry,
+    editService,
+    createService,
     createVolumeService,
     deleteImageService,
     launchInstanceService,
     updateMetadataService,
-    imageResourceTypeCode)
-  {
+    imageResourceTypeCode
+  ) {
     var imageResourceType = registry.getResourceType(imageResourceTypeCode);
     imageResourceType.itemActions
       .append({
@@ -58,6 +62,13 @@
         service: createVolumeService,
         template: {
           text: gettext('Create Volume')
+        }
+      })
+      .append({
+        id: 'editAction',
+        service: editService,
+        template: {
+          text: gettext('Edit Image')
         }
       })
       .append({
@@ -77,6 +88,14 @@
       });
 
     imageResourceType.batchActions
+      .append({
+        id: 'createImageAction',
+        service: createService,
+        template: {
+          text: gettext('Create Image'),
+          type: 'create'
+        }
+      })
       .append({
         id: 'batchDeleteImageAction',
         service: deleteImageService,

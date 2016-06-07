@@ -27,6 +27,7 @@
     'ngCookies',
     'ngSanitize',
     'smart-table',
+    'ngFileUpload',
     'ui.bootstrap'
   ];
 
@@ -36,6 +37,7 @@
    */
   var horizonBuiltInModules = [
     'horizon.app.core',
+    'horizon.app.resources',
     'horizon.app.tech-debt',
     'horizon.auth',
     'horizon.framework'

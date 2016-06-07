@@ -34,7 +34,7 @@
       regularMarkup = $templateCache.get(basePath + 'login.regular.mock.html');
 
       jasmine.addMatchers({
-        // jquery show is not consistent across different browsers
+        // jQuery show is not consistent across different browsers
         // on FF, it is 'block' while on chrome it is 'inline'
         // to reconcile this difference, we need a custom matcher
         toBeVisible: function() {
@@ -43,9 +43,9 @@
               var pass = actual.css('display') !== 'none';
               var result = {
                 pass: pass,
-                message: pass ?
-                  'Expected element to be visible' :
-                  'Expected element to be visible, but it is hidden'
+                message: pass
+                  ? 'Expected element to be visible'
+                  : 'Expected element to be visible, but it is hidden'
               };
               return result;
             }

@@ -18,6 +18,7 @@
 
 from socket import timeout as socket_timeout  # noqa
 
+import django
 from django.core.urlresolvers import reverse
 from django import http
 from django.test.utils import override_settings
@@ -228,6 +229,19 @@ class UsersViewTests(test.BaseAdminViewTests):
         api.keystone.role_list(IgnoreArg()).AndReturn(self.roles.list())
         api.keystone.get_default_role(IgnoreArg()) \
                     .AndReturn(self.roles.first())
+        if django.VERSION >= (1, 9):
+            if api.keystone.VERSIONS.active >= 3:
+                api.keystone.tenant_list(
+                    IgnoreArg(), domain=domain_id).AndReturn(
+                    [self.tenants.list(), False])
+            else:
+                api.keystone.tenant_list(
+                    IgnoreArg(), user=None).AndReturn(
+                    [self.tenants.list(), False])
+
+            api.keystone.role_list(IgnoreArg()).AndReturn(self.roles.list())
+            api.keystone.get_default_role(IgnoreArg()) \
+                .AndReturn(self.roles.first())
 
         self.mox.ReplayAll()
 
@@ -268,6 +282,19 @@ class UsersViewTests(test.BaseAdminViewTests):
         api.keystone.role_list(IgnoreArg()).AndReturn(self.roles.list())
         api.keystone.get_default_role(IgnoreArg()) \
                     .AndReturn(self.roles.first())
+        if django.VERSION >= (1, 9):
+            if api.keystone.VERSIONS.active >= 3:
+                api.keystone.tenant_list(
+                    IgnoreArg(), domain=domain_id).AndReturn(
+                    [self.tenants.list(), False])
+            else:
+                api.keystone.tenant_list(
+                    IgnoreArg(), user=None).AndReturn(
+                    [self.tenants.list(), False])
+
+            api.keystone.role_list(IgnoreArg()).AndReturn(self.roles.list())
+            api.keystone.get_default_role(IgnoreArg()) \
+                .AndReturn(self.roles.first())
 
         self.mox.ReplayAll()
 
@@ -311,6 +338,19 @@ class UsersViewTests(test.BaseAdminViewTests):
         api.keystone.role_list(IgnoreArg()).AndReturn(self.roles.list())
         api.keystone.get_default_role(IgnoreArg()) \
                     .AndReturn(self.roles.first())
+        if django.VERSION >= (1, 9):
+            if api.keystone.VERSIONS.active >= 3:
+                api.keystone.tenant_list(
+                    IgnoreArg(), domain=domain_id).AndReturn(
+                    [self.tenants.list(), False])
+            else:
+                api.keystone.tenant_list(
+                    IgnoreArg(), user=None).AndReturn(
+                    [self.tenants.list(), False])
+
+            api.keystone.role_list(IgnoreArg()).AndReturn(self.roles.list())
+            api.keystone.get_default_role(IgnoreArg()) \
+                .AndReturn(self.roles.first())
 
         self.mox.ReplayAll()
 
@@ -597,7 +637,8 @@ class UsersViewTests(test.BaseAdminViewTests):
             res, "form", 'password',
             ['Password must be between 8 and 18 characters.'])
 
-    @test.create_stubs({api.keystone: ('user_update_enabled',
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'user_update_enabled',
                                        'user_list',
                                        'domain_lookup')})
     def test_enable_user(self):
@@ -607,6 +648,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         users = self._get_users(domain_id)
         user.enabled = False
 
+        api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         api.keystone.user_list(IgnoreArg(), domain=domain_id).AndReturn(users)
         api.keystone.user_update_enabled(IgnoreArg(),
                                          user.id,
@@ -621,7 +663,8 @@ class UsersViewTests(test.BaseAdminViewTests):
 
         self.assertRedirectsNoFollow(res, USERS_INDEX_URL)
 
-    @test.create_stubs({api.keystone: ('user_update_enabled',
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'user_update_enabled',
                                        'user_list',
                                        'domain_lookup')})
     def test_disable_user(self):
@@ -632,6 +675,7 @@ class UsersViewTests(test.BaseAdminViewTests):
 
         self.assertTrue(user.enabled)
 
+        api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         api.keystone.user_list(IgnoreArg(), domain=domain_id) \
             .AndReturn(users)
         api.keystone.user_update_enabled(IgnoreArg(),
@@ -647,7 +691,8 @@ class UsersViewTests(test.BaseAdminViewTests):
 
         self.assertRedirectsNoFollow(res, USERS_INDEX_URL)
 
-    @test.create_stubs({api.keystone: ('user_update_enabled',
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'user_update_enabled',
                                        'user_list',
                                        'domain_lookup')})
     def test_enable_disable_user_exception(self):
@@ -657,6 +702,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         users = self._get_users(domain_id)
         user.enabled = False
 
+        api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         api.keystone.user_list(IgnoreArg(), domain=domain_id) \
             .AndReturn(users)
         api.keystone.user_update_enabled(IgnoreArg(), user.id, True) \
@@ -670,11 +716,14 @@ class UsersViewTests(test.BaseAdminViewTests):
 
         self.assertRedirectsNoFollow(res, USERS_INDEX_URL)
 
-    @test.create_stubs({api.keystone: ('user_list', 'domain_lookup')})
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'user_list',
+                                       'domain_lookup')})
     def test_disabling_current_user(self):
         domain = self._get_default_domain()
         domain_id = domain.id
         users = self._get_users(domain_id)
+        api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         for i in range(0, 2):
             api.keystone.user_list(IgnoreArg(), domain=domain_id) \
                 .AndReturn(users)
@@ -687,10 +736,12 @@ class UsersViewTests(test.BaseAdminViewTests):
         res = self.client.post(USERS_INDEX_URL, formData, follow=True)
 
         self.assertEqual(list(res.context['messages'])[0].message,
-                         u'You cannot disable the user you are currently '
-                         u'logged in as.')
+                         u'You are not allowed to disable user: '
+                         u'test_user')
 
-    @test.create_stubs({api.keystone: ('user_list', 'domain_lookup')})
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'user_list',
+                                       'domain_lookup')})
     def test_disabling_current_user_domain_name(self):
         domain = self._get_default_domain()
         domains = self.domains.list()
@@ -698,6 +749,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         users = self._get_users(domain_id)
         domain_lookup = dict((d.id, d.name) for d in domains)
 
+        api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         for u in users:
             u.domain_name = domain_lookup.get(u.domain_id)
 
@@ -712,14 +764,17 @@ class UsersViewTests(test.BaseAdminViewTests):
         res = self.client.post(USERS_INDEX_URL, formData, follow=True)
 
         self.assertEqual(list(res.context['messages'])[0].message,
-                         u'You cannot disable the user you are currently '
-                         u'logged in as.')
+                         u'You are not allowed to disable user: '
+                         u'test_user')
 
-    @test.create_stubs({api.keystone: ('user_list', 'domain_lookup')})
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'user_list',
+                                       'domain_lookup')})
     def test_delete_user_with_improper_permissions(self):
         domain = self._get_default_domain()
         domain_id = domain.id
         users = self._get_users(domain_id)
+        api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         for i in range(0, 2):
             api.keystone.user_list(IgnoreArg(), domain=domain_id) \
                 .AndReturn(users)
@@ -735,7 +790,9 @@ class UsersViewTests(test.BaseAdminViewTests):
                          u'You are not allowed to delete user: %s'
                          % self.request.user.username)
 
-    @test.create_stubs({api.keystone: ('user_list', 'domain_lookup')})
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'user_list',
+                                       'domain_lookup')})
     def test_delete_user_with_improper_permissions_domain_name(self):
         domain = self._get_default_domain()
         domains = self.domains.list()
@@ -743,6 +800,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         users = self._get_users(domain_id)
         domain_lookup = dict((d.id, d.name) for d in domains)
 
+        api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         for u in users:
             u.domain_name = domain_lookup.get(u.domain_id)
 
@@ -760,11 +818,15 @@ class UsersViewTests(test.BaseAdminViewTests):
                          u'You are not allowed to delete user: %s'
                          % self.request.user.username)
 
-    @test.create_stubs({api.keystone: ('user_get', 'tenant_get')})
+    @test.create_stubs({api.keystone: ('domain_get',
+                                       'user_get',
+                                       'tenant_get')})
     def test_detail_view(self):
+        domain = self._get_default_domain()
         user = self.users.get(id="1")
         tenant = self.tenants.get(id=user.project_id)
 
+        api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         api.keystone.user_get(IsA(http.HttpRequest), '1').AndReturn(user)
         api.keystone.tenant_get(IsA(http.HttpRequest), user.project_id) \
             .AndReturn(tenant)

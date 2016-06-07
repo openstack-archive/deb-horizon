@@ -30,11 +30,16 @@
   /**
    * @ngDoc factory
    * @name horizon.app.core.images.actions.launchInstanceService
-   *
+   * @param {Object} $q
+   * @param {Object} nonBootableImageTypes
+   * @param {Object} launchInstanceModal
+   * @param {Object} $qExtensions
    * @Description
    * Brings up the Launch Instance for image modal.
    * On submit, launch the instance for the Image.
    * On cancel, do nothing.
+   *
+   * @returns {Object} The service
    */
   function launchInstanceService(
     $q,
@@ -52,8 +57,10 @@
     //////////////
 
     function perform(image) {
+      // Previous uses of this relocated the display using the successUrl;
+      // in this case we leave the post-action behavior up to the result
+      // handler.
       return launchInstanceModal.open({
-        successUrl: '/project/instances',
         'imageId': image.id
       });
     }

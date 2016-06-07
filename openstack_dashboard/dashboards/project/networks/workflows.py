@@ -62,7 +62,7 @@ class CreateNetworkInfoAction(workflows.Action):
                                                           'action,'
                                                           'create_network__'
                                                           'createsubnetdetail'
-                                                          'action,',
+                                                          'action',
                                          'data-hide-on-checked': 'false'
                                      }),
                                      initial=True,
@@ -174,7 +174,7 @@ class CreateSubnetInfoAction(workflows.Action):
         label=_("Gateway IP"),
         widget=forms.TextInput(attrs={
             'class': 'switched',
-            'data-switch-on': 'source gateway_ip',
+            'data-switch-on': 'gateway_ip',
             'data-source-manual': _("Gateway IP")
         }),
         required=False,
@@ -256,24 +256,6 @@ class CreateSubnetInfoAction(workflows.Action):
 
     def get_subnetpool_choices(self, request):
         subnetpool_choices = [('', _('Select a pool'))]
-        default_ipv6_subnet_pool_label = \
-            getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {}).get(
-                'default_ipv6_subnet_pool_label', None)
-        default_ipv4_subnet_pool_label = \
-            getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {}).get(
-                'default_ipv4_subnet_pool_label', None)
-
-        if default_ipv6_subnet_pool_label:
-            subnetpool_dict = {'ip_version': 6,
-                               'name': default_ipv6_subnet_pool_label}
-            subnetpool = api.neutron.SubnetPool(subnetpool_dict)
-            subnetpool_choices.append(('', subnetpool))
-
-        if default_ipv4_subnet_pool_label:
-            subnetpool_dict = {'ip_version': 4,
-                               'name': default_ipv4_subnet_pool_label}
-            subnetpool = api.neutron.SubnetPool(subnetpool_dict)
-            subnetpool_choices.append(('', subnetpool))
 
         for subnetpool in api.neutron.subnetpool_list(request):
             subnetpool_choices.append((subnetpool.id, subnetpool))
@@ -291,11 +273,13 @@ class CreateSubnetInfoAction(workflows.Action):
         gateway_ip = cleaned_data.get('gateway_ip')
         no_gateway = cleaned_data.get('no_gateway')
         address_source = cleaned_data.get('address_source')
+        subnetpool = cleaned_data.get('subnetpool')
 
-        # When creating network from a pool it is allowed to supply empty
-        # subnetpool_id signaling that Neutron should choose the default
-        # pool configured by the operator. This is also part of the IPv6
-        # Prefix Delegation Workflow.
+        if not subnetpool and address_source == 'subnetpool':
+            msg = _('Specify "Address pool" or select '
+                    '"Enter Network Address manually" and specify '
+                    '"Network Address".')
+            raise forms.ValidationError(msg)
         if not cidr and address_source != 'subnetpool':
             msg = _('Specify "Network Address" or '
                     'clear "Create Subnet" checkbox in previous step.')

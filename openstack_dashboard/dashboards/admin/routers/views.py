@@ -40,6 +40,10 @@ class IndexView(r_views.IndexView, n_views.IndexView):
             routers = []
             exceptions.handle(self.request,
                               _('Unable to retrieve router list.'))
+        self._set_router_tenant_info(routers)
+        return routers
+
+    def _set_router_tenant_info(self, routers):
         if routers:
             tenant_dict = self._get_tenant_list()
             ext_net_dict = self._list_external_networks()
@@ -67,7 +71,17 @@ class DetailView(r_views.DetailView):
         context = super(DetailView, self).get_context_data(**kwargs)
         table = rtbl.RoutersTable(self.request)
         context["url"] = self.failure_url
-        context["actions"] = table.render_row_actions(context["router"])
+        router = context["router"]
+        # try to lookup the l3 agent location so we know where to troubleshoot
+        try:
+            agents = api.neutron.list_l3_agent_hosting_router(self.request,
+                                                              router.id)
+            router.l3_host_agents = agents
+        except Exception:
+            exceptions.handle(self.request,
+                              _('The L3 agent information could not '
+                                'be located.'))
+        context["actions"] = table.render_row_actions(router)
         return context
 
 
@@ -76,3 +90,23 @@ class UpdateView(r_views.UpdateView):
     template_name = 'project/routers/update.html'
     success_url = reverse_lazy("horizon:admin:routers:index")
     submit_url = "horizon:admin:routers:update"
+
+
+class L3AgentView(IndexView):
+
+    def _get_routers(self, search_opts=None):
+        try:
+            agent_id = self.kwargs['l3_agent_id']
+            agents = api.neutron.agent_list(self.request, id=agent_id)
+            if agents:
+                self.page_title = _("Routers on %(host)s") % {'host':
+                                                              agents[0].host}
+            routers = api.neutron.\
+                router_list_on_l3_agent(self.request, agent_id,
+                                        search_opts=search_opts)
+        except Exception:
+            routers = []
+            exceptions.handle(self.request,
+                              _('Unable to retrieve router list.'))
+        self._set_router_tenant_info(routers)
+        return routers

@@ -59,7 +59,8 @@ INSTALLED_APPS = (
     'horizon',
     'horizon.test',
     'horizon.test.test_dashboards.cats',
-    'horizon.test.test_dashboards.dogs'
+    'horizon.test.test_dashboards.dogs',
+    'openstack_auth'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -133,7 +134,7 @@ COMPRESS_PARSER = 'compressor.parser.HtmlParser'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'horizon.contrib.staticfiles.finders.HorizonStaticFinder',
     'compressor.finders.CompressorFinder',
 )
 

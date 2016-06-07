@@ -25,6 +25,7 @@ from horizon import exceptions
 from openstack_dashboard import api
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
+from openstack_dashboard.api import swift
 
 
 @urls.register
@@ -92,7 +93,11 @@ class Container(generic.View):
 
     @rest_utils.ajax()
     def delete(self, request, container):
-        api.swift.swift_delete_container(request, container)
+        try:
+            api.swift.swift_delete_container(request, container)
+        except exceptions.Conflict as e:
+            # It cannot be deleted if it's not empty.
+            return rest_utils.JSONResponse(str(e), 409)
 
     @rest_utils.ajax(data_required=True)
     def put(self, request, container):
@@ -128,9 +133,9 @@ class Objects(generic.View):
             'path': o.name,
             'name': o.name.split('/')[-1],
             'bytes': o.bytes,
-            'is_subdir': o.content_type == 'application/pseudo-folder',
-            'is_object': o.content_type != 'application/pseudo-folder',
-            'content_type': o.content_type
+            'is_subdir': isinstance(o, swift.PseudoFolder),
+            'is_object': not isinstance(o, swift.PseudoFolder),
+            'content_type': getattr(o, 'content_type', None)
         } for o in objects[0] if o.name != path]
         return {'items': contents}
 
@@ -171,19 +176,23 @@ class Object(generic.View):
 
         data = form.clean()
 
-        if object_name[-1] == '/':
-            result = api.swift.swift_create_pseudo_folder(
-                request,
-                container,
-                object_name
-            )
-        else:
-            result = api.swift.swift_upload_object(
-                request,
-                container,
-                object_name,
-                data['file']
-            )
+        try:
+            if object_name[-1] == '/':
+                result = api.swift.swift_create_pseudo_folder(
+                    request,
+                    container,
+                    object_name
+                )
+            else:
+                result = api.swift.swift_upload_object(
+                    request,
+                    container,
+                    object_name,
+                    data['file']
+                )
+        except exceptions.AlreadyExists as e:
+            # 409 Conflict
+            return rest_utils.JSONResponse(str(e), 409)
 
         return rest_utils.CreatedResponse(
             u'/api/swift/containers/%s/object/%s' % (container, result.name)
@@ -191,7 +200,15 @@ class Object(generic.View):
 
     @rest_utils.ajax()
     def delete(self, request, container, object_name):
-        api.swift.swift_delete_object(request, container, object_name)
+        if object_name[-1] == '/':
+            try:
+                api.swift.swift_delete_folder(request, container, object_name)
+            except exceptions.Conflict as e:
+                # In case the given object is pseudo folder
+                # It cannot be deleted if it's not empty.
+                return rest_utils.JSONResponse(str(e), 409)
+        else:
+            api.swift.swift_delete_object(request, container, object_name)
 
     def get(self, request, container, object_name):
         """Get the object contents.
@@ -246,13 +263,16 @@ class ObjectCopy(generic.View):
     def post(self, request, container, object_name):
         dest_container = request.DATA['dest_container']
         dest_name = request.DATA['dest_name']
-        result = api.swift.swift_copy_object(
-            request,
-            container,
-            object_name,
-            dest_container,
-            dest_name
-        )
+        try:
+            result = api.swift.swift_copy_object(
+                request,
+                container,
+                object_name,
+                dest_container,
+                dest_name
+            )
+        except exceptions.AlreadyExists as e:
+            return rest_utils.JSONResponse(str(e), 409)
         return rest_utils.CreatedResponse(
             u'/api/swift/containers/%s/object/%s' % (dest_container,
                                                      result.name)

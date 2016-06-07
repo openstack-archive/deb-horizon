@@ -1,11 +1,11 @@
 # Zhang Xiaowei <zero00072@gmail.com>, 2015. #zanata
+# Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
 # Ching Kuo <igene@igene.tw>, 2016. #zanata
-# Jennifer <cristxu@tw.ibm.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-18 21:42+0000\n"
+"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-05-24 18:48+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,10 +18,6 @@ msgstr ""
 
 msgid "#"
 msgstr "#"
-
-#, python-format
-msgid "%(name)s deleted."
-msgstr "已刪除 %(name)s。"
 
 #, python-format
 msgid "%s instance launched."
@@ -51,60 +47,6 @@ msgstr "6"
 
 msgid "7"
 msgstr "7"
-
-msgid "8"
-msgstr "8"
-
-msgid ""
-"<button></button>\n"
-"          <strong>Heads up!</strong>\n"
-"           This\n"
-"          <a>alert needs your attention</a>,\n"
-"           but it's not super important."
-msgstr ""
-"<button></button>\n"
-"          <strong>注意！</strong>\n"
-"           這一則\n"
-"          <a>警報需要注意</a>，\n"
-"           但它的重要性不是最高的。"
-
-msgid ""
-"<button></button>\n"
-"          <strong>Oh snap!</strong>\n"
-"          <a>Change a few things up</a>\n"
-"          and try submitting again."
-msgstr ""
-"<button></button>\n"
-"          <strong>喔，貼齊！</strong>\n"
-"          <a>變更一些內容</a>\n"
-"          然後再次嘗試提交。"
-
-msgid ""
-"<button></button>\n"
-"          <strong>Well done!</strong>\n"
-"          You successfully read\n"
-"          <a>this important alert message</a>."
-msgstr ""
-"<button></button>\n"
-"          <strong>很好！</strong>\n"
-"          您已順利讀取\n"
-"          <a>這一則重要的警報訊息</a>。"
-
-msgid ""
-"<input>\n"
-"                Public</input>"
-msgstr ""
-"<input>\n"
-"                公開</input>"
-
-msgid ""
-"<input>\n"
-"        Configuration Drive\n"
-"      </input>"
-msgstr ""
-"<input>\n"
-"        配置磁碟機\n"
-"      </input>"
 
 msgid ""
 "<li><b>Image (with Create New Volume checked)</b>: This options uses an "
@@ -144,27 +86,6 @@ msgstr ""
 
 msgid "<small>This line of text is meant to be treated as fine print.</small>"
 msgstr "<small>這一行文字將進行精細列印。</small>"
-
-msgid ""
-"A container is a storage compartment for your data and provides a way\n"
-"          for you to organize your data. You can think of a container as a\n"
-"          folder in Windows or a directory in UNIX. The primary difference\n"
-"          between a container and these other file system concepts is that\n"
-"          containers cannot be nested. You can, however, create an "
-"unlimited\n"
-"          number of containers within your account. Data must be stored in "
-"a\n"
-"          container so you must have at least one container defined in your\n"
-"          account prior to uploading data."
-msgstr ""
-"容器是一個用於您資料的儲存隔間，並且提供\n"
-"          方法讓您組織資料。您可以將容器視為\n"
-"          Windows 資料夾或者 UNIX 目錄。容器與\n"
-"          這些其他的檔案系統觀念的主要不同在於\n"
-"          容器不能階層化。但是，您可以以您的帳戶\n"
-"          新增無限數量的容器。資料必須儲存在容器裡，\n"
-"          所以您必須在上傳資料前，至少先在您的帳戶裡\n"
-"          定義一個容器。"
 
 msgid ""
 "A floating IP allows instances to be addressable from an external network.\n"
@@ -259,9 +180,6 @@ msgstr ""
 "    請在<b>專案</b>網路及<b>對外</b>網路間附加路由器。\n"
 "    您可以使用<b>網路拓撲</b>檢視兩個網路與路由器的連線。"
 
-msgid "An abbreviation of the word attribute is <abbr>attr</abbr>."
-msgstr "單詞 attribute 的縮寫是 <abbr>attr</abbr>。"
-
 msgid ""
 "An advanced option available when launching an instance is disk "
 "partitioning. There are two disk partition options. Selecting <b>Automatic</"
@@ -284,14 +202,6 @@ msgstr "另一個動作"
 
 msgid "Architecture"
 msgstr "架構"
-
-#, python-format
-msgid "Are you sure you want to delete %(name)s?"
-msgstr "您確定要刪除 %(name)s 嗎？"
-
-#, python-format
-msgid "Are you sure you want to delete %(numSelected)s files?"
-msgstr "您確定要刪除 %(numSelected)s 個檔案嗎？"
 
 #, python-format
 msgid "Are you sure you want to delete container %(name)s?"
@@ -362,13 +272,6 @@ msgstr "勾選框"
 msgid "Checksum"
 msgstr "檢查碼"
 
-msgid ""
-"Clear Selection\n"
-"            <span>{$ oc.numSelected $}</span>"
-msgstr ""
-"清除選項\n"
-"            <span>{$ oc.numSelected $}</span>"
-
 msgid "Click to see more details"
 msgstr "點擊來顯示更多詳細資訊"
 
@@ -430,13 +333,6 @@ msgstr "內容類型"
 msgid "Contextual alternatives"
 msgstr "環境定義替代方案"
 
-msgid ""
-"Count\n"
-"          <span></span>"
-msgstr ""
-"計數\n"
-"          <span></span>"
-
 msgid "Create"
 msgstr "新增"
 
@@ -445,13 +341,6 @@ msgstr "新增容器"
 
 msgid "Create Folder"
 msgstr "新增資料夾"
-
-msgid ""
-"Create Folder In: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
-msgstr ""
-"新增資料夾位置：{$ ctrl.model.container.name $}\n"
-"    <span>：{$ ctrl.model.folder $}</span>"
 
 msgid "Create Key Pair"
 msgstr "新增密鑰對"
@@ -553,9 +442,6 @@ msgid "Deleted Image: %s."
 msgid_plural "Deleted Images: %s."
 msgstr[0] "已刪除映像檔：%s。"
 
-msgid "Deleted."
-msgstr "已刪除。"
-
 msgid "Deleting"
 msgstr "正在刪除"
 
@@ -649,9 +535,6 @@ msgstr "未啟用擴充套件：%(extension)s."
 
 msgid "External Network"
 msgstr "對外網路"
-
-msgid "Failed to delete."
-msgstr "無法刪除。"
 
 msgid "File"
 msgstr "檔案"
@@ -834,27 +717,11 @@ msgstr "輸入成功"
 msgid "Input warning"
 msgstr "輸入警告"
 
-msgid ""
-"Instance Name\n"
-"          <span></span>"
-msgstr ""
-"雲實例名稱\n"
-"          <span></span>"
-
 msgid "Instance Snapshot"
 msgstr "雲實例即時存檔"
 
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "雲實例計數需要最少為 1 的整數"
-
-msgid ""
-"Instance source is the template used to create an instance. You can use a "
-"snapshot of an existing instance, an image, or a volume (if enabled).\n"
-"      You can also choose to use persistent storage by creating a new volume."
-msgstr ""
-"雲實例來源是用來新增雲實例的範本。您可以使用已存在雲實例的即時存檔、映像檔或"
-"雲硬碟（如果已啟用）。\n"
-"      您也可以選擇透過新增新的雲硬碟來使用持續儲存體。"
 
 msgid "Insufficient privilege level to view user information."
 msgstr "權限不足以檢視用戶資訊。"
@@ -867,13 +734,6 @@ msgstr "核心 ID"
 
 msgid "Key Pair"
 msgstr "密鑰對"
-
-msgid ""
-"Key Pair Name\n"
-"        <span></span>"
-msgstr ""
-"金鑰組名稱\n"
-"        <span></span>"
 
 msgid "Key Pairs"
 msgstr "密鑰組"
@@ -987,17 +847,11 @@ msgstr "詮釋資料定義"
 msgid "Middle"
 msgstr "中間"
 
-msgid "Min Disk"
-msgstr "最小硬碟"
-
 msgid "Min Disk (GB)"
 msgstr "最小硬碟（GB）"
 
 msgid "Min Port"
 msgstr "最小端口"
-
-msgid "Min RAM"
-msgstr "最小隨機存取記憶體"
 
 msgid "Min RAM (MB)"
 msgstr "最小隨機存取記憶體（MB）"
@@ -1288,13 +1142,6 @@ msgstr "公開存取權"
 msgid "Public Key"
 msgstr "公鑰"
 
-msgid ""
-"Public Key\n"
-"        <span></span>"
-msgstr ""
-"公開金鑰\n"
-"        <span></span>"
-
 msgid "QCOW2"
 msgstr "QCOW2"
 
@@ -1418,12 +1265,6 @@ msgstr "選取"
 
 msgid "Separated link"
 msgstr "已區隔的鏈結"
-
-msgid "Server"
-msgstr "伺服器"
-
-msgid "Servers"
-msgstr "伺服器"
 
 #, python-format
 msgid "Service type is not enabled: %(desiredType)s"
@@ -1637,13 +1478,6 @@ msgstr "時間"
 
 msgid "Timestamp"
 msgstr "時間戳記"
-
-msgid ""
-"To view source code, hover over a section, then click the <a><span></span></"
-"a> button in the top right of that section."
-msgstr ""
-"如果要檢視原始碼，請將游標移至區段上方，然後按一下該區段右上角的 <a><span></"
-"span></a> 按鈕。"
 
 msgid "Tooltips"
 msgstr "工具提示"
@@ -2011,13 +1845,6 @@ msgstr "更新時間"
 msgid "Upload File"
 msgstr "上傳檔案"
 
-msgid ""
-"Upload File To: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
-msgstr ""
-"將檔案上傳至：{$ ctrl.model.container.name $}\n"
-"    <span>：{$ ctrl.model.folder $}</span>"
-
 msgid "Uploading"
 msgstr "正在上傳"
 
@@ -2081,13 +1908,6 @@ msgstr "雲硬碟詳細資訊"
 
 msgid "Volume Quota"
 msgstr "雲硬碟配額"
-
-msgid ""
-"Volume Size (GB)\n"
-"              <span></span>"
-msgstr ""
-"雲硬碟容量 (GB)\n"
-"              <span></span>"
 
 msgid "Volume Snapshot"
 msgstr "雲硬碟即時存檔"

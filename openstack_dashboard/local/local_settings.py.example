@@ -34,7 +34,7 @@ WEBROOT = '/'
 # Pass this header from the proxy after terminating the SSL,
 # and don't forget to strip it from the client's request.
 # For more information see:
-# https://docs.djangoproject.com/en/1.8/ref/settings/#secure-proxy-ssl-header
+# https://docs.djangoproject.com/en/dev/ref/settings/#secure-proxy-ssl-header
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # If Horizon is being served through SSL, then uncomment the following two
@@ -238,6 +238,7 @@ OPENSTACK_KEYSTONE_BACKEND = {
 # properties found in the Launch Instance modal.
 #LAUNCH_INSTANCE_DEFAULTS = {
 #    'config_drive': False,
+#    'enable_scheduler_hints': True
 #}
 
 # The Xen Hypervisor has the ability to set the mount point for volumes
@@ -270,17 +271,12 @@ OPENSTACK_NEUTRON_NETWORK = {
     'enable_vpn': True,
     'enable_fip_topology_check': True,
 
-    # Neutron can be configured with a default Subnet Pool to be used for IPv4
-    # subnet-allocation. Specify the label you wish to display in the Address
-    # pool selector on the create subnet step if you want to use this feature.
-    'default_ipv4_subnet_pool_label': None,
-
-    # Neutron can be configured with a default Subnet Pool to be used for IPv6
-    # subnet-allocation. Specify the label you wish to display in the Address
-    # pool selector on the create subnet step if you want to use this feature.
-    # You must set this to enable IPv6 Prefix Delegation in a PD-capable
-    # environment.
-    'default_ipv6_subnet_pool_label': None,
+    # Default dns servers you would like to use when a subnet is
+    # created.  This is only a default, users can still choose a different
+    # list of dns servers when creating a new subnet.
+    # The entries below are examples only, and are not appropriate for
+    # real deployments
+    # 'default_dns_nameservers': ["8.8.8.8", "8.8.4.4", "208.67.222.222"],
 
     # The profile_support option is used to detect if an external router can be
     # configured via the dashboard. When using specific plugins the
@@ -290,8 +286,24 @@ OPENSTACK_NEUTRON_NETWORK = {
 
     # Set which provider network types are supported. Only the network types
     # in this list will be available to choose from when creating a network.
-    # Network types include local, flat, vlan, gre, and vxlan.
-    'supported_provider_types': ['*'],
+    # Network types include local, flat, vlan, gre, vxlan and geneve.
+    # 'supported_provider_types': ['*'],
+
+    # You can configure available segmentation ID range per network type
+    # in your deployment.
+    # 'segmentation_id_range': {
+    #     'vlan': [1024, 2048],
+    #     'vxlan': [4094, 65536],
+    # },
+
+    # You can define additional provider network types here.
+    # 'extra_provider_types': {
+    #     'awesome_type': {
+    #         'display_name': 'Awesome New Type',
+    #         'require_physical_network': False,
+    #         'require_segmentation_id': True,
+    #     }
+    # },
 
     # Set which VNIC types are supported for port binding. Only the VNIC
     # types in this list will be available to choose from when creating a
@@ -449,6 +461,13 @@ LOGGING = {
     # if nothing is specified here and disable_existing_loggers is True,
     # django.db.backends will still log unless it is disabled explicitly.
     'disable_existing_loggers': False,
+    'formatters': {
+        'operation': {
+            # The format of "%(message)s" is defined by
+            # OPERATION_LOG_OPTIONS['format']
+            'format': '%(asctime)s %(message)s'
+        },
+    },
     'handlers': {
         'null': {
             'level': 'DEBUG',
@@ -458,6 +477,11 @@ LOGGING = {
             # Set the level to "DEBUG" for verbose output logging.
             'level': 'INFO',
             'class': 'logging.StreamHandler',
+        },
+        'operation': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'operation',
         },
     },
     'loggers': {
@@ -474,6 +498,11 @@ LOGGING = {
         'horizon': {
             'handlers': ['console'],
             'level': 'DEBUG',
+            'propagate': False,
+        },
+        'horizon.operation_log': {
+            'handlers': ['operation'],
+            'level': 'INFO',
             'propagate': False,
         },
         'openstack_dashboard': {
@@ -704,7 +733,8 @@ SECURITY_GROUP_RULES = {
 # You should not add settings to this list for out of tree extensions.
 # See: https://wiki.openstack.org/wiki/Horizon/RESTAPI
 REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES',
-                              'LAUNCH_INSTANCE_DEFAULTS']
+                              'LAUNCH_INSTANCE_DEFAULTS',
+                              'OPENSTACK_IMAGE_FORMATS']
 
 # Additional settings can be made available to the client side for
 # extensibility by specifying them in REST_API_ADDITIONAL_SETTINGS
@@ -720,3 +750,24 @@ REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES',
 # For more information see:
 # http://tinyurl.com/anticlickjack
 #DISALLOW_IFRAME_EMBED = True
+
+# Help URL can be made available for the client. To provide a help URL, edit the
+# following attribute to the URL of your choice.
+#HORIZON_CONFIG["help_url"] = "http://openstack.mycompany.org"
+
+# Settings for OperationLogMiddleware
+# OPERATION_LOG_ENABLED is flag to use the function to log an operation on
+# Horizon.
+# mask_targets is arrangement for appointing a target to mask.
+# method_targets is arrangement of HTTP method to output log.
+# format is the log contents.
+#OPERATION_LOG_ENABLED = False
+#OPERATION_LOG_OPTIONS = {
+#    'mask_fields': ['password'],
+#    'target_methods': ['POST'],
+#    'format': ("[%(domain_name)s] [%(domain_id)s] [%(project_name)s]"
+#        " [%(project_id)s] [%(user_name)s] [%(user_id)s] [%(request_scheme)s]"
+#        " [%(referer_url)s] [%(request_url)s] [%(message)s] [%(method)s]"
+#        " [%(http_status)s] [%(param)s]"),
+#}
+

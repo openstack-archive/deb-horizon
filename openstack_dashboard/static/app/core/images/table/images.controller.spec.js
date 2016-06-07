@@ -18,15 +18,20 @@
   'use strict';
 
   describe('horizon.app.core.images table controller', function() {
+    var images = [{id: '1', visibility: 'public', filtered_visibility: 'Public'},
+              {id: '2', is_public: false, owner: 'not_me', filtered_visibility: 'Shared with Me'}];
 
     var glanceAPI = {
       getImages: function () {
         return {
           data: {
             items: [
-              {id: '1', visibility: 'public'},
-              {id: '2', is_public: false, owner: 'not_me'}
+              {id: '1', visibility: 'public', filtered_visibility: 'Public'},
+              {id: '2', is_public: false, owner: 'not_me', filtered_visibility: 'Shared with Me'}
             ]
+          },
+          success: function(callback) {
+            callback({items : angular.copy(images)});
           }
         };
       },
@@ -38,6 +43,17 @@
         };
       }
     };
+
+    var policy = { allowed: true };
+    function fakePolicy() {
+      return {
+        then: function(successFn, errorFn) {
+          if (policy.allowed) { successFn(); }
+          else { errorFn(); }
+        }
+      };
+    }
+    function fakeToast() { return { add: angular.noop }; }
 
     var userSession = {
       get: function () {
@@ -52,6 +68,9 @@
             callback(input);
           }
         };
+      },
+      when: function (input, callback) {
+        return callback(input);
       }
     };
 
@@ -60,7 +79,7 @@
       2: {id: '2', is_public: false, owner: 'not_me', filtered_visibility: 'Shared with Me'}
     };
 
-    var $scope, controller, events, detailsRoute;
+    var $scope, controller, toastService, detailsRoute, policyAPI;
 
     beforeEach(module('ui.bootstrap'));
     beforeEach(module('horizon.framework'));
@@ -80,10 +99,14 @@
 
     beforeEach(inject(function ($injector, _$rootScope_) {
       $scope = _$rootScope_.$new();
-      events = $injector.get('horizon.app.core.images.events');
+
+      toastService = $injector.get('horizon.framework.widgets.toast.service');
+      policyAPI = $injector.get('horizon.app.core.openstack-service-api.policy');
       controller = $injector.get('$controller');
       detailsRoute = $injector.get('horizon.app.core.images.detailsRoute');
 
+      spyOn(toastService, 'add').and.callFake(fakeToast);
+      spyOn(policyAPI, 'ifAllowed').and.callFake(fakePolicy);
       spyOn(glanceAPI, 'getImages').and.callThrough();
       spyOn(glanceAPI, 'getNamespaces').and.callThrough();
       spyOn(userSession, 'get').and.callThrough();
@@ -93,6 +116,8 @@
 
     function createController() {
       return controller('horizon.app.core.images.table.ImagesController', {
+        toast: toastService,
+        policyAPI: policyAPI,
         glanceAPI: glanceAPI,
         userSession: userSession,
         $q: mockQ,
@@ -106,9 +131,12 @@
     });
 
     it('should invoke initialization apis', function() {
+      policy.allowed = true;
       var ctrl = createController();
-      expect(userSession.get).toHaveBeenCalled();
+
+      expect(policyAPI.ifAllowed).toHaveBeenCalled();
       expect(glanceAPI.getImages).toHaveBeenCalled();
+      expect(userSession.get).toHaveBeenCalled();
       expect(ctrl.imagesSrc).toEqual([
         expectedImages['1'],
         expectedImages['2']
@@ -116,33 +144,76 @@
       expect(glanceAPI.getNamespaces).toHaveBeenCalled();
     });
 
-    it('should refresh images after delete', function() {
+    it('re-queries if no result', function() {
       var ctrl = createController();
-      expect(ctrl.imagesSrc).toEqual([
-        expectedImages['1'],
-        expectedImages['2']
-      ]);
-
-      spyOn($scope, '$emit').and.callThrough();
-      $scope.$emit(events.DELETE_SUCCESS, ['1']);
-
-      expect(ctrl.imagesSrc).toEqual([
-        expectedImages['2']
-      ]);
-
-      expect($scope.$emit).toHaveBeenCalledWith('hzTable:clearSelected');
+      glanceAPI.getImages.calls.reset();
+      ctrl.actionResultHandler();
+      expect(glanceAPI.getImages).toHaveBeenCalled();
     });
 
-    it('should destroy the event watchers', function() {
+    it('re-queries if updated', function() {
       var ctrl = createController();
+      glanceAPI.getImages.calls.reset();
+      ctrl.actionResultHandler({updated: [{type: 'OS::Glance::Image', id: 'b'}]});
+      expect(glanceAPI.getImages).toHaveBeenCalled();
+    });
 
-      $scope.$emit('$destroy');
-      $scope.$emit(events.DELETE_SUCCESS, ['1']);
+    it('re-queries if created', function() {
+      var ctrl = createController();
+      glanceAPI.getImages.calls.reset();
+      ctrl.actionResultHandler({created: [{type: 'OS::Glance::Image', id: 'b'}]});
+      expect(glanceAPI.getImages).toHaveBeenCalled();
+    });
+
+    it('does not re-query if only failed', function() {
+      var ctrl = createController();
+      glanceAPI.getImages.calls.reset();
+      ctrl.actionResultHandler({failed: [{type: 'OS::Glance::Image', id: 'b'}]});
+      expect(glanceAPI.getImages).not.toHaveBeenCalled();
+    });
+
+    it('should remove deleted images', function() {
+      var ctrl = createController();
+      expect(ctrl.imagesSrc).toEqual([
+        expectedImages['1'],
+        expectedImages['2']
+      ]);
+
+      var result = {
+        deleted: [ {type: "OS::Glance::Image", id: '1'} ]
+      };
+      ctrl.actionResultHandler(result);
+
+      expect(ctrl.imagesSrc).toEqual([
+        expectedImages['2']
+      ]);
+    });
+
+    it('should not remove deleted volumes', function() {
+      var ctrl = createController();
+      expect(ctrl.imagesSrc).toEqual([
+        expectedImages['1'],
+        expectedImages['2']
+      ]);
+
+      var result = {
+        deleted: [ {type: "OS::Cinder::Values", id: '1'} ]
+      };
+      ctrl.actionResultHandler(result);
 
       expect(ctrl.imagesSrc).toEqual([
         expectedImages['1'],
         expectedImages['2']
       ]);
+    });
+
+    it('should not invoke glance apis if policy fails', function() {
+      policy.allowed = false;
+      createController();
+
+      expect(policyAPI.ifAllowed).toHaveBeenCalled();
+      expect(toastService.add).toHaveBeenCalled();
+      expect(glanceAPI.getImages).not.toHaveBeenCalled();
     });
 
   });

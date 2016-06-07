@@ -10,8 +10,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import django
 from django.core.urlresolvers import reverse
 from django import http
+from django.utils.http import urlunquote
 from mox3.mox import IsA  # noqa
 
 from openstack_dashboard.api import cinder
@@ -19,7 +21,8 @@ from openstack_dashboard.test import helpers as test
 
 
 VOLUME_INDEX_URL = reverse('horizon:project:volumes:index')
-VOLUME_CGROUPS_TAB_URL = reverse('horizon:project:volumes:cgroups_tab')
+VOLUME_CGROUPS_TAB_URL = urlunquote(reverse(
+    'horizon:project:volumes:cgroups_tab'))
 
 
 class ConsistencyGroupTests(test.TestCase):
@@ -31,7 +34,7 @@ class ConsistencyGroupTests(test.TestCase):
                                  'extension_supported')})
     def test_create_cgroup(self):
         cgroup = self.cinder_consistencygroups.first()
-        volume_types = self.volume_types.list()
+        volume_types = self.cinder_volume_types.list()
         az = self.cinder_availability_zones.first().zoneName
         formData = {'volume_types': '1',
                     'name': 'test CG',
@@ -69,7 +72,7 @@ class ConsistencyGroupTests(test.TestCase):
                                  'availability_zone_list',
                                  'extension_supported')})
     def test_create_cgroup_exception(self):
-        volume_types = self.volume_types.list()
+        volume_types = self.cinder_volume_types.list()
         az = self.cinder_availability_zones.first().zoneName
         formData = {'volume_types': '1',
                     'name': 'test CG',
@@ -111,8 +114,9 @@ class ConsistencyGroupTests(test.TestCase):
             AndReturn(cgroups)
         cinder.volume_cgroup_delete(IsA(http.HttpRequest), cgroup.id,
                                     force=False)
-        cinder.volume_cgroup_list_with_vol_type_names(IsA(http.HttpRequest)).\
-            AndReturn(cgroups)
+        if django.VERSION < (1, 9):
+            cinder.volume_cgroup_list_with_vol_type_names(
+                IsA(http.HttpRequest)).AndReturn(cgroups)
 
         self.mox.ReplayAll()
 

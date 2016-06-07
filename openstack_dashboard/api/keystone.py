@@ -118,8 +118,7 @@ def _get_endpoint_url(request, endpoint_type, catalog=None):
 
     # TODO(gabriel): When the Service Catalog no longer contains API versions
     # in the endpoints this can be removed.
-    url = url.rstrip('/')
-    url = urlparse.urljoin(url, 'v%s' % VERSIONS.active)
+    url = auth_utils.fix_auth_url_version(url)
 
     return url
 
@@ -219,7 +218,7 @@ def domain_lookup(request):
             domains = domain_list(request)
             return dict((d.id, d.name) for d in domains)
         except Exception:
-            LOG.warn("Pure project admin doesn't have a domain token")
+            LOG.warning("Pure project admin doesn't have a domain token")
             return None
     else:
         domain = get_default_domain(request)
@@ -269,7 +268,7 @@ def get_default_domain(request, get_name=True):
         # if no domain context set, default to user's domain
         domain_id = request.user.user_domain_id
         domain_name = request.user.user_domain_name
-        if get_name:
+        if get_name and not request.user.is_federated:
             try:
                 domain = domain_get(request, domain_id)
                 domain_name = domain.name

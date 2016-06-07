@@ -9,10 +9,10 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-import re
-
+import collections
 import six
 
+from selenium.common import exceptions
 from selenium.webdriver.common import by
 import selenium.webdriver.support.ui as Support
 
@@ -85,42 +85,29 @@ class BaseFormFieldRegion(baseregion.BaseRegion):
 
 
 class CheckBoxMixin(object):
+
+    @property
+    def label(self):
+        id_attribute = self.element.get_attribute('id')
+        return self.element.find_element(
+            by.By.XPATH, '../..//label[@for="{}"]'.format(id_attribute))
+
     def is_marked(self):
         return self.element.is_selected()
 
     def mark(self):
         if not self.is_marked():
-            self.element.click()
+            self.label.click()
 
     def unmark(self):
         if self.is_marked():
-            self.element.click()
-
-    @property
-    def name(self):
-        """Themable checkboxes use a <label> with font-awesome icon as a
-        control element while the <input> widget is hidden. Still the name
-        needs to be extracted from <label>. Attribute "for" is used for that,
-        since it mirrors <input> "id" which in turn is derived from <input>'s
-        name.
-        """
-        for_attribute = self.element.get_attribute('for')
-        indirect_name = re.search(r'id_(.*)', for_attribute)
-        return (indirect_name and indirect_name.group(1)) or None
+            self.label.click()
 
 
 class CheckBoxFormFieldRegion(CheckBoxMixin, BaseFormFieldRegion):
     """Checkbox field."""
 
-    _element_locator_str_suffix = \
-        '.themable-checkbox input[type=checkbox] + label'
-
-
-class ProjectPageCheckBoxFormFieldRegion(CheckBoxMixin, BaseFormFieldRegion):
-    """Checkbox field for Project-page."""
-
-    _element_locator_str_suffix = \
-        'div > .themable-checkbox input[type=checkbox] + label'
+    _element_locator_str_suffix = 'input[type=checkbox]'
 
 
 class ChooseFileFormFieldRegion(BaseFormFieldRegion):
@@ -204,6 +191,13 @@ class SelectFormFieldRegion(BaseFormFieldRegion):
         return results
 
     @property
+    def options(self):
+        results = collections.OrderedDict()
+        for option in self.element.options:
+            results[option.get_attribute('value')] = option.text
+        return results
+
+    @property
     def name(self):
         return self.element._el.get_attribute('name')
 
@@ -238,7 +232,8 @@ class BaseFormRegion(baseregion.BaseRegion):
         if src_elem is None:
             # fake self.src_elem must be set up in order self._get_element work
             self.src_elem = driver
-            src_elem = self._get_element(*self._default_form_locator)
+            # bind the topmost modal form in a modal stack
+            src_elem = self._get_elements(*self._default_form_locator)[-1]
         super(BaseFormRegion, self).__init__(driver, conf, src_elem)
 
     @property
@@ -418,3 +413,70 @@ class DateFormRegion(BaseFormRegion):
 
     def _set_to_field(self, value):
         self._fill_field_element(value, self.to_date)
+
+
+class MetadataFormRegion(BaseFormRegion):
+
+    _input_fields = (by.By.CSS_SELECTOR, 'div.input-group')
+    _custom_input_field = (by.By.XPATH, "//input[@name='customItem']")
+    _custom_input_button = (by.By.CSS_SELECTOR, 'span.input-group-btn > .btn')
+    _submit_locator = (by.By.CSS_SELECTOR, '.modal-footer > .btn.btn-primary')
+    _cancel_locator = (by.By.CSS_SELECTOR, '.modal-footer > .btn.btn-default')
+
+    def _form_getter(self):
+        return self.driver.find_element(*self._default_form_locator)
+
+    @property
+    def custom_field_value(self):
+        return self._get_element(*self._custom_input_field)
+
+    @property
+    def add_button(self):
+        return self._get_element(*self._custom_input_button)
+
+    def add_custom_field(self, field_name, field_value):
+        self.custom_field_value.send_keys(field_name)
+        self.add_button.click()
+        for div in self._get_elements(*self._input_fields):
+            if div.text in field_name:
+                field = div.find_element(by.By.CSS_SELECTOR, 'input')
+                if not hasattr(self, field_name):
+                    self._dynamic_properties[field_name] = field
+        self.set_field_value(field_name, field_value)
+
+    def set_field_value(self, field_name, field_value):
+        if hasattr(self, field_name):
+            field = getattr(self, field_name)
+            field.send_keys(field_value)
+        else:
+            raise AttributeError("Unknown form field '{}'.".format(field_name))
+
+    def wait_till_spinner_disappears(self):
+        # No spinner is invoked after the 'Save' button click
+        # Will wait till the form itself disappears
+        try:
+            self.wait_till_element_disappears(self._form_getter)
+        except exceptions.StaleElementReferenceException:
+            # The form might be absent already by the time the first check
+            # occurs. So just suppress the exception here.
+            pass
+
+
+class ItemTextDescription(baseregion.BaseRegion):
+
+    _separator_locator = (by.By.CSS_SELECTOR, 'dl.dl-horizontal')
+    _key_locator = (by.By.CSS_SELECTOR, 'dt')
+    _value_locator = (by.By.CSS_SELECTOR, 'dd')
+
+    def __init__(self, driver, conf, src=None):
+        super(ItemTextDescription, self).__init__(driver, conf, src)
+
+    def get_content(self):
+        keys = []
+        values = []
+        for section in self._get_elements(*self._separator_locator):
+            keys.extend([x.text for x in
+                         section.find_elements(*self._key_locator)])
+            values.extend([x.text for x in
+                           section.find_elements(*self._value_locator)])
+        return dict(zip(keys, values))

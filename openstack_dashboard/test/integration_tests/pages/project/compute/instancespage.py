@@ -14,9 +14,8 @@ from openstack_dashboard.test.integration_tests.regions import forms
 from openstack_dashboard.test.integration_tests.regions import tables
 
 
-class InstancesTable(tables.TableRegion):
-    name = "instances"
-    CREATE_INSTANCE_FORM_FIELDS = ((
+class LaunchInstanceForm(forms.TabbedFormRegion):
+    field_mappings = ((
         "availability_zone", "name", "flavor",
         "count", "source_type", "instance_snapshot_id",
         "volume_id", "volume_snapshot_id", "image_id", "volume_size",
@@ -26,12 +25,18 @@ class InstancesTable(tables.TableRegion):
         ("disk_config", "config_drive")
     )
 
+    def __init__(self, driver, conf):
+        super(LaunchInstanceForm, self).__init__(
+            driver, conf, field_mappings=self.field_mappings)
+
+
+class InstancesTable(tables.TableRegion):
+    name = "instances"
+
     @tables.bind_table_action('launch')
     def launch_instance(self, launch_button):
         launch_button.click()
-        return forms.TabbedFormRegion(
-            self.driver, self.conf,
-            field_mappings=self.CREATE_INSTANCE_FORM_FIELDS)
+        return LaunchInstanceForm(self.driver, self.conf)
 
     @tables.bind_table_action('delete')
     def delete_instance(self, delete_button):
@@ -110,9 +115,13 @@ class InstancesPage(basepage.BaseNavigationPage):
             lambda: self._get_row_with_instance_name(name))
 
     def is_instance_active(self, name):
-        row = self._get_row_with_instance_name(name)
-        return self.instances_table.is_cell_status(
-            lambda: row.cells[self.INSTANCES_TABLE_STATUS_COLUMN], 'Active')
+        def cell_getter():
+            row = self._get_row_with_instance_name(name)
+            return row and row.cells[self.INSTANCES_TABLE_STATUS_COLUMN]
+
+        status = self.instances_table.wait_cell_status(cell_getter,
+                                                       ('Active', 'Error'))
+        return status == 'Active'
 
     def _get_source_name(self, instance, boot_source,
                          conf):

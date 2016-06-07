@@ -68,7 +68,7 @@ theme's ``_variables.scss``::
    @import "/themes/default/variables";
 
 Once you have made your changes you must re-generate the static files with
- ``./run_tests.py -m collectstatic``.
+ ``./run_tests.sh -m collectstatic``.
 
 By default, all of the themes configured by ``AVAILABLE_THEMES`` setting are
 collected by horizon during the `collectstatic` process. By default, the themes
@@ -440,12 +440,6 @@ Or get the instances panel::
 
     projects_dashboard = horizon.get_dashboard("project")
     instances_panel = projects_dashboard.get_panel("instances")
-
-And limit access to users with the Keystone Admin role::
-
-    permissions = list(getattr(instances_panel, 'permissions', []))
-    permissions.append('openstack.roles.admin')
-    instances_panel.permissions = tuple(permissions)
 
 Or just remove it entirely::
 

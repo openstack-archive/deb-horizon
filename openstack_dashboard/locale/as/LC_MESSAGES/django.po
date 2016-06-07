@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-16 02:16+0000\n"
+"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-05-24 18:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,104 +13,6 @@ msgstr ""
 "Language: as\n"
 "X-Generator: Zanata 3.7.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-#, python-format
-msgid ""
-"\n"
-"            <a href=\"%(volume_url)s\">%(volume_label)s</a> on "
-"%(volume_device)s\n"
-"            "
-msgstr ""
-"\n"
-"            %(volume_device)s ত <a href=\"%(volume_url)s\">%(volume_label)s</"
-"a>\n"
-"            "
-
-#, python-format
-msgid ""
-"\n"
-"        Other IPv6 modes: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode="
-"%(addr_mode)s\n"
-"        "
-msgstr ""
-"\n"
-"        অন্য IPv6 ধৰণবোৰ: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode="
-"%(addr_mode)s\n"
-"        "
-
-msgid ""
-"\n"
-"      Volume type is a type or label that can be selected at volume "
-"creation\n"
-"      time in OpenStack. It usually maps to a set of capabilities of the "
-"storage\n"
-"      back-end driver to be used for this volume. Examples: \"Performance"
-"\",\n"
-"      \"SSD\", \"Backup\", etc. This is equivalent to the\n"
-"      <tt>cinder type-create</tt> command. Once the volume type gets "
-"created,\n"
-"      click the \"View Extra Specs\" button to set up extra specs key-value\n"
-"      pair(s) for that volume type.\n"
-"     "
-msgstr ""
-"\n"
-"      আয়তন প্ৰকাৰ হল এটা প্ৰকাৰ  বা স্তৰ যিটো মুক্ত ষ্টেকত আয়তন তৈয়াৰ কৰা সময়ত "
-"নিৰ্বাচিত কৰিব পাৰি.\n"
-"      এই আয়তনটোৰ বাবে ব্যৱহাৰ কৰিবলগীয়া ভঁৰালৰ পিছফালৰ চালকটোৰ দক্ষতাবোৰৰ ছেট "
-"এটালৈ এইটোৱে সাধাৰণতে মেপ কৰে.\n"
-"      উদাহৰণবোৰ: \"Performance\",\n"
-"      \"SSD\", \"Backup\", ইত্যাদি. এইটো \n"
-"      <tt>cinder type-create</tt> নিৰ্দেশৰ সমতুল্য. এবাৰ আয়তন প্ৰকাৰ তৈয়াৰ কৰাৰ "
-"পিছত,\n"
-"      উক্ত আয়তন প্ৰকাৰটোৰ বাবে অতিৰিক্ত স্পেকবোৰৰ মুখ্য-মান যোৰা(বোৰ) ছেট কৰিবলৈ "
-"\"View Extra Specs\" বাটনটোত ক্লিক কৰক.\n"
-"     "
-
-msgid ""
-"\n"
-"    Each QoS Specs entity will have a \"Consumer\" value which indicates "
-"where the\n"
-"    administrator would like the QoS policy to be enforced. This value can "
-"be \"front-end\"\n"
-"    (Nova Compute), \"back-end\" (Cinder back-end), or \"both\".\n"
-"    "
-msgstr ""
-"\n"
-"    প্ৰত্যেক QoS স্পেক উপাদনৰ এটা \"Consumer\" মান থাকিব যিয়ে কৰ্তৃপক্ষই কত QoS "
-"নীতিটো প্ৰৱৰ্তন কৰিব বিচাৰিব সূচিত কৰে.\n"
-"    এই মানটো \"front-end\"\n"
-"    (নোভা গণনা), \"back-end\" (ছাইণ্ডাৰ পিছফাল), বা \"দুয়োটা\" হব পাৰে.    "
-
-msgid ""
-"\n"
-"    The status of a volume is normally managed automatically.  In some "
-"circumstances an\n"
-"    administrator may need to explicitly update the status value.  This is "
-"equivalent to\n"
-"    the <tt>cinder reset-state</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"    আয়তন এটাৰ স্থিতিটো সাধাৰণতে স্বয়ংক্ৰিয়ভাৱে পৰিচালনা কৰা হয়.  কিছুমানক্ষেত্ৰত\n"
-"    কৰ্তৃপক্ষ এটাই স্থিতিৰ মানটো সম্পূৰ্ণভাৱে আপডেট কৰাটো বিচাৰিব পাৰে. এইটো \n"
-"    <tt>cinder reset-state</tt> নিৰ্দেশৰ সমতুল্য.\n"
-"    "
-
-msgid ""
-"\n"
-"    The status of a volume snapshot is normally managed automatically.  In "
-"some circumstances\n"
-"    an administrator may need to explicitly update the status value. This is "
-"equivalent to\n"
-"    the <tt>cinder snapshot-reset-state</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"    আয়তন স্নেপশ্বট এটাৰ স্থিতিটো সাধাৰণতে স্বয়ংক্ৰিয়ভাৱে পৰিচালনা কৰা হয়.  "
-"কিছুমানক্ষেত্ৰত\n"
-"    কৰ্তৃপক্ষ এটাই স্থিতিৰ মানটো সম্পূৰ্ণভাৱে আপডেট কৰাটো বিচাৰিব পাৰে. এইটো \n"
-"    <tt>cinder snapshot-reset-state</tt> নিৰ্দেশৰ সমতুল্য.\n"
-"    "
 
 msgid " - End"
 msgstr " - সমাপ্ত"
@@ -935,15 +837,6 @@ msgstr ""
 "পুছ বাটন বা ড্ৰেগ আৰু ড্ৰপৰ দ্বাৰা নিৰ্বাচিত নেটৱৰ্কবোৰলৈ উপলব্ধ নেটৱৰ্কবোৰৰ পৰা "
 "নেটৱৰ্ক নিৰ্বাচন কৰক, একেদৰে ড্ৰেগ আৰু  ড্ৰপৰ দ্বাৰা আপুনি NIC ক্ৰম সলনি কৰিব পাৰে. "
 
-msgid ""
-"Choose rule(s) from Available Rules to Selected Rule by push button or drag "
-"and drop,\n"
-"you may change their order by drag and drop as well. "
-msgstr ""
-"পুছ বাটন বা ড্ৰেগ আৰু ড্ৰপৰ দ্বাৰা নিৰ্বাচিত নিয়মলৈ উপলব্ধ নিয়মবোৰৰ পৰা নিয়ম(বোৰ) "
-"নিৰ্বাচন কৰক,\n"
-"একেদৰে ড্ৰেগ আৰু ড্ৰপ কৰাৰ দ্বাৰা আপুনি সিহঁতৰ ক্ৰম সলনি কৰিব পাৰে. "
-
 msgid "Choose the flavor to launch."
 msgstr "আৰম্ভ কৰিবলৈ ফ্লেভাৰটো পছন্দ কৰক."
 
@@ -1763,10 +1656,6 @@ msgstr "EC2 পৰিচয়পত্ৰবোৰ ডাউনলোড কৰক
 msgid "Download Key Pair"
 msgstr "মুখ্য যোৰা ডাউনলোড কৰক"
 
-#, python-format
-msgid "Download key pair &quot;%(keypair_name)s&quot;"
-msgstr "&quot;%(keypair_name)s&quot; মুখ্য যোৰা ডাউনলোড কৰক"
-
 msgid "EC2 Access Key"
 msgstr "EC2 প্ৰৱেশ কী"
 
@@ -2427,10 +2316,6 @@ msgstr "ফ্লটিং IP বোৰ"
 msgid "Folder created successfully."
 msgstr "ফল্ডাৰ সফলতাৰে তৈয়াৰ কৰা হল."
 
-#, python-format
-msgid "For GRE networks, valid tunnel IDs are %(min)s through %(max)s."
-msgstr "GRE নেটৱৰ্কবোৰৰ বাবে, বৈধ টানেল IDবোৰ হল %(max)s ৰ জৰিয়তে %(min)s."
-
 msgid ""
 "For TCP and UDP rules you may choose to open either a single port or a range "
 "of ports. Selecting the \"Port Range\" option will provide you with space to "
@@ -2441,30 +2326,6 @@ msgstr ""
 "পছন্দ কৰিব পাৰে. \"Port Range\" বিকল্পটো নিৰ্বাচন কৰাটোৱে আপোনাক পৰিসৰটোৰ বাবে "
 "আৰম্ভণি আৰু শেষৰ পোৰ্ট দুয়োটালৈ খালী ঠাই আগবঢ়াব. ICMP নিয়মবোৰৰ বাবে আপুনি এটা "
 "ICMP প্ৰকাৰ আৰু দিয়া ঠাইবোৰ কোড নিৰ্দিষ্ট কৰাৰ পৰিৱৰ্তে."
-
-#, python-format
-msgid ""
-"For VLAN networks, the VLAN VID on the physical network that realizes the "
-"virtual network. Valid VLAN VIDs are %(vlan_min)s through %(vlan_max)s. For "
-"GRE or VXLAN networks, the tunnel ID. Valid tunnel IDs for GRE networks are "
-"%(gre_min)s through %(gre_max)s. For VXLAN networks, %(vxlan_min)s through "
-"%(vxlan_max)s."
-msgstr ""
-"VLAN নেটৱৰ্কবোৰৰ বাবে, ফিজিকেল নেটৱৰ্কটোত থকা VLAN VID টোৱে ভিৰচুৱেল নেটৱৰ্কটো "
-"উপলব্ধি কৰে. বৈধ VLAN VIDবোৰ হল %(vlan_max)s ৰ জৰিয়তে  %(vlan_min)s. GRE বা "
-"VXLAN নেটৱৰ্কৰ বাবে, টানেল ID টো. GRE নেটৱৰ্কবোৰৰ বাবে বৈধ টানেল IDবোৰ হল "
-"%(gre_max)s ৰ জৰিয়তে %(gre_min)s. VXLAN নেটৱৰ্কবোৰৰ বাবে, through "
-"%(vxlan_max)s ৰ জৰিয়তে %(vxlan_min)s."
-
-#, python-format
-msgid "For VLAN networks, valid VLAN IDs are %(min)s through %(max)s."
-msgstr "VLAN নেটৱৰ্কবোৰৰ বাবে, বৈধ VLAN IDবোৰ হল %(max)s ৰ জৰিয়তে %(min)s."
-
-#, python-format
-msgid "For VXLAN networks, valid tunnel IDs are %(min)s through %(max)s."
-msgstr ""
-"VXLAN নেটৱৰ্কবোৰৰ বাবে , বৈধ টানেল ID বোৰ হল  through %(max)s ৰ জৰিয়তে "
-"%(min)s."
 
 msgid "Forbidden"
 msgstr "নিষিদ্ধ কৰা হল"
@@ -2933,9 +2794,6 @@ msgstr "উদাহৰণ কনছোল"
 msgid "Instance Console Log"
 msgstr "উদাহৰণ কনছোল ল'গ"
 
-msgid "Instance Count"
-msgstr "উদাহৰণ গণনা"
-
 msgid "Instance ID"
 msgstr "উদাহৰণ ID"
 
@@ -3104,10 +2962,6 @@ msgstr "এই নেটৱৰ্কবোৰৰ সৈতে উদাহৰণ
 
 msgid "Launch instance with this policy profile"
 msgstr "এই নীতি প্ৰফাইলটোৰ সৈতে উদাহৰণ আৰম্ভ কৰক"
-
-#, python-format
-msgid "Launched %(count)s named \"%(name)s\"."
-msgstr "\"%(name)s\" নামৰ %(count)s টো আৰম্ভ কৰা হল."
 
 msgid ""
 "Launching multiple instances is only supported for images and instance "
@@ -3716,9 +3570,6 @@ msgstr "এটা VM ইন্টাৰফেছৰ বাবে  নেটৱ�
 msgid "Number of incoming packets for a VM interface"
 msgstr "VM ইন্টাৰফেছ এটাৰ বাবে অহা পেকেটবোৰৰ সংখ্যা"
 
-msgid "Number of instances to launch."
-msgstr "আৰম্ভ কৰিবলৈ উদাহৰণবোৰৰ সংখ্যা."
-
 msgid "Number of objects"
 msgstr "বস্তুবোৰৰ সংখ্যা"
 
@@ -4220,9 +4071,6 @@ msgstr ""
 "সকলোবোৰ নিৰ্বাচিত সদস্যবোৰলৈ একে ওজনটো প্ৰয়োগ কৰা হব আৰু পিছত পৰিৱৰ্তন কৰা হব "
 "পাৰে. ওজনটো 1 ৰ পৰা 256 পৰিসৰৰ ভিতৰত থকাটো অপৰিহাৰ্য."
 
-msgid "Reload"
-msgstr "পুনৰ লোড কৰক"
-
 msgid "Remote"
 msgstr "দূৰৰ"
 
@@ -4479,10 +4327,6 @@ msgstr "অতিৰিক্ত স্পেক \"%s\" ছেভ কৰা হ�
 msgid "Saved spec \"%s\"."
 msgstr "স্পেক \"%s\" ছেভ কৰা হল."
 
-#, python-format
-msgid "Scheduled resize of instance \"%s\"."
-msgstr " \"%s\" উদাহৰণৰ পুনৰ আকাৰ কৰাটো নিৰ্ধাৰণ কৰা হল."
-
 msgctxt "Task status of an Instance"
 msgid "Scheduling"
 msgstr "কাৰ্যসূচী নিৰ্ধাৰণ কৰিছে"
@@ -4587,9 +4431,6 @@ msgstr "মুখ্য যোৰা এটা নিৰ্বাচন কৰ�
 #, python-format
 msgid "Select a monitor template for %s"
 msgstr "%s ৰ বাবে নিৰীক্ষণকৰ্তা নমুনা এটা নিৰ্বাচন কৰক"
-
-msgid "Select a name for your network."
-msgstr "আপোনাৰ নেটৱৰ্কৰ নাম এটা নিৰ্বাচন কৰক."
 
 msgid "Select a new agent"
 msgstr "এটা নতুন এজেন্ট নিৰ্বাচন কৰক"
@@ -5048,12 +4889,6 @@ msgstr "QoS স্পেক উপভোক্তা সফলতাৰে প�
 
 #, python-format
 msgid ""
-"Successfully restored backup %(backup_name)s to volume with id: %(volume_id)s"
-msgstr ""
-"id ৰ সৈতে আয়তনলৈ সফলতাৰে %(backup_name)s বেকআপ পুনৰ জমা কৰা হল: %(volume_id)s"
-
-#, python-format
-msgid ""
 "Successfully sent the request to change the volume type to \"%(vtype)s\" for "
 "volume: \"%(name)s\""
 msgstr ""
@@ -5270,14 +5105,6 @@ msgstr "উদাহৰণটোৱে \"%s\" হষ্টলৈ জীৱন্
 
 msgid "The instance password encrypted with your public key."
 msgstr "আপোনাৰ ৰাজহুৱা কীৰ সৈতে উদাহৰণ পাছৱৰ্ডটো এনক্ৰিপ্ট কৰা হল."
-
-#, python-format
-msgid ""
-"The key pair &quot;%(keypair_name)s&quot; should download automatically. If "
-"not use the link below."
-msgstr ""
-"&quot;%(keypair_name)s&quot; মুখ্য যোৰাটো স্বয়ংক্ৰিয়ভাৱে ডাউনলোড কৰা উচিত. যদি "
-"তলৰ সংযোগটো ব্যৱহাৰ নকৰে."
 
 msgid ""
 "The minimum disk size required to boot the image. If unspecified, this value "
@@ -6741,14 +6568,6 @@ msgstr "মান (গড়)"
 msgid "Value:"
 msgstr "মান:"
 
-#, python-format
-msgid ""
-"Version: %(version_info)s\n"
-"      "
-msgstr ""
-"সংস্কৰণ: %(version_info)s\n"
-"      "
-
 msgid "View Container"
 msgstr "ধাৰক চাওক"
 
@@ -6925,9 +6744,6 @@ msgstr ""
 "আপুনি বিচৰা কৰা নিয়ম নমুনাটো নিৰ্দিষ্ট কৰিব পাৰে বা নিয়মবোৰৰ ব্যৱস্থা কৰিব পাৰে, "
 "বিকল্পবোৰ হল ব্যৱস্থা TCP নিয়ম, ব্যৱস্থা UDP নিয়ম, বা ব্যৱস্থা ICMP নিয়ম."
 
-msgid "You cannot disable the user you are currently logged in as."
-msgstr "আপুনি বৰ্তমানে ... ৰ দৰে লগ ইন কৰা ব্যৱহাৰকৰ্তাবোৰ অক্ষম কৰিব নোৱাৰে."
-
 msgid ""
 "You cannot revoke your administrative privileges from the domain you are "
 "currently logged into. Please switch to another domain with administrative "
@@ -7075,9 +6891,6 @@ msgstr "উভয়ে"
 
 msgid "clear"
 msgstr "সম্পন্ন কৰক"
-
-msgid "console is currently unavailable. Please try again later."
-msgstr "কনছোল বৰ্তমানে উপলব্ধ নাই. অনুগ্ৰহ কৰি পিছত পুনৰ চেষ্টা কৰক."
 
 msgid "disabled"
 msgstr "অক্ষম কৰা হল"

@@ -27,12 +27,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View  # noqa
 
 from horizon import exceptions
+from horizon import tabs
 from horizon.utils.lazy_encoder import LazyTranslationEncoder
-from horizon import views
 
 from openstack_dashboard import api
-from openstack_dashboard.usage import quotas
-
 from openstack_dashboard.dashboards.project.network_topology.instances \
     import tables as instances_tables
 from openstack_dashboard.dashboards.project.network_topology.networks \
@@ -43,6 +41,9 @@ from openstack_dashboard.dashboards.project.network_topology.routers \
     import tables as routers_tables
 from openstack_dashboard.dashboards.project.network_topology.subnets \
     import tables as subnets_tables
+from openstack_dashboard.dashboards.project.network_topology \
+    import tabs as topology_tabs
+from openstack_dashboard.dashboards.project.network_topology import utils
 
 from openstack_dashboard.dashboards.project.instances import\
     console as i_console
@@ -76,6 +77,12 @@ from openstack_dashboard.dashboards.project.routers.tables import \
     STATUS_DISPLAY_CHOICES as routers_status_choices
 from openstack_dashboard.dashboards.project.routers import\
     views as r_views
+
+# List of known server statuses that wont connect to the console
+console_invalid_status = {
+    'shutoff', 'suspended', 'resize', 'verify_resize',
+    'revert_resize', 'migrating', 'build', 'shelved',
+    'shelved_offloaded'}
 
 
 class TranslationHelper(object):
@@ -177,45 +184,14 @@ class NetworkDetailView(n_views.DetailView):
     template_name = 'project/network_topology/iframe.html'
 
 
-class NetworkTopologyView(views.HorizonTemplateView):
+class NetworkTopologyView(tabs.TabView):
+    tab_group_class = topology_tabs.TopologyTabs
     template_name = 'project/network_topology/index.html'
     page_title = _("Network Topology")
 
-    def _has_permission(self, policy):
-        has_permission = True
-        policy_check = getattr(settings, "POLICY_CHECK_FUNCTION", None)
-
-        if policy_check:
-            has_permission = policy_check(policy, self.request)
-
-        return has_permission
-
-    def _quota_exceeded(self, quota):
-        usages = quotas.tenant_quota_usages(self.request)
-        available = usages.get(quota, {}).get('available', 1)
-        return available <= 0
-
     def get_context_data(self, **kwargs):
         context = super(NetworkTopologyView, self).get_context_data(**kwargs)
-        network_config = getattr(settings, 'OPENSTACK_NEUTRON_NETWORK', {})
-
-        context['launch_instance_allowed'] = self._has_permission(
-            (("compute", "compute:create"),))
-        context['instance_quota_exceeded'] = self._quota_exceeded('instances')
-        context['create_network_allowed'] = self._has_permission(
-            (("network", "create_network"),))
-        context['network_quota_exceeded'] = self._quota_exceeded('networks')
-        context['create_router_allowed'] = (
-            network_config.get('enable_router', True) and
-            self._has_permission((("network", "create_router"),)))
-        context['router_quota_exceeded'] = self._quota_exceeded('routers')
-        context['console_type'] = getattr(
-            settings, 'CONSOLE_TYPE', 'AUTO')
-        context['show_ng_launch'] = getattr(
-            settings, 'LAUNCH_INSTANCE_NG_ENABLED', True)
-        context['show_legacy_launch'] = getattr(
-            settings, 'LAUNCH_INSTANCE_LEGACY_ENABLED', False)
-        return context
+        return utils.get_context(self.request, context)
 
 
 class JSONView(View):
@@ -251,19 +227,21 @@ class JSONView(View):
         console_type = getattr(settings, 'CONSOLE_TYPE', 'AUTO')
         # lowercase of the keys will be used at the end of the console URL.
         for server in servers:
-            try:
-                console = i_console.get_console(
-                    request, console_type, server)[0].lower()
-            except exceptions.NotAvailable:
-                console = None
-
             server_data = {'name': server.name,
                            'status': self.trans.instance[server.status],
                            'original_status': server.status,
                            'task': getattr(server, 'OS-EXT-STS:task_state'),
                            'id': server.id}
-            if console:
-                server_data['console'] = console
+            # Avoid doing extra calls for console if the server is in
+            # a invalid status for console connection
+            if server.status.lower() not in console_invalid_status:
+                try:
+                    console = i_console.get_console(
+                        request, console_type, server)[0].lower()
+                    server_data['console'] = console
+                except exceptions.NotAvailable:
+                    pass
+
             data.append(server_data)
         self.add_resource_url('horizon:project:instances:detail', data)
         return data

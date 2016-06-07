@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-16 02:16+0000\n"
+"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-05-24 18:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -642,15 +642,6 @@ msgstr "Odaberite volume"
 
 msgid "Choose an image"
 msgstr "Odaberite image"
-
-msgid ""
-"Choose rule(s) from Available Rules to Selected Rule by push button or drag "
-"and drop,\n"
-"you may change their order by drag and drop as well. "
-msgstr ""
-"Odaberite pravilo(a) iz dostupnih pravila u odabrana pravila dugmetom ili "
-"uzmi i prebaci,\n"
-"možete menjati redosled pomoću uzmi i prebaci. "
 
 msgid "Choose the flavor to launch."
 msgstr "Odaberite aromu za pokretanje."
@@ -1299,10 +1290,6 @@ msgstr "Skidanje EC2 akreditiva"
 
 msgid "Download Key Pair"
 msgstr "Skinite par ključeva"
-
-#, python-format
-msgid "Download key pair &quot;%(keypair_name)s&quot;"
-msgstr "Skinite par ključeva &quot;%(keypair_name)s&quot;"
 
 msgid "Edit"
 msgstr "Izmena"
@@ -2224,9 +2211,6 @@ msgstr "Konzola za instance"
 msgid "Instance Console Log"
 msgstr "Log konzole instance"
 
-msgid "Instance Count"
-msgstr "Broj instanci"
-
 msgid "Instance ID"
 msgstr "ID instance"
 
@@ -2361,10 +2345,6 @@ msgstr "Pokretanje instance sa ovim mrežama"
 
 msgid "Launch instance with this policy profile"
 msgstr "pokrenite računarsku jedinicu sa ovim profilom politika"
-
-#, python-format
-msgid "Launched %(count)s named \"%(name)s\"."
-msgstr "Pokrenute %(count)s po imenu \"%(name)s\"."
 
 msgid ""
 "Launching multiple instances is only supported for images and instance "
@@ -2879,9 +2859,6 @@ msgstr "Broj dolaznih bajtova na mreži za VM interfejs"
 msgid "Number of incoming packets for a VM interface"
 msgstr "Broj dolaznih paketa za VM interfejs"
 
-msgid "Number of instances to launch."
-msgstr "Broj instanci za pokretanje."
-
 msgid "Number of objects"
 msgstr "Broj objekata"
 
@@ -3280,9 +3257,6 @@ msgstr "Renoviranje instance %s."
 msgid "Relative part of requests this pool member serves compared to others"
 msgstr "Relative part of requests this pool member serves compared to others"
 
-msgid "Reload"
-msgstr "Ponovno učitavanje"
-
 msgid "Remote"
 msgstr "Udaljen"
 
@@ -3488,10 +3462,6 @@ msgstr "Sačuvaj izmene"
 msgid "Saved extra spec \"%s\"."
 msgstr "Sačuvana dodatna specifikacija ta \"%s\"."
 
-#, python-format
-msgid "Scheduled resize of instance \"%s\"."
-msgstr "Planirana promena veličine instance \"%s\"."
-
 msgid "Security Group"
 msgstr "Sigurnosna grupa"
 
@@ -3565,9 +3535,6 @@ msgstr "Odaberite par ključeva"
 #, python-format
 msgid "Select a monitor template for %s"
 msgstr "Odaberite šablon monitora za %s"
-
-msgid "Select a name for your network."
-msgstr "Odaberite ime mreže."
 
 msgid "Select a new host"
 msgstr "Odaberite novi Host"
@@ -4064,14 +4031,6 @@ msgstr "Instanca se priprema za selidbu uživo na host \"%s\"."
 
 msgid "The instance password encrypted with your public key."
 msgstr "Lozinka instance je šifrovana sa vašim javnim ključem."
-
-#, python-format
-msgid ""
-"The key pair &quot;%(keypair_name)s&quot; should download automatically. If "
-"not use the link below."
-msgstr ""
-"Par ključeva &quot;%(keypair_name)s&quot; će automatski biti prenet. Ako "
-"nije, iskoristite link ispod."
 
 msgid ""
 "The minimum disk size required to boot the image. If unspecified, this value "
@@ -5391,9 +5350,6 @@ msgstr ""
 "izbor su uobičajeno TCP pravilo, uobičajeno DP pravilo, ili Uobičajeno ICMP "
 "pravilo."
 
-msgid "You cannot disable the user you are currently logged in as."
-msgstr "Nemožete onemogućiti korisnika pod kojim ste trenutno ulogovani."
-
 msgid ""
 "You cannot revoke your administrative privileges from the project you are "
 "currently logged into. Please switch to another project with administrative "
@@ -5522,9 +5478,6 @@ msgstr "oboje"
 
 msgid "clear"
 msgstr "čisto"
-
-msgid "console is currently unavailable. Please try again later."
-msgstr "KOnzola je trenutno nedostupna. Pokušajte kasnije."
 
 msgid "disabled"
 msgstr "onemogućeno"

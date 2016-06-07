@@ -19,7 +19,11 @@
 
     var deleteModalService = {
       open: function () {
-        return;
+        deferredModal.resolve({
+          pass: [{context: {id: 'a'}}],
+          fail: [{context: {id: 'b'}}]
+        });
+        return deferredModal.promise;
       }
     };
 
@@ -46,7 +50,7 @@
       }
     };
 
-    var deferred, service, $scope;
+    var deferred, service, $scope, deferredModal;
 
     ///////////////////////
 
@@ -70,6 +74,7 @@
       $scope = _$rootScope_.$new();
       service = $injector.get('horizon.app.core.images.actions.delete-image.service');
       deferred = $q.defer();
+      deferredModal = $q.defer();
     }));
 
     function generateImage(imageCount) {
@@ -85,7 +90,7 @@
 
       for (var index = 0; index < imageCount; index++) {
         var image = angular.copy(data);
-        image.id = (index + 1);
+        image.id = index + 1;
         image.name = 'image' + (index + 1);
         images.push(image);
       }
@@ -95,7 +100,7 @@
     describe('perform method', function() {
 
       beforeEach(function() {
-        spyOn(deleteModalService, 'open');
+        spyOn(deleteModalService, 'open').and.callThrough();
         service.initScope($scope, labelize);
       });
 
@@ -114,7 +119,6 @@
       it('should open the delete modal and show correct labels', testSingleLabels);
       it('should open the delete modal and show correct labels', testpluralLabels);
       it('should open the delete modal with correct entities', testEntities);
-      it('should pass the success and error events to be thrown', testEvents);
       it('should only delete images that are valid', testValids);
       it('should fail if this project is not owner', testOwner);
       it('should fail if images is protected', testProtected);
@@ -130,7 +134,9 @@
 
         var labels = deleteModalService.open.calls.argsFor(0)[2].labels;
         expect(deleteModalService.open).toHaveBeenCalled();
-        for (var k in labels) { expect(labels[k].toLowerCase()).toContain('image'); }
+        angular.forEach(labels, function eachLabel(label) {
+          expect(label.toLowerCase()).toContain('image');
+        });
       }
 
       function testpluralLabels() {
@@ -140,7 +146,9 @@
 
         var labels = deleteModalService.open.calls.argsFor(0)[2].labels;
         expect(deleteModalService.open).toHaveBeenCalled();
-        for (var k in labels) { expect(labels[k].toLowerCase()).toContain('images'); }
+        angular.forEach(labels, function eachLabel(label) {
+          expect(label.toLowerCase()).toContain('images');
+        });
       }
 
       function testEntities() {
@@ -152,16 +160,6 @@
         var entities = deleteModalService.open.calls.argsFor(0)[1];
         expect(deleteModalService.open).toHaveBeenCalled();
         expect(entities.length).toEqual(imageCount);
-      }
-
-      function testEvents() {
-        var images = generateImage(1);
-        service.perform(images);
-        $scope.$apply();
-
-        var context = deleteModalService.open.calls.argsFor(0)[2];
-        expect(deleteModalService.open).toHaveBeenCalled();
-        expect(context.successEvent).toEqual('horizon.app.core.images.DELETE_SUCCESS');
       }
 
       function testValids() {

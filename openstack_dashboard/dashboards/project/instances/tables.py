@@ -82,8 +82,6 @@ def is_deleting(instance):
 
 
 class DeleteInstance(policy.PolicyTargetMixin, tables.DeleteAction):
-    name = "delete"
-    classes = ("btn-danger",)
     policy_rules = (("compute", "compute:delete"),)
     help_text = _("Deleted instances are not recoverable.")
 
@@ -104,8 +102,13 @@ class DeleteInstance(policy.PolicyTargetMixin, tables.DeleteAction):
         )
 
     def allowed(self, request, instance=None):
-        """Allow delete action if instance not currently being deleted."""
-        return not is_deleting(instance)
+        """Allow delete action if instance is in error state or not currently
+        being deleted.
+        """
+        error_state = False
+        if instance:
+            error_state = (instance.status == 'ERROR')
+        return error_state or not is_deleting(instance)
 
     def action(self, request, obj_id):
         api.nova.server_delete(request, obj_id)
@@ -113,10 +116,11 @@ class DeleteInstance(policy.PolicyTargetMixin, tables.DeleteAction):
 
 class RebootInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "reboot"
-    classes = ('btn-danger', 'btn-reboot')
+    classes = ('btn-reboot',)
     policy_rules = (("compute", "compute:reboot"),)
     help_text = _("Restarted instances will lose any data"
                   " not saved in persistent storage.")
+    action_type = "danger"
 
     @staticmethod
     def action_present(count):
@@ -677,8 +681,9 @@ class SimpleAssociateIP(policy.PolicyTargetMixin, tables.Action):
 class SimpleDisassociateIP(policy.PolicyTargetMixin, tables.Action):
     name = "disassociate"
     verbose_name = _("Disassociate Floating IP")
-    classes = ("btn-danger", "btn-disassociate",)
+    classes = ("btn-disassociate",)
     policy_rules = (("compute", "network:disassociate_floating_ip"),)
+    action_type = "danger"
 
     def allowed(self, request, instance):
         if not api.network.floating_ip_supported(request):
@@ -822,9 +827,9 @@ class StartInstance(policy.PolicyTargetMixin, tables.BatchAction):
 
 class StopInstance(policy.PolicyTargetMixin, tables.BatchAction):
     name = "stop"
-    classes = ('btn-danger',)
     policy_rules = (("compute", "compute:stop"),)
     help_text = _("The instance(s) will be shut off.")
+    action_type = "danger"
 
     @staticmethod
     def action_present(count):
@@ -942,10 +947,18 @@ class DetachInterface(policy.PolicyTargetMixin, tables.LinkAction):
     url = "horizon:project:instances:detach_interface"
 
     def allowed(self, request, instance):
-        return ((instance.status in ACTIVE_STATES
-                 or instance.status == 'SHUTOFF')
-                and not is_deleting(instance)
-                and api.base.is_service_enabled(request, 'network'))
+        if not api.base.is_service_enabled(request, 'network'):
+            return False
+        if is_deleting(instance):
+            return False
+        if (instance.status not in ACTIVE_STATES and
+                instance.status != 'SHUTOFF'):
+            return False
+        for addresses in instance.addresses.values():
+            for address in addresses:
+                if address.get('OS-EXT-IPS:type') == "fixed":
+                    return True
+        return False
 
     def get_link_url(self, datum):
         instance_id = self.table.get_object_id(datum)

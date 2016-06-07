@@ -2,16 +2,16 @@
 # Xu Yang <yizhongchuanqi@163.com>, 2015. #zanata
 # Yu Zhiuguo <yuzg@cn.fujitsu.com>, 2015. #zanata
 # zhangjingwen <zhangjingwen@cn.fujitsu.com>, 2015. #zanata
+# Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
 # Gaoxiao Zhu <zhu.gaoxiao@h3c.com>, 2016. #zanata
 # Linda <duleish@cn.ibm.com>, 2016. #zanata
 # Zheng Xi Zhou <zzxwill@gmail.com>, 2016. #zanata
-# qingszhao <zdqyuqing@163.com>, 2016. #zanata
 # vuuv <froms2008@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-18 21:42+0000\n"
+"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-05-24 18:48+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,10 +24,6 @@ msgstr ""
 
 msgid "#"
 msgstr "#"
-
-#, python-format
-msgid "%(name)s deleted."
-msgstr "%(name)s 已删除。"
 
 #, python-format
 msgid "%s instance launched."
@@ -57,25 +53,6 @@ msgstr "6"
 
 msgid "7"
 msgstr "7"
-
-msgid "8"
-msgstr "8"
-
-msgid ""
-"<input>\n"
-"                Public</input>"
-msgstr ""
-"<input>\n"
-"                公开</input>"
-
-msgid ""
-"<input>\n"
-"        Configuration Drive\n"
-"      </input>"
-msgstr ""
-"<input>\n"
-"        配置驱动器\n"
-"      </input>"
 
 msgid ""
 "<li><b>Image (with Create New Volume checked)</b>: This options uses an "
@@ -112,27 +89,6 @@ msgstr ""
 "<li><b>云硬盘</b>：这个选项使用一个已存在的云硬盘。它不创建一个新云硬盘。您可"
 "以选择在销毁云主机时删除云硬盘。 <em>注意：当选择云硬盘时，您只可以启动一个云"
 "主机。</em></li>"
-
-msgid ""
-"A container is a storage compartment for your data and provides a way\n"
-"          for you to organize your data. You can think of a container as a\n"
-"          folder in Windows or a directory in UNIX. The primary difference\n"
-"          between a container and these other file system concepts is that\n"
-"          containers cannot be nested. You can, however, create an "
-"unlimited\n"
-"          number of containers within your account. Data must be stored in "
-"a\n"
-"          container so you must have at least one container defined in your\n"
-"          account prior to uploading data."
-msgstr ""
-"容器是储存您数据的存储室，\n"
-"便于您组织数据。\n"
-"您可以认为容器是 Windows 的文件夹，\n"
-"或者 Unix 的目录。\n"
-"容器和这些文件系统的主要区别是容器无法嵌套。\n"
-"但是，您可以在您的账号下创建无限个容器。\n"
-"数据必须存储在容器里，\n"
-"因此您必须在上传数据前在您的账号下定义至少一个容器。"
 
 msgid ""
 "A floating IP allows instances to be addressable from an external network.\n"
@@ -242,14 +198,6 @@ msgid "Architecture"
 msgstr "架构"
 
 #, python-format
-msgid "Are you sure you want to delete %(name)s?"
-msgstr "确认删除 %(name)s ？"
-
-#, python-format
-msgid "Are you sure you want to delete %(numSelected)s files?"
-msgstr "确认删除 %(numSelected)s 个文件？"
-
-#, python-format
 msgid "Are you sure you want to delete container %(name)s?"
 msgstr "确认删除容器 %(name)s ？"
 
@@ -290,13 +238,6 @@ msgstr ""
 
 msgid "Checksum"
 msgstr "校验和"
-
-msgid ""
-"Clear Selection\n"
-"            <span>{$ oc.numSelected $}</span>"
-msgstr ""
-"取消选择\n"
-"            <span>{$ oc.numSelected $}</span>"
 
 msgid "Click to see more details"
 msgstr "点击查看更多细节"
@@ -347,13 +288,6 @@ msgstr "容器"
 msgid "Content Type"
 msgstr "内容类型"
 
-msgid ""
-"Count\n"
-"          <span></span>"
-msgstr ""
-"数量\n"
-"          <span></span>"
-
 msgid "Create"
 msgstr "创建"
 
@@ -362,13 +296,6 @@ msgstr "创建容器"
 
 msgid "Create Folder"
 msgstr "创建目录"
-
-msgid ""
-"Create Folder In: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
-msgstr ""
-"创建目录： {$ ctrl.model.container.name $}，位于\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
 
 msgid "Create Key Pair"
 msgstr "创建秘钥对"
@@ -464,9 +391,6 @@ msgid "Deleted Image: %s."
 msgid_plural "Deleted Images: %s."
 msgstr[0] "已删除的镜像： %s"
 
-msgid "Deleted."
-msgstr "已删除。"
-
 msgid "Deleting"
 msgstr "删除中"
 
@@ -548,9 +472,6 @@ msgstr "扩展没有启用：%(extension)s。"
 
 msgid "External Network"
 msgstr "外部网络"
-
-msgid "Failed to delete."
-msgstr "删除失败。"
 
 msgid "File"
 msgstr "文件"
@@ -706,27 +627,11 @@ msgstr "导入秘钥对"
 msgid "Info"
 msgstr "信息"
 
-msgid ""
-"Instance Name\n"
-"          <span></span>"
-msgstr ""
-"云主机名称\n"
-"          <span></span>"
-
 msgid "Instance Snapshot"
 msgstr "云主机快照"
 
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "云主机数是必须的而且必须是至少为1的整数。"
-
-msgid ""
-"Instance source is the template used to create an instance. You can use a "
-"snapshot of an existing instance, an image, or a volume (if enabled).\n"
-"      You can also choose to use persistent storage by creating a new volume."
-msgstr ""
-"云主机启动源是用来创建一个云主机的模板。您可以用已存在云主机的快照、镜像或者"
-"云硬盘(如果能引导)。\n"
-"您也可以选择创建一个新的云硬盘以便使用持久化存储。"
 
 msgid "Insufficient privilege level to view user information."
 msgstr "查看用户信息权限不足。"
@@ -736,13 +641,6 @@ msgstr "内核 ID"
 
 msgid "Key Pair"
 msgstr "密钥对"
-
-msgid ""
-"Key Pair Name\n"
-"        <span></span>"
-msgstr ""
-"密钥对名称\n"
-"        <span></span>"
 
 msgid "Key Pairs"
 msgstr "密钥对"
@@ -829,17 +727,11 @@ msgstr "元数据定义"
 msgid "Middle"
 msgstr "中"
 
-msgid "Min Disk"
-msgstr "最小磁盘"
-
 msgid "Min Disk (GB)"
 msgstr "最小磁盘 (GB)"
 
 msgid "Min Port"
 msgstr "最小端口"
-
-msgid "Min RAM"
-msgstr "最小内存"
 
 msgid "Min RAM (MB)"
 msgstr "最小内存 (MB)"
@@ -1056,13 +948,6 @@ msgstr "公开访问"
 msgid "Public Key"
 msgstr "公钥"
 
-msgid ""
-"Public Key\n"
-"        <span></span>"
-msgstr ""
-"公钥\n"
-"        <span></span>"
-
 msgid "QCOW2"
 msgstr "QCOW2"
 
@@ -1175,12 +1060,6 @@ msgstr "选择下面列出的端口。"
 
 msgid "Select the security groups to launch the instance in."
 msgstr "要在其中启动云主机的安全组。"
-
-msgid "Server"
-msgstr "Server"
-
-msgid "Servers"
-msgstr "Servers"
 
 #, python-format
 msgid "Service type is not enabled: %(desiredType)s"
@@ -1352,13 +1231,6 @@ msgstr "时间"
 
 msgid "Timestamp"
 msgstr "时间戳"
-
-msgid ""
-"To view source code, hover over a section, then click the <a><span></span></"
-"a> button in the top right of that section."
-msgstr ""
-"要查看源代码，请使光标悬浮在某节上，然后单击该节右上角的 <a><span></span></"
-"a> 按钮。"
 
 msgid "Total Disk"
 msgstr "磁盘总计"
@@ -1717,13 +1589,6 @@ msgstr "更新于"
 msgid "Upload File"
 msgstr "上传文件"
 
-msgid ""
-"Upload File To: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
-msgstr ""
-"上传文件到: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
-
 msgid "Uploading"
 msgstr "上传中"
 
@@ -1787,13 +1652,6 @@ msgstr "云硬盘详情"
 
 msgid "Volume Quota"
 msgstr "云硬盘配额"
-
-msgid ""
-"Volume Size (GB)\n"
-"              <span></span>"
-msgstr ""
-"云硬盘大小 (GB)\n"
-"              <span></span>"
 
 msgid "Volume Snapshot"
 msgstr "云硬盘快照"

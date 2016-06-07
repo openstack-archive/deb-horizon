@@ -311,6 +311,11 @@ def swift_create_pseudo_folder(request, container_name, pseudo_folder_name):
 
 
 def swift_delete_object(request, container_name, object_name):
+    swift_api(request).delete_object(container_name, object_name)
+    return True
+
+
+def swift_delete_folder(request, container_name, object_name):
     objects, more = swift_get_objects(request, container_name,
                                       prefix=object_name)
     # In case the given object is pseudo folder,
@@ -359,4 +364,9 @@ def swift_get_object(request, container_name, object_name, with_data=True,
 
 
 def swift_get_capabilities(request):
-    return swift_api(request).get_capabilities()
+    try:
+        return swift_api(request).get_capabilities()
+    # NOTE(tsufiev): Ceph backend currently does not support '/info', even
+    # some Swift installations do not support it (see `expose_info` docs).
+    except swiftclient.exceptions.ClientException:
+        return {}

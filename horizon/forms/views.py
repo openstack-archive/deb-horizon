@@ -43,8 +43,8 @@ class ModalBackdropMixin(object):
     """
     modal_backdrop = 'static'
 
-    def __init__(self):
-        super(ModalBackdropMixin, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(ModalBackdropMixin, self).__init__(*args, **kwargs)
         config = getattr(settings, 'HORIZON_CONFIG', {})
         if 'modal_backdrop' in config:
             self.modal_backdrop = config['modal_backdrop']
@@ -55,7 +55,7 @@ class ModalBackdropMixin(object):
         return context
 
 
-class ModalFormMixin(object):
+class ModalFormMixin(ModalBackdropMixin):
     def get_template_names(self):
         if self.request.is_ajax():
             if not hasattr(self, "ajax_template_name"):
@@ -77,7 +77,7 @@ class ModalFormMixin(object):
         return context
 
 
-class ModalFormView(ModalBackdropMixin, ModalFormMixin, views.HorizonFormView):
+class ModalFormView(ModalFormMixin, views.HorizonFormView):
     """The main view class from which all views which handle forms in Horizon
     should inherit. It takes care of all details with processing
     :class:`~horizon.forms.base.SelfHandlingForm` classes, and modal concerns
@@ -133,8 +133,7 @@ class ModalFormView(ModalBackdropMixin, ModalFormMixin, views.HorizonFormView):
     cancel_label = _("Cancel")
     cancel_url = None
 
-    def get_context_data(self, **kwargs):
-        context = super(ModalFormView, self).get_context_data(**kwargs)
+    def _populate_context(self, context):
         context['modal_id'] = self.modal_id
         context['modal_header'] = self.modal_header
         context['form_id'] = self.form_id
@@ -142,6 +141,11 @@ class ModalFormView(ModalBackdropMixin, ModalFormMixin, views.HorizonFormView):
         context['submit_label'] = self.submit_label
         context['cancel_label'] = self.cancel_label
         context['cancel_url'] = self.get_cancel_url()
+        return context
+
+    def get_context_data(self, **kwargs):
+        context = super(ModalFormView, self).get_context_data(**kwargs)
+        context = self._populate_context(context)
         return context
 
     def get_cancel_url(self):
@@ -164,6 +168,12 @@ class ModalFormView(ModalBackdropMixin, ModalFormMixin, views.HorizonFormView):
     def get_form(self, form_class):
         """Returns an instance of the form to be used in this view."""
         return form_class(self.request, **self.get_form_kwargs())
+
+    def form_invalid(self, form):
+        context = super(ModalFormView, self).get_context_data()
+        context = self._populate_context(context)
+        context['form'] = form
+        return self.render_to_response(context)
 
     def form_valid(self, form):
         try:

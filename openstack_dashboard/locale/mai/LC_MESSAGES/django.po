@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-16 02:16+0000\n"
+"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-05-24 18:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,103 +13,6 @@ msgstr ""
 "Language: mai\n"
 "X-Generator: Zanata 3.7.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-#, python-format
-msgid ""
-"\n"
-"            <a href=\"%(volume_url)s\">%(volume_label)s</a> on "
-"%(volume_device)s\n"
-"            "
-msgstr ""
-"\n"
-"            %(volume_device)s पर <a href=\"%(volume_url)s\">"
-"%(volume_label)s</a> \n"
-"            "
-
-#, python-format
-msgid ""
-"\n"
-"        Other IPv6 modes: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode="
-"%(addr_mode)s\n"
-"        "
-msgstr ""
-"\n"
-"        आन IPv6 मोड: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode="
-"%(addr_mode)s\n"
-"        "
-
-msgid ""
-"\n"
-"      Volume type is a type or label that can be selected at volume "
-"creation\n"
-"      time in OpenStack. It usually maps to a set of capabilities of the "
-"storage\n"
-"      back-end driver to be used for this volume. Examples: \"Performance"
-"\",\n"
-"      \"SSD\", \"Backup\", etc. This is equivalent to the\n"
-"      <tt>cinder type-create</tt> command. Once the volume type gets "
-"created,\n"
-"      click the \"View Extra Specs\" button to set up extra specs key-value\n"
-"      pair(s) for that volume type.\n"
-"     "
-msgstr ""
-"\n"
-"      वाल्यूम प्रकार एकगोट टाइप या लेबल होइछ जे जकरा वाल्यूम निर्माण समय पर चुनल "
-"जाइछ\n"
-"      ओपनस्टैक मे. ई भंडारणक वैकेंड ड्राइवर क्षमताक सेट करबामे मैप कएल जाइछ\n"
-"      जकरा इ वाल्यूमक लेल प्रयोग कएल जाए. उदाहरण: \"Performance\",\n"
-"      \"SSD\", \"Backup\", etc. This is equivalent to the\n"
-"      <tt>cinder type-create</tt> command. Once the volume type gets "
-"created,\n"
-"      click the \"View Extra Specs\" button to set up extra specs key-value\n"
-"      pair(s) for that volume type.\n"
-"     "
-
-msgid ""
-"\n"
-"    Each QoS Specs entity will have a \"Consumer\" value which indicates "
-"where the\n"
-"    administrator would like the QoS policy to be enforced. This value can "
-"be \"front-end\"\n"
-"    (Nova Compute), \"back-end\" (Cinder back-end), or \"both\".\n"
-"    "
-msgstr ""
-"\n"
-"    प्रत्येक QoS विनिर्देश एकाइ मे एकटा \"Consumer\" मान हाएत जे ई देखाबैत अछि जे\n"
-"    व्यवस्थापक QoS नीति केँ कतए लागू कएनाइ चाहैत अछि. ई मान \"front-end\"\n"
-"    (Nova Compute), \"back-end\" (Cinder back-end), अथवा \"both\" भ' सकैत "
-"अछि.\n"
-"    "
-
-msgid ""
-"\n"
-"    The status of a volume is normally managed automatically.  In some "
-"circumstances an\n"
-"    administrator may need to explicitly update the status value.  This is "
-"equivalent to\n"
-"    the <tt>cinder reset-state</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"    वाल्यूमक स्थिति अपने प्रबंधित कएल जाइछ सामान्यतः. किछु स्थिति मे\n"
-"    प्रशासककेँ स्थिित मानकेँ विशेष रूपेँ अद्यतन करबाक जरूरत होइछ.  ई\n"
-"    <tt>cinder reset-state</tt> कमांडक बराबर होइछ.\n"
-"    "
-
-msgid ""
-"\n"
-"    The status of a volume snapshot is normally managed automatically.  In "
-"some circumstances\n"
-"    an administrator may need to explicitly update the status value. This is "
-"equivalent to\n"
-"    the <tt>cinder snapshot-reset-state</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"    वाल्यूम स्नैपशाटक स्थिति अपने प्रबंधित होइछ.  किछु स्थितिमे\n"
-"    प्रशासककेँ स्थिति मानकेँ विशेष रूपेँ अद्यतन करबाक जरूरत होइछ. ई\n"
-"    <tt>cinder snapshot-reset-state</tt> कमांडक बराबर होइछ.\n"
-"    "
 
 msgid " - End"
 msgstr " - अंत"
@@ -930,14 +833,6 @@ msgstr ""
 "मोजुद संजाल सँ पुश बटन अथवा खींचू आओर ड्रॉप द्वारा चयनित संजाल क लेल संजाल चुनू, अहाँ केँ "
 "खींच द्वारा एनआईसी क्रम बदैल सकैत छी आओर सँग  सँग छोड़ सकैत अछि."
 
-msgid ""
-"Choose rule(s) from Available Rules to Selected Rule by push button or drag "
-"and drop,\n"
-"you may change their order by drag and drop as well. "
-msgstr ""
-"पुश बटन अथवा खींचू आओर ड्रॉप द्वारा चयनित नियम केँ मोजुद नियम सँ नियम चुनू, \n"
-" अहाँ केँ खींच द्वारा ओकर आदेश केँ बदैल सकैत छी आओर सँग  सँग छोड़ देत अछि."
-
 msgid "Choose the flavor to launch."
 msgstr "लांच करबाक लेल फ्लेवर चुनू."
 
@@ -1752,10 +1647,6 @@ msgstr "EC2 पहचान डाउनलोड करू"
 msgid "Download Key Pair"
 msgstr "कुँजी युग्म डाउनलोड करू"
 
-#, python-format
-msgid "Download key pair &quot;%(keypair_name)s&quot;"
-msgstr "&quot;%(keypair_name)s&quot; कुँजी युग्म डाउनलोड करू"
-
 msgid "EC2 Access Key"
 msgstr "EC2 पहुँच कुँजी"
 
@@ -2414,10 +2305,6 @@ msgstr "उत्प्लावित IP"
 msgid "Folder created successfully."
 msgstr "फोल्डर सफलतापूर्वक बनैलक."
 
-#, python-format
-msgid "For GRE networks, valid tunnel IDs are %(min)s through %(max)s."
-msgstr "GRE संजाल क लेल मान्य टनेल IDs %(min)s सँ लेकर %(max)s तक अछि."
-
 msgid ""
 "For TCP and UDP rules you may choose to open either a single port or a range "
 "of ports. Selecting the \"Port Range\" option will provide you with space to "
@@ -2428,27 +2315,6 @@ msgstr ""
 "चुन सकैत अछि. \"पोर्ट सीमा\" विकल्प चुनब श्रृंखला क लेल दुनू प्रारंभिक आओर अंतिम पोर्ट "
 "प्रदान करबाक लेल स्थान प्रदान कएल गेल छी . ICMP नियम क लेल अहाँ क बजाय रिक्त स्थान मे "
 "एकटा ICMP प्रकार आओर कोड निर्दिष्ट करू."
-
-#, python-format
-msgid ""
-"For VLAN networks, the VLAN VID on the physical network that realizes the "
-"virtual network. Valid VLAN VIDs are %(vlan_min)s through %(vlan_max)s. For "
-"GRE or VXLAN networks, the tunnel ID. Valid tunnel IDs for GRE networks are "
-"%(gre_min)s through %(gre_max)s. For VXLAN networks, %(vxlan_min)s through "
-"%(vxlan_max)s."
-msgstr ""
-"VLAN संजालक लेल, फिजिकल संजाल पर VLAN VID जे वर्चुअल संजालक सामना करैछ. वैध VLAN VIDs "
-"अछि %(vlan_min)s through %(vlan_max)s. GRE अथवा VXLAN संजालक लेल, टनल ID. GRE "
-"संजाल अछि %(gre_min)s %(gre_max)s सँ. VXLAN संजालक लेल, %(vxlan_min)s "
-"%(vxlan_max)s सँ."
-
-#, python-format
-msgid "For VLAN networks, valid VLAN IDs are %(min)s through %(max)s."
-msgstr "VLAN संजाल क लेल मान्य VLAN IDs %(min)s सँ लेकर %(max)s तक अछि."
-
-#, python-format
-msgid "For VXLAN networks, valid tunnel IDs are %(min)s through %(max)s."
-msgstr "VXLAN संजाल क लेल मान्य टनेल IDs %(min)s सँ लेकर %(max)s तक अछि."
 
 msgid "Forbidden"
 msgstr "निषेध"
@@ -2914,9 +2780,6 @@ msgstr "इंस्टांस कँसोल"
 msgid "Instance Console Log"
 msgstr "इंस्टांस कँसोल लाग"
 
-msgid "Instance Count"
-msgstr "इंस्टांस गणना"
-
 msgid "Instance ID"
 msgstr "इंस्टैंस आईडी"
 
@@ -3082,10 +2945,6 @@ msgstr "ई संजाल क सँग इंस्टेंस लान्�
 
 msgid "Launch instance with this policy profile"
 msgstr "ई नीति प्रोफाइल क सँग इंस्टेंस लान्च करू"
-
-#, python-format
-msgid "Launched %(count)s named \"%(name)s\"."
-msgstr " %(count)s \"%(name)s\" नामित शुभारंभ कएल."
 
 msgid ""
 "Launching multiple instances is only supported for images and instance "
@@ -3691,9 +3550,6 @@ msgstr "वीएम अंतरफलक क लेल सँजाल पर 
 msgid "Number of incoming packets for a VM interface"
 msgstr "वीएम अंतरफलक क लेल आबै बला पैकेट क संख्या"
 
-msgid "Number of instances to launch."
-msgstr "लान्च करबाक लेल अनेक इंस्टैंस"
-
 msgid "Number of objects"
 msgstr "वस्तु क संख्या"
 
@@ -4194,9 +4050,6 @@ msgstr ""
 "इसी भार क प्रयोग सबहि चयनित सदस्य क लेल कएल जएताह आओर एकरा बाद मे संशोधित कएल जाए "
 "सकैत अछि. भार 1 सँ 256 तक क श्रेणी मे होनाइ चाही."
 
-msgid "Reload"
-msgstr "फिनु लोड करू"
-
 msgid "Remote"
 msgstr "दूरस्थ"
 
@@ -4453,10 +4306,6 @@ msgstr " \"%s\" बाइली विनिर्देश सहेजलक."
 msgid "Saved spec \"%s\"."
 msgstr "स्पेक \"%s\" सहेजलक."
 
-#, python-format
-msgid "Scheduled resize of instance \"%s\"."
-msgstr "इंस्टेंस \"%s\" क अनुसूचित आकार परिवर्तन."
-
 msgctxt "Task status of an Instance"
 msgid "Scheduling"
 msgstr "समय-सारणी"
@@ -4561,9 +4410,6 @@ msgstr "कुँजी युग्म चुनू"
 #, python-format
 msgid "Select a monitor template for %s"
 msgstr " %s क लेल एकटा निगरानी नमूना क चयन करू"
-
-msgid "Select a name for your network."
-msgstr "अपन संजाल क लेल नाम क चयन करू."
 
 msgid "Select a new agent"
 msgstr " नवएजेंट चयन करू"
@@ -5023,13 +4869,6 @@ msgstr "QoS विनिर्देश उपभोक्ता केँ स�
 
 #, python-format
 msgid ""
-"Successfully restored backup %(backup_name)s to volume with id: %(volume_id)s"
-msgstr ""
-"बैकअप %(backup_name)s केँ आईडी क सँग वाल्यूम मे सफलतापूर्वक पुनर्स्थापित कएल गेल: "
-"%(volume_id)s"
-
-#, python-format
-msgid ""
 "Successfully sent the request to change the volume type to \"%(vtype)s\" for "
 "volume: \"%(name)s\""
 msgstr ""
@@ -5244,14 +5083,6 @@ msgstr "इंस्टेंस मेजबान \"%s\" कलेल ला�
 
 msgid "The instance password encrypted with your public key."
 msgstr "अहाँक सार्वजनिक कुँजी क सँग एन्क्रिप्टेड इंस्टेंस गुड़किल्ली."
-
-#, python-format
-msgid ""
-"The key pair &quot;%(keypair_name)s&quot; should download automatically. If "
-"not use the link below."
-msgstr ""
-"कुँजी युग्म &quot;%(keypair_name)s&quot; स्वतः डाउनलोड भ' जएताह. जँ नहि, तँ नीच्चाँ "
-"देल गेल लिंक क उपयोग करू."
 
 msgid ""
 "The minimum disk size required to boot the image. If unspecified, this value "
@@ -6710,14 +6541,6 @@ msgstr "मान (औसत)"
 msgid "Value:"
 msgstr "मूल्य:"
 
-#, python-format
-msgid ""
-"Version: %(version_info)s\n"
-"      "
-msgstr ""
-"संस्करण: %(version_info)s\n"
-"      "
-
 msgid "View Container"
 msgstr "कंटेनर देखू "
 
@@ -6892,9 +6715,6 @@ msgstr ""
 "अहाँ वांछित नियम नमूना निर्दिष्ट अथवा मनपसिन्न नियम क उपयोग कए सकैत अछि, विकल्प "
 "मनपसिन्न टीसीपी नियम, मनपसिन्न यूडीपी नियम, अथवा मनपसिन्न ICMP नियम अछि."
 
-msgid "You cannot disable the user you are currently logged in as."
-msgstr "अहाँ वर्तमान क रूपेँ लाग ई कए रहल प्रयोक्ता केँ निष्क्रिय नहि कएल जाए सकैत अछि."
-
 msgid ""
 "You cannot revoke your administrative privileges from the domain you are "
 "currently logged into. Please switch to another domain with administrative "
@@ -7040,9 +6860,6 @@ msgstr "दुनू"
 
 msgid "clear"
 msgstr "साफ करू"
-
-msgid "console is currently unavailable. Please try again later."
-msgstr "कँसोल वर्तमान मे अनुपलब्ध अछि. बाद मे फिनु प्रयास करू."
 
 msgid "disabled"
 msgstr "निष्क्रिय"

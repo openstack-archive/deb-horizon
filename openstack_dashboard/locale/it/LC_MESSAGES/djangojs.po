@@ -1,12 +1,12 @@
 # Alessandra <alessandra@translated.net>, 2015. #zanata
 # Mattia Gandolfi <mgandolf@redhat.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
-# Alessandra <alessandra@translated.net>, 2016. #zanata
+# Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-18 21:42+0000\n"
+"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-05-24 18:48+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,10 +19,6 @@ msgstr ""
 
 msgid "#"
 msgstr "#"
-
-#, python-format
-msgid "%(name)s deleted."
-msgstr "%(name)s eliminato."
 
 #, python-format
 msgid "%s instance launched."
@@ -53,60 +49,6 @@ msgstr "6"
 
 msgid "7"
 msgstr "7"
-
-msgid "8"
-msgstr "8"
-
-msgid ""
-"<button></button>\n"
-"          <strong>Heads up!</strong>\n"
-"           This\n"
-"          <a>alert needs your attention</a>,\n"
-"           but it's not super important."
-msgstr ""
-"<button></button>\n"
-"          <strong>Attenzione!</strong>\n"
-"           Questo\n"
-"          <a>avviso richiede attenzione</a>,\n"
-"           ma non è eccessivamente importante."
-
-msgid ""
-"<button></button>\n"
-"          <strong>Oh snap!</strong>\n"
-"          <a>Change a few things up</a>\n"
-"          and try submitting again."
-msgstr ""
-"<button></button>\n"
-"          <strong>Istantanea!</strong>\n"
-"          <a>Modificare alcuni elementi</a>\n"
-"          e provare a inserirli di nuovo."
-
-msgid ""
-"<button></button>\n"
-"          <strong>Well done!</strong>\n"
-"          You successfully read\n"
-"          <a>this important alert message</a>."
-msgstr ""
-"<button></button>\n"
-"          <strong>Ben fatto!</strong>\n"
-"          Questo importante messaggio di avviso\n"
-"          <a>è stato letto correttamente</a>."
-
-msgid ""
-"<input>\n"
-"                Public</input>"
-msgstr ""
-"<input>\n"
-"                Pubblico</input>"
-
-msgid ""
-"<input>\n"
-"        Configuration Drive\n"
-"      </input>"
-msgstr ""
-"<input>\n"
-"        Unità di configurazione\n"
-"      </input>"
 
 msgid ""
 "<li><b>Image (with Create New Volume checked)</b>: This options uses an "
@@ -155,29 +97,6 @@ msgstr ""
 msgid "<small>This line of text is meant to be treated as fine print.</small>"
 msgstr ""
 "<small>Questa riga di testo deve essere considerata come stampa.</small>"
-
-msgid ""
-"A container is a storage compartment for your data and provides a way\n"
-"          for you to organize your data. You can think of a container as a\n"
-"          folder in Windows or a directory in UNIX. The primary difference\n"
-"          between a container and these other file system concepts is that\n"
-"          containers cannot be nested. You can, however, create an "
-"unlimited\n"
-"          number of containers within your account. Data must be stored in "
-"a\n"
-"          container so you must have at least one container defined in your\n"
-"          account prior to uploading data."
-msgstr ""
-"Un contenitore è una parte di archivio per i propri dati e fornisce\n"
-"un modo per organizzare i dati. È possibile considerare un\n"
-"contenitore come una cartella in Windows o una directory in UNIX.\n"
-"La differenza principale tra un contenitore e questi altri concetti\n"
-"di file system è che i contenitori non possono essere\n"
-"concatenati. È possibile, tuttavia, creare un numero illimitato di "
-"contenitori nel\n"
-"proprio account. I dati devono essere archiviati in un contenitore in modo "
-"da\n"
-"avere almeno un contenitore definito nell'account prima di caricare i dati."
 
 msgid ""
 "A floating IP allows instances to be addressable from an external network.\n"
@@ -289,9 +208,6 @@ msgstr ""
 "    È possibile utilizzare la <b>Topologia di rete</b> per collegare il "
 "router alle due reti."
 
-msgid "An abbreviation of the word attribute is <abbr>attr</abbr>."
-msgstr "Un'abbreviazione della parola attributo è  <abbr>attr</abbr>."
-
 msgid ""
 "An advanced option available when launching an instance is disk "
 "partitioning. There are two disk partition options. Selecting <b>Automatic</"
@@ -319,14 +235,6 @@ msgstr "Un'altra azione"
 
 msgid "Architecture"
 msgstr "Architettura"
-
-#, python-format
-msgid "Are you sure you want to delete %(name)s?"
-msgstr "Eliminare %(name)s?"
-
-#, python-format
-msgid "Are you sure you want to delete %(numSelected)s files?"
-msgstr "Eliminare %(numSelected)s file?"
 
 #, python-format
 msgid "Are you sure you want to delete container %(name)s?"
@@ -398,13 +306,6 @@ msgstr "Casella di spunta"
 msgid "Checksum"
 msgstr "Checksum"
 
-msgid ""
-"Clear Selection\n"
-"            <span>{$ oc.numSelected $}</span>"
-msgstr ""
-"Cancella selezione\n"
-"            <span>{$ oc.numSelected $}</span>"
-
 msgid "Click to see more details"
 msgstr "Fare clic per visualizzare ulteriori dettagli"
 
@@ -467,13 +368,6 @@ msgstr "Tipo di contenuto"
 msgid "Contextual alternatives"
 msgstr "Alternative contestuali"
 
-msgid ""
-"Count\n"
-"          <span></span>"
-msgstr ""
-"Conteggio\n"
-"          <span></span>"
-
 msgid "Create"
 msgstr "Crea"
 
@@ -482,13 +376,6 @@ msgstr "Crea contenitore"
 
 msgid "Create Folder"
 msgstr "Crea cartella"
-
-msgid ""
-"Create Folder In: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
-msgstr ""
-"Crea cartella in: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
 
 msgid "Create Key Pair"
 msgstr "Crea coppia di chiavi"
@@ -594,9 +481,6 @@ msgid_plural "Deleted Images: %s."
 msgstr[0] "Immagine eliminata: %s."
 msgstr[1] "Immagini eliminate: %s."
 
-msgid "Deleted."
-msgstr "Eliminato."
-
 msgid "Deleting"
 msgstr "Eliminazione"
 
@@ -690,9 +574,6 @@ msgstr "Estensione non abilitata: %(extension)s."
 
 msgid "External Network"
 msgstr "Rete esterna"
-
-msgid "Failed to delete."
-msgstr "Impossibile eliminare."
 
 msgid "File"
 msgstr "File"
@@ -889,13 +770,6 @@ msgstr "Input riuscito"
 msgid "Input warning"
 msgstr "Avvertenza input"
 
-msgid ""
-"Instance Name\n"
-"          <span></span>"
-msgstr ""
-"Nome istanza\n"
-"          <span></span>"
-
 msgid "Instance Snapshot"
 msgstr "Istantanea dell'istanza"
 
@@ -903,17 +777,6 @@ msgid "Instance count is required and must be an integer of at least 1"
 msgstr ""
 "Il numero di istanze è obbligatorio e deve essere un numero intero superiore "
 "a 1"
-
-msgid ""
-"Instance source is the template used to create an instance. You can use a "
-"snapshot of an existing instance, an image, or a volume (if enabled).\n"
-"      You can also choose to use persistent storage by creating a new volume."
-msgstr ""
-"L'origine dell'istanza è il template utilizzato per creare un'istanza. È "
-"possibile utilizzare un'istantanea di un'istanza esistente, un'immagine o un "
-"volume (se abilitato). \n"
-"È inoltre possibile scegliere di utilizzare la memoria persistente creando "
-"un nuovo volume."
 
 msgid "Insufficient privilege level to view user information."
 msgstr "Privilegi insufficienti per visualizzare le informazioni utente"
@@ -926,13 +789,6 @@ msgstr "ID kernel"
 
 msgid "Key Pair"
 msgstr "Coppia di chiavi"
-
-msgid ""
-"Key Pair Name\n"
-"        <span></span>"
-msgstr ""
-"Nome coppia di chiavi\n"
-"        <span></span>"
 
 msgid "Key Pairs"
 msgstr "Coppie di chiavi"
@@ -1049,17 +905,11 @@ msgstr "Definizioni di metadati"
 msgid "Middle"
 msgstr "Centro"
 
-msgid "Min Disk"
-msgstr "Disco min"
-
 msgid "Min Disk (GB)"
 msgstr "Disco min (GB)"
 
 msgid "Min Port"
 msgstr "Porta min"
-
-msgid "Min RAM"
-msgstr "RAM min"
 
 msgid "Min RAM (MB)"
 msgstr "RAM min (MB)"
@@ -1356,13 +1206,6 @@ msgstr "Accesso pubblico"
 msgid "Public Key"
 msgstr "Chiave pubblica"
 
-msgid ""
-"Public Key\n"
-"        <span></span>"
-msgstr ""
-"Chiave pubblica\n"
-"        <span></span>"
-
 msgid "QCOW2"
 msgstr "QCOW2"
 
@@ -1494,12 +1337,6 @@ msgstr "Seleziona"
 
 msgid "Separated link"
 msgstr "Link separato"
-
-msgid "Server"
-msgstr "Server"
-
-msgid "Servers"
-msgstr "Server"
 
 #, python-format
 msgid "Service type is not enabled: %(desiredType)s"
@@ -1736,14 +1573,6 @@ msgstr "Ora"
 
 msgid "Timestamp"
 msgstr "Data/ora"
-
-msgid ""
-"To view source code, hover over a section, then click the <a><span></span></"
-"a> button in the top right of that section."
-msgstr ""
-"Per visualizzare il codice di origine, posizionare il puntatore del mouse su "
-"una sezione e quindi fare clic sul pulsante <a><span></span></a> in alto a "
-"destra in quella sezione."
 
 msgid "Tooltips"
 msgstr "Suggerimenti"
@@ -2113,13 +1942,6 @@ msgstr "Data aggiornamento"
 msgid "Upload File"
 msgstr "Carica file"
 
-msgid ""
-"Upload File To: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
-msgstr ""
-"Carica file in: {$ ctrl.model.container.name $}\n"
-"    <span>: {$ ctrl.model.folder $}</span>"
-
 msgid "Uploading"
 msgstr "Caricamento"
 
@@ -2183,13 +2005,6 @@ msgstr "Dettagli del volume"
 
 msgid "Volume Quota"
 msgstr "Quota volume"
-
-msgid ""
-"Volume Size (GB)\n"
-"              <span></span>"
-msgstr ""
-"Dimensione volume (GB)\n"
-"              <span></span>"
 
 msgid "Volume Snapshot"
 msgstr "Istantanea del volume"

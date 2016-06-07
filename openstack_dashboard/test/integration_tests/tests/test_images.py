@@ -10,17 +10,39 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from openstack_dashboard.test.integration_tests import decorators
 from openstack_dashboard.test.integration_tests import helpers
 from openstack_dashboard.test.integration_tests.regions import messages
 
-IMAGE_NAME = helpers.gen_random_resource_name("image")
-
 
 class TestImagesBasic(helpers.TestCase):
+    """Login as demo user"""
+    IMAGE_NAME = helpers.gen_random_resource_name("image")
 
     @property
     def images_page(self):
         return self.home_pg.go_to_compute_imagespage()
+
+    def image_create(self, local_file=None):
+        images_page = self.images_page
+        if local_file:
+            images_page.create_image(self.IMAGE_NAME,
+                                     image_source_type='file',
+                                     image_file=local_file)
+        else:
+            images_page.create_image(self.IMAGE_NAME)
+        self.assertTrue(images_page.find_message_and_dismiss(messages.INFO))
+        self.assertFalse(images_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(images_page.is_image_present(self.IMAGE_NAME))
+        self.assertTrue(images_page.is_image_active(self.IMAGE_NAME))
+        return images_page
+
+    def image_delete(self):
+        images_page = self.images_page
+        images_page.delete_image(self.IMAGE_NAME)
+        self.assertTrue(images_page.find_message_and_dismiss(messages.SUCCESS))
+        self.assertFalse(images_page.find_message_and_dismiss(messages.ERROR))
+        self.assertFalse(images_page.is_image_present(self.IMAGE_NAME))
 
     def test_image_create_delete(self):
         """tests the image creation and deletion functionalities:
@@ -29,18 +51,20 @@ class TestImagesBasic(helpers.TestCase):
         * deletes the newly created image
         * verifies the image does not appear in the table after deletion
         """
-        images_page = self.images_page
+        self.image_create()
+        self.image_delete()
 
-        images_page.create_image(IMAGE_NAME)
-        self.assertTrue(images_page.find_message_and_dismiss(messages.SUCCESS))
-        self.assertFalse(images_page.find_message_and_dismiss(messages.ERROR))
-        self.assertTrue(images_page.is_image_present(IMAGE_NAME))
-        self.assertTrue(images_page.is_image_active(IMAGE_NAME))
-
-        images_page.delete_image(IMAGE_NAME)
-        self.assertTrue(images_page.find_message_and_dismiss(messages.SUCCESS))
-        self.assertFalse(images_page.find_message_and_dismiss(messages.ERROR))
-        self.assertFalse(images_page.is_image_present(IMAGE_NAME))
+    def test_image_create_delete_from_local_file(self):
+        """tests the image creation and deletion functionalities:
+        * downloads image from horizon.conf stated in http_image
+        * creates the image from the downloaded file
+        * verifies the image appears in the images table as active
+        * deletes the newly created image
+        * verifies the image does not appear in the table after deletion
+        """
+        with helpers.gen_temporary_file() as file_name:
+            self.image_create(local_file=file_name)
+            self.image_delete()
 
     def test_images_pagination(self):
         """This test checks images pagination
@@ -94,9 +118,73 @@ class TestImagesBasic(helpers.TestCase):
         settings_page.change_pagesize()
         settings_page.find_message_and_dismiss(messages.SUCCESS)
 
+    def test_update_image_metadata(self):
+        """Test update image metadata
+        * logs in as admin user
+        * creates image from locally downloaded file
+        * verifies the image appears in the images table as active
+        * invokes action 'Update Metadata' for the image
+        * adds custom filed 'metadata'
+        * adds value 'image' for the custom filed 'metadata'
+        * gets the actual description of the image
+        * verifies that custom filed is present in the image description
+        * deletes the image
+        * verifies the image does not appear in the table after deletion
+        """
+        new_metadata = {'metadata1': helpers.gen_random_resource_name("value"),
+                        'metadata2': helpers.gen_random_resource_name("value")}
+
+        with helpers.gen_temporary_file() as file_name:
+            images_page = self.image_create(local_file=file_name)
+            images_page.add_custom_metadata(self.IMAGE_NAME, new_metadata)
+            results = images_page.check_image_details(self.IMAGE_NAME,
+                                                      new_metadata)
+            self.image_delete()
+            self.assertSequenceTrue(results)  # custom matcher
+
+    def test_remove_protected_image(self):
+        """tests that protected image is not deletable
+        * logs in as admin user
+        * creates image from locally downloaded file
+        * verifies the image appears in the images table as active
+        * marks 'Protected' checkbox
+        * verifies that edit action was successful
+        * verifies that delete action is not available in the list
+        * tries to delete the image
+        * verifies that exception is generated for the protected image
+        * unmarks 'Protected' checkbox
+        * deletes the image
+        * verifies the image does not appear in the table after deletion
+        """
+        with helpers.gen_temporary_file() as file_name:
+            images_page = self.image_create(local_file=file_name)
+            images_page.edit_image(self.IMAGE_NAME, protected=True)
+            self.assertTrue(
+                images_page.find_message_and_dismiss(messages.SUCCESS))
+
+            # Check that Delete action is not available in the action list.
+            # The below action will generate exception since the bind fails.
+            # But only ValueError with message below is expected here.
+            with self.assertRaisesRegexp(ValueError, 'Could not bind method'):
+                images_page.delete_image_via_row_action(self.IMAGE_NAME)
+
+            # Try to delete image. That should not be possible now.
+            images_page.delete_image(self.IMAGE_NAME)
+            self.assertFalse(
+                images_page.find_message_and_dismiss(messages.SUCCESS))
+            self.assertTrue(
+                images_page.find_message_and_dismiss(messages.ERROR))
+            self.assertTrue(images_page.is_image_present(self.IMAGE_NAME))
+
+            images_page.edit_image(self.IMAGE_NAME, protected=False)
+            self.assertTrue(
+                images_page.find_message_and_dismiss(messages.SUCCESS))
+            self.image_delete()
+
 
 class TestImagesAdvanced(helpers.TestCase):
     """Login as demo user"""
+    IMAGE_NAME = helpers.gen_random_resource_name("image")
 
     @property
     def images_page(self):
@@ -167,3 +255,33 @@ class TestImagesAdmin(helpers.AdminTestCase, TestImagesBasic):
     @property
     def images_page(self):
         return self.home_pg.go_to_system_imagespage()
+
+    @decorators.skip_because(bugs=['1584057'])
+    def test_image_create_delete(self):
+        super(TestImagesAdmin, self).test_image_create_delete()
+
+    def test_filter_images(self):
+        """This test checks filtering of images
+            Steps:
+            1) Login to Horizon dashboard as admin user
+            2) Go to Admin -> System -> Images
+            3) Use filter by Image Name
+            4) Check that filtered table has one image only (which name is
+            equal to filter value)
+            5) Check that no other images in the table
+            6) Clear filter and set nonexistent image name. Check that 0 rows
+            are displayed
+        """
+        images_list = self.CONFIG.image.images_list
+        images_page = self.images_page
+
+        images_page.images_table.filter(images_list[0])
+        self.assertTrue(images_page.is_image_present(images_list[0]))
+        for image in images_list[1:]:
+            self.assertFalse(images_page.is_image_present(image))
+
+        nonexistent_image_name = "{0}_test".format(self.IMAGE_NAME)
+        images_page.images_table.filter(nonexistent_image_name)
+        self.assertEqual(images_page.images_table.rows, [])
+
+        images_page.images_table.filter('')

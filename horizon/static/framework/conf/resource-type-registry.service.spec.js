@@ -34,6 +34,10 @@
       expect(service).toBeDefined();
     });
 
+    it('establishes detailsViews on a resourceType object', function() {
+      expect(service.getResourceType('something').detailsViews).toBeDefined();
+    });
+
     it('init calls initScope on item and batch actions', function() {
       var action = { service: { initScope: angular.noop } };
       spyOn(action.service, 'initScope');
@@ -57,26 +61,30 @@
       });
 
       it('returns a new resource type object', function() {
-        var value = service.getResourceType('something', {here: "I am"});
+        var value = service.getResourceType('something');
         expect(value).toBeDefined();
       });
 
-      it('takes the given properties', function() {
-        var value = service.getResourceType('something', {here: "I am"});
-        expect(value.here).toEqual('I am');
-      });
-
       it('has an setProperty function', function() {
-        var value = service.getResourceType('something', {here: "I am"});
+        var value = service.getResourceType('something');
         expect(value.setProperty).toBeDefined();
       });
 
-      it('can be called multiple times, overlaying values', function() {
-        var value = service.getResourceType('something', {here: "I am"});
-        service.getResourceType('something', {another: "Thing"});
-        expect(value.here).toBe('I am');
-        expect(value.another).toBe('Thing');
+      it('can be called multiple times', function() {
+        var value = service.getResourceType('something');
+        var value2 = service.getResourceType('something');
+        expect(value).toBe(value2);
       });
+    });
+
+    it('get/setDefaultDetailsTemplateUrl sets/retrieves a URL', function() {
+      service.setDefaultDetailsTemplateUrl('/my/path.html');
+      expect(service.getDefaultDetailsTemplateUrl()).toBe('/my/path.html');
+    });
+
+    it('get/setDefaultSummaryTemplateUrl sets/retrieves a URL', function() {
+      service.setDefaultSummaryTemplateUrl('/my/path.html');
+      expect(service.getDefaultSummaryTemplateUrl()).toBe('/my/path.html');
     });
 
     describe('label', function() {
@@ -152,29 +160,146 @@
       });
     });
 
+    it("sets and retrieves slugs", function() {
+      service.setSlug('image', 'OS::Glance::Image');
+      expect(service.getTypeNameBySlug('image')).toBe('OS::Glance::Image');
+    });
+
     describe('getName', function() {
       it('returns nothing if names not provided', function() {
-        var type = service.getResourceType('something', {});
+        var type = service.getResourceType('something');
         expect(type.getName(2)).toBeUndefined();
       });
 
       it('returns plural if count not provided', function() {
-        var type = service.getResourceType('something',
-          {names: ['Name', 'Names']});
+        var type = service.getResourceType('something')
+          .setNames('Name', 'Names');
         expect(type.getName()).toBe('Names');
       });
 
       it('returns singular if given one', function() {
-        var type = service.getResourceType('something', {names: ["Image", "Images"]});
+        var type = service.getResourceType('something')
+          .setNames("Image", "Images");
         expect(type.getName(1)).toBe('Image');
       });
 
       it('returns plural if given two', function() {
-        var type = service.getResourceType('something', {names: ["Image", "Images"]});
+        var type = service.getResourceType('something')
+          .setNames("Image", "Images");
         expect(type.getName(2)).toBe('Images');
       });
     });
 
-  });
+    it('manages the tableColumns', function() {
+      var type = service.getResourceType('something');
+      type.tableColumns.push({id: "im-an-id"});
+      type.tableColumns.push({title: "im-a-title"});
+      expect(type.getTableColumns()).toEqual([{id: "im-an-id", title: "im-an-id"},
+        {title: "im-a-title"}]);
+    });
 
+    it('manages the globalActions', function() {
+      var typeA = service.getResourceType('a');
+      var typeB = service.getResourceType('b');
+      typeA.globalActions.push({id: "action-a"});
+      typeB.globalActions.push({id: "action-b"});
+      expect(service.getGlobalActions()).toEqual([{id: "action-a"}, {id: "action-b"}]);
+    });
+
+    describe('functions the resourceType object', function() {
+      var type;
+      beforeEach(function() {
+        type = service.getResourceType('something');
+      });
+
+      it("sets a default path generator", function() {
+        expect(type.pathGenerator('hello')).toBe('hello');
+      });
+
+      it("default load function returns a promise", function() {
+        expect(type.loadFunction()).toBeDefined();
+      });
+
+      it("allows setting a list function", function() {
+        function list() {
+          return 'this would be a promise';
+        }
+        type.setListFunction(list);
+        expect(type.listFunction()).toBe('this would be a promise');
+      });
+
+      it("allows setting of a summary template URL", function() {
+        type.setSummaryTemplateUrl('/my/path.html');
+        expect(type.summaryTemplateUrl).toBe('/my/path.html');
+        expect(type.setSummaryTemplateUrl('/what')).toBe(type);
+      });
+
+      it('itemName defaults to returning the name of an item', function() {
+        var item = {name: 'MegaMan'};
+        expect(type.itemName(item)).toBe('MegaMan');
+      });
+
+      it('setItemNameFunction supplies a function for interpreting names', function() {
+        var item = {name: 'MegaMan'};
+        var func = function(x) { return 'Mr. ' + x.name; };
+        type.setItemNameFunction(func);
+        expect(type.itemName(item)).toBe('Mr. MegaMan');
+      });
+
+      it("pathParser return has resourceTypeCode embedded", function() {
+        expect(type.parsePath('abcd').resourceTypeCode).toBe('something');
+      });
+
+      it("pathParser defaults to using the full path as the id", function() {
+        expect(type.parsePath('abcd').identifier).toBe('abcd');
+      });
+
+      it("setPathParser sets the function for parsing the path", function() {
+        var func = function(x) {
+          var y = x.split('/');
+          return {poolId: y[0], memberId: y[1]};
+        };
+        var expected = {
+          identifier: {poolId: '12', memberId: '42'},
+          resourceTypeCode: 'something'
+        };
+        type.setPathParser(func);
+        expect(type.parsePath('12/42')).toEqual(expected);
+      });
+
+      it("pathParser defaults to using the full path as the id", function() {
+        expect(type.parsePath('abcd').identifier).toBe('abcd');
+      });
+
+      it("setPathParser sets the function for parsing the path", function() {
+        var func = function(x) {
+          var y = x.split('/');
+          return {poolId: y[0], memberId: y[1]};
+        };
+        var expected = {
+          identifier: {poolId: '12', memberId: '42'},
+          resourceTypeCode: 'something'
+        };
+        type.setPathParser(func);
+        expect(type.parsePath('12/42')).toEqual(expected);
+      });
+
+      it('setPathGenerator sets the path identifier generator', function() {
+        var func = function(x) {
+          return x.poolId + '/' + x.memberId;
+        };
+        type.setPathGenerator(func);
+        var identifier = {poolId: '12', memberId: '42'};
+        expect(type.pathGenerator(identifier)).toBe('12/42');
+      });
+
+      it('setLoadFunction sets the function used by "load"', function() {
+        var api = {
+          loadMe: function() { return {an: 'object'}; }
+        };
+        type.setLoadFunction(api.loadMe);
+        expect(type.load()).toEqual({an: 'object'});
+      });
+    });
+  });
 })();

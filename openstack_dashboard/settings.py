@@ -48,8 +48,11 @@ WEBROOT = '/'
 LOGIN_URL = None
 LOGOUT_URL = None
 LOGIN_REDIRECT_URL = None
+MEDIA_ROOT = None
+MEDIA_URL = None
 STATIC_ROOT = None
 STATIC_URL = None
+INTEGRATION_TESTS_SUPPORT = False
 
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
@@ -71,7 +74,8 @@ HORIZON_CONFIG = {
     'js_files': [],
     'js_spec_files': [],
     'external_templates': [],
-    'plugins': []
+    'plugins': [],
+    'integration_tests_support': INTEGRATION_TESTS_SUPPORT
 }
 
 # Set to True to allow users to upload images to glance via Horizon server.
@@ -104,6 +108,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'horizon.middleware.OperationLogMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'horizon.middleware.HorizonMiddleware',
@@ -123,14 +128,14 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'openstack_dashboard.context_processors.openstack',
 )
 
-TEMPLATE_LOADERS = (
-    'horizon.themes.ThemeTemplateLoader',
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-        'horizon.loaders.TemplateLoader',
-    )),
-)
+TEMPLATE_LOADERS = ('horizon.themes.ThemeTemplateLoader',)
+
+CACHED_TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    'horizon.loaders.TemplateLoader',)
+
+ADD_TEMPLATE_LOADERS = []
 
 TEMPLATE_DIRS = (
     os.path.join(ROOT_PATH, 'templates'),
@@ -138,7 +143,7 @@ TEMPLATE_DIRS = (
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'horizon.contrib.staticfiles.finders.HorizonStaticFinder',
     'compressor.finders.CompressorFinder',
 )
 
@@ -287,10 +292,24 @@ THEME_COLLECTION_DIR = 'themes'
 # Theme Cookie Name
 THEME_COOKIE_NAME = 'theme'
 
+POLICY_CHECK_FUNCTION = None
+
+CSRF_COOKIE_AGE = None
+
+COMPRESS_OFFLINE_CONTEXT = 'horizon.themes.offline_context'
+
+# Notice all customizable configurations should be above this line
 try:
     from local.local_settings import *  # noqa
 except ImportError:
     logging.warning("No local_settings file found.")
+
+if DEBUG:
+    TEMPLATE_LOADERS += CACHED_TEMPLATE_LOADERS + tuple(ADD_TEMPLATE_LOADERS)
+else:
+    TEMPLATE_LOADERS += (
+        ('django.template.loaders.cached.Loader', CACHED_TEMPLATE_LOADERS),
+    ) + tuple(ADD_TEMPLATE_LOADERS)
 
 # allow to drop settings snippets into a local_settings_dir
 LOCAL_SETTINGS_DIR_PATH = os.path.join(ROOT_PATH, "local", "local_settings.d")
@@ -302,8 +321,13 @@ if os.path.exists(LOCAL_SETTINGS_DIR_PATH):
                     execfile(os.path.join(dirpath, filename))
                 except Exception as e:
                     logging.exception(
-                        "Can not exec settings snippet %s" % (filename))
+                        "Can not exec settings snippet %s" % filename)
 
+# The purpose of OPENSTACK_IMAGE_FORMATS is to provide a simple object
+# that does not contain the lazy-loaded translations, so the list can
+# be sent as JSON to the client-side (Angular).
+OPENSTACK_IMAGE_FORMATS = [fmt for (fmt, name)
+                           in OPENSTACK_IMAGE_BACKEND['image_formats']]
 
 if not WEBROOT.endswith('/'):
     WEBROOT += '/'
@@ -314,8 +338,11 @@ if LOGOUT_URL is None:
 if LOGIN_REDIRECT_URL is None:
     LOGIN_REDIRECT_URL = WEBROOT
 
-MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'media'))
-MEDIA_URL = WEBROOT + 'media/'
+if MEDIA_ROOT is None:
+    MEDIA_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'media'))
+
+if MEDIA_URL is None:
+    MEDIA_URL = WEBROOT + 'media/'
 
 if STATIC_ROOT is None:
     STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
@@ -376,8 +403,15 @@ settings.update_dashboards(
 )
 INSTALLED_APPS[0:0] = ADD_INSTALLED_APPS
 
-from openstack_auth import policy
-POLICY_CHECK_FUNCTION = policy.check
+
+def check(actions, request, target=None):
+    # Note(Itxaka): This is to prevent circular dependencies and apps not ready
+    # If you do django imports in your settings, you are gonna have a bad time
+    from openstack_auth import policy
+    return policy.check(actions, request, target=None)
+
+if POLICY_CHECK_FUNCTION is None:
+    POLICY_CHECK_FUNCTION = check
 
 # This base context objects gets added to the offline context generator
 # for each theme configured.
@@ -387,16 +421,5 @@ HORIZON_COMPRESS_OFFLINE_CONTEXT_BASE = {
     'HORIZON_CONFIG': HORIZON_CONFIG
 }
 
-COMPRESS_OFFLINE_CONTEXT = 'horizon.themes.offline_context'
-
 if DEBUG:
     logging.basicConfig(level=logging.DEBUG)
-
-# during django reloads and an active user is logged in, the monkey
-# patch below will not otherwise be applied in time - resulting in developers
-# appearing to be logged out.  In typical production deployments this section
-# below may be omitted, though it should not be harmful
-from openstack_auth import utils as auth_utils
-auth_utils.patch_middleware_get_user()
-
-CSRF_COOKIE_AGE = None

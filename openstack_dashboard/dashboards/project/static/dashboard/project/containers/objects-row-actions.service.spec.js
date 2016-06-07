@@ -21,15 +21,20 @@
     beforeEach(module('horizon.app.core.openstack-service-api'));
     beforeEach(module('horizon.framework'));
     beforeEach(module('horizon.dashboard.project'));
+
+    var $window = {location: {href: 'ham'}};
+
     beforeEach(module(function before($provide) {
       $provide.constant('horizon.dashboard.project.containers.basePath', '/base/path/');
+      $provide.value('$window', $window);
     }));
 
-    var rowActions, $rootScope, model;
+    var rowActions, $modal, $rootScope, model;
 
-    beforeEach(inject(function inject($injector, _$rootScope_) {
+    beforeEach(inject(function inject($injector, _$modal_, _$rootScope_) {
       rowActions = $injector.get('horizon.dashboard.project.containers.objects-row-actions');
       model = $injector.get('horizon.dashboard.project.containers.containers-model');
+      $modal = _$modal_;
       $rootScope = _$rootScope_;
     }));
 
@@ -67,17 +72,17 @@
       });
 
       it('should immediately return a URL from perform()', function test() {
-        expect(downloadService.perform({url: 'spam'})).toEqual('spam');
+        downloadService.perform({url: '/spam'});
+        expect($window.location.href).toEqual('spam');
       });
     });
 
     describe('viewService', function test() {
-      var swiftAPI, viewService, $modal, $q;
+      var swiftAPI, viewService, $q;
 
-      beforeEach(inject(function inject($injector, _$modal_, _$q_) {
+      beforeEach(inject(function inject($injector, _$q_) {
         swiftAPI = $injector.get('horizon.app.core.openstack-service-api.swift');
         viewService = $injector.get('horizon.dashboard.project.containers.objects-actions.view');
-        $modal = _$modal_;
         $q = _$q_;
       }));
 
@@ -122,14 +127,12 @@
     });
 
     describe('deleteService', function test() {
-      var deleteService, simpleModal, toast, $q;
+      var deleteService, $q;
 
       beforeEach(inject(function inject($injector, _$q_) {
         deleteService = $injector.get(
           'horizon.dashboard.project.containers.objects-actions.delete'
         );
-        simpleModal = $injector.get('horizon.framework.widgets.modal.simple-modal.service');
-        toast = $injector.get('horizon.framework.widgets.toast.service');
         $q = _$q_;
       }));
 
@@ -146,40 +149,26 @@
         // deferred to be resolved then the modal is "closed" in a bit
         var deferred = $q.defer();
         var result = { result: deferred.promise };
-        spyOn(simpleModal, 'modal').and.returnValue(result);
-        spyOn(deleteService, 'deleteServiceAction');
+        spyOn($modal, 'open').and.returnValue(result);
+        spyOn(model, 'updateContainer');
+        model.objects = [{name: 'ham'}, {name: 'too'}];
 
         deleteService.perform({name: 'ham'});
         $rootScope.$apply();
 
-        expect(simpleModal.modal).toHaveBeenCalled();
-        var spec = simpleModal.modal.calls.mostRecent().args[0];
-        expect(spec.title).toBeDefined();
-        expect(spec.body).toEqual('Are you sure you want to delete ham?');
-        expect(spec.submit).toBeDefined();
-        expect(spec.cancel).toBeDefined();
+        expect($modal.open).toHaveBeenCalled();
+        var spec = $modal.open.calls.mostRecent().args[0];
+        expect(spec.controller).toBeDefined();
+        expect(spec.templateUrl).toBeDefined();
+        expect(spec.resolve).toBeDefined();
+        expect(spec.resolve.selected).toBeDefined();
+        expect(spec.resolve.selected()).toEqual([{checked: true, file: {name: 'ham'}}]);
 
         // "close" the modal, make sure delete is called
         deferred.resolve();
         $rootScope.$apply();
-        expect(deleteService.deleteServiceAction).toHaveBeenCalledWith({name: 'ham'});
-      });
-
-      it('should delete objects', function test() {
-        var deferred = $q.defer();
-        spyOn(model, 'deleteObject').and.returnValue(deferred.promise);
-        spyOn(model, 'updateContainer');
-        spyOn(toast, 'add');
-
-        deleteService.deleteServiceAction({name: 'one', is_object: true});
-
-        expect(model.deleteObject).toHaveBeenCalledWith({name: 'one', is_object: true});
-        expect(model.deleteObject.calls.count()).toEqual(1);
-
-        deferred.resolve();
-        $rootScope.$apply();
-        expect(toast.add).toHaveBeenCalledWith('success', 'one deleted.');
         expect(model.updateContainer).toHaveBeenCalled();
+        expect(model.objects).toEqual([{name: 'too'}]);
       });
     });
 

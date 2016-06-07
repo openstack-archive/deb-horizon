@@ -27,8 +27,11 @@
 
   /**
    * @ngdoc service
-   * @name horizon.app.core.openstack-service-api.swift
+   * @name swiftAPI
+   * @param {Object} apiService
+   * @param {Object} toastService
    * @description Provides direct pass through to Swift with NO abstraction.
+   * @returns {Object} The service
    */
   function swiftAPI(apiService, toastService) {
     var service = {
@@ -62,10 +65,13 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.getObjectURL
+     * @name getObjectURL
+     * @param {Object} container - A container
+     * @param {Object} object - The object to be encoded
+     * @param {string} type - String representation of the type
      * @description
      * Calculate the download URL for an object.
-     *
+     * @returns {string} A URL that represents the given object
      */
     function getObjectURL(container, object, type) {
       var urlType = type || 'object';
@@ -74,12 +80,12 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.getInfo
+     * @name getInfo
      * @description
      * Lists the activated capabilities for this version of the OpenStack
      * Object Storage API.
      *
-     * The result is an object passed through from the Swift /info/ call.
+     * @returns {Object} The result of the object passed to the Swift /info/ call.
      *
      */
     function getInfo() {
@@ -90,11 +96,11 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.getContainers
+     * @name getContainers
      * @description
      * Get the list of containers for this account
      *
-     * The result is an object with 'items' and 'has_more' flag.
+     * @returns {Object} An object with 'items' and 'has_more' flag.
      *
      */
     function getContainers() {
@@ -105,11 +111,12 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.getContainer
+     * @name getContainer
+     * @param {Object} container - The container
      * @description
      * Get the container's detailed metadata
      *
-     * The result is an object with the metadata fields.
+     * @returns {Object} An object with the metadata fields.
      *
      */
     function getContainer(container) {
@@ -120,9 +127,12 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.createContainer
+     * @name createContainer
+     * @param {Object} container - The container
+     * @param {boolean} isPublic - Whether the container should be public
      * @description
      * Creates the named container with the is_public flag set to isPublic.
+     * @returns {Object} The result of the creation call
      *
      */
     function createContainer(container, isPublic) {
@@ -132,8 +142,8 @@
         data.is_public = true;
       }
       return apiService.post(service.getContainerURL(container) + '/metadata/', data)
-        .error(function (response, status) {
-          if (status === 409) {
+        .error(function (response) {
+          if (response.status === 409) {
             toastService.add('error', response);
           } else {
             toastService.add('error', gettext('Unable to create the container.'));
@@ -142,22 +152,31 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.deleteContainer
+     * @name deleteContainer
+     * @param {Object} container - The container to delete
      * @description
      * Delete the named container.
+     * @returns {Object} The result of the delete call
      *
      */
     function deleteContainer(container) {
       return apiService.delete(service.getContainerURL(container) + '/metadata/')
-        .error(function () {
-          toastService.add('error', gettext('Unable to delete the container.'));
+        .error(function (response, status) {
+          if (status === 409) {
+            toastService.add('error', response);
+          } else {
+            toastService.add('error', gettext('Unable to delete the container.'));
+          }
         });
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.setContainerAccess
+     * @name setContainerAccess
+     * @param {Object} container - The container
+     * @param {boolean} isPublic - Whether the container should be public
      * @description
      * Set the container's is_public flag.
+     * @returns {Object} The result of the access call
      *
      */
     function setContainerAccess(container, isPublic) {
@@ -170,13 +189,16 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.getObjects
+     * @name getObjects
+     * @param {Object} container - The container
+     * @param {Object} params - The parameters to pass to the call
      * @description
      * Get a listing of the objects in the container, optionally
      * limited to a specific folder.
      *
      * Use the params value "path" to specify a folder prefix to limit
      * the fetch to a pseudo-folder.
+     * @returns {Object} The result of the API call
      *
      */
     function getObjects(container, params) {
@@ -193,10 +215,14 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.uploadObject
+     * @name uploadObject
+     * @param {Object} container - The container
+     * @param {string} objectName - The new object's name
+     * @param {Object} file - File data
      * @description
      * Add a file to the specified container with the given objectName (which
      * may include pseudo-folder path), the mimetype and raw file data.
+     * @returns {Object} The result of the API call
      *
      */
     function uploadObject(container, objectName, file) {
@@ -207,27 +233,40 @@
         fd,
         {
           headers: {
+            // This is seriously weird magic on the part of various JS things here, but
+            // in short, setting the Content-Type to undefined (and *not* empty-string)
+            // will result in the AJAX POST filling in multipart/form-data with an
+            // appropriate boundary because we're including a FormData object with a
+            // file as the post data. Seriously.
             'Content-Type': undefined
           }
         }
       )
-        .error(function () {
-          toastService.add('error', gettext('Unable to upload the object.'));
+        .error(function (response, status) {
+          if (status === 409) {
+            toastService.add('error', response);
+          } else {
+            toastService.add('error', gettext('Unable to upload the object.'));
+          }
         });
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.deleteObject
+     * @name deleteObject
+     * @param {Object} container - The container
+     * @param {string} objectName - The name of the object to delete
      * @description
-     * Delete an object (or pseudo-folder).
+     * Delete an object (or pseudo-folder). Note that pseudo-folder
+     * names *must* end in a DELIMETER ("/" usually).
+     * @returns {Object} The result of the API call
      *
      */
     function deleteObject(container, objectName) {
       return apiService.delete(
         service.getObjectURL(container, objectName)
       )
-        .error(function (response, status) {
-          if (status === 409) {
+        .error(function (response) {
+          if (response.status === 409) {
             toastService.add('error', gettext(
               'Unable to delete the folder because it is not empty.'
             ));
@@ -238,9 +277,12 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.getObjectDetails
+     * @name getObjectDetails
+     * @param {Object} container - The container
+     * @param {string} objectName - The name of the object to get info about
      * @description
      * Get the metadata for an object.
+     * @returns {Object} The result of the API call
      *
      */
     function getObjectDetails(container, objectName) {
@@ -253,9 +295,12 @@
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.createFolder
+     * @name createFolder
+     * @param {Object} container - The container
+     * @param {string} folderName - The new folder name
      * @description
      * Create a pseudo-folder.
+     * @returns {Object} The result of the API call
      *
      */
     function createFolder(container, folderName) {
@@ -263,15 +308,24 @@
         service.getObjectURL(container, folderName) + '/',
         {}
       )
-        .error(function () {
-          toastService.add('error', gettext('Unable to create the folder.'));
+        .error(function (response, status) {
+          if (status === 409) {
+            toastService.add('error', response);
+          } else {
+            toastService.add('error', gettext('Unable to create the folder.'));
+          }
         });
     }
 
     /**
-     * @name horizon.app.core.openstack-service-api.swift.copyObject
+     * @name copyObject
+     * @param {Object} container - The original container
+     * @param {string} objectName - The original object's name
+     * @param {Object} destContainer - The destination container
+     * @param {string} destName - The destination object's name
      * @description
      * Copy an object.
+     * @returns {Object} The result of the API call
      *
      */
     function copyObject(container, objectName, destContainer, destName) {
@@ -279,8 +333,12 @@
         service.getObjectURL(container, objectName, 'copy'),
         {dest_container: destContainer, dest_name: destName}
       )
-        .error(function () {
-          toastService.add('error', gettext('Unable to copy the object.'));
+        .error(function (response, status) {
+          if (status === 409) {
+            toastService.add('error', response);
+          } else {
+            toastService.add('error', gettext('Unable to copy the object.'));
+          }
         });
     }
   }

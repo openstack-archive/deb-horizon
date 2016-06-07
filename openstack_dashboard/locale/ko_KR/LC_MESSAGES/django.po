@@ -1,340 +1,27 @@
 # Ian Y. Choi <ianyrchoi@gmail.com>, 2015. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 # Sungjin Kang <gang.sungjin@gmail.com>, 2015. #zanata
+# jay jeong <jay.gtv@gmail.com>, 2015. #zanata
+# Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
 # Ian Y. Choi <ianyrchoi@gmail.com>, 2016. #zanata
 # Jaesang Lee <hyangii@gmail.com>, 2016. #zanata
+# OpenStack Infra <zanata@openstack.org>, 2016. #zanata
 # Sungjin Kang <gang.sungjin@gmail.com>, 2016. #zanata
 # Sunhong Kim <intensify7@naver.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-18 21:42+0000\n"
+"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-05-24 18:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-03-20 02:33+0000\n"
+"PO-Revision-Date: 2016-04-05 12:07+0000\n"
 "Last-Translator: Ian Y. Choi <ianyrchoi@gmail.com>\n"
 "Language-Team: Korean (South Korea)\n"
 "Language: ko-KR\n"
 "X-Generator: Zanata 3.7.3\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-
-#, python-format
-msgid ""
-"\n"
-"            <a href=\"%(volume_url)s\">%(volume_label)s</a> on "
-"%(volume_device)s\n"
-"            "
-msgstr ""
-"\n"
-"            <a href=\"%(volume_url)s\">%(volume_label)s</a> on "
-"%(volume_device)s\n"
-"            "
-
-#, python-format
-msgid ""
-"\n"
-"        Other IPv6 modes: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode="
-"%(addr_mode)s\n"
-"        "
-msgstr ""
-"\n"
-"다른 IPv6 모드: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode=%(addr_mode)s"
-
-msgid ""
-"\n"
-"        When the volume status is \"in-use\", you can use \"Force\" to "
-"upload the\n"
-"        volume to an image.\n"
-"       "
-msgstr ""
-"\n"
-"        볼륨 상태가 \"In-use\"이면, \"강제\"를 사용하여 볼륨을 \n"
-"        이미지에 업로드할 수 있습니다.\n"
-"       "
-
-#, python-format
-msgid ""
-"\n"
-"      <a href=\"%(instance_url)s\">%(instance_name)s</a> on %(device)s\n"
-"      "
-msgstr ""
-"\n"
-"%(device)s 에 <a href=\"%(instance_url)s\">%(instance_name)s</a>"
-
-#, python-format
-msgid ""
-"\n"
-"      <span class=\"pull-right\">%(used)s of %(quota)s MB Used</span>\n"
-"    "
-msgstr ""
-"\n"
-"  <span class=\"pull-right\"> %(quota)s MB에서 %(used)s 사용함</span>\n"
-" "
-
-#, python-format
-msgid ""
-"\n"
-"      <span class=\"pull-right\">%(used)s of %(quota)s Used</span>\n"
-"    "
-msgstr ""
-"\n"
-"      <span class=\"pull-right\"> %(quota)s에서 %(used)s 사용함</span>\n"
-"    "
-
-msgid ""
-"\n"
-"      Change the volume type of a volume after its creation.\n"
-"      This is equivalent to the <tt>cinder retype</tt> command.\n"
-"     "
-msgstr ""
-"\n"
-"볼륨을 생성한후 볼륨 유형을 변경합니다.\n"
-"이것은 <tt>cinder retype</tt> 명령어와 동일합니다."
-
-msgid ""
-"\n"
-"      Choose \"Disk Format\" for the image. The volume images are created "
-"with\n"
-"      the QEMU disk image utility.\n"
-"     "
-msgstr ""
-"\n"
-"이미지에 대한 \"디스크 포맷\"을 선택합니다. 볼륨 이미지는 QEMU\n"
-"디스크 \n"
-"이미지 유틸리티와 같이 생성됩니다."
-
-msgid ""
-"\n"
-"      QoS Specs can be associated with volume types.\n"
-"      It is used to map to a set of quality of service capabilities "
-"requested\n"
-"      by the volume owner. This is equivalent to the\n"
-"      <tt>cinder qos-create</tt> command. Once the QoS Spec gets created,\n"
-"      click the \"Manage Specs\" button to manage the key-value specs for "
-"the QoS Spec.\n"
-"      <br>\n"
-"      <br>\n"
-"      Each QoS Specs entity will have a \"Consumer\" value which indicates "
-"where the\n"
-"      administrator would like the QoS policy to be enforced. This value can "
-"be \"front-end\"\n"
-"      (Nova Compute), \"back-end\" (Cinder back-end), or \"both\".\n"
-"  "
-msgstr ""
-"\n"
-"      QoS 스펙은 볼륨 타입과 연결이 가능합니다.\n"
-"      이는 볼륨 소유자에 의해 요청된 서비스 품질 기능 \n"
-"      집합과 연결되는데 사용됩니다.\n"
-"      이는 <tt>cinder qos-create</tt> 명령어와 동일합니다.\n"
-"      QoS 스펙이 생성되면, \"Manage Specs\" 버튼을 클릭하여 QoS 스펙에 대해 "
-"키-값 스펙을 관리하십시오.\n"
-"      <br>\n"
-"      <br>\n"
-"      각 QoS 스펙 개체는 QoS 정책을 적용하고자 하는 관리자를 가리키는 \n"
-"      \"Consumer\" 값을 가질 것입니다. 이 값은 \"front-end\"(Nova "
-"Compute), \n"
-"      \"back-end\"(Cinder back-end), \"both\"가 있습니다.\n"
-"  "
-
-msgid ""
-"\n"
-"      The \"Migration Policy\" is only used if the volume retype cannot be\n"
-"      completed. If the \"Migration Policy\" is \"On Demand\", the back end "
-"will\n"
-"      perform volume migration. Note that migration may take a significant\n"
-"      amount of time to complete, in some cases hours.\n"
-"     "
-msgstr ""
-"\n"
-"볼륨의 형식을 변경할 수 없는 경우, \"마이그레이션 정책\"만 사용됩니다.\n"
-"만약 \"마이그레이션 정책\"이 \"On Demand\"일 경우, 백엔드 볼륨 \n"
-"마이그레이션만 작동합니다. 어떤 경우엔 완료하는데 \n"
-"시간이 오래 걸릴 수 있습니다."
-
-msgid ""
-"\n"
-"      The \"Volume Type\" selected must be different from the current volume "
-"type.\n"
-"     "
-msgstr ""
-"\n"
-"선택된 \"볼륨 유형\"은 현재 볼륨 유형과 달라야 합니다."
-
-msgid ""
-"\n"
-"      Upload the volume to the Image Service as an image.\n"
-"      This is equivalent to the <tt>cinder upload-to-image</tt> command.\n"
-"     "
-msgstr ""
-"\n"
-"      볼륨을 이미지 서비스에 이미지로 업로드합니다.\n"
-"      이는 <tt>cinder upload-to-image</tt> 명령어와 동일합니다.\n"
-"     "
-
-msgid ""
-"\n"
-"      Volume type is a type or label that can be selected at volume "
-"creation\n"
-"      time in OpenStack. It usually maps to a set of capabilities of the "
-"storage\n"
-"      back-end driver to be used for this volume. Examples: \"Performance"
-"\",\n"
-"      \"SSD\", \"Backup\", etc. This is equivalent to the\n"
-"      <tt>cinder type-create</tt> command. Once the volume type gets "
-"created,\n"
-"      click the \"View Extra Specs\" button to set up extra specs key-value\n"
-"      pair(s) for that volume type.\n"
-"     "
-msgstr ""
-"\n"
-"      볼륨 타입은 OpenStack에서 볼륨 생성시 선택하는 타입 또는 라벨입니다.\n"
-"      일반적으로 볼륨이 사용될 스토리지 백엔드 드라이버\n"
-"      기능 설정과 매핑됩니다. 예 : \"성능\", \"SSD\", \"백업\" 등.\n"
-"      <tt>cinder type-create</tt>와 명령이 같습니다.\n"
-"      생성시 하나의 볼륨 타입을 얻게 됩니다만, \n"
-"      \"추가 사양 보기\" 버튼을 클릭하여 볼륨 타입에 대한\n"
-"      확장 스펙에 대한 키-값 페어(들)을 설정할 수 있습니다.\n"
-"     "
-
-msgid ""
-"\n"
-"    \"Manage\" an existing volume from a Cinder host. This will make the "
-"volume visible within\n"
-"    OpenStack.\n"
-"    <br>\n"
-"    <br>\n"
-"    This is equivalent to the <tt>cinder manage</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"Cinder 호스트에서 기본 볼륨을 \"관리\"합니다. OpenStack의 볼륨을 볼 수 있도"
-"록 해줍니다.\n"
-"<br>\n"
-"<br>\n"
-"이 명령은 <tt>cinder manage</tt> 명령어와 동일합니다."
-
-msgid ""
-"\n"
-"    Each QoS Specs entity will have a \"Consumer\" value which indicates "
-"where the\n"
-"    administrator would like the QoS policy to be enforced. This value can "
-"be \"front-end\"\n"
-"    (Nova Compute), \"back-end\" (Cinder back-end), or \"both\".\n"
-"    "
-msgstr ""
-"\n"
-"    각 QoS 스펙 개체는 관리자가 적용하고자 하는 QoS 정책을 가리키는\n"
-"    \"소비자\" 값을 가질 것입니다. 해당 값은 \"front-end\"\n"
-"    (Nova Compute), \"back-end\" (Cinder back-end), 또는 \"both\"가 될 수 있"
-"습니다.\n"
-"    "
-
-msgid ""
-"\n"
-"    Migrate a volume to a specific host.\n"
-"    <br>\n"
-"    <br>\n"
-"    Force Host Copy: Enables or disables generic host-based force-migration, "
-"which bypasses driver optimizations.\n"
-"    "
-msgstr ""
-"\n"
-"    특정 호스트에서 볼륨을 마이그레이션시킵니다.\n"
-"    <br>\n"
-"    <br>\n"
-"    강제 호스트 복사: 드라이버 최적화를 바이패스하여 일반적인 호스트 가반의 "
-"강제 마이그레이션을 활성화하고, 비활성화합니다.\n"
-"    "
-
-msgid ""
-"\n"
-"    The status of a volume is normally managed automatically.  In some "
-"circumstances an\n"
-"    administrator may need to explicitly update the status value.  This is "
-"equivalent to\n"
-"    the <tt>cinder reset-state</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"볼륨 상태는 기본적으론 자동으로 관리됩니다. 어떤 경우에는\n"
-"관리자가 직접 상태값을 업데이트할 필요가 있을 수 있습니다.\n"
-"이것은 <tt>cinder reset-state</tt> 명령과 같습니다."
-
-msgid ""
-"\n"
-"    The status of a volume snapshot is normally managed automatically.  In "
-"some circumstances\n"
-"    an administrator may need to explicitly update the status value. This is "
-"equivalent to\n"
-"    the <tt>cinder snapshot-reset-state</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"    볼륨 스냅샷 상태는 기본적으론 자동으로 관리됩니다. 어떤 경우에는 \n"
-"    관리자가 직접 상태값을 업데이트할 필요가 있을 수 있습니다. \n"
-"    이것은 <tt>cinder snapshot-reset-state</tt> 명령과 같습니다.\n"
-"    "
-
-msgid ""
-"\n"
-"    When a volume is \"unmanaged\", the volume will no longer be visible "
-"within OpenStack. Note that the\n"
-"    volume will not be deleted from the Cinder host.\n"
-"    <br>\n"
-"    <br>\n"
-"    This is equivalent to the <tt>cinder unmanage</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"볼륨이 \"미관리\" 상태일 때, 해당 볼륨은 OpenStack에서 더 이상 나타나지 않을 "
-"것입니다. 참고로,\n"
-"해당 볼륨이 Cinder 호스트에서 삭제된 것은 아닙니다.\n"
-"<br>\n"
-"<br>\n"
-"이는 <tt>cinder unmanage</tt> 명령어와 동일합니다."
-
-msgid ""
-"\n"
-"  Assign a name and description for the pool. Choose one subnet where all\n"
-"  members of this pool must be on. Select the protocol and load balancing\n"
-"  method for this pool. Admin State is UP (checked) by default.\n"
-"  "
-msgstr ""
-"\n"
-"Pool에 대한 이름 및 설명을 할당합니다. 해당 Pool의 모든 멤버들이 있어야 하"
-"는 \n"
-"서브넷 하나를 선택합니다. 해당 Pool에 대한 프로토콜 및 로드 밸런싱 \n"
-"방식을 선택합니다. 관리 상태는 디폴트로 UP (선택됨)입니다."
-
-msgid ""
-"\n"
-" Create a VIP for this pool. Assign a name, description, IP address, port,\n"
-" and maximum connections allowed for the VIP. Choose the protocol and "
-"session persistence\n"
-" method for the VIP. Admin State is UP (checked) by default.\n"
-" "
-msgstr ""
-"\n"
-" 이 pool의 VIP를 생성합니다. VIP에 대한 이름, 설명, IP 주소, 포트, \n"
-" 최대 접근 허용 범위를 작성합니다. VIP에 대한 프로토콜과 섹션 지속 \n"
-" 메서드을 선택합니다. 관리 상태는 기본으로 UP (확인된)입니다.\n"
-" "
-
-msgid ""
-"\n"
-"Resize the canvas by scrolling up/down with your mouse/trackpad on the "
-"topology.\n"
-"Pan around the canvas by clicking and dragging the space behind the "
-"topology.\n"
-"  "
-msgstr ""
-"\n"
-"토폴로지에서 마우스/트랙패드를 스크롤 업/다운하여 캔버스 크기를 조절합니다.\n"
-"토폴로지 뒤의 여백을 클릭 및 드래그하여 캔버스 주위를 상하[좌우]로 회전시킵니"
-"다.\n"
-"  "
 
 msgid " - End"
 msgstr "- 끝"
@@ -355,32 +42,10 @@ msgstr ""
 msgid " Also failed to delete port %s"
 msgstr "포트 %s 제거 또한 실패하였습니다"
 
-msgid "\"Add Router Route\""
-msgstr "\"라우터 경로 추가\""
-
-msgid "\"Containers\""
-msgstr "\"Containers\""
-
 msgid ""
 "\"Customization Script\" is analogous to \"User Data\" in other systems."
 msgstr ""
 "\"사용자 정의 스크립트\"는 다른 시스템의 \"사용자 데이터\"와 유사합니다."
-
-msgid "\"Edit Volume Type\""
-msgstr "\"볼륨 타입 수정\""
-
-msgid "\"N/A\""
-msgstr "\"N/A\""
-
-msgid "\"Namespace Resource Type Associations\""
-msgstr "\"네임스페이스 자원 유형 연관\""
-
-msgid "\"No flavors meet minimum criteria for selected image.\""
-msgstr ""
-"\"선택된 이미지에 대해 최소 기준을 충족하는 Flavor가 존재하지 않습니다.\""
-
-msgid "\"None\""
-msgstr "\"None\""
 
 msgid ""
 "\"None\" indicates that no QoS Spec is currently associated. Conversely, "
@@ -388,10 +53,6 @@ msgid ""
 msgstr ""
 "\"None\" 표시는 QoS 사양에 현재 관련되지 않았음을 나타냅니다. 반대로 QoS 스펙"
 "을 설정하면 \"None\"을 현재 연결에서 제거합니다."
-
-msgid ""
-"\"Some flavors not meeting minimum image requirements have been disabled.\""
-msgstr "\"최소 이미지를 만족하지 못하는 일부 flavor를 비활성되었습니다.\""
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -479,9 +140,6 @@ msgstr "%sGiB"
 #, python-format
 msgid "%sMB"
 msgstr "%sMB"
-
-msgid "&laquo;&nbsp;Back"
-msgstr "&laquo;&nbsp;뒤로"
 
 msgid "(Quota exceeded)"
 msgstr "(Quota 초과)"
@@ -1069,13 +727,6 @@ msgstr "할당됨"
 msgid "Allocated Floating IP %(ip)s."
 msgstr "Floating IP %(ip)s를 할당했습니다."
 
-msgid ""
-"Allocates requests to the instance with the least number of\n"
-"          active connections."
-msgstr ""
-"최소 개수의 활성화된 연결과 함께 인스턴스에 \n"
-" 요청을 할당합니다."
-
 msgid "Allocation Pools"
 msgstr "Pools 할당"
 
@@ -1139,7 +790,7 @@ msgid "Associate QoS Spec"
 msgstr "연결된 QoS 스펙"
 
 msgid "Associate QoS Spec with Volume Type"
-msgstr "볼륨 타입별 연결 QOS 사양"
+msgstr "볼륨 타입별 연결 QOS 스펙"
 
 msgid "Associate a health monitor with target pool."
 msgstr "상태 모니터는 대상 pool에 연결합니다"
@@ -1462,6 +1113,7 @@ msgctxt "current status of stack"
 msgid "Check In Progress"
 msgstr "Check In Progress"
 
+#, fuzzy
 msgid "Check Stack"
 msgid_plural "Check Stacks"
 msgstr[0] "스택 확인"
@@ -1525,15 +1177,6 @@ msgid ""
 msgstr ""
 "푸시 버튼이나 드래그 앤 드롭으로 선택한 라우터에서 사용가능한 라우터로 라우터"
 "를 선택합니다."
-
-msgid ""
-"Choose rule(s) from Available Rules to Selected Rule by push button or drag "
-"and drop,\n"
-"you may change their order by drag and drop as well. "
-msgstr ""
-"사용 가능한 규칙에서 선택한 규칙에 버튼을 누르거나 드래그 앤 드롭하여 규칙을 "
-"선택합니다.\n"
-"드래그 앤 드롭으로 규칙 순서를 변경할 수 있습니다."
 
 msgid "Choose the flavor to launch."
 msgstr "시작시 flavor을 고릅니다."
@@ -1901,7 +1544,7 @@ msgid "Create Pseudo-folder"
 msgstr "가상 폴더 만들기"
 
 msgid "Create QoS Spec"
-msgstr "QOS 사양 생성:"
+msgstr "QOS 스펙 생성:"
 
 msgid "Create Role"
 msgstr "역할 생성"
@@ -2106,7 +1749,7 @@ msgstr ""
 "수를 지정하세요. 방식, URL 경로, 성공 시 예상된 HTTP 코드를 지정하세요. "
 
 msgid "Create a new \"extra spec\" key-value pair for a volume type."
-msgstr "볼륨 타입에대한 새로운 \"추가 사양\" 키-값을 생성합니다."
+msgstr "볼륨 타입에대한 새로운 \"추가 사양\" 키-값 페어를 생성합니다."
 
 #, python-format
 msgid "Create a new \"spec\" key-value pair for QoS Spec \"%(qos_spec_name)s\""
@@ -2565,7 +2208,7 @@ msgstr[0] "프로토콜 삭제"
 
 msgid "Delete QoS Spec"
 msgid_plural "Delete QoS Specs"
-msgstr[0] "QOS 사양 삭제"
+msgstr[0] "QOS 스펙 삭제"
 
 msgid "Delete Role"
 msgid_plural "Delete Roles"
@@ -2725,7 +2368,7 @@ msgstr[0] "삭제된 프로토콜"
 
 msgid "Deleted QoS Spec"
 msgid_plural "Deleted QoS Specs"
-msgstr[0] "삭제된 QOS 사양"
+msgstr[0] "삭제된 QOS 스펙"
 
 msgid "Deleted Role"
 msgid_plural "Deleted Roles"
@@ -3107,10 +2750,6 @@ msgstr "OpenStack RC File v2.0 다운로드"
 
 msgid "Download OpenStack RC File v3"
 msgstr "OPenStack RC File v3 다운로드"
-
-#, python-format
-msgid "Download key pair &quot;%(keypair_name)s&quot;"
-msgstr "키 페어 &quot;%(keypair_name)s&quot; 다운로드"
 
 msgid "EC2 Access Key"
 msgstr "EC2 접근 키"
@@ -3495,7 +3134,7 @@ msgid "Error getting resource type associations."
 msgstr "리소스 타입과 관련된 것을 얻는 중에 오류가 발생했습니다."
 
 msgid "Error updating QoS Spec association."
-msgstr "QoS 스펙 업데이트하는데 오류가 발생했습니다."
+msgstr "QoS 스펙을 업데이트하는데 오류가 발생했습니다."
 
 #, python-format
 msgid "Error updating resource types for namespace %s."
@@ -4024,11 +3663,6 @@ msgstr "Floating IP:"
 msgid "Folder created successfully."
 msgstr "폴더가 성공적으로 생성되었습니다."
 
-#, python-format
-msgid "For GRE networks, valid tunnel IDs are %(min)s through %(max)s."
-msgstr ""
-"GRE 네트워크인 경우, 사용 가능한 터널 ID는 %(min)s에서 %(max)s까지 입니다."
-
 msgid ""
 "For TCP and UDP rules you may choose to open either a single port or a range "
 "of ports. Selecting the \"Port Range\" option will provide you with space to "
@@ -4038,30 +3672,6 @@ msgstr ""
 "TCP와 UDP Rule을 설정하려면, 단일 포트 또는 특정 범위의 포트를 열 수 있습니"
 "다. \"포트 범위\" 옵션을 선택하면 포트 범위 시작 값과 최종 값을 설정할 수 있"
 "습니다. 그러나 ICMP Rule은 주어진 칸에 ICMP 타입과 코드를 지정하여야 합니다. "
-
-#, python-format
-msgid ""
-"For VLAN networks, the VLAN VID on the physical network that realizes the "
-"virtual network. Valid VLAN VIDs are %(vlan_min)s through %(vlan_max)s. For "
-"GRE or VXLAN networks, the tunnel ID. Valid tunnel IDs for GRE networks are "
-"%(gre_min)s through %(gre_max)s. For VXLAN networks, %(vxlan_min)s through "
-"%(vxlan_max)s."
-msgstr ""
-"VLAN 네트워크인 경우, 물리적 네트워크에서 VLAN VID를 이용하여 가상 네트워크"
-"를 실현합니다. 사용 가능한 VLAN VID는 %(vlan_min)s에서 %(vlan_max)s까지 입니"
-"다. GRE 또는 VXLAN 네트워크의 경우, 터널 ID를 사용합니다. 사용 가능한 GRE 네"
-"트워크의 터널 ID는 %(gre_min)s에서 %(gre_max)s까지 입니다. VXLAN 네트워크는 "
-"%(vxlan_min)s에서 %(vxlan_max)s까지 입니다."
-
-#, python-format
-msgid "For VLAN networks, valid VLAN IDs are %(min)s through %(max)s."
-msgstr ""
-"VLAN 네트워크인 경우, 사용 가능한 VLAN ID는 %(min)s에서 %(max)s까지 입니다."
-
-#, python-format
-msgid "For VXLAN networks, valid tunnel IDs are %(min)s through %(max)s."
-msgstr ""
-"VXLAN 네트워크인 경우, 사용 가능한 터널 ID는 %(min)s에서 %(max)s까지 입니다."
 
 msgid "Forbidden"
 msgstr "거부했습니다"
@@ -4669,9 +4279,6 @@ msgstr "인스턴스 콘솔"
 msgid "Instance Console Log"
 msgstr "인스턴스 콘솔 로그"
 
-msgid "Instance Count"
-msgstr "인스턴스 카운트"
-
 msgid "Instance ID"
 msgstr "인스턴스 ID"
 
@@ -4870,10 +4477,6 @@ msgstr "이 포트로 인스턴스 구동"
 
 msgid "Launch instance with this policy profile"
 msgstr "이 정책 프로필을 사용하여 인스턴스 시작"
-
-#, python-format
-msgid "Launched %(count)s named \"%(name)s\"."
-msgstr "%(count)s 개의 \"%(name)s\"이 구동됨."
 
 msgid ""
 "Launching multiple instances is only supported for images and instance "
@@ -5168,6 +4771,7 @@ msgstr "측정 기준:"
 msgid "Migrate"
 msgstr "이동"
 
+#, fuzzy
 msgid "Migrate Host"
 msgid_plural "Migrate Hosts"
 msgstr[0] "호스트 마이그래이션"
@@ -5468,7 +5072,7 @@ msgid "New Host"
 msgstr "새로운 호스트"
 
 msgid "New QoS Spec Consumer"
-msgstr "새로운 QoS 스펙 고객"
+msgstr "새로운 QoS 스펙 소비자"
 
 msgid "New Size (GiB)"
 msgstr "새로운 크기 (GiB)"
@@ -5499,9 +5103,6 @@ msgstr ""
 
 msgid "Next Hops"
 msgstr "다음 홉"
-
-msgid "Next&nbsp;&raquo;"
-msgstr "다음&nbsp;&raquo;"
 
 msgid "No"
 msgstr "아니오"
@@ -5583,7 +5184,7 @@ msgid "No networks available"
 msgstr "사용 가능한 네트워크가 없습니다"
 
 msgid "No new QoS spec available"
-msgstr "사용 가능한 새로운 QoS 스펙 없음"
+msgstr "사용 가능한 새로운 QoS 스펙이 없습니다"
 
 msgid "No options specified"
 msgstr "지정된 옵션 없음"
@@ -5757,9 +5358,6 @@ msgstr "VM 인터페이스로 네트워크를 통해 들어오는 바이트 수"
 
 msgid "Number of incoming packets for a VM interface"
 msgstr "VM 인터페이스로 들어오는 패킷 수"
-
-msgid "Number of instances to launch."
-msgstr "구동시 인스턴스 수"
 
 #, python-format
 msgid ""
@@ -6338,13 +5936,13 @@ msgid "QoS Spec to be associated"
 msgstr "연결할 QoS 스펙"
 
 msgid "QoS Spec: "
-msgstr "QOS 사양:"
+msgstr "QOS 스펙:"
 
 msgid "QoS Spec: {{ qos_spec_name }}"
 msgstr "QoS 스펙: {{ qos_spec_name }}"
 
 msgid "QoS Specs"
-msgstr "QOS 사양"
+msgstr "QOS 스펙"
 
 msgctxt "Current status of an Image"
 msgid "Queued"
@@ -6502,9 +6100,6 @@ msgid "Released Floating IP"
 msgid_plural "Released Floating IPs"
 msgstr[0] "Floating IP 해제함"
 
-msgid "Reload"
-msgstr "새로 고침"
-
 msgid "Remote"
 msgstr "원격"
 
@@ -6579,13 +6174,6 @@ msgstr "요청 ID"
 
 msgid "Requested snapshot would exceed the allowed quota."
 msgstr "요청된 스냅샷은 허용된 qouta를 초과 합니다."
-
-msgid ""
-"Requests from a unique source IP address are consistently\n"
-"          directed to the same instance."
-msgstr ""
-"하나의 고유한 소스 IP 주소로부터의 요청들은 지속적으로  \n"
-"같은 인스턴스로 이동합니다."
 
 msgid "Required for APP_COOKIE persistence; Ignored otherwise."
 msgstr "APP_COOKIE 지속성을 위해 요청되었습니다. 다른 경우 무시됩니다."
@@ -6708,6 +6296,7 @@ msgid "Resume Instance"
 msgid_plural "Resume Instances"
 msgstr[0] "인스턴스 재시작"
 
+#, fuzzy
 msgid "Resume Stack"
 msgid_plural "Resume Stacks"
 msgstr[0] "스택 재개"
@@ -6996,10 +6585,6 @@ msgid "Scheduled migration (pending confirmation) of Instance"
 msgid_plural "Scheduled migration (pending confirmation) of Instances"
 msgstr[0] "인스턴스 예약 마이그레이션 (확인 대기중)"
 
-#, python-format
-msgid "Scheduled resize of instance \"%s\"."
-msgstr "인스턴스  \"%s\" 예약된 크기 조정."
-
 msgctxt "Task status of an Instance"
 msgid "Scheduling"
 msgstr "Scheduling"
@@ -7119,9 +6704,6 @@ msgstr "키 페어 선택"
 #, python-format
 msgid "Select a monitor template for %s"
 msgstr "%s에 대한 모니터 템플릿 선택"
-
-msgid "Select a name for your network."
-msgstr "네트워크 이름을 선택하십시오."
 
 msgid "Select a new QoS spec"
 msgstr "새로운 QoS 스펙 선택"
@@ -7737,7 +7319,7 @@ msgstr "Floating IP를 성공적으로 연결: %s"
 
 #, python-format
 msgid "Successfully created QoS Spec: %s"
-msgstr "QOS 사양을 성공적으로 생성했습니다: %s"
+msgstr "QOS 스펙을 성공적으로 생성했습니다: %s"
 
 #, python-format
 msgid "Successfully created encryption for volume type: %s"
@@ -7778,12 +7360,6 @@ msgstr "EC2 credential를 다시 만들었습니다."
 
 #, python-format
 msgid ""
-"Successfully restored backup %(backup_name)s to volume with id: %(volume_id)s"
-msgstr ""
-"ID가 볼륨에서 백업 %(backup_name)s을 성공적으로 복원하였습니다: %(volume_id)s"
-
-#, python-format
-msgid ""
 "Successfully sent the request to change the volume type to \"%(vtype)s\" for "
 "volume: \"%(name)s\""
 msgstr ""
@@ -7809,7 +7385,7 @@ msgstr ""
 "볼륨에대한 이미지에서 볼륨을 업로드 요청을 성공적으로 전송했습니다: \"%s\""
 
 msgid "Successfully updated QoS Spec association."
-msgstr "QoS 스펙 업데이를 완료했습니다."
+msgstr "QoS 스펙 업데이트를 완료했습니다."
 
 #, python-format
 msgid "Successfully updated aggregate: \"%s.\""
@@ -7863,6 +7439,7 @@ msgid "Suspend Instance"
 msgid_plural "Suspend Instances"
 msgstr[0] "인스턴스 일시 중단"
 
+#, fuzzy
 msgid "Suspend Stack"
 msgid_plural "Suspend Stacks"
 msgstr[0] "스팩 중지"
@@ -8021,13 +7598,6 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "집합을 업데이트 하였습니다."
 
-msgid ""
-"The Authorization Key will not be available after closing this page, so you "
-"must capture it now, or else you will be unable to use the transfer."
-msgstr ""
-"승인키는 해당 페이지를 닫은 이후 사용할 수 없기에, 지금 capture해야 합니다. "
-"그렇지 않으면, 전송을 사용할 수 없을 것입니다."
-
 msgid "The ICMP code is invalid."
 msgstr "ICMP 코드가 올바르지 않습니다."
 
@@ -8093,25 +7663,6 @@ msgid ""
 msgstr ""
 "다음 차트는 이 프로젝트에 관련된 프로젝트 quota에 관한 리소스를 보여줍니다."
 
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column).\n"
-"     Clicking the <span class=\"fa fa-random\"></span> button in the "
-"intersection will install a rule to switch the traffic behavior.<br/>\n"
-"\n"
-"     <b>Note:</b> Rules only affect one direction of traffic. The opposite "
-"direction is outlined when hovering over an intersection.\n"
-" "
-msgstr ""
-"교차점의 색상과 아이콘은 트래픽이 원본 (행)으로부터 대상 (열)까지 허용 여부"
-"를 나타냅니다.\n"
-"     교차점에 있는 <span class=\"fa fa-random\"></span> 버튼을 클릭하면 트래"
-"픽 상태를 전환하기 위한 규칙을 설정할 수 있습니다.<br/>\n"
-"\n"
-"     <b>참고:</b> 규칙은 트래픽의 한 방향으로만 영향을 미칩니다. 교차점 위에 "
-"마우스를 이동하게 되면, 반대 방향을 보여줍니다.\n"
-" "
-
 msgid "The container cannot be deleted since it is not empty."
 msgstr "컨테이너가 비어있지 않아 삭제할 수 없습니다."
 
@@ -8159,14 +7710,6 @@ msgstr "공개 키를 이용하여 인스턴스 비밀번호를 암호화합니�
 
 msgid "The instance(s) will be shut off."
 msgstr "인스턴스 전원을 끌 수 있습니다."
-
-#, python-format
-msgid ""
-"The key pair &quot;%(keypair_name)s&quot; should download automatically. If "
-"not use the link below."
-msgstr ""
-"키 페어 &quot;%(keypair_name)s&quot;는 자동으로 다운로드 됩니다. 안되면 아래 "
-"링크를 사용하세요."
 
 msgid ""
 "The maximum time in seconds for a monitor to wait for a reply. It must be "
@@ -8382,8 +7925,8 @@ msgid ""
 "This is equivalent to the <tt>cinder qos-associate</tt> and <tt>cinder qos-"
 "disassociate</tt> commands."
 msgstr ""
-"<tt>cinder qos-associate</tt>와 <tt>cinder qos-disassociate</tt> 명령과 동일"
-"합니다."
+"<tt>cinder qos-associate</tt> 및 <tt>cinder qos-disassociate</tt> 명령어와 동"
+"일합니다."
 
 msgid ""
 "This is required for operations to be performed throughout the lifecycle of "
@@ -8465,9 +8008,6 @@ msgstr "종료:"
 
 msgid "Toggle Network Collapse"
 msgstr "네트워크 축소 토글"
-
-msgid "Toggle labels"
-msgstr "라벨 토글"
 
 msgid "Toggle navigation"
 msgstr "내비게이션 토글"
@@ -8675,7 +8215,7 @@ msgid "Unable to copy object."
 msgstr "오브젝트를 복사할 수 없습니다."
 
 msgid "Unable to create QoS Spec."
-msgstr "QOS 사양을 생성할 수 없습니다. "
+msgstr "QOS 스펙을 생성할 수 없습니다. "
 
 msgid "Unable to create consistency group."
 msgstr "일관성 그룹을 생성할 수 없습니다."
@@ -8688,7 +8228,7 @@ msgid "Unable to create domain \"%s\"."
 msgstr "도메인 \"%s\" 을 만들 수 없습니다."
 
 msgid "Unable to create encrypted volume type."
-msgstr "볼륨 타입 암호화 생성 실패."
+msgstr "암호화된 볼륨 타입 생성 실패하였습니다."
 
 #, python-format
 msgid "Unable to create flavor \"%s\"."
@@ -9120,13 +8660,13 @@ msgid "Unable to retrieve QoS Spec details."
 msgstr "QoS 사양의 세부 정보를 찾지 못했습니다."
 
 msgid "Unable to retrieve QoS Specs."
-msgstr "QOS 사양의 정보을 찾지 못 했습니다."
+msgstr "QOS 스펙의 정보을 찾지 못했습니다."
 
 msgid "Unable to retrieve QoS spec details."
 msgstr "QoS 사양의 세부 정보를 찾지 못 했습니다."
 
 msgid "Unable to retrieve QoS spec list."
-msgstr "QOS 사양 목록을 찾지 못 했습니다."
+msgstr "QOS 스펙 목록을 찾지 못 했습니다."
 
 msgid "Unable to retrieve QoS specs"
 msgstr "QOS 사양을 검색할 수 없습니다."
@@ -9947,7 +9487,7 @@ msgid "Update Volume Snapshot Status"
 msgstr "볼륨 스냅샷 상태 업데이트"
 
 msgid "Update Volume Status"
-msgstr "볼륨 스냅샷 업데이트"
+msgstr "볼륨 상태 업데이트"
 
 msgid "Update Volume Type Encryption"
 msgstr "볼륨 타입 암호화 업데이트"
@@ -9991,7 +9531,7 @@ msgstr "\"%(key)s\"에 대한 \"extra spec\" 값을 업데이트 하였습니다
 
 #, python-format
 msgid "Update the spec value for \"%(key)s\""
-msgstr " \"%(key)s\" 스펙 값을 갱신합니다. "
+msgstr " \"%(key)s\" 스펙 값을 업데이트합니다. "
 
 msgid "Updated"
 msgstr "업데이트 완료"
@@ -10244,14 +9784,6 @@ msgstr "값 (평균)"
 msgid "Value:"
 msgstr "값:"
 
-#, python-format
-msgid ""
-"Version: %(version_info)s\n"
-"      "
-msgstr ""
-"버전: %(version_info)s\n"
-"      "
-
 msgid "View Container"
 msgstr "컨테이너 보기"
 
@@ -10491,18 +10023,6 @@ msgid "Weight"
 msgstr "Weight"
 
 msgid ""
-"When no IP address is provided, the VIP will obtain an address from\n"
-"  the selected subnet. If a specific IP address is desired, it may be "
-"provided and\n"
-"  must also be an address within the selected subnet.\n"
-"  "
-msgstr ""
-"IP 주소가 지정되지 않는 경우, VIP는 선택한 서브넷에서 \n"
-"  주소를 할당받습니다. 특정 IP 주소를 할당 받기위해선 \n"
-"  선택된 서브넷내의 주소에서 제공받을 수 있습니다.\n"
-"  "
-
-msgid ""
 "Within a container you can group your objects into pseudo-folders, which "
 "behave similarly to folders in your desktop operating system, with the "
 "exception that they are virtual collections defined by a common prefix on "
@@ -10554,9 +10074,6 @@ msgstr ""
 "자 정의 TCP 규칙, 사용자 정의 UDP 규칙, 또는 사용자 정의 ICMP 규칙이 있습니"
 "다. "
 
-msgid "You cannot disable the user you are currently logged in as."
-msgstr "현재 로그인한 사용자를 비활성화할 수 없습니다."
-
 msgid "You cannot disable your current project"
 msgstr "현재 프로젝트를 비활성화할 수 없습니다"
 
@@ -10576,15 +10093,6 @@ msgstr ""
 "현재 로그인된 사용자로는 프로젝트에서 관리 권한을 무효할 수 없습니다. 관리자 "
 "권한이 있는 다른 프로젝트로 전환을 하거나, CLI를 통해 수동으로 관리자 역할을 "
 "제거하십시오."
-
-msgid ""
-"You do not have the required\n"
-"          privileges to access this content. If you believe this message to\n"
-"          be in error, please contact your project manager."
-msgstr ""
-"해당 내용에 접근할\n"
-"권한을 갖고 있지 않습니다. 해당 메시지가 오류라고\n"
-"생각되는 경우, 프로젝트 관리자에게 문의하시기 바랍니다."
 
 msgid "You may have mistyped the address or the page may have moved."
 msgstr "주소가 잘못되었거나 페이지가 이동했을 수 있습니다."
@@ -10720,9 +10228,6 @@ msgstr "양쪽 모두"
 
 msgid "clear"
 msgstr "clear"
-
-msgid "console is currently unavailable. Please try again later."
-msgstr "콘솔을 현재 사용할 수 없습니다. 잠시 후 다시 시도하세요."
 
 msgid "disabled"
 msgstr "disabled"

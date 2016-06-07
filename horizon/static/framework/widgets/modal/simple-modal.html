@@ -1,4 +1,7 @@
 <div class="modal-header">
+  <button type="button" class="close" ng-click="modalCtrl.cancel()" aria-hidden="true" aria-label="Close">
+    <span aria-hidden="true" class="fa fa-times"></span>
+  </button>
   <h3 class="modal-title">
     <span ng-bind="::modalCtrl.context.title"></span>
   </h3>
@@ -7,7 +10,7 @@
   <p ng-bind="::modalCtrl.context.body"></p>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-default secondary"
+  <button class="btn btn-default"
     type="button" ng-click="modalCtrl.cancel()">
     <span ng-bind="::modalCtrl.context.cancel"></span>
   </button>

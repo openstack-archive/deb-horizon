@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-03-16 02:16+0000\n"
+"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2016-05-24 18:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,108 +13,6 @@ msgstr ""
 "Language: ur\n"
 "X-Generator: Zanata 3.7.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-#, python-format
-msgid ""
-"\n"
-"            <a href=\"%(volume_url)s\">%(volume_label)s</a> on "
-"%(volume_device)s\n"
-"            "
-msgstr ""
-"\n"
-"            <a href=\"%(volume_url)s\">%(volume_label)s</a> on "
-"%(volume_device)s\n"
-"            "
-
-#, python-format
-msgid ""
-"\n"
-"        Other IPv6 modes: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode="
-"%(addr_mode)s\n"
-"        "
-msgstr ""
-"\n"
-"        Other IPv6 modes: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode="
-"%(addr_mode)s\n"
-"        "
-
-msgid ""
-"\n"
-"      Volume type is a type or label that can be selected at volume "
-"creation\n"
-"      time in OpenStack. It usually maps to a set of capabilities of the "
-"storage\n"
-"      back-end driver to be used for this volume. Examples: \"Performance"
-"\",\n"
-"      \"SSD\", \"Backup\", etc. This is equivalent to the\n"
-"      <tt>cinder type-create</tt> command. Once the volume type gets "
-"created,\n"
-"      click the \"View Extra Specs\" button to set up extra specs key-value\n"
-"      pair(s) for that volume type.\n"
-"     "
-msgstr ""
-"\n"
-"         حجم کی قسم یا لیبل ہے OpenStack میں حجم کی تخلیق وقت میں منتخب کیا "
-"جا سکتا ہے\n"
-"         یہ عام طور پر اس كے حجم كو استعمال كرنے کے لئے محفوظ کیا جاتا ہے \n"
-"         بیک ۔ اینڈ ڈرائیور کی صلاحیتوں کا سیٹ كا میپ ہے۔ مثال كے طور پر : "
-"\"کارکردگی \",\n"
-"        \"SSD\", \"بیك اپ\", وغیرہ \n"
-"       <tt>cinder type-create</tt> كمانڈ ۔ ایك بار ولیوم ٹائپ تخلیق ہونے "
-"پر،,\n"
-"       \"زائد اسپیس دكھاؤ\" بٹن پر كلك كریں ولیوم ٹائپ كے لیے\n"
-"       زائد اسپیس كلید۔ ویلیو كی جوڑی كو سیٹ كریں۔ .\n"
-"     "
-
-msgid ""
-"\n"
-"    Each QoS Specs entity will have a \"Consumer\" value which indicates "
-"where the\n"
-"    administrator would like the QoS policy to be enforced. This value can "
-"be \"front-end\"\n"
-"    (Nova Compute), \"back-end\" (Cinder back-end), or \"both\".\n"
-"    "
-msgstr ""
-"\n"
-"     ہر QoS ونیردیشن یونٹ میں ایک  \"كنزیومر\" ویلیو ہوگا جو یہ ظاہر کرتا ہے "
-"کہ \n"
-"     منتظم QoS پالیسی کو کہاں لاگو کرنا چاہتا ہے. یہ ویلیو \"فرنٹ ۔ اینڈ "
-"\" \n"
-"     (نوا كمپیوٹ)، \"بیك اینڈ \" (سینڈر بیك ۔ اینڈ)، یا \"دونوں\" ہو سکتا "
-"ہے. \n"
-"    "
-
-msgid ""
-"\n"
-"    The status of a volume is normally managed automatically.  In some "
-"circumstances an\n"
-"    administrator may need to explicitly update the status value.  This is "
-"equivalent to\n"
-"    the <tt>cinder reset-state</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"      ولیوم كی حالت عام طور پر خود كار طریقہ سے مینیج كی جاتی ہے۔ كچھ حالتوں "
-"میں كوئی ایك ایڈمنسٹریٹر\n"
-"      كو شاید حالت ویلیو واضح طور پر اپ ڈیٹ كرنی ہوگی۔ \n"
-"       یہ <tt>cinder reset-state</tt> كمانڈ ہے۔. \n"
-"    "
-
-msgid ""
-"\n"
-"    The status of a volume snapshot is normally managed automatically.  In "
-"some circumstances\n"
-"    an administrator may need to explicitly update the status value. This is "
-"equivalent to\n"
-"    the <tt>cinder snapshot-reset-state</tt> command.\n"
-"    "
-msgstr ""
-"\n"
-"    ایک مقداراسنیپ شاٹ کے حالات عام طور پر خود کار طریقے سے منظم کیا جاتا "
-"ہے. کچھ حالات میں \n"
-"     ایک منتظم واضح طور پر صورتحال مان طرف کرنے کی ضرورت ہو سکتی ہے. اس \n"
-"     کے برابر ہے<tt>cinder snapshot-reset-state</tt> حکم ہے. \n"
-"    "
 
 msgid " - End"
 msgstr " - ختم كریں "
@@ -903,16 +801,6 @@ msgstr ""
 "دستیاب نیٹ ورک سے پش بٹن یا ڈریگ اور ڈراپ کی طرف سے منتخب نیٹ ورک کے لئے نیٹ "
 "ورک کا انتخاب کریں، آپ کو کھینچ طرف NIC آرڈر تبدیل کر سکتے ہیں اور ساتھ ہی "
 "ساتھ چھوڑ سکتے ہیں."
-
-msgid ""
-"Choose rule(s) from Available Rules to Selected Rule by push button or drag "
-"and drop,\n"
-"you may change their order by drag and drop as well. "
-msgstr ""
-"پش بٹن یا ڈریگ اور ڈراپ کی طرف سے منتخب قواعد کو دستیاب رول سے رولس منتخب "
-"کریں، \n"
-"  آپ کو کھینچ طرف اس کے حکم کو تبدیل کر سکتے ہیں اور ساتھ ہی ساتھ چھوڑ دیتے "
-"ہیں."
 
 msgid "Choose the flavor to launch."
 msgstr "فلور كو لانچ كے لیے انتخاب كریں"
@@ -1721,10 +1609,6 @@ msgstr "EC2 شناخت ڈاؤن لوڈ کریں"
 msgid "Download Key Pair"
 msgstr "كلید ك جوڑی ڈاؤن لوڈ كریں"
 
-#, python-format
-msgid "Download key pair &quot;%(keypair_name)s&quot;"
-msgstr " &quot;%(keypair_name)s&quot; کلید مجموعہ ڈاؤن لوڈ كریں"
-
 msgid "EC2 Access Key"
 msgstr "EC2 رسائی كلید"
 
@@ -2382,10 +2266,6 @@ msgstr "فلاؤٹینگIPs"
 msgid "Folder created successfully."
 msgstr "فولڈر كی تخلیق كامیابی سی كی گئی۔"
 
-#, python-format
-msgid "For GRE networks, valid tunnel IDs are %(min)s through %(max)s."
-msgstr " نیٹ ورکس کے لئے درست ٹنیل IDs %(min)s سے لے کر%(max)s تک ہے."
-
 msgid ""
 "For TCP and UDP rules you may choose to open either a single port or a range "
 "of ports. Selecting the \"Port Range\" option will provide you with space to "
@@ -2396,28 +2276,6 @@ msgstr ""
 "منتخب کر سکتے ہیں. \"پورٹ حد \" اختیارات منتخب کرنے سیریز کے لئے دونوں "
 "ابتدائی اور آخری پورٹ فراہم کرنے کے لئے جگہ فراہم کی گئی ہیں.ICMP قوانین کے "
 "لئے آپ کی بجائے خالی جگہ میں ایک ICMP قسم اور کوڈ کی وضاحت کریں."
-
-#, python-format
-msgid ""
-"For VLAN networks, the VLAN VID on the physical network that realizes the "
-"virtual network. Valid VLAN VIDs are %(vlan_min)s through %(vlan_max)s. For "
-"GRE or VXLAN networks, the tunnel ID. Valid tunnel IDs for GRE networks are "
-"%(gre_min)s through %(gre_max)s. For VXLAN networks, %(vxlan_min)s through "
-"%(vxlan_max)s."
-msgstr ""
-"For VLAN networks, the VLAN VID on the physical network that realizes the "
-"virtual network. Valid VLAN VIDs are %(vlan_min)s through %(vlan_max)s. For "
-"GRE or VXLAN networks, the tunnel ID. Valid tunnel IDs for GRE networks are "
-"%(gre_min)s through %(gre_max)s. For VXLAN networks, %(vxlan_min)s through "
-"%(vxlan_max)s."
-
-#, python-format
-msgid "For VLAN networks, valid VLAN IDs are %(min)s through %(max)s."
-msgstr "For VLAN networks, valid VLAN IDs are %(min)s through %(max)s."
-
-#, python-format
-msgid "For VXLAN networks, valid tunnel IDs are %(min)s through %(max)s."
-msgstr "VXLAN نیٹ ورکس کے لئے درست ٹنیل IDs%(min) s سے لے کر%(max) s تک ہے"
 
 msgid "Forbidden"
 msgstr "منع کیا"
@@ -2862,9 +2720,6 @@ msgstr "انسٹانس کنسول"
 msgid "Instance Console Log"
 msgstr "انسٹانس کنسول لاگ"
 
-msgid "Instance Count"
-msgstr "انسٹانس شمار"
-
 msgid "Instance ID"
 msgstr "واقعے کی ID"
 
@@ -3035,10 +2890,6 @@ msgstr "ان نیٹ ورکس کے ساتھ انسٹانس لانچ کریں"
 
 msgid "Launch instance with this policy profile"
 msgstr "اس پالیسی کی پروفائل کے ساتھ انسٹانس لانچ کریں"
-
-#, python-format
-msgid "Launched %(count)s named \"%(name)s\"."
-msgstr "%(count)s named \"%(name)s\" نامزد آغاز کیا."
 
 msgid ""
 "Launching multiple instances is only supported for images and instance "
@@ -3644,9 +3495,6 @@ msgstr "VM انٹرفیس کے لئے نیٹ ورک پر آنے والے بائ�
 msgid "Number of incoming packets for a VM interface"
 msgstr "VM  انٹرفیس کے لئے نیٹ ورک پر آنے والے بائٹ کی تعداد"
 
-msgid "Number of instances to launch."
-msgstr "لانچ کرنے کے لئے متعدد انسٹانس"
-
 msgid "Number of objects"
 msgstr "اشیاء کی تعداد"
 
@@ -4096,9 +3944,6 @@ msgstr ""
 "اسی بوجھ کا استعمال تمام منتخب شدہ ممبران کے لئے کیا جائے گا اور اسے بعد میں "
 "نظر ثانی کی جا سکتا ہے. وزن 1 سے 256 تک کے زمرے میں ہونا چاہئے."
 
-msgid "Reload"
-msgstr "پھرسے لوڈ کریں"
-
 msgid "Remote"
 msgstr "ریموٹ"
 
@@ -4315,10 +4160,6 @@ msgstr "اضافی تصریح \"%s\" محفوظ كیا"
 msgid "Saved spec \"%s\"."
 msgstr "تصریح \"%s\" محفوظ كیا ۔"
 
-#, python-format
-msgid "Scheduled resize of instance \"%s\"."
-msgstr "انسٹانس \"%s\" کے شیڈول سائز تبدیل كریں."
-
 msgid "Script Data"
 msgstr "اسكرپٹ ڈیٹا"
 
@@ -4421,9 +4262,6 @@ msgstr "كلید جوڑی منتخب كریں"
 #, python-format
 msgid "Select a monitor template for %s"
 msgstr " %s كے لیے مانیٹر ٹیمپلیٹ منتخب كریں"
-
-msgid "Select a name for your network."
-msgstr "آپ كے نیٹ ورك كے لیے نام منتخب كریں۔"
 
 msgid "Select a new agent"
 msgstr "نئے ایجنٹ كو منتخب كریں"
@@ -4839,13 +4677,6 @@ msgstr "QoS تصریح صارفین کو کامیابی سے نظر ثانی ک�
 
 #, python-format
 msgid ""
-"Successfully restored backup %(backup_name)s to volume with id: %(volume_id)s"
-msgstr ""
-"بیک اپ %(backup_name)s کو شناخت کے ساتھ ولیوم میں کامیابی بحال کیا گیا : "
-"%(volume_id)s"
-
-#, python-format
-msgid ""
 "Successfully sent the request to change the volume type to \"%(vtype)s\" for "
 "volume: \"%(name)s\""
 msgstr ""
@@ -5062,14 +4893,6 @@ msgstr "اسٹےس ہوسٹ \"%s\" کے لئے لائیو منتقلی تیار�
 
 msgid "The instance password encrypted with your public key."
 msgstr "آپ کی عوامی  كلید کے ساتھ خفیہ کردہ انسٹانس پاس ورڈ."
-
-#, python-format
-msgid ""
-"The key pair &quot;%(keypair_name)s&quot; should download automatically. If "
-"not use the link below."
-msgstr ""
-"کلید مجموعہ &quot;%(keypair_name)s&quot;  خود کار طریقے سے ڈاؤن لوڈ ہو جائے "
-"گا. اگر نہیں، تو ذیل کے لنک کا استعمال کریں."
 
 msgid ""
 "The minimum disk size required to boot the image. If unspecified, this value "
@@ -6527,14 +6350,6 @@ msgstr "ویلیو (اوسط)"
 msgid "Value:"
 msgstr "قیمت:"
 
-#, python-format
-msgid ""
-"Version: %(version_info)s\n"
-"      "
-msgstr ""
-"ورژن: %(version_info)s\n"
-"      "
-
 msgid "View Container"
 msgstr "كنٹینر دكھائیں"
 
@@ -6710,9 +6525,6 @@ msgstr ""
 "آپ مطلوبہ رول ٹیمپلیٹ مخصوص یا كسٹم کے قوانین کا استعمال کر سکتے ہیں، "
 "اختیارات كسٹم TCP کے رول، كسٹم UDP رول، یا كسٹم  کے ICMP رول ہیں."
 
-msgid "You cannot disable the user you are currently logged in as."
-msgstr "آپ فی کے طور پر لاگ ان صارف کو غیر فعال نہیں کیا جا سکتا ہے."
-
 msgid ""
 "You cannot revoke your administrative privileges from the domain you are "
 "currently logged into. Please switch to another domain with administrative "
@@ -6855,9 +6667,6 @@ msgstr "دو طرفہ"
 
 msgid "clear"
 msgstr "صاف"
-
-msgid "console is currently unavailable. Please try again later."
-msgstr "کنسول فی الحال دستیاب نہیں ہے. بعد میں دوبارہ کوشش کریں."
 
 msgid "disabled"
 msgstr "ناقابل"

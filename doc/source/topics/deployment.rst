@@ -47,18 +47,8 @@ how to customize it, and where other components may take over:
   read the `Django logging directive`_ and the `Python logging directive`_
   documentation. Horizon is built on Python and Django.
 
-.. _Django logging directive: https://docs.djangoproject.com/en/1.5/topics/logging
+.. _Django logging directive: https://docs.djangoproject.com/en/dev/topics/logging
 .. _Python logging directive: http://docs.python.org/2/library/logging.html
-
-.. warning::
-
-    At this time there is `a known bug in python-keystoneclient`_ where it will
-    log the complete request body of any request sent to Keystone through it
-    (including logging passwords in plain text) when the log level is set to
-    ``"DEBUG"``. If this behavior is not desired, make sure your log level is
-    ``"INFO"`` or higher.
-
-.. _a known bug in python-keystoneclient: https://bugs.launchpad.net/keystone/+bug/1004114
 
 File Uploads
 ============
@@ -115,9 +105,8 @@ drawbacks:
   * No shared storage across processes or workers.
   * No persistence after a process terminates.
 
-The local memory backend is enabled as the default for Horizon solely because
-it has no dependencies. It is not recommended for production use, or even for
-serious development work. For better options, read on.
+It is not recommended for production use, or even for serious development work.
+For better options, read on.
 
 Memcached
 ---------

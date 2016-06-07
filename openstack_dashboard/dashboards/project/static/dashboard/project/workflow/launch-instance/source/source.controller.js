@@ -59,7 +59,6 @@
     /*eslint-disable max-len */
     ctrl.bootSourceTypeError = gettext('Volumes can only be attached to 1 active instance at a time. Please either set your instance count to 1 or select a different source type.');
     /*eslint-enable max-len */
-    ctrl.volumeSizeError = gettext('Volume size is required and must be an integer');
 
     // toggle button label/value defaults
     ctrl.toggleButtonOptions = [
@@ -134,32 +133,32 @@
     // Mapping for dynamic table headers
     var tableHeadCellsMap = {
       image: [
-        { text: gettext('Name'), style: { width: '30%' }, sortable: true, sortDefault: true },
-        { text: gettext('Updated'), style: { width: '15%' }, sortable: true },
-        { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
+        { text: gettext('Name'), sortable: true, sortDefault: true },
+        { text: gettext('Updated'), sortable: true },
+        { text: gettext('Size'), classList: ['number'], sortable: true },
         { text: gettext('Type'), sortable: true },
         { text: gettext('Visibility'), sortable: true }
       ],
       snapshot: [
-        { text: gettext('Name'), style: { width: '30%' }, sortable: true, sortDefault: true },
-        { text: gettext('Updated'), style: { width: '15%' }, sortable: true },
-        { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
+        { text: gettext('Name'), sortable: true, sortDefault: true },
+        { text: gettext('Updated'), sortable: true },
+        { text: gettext('Size'), classList: ['number'], sortable: true },
         { text: gettext('Type'), sortable: true },
         { text: gettext('Visibility'), sortable: true }
       ],
       volume: [
-        { text: gettext('Name'), style: { width: '25%' }, sortable: true, sortDefault: true },
-        { text: gettext('Description'), style: { width: '20%' }, sortable: true },
-        { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
-        { text: gettext('Type'), style: { width: '20%' }, sortable: true },
-        { text: gettext('Availability Zone'), style: { width: '20%' }, sortable: true }
+        { text: gettext('Name'), sortable: true, sortDefault: true },
+        { text: gettext('Description'), sortable: true },
+        { text: gettext('Size'), classList: ['number'], sortable: true },
+        { text: gettext('Type'), sortable: true },
+        { text: gettext('Availability Zone'), sortable: true }
       ],
       volume_snapshot: [
-        { text: gettext('Name'), style: { width: '25%' }, sortable: true, sortDefault: true },
-        { text: gettext('Description'), style: { width: '20%' }, sortable: true },
-        { text: gettext('Size'), style: { width: '15%' }, classList: ['number'], sortable: true },
-        { text: gettext('Created'), style: { width: '15%' }, sortable: true },
-        { text: gettext('Status'), style: { width: '20%' }, sortable: true }
+        { text: gettext('Name'), sortable: true, sortDefault: true },
+        { text: gettext('Description'), sortable: true },
+        { text: gettext('Size'), classList: ['number'], sortable: true },
+        { text: gettext('Created'), sortable: true },
+        { text: gettext('Status'), sortable: true }
       ]
     };
 
@@ -172,26 +171,21 @@
         { key: 'name', classList: ['hi-light'] },
         { key: 'updated_at', filter: dateFilter, filterArg: 'short' },
         { key: 'size', filter: bytesFilter, classList: ['number'] },
-        { key: 'disk_format', style: { 'text-transform': 'uppercase' },
-          filter: diskFormatFilter, filterRawData: true },
-        { key: 'is_public', filter: decodeFilter, filterArg: _visibilitymap,
-          style: { 'text-transform': 'capitalize' } }
+        { key: 'disk_format', filter: diskFormatFilter, filterRawData: true },
+        { key: 'is_public', filter: decodeFilter, filterArg: _visibilitymap }
       ],
       snapshot: [
         { key: 'name', classList: ['hi-light'] },
         { key: 'updated_at', filter: dateFilter, filterArg: 'short' },
         { key: 'size', filter: bytesFilter, classList: ['number'] },
-        { key: 'disk_format', style: { 'text-transform': 'uppercase' },
-          filter: diskFormatFilter, filterRawData: true },
-        { key: 'is_public', filter: decodeFilter, filterArg: _visibilitymap,
-          style: { 'text-transform': 'capitalize' } }
+        { key: 'disk_format', filter: diskFormatFilter, filterRawData: true },
+        { key: 'is_public', filter: decodeFilter, filterArg: _visibilitymap }
       ],
       volume: [
         { key: 'name', classList: ['hi-light'] },
         { key: 'description' },
         { key: 'size', filter: gbFilter, classList: ['number'] },
-        { key: 'volume_image_metadata', filter: diskFormatFilter,
-          style: { 'text-transform': 'uppercase' } },
+        { key: 'volume_image_metadata', filter: diskFormatFilter },
         { key: 'availability_zone' }
       ],
       volume_snapshot: [
@@ -199,7 +193,7 @@
         { key: 'description' },
         { key: 'size', filter: gbFilter, classList: ['number'] },
         { key: 'created_at', filter: dateFilter, filterArg: 'short' },
-        { key: 'status', style: { 'text-transform': 'capitalize' } }
+        { key: 'status' }
       ]
     };
 
@@ -399,7 +393,7 @@
 
     function updateBootSourceSelection(selectedSource) {
       ctrl.currentBootSource = selectedSource;
-      $scope.model.newInstanceSpec.vol_create = false;
+      $scope.model.newInstanceSpec.vol_create = true;
       $scope.model.newInstanceSpec.vol_delete_on_instance_delete = false;
       changeBootSource(selectedSource);
       validateBootSourceType();
@@ -465,14 +459,15 @@
         var imageGb = source.size * 1e-9;
         var imageDisk = source.min_disk;
         ctrl.minVolumeSize = Math.ceil(Math.max(imageGb, imageDisk));
-
+        if ($scope.model.newInstanceSpec.vol_size < ctrl.minVolumeSize) {
+          $scope.model.newInstanceSpec.vol_size = ctrl.minVolumeSize;
+        }
         var volumeSizeText = gettext('The volume size must be at least %(minVolumeSize)s GB');
         var volumeSizeObj = { minVolumeSize: ctrl.minVolumeSize };
-        ctrl.minVolumeSizeError = interpolate(volumeSizeText, volumeSizeObj, true);
+        ctrl.volumeSizeError = interpolate(volumeSizeText, volumeSizeObj, true);
       } else {
-        /*eslint-disable no-undefined */
-        ctrl.minVolumeSize = undefined;
-        /*eslint-enable no-undefined */
+        ctrl.minVolumeSize = 0;
+        ctrl.volumeSizeError = gettext('Volume size is required and must be an integer');
       }
     }
 

@@ -19,6 +19,7 @@ import logging
 from operator import attrgetter
 import sys
 
+from django.conf import settings
 from django.core import exceptions as core_exceptions
 from django.core import urlresolvers
 from django import forms
@@ -433,10 +434,11 @@ class Column(html.HTMLElement):
         except urlresolvers.NoReverseMatch:
             return self.link
 
-    def get_default_attrs(self):
-        attrs = super(Column, self).get_default_attrs()
-        attrs.update({'data-selenium': self.name})
-        return attrs
+    if getattr(settings, 'INTEGRATION_TESTS_SUPPORT', False):
+        def get_default_attrs(self):
+            attrs = super(Column, self).get_default_attrs()
+            attrs.update({'data-selenium': self.name})
+            return attrs
 
     def get_summation(self):
         """Returns the summary value for the data in this column if a
@@ -579,8 +581,11 @@ class Row(html.HTMLElement):
 
         # Add the row's display name if available
         display_name = table.get_object_display(datum)
+        display_name_key = table.get_object_display_key(datum)
+
         if display_name:
             self.attrs['data-display'] = escape(display_name)
+            self.attrs['data-display-key'] = escape(display_name_key)
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.id)
@@ -662,7 +667,8 @@ class Cell(html.HTMLElement):
             if len(data) > column.truncate:
                 self.attrs['data-toggle'] = 'tooltip'
                 self.attrs['title'] = data
-                self.attrs['data-selenium'] = data
+                if getattr(settings, 'INTEGRATION_TESTS_SUPPORT', False):
+                    self.attrs['data-selenium'] = data
         self.data = self.get_data(datum, column, row)
 
     def get_data(self, datum, column, row):
@@ -1678,13 +1684,17 @@ class DataTable(object):
         """
         return datum.id
 
+    def get_object_display_key(self, datum):
+        return 'name'
+
     def get_object_display(self, datum):
         """Returns a display name that identifies this object.
 
         By default, this returns a ``name`` attribute from the given object,
         but this can be overridden to return other values.
         """
-        return getattr(datum, 'name', None)
+        display_key = self.get_object_display_key(datum)
+        return getattr(datum, display_key, None)
 
     def has_prev_data(self):
         """Returns a boolean value indicating whether there is previous data

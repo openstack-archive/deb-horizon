@@ -265,6 +265,31 @@ class InstanceTests(helpers.TestCase):
                                       'server_delete',),
                            api.glance: ('image_list_detailed',),
                            api.network: ('servers_update_addresses',)})
+    def test_delete_instance_error_state(self):
+        servers = self.servers.list()
+        server = servers[0]
+        server.status = 'ERROR'
+
+        search_opts = {'marker': None, 'paginate': True}
+        api.nova.server_list(IsA(http.HttpRequest), search_opts=search_opts) \
+            .AndReturn([servers, False])
+        api.network.servers_update_addresses(IsA(http.HttpRequest), servers)
+        api.nova.flavor_list(IgnoreArg()).AndReturn(self.flavors.list())
+        api.glance.image_list_detailed(IgnoreArg()) \
+            .AndReturn((self.images.list(), False, False))
+        api.nova.server_delete(IsA(http.HttpRequest), server.id)
+        self.mox.ReplayAll()
+
+        formData = {'action': 'instances__delete__%s' % server.id}
+        res = self.client.post(INDEX_URL, formData)
+
+        self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @helpers.create_stubs({api.nova: ('server_list',
+                                      'flavor_list',
+                                      'server_delete',),
+                           api.glance: ('image_list_detailed',),
+                           api.network: ('servers_update_addresses',)})
     def test_delete_instance_exception(self):
         servers = self.servers.list()
         server = servers[0]
@@ -977,8 +1002,18 @@ class InstanceTests(helpers.TestCase):
         res = self._get_instance_details(server)
         self.assertItemsEqual(res.context['instance'].fault, server.fault)
 
+    @helpers.create_stubs({console: ('get_console',)})
     def test_instance_details_console_tab(self):
         server = self.servers.first()
+        CONSOLE_OUTPUT = '/vncserver'
+        CONSOLE_TITLE = '&title=%s(%s)' % (server.name, server.id)
+        CONSOLE_URL = CONSOLE_OUTPUT + CONSOLE_TITLE
+
+        console_mock = self.mox.CreateMock(api.nova.VNCConsole)
+        console_mock.url = CONSOLE_OUTPUT
+
+        console.get_console(IgnoreArg(), 'AUTO', server) \
+            .AndReturn(('VNC', CONSOLE_URL))
 
         tg = tabs.InstanceDetailTabs(self.request, instance=server)
         qs = "?%s=%s" % (tg.param_name, tg.get_tab("console").get_id())
@@ -1462,6 +1497,7 @@ class InstanceTests(helpers.TestCase):
     @helpers.create_stubs({api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
+                                      'server_group_list',
                                       'tenant_absolute_limits',
                                       'availability_zone_list',),
                            api.network: ('security_group_list',),
@@ -1533,6 +1569,10 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(disk_config)
         api.nova.extension_supported(
             'ConfigDrive', IsA(http.HttpRequest)).AndReturn(config_drive)
+        api.nova.extension_supported(
+            'ServerGroups', IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.server_groups.list())
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
             .AndReturn(self.limits['absolute'])
         api.nova.flavor_list(IsA(http.HttpRequest)) \
@@ -1712,6 +1752,7 @@ class InstanceTests(helpers.TestCase):
     @helpers.create_stubs({api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
+                                      'server_group_list',
                                       'tenant_absolute_limits',
                                       'availability_zone_list',),
                            api.network: ('security_group_list',),
@@ -1778,6 +1819,10 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(disk_config)
         api.nova.extension_supported(
             'ConfigDrive', IsA(http.HttpRequest)).AndReturn(config_drive)
+        api.nova.extension_supported(
+            'ServerGroups', IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.server_groups.list())
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest))\
             .AndReturn(self.limits['absolute'])
         api.nova.flavor_list(IsA(http.HttpRequest)) \
@@ -1827,6 +1872,7 @@ class InstanceTests(helpers.TestCase):
                                       'flavor_list',
                                       'keypair_list',
                                       'availability_zone_list',
+                                      'server_group_list',
                                       'server_create',),
                            api.network: ('security_group_list',),
                            cinder: ('volume_list',
@@ -1846,6 +1892,7 @@ class InstanceTests(helpers.TestCase):
         customization_script = 'user data'
         nics = [{"net-id": self.networks.first().id, "v4-fixed-ip": ''}]
         quota_usages = self.quota_usages.first()
+        scheduler_hints = {"group": self.server_groups.first().id}
 
         api.nova.extension_supported('BlockDeviceMappingV2Boot',
                                      IsA(http.HttpRequest)) \
@@ -1911,6 +1958,10 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(disk_config)
         api.nova.extension_supported(
             'ConfigDrive', IsA(http.HttpRequest)).AndReturn(config_drive)
+        api.nova.extension_supported(
+            'ServerGroups', IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.server_groups.list())
         cinder.volume_list(IsA(http.HttpRequest),
                            search_opts=VOLUME_SEARCH_OPTS) \
             .AndReturn([])
@@ -1939,7 +1990,8 @@ class InstanceTests(helpers.TestCase):
                                instance_count=IsA(int),
                                admin_pass=u'',
                                disk_config=disk_config_value,
-                               config_drive=config_drive_value)
+                               config_drive=config_drive_value,
+                               scheduler_hints=scheduler_hints)
         quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
             .AndReturn(quota_usages)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
@@ -1960,7 +2012,8 @@ class InstanceTests(helpers.TestCase):
                      'availability_zone': avail_zone.zoneName,
                      'volume_type': '',
                      'network': self.networks.first().id,
-                     'count': 1}
+                     'count': 1,
+                     'server_group': self.server_groups.first().id}
         if disk_config:
             form_data['disk_config'] = 'AUTO'
         if config_drive:
@@ -2073,6 +2126,8 @@ class InstanceTests(helpers.TestCase):
                 .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         cinder.volume_list(IsA(http.HttpRequest),
                            search_opts=VOLUME_SEARCH_OPTS) \
               .AndReturn([])
@@ -2256,6 +2311,8 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         volumes = [v for v in self.volumes.list()
                    if (v.status == AVAILABLE and v.bootable == 'true')]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -2282,7 +2339,8 @@ class InstanceTests(helpers.TestCase):
                                instance_count=IsA(int),
                                admin_pass=u'',
                                disk_config=u'AUTO',
-                               config_drive=True)
+                               config_drive=True,
+                               scheduler_hints={})
         quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
             .AndReturn(quota_usages)
 
@@ -2332,6 +2390,7 @@ class InstanceTests(helpers.TestCase):
                                       'flavor_list',
                                       'keypair_list',
                                       'availability_zone_list',
+                                      'server_group_list',
                                       'tenant_absolute_limits',),
                            api.network: ('security_group_list',),
                            cinder: ('volume_list',
@@ -2411,6 +2470,9 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)).AndReturn([])
         volumes = [v for v in self.volumes.list()
                    if (v.status == AVAILABLE and v.bootable == 'true')]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -2439,7 +2501,8 @@ class InstanceTests(helpers.TestCase):
                                instance_count=IsA(int),
                                admin_pass=u'',
                                disk_config='MANUAL',
-                               config_drive=True)
+                               config_drive=True,
+                               scheduler_hints={})
 
         self.mox.ReplayAll()
 
@@ -2543,6 +2606,8 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         api.nova.keypair_list(IsA(http.HttpRequest)) \
@@ -2597,6 +2662,7 @@ class InstanceTests(helpers.TestCase):
                    'flavor_list',
                    'keypair_list',
                    'availability_zone_list',
+                   'server_group_list',
                    'server_create',),
         api.network: ('security_group_list',),
         cinder: ('volume_list',
@@ -2694,6 +2760,9 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)).AndReturn([])
         snapshots = [v for v in self.cinder_volume_snapshots.list()
                      if (v.status == AVAILABLE)]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -2720,7 +2789,8 @@ class InstanceTests(helpers.TestCase):
                                instance_count=IsA(int),
                                admin_pass=u'',
                                disk_config=u'AUTO',
-                               config_drive=True)
+                               config_drive=True,
+                               scheduler_hints={})
         quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
               .AndReturn(quota_usages)
 
@@ -2766,12 +2836,14 @@ class InstanceTests(helpers.TestCase):
         api.neutron: ('network_list',
                       'profile_list',
                       'port_create',
-                      'port_list'),
+                      'port_list',
+                      'is_port_profiles_supported'),
         api.nova: ('extension_supported',
                    'flavor_list',
                    'keypair_list',
                    'availability_zone_list',
-                   'server_create',),
+                   'server_create',
+                   'tenant_absolute_limits'),
         api.network: ('security_group_list',),
         cinder: ('volume_list',
                  'volume_snapshot_list',),
@@ -2786,11 +2858,6 @@ class InstanceTests(helpers.TestCase):
         avail_zone = self.availability_zones.first()
         quota_usages = self.quota_usages.first()
 
-        api.nova.extension_supported('BlockDeviceMappingV2Boot',
-                                     IsA(http.HttpRequest)) \
-            .AndReturn(True)
-        api.nova.flavor_list(IsA(http.HttpRequest)) \
-            .AndReturn(self.flavors.list())
         api.glance.image_list_detailed(IsA(http.HttpRequest),
                                        filters={'is_public': True,
                                                 'status': 'active'}) \
@@ -2800,6 +2867,12 @@ class InstanceTests(helpers.TestCase):
             filters={'property-owner_id': self.tenant.id,
                      'status': 'active'}) \
             .AndReturn([[], False, False])
+
+        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
+            .AndReturn(quota_usages)
+
+        api.neutron.is_port_profiles_supported()\
+            .MultipleTimes().AndReturn(test_with_profile)
         api.neutron.network_list(IsA(http.HttpRequest),
                                  tenant_id=self.tenant.id,
                                  shared=False) \
@@ -2818,30 +2891,14 @@ class InstanceTests(helpers.TestCase):
             api.neutron.port_list(IsA(http.HttpRequest),
                                   network_id=net.id) \
                 .AndReturn(self.ports.list())
-        api.nova.flavor_list(IsA(http.HttpRequest)) \
-            .AndReturn(self.flavors.list())
-        api.nova.keypair_list(IsA(http.HttpRequest)) \
-            .AndReturn(self.keypairs.list())
-        api.network.security_group_list(IsA(http.HttpRequest)) \
-            .AndReturn(self.security_groups.list())
-        api.nova.availability_zone_list(IsA(http.HttpRequest)) \
-            .AndReturn(self.availability_zones.list())
         api.nova.extension_supported('DiskConfig',
                                      IsA(http.HttpRequest)) \
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
 
-        cinder.volume_list(IsA(http.HttpRequest),
-                           search_opts=VOLUME_SEARCH_OPTS) \
-            .AndReturn([])
-        cinder.volume_snapshot_list(IsA(http.HttpRequest),
-                                    search_opts=SNAPSHOT_SEARCH_OPTS) \
-            .AndReturn([])
-
-        quotas.tenant_quota_usages(IsA(http.HttpRequest)) \
-            .AndReturn(quota_usages)
-
+        api.nova.tenant_absolute_limits(IsA(http.HttpRequest)) \
+            .MultipleTimes().AndReturn(self.limits['absolute'])
         self.mox.ReplayAll()
 
         bad_snapshot_id = 'a-bogus-id'
@@ -2865,7 +2922,7 @@ class InstanceTests(helpers.TestCase):
         url = reverse('horizon:project:instances:launch')
         res = self.client.post(url, form_data)
 
-        self.assertFormErrors(res, 1, "You must select a snapshot.")
+        self.assertFormErrors(res, 3, "You must select a snapshot.")
 
     @helpers.create_stubs({api.glance: ('image_list_detailed',),
                            api.neutron: ('network_list',
@@ -2926,6 +2983,8 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         api.nova.tenant_absolute_limits(IsA(http.HttpRequest)) \
             .AndReturn(self.limits['absolute'])
         api.nova.flavor_list(IsA(http.HttpRequest)) \
@@ -2961,6 +3020,7 @@ class InstanceTests(helpers.TestCase):
                                       'flavor_list',
                                       'keypair_list',
                                       'availability_zone_list',
+                                      'server_group_list',
                                       'server_create',),
                            api.network: ('security_group_list',),
                            cinder: ('volume_list',
@@ -3041,6 +3101,8 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         api.nova.server_create(IsA(http.HttpRequest),
                                server.name,
                                image.id,
@@ -3055,7 +3117,8 @@ class InstanceTests(helpers.TestCase):
                                instance_count=IsA(int),
                                admin_pass='password',
                                disk_config='AUTO',
-                               config_drive=False) \
+                               config_drive=False,
+                               scheduler_hints={}) \
             .AndRaise(self.exceptions.keystone)
         if test_with_profile:
             api.neutron.port_delete(IsA(http.HttpRequest), port.id)
@@ -3173,6 +3236,8 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         volumes = [v for v in self.volumes.list()
                    if (v.status == AVAILABLE and v.bootable == 'true')]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -3220,6 +3285,7 @@ class InstanceTests(helpers.TestCase):
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
+                                      'server_group_list',
                                       'tenant_absolute_limits',
                                       'availability_zone_list',),
                            api.network: ('security_group_list',),
@@ -3292,6 +3358,10 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.server_groups.list())
         volumes = [v for v in self.volumes.list()
                    if (v.status == AVAILABLE and v.bootable == 'true')]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -3429,6 +3499,8 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         volumes = [v for v in self.volumes.list()
                    if (v.status == AVAILABLE and v.bootable == 'true')]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -3577,6 +3649,8 @@ class InstanceTests(helpers.TestCase):
             'DiskConfig', IsA(http.HttpRequest)).AndReturn(True)
         api.nova.extension_supported(
             'ConfigDrive', IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported(
+            'ServerGroups', IsA(http.HttpRequest)).AndReturn(False)
         volumes = [v for v in self.volumes.list()
                    if (v.status == AVAILABLE and v.bootable == 'true')]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -3647,6 +3721,7 @@ class InstanceTests(helpers.TestCase):
                            api.nova: ('extension_supported',
                                       'flavor_list',
                                       'keypair_list',
+                                      'server_group_list',
                                       'tenant_absolute_limits',
                                       'availability_zone_list',),
                            api.network: ('security_group_list',),
@@ -3716,6 +3791,10 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)) \
+            .AndReturn(self.server_groups.list())
         volumes = [v for v in self.volumes.list()
                    if (v.status == AVAILABLE and v.bootable == 'true')]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -3891,6 +3970,7 @@ class InstanceTests(helpers.TestCase):
                                       'flavor_list',
                                       'keypair_list',
                                       'availability_zone_list',
+                                      'server_group_list',
                                       'tenant_absolute_limits',
                                       'server_create',),
                            api.network: ('security_group_list',),
@@ -3960,6 +4040,9 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)).AndReturn([])
         volumes = [v for v in self.volumes.list()
                    if (v.status == AVAILABLE and v.bootable == 'true')]
         cinder.volume_list(IsA(http.HttpRequest),
@@ -3988,7 +4071,8 @@ class InstanceTests(helpers.TestCase):
                                instance_count=IsA(int),
                                admin_pass=u'',
                                config_drive=False,
-                               disk_config=u'')
+                               disk_config=u'',
+                               scheduler_hints={})
 
         self.mox.ReplayAll()
 
@@ -4115,6 +4199,8 @@ class InstanceTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         api.nova.flavor_list(IsA(http.HttpRequest)) \
             .AndReturn(self.flavors.list())
         api.nova.flavor_list(IsA(http.HttpRequest)) \
@@ -4227,6 +4313,8 @@ class InstanceTests(helpers.TestCase):
         api.nova.extension_supported('DiskConfig',
                                      IsA(http.HttpRequest)) \
             .AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
 
         self.mox.ReplayAll()
 
@@ -4299,6 +4387,8 @@ class InstanceTests(helpers.TestCase):
         api.nova.extension_supported('DiskConfig',
                                      IsA(http.HttpRequest)) \
             .AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
 
         self.mox.ReplayAll()
 
@@ -4334,6 +4424,8 @@ class InstanceTests(helpers.TestCase):
         api.nova.extension_supported('DiskConfig',
                                      IsA(http.HttpRequest)) \
             .AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         api.nova.server_resize(IsA(http.HttpRequest), server.id, flavor.id,
                                'AUTO').AndReturn([])
 
@@ -4357,6 +4449,8 @@ class InstanceTests(helpers.TestCase):
         api.nova.extension_supported('DiskConfig',
                                      IsA(http.HttpRequest)) \
             .AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(False)
         api.nova.server_resize(IsA(http.HttpRequest), server.id, flavor.id,
                                'AUTO') \
             .AndRaise(self.exceptions.nova)
@@ -4511,7 +4605,8 @@ class InstanceTests(helpers.TestCase):
                                           confirm_password=pass2,
                                           disk_config='MANUAL')
 
-        self.assertContains(res, "Passwords do not match.")
+        self.assertEqual(res.context['form'].errors['__all__'],
+                         ["Passwords do not match."])
 
     @helpers.create_stubs(instance_rebuild_post_stubs)
     def test_rebuild_instance_post_with_empty_string(self):
@@ -5083,6 +5178,7 @@ class ConsoleManagerTests(helpers.TestCase):
                                       'flavor_list',
                                       'keypair_list',
                                       'availability_zone_list',
+                                      'server_group_list',
                                       'server_create',),
                            api.network: ('security_group_list',),
                            cinder: ('volume_list',
@@ -5159,6 +5255,9 @@ class ConsoleManagerTests(helpers.TestCase):
             .AndReturn(True)
         api.nova.extension_supported('ConfigDrive',
                                      IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.extension_supported('ServerGroups',
+                                     IsA(http.HttpRequest)).AndReturn(True)
+        api.nova.server_group_list(IsA(http.HttpRequest)).AndReturn([])
         api.nova.server_create(IsA(http.HttpRequest),
                                server.name,
                                image.id,
@@ -5173,7 +5272,8 @@ class ConsoleManagerTests(helpers.TestCase):
                                instance_count=IsA(int),
                                admin_pass='password',
                                disk_config='AUTO',
-                               config_drive=False) \
+                               config_drive=False,
+                               scheduler_hints={}) \
             .AndRaise(self.exceptions.neutron)
         api.neutron.port_delete(IsA(http.HttpRequest), port.id)
         quotas.tenant_quota_usages(IsA(http.HttpRequest)) \

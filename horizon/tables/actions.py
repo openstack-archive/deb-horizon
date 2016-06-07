@@ -96,6 +96,7 @@ class BaseAction(html.HTMLElement):
         self.requires_input = kwargs.get('requires_input', False)
         self.preempt = kwargs.get('preempt', False)
         self.policy_rules = kwargs.get('policy_rules', None)
+        self.action_type = kwargs.get('action_type', 'default')
 
     def data_type_matched(self, datum):
         """Method to see if the action is allowed for a certain type of data.
@@ -352,6 +353,7 @@ class LinkAction(BaseAction):
         self.allowed_data_types = kwargs.get('allowed_data_types', [])
         self.icon = kwargs.get('icon', None)
         self.kwargs = kwargs
+        self.action_type = kwargs.get('action_type', 'default')
 
         if not kwargs.get('verbose_name', None):
             raise NotImplementedError('A LinkAction object must have a '
@@ -520,6 +522,12 @@ class FilterAction(BaseAction):
                         choice[2] is True):
                     return True
         return False
+
+    def get_select_options(self):
+        """Provide the value and string for the template to render.
+        """
+        if self.filter_choices:
+            return [x[:2] for x in self.filter_choices]
 
 
 class NameFilterAction(FilterAction):
@@ -930,6 +938,7 @@ class DeleteAction(BatchAction):
         if not hasattr(self, "action_past"):
             self.action_past = kwargs.get('action_past', _("Deleted"))
         self.icon = "trash"
+        self.action_type = "danger"
 
     def action(self, request, obj_id):
         """Action entry point. Overrides base class' action method.
@@ -944,16 +953,6 @@ class DeleteAction(BatchAction):
 
         Override to provide delete functionality specific to your data.
         """
-
-    def get_default_classes(self):
-        """Appends ``btn-danger`` to the action's default css classes.
-
-        This method ensures the corresponding button is highlighted
-        as a trigger for a potentially dangerous action.
-        """
-        classes = super(DeleteAction, self).get_default_classes()
-        classes += ("btn-danger",)
-        return classes
 
 
 class UpdateAction(object):

@@ -26,7 +26,9 @@ from __future__ import print_function
 
 import django
 import os
+import subprocess
 import sys
+import warnings
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
@@ -81,8 +83,8 @@ def write_autodoc_index():
         os.mkdir(RSTDIR)
     CURRENT_SOURCES[RSTDIR] = ['autoindex.rst']
 
-    INDEXOUT = open(os.path.join(RSTDIR, "autoindex.rst"), "w")
-    INDEXOUT.write("""
+    with open(os.path.join(RSTDIR, "autoindex.rst"), "w") as INDEXOUT:
+        INDEXOUT.write("""
 =================
 Source Code Index
 =================
@@ -93,57 +95,54 @@ Source Code Index
 
 """)
 
-    for modulename, path in SRCS:
-        sys.stdout.write("Generating source documentation for %s\n" %
-                         modulename)
-        INDEXOUT.write("\n%s\n" % modulename.capitalize())
-        INDEXOUT.write("%s\n" % ("=" * len(modulename),))
-        INDEXOUT.write(".. toctree::\n")
-        INDEXOUT.write("   :maxdepth: 1\n")
-        INDEXOUT.write("\n")
+        for modulename, path in SRCS:
+            sys.stdout.write("Generating source documentation for %s\n" %
+                             modulename)
+            INDEXOUT.write("\n%s\n" % modulename.capitalize())
+            INDEXOUT.write("%s\n" % ("=" * len(modulename),))
+            INDEXOUT.write(".. toctree::\n")
+            INDEXOUT.write("   :maxdepth: 1\n")
+            INDEXOUT.write("\n")
 
-        MOD_DIR = os.path.join(RSTDIR, modulename)
-        CURRENT_SOURCES[MOD_DIR] = []
-        if not(os.path.exists(MOD_DIR)):
-            os.mkdir(MOD_DIR)
-        for module in find_autodoc_modules(modulename, path):
-            if any([module.startswith(exclude) for exclude
-                   in EXCLUDED_MODULES]):
-                print("Excluded module %s." % module)
-                continue
-            mod_path = os.path.join(path, *module.split("."))
-            generated_file = os.path.join(MOD_DIR, "%s.rst" % module)
+            MOD_DIR = os.path.join(RSTDIR, modulename)
+            CURRENT_SOURCES[MOD_DIR] = []
+            if not(os.path.exists(MOD_DIR)):
+                os.mkdir(MOD_DIR)
+            for module in find_autodoc_modules(modulename, path):
+                if any([module.startswith(exclude) for exclude
+                       in EXCLUDED_MODULES]):
+                    print("Excluded module %s." % module)
+                    continue
+                mod_path = os.path.join(path, *module.split("."))
+                generated_file = os.path.join(MOD_DIR, "%s.rst" % module)
 
-            INDEXOUT.write("   %s/%s\n" % (modulename, module))
+                INDEXOUT.write("   %s/%s\n" % (modulename, module))
 
-            # Find the __init__.py module if this is a directory
-            if os.path.isdir(mod_path):
-                source_file = ".".join((os.path.join(mod_path, "__init__"),
-                                        "py",))
-            else:
-                source_file = ".".join((os.path.join(mod_path), "py"))
+                # Find the __init__.py module if this is a directory
+                if os.path.isdir(mod_path):
+                    source_file = ".".join((os.path.join(mod_path, "__init__"),
+                                            "py",))
+                else:
+                    source_file = ".".join((os.path.join(mod_path), "py"))
 
-            CURRENT_SOURCES[MOD_DIR].append("%s.rst" % module)
-            # Only generate a new file if the source has changed or we don't
-            # have a doc file to begin with.
-            if not os.access(generated_file, os.F_OK) or (
-                    os.stat(generated_file).st_mtime <
-                    os.stat(source_file).st_mtime):
-                print("Module %s updated, generating new documentation."
-                      % module)
-                FILEOUT = open(generated_file, "w")
-                header = "The :mod:`%s` Module" % module
-                FILEOUT.write("%s\n" % ("=" * len(header),))
-                FILEOUT.write("%s\n" % header)
-                FILEOUT.write("%s\n" % ("=" * len(header),))
-                FILEOUT.write(".. automodule:: %s\n" % module)
-                FILEOUT.write("  :members:\n")
-                FILEOUT.write("  :undoc-members:\n")
-                FILEOUT.write("  :show-inheritance:\n")
-                FILEOUT.write("  :noindex:\n")
-                FILEOUT.close()
-
-    INDEXOUT.close()
+                CURRENT_SOURCES[MOD_DIR].append("%s.rst" % module)
+                # Only generate a new file if the source has changed or
+                # we don't have a doc file to begin with.
+                if not os.access(generated_file, os.F_OK) or (
+                        os.stat(generated_file).st_mtime <
+                        os.stat(source_file).st_mtime):
+                    print("Module %s updated, generating new documentation."
+                          % module)
+                    with open(generated_file, "w") as FILEOUT:
+                        header = "The :mod:`%s` Module" % module
+                        FILEOUT.write("%s\n" % ("=" * len(header),))
+                        FILEOUT.write("%s\n" % header)
+                        FILEOUT.write("%s\n" % ("=" * len(header),))
+                        FILEOUT.write(".. automodule:: %s\n" % module)
+                        FILEOUT.write("  :members:\n")
+                        FILEOUT.write("  :undoc-members:\n")
+                        FILEOUT.write("  :show-inheritance:\n")
+                        FILEOUT.write("  :noindex:\n")
 
     # Delete auto-generated .rst files for sources which no longer exist
     for directory, subdirs, files in list(os.walk(RSTDIR)):
@@ -275,13 +274,19 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 # html_last_updated_fmt = '%b %d, %Y'
-git_cmd = "git log --pretty=format:'%ad, commit %h' --date=local -n1"
-html_last_updated_fmt = os.popen(git_cmd).read()
+git_cmd = ["git", "log", "--pretty=format:'%ad, commit %h'", "--date=local",
+           "-n1"]
+try:
+    html_last_updated_fmt = subprocess.Popen(
+        git_cmd, stdout=subprocess.PIPE).communicate()[0]
+except Exception:
+    warnings.warn('Cannot get last updated time from git repository. '
+                  'Not setting "html_last_updated_fmt".')
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.

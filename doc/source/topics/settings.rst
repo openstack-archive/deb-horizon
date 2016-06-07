@@ -64,7 +64,7 @@ Horizon Dashboards are automatically discovered in the following way:
   directory (for more information see :ref:`pluggable-settings-label`).
   This is the default way in OpenStack Dashboard.
 * By traversing Django's list of
-  `INSTALLED_APPS <https://docs.djangoproject.com/en/1.4/ref/settings/#std:setting-INSTALLED_APPS>`_
+  `INSTALLED_APPS <https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-INSTALLED_APPS>`_
   and importing any files that have the name ``"dashboard.py"`` and include
   code to register themselves as a Horizon dashboard.
 
@@ -429,10 +429,12 @@ This example sorts flavors by vcpus in descending order::
 
 .. versionadded:: 9.0.0(Mitaka)
 
-Default: ``AVAILABLE_THEMES = [
-    ('default', 'Default', 'themes/default'),
-    ('material', 'Material', 'themes/material'),
-]``
+Default::
+
+   AVAILABLE_THEMES = [
+        ('default', 'Default', 'themes/default'),
+        ('material', 'Material', 'themes/material'),
+   ]
 
 This setting tells Horizon which themes to use.
 
@@ -455,7 +457,7 @@ If you wish to include content other than static files in a theme
 directory, but do not wish that content to be served up, then you
 can create a sub directory named ``static``. If the theme folder
 contains a sub-directory with the name ``static``, then
-``static/custom/static``` will be used as the root for the content
+``static/custom/static`` will be used as the root for the content
 served at ``/static/custom``.
 
 The static root of the theme folder must always contain a _variables.scss
@@ -488,7 +490,7 @@ Default: ``"themes"``
 
 This setting tells Horizon which static directory to collect the
 available themes into, and therefore which URL points to the theme
-colleciton root.  For example, the default theme would be accessible
+collection root.  For example, the default theme would be accessible
 via ``/{{ STATIC_URL }}/themes/default``.
 
 ``THEME_COOKIE_NAME``
@@ -621,7 +623,8 @@ edited.
 Default::
 
     {
-        "config_drive": False
+        "config_drive": False,
+        "enable_scheduler_hints": True
     }
 
 A dictionary of settings which can be used to provide the default values for
@@ -630,6 +633,8 @@ properties found in the Launch Instance modal.
 The ``config_drive`` setting specifies the default value for the Configuration
 Drive property.
 
+The ``enable_scheduler_hints`` setting specifies whether or not Scheduler Hints
+can be provided when launching an instance.
 
 ``LAUNCH_INSTANCE_NG_ENABLED``
 ------------------------------
@@ -1059,9 +1064,10 @@ Default::
             'enable_firewall': True,
             'enable_vpn': True,
             'profile_support': None,
-            'supported_provider_types': ["*"],
             'supported_vnic_types': ["*"],
+            'supported_provider_types': ["*"],
             'segmentation_id_range': {},
+            'extra_provider_types': {},
             'enable_fip_topology_check': True,
         }
 
@@ -1190,9 +1196,15 @@ Default: ``["*"]``
 
 For use with the provider network extension. Use this to explicitly set which
 provider network types are supported. Only the network types in this list will
-be available to choose from when creating a network. Network types include
-local, flat, vlan, gre, and vxlan. By default all provider network types will
-be available to choose from.
+be available to choose from when creating a network.
+Network types defined in Horizon or defined in ``extra_provider_types``
+settings can be specified in this list.
+As of the Newton release, the network types defined in Horizon include
+network types supported by Neutron ML2 plugin with Open vSwitch driver
+(``local``, ``flat``, ``vlan``, ``gre``, ``vxlan`` and ``geneve``)
+and supported by Midonet plugin (``midonet`` and ``uplink``).
+``["*"]`` means that all provider network types supported by Neutron
+ML2 plugin will be available to choose from.
 
 Example: ``['local', 'flat', 'gre']``
 
@@ -1226,7 +1238,48 @@ number is the maximum segmentation ID. Pertains only to the vlan, gre, and
 vxlan network types. By default this option is not provided and each minimum
 and maximum value will be the default for the provider network type.
 
-Example: ``{'vlan': [1024, 2048], 'gre': [4094, 65536]}``
+Example::
+
+    {
+        'vlan': [1024, 2048],
+        'gre': [4094, 65536]
+    }
+
+``extra_provider_types``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 10.0.0(Newton)
+
+Default: ``{}``
+
+For use with the provider network extension.
+This is a dictionary to define extra provider network definitions.
+Network types supported by Neutron depend on the configured plugin.
+Horizon has predefined provider network types but horizon cannot cover
+all of them. If you are using a provider network type not defined
+in advance, you can add a definition through this setting.
+
+The **key** name of each item in this must be a network type used
+in the Neutron API. * **value** should be a dictionary which contains
+the following items:
+
+* ``display_name``: string displayed in the network creation form.
+* ``require_physical_network``: a boolean parameter which indicates
+  this network type requires a physical network.
+* ``require_segmentation_id``: a boolean parameter which indicates
+  this network type requires a segmentation ID.
+  If True, a valid segmentation ID range must be configureed
+  in ``segmentation_id_range`` settings above.
+
+Example::
+
+    {
+        'awesome': {
+            'display_name': 'Awesome',
+            'require_physical_network': False,
+            'require_segmentation_id': True,
+        },
+    }
 
 ``enable_fip_topology_check``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1245,40 +1298,17 @@ subnet with no router if your Neutron backend allows it.
 
 .. versionadded:: 8.0.0(Liberty)
 
-``default_ipv4_subnet_pool_label``
+``default_dns_nameservers``:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionadded:: 8.0.0(Liberty)
+.. versionadded:: 10.0.0(Newton)
 
-Default: ``None`` (Disabled)
+Default: ``None`` (Empty)
 
-Neutron can be configured with a default Subnet Pool to be used for IPv4
-subnet-allocation. Specify the label you wish to display in the Address pool
-selector on the create subnet step if you want to use this feature.
+Default DNS servers you would like to use when a subnet is created. This is
+only a default. Users can still choose a different list of dns servers.
 
-This option is now marked as "deprecated" and will be removed in Newton or
-a later release. If there exists a default Subnet Pool it will be automatically
-detected through the Neutron API and the label will be set to the name of the
-default Subnet Pool.
-
-``default_ipv6_subnet_pool_label``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 8.0.0(Liberty)
-
-Default: ``None`` (Disabled)
-
-Neutron can be configured with a default Subnet Pool to be used for IPv6
-subnet-allocation. Specify the label you wish to display in the Address pool
-selector on the create subnet step if you want to use this feature.
-
-When using Liberty Neutron you must set this to enable IPv6 Prefix Delegation
-in a PD-capable environment.
-
-This option is now marked as "deprecated" and will be removed in Newton or
-a later release. If there exists a default Subnet Pool it will be automatically
-detected through the Neutron API and the label will be set to the name of the
-default Subnet Pool.
+Example: ``["8.8.8.8", "8.8.4.4", "208.67.222.222"]``
 
 ``OPENSTACK_SSL_CACERT``
 ------------------------
@@ -1428,7 +1458,7 @@ The absolute path to the directory where static files are collected when
 collectstatic is run.
 
 For more information see:
-https://docs.djangoproject.com/en/1.7/ref/settings/#static-root
+https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 
 ``STATIC_URL``
 --------------
@@ -1453,7 +1483,7 @@ $static_url.  Make sure you run ``python manage.py collectstatic`` and
 ``python manage.py compress`` after any changes to this value in settings.py.
 
 For more information see:
-https://docs.djangoproject.com/en/1.7/ref/settings/#static-url
+https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 
 ``DISALLOW_IFRAME_EMBED``
 -------------------------
@@ -1488,6 +1518,66 @@ Default: ``[]``
 Ignore all listed Nova extensions, and behave as if they were unsupported.
 Can be used to selectively disable certain costly extensions for performance
 reasons.
+
+
+``OPERATION_LOG_ENABLED``
+-------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Default: ``False``
+
+This setting can be used to log operations of all of users on Horizon.
+In this log, it can include date and time of an operation, an operation URL,
+user information such as domain, project and user, and so on.
+And this log format is configurable. In detail, you can see OPERATION_LOG_OPTIONS.
+
+.. note::
+
+  If you use this feature, you need to configure the logger setting like
+  a outputting path for operation log in ``local_settings.py``.
+
+
+``OPERATION_LOG_OPTIONS``
+------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Default::
+
+        {
+         'mask_fields': ['password'],
+         'target_methods': ['POST'],
+         'format': ("[%(domain_name)s] [%(domain_id)s] [%(project_name)s]"
+             " [%(project_id)s] [%(user_name)s] [%(user_id)s] [%(request_scheme)s]"
+             " [%(referer_url)s] [%(request_url)s] [%(message)s] [%(method)s]"
+             " [%(http_status)s] [%(param)s]"),
+        }
+
+This setting controls the behavior of the operation log.
+
+* ``mask_fields`` is a list of keys of post data which should be masked from the
+  point of view of security. Fields like ``password`` should be included.
+  The fields specified in ``mask_fields`` are logged as ``********``.
+* ``target_methods`` is a request method which is logged to a operation log.
+  The valid methods are ``POST``, ``GET``, ``PUT``, ``DELETE``.
+* ``format`` defines the operation log format.
+  Currently you can use the following keywords.
+  The default value contains all keywords.
+
+  * %(domain_name)s
+  * %(domain_id)s
+  * %(project_name)s
+  * %(project_id)s
+  * %(user_name)s
+  * %(user_id)s
+  * %(request_scheme)s
+  * %(referer_url)s
+  * %(request_url)s
+  * %(message)s
+  * %(method)s
+  * %(http_status)s
+  * %(param)s
 
 
 Django Settings (Partial)
@@ -1534,9 +1624,41 @@ Default: ``True``
 Controls whether unhandled exceptions should generate a generic 500 response
 or present the user with a pretty-formatted debug information page.
 
+When set, CACHED_TEMPLATE_LOADERS will not be cached.
+
 This setting should **always** be set to ``False`` for production deployments
 as the debug page can display sensitive information to users and attackers
 alike.
+
+``TEMPLATE_LOADERS``
+---------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+These template loaders will be the first loaders and get loaded before the
+CACHED_TEMPLATE_LOADERS. Use ADD_TEMPLATE_LOADERS if you want to add loaders at
+the end and not cache loaded templates.
+After the whole settings process has gone through, TEMPLATE_LOADERS will be:
+
+    TEMPLATE_LOADERS += (
+            ('django.template.loaders.cached.Loader', CACHED_TEMPLATE_LOADERS),
+        ) + tuple(ADD_TEMPLATE_LOADERS)
+
+``CACHED_TEMPLATE_LOADERS``
+---------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Template loaders defined here will have their output cached if DEBUG
+is set to False.
+
+``ADD_TEMPLATE_LOADERS``
+---------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Template loaders defined here will be be loaded at the end of TEMPLATE_LOADERS,
+after the CACHED_TEMPLATE_LOADERS and will never have a cached output.
 
 ``SECRET_KEY``
 --------------
@@ -1868,4 +1990,3 @@ following content::
     PANEL_GROUP = 'plugin_panel_group'
     PANEL_GROUP_NAME = 'Plugin Panel Group'
     PANEL_GROUP_DASHBOARD = 'admin'
-

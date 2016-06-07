@@ -41,6 +41,33 @@
     ctrl.chartTotalVcpusLabel = gettext('Total VCPUs');
     ctrl.chartTotalRamLabel = gettext('Total RAM');
 
+    ctrl.filterFacets = [
+      {
+        label: gettext('Name'),
+        name: 'name',
+        singleton: true
+      },
+      {
+        label: gettext('VCPUs'),
+        name: 'vcpus',
+        singleton: true
+      },
+      {
+        label: gettext('RAM'),
+        name: 'ram',
+        singleton: true
+      },
+      {
+        label: gettext('Public'),
+        name: 'isPublic',
+        singleton: true,
+        options: [
+          { label: gettext('No'), key: false },
+          { label: gettext('Yes'), key: true }
+        ]
+      }
+    ];
+
     // Labels for error message on ram/disk validation
     ctrl.sourcesLabel = {
       image: gettext('image'),
@@ -146,7 +173,7 @@
 
     // Convenience function to return a sensible value instead of undefined
     function defaultIfUndefined(value, defaultValue) {
-      return (angular.isUndefined(value)) ? defaultValue : value;
+      return angular.isUndefined(value) ? defaultValue : value;
     }
 
     /*

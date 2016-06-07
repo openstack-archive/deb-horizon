@@ -27,3 +27,18 @@
   display: inline-block;
   vertical-align: middle;
 }
+
+// Mixin for the dropdown button styling of the table action rows
+@mixin dropdown-button($class, $color, $hover-bg, $hover-color: $color) {
+  &.btn-#{$class} {
+    color: $color;
+
+    &:focus,
+    &.active,
+    &:active,
+    &:hover {
+      color: $hover-color;
+      background: $hover-bg;
+    }
+  }
+}

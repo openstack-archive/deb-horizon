@@ -11,11 +11,14 @@
 #    under the License.
 import time
 
+from openstack_dashboard.test.integration_tests import decorators
 from openstack_dashboard.test.integration_tests import helpers
 from openstack_dashboard.test.integration_tests.regions import messages
 
 
-class TestVolumes(helpers.TestCase):
+class TestVolumesBasic(helpers.TestCase):
+    """Login as demo user"""
+
     VOLUME_NAME = helpers.gen_random_resource_name("volume")
 
     @property
@@ -49,22 +52,20 @@ class TestVolumes(helpers.TestCase):
 
         new_name = "edited_" + self.VOLUME_NAME
         volumes_page.edit_volume(self.VOLUME_NAME, new_name, "description")
-        self.VOLUME_NAME = new_name
         self.assertTrue(
             volumes_page.find_message_and_dismiss(messages.INFO))
         self.assertFalse(
             volumes_page.find_message_and_dismiss(messages.ERROR))
-        self.assertTrue(volumes_page.is_volume_present(self.VOLUME_NAME))
-        self.assertTrue(volumes_page.is_volume_status(self.VOLUME_NAME,
-                                                      'Available'))
+        self.assertTrue(volumes_page.is_volume_present(new_name))
+        self.assertTrue(volumes_page.is_volume_status(new_name, 'Available'))
 
         volumes_page = self.volumes_page
-        volumes_page.delete_volume(self.VOLUME_NAME)
+        volumes_page.delete_volume(new_name)
         self.assertTrue(
             volumes_page.find_message_and_dismiss(messages.SUCCESS))
         self.assertFalse(
             volumes_page.find_message_and_dismiss(messages.ERROR))
-        self.assertTrue(volumes_page.is_volume_deleted(self.VOLUME_NAME))
+        self.assertTrue(volumes_page.is_volume_deleted(new_name))
         # NOTE(tsufiev): A short regression test on bug 1553314: we try to
         # re-open 'Create Volume' button after the volume was deleted. If the
         # regression occurs, the form won't appear (because link is going to be
@@ -145,9 +146,188 @@ class TestVolumes(helpers.TestCase):
             self.assertTrue(volumes_page.is_volume_deleted(volume_name))
 
 
-class TestAdminVolumes(helpers.AdminTestCase, TestVolumes):
+class TestAdminVolumes(helpers.AdminTestCase, TestVolumesBasic):
+    """Login as admin user"""
+
     VOLUME_NAME = helpers.gen_random_resource_name("volume")
 
     @property
     def volumes_page(self):
         return self.home_pg.go_to_system_volumes_volumespage()
+
+
+class TestVolumesAdvanced(helpers.TestCase):
+    """Login as demo user"""
+
+    VOLUME_NAME = helpers.gen_random_resource_name("volume")
+
+    @property
+    def volumes_page(self):
+        return self.home_pg.go_to_compute_volumes_volumespage()
+
+    @decorators.skip_because(bugs=['1584057'])
+    def test_manage_volume_attachments(self):
+        """This test case checks attach/detach actions for volume
+            Steps:
+            1. Login to Horizon Dashboard as horizon user
+            2. Navigate to Project -> Compute -> Instances, create instance
+            3. Navigate to Project -> Compute -> Volumes, create volume
+            4. Attach volume to instance from step2
+            5. Check that volume status and link to instance
+            6. Detach volume from instance
+            7. Check volume status
+            8. Delete volume and instance
+        """
+        instance_name = helpers.gen_random_resource_name('instance')
+        instances_page = self.home_pg.go_to_compute_instancespage()
+        instances_page.create_instance(instance_name)
+        instances_page.find_message_and_dismiss(messages.SUCCESS)
+        self.assertFalse(
+            instances_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(instances_page.is_instance_active(instance_name))
+
+        volumes_page = self.volumes_page
+        volumes_page.create_volume(self.VOLUME_NAME)
+        volumes_page.find_message_and_dismiss(messages.INFO)
+        self.assertFalse(volumes_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(volumes_page.is_volume_status(self.VOLUME_NAME,
+                                                      'Available'))
+
+        volumes_page.attach_volume_to_instance(self.VOLUME_NAME, instance_name)
+        volumes_page.find_message_and_dismiss(messages.INFO)
+        self.assertFalse(volumes_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(volumes_page.is_volume_status(self.VOLUME_NAME,
+                                                      'In-use'))
+        self.assertTrue(
+            volumes_page.is_volume_attached_to_instance(self.VOLUME_NAME,
+                                                        instance_name))
+
+        volumes_page.detach_volume_from_instance(self.VOLUME_NAME,
+                                                 instance_name)
+        volumes_page.find_message_and_dismiss(messages.SUCCESS)
+        self.assertFalse(volumes_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(volumes_page.is_volume_status(self.VOLUME_NAME,
+                                                      'Available'))
+
+        volumes_page.delete_volume(self.VOLUME_NAME)
+        volumes_page.find_message_and_dismiss(messages.SUCCESS)
+        self.assertFalse(volumes_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(volumes_page.is_volume_deleted(self.VOLUME_NAME))
+
+        instances_page = self.home_pg.go_to_compute_instancespage()
+        instances_page.delete_instance(instance_name)
+        instances_page.find_message_and_dismiss(messages.SUCCESS)
+        self.assertFalse(
+            instances_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(instances_page.is_instance_deleted(instance_name))
+
+
+class TestVolumesActions(helpers.TestCase):
+    VOLUME_NAME = helpers.gen_random_resource_name("volume")
+    IMAGE_NAME = helpers.gen_random_resource_name("image")
+    INSTANCE_NAME = helpers.gen_random_resource_name("instance")
+
+    def setUp(self):
+        super(TestVolumesActions, self).setUp()
+        self.volumes_page = self.home_pg.go_to_compute_volumes_volumespage()
+        self.volumes_page.create_volume(self.VOLUME_NAME)
+        self.assertTrue(
+            self.volumes_page.find_message_and_dismiss(messages.INFO))
+        self.assertFalse(
+            self.volumes_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(self.volumes_page.is_volume_present(self.VOLUME_NAME))
+        self.assertTrue(self.volumes_page.is_volume_status(self.VOLUME_NAME,
+                                                           'Available'))
+
+    def test_volume_extend(self):
+        """This test case checks extend volume functionality:
+            Steps:
+            1. Check current volume size
+            2. Extend volume
+            3. Check that no Error messages present
+            4. Check that the volume is still in the list
+            5. Check that the volume size is changed
+        """
+        orig_size = self.volumes_page.get_size(self.VOLUME_NAME)
+        self.volumes_page.extend_volume(self.VOLUME_NAME, orig_size + 1)
+        self.assertTrue(
+            self.volumes_page.find_message_and_dismiss(messages.INFO))
+        self.assertFalse(
+            self.volumes_page.find_message_and_dismiss(messages.ERROR))
+        new_size = self.volumes_page.get_size(self.VOLUME_NAME)
+        self.assertFalse(orig_size >= new_size)
+
+    @decorators.skip_because(bugs=['1584057'])
+    def test_volume_upload_to_image(self):
+        """This test case checks upload volume to image functionality:
+            Steps:
+            1. Upload volume to image with some disk format
+            2. Check that image is created
+            3. Check that no Error messages present
+            4. Delete the image
+            5. Repeat actions for all disk formats
+        """
+        self.volumes_page = self.home_pg.go_to_compute_volumes_volumespage()
+        all_formats = {"qcow2": u'QCOW2', "raw": u'Raw', "vdi": u'VDI',
+                       "vmdk": u'VMDK'}
+        for disk_format in all_formats:
+            self.volumes_page.upload_volume_to_image(self.VOLUME_NAME,
+                                                     self.IMAGE_NAME,
+                                                     disk_format)
+            self.assertFalse(
+                self.volumes_page.find_message_and_dismiss(messages.ERROR))
+            self.assertTrue(self.volumes_page.is_volume_status(
+                self.VOLUME_NAME, 'Available'))
+            images_page = self.home_pg.go_to_compute_imagespage()
+            self.assertTrue(images_page.is_image_present(self.IMAGE_NAME))
+            self.assertTrue(images_page.is_image_active(self.IMAGE_NAME))
+            self.assertEqual(images_page.get_image_format(self.IMAGE_NAME),
+                             all_formats[disk_format])
+            images_page.delete_image(self.IMAGE_NAME)
+            self.assertTrue(images_page.find_message_and_dismiss(
+                messages.SUCCESS))
+            self.assertFalse(images_page.find_message_and_dismiss(
+                messages.ERROR))
+            self.assertFalse(images_page.is_image_present(self.IMAGE_NAME))
+            self.volumes_page = \
+                self.home_pg.go_to_compute_volumes_volumespage()
+
+    def test_volume_launch_as_instance(self):
+        """This test case checks launch volume as instance functionality:
+            Steps:
+            1. Launch volume as instance
+            2. Check that instance is created
+            3. Check that no Error messages present
+            4. Check that instance status is 'active'
+            5. Check that volume status is 'in use'
+            6. Delete instance
+        """
+        self.volumes_page.launch_instance(self.VOLUME_NAME, self.INSTANCE_NAME)
+        self.assertTrue(
+            self.volumes_page.find_message_and_dismiss(messages.SUCCESS))
+        self.assertFalse(
+            self.volumes_page.find_message_and_dismiss(messages.ERROR))
+        instances_page = self.home_pg.go_to_compute_instancespage()
+        self.assertTrue(instances_page.is_instance_active(self.INSTANCE_NAME))
+        self.volumes_page = self.home_pg.go_to_compute_volumes_volumespage()
+        self.assertTrue(self.volumes_page.is_volume_status(self.VOLUME_NAME,
+                                                           'In-use'))
+        self.assertIn(self.INSTANCE_NAME,
+                      self.volumes_page.get_attach_instance(self.VOLUME_NAME))
+        instances_page = self.home_pg.go_to_compute_instancespage()
+        instances_page.delete_instance(self.INSTANCE_NAME)
+        self.assertTrue(
+            instances_page.find_message_and_dismiss(messages.SUCCESS))
+        self.assertFalse(
+            instances_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(instances_page.is_instance_deleted(self.INSTANCE_NAME))
+        self.volumes_page = self.home_pg.go_to_compute_volumes_volumespage()
+
+    def tearDown(self):
+        self.volumes_page.delete_volume(self.VOLUME_NAME)
+        self.assertTrue(
+            self.volumes_page.find_message_and_dismiss(messages.SUCCESS))
+        self.assertFalse(
+            self.volumes_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(self.volumes_page.is_volume_deleted(self.VOLUME_NAME))
+        super(TestVolumesActions, self).tearDown()

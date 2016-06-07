@@ -34,7 +34,7 @@ STATUS_DICT = dict(project_tables.STATUS_DISPLAY_CHOICES)
 VNIC_TYPES = dict(project_forms.VNIC_TYPES)
 
 
-class DetailView(tabs.TabView):
+class DetailView(tabs.TabbedTableView):
     tab_group_class = project_tabs.PortDetailTabs
     template_name = 'horizon/common/_detail.html'
     page_title = "{{ port.name|default:port.id }}"
@@ -89,7 +89,6 @@ class DetailView(tabs.TabView):
                                           network_id=port.network_id)
         # TODO(robcresswell) Add URL for "Ports" crumb after bug/1416838
         breadcrumb = [
-            (_("Networks"), self.get_redirect_url()),
             ((port.network_name or port.network_id), port.network_url),
             (_("Ports"),), ]
         context["custom_breadcrumb"] = breadcrumb

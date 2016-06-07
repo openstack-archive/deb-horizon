@@ -15,6 +15,7 @@
 """
 Views for managing Neutron Subnets.
 """
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -48,10 +49,17 @@ class CreateView(workflows.WorkflowView):
             msg = _("Unable to retrieve network.")
             exceptions.handle(self.request, msg, redirect=redirect)
 
+    def get_default_dns_servers(self):
+        # this returns the default dns servers to be used for new subnets
+        dns_default = "\n".join(getattr(settings, 'OPENSTACK_NEUTRON_NETWORK',
+                                        {}).get('default_dns_nameservers', ''))
+        return dns_default
+
     def get_initial(self):
         network = self.get_object()
         return {"network_id": self.kwargs['network_id'],
-                "network_name": network.name_or_id}
+                "network_name": network.name_or_id,
+                "dns_nameservers": self.get_default_dns_servers()}
 
 
 class UpdateView(workflows.WorkflowView):
@@ -144,14 +152,13 @@ class DetailView(tabs.TabView):
         subnet = self.get_data()
         network = self.get_network(subnet.network_id)
         subnet.network_name = network.get('name')
+        subnet.network_url = self.get_network_detail_url(subnet.network_id)
         network_nav = subnet.network_name or subnet.network_id
         table = project_tables.SubnetsTable(self.request,
                                             network_id=subnet.network_id)
         # TODO(robcresswell) Add URL for "Subnets" crumb after bug/1416838
         breadcrumb = [
-            (_("Networks"), self.get_redirect_url()),
-            (network_nav, reverse('horizon:project:networks:detail',
-                                  args=(subnet.network_id,))),
+            (network_nav, subnet.network_url),
             (_("Subnets"),), ]
         context["custom_breadcrumb"] = breadcrumb
         context["subnet"] = subnet
@@ -162,6 +169,11 @@ class DetailView(tabs.TabView):
     def get_tabs(self, request, *args, **kwargs):
         subnet = self.get_data()
         return self.tab_group_class(request, subnet=subnet, **kwargs)
+
+    @staticmethod
+    def get_network_detail_url(network_id):
+        return reverse('horizon:project:networks:detail',
+                       args=(network_id,))
 
     @staticmethod
     def get_redirect_url():

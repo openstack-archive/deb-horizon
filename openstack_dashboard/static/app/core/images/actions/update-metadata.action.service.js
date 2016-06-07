@@ -25,29 +25,38 @@
     'horizon.app.core.images.events',
     'horizon.app.core.metadata.modal.service',
     'horizon.app.core.openstack-service-api.userSession',
-    'horizon.framework.util.q.extensions'
+    'horizon.framework.util.actions.action-result.service',
+    'horizon.framework.util.q.extensions',
+    'horizon.app.core.images.resourceType'
   ];
 
   /**
    * @ngDoc factory
    * @name horizon.app.core.images.actions.updateMetadataService
    *
+   * @param {Object} $q
+   * @param {Object} events
+   * @param {Object} metadataModalService
+   * @param {Object} userSessionService
+   * @param {Object} $qExtensions
    * @Description
    * Brings up the Update Metadata for image modal.
    * On submit, update the metadata of selected image.
    * On cancel, do nothing.
+   *
+   * @returns {Object} The service
    */
   function updateMetadataService(
     $q,
     events,
     metadataModalService,
     userSessionService,
-    $qExtensions
+    actionResultService,
+    $qExtensions,
+    imageResourceType
   ) {
-    var scope;
 
     var service = {
-      initScope: initScope,
       perform: perform,
       allowed: allowed
     };
@@ -56,22 +65,17 @@
 
     //////////////
 
-    function initScope(newScope) {
-      scope = newScope;
-    }
-
     function perform(image) {
       return metadataModalService.open('image', image.id)
         .result
         .then(onSuccess);
 
       function onSuccess() {
-        scope.$emit(events.UPDATE_METADATA_SUCCESS, [image.id]);
-        return {
-          // Object intentionally left blank. This data is passed to
-          // code that holds this action's promise. In the future, it may
-          // contain entity IDs and types that were modified by this action.
-        };
+        // To make the result of this action generically useful, reformat the return
+        // from the deleteModal into a standard form
+        return actionResultService.getActionResult()
+          .updated(imageResourceType, image.id)
+          .result;
       }
     }
 

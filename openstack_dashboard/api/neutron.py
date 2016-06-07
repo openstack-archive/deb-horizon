@@ -20,6 +20,7 @@
 from __future__ import absolute_import
 
 import collections
+import copy
 import logging
 
 import netaddr
@@ -120,7 +121,21 @@ class Port(NeutronAPIDictWrapper):
         if 'mac_learning_enabled' in apidict:
             apidict['mac_state'] = \
                 ON_STATE if apidict['mac_learning_enabled'] else OFF_STATE
+        pairs = apidict.get('allowed_address_pairs')
+        if pairs:
+            apidict = copy.deepcopy(apidict)
+            wrapped_pairs = [PortAllowedAddressPair(pair) for pair in pairs]
+            apidict['allowed_address_pairs'] = wrapped_pairs
         super(Port, self).__init__(apidict)
+
+
+class PortAllowedAddressPair(NeutronAPIDictWrapper):
+    """Wrapper for neutron port allowed address pairs."""
+
+    def __init__(self, addr_pair):
+        super(PortAllowedAddressPair, self).__init__(addr_pair)
+        # Horizon references id property for table operations
+        self.id = addr_pair['ip_address']
 
 
 class Profile(NeutronAPIDictWrapper):
@@ -951,6 +966,13 @@ def router_list(request, **params):
     return [Router(r) for r in routers]
 
 
+def router_list_on_l3_agent(request, l3_agent_id, **params):
+    routers = neutronclient(request).\
+        list_routers_on_l3_agent(l3_agent_id,
+                                 **params).get('routers')
+    return [Router(r) for r in routers]
+
+
 def router_delete(request, router_id):
     neutronclient(request).delete_router(router_id)
 
@@ -1033,6 +1055,12 @@ def agent_list(request, **params):
 def list_dhcp_agent_hosting_networks(request, network, **params):
     agents = neutronclient(request).list_dhcp_agent_hosting_networks(network,
                                                                      **params)
+    return [Agent(a) for a in agents['agents']]
+
+
+def list_l3_agent_hosting_router(request, router, **params):
+    agents = neutronclient(request).list_l3_agent_hosting_routers(router,
+                                                                  **params)
     return [Agent(a) for a in agents['agents']]
 
 

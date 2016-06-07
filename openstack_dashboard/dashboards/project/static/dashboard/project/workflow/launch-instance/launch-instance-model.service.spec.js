@@ -19,56 +19,56 @@
   describe('Launch Instance Model', function() {
 
     describe('launchInstanceModel Factory', function() {
-      var model, scope, settings, $q;
+      var model, scope, settings, $q, glance;
       var cinderEnabled = false;
       var neutronEnabled = false;
       var novaExtensionsEnabled = false;
       var novaApi = {
         createServer: function(finalSpec) {
-            return {
-              then: function () {
-                return finalSpec;
-              }
-            };
-          },
+          return {
+            then: function () {
+              return finalSpec;
+            }
+          };
+        },
         getAvailabilityZones: function() {
-            var zones = [
-              { zoneName: 'zone-1', zoneState: { available: true } },
-              { zoneName: 'zone-2', zoneState: { available: true } },
-              { zoneName: 'invalid-zone-1' },
-              { zoneName: 'invalid-zone-2' }
-            ];
+          var zones = [
+            { zoneName: 'zone-1', zoneState: { available: true } },
+            { zoneName: 'zone-2', zoneState: { available: true } },
+            { zoneName: 'invalid-zone-1' },
+            { zoneName: 'invalid-zone-2' }
+          ];
 
-            var deferred = $q.defer();
-            deferred.resolve({ data: { items: zones } });
+          var deferred = $q.defer();
+          deferred.resolve({ data: { items: zones } });
 
-            return deferred.promise;
-          },
+          return deferred.promise;
+        },
         getFlavors: function() {
-            var flavors = [ 'flavor-1', 'flavor-2' ];
+          var flavors = [ 'flavor-1', 'flavor-2' ];
 
-            var deferred = $q.defer();
-            deferred.resolve({ data: { items: flavors } });
+          var deferred = $q.defer();
+          deferred.resolve({ data: { items: flavors } });
 
-            return deferred.promise;
-          },
+          return deferred.promise;
+        },
         getKeypairs: function() {
-            var keypairs = [ { keypair: { name: 'key-1' } },
-                             { keypair: { name: 'key-2' } } ];
+          var keypairs = [ { keypair: { name: 'key-1' } },
+                           { keypair: { name: 'key-2' } } ];
 
-            var deferred = $q.defer();
-            deferred.resolve({ data: { items: keypairs } });
+          var deferred = $q.defer();
+          deferred.resolve({ data: { items: keypairs } });
 
-            return deferred.promise;
-          },
+          return deferred.promise;
+        },
         getLimits: function() {
-            var limits = { maxTotalInstances: 10, totalInstancesUsed: 0 };
+          var limits = { maxTotalInstances: 10, totalInstancesUsed: 0 };
 
-            var deferred = $q.defer();
-            deferred.resolve({ data: limits });
+          var deferred = $q.defer();
+          deferred.resolve({ data: limits });
 
-            return deferred.promise;
-          }
+          return deferred.promise;
+        }
       };
 
       beforeEach(module('horizon.dashboard.project.workflow.launch-instance'));
@@ -187,6 +187,16 @@
           }
         });
 
+        $provide.value('horizon.app.core.openstack-service-api.policy', {
+          ifAllowed: function() {
+            var deferred = $q.defer();
+
+            deferred.resolve();
+
+            return deferred.promise;
+          }
+        });
+
         $provide.value('horizon.app.core.openstack-service-api.novaExtensions', {
           ifNameEnabled: function() {
             var deferred = $q.defer();
@@ -208,6 +218,27 @@
             deferred.resolve(settings[setting]);
 
             return deferred.promise;
+          },
+          ifEnabled: function(setting) {
+            var deferred = $q.defer();
+
+            var keys = setting.split('.');
+            var index = 0;
+            var value = settings;
+            while (angular.isObject(value) && index < keys.length) {
+              value = value[keys[index]];
+              index++;
+            }
+
+            // NOTE: This does not work for the general case of ifEnabled, only for what
+            // we need it for at the moment (only explicit false rejects the promise).
+            if (value === false) {
+              deferred.reject();
+            } else {
+              deferred.resolve();
+            }
+
+            return deferred.promise;
           }
         });
 
@@ -216,10 +247,12 @@
         });
       }));
 
-      beforeEach(inject(function(launchInstanceModel, $rootScope, _$q_) {
-        model = launchInstanceModel;
-        $q = _$q_;
-        scope = $rootScope.$new();
+      beforeEach(inject(function($injector) {
+        model = $injector.get('launchInstanceModel');
+        $q = $injector.get('$q');
+        scope = $injector.get('$rootScope').$new();
+        glance = $injector.get('horizon.app.core.openstack-service-api.glance');
+        spyOn(glance, 'getNamespaces').and.callThrough();
       }));
 
       describe('Initial object (pre-initialize)', function() {
@@ -252,7 +285,8 @@
           expect(model.metadataDefs.image).toBeNull();
           expect(model.metadataDefs.volume).toBeNull();
           expect(model.metadataDefs.instance).toBeNull();
-          expect(Object.keys(model.metadataDefs).length).toBe(4);
+          expect(model.metadataDefs.hints).toBeNull();
+          expect(Object.keys(model.metadataDefs).length).toBe(5);
         });
 
         it('defaults "allow create volume from image" to false', function() {
@@ -269,6 +303,10 @@
 
         it('defaults "metadataTree" to null', function() {
           expect(model.metadataTree).toBe(null);
+        });
+
+        it('defaults "hintsTree" to null', function() {
+          expect(model.hintsTree).toBe(null);
         });
 
         it('initializes "nova limits" to empty object', function() {
@@ -387,6 +425,19 @@
           scope.$apply();
           expect(model.ports.length).toBe(1);
         });
+
+        it('should make 5 requests for namespaces', function() {
+          model.initialize(true);
+          scope.$apply();
+          expect(glance.getNamespaces.calls.count()).toBe(5);
+        });
+
+        it('should not request scheduler hints if scheduler hints disabled', function() {
+          settings.LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints = false;
+          model.initialize(true);
+          scope.$apply();
+          expect(glance.getNamespaces.calls.count()).toBe(4);
+        });
       });
 
       describe('Post Initialization Model - Initializing', function() {
@@ -463,7 +514,7 @@
         });
 
         it('sets volume options appropriately', function() {
-          expect(model.newInstanceSpec.vol_create).toBe(false);
+          expect(model.newInstanceSpec.vol_create).toBe(true);
           expect(model.newInstanceSpec.vol_device_name).toBe('vda');
           expect(model.newInstanceSpec.vol_delete_on_instance_delete).toBe(false);
           expect(model.newInstanceSpec.vol_size).toBe(1);
@@ -472,7 +523,7 @@
       });
 
       describe('Create Instance', function() {
-        var metadata;
+        var metadata, hints;
 
         beforeEach(function() {
           // initialize some data
@@ -493,6 +544,13 @@
           model.metadataTree = {
             getExisting: function() {
               return metadata;
+            }
+          };
+
+          hints = {'group': 'group1'};
+          model.hintsTree = {
+            getExisting: function() {
+              return hints;
             }
           };
         });
@@ -647,6 +705,23 @@
         it('should have meta property if metadata specified', function() {
           var finalSpec = model.createInstance();
           expect(finalSpec.meta).toBe(metadata);
+        });
+
+        it('should not have scheduler_hints property if no scheduler hints specified', function() {
+          hints = {};
+
+          var finalSpec = model.createInstance();
+          expect(finalSpec.scheduler_hints).toBeUndefined();
+
+          model.hintsTree = null;
+
+          finalSpec = model.createInstance();
+          expect(finalSpec.scheduler_hints).toBeUndefined();
+        });
+
+        it('should have scheduler_hints property if scheduler hints specified', function() {
+          var finalSpec = model.createInstance();
+          expect(finalSpec.scheduler_hints).toBe(hints);
         });
 
       });
