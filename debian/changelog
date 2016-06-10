@@ -1,5 +1,6 @@
 horizon (2:10.0.0~b1-1) UNRELEASED; urgency=medium
 
+  * New upstream release.
   * Fix (build-)dependencies.
 
  -- Ivan Udovichenko <iudovichenko@mirantis.com>  Wed, 08 Jun 2016 00:51:25 +0300
