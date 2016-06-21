@@ -1,0 +1,39 @@
+From 27844673e0a736782cfc18505ba7ab0a2c0ccb63 Mon Sep 17 00:00:00 2001
+From: Ivan Udovichenko <iudovichenko@mirantis.com>
+Date: Tue, 21 Jun 2016 13:38:57 +0300
+Subject: [PATCH] Fix patch.
+
+---
+ openstack_dashboard/dashboards/project/volumes/volumes/tests.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/openstack_dashboard/dashboards/project/volumes/volumes/tests.py b/openstack_dashboard/dashboards/project/volumes/volumes/tests.py
+index a77f8cd..e941ffe 100644
+--- a/openstack_dashboard/dashboards/project/volumes/volumes/tests.py
++++ b/openstack_dashboard/dashboards/project/volumes/volumes/tests.py
+@@ -16,10 +16,12 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
++import django
+ from django.core.urlresolvers import reverse
+ from django.forms import widgets
+ from django import http
+ from django.test.utils import override_settings
++from django.utils.http import urlunquote  # noqa
+ 
+ from mox3.mox import IsA  # noqa
+ import six
+@@ -32,7 +34,8 @@ from openstack_dashboard.usage import quotas
+ 
+ 
+ VOLUME_INDEX_URL = reverse('horizon:project:volumes:index')
+-VOLUME_VOLUMES_TAB_URL = reverse('horizon:project:volumes:volumes_tab')
++VOLUME_VOLUMES_TAB_URL = urlunquote(reverse(
++    'horizon:project:volumes:volumes_tab'))
+ SEARCH_OPTS = dict(status=api.cinder.VOLUME_STATE_AVAILABLE)
+ 
+ 
+-- 
+2.1.4
+

@@ -2,3 +2,4 @@ fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 Fix_remaining_Django_1.9_test_failures.patch
+0001-Fix-patch.patch
