@@ -1,4 +1,4 @@
-horizon (2:10.0.0~b1-1) UNRELEASED; urgency=medium
+horizon (2:10.0.0~b1-1) experimental; urgency=medium
 
   [ Ivan Udovichenko ]
   * New upstream release.
