@@ -1,10 +1,16 @@
-horizon (2:10.0.0~b1-2) experimental; urgency=medium
+horizon (3:10.0.0~b1-2) experimental; urgency=medium
 
   * Adds CVE-2016-4428_Escape_angularjs_templating_in_unsafe_HTML.patch.
 
  -- Thomas Goirand <zigo@debian.org>  Wed, 29 Jun 2016 14:51:26 +0200
 
-horizon (2:10.0.0~b1-1) experimental; urgency=medium
+horizon (3:10.0.0~b1-2) experimental; urgency=medium
+
+  * Increasing the EPOC after an unfortunate upload to unstable.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 28 Jun 2016 08:02:20 +0000
+
+horizon (2:10.0.0~b1-1) unstable; urgency=medium
 
   [ Ivan Udovichenko ]
   * New upstream release.
