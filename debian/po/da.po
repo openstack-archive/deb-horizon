@@ -1,14 +1,14 @@
 # Danish translation horizon.
-# Copyright (C) 2013 horizon & nedenstående oversættere.
+# Copyright (C) 2016 horizon & nedenstående oversættere.
 # This file is distributed under the same license as the horizon package.
-# Joe Hansen <joedalton2@yahoo.dk>, 2013.
+# Joe Hansen <joedalton2@yahoo.dk>, 2013, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: horizon\n"
 "Report-Msgid-Bugs-To: horizon@packages.debian.org\n"
 "POT-Creation-Date: 2015-09-22 13:31+0000\n"
-"PO-Revision-Date: 2013-10-10 23:51+0200\n"
+"PO-Revision-Date: 2016-07-09 23:51+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <debian-l10n-danish@lists.debian.org>\n"
 "Language: da\n"
@@ -39,6 +39,8 @@ msgid ""
 "If this option is not selected, Horizon will be installed using /horizon "
 "instead of the webroot."
 msgstr ""
+"Hvis denne indstilling ikke er valgt, så vil Horizon blive installeret "
+"via /horizon i stedet for webroot'en."
 
 #. Type: boolean
 #. Description

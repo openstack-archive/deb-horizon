@@ -1,3 +1,9 @@
+horizon (3:10.0.0~b1-3) UNRELEASED; urgency=medium
+
+  * Updated Danish translation of debconf templates (Closes: #830639).
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 11 Jul 2016 14:24:50 +0200
+
 horizon (3:10.0.0~b1-2) experimental; urgency=medium
 
   * Adds CVE-2016-4428_Escape_angularjs_templating_in_unsafe_HTML.patch.
