@@ -1,0 +1,28 @@
+Description: Fix oslo.utils last version compatibility
+ Horizon is checking against port 0, which is now valid in oslo.utils.
+ This patch removes the wrong tests.
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: not-needed
+Last-Update: 2016-07-12
+
+--- horizon-10.0.0~b1.orig/horizon/test/tests/utils.py
++++ horizon-10.0.0~b1/horizon/test/tests/utils.py
+@@ -196,7 +196,7 @@ class ValidatorsTests(test.TestCase):
+ 
+     def test_port_validator(self):
+         VALID_PORTS = (1, 65535)
+-        INVALID_PORTS = (-1, 0, 65536)
++        INVALID_PORTS = (-1, 65536)
+ 
+         for port in VALID_PORTS:
+             self.assertIsNone(validators.validate_port_range(port))
+@@ -222,8 +222,7 @@ class ValidatorsTests(test.TestCase):
+         VALID_RANGE = ('1:65535',
+                        '1:1')
+         INVALID_RANGE = ('22:22:22:22',
+-                         '1:-1',
+-                         '0:65535')
++                         '1:-1')
+ 
+         test_call = validators.validate_port_or_colon_separated_port_range
+         for prange in VALID_RANGE:

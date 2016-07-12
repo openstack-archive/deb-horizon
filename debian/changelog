@@ -1,6 +1,7 @@
 horizon (3:10.0.0~b1-3) UNRELEASED; urgency=medium
 
   * Updated Danish translation of debconf templates (Closes: #830639).
+  * Add fix-oslo.utils-last-vers-compat.patch, useful until ~b2.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 11 Jul 2016 14:24:50 +0200
 
