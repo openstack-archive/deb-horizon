@@ -1,6 +1,7 @@
 horizon (3:10.0.0~b2-1) experimental; urgency=medium
 
   * New upstream release.
+  * Fixed (build-)depends for this release.
   * Updated Danish translation of debconf templates (Closes: #830639).
   * Add fix-oslo.utils-last-vers-compat.patch, useful until ~b2.
 
