@@ -16,6 +16,7 @@
 from django.http import HttpResponse
 from django.template.defaultfilters import slugify
 from django.utils import http as utils_http
+from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 
 from novaclient import exceptions
@@ -24,6 +25,7 @@ from openstack_dashboard import api
 from openstack_dashboard.api.rest import json_encoder
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
+from openstack_dashboard.usage import quotas
 
 
 @urls.register
@@ -509,3 +511,112 @@ class AggregateExtraSpecs(generic.View):
             for name in request.DATA.get('removed'):
                 updated[name] = None
         api.nova.aggregate_set_metadata(request, aggregate_id, updated)
+
+
+@urls.register
+class DefaultQuotaSets(generic.View):
+    """API for getting default quotas for nova
+    """
+    url_regex = r'nova/quota-sets/defaults/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get the values for Nova specific quotas
+
+        Example GET:
+        http://localhost/api/nova/quota-sets/defaults/
+        """
+        if api.base.is_service_enabled(request, 'compute'):
+            quota_set = api.nova.default_quota_get(request,
+                                                   request.user.tenant_id)
+
+            disabled_quotas = quotas.get_disabled_quotas(request)
+
+            filtered_quotas = [quota for quota in quota_set
+                               if quota.name not in disabled_quotas]
+
+            result = [{
+                'display_name': quotas.QUOTA_NAMES.get(
+                    quota.name,
+                    quota.name.replace("_", " ").title()
+                ) + '',
+                'name': quota.name,
+                'limit': quota.limit
+            } for quota in filtered_quotas]
+
+            return {'items': result}
+        else:
+            raise rest_utils.AjaxError(501, _('Service Nova is disabled.'))
+
+    @rest_utils.ajax(data_required=True)
+    def patch(self, request):
+        """Update the values for Nova specific quotas
+
+        This method returns HTTP 204 (no content) on success.
+        """
+        if api.base.is_service_enabled(request, 'compute'):
+            disabled_quotas = quotas.get_disabled_quotas(request)
+
+            all_quotas = quotas.NOVA_QUOTA_FIELDS + quotas.MISSING_QUOTA_FIELDS
+
+            filtered_quotas = [quota for quota in all_quotas
+                               if quota not in disabled_quotas]
+
+            request_data = {
+                key: request.DATA.get(key, None) for key in filtered_quotas
+            }
+
+            nova_data = {key: value for key, value in request_data.items()
+                         if value is not None}
+
+            api.nova.default_quota_update(request, **nova_data)
+        else:
+            raise rest_utils.AjaxError(501, _('Service Nova is disabled.'))
+
+
+@urls.register
+class EditableQuotaSets(generic.View):
+    """API for editable quotas.
+    """
+    url_regex = r'nova/quota-sets/editable/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of editable quota fields.
+
+        The listing result is an object with property "items". Each item
+        is an editable quota. Returns an empty list in case no editable
+        quota is found.
+        """
+        disabled_quotas = quotas.get_disabled_quotas(request)
+        editable_quotas = [quota for quota in quotas.QUOTA_FIELDS
+                           if quota not in disabled_quotas]
+        return {'items': editable_quotas}
+
+
+@urls.register
+class QuotaSets(generic.View):
+    """API for setting quotas for a given project.
+    """
+    url_regex = r'nova/quota-sets/(?P<project_id>[0-9a-f]+)$'
+
+    @rest_utils.ajax(data_required=True)
+    def patch(self, request, project_id):
+        """Update a single project quota data.
+
+        The PATCH data should be an application/json object with the
+        attributes to set to new quota values.
+
+        This method returns HTTP 204 (no content) on success.
+        """
+        disabled_quotas = quotas.get_disabled_quotas(request)
+
+        if api.base.is_service_enabled(request, 'compute'):
+            nova_data = {
+                key: request.DATA[key] for key in quotas.NOVA_QUOTA_FIELDS
+                if key not in disabled_quotas
+            }
+
+            api.nova.tenant_quota_update(request, project_id, **nova_data)
+        else:
+            raise rest_utils.AjaxError(501, _('Service Nova is disabled.'))

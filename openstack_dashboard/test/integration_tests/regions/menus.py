@@ -182,8 +182,8 @@ class DropDownMenuRegion(baseregion.BaseRegion):
     _menu_container_locator = (by.By.CSS_SELECTOR, 'ul.dropdown-menu')
     _menu_items_locator = (by.By.CSS_SELECTOR,
                            'ul.dropdown-menu > li > *')
-    _menu_first_child_locator = (by.By.CSS_SELECTOR,
-                                 'a[data-toggle="dropdown"]')
+    _dropdown_locator = (by.By.CSS_SELECTOR, '.dropdown')
+    _active_cls = 'selenium-active'
 
     @property
     def menu_items(self):
@@ -198,7 +198,19 @@ class DropDownMenuRegion(baseregion.BaseRegion):
     def open(self):
         """Opens menu by clicking on the first child of the source element."""
         if self.is_open() is False:
-            self._get_element(*self._menu_first_child_locator).click()
+            dropdown = self._get_element(*self._dropdown_locator)
+
+            # NOTE(tsufiev): there is an issue with clicking dropdowns too fast
+            # after page has been loaded - the Bootstrap constructors haven't
+            # completed yet, so the dropdown never opens in that case. Avoid
+            # this by waiting for a specific class to appear, which is set in
+            # horizon.selenium.js for dropdowns after a timeout passes
+            def predicate(d):
+                classes = dropdown.get_attribute('class').split()
+                return self._active_cls in classes
+            self._wait_until(predicate)
+
+            dropdown.click()
             self._wait_till_element_visible(self._menu_container_locator)
 
 
@@ -206,13 +218,16 @@ class UserDropDownMenuRegion(DropDownMenuRegion):
     """Drop down menu located in the right side of the topbar,
     contains links to settings and help.
     """
-    _menu_first_child_locator = (by.By.CSS_SELECTOR, '*')
     _settings_link_locator = (by.By.CSS_SELECTOR,
                               'a[href*="/settings/"]')
     _help_link_locator = (by.By.CSS_SELECTOR,
                           'ul#editor_list li:nth-of-type(2) > a')
     _logout_link_locator = (by.By.CSS_SELECTOR,
                             'a[href*="/auth/logout/"]')
+
+    def _theme_picker_locator(self, theme_name):
+        return (by.By.CSS_SELECTOR,
+                '.theme-picker-item[data-theme="%s"]' % theme_name)
 
     @property
     def settings_link(self):
@@ -226,6 +241,9 @@ class UserDropDownMenuRegion(DropDownMenuRegion):
     def logout_link(self):
         return self._get_element(*self._logout_link_locator)
 
+    def theme_picker_link(self, theme_name):
+        return self._get_element(*self._theme_picker_locator(theme_name))
+
     def click_on_settings(self):
         self.open()
         self.settings_link.click()
@@ -233,6 +251,10 @@ class UserDropDownMenuRegion(DropDownMenuRegion):
     def click_on_help(self):
         self.open()
         self.help_link.click()
+
+    def choose_theme(self, theme_name):
+        self.open()
+        self.theme_picker_link(theme_name).click()
 
     def click_on_logout(self):
         self.open()
@@ -249,8 +271,6 @@ class TabbedMenuRegion(baseregion.BaseRegion):
 
 
 class ProjectDropDownRegion(DropDownMenuRegion):
-
-    _menu_first_child_locator = (by.By.CSS_SELECTOR, '*')
     _menu_items_locator = (
         by.By.CSS_SELECTOR, 'ul.context-selection li > a')
 

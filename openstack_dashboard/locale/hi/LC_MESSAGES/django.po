@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev230\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-06-28 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -117,9 +117,6 @@ msgstr ""
 "परिभाषित कम से कम एक कंटेनर होना आवश्यक है ताकि डेटा एक कंटेनर में संग्रहित किया जाना "
 "चाहिए."
 
-msgid "A image or external image location must be specified."
-msgstr "बिंब या बाहरी बिंब स्थान निर्दिष्ट किया जाना चाहिए."
-
 msgid "A local environment to upload."
 msgstr "अपलोड करने के लिए स्थानीय पर्यावरण."
 
@@ -203,14 +200,6 @@ msgid "Active"
 msgstr "सक्रिय"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "सक्रिय"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "सक्रिय"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "सक्रिय"
 
@@ -685,9 +674,6 @@ msgstr "CIDR निर्दिष्ट किया जाना चाहि�
 msgid "CPU time used"
 msgstr "उपयोग किया गया CPU समय"
 
-msgid "Can not specify both image and external image location."
-msgstr "बिंब और बिंब छवि स्थान दोनों निर्दिष्ट नहीं कर सकते."
-
 msgid "Cancel"
 msgstr "रद्द करें"
 
@@ -1036,10 +1022,6 @@ msgid "Created"
 msgstr "निर्मित"
 
 msgctxt "Current status of a Pool"
-msgid "Created"
-msgstr "निर्मित"
-
-msgctxt "Current status of a VPN Service"
 msgid "Created"
 msgstr "निर्मित"
 
@@ -1637,14 +1619,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "नीचे"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "नीचे"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "नीचे"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "नीचे"
@@ -1831,9 +1805,6 @@ msgstr " ICMP कोड के लिए एक मूल्य दर्ज (: 
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr " ICMP प्रकार के लिए एक मूल्य दर्ज (: 255 -1) रेंज में"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "0 और 255 (या -1 वाइल्डकार्ड का अर्थ है) के बीच एक पूर्णांक मान दर्ज करें."
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "1 और 65535 के बीच एक पूर्णांक मान दर्ज करें."
 
@@ -1874,19 +1845,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "त्रुटि"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "त्रुटि"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "त्रुटि"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "त्रुटि"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "त्रुटि"
 
@@ -4221,9 +4184,6 @@ msgstr "साझा"
 msgid "Shared Storage"
 msgstr "साझा भंडार"
 
-msgid "Shared with Me"
-msgstr "मेरे साथ साझा"
-
 msgctxt "Power state of an Instance"
 msgid "Shut Down"
 msgstr "बंद करें"
@@ -4555,14 +4515,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "सकल अद्यतन किया गया था."
 
-msgid "The ICMP code is invalid."
-msgstr "ICMP कोड अमान्य है."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "ICMP कोड की (-1, 255) रेंज में नहीं हैं"
-
-msgid "The ICMP type is invalid."
-msgstr "ICMP प्रकार अमान्य है."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "श्रृंखला में ICMP प्रकार नहीं (-1, 255) हैं"
@@ -4613,10 +4567,6 @@ msgid ""
 msgstr ""
 "फ्लेवर %(flavor)s' के लिए अनुरोध बिंब बहुत छोटा है.\n"
 "न्यूनतम आवश्यकताओं: %(min_ram)s रैम की एमबी और %(min_disk)s जड़ डिस्क के जीबी."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "इंस्टेंस होस्ट \"%s\" के लिए लाइव माइग्रेशन तैयारी कर रहा है."
 
 msgid "The instance password encrypted with your public key."
 msgstr "आपकी सार्वजनिक कुंजी के साथ एन्क्रिप्टेड इंस्टेंस पासवर्ड."

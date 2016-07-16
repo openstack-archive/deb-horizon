@@ -10,9 +10,9 @@
 # Sunhong Kim <intensify7@naver.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev266\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-07-01 00:12+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -175,9 +175,6 @@ msgstr ""
 "야 하므로, 데이터를 올리기 전 반드시 계정 내에 최소 1개의 컨테이너가 존재해"
 "야 합니다"
 
-msgid "A image or external image location must be specified."
-msgstr "이미지 또는 외부 이미지의 위치를 지정해야 합니다."
-
 msgid "A local environment to upload."
 msgstr "로컬에서 environment 업로드."
 
@@ -323,14 +320,6 @@ msgid "Active"
 msgstr "Active"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "Active"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "Active"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "Active"
 
@@ -1053,9 +1042,6 @@ msgstr "CIDR은 반드시 지정되어야 합니다."
 msgid "CPU time used"
 msgstr "CPU 사용 시간"
 
-msgid "Can not specify both image and external image location."
-msgstr "이미지와 외부 이미지의 위치를 둘 다 지정할 수 없습니다."
-
 msgid "Cancel"
 msgstr "취소"
 
@@ -1117,13 +1103,6 @@ msgstr "Check In Progress"
 msgid "Check Stack"
 msgid_plural "Check Stacks"
 msgstr[0] "스택 확인"
-
-msgid ""
-"Check the &quot;Delete Volumes&quot; box to also delete the volumes "
-"associated with this consistency group."
-msgstr ""
-"&quot;볼륨 제거&quot; 상자를 선택하여 해당 일관성 그룹에 연결된 볼륨 또한 삭"
-"제합니다."
 
 msgid "Checked Stack"
 msgid_plural "Checked Stacks"
@@ -1812,10 +1791,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "Created"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "Created"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "추가 사양 \"%s\"이 생성됨."
@@ -1850,9 +1825,6 @@ msgstr "생성된 스펙 \"%s\" ."
 #, python-format
 msgid "Created subnet \"%s\"."
 msgstr "서브넷 \"%s\" 생성."
-
-msgid "Created volume transfer."
-msgstr "볼륨 이전이 생성되었습니다."
 
 #, python-format
 msgid "Created volume transfer: \"%s\"."
@@ -2086,9 +2058,9 @@ msgctxt "current status of stack"
 msgid "Delete Complete"
 msgstr "Delete Complete"
 
+#, fuzzy
 msgid "Delete Consistency Group"
-msgid_plural "Delete Consistency Groups"
-msgstr[0] "일관성 그룹 삭제"
+msgstr "일관성 그룹 삭제"
 
 msgid "Delete Container"
 msgid_plural "Delete Containers"
@@ -2717,14 +2689,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "Down"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "Down"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "Down"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "Down"
@@ -2887,10 +2851,6 @@ msgstr "볼륨 타입 수정"
 msgid "Edit Volume Type Extra Spec"
 msgstr "볼륨 타입 추가 사양 편집"
 
-#, python-format
-msgid "Edit consistency group \"%s\"."
-msgstr "일관성 그룹 \"%s\" 를 편집합니다."
-
 msgid ""
 "Edit the flavor details. Flavors define the sizes for RAM, disk, number of "
 "cores, and other resources. Flavors are selected when users deploy instances."
@@ -3005,9 +2965,6 @@ msgstr "ICMP 코드의 범위 값을 입력하세요. (-1: 255)"
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "ICMP 타입의 범위 값을 입력하세요. (-1: 255)"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "0~255 사이의 정수 값을 입력하세요. (-1은 와일드카드)"
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "1 ~ 65535 사이의 정수 값을 입력하세요."
 
@@ -3066,19 +3023,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "Error"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "Error"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "Error"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "Error"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "Error"
 
@@ -4203,10 +4152,6 @@ msgctxt "Current status of a Pool"
 msgid "Inactive"
 msgstr "Inactive"
 
-msgctxt "Current status of a VPN Service"
-msgid "Inactive"
-msgstr "Inactive"
-
 msgid ""
 "Indicates whether this identity provider should accept federated "
 "authentication requests."
@@ -4884,9 +4829,6 @@ msgstr "스냅샷에 대한 이름과 설명을 수정합니다."
 
 msgid "Modify the name and description of a volume consistency group."
 msgstr "볼륨 일관성 그룹에 대한 이름 및 설명을 수정합니다."
-
-msgid "Modify volume type name and description."
-msgstr "볼륨 타입 이름과 설명을 수정합니다."
 
 msgid "Monitor"
 msgstr "모니터"
@@ -5591,19 +5533,11 @@ msgctxt "Current status of a Pool"
 msgid "Pending Create"
 msgstr "Pending Create"
 
-msgctxt "Current status of a VPN Service"
-msgid "Pending Create"
-msgstr "Pending Create"
-
 msgctxt "Current status of a Firewall"
 msgid "Pending Delete"
 msgstr "Pending Delete"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Delete"
-msgstr "Pending Delete"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Delete"
 msgstr "Pending Delete"
 
@@ -5616,10 +5550,6 @@ msgid "Pending Update"
 msgstr "Pending Update"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Update"
-msgstr "Pending Update"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Update"
 msgstr "Pending Update"
 
@@ -6521,10 +6451,6 @@ msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "Saving"
 
-msgid "Scheduled deletion of Consistency Group"
-msgid_plural "Scheduled deletion of Consistency Groups"
-msgstr[0] "일관성 그룹에 대한 예약된 삭제"
-
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "방화벽 예약 삭제"
@@ -6898,9 +6824,6 @@ msgstr "공유"
 
 msgid "Shared Storage"
 msgstr "공유 스토리지"
-
-msgid "Shared with Me"
-msgstr "나에게 공유됨"
 
 msgid "Shelve Instance"
 msgid_plural "Shelve Instances"
@@ -7598,14 +7521,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "집합을 업데이트 하였습니다."
 
-msgid "The ICMP code is invalid."
-msgstr "ICMP 코드가 올바르지 않습니다."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "범위에 들지 않는 ICMP 코드 (-1, 255)"
-
-msgid "The ICMP type is invalid."
-msgstr "ICMP 타입이 올바르지 않습니다."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "범위에 들지 않는 ICMP 타입 (-1, 255)"
@@ -7686,13 +7603,6 @@ msgstr ""
 "스의 다른 IP 주소를 지정할 수 있습니다. 위의 목록 속하는 지정된 IP 주소를 서"
 "브넷에서 선택해야 합니다."
 
-msgid ""
-"The default action for deleting a consistency group is to first disassociate "
-"all associated volumes."
-msgstr ""
-"일관성 그룹 삭제에 대한 기본 작업은 첫 번째로 모든 연결된 볼륨과 연결을 제거"
-"하는 것입니다."
-
 #, python-format
 msgid ""
 "The flavor '%(flavor)s' is too small for requested image.\n"
@@ -7700,10 +7610,6 @@ msgid ""
 msgstr ""
 "요청한 이미지의 flavor '%(flavor)s'가 적습니다.\n"
 "최소 사항: 램 %(min_ram)s MB와 root 디스크 %(min_disk)s GB."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "인스턴스가 \"%s\" 호스트에서 라이브 마이그레이션을 준비하고 있습니다."
 
 msgid "The instance password encrypted with your public key."
 msgstr "공개 키를 이용하여 인스턴스 비밀번호를 암호화합니다."
@@ -8350,9 +8256,6 @@ msgstr "VIP를 삭제할 수 없습니다. %s"
 msgid "Unable to delete VPN Service. %s"
 msgstr "VPN 서비스를 삭제할 수 없습니다. %s"
 
-msgid "Unable to delete consistency group."
-msgstr "일관성 그룹을 삭제할 수 없습니다."
-
 msgid "Unable to delete container."
 msgstr "컨테이너를 삭제할 수 없습니다."
 
@@ -8404,12 +8307,6 @@ msgstr "Floating IP 연결을 끊을 수 없습니다."
 
 msgid "Unable to disassociate monitor."
 msgstr "모니터를 연결 해제할 수 없습니다."
-
-msgid "Unable to edit consistency group"
-msgstr "일관성 그룹을 편집할 수 없습니다"
-
-msgid "Unable to edit consistency group."
-msgstr "일관성 그룹을 편집할 수 없습니다."
 
 msgid "Unable to edit spec."
 msgstr "사양을 수정하지 못 했습니다."
@@ -9927,13 +9824,6 @@ msgstr ""
 "사용가능한 quota의 %(avail)iGiB에서 %(req)iGiB로 볼륨을 확장하지 못했습니다."
 
 msgid ""
-"Volume consistency groups can only be deleted after all the volumes they "
-"contain are either deleted or unassigned."
-msgstr ""
-"볼륨 일관성 그룹은 포함된 모든 볼륨이 삭제 또는 할당되어 있지 않은 이후에만 "
-"삭제할 수 있습니다."
-
-msgid ""
 "Volume consistency groups provide a mechanism for creating snapshots of "
 "multiple volumes at the same point-in-time to ensure data consistency\n"
 "\n"
@@ -10297,6 +10187,3 @@ msgstr "v1"
 
 msgid "v2"
 msgstr "v2"
-
-msgid "yes,no,-"
-msgstr "예,아니오,-"

@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev230\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-06-28 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -136,9 +136,6 @@ msgstr ""
 "ডেটাতে আপনার অ্যাকাউন্টে নির্ধারিত কমপক্ষে একটি কন্টেনার থাকা উচিত যাতে ডেটা একটি "
 "কন্টেনারে সঞ্চিত থাকা চাই."
 
-msgid "A image or external image location must be specified."
-msgstr "একটি ইমেজ বা বাহ্যিক ইমেজের অবস্থান নির্দিষ্ট হওয়া চাই."
-
 msgid "A local environment to upload."
 msgstr "আপলোড করতে একটি স্থানীয় পরিবেশ."
 
@@ -229,14 +226,6 @@ msgid "Active"
 msgstr "সক্রিয়"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "সক্রিয়"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "সক্রিয়"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "সক্রিয়"
 
@@ -725,9 +714,6 @@ msgstr "CIDR নির্দিষ্ট হওয়া চাই."
 msgid "CPU time used"
 msgstr "ব্যবহৃত CPU সময়"
 
-msgid "Can not specify both image and external image location."
-msgstr "ইমেজ ও বাহ্যিক ইমেজ অবস্থান উভয়ই নির্দিষ্ট করতে পারে না."
-
 msgid "Cancel"
 msgstr "বাতিল করুন"
 
@@ -1167,10 +1153,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "তৈরি"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "তৈরি"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "তৈরি করা অতিরিক্ত স্পেক \"%s\"."
@@ -1579,14 +1561,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "নিচে"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "নিচে"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "নিচে"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "নিচে"
@@ -1784,9 +1758,6 @@ msgstr "ICMP কোডের জন্য মান ভরুন ব্যপ্
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "ICMP প্রকারের জন্য মান ভরুন ব্যপ্তি (-1: 255)"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "0 এবং 255 এর মধ্যে একটি পূর্ণ মান ভরুন(বা -1 যার মানে ওয়াইল্ডকার্ড)."
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "1 এবং 65535 এর মধ্যে একটি পূর্ণ মান ভরুন."
 
@@ -1841,19 +1812,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "ভুল"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "ভুল"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "ভুল"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "ভুল"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "ভুল"
 
@@ -4364,9 +4327,6 @@ msgstr "অংশীদারী"
 msgid "Shared Storage"
 msgstr "অংশীদারী ভাণ্ডার"
 
-msgid "Shared with Me"
-msgstr "আমার সঙ্গে ভাগ করুন"
-
 msgid "Sign Out"
 msgstr "সাইন আউট"
 
@@ -4781,14 +4741,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "সমূহ সদ্যতন ছিল."
 
-msgid "The ICMP code is invalid."
-msgstr "ICMP কোড অবৈধ."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "ICMP কোড ব্যপ্তিতে নেই (-1, 255)"
-
-msgid "The ICMP type is invalid."
-msgstr "ICMP প্রকারটি অবৈধ."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "ICMP প্রকার (-1, 255) ব্যপ্তিতে নেই"
@@ -4840,10 +4794,6 @@ msgid ""
 msgstr ""
 "অনুরোধ করা ইমেজের জন্য ফ্লেভার '%(flavor)s' খুবই ছোটো.\n"
 "ন্যূনতম প্রয়োজন: RAM  এর %(min_ram)s MB এবং রুট ডিস্কের %(min_disk)s GB."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "\"%s\" হোস্টে উদাহরণ লাইভ মাইগ্রেশন প্রস্তুতি করছে."
 
 msgid "The instance password encrypted with your public key."
 msgstr "আপনার পাবলিক কী সহ এনক্রিপ্ট করা উদাহরণ পাসওয়ার্ড."

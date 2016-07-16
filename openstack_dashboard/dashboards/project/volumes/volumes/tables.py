@@ -88,6 +88,9 @@ class LaunchVolumeNG(LaunchVolume):
 
 
 class DeleteVolume(VolumePolicyTargetMixin, tables.DeleteAction):
+    help_text = _("Deleted volumes are not recoverable. "
+                  "All data stored in the volume will be removed.")
+
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
@@ -111,6 +114,10 @@ class DeleteVolume(VolumePolicyTargetMixin, tables.DeleteAction):
 
     def allowed(self, request, volume=None):
         if volume:
+            # Can't delete volume if part of consistency group
+            if getattr(volume, 'consistencygroup_id', None):
+                return False
+
             return (volume.status in DELETABLE_STATES and
                     not getattr(volume, 'has_snapshot', False))
         return True
@@ -386,6 +393,12 @@ def get_encrypted_value(volume):
         return _("Yes")
 
 
+def get_encrypted_link(volume):
+    if hasattr(volume, 'encrypted') and volume.encrypted:
+        return reverse("horizon:project:volumes:volumes:encryption_detail",
+                       kwargs={'volume_id': volume.id})
+
+
 class VolumesTableBase(tables.DataTable):
     STATUS_CHOICES = (
         ("in-use", True),
@@ -466,8 +479,7 @@ class VolumesTable(VolumesTableBase):
                              filters=(filters.yesno, filters.capfirst))
     encryption = tables.Column(get_encrypted_value,
                                verbose_name=_("Encrypted"),
-                               link="horizon:project:volumes:"
-                                    "volumes:encryption_detail")
+                               link=get_encrypted_link)
 
     class Meta(object):
         name = "volumes"

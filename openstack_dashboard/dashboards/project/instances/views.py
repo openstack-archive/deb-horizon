@@ -443,18 +443,83 @@ class AttachInterfaceView(forms.ModalFormView):
     modal_header = _("Attach Interface")
     form_id = "attach_interface_form"
     submit_label = _("Attach Interface")
-    submit_url = "horizon:project:instances:attach_interface"
     success_url = reverse_lazy('horizon:project:instances:index')
 
     def get_context_data(self, **kwargs):
         context = super(AttachInterfaceView, self).get_context_data(**kwargs)
         context['instance_id'] = self.kwargs['instance_id']
-        args = (self.kwargs['instance_id'],)
-        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):
-        return {'instance_id': self.kwargs['instance_id']}
+        args = {'instance_id': self.kwargs['instance_id']}
+        submit_url = "horizon:project:instances:attach_interface"
+        self.submit_url = reverse(submit_url, kwargs=args)
+        return args
+
+
+class AttachVolumeView(forms.ModalFormView):
+    form_class = project_forms.AttachVolume
+    template_name = 'project/instances/attach_volume.html'
+    modal_header = _("Attach Volume")
+    modal_id = "attach_volume_modal"
+    submit_label = _("Attach Volume")
+    success_url = reverse_lazy('horizon:project:instances:index')
+
+    @memoized.memoized_method
+    def get_object(self):
+        try:
+            return api.nova.server_get(self.request,
+                                       self.kwargs["instance_id"])
+        except Exception:
+            exceptions.handle(self.request,
+                              _("Unable to retrieve instance."))
+
+    def get_initial(self):
+        args = {'instance_id': self.kwargs['instance_id']}
+        submit_url = "horizon:project:instances:attach_volume"
+        self.submit_url = reverse(submit_url, kwargs=args)
+        try:
+            volume_list = api.cinder.volume_list(self.request)
+        except Exception:
+            volume_list = []
+            exceptions.handle(self.request,
+                              _("Unable to retrieve volume information."))
+        return {"instance_id": self.kwargs["instance_id"],
+                "volume_list": volume_list}
+
+    def get_context_data(self, **kwargs):
+        context = super(AttachVolumeView, self).get_context_data(**kwargs)
+        context['instance_id'] = self.kwargs['instance_id']
+        return context
+
+
+class DetachVolumeView(forms.ModalFormView):
+    form_class = project_forms.DetachVolume
+    template_name = 'project/instances/detach_volume.html'
+    modal_header = _("Detach Volume")
+    modal_id = "detach_volume_modal"
+    submit_label = _("Detach Volume")
+    success_url = reverse_lazy('horizon:project:instances:index')
+
+    @memoized.memoized_method
+    def get_object(self):
+        try:
+            return api.nova.server_get(self.request,
+                                       self.kwargs['instance_id'])
+        except Exception:
+            exceptions.handle(self.request,
+                              _("Unable to retrieve instance."))
+
+    def get_initial(self):
+        args = {'instance_id': self.kwargs['instance_id']}
+        submit_url = "horizon:project:instances:detach_volume"
+        self.submit_url = reverse(submit_url, kwargs=args)
+        return {"instance_id": self.kwargs["instance_id"]}
+
+    def get_context_data(self, **kwargs):
+        context = super(DetachVolumeView, self).get_context_data(**kwargs)
+        context['instance_id'] = self.kwargs['instance_id']
+        return context
 
 
 class DetachInterfaceView(forms.ModalFormView):
@@ -463,15 +528,15 @@ class DetachInterfaceView(forms.ModalFormView):
     modal_header = _("Detach Interface")
     form_id = "detach_interface_form"
     submit_label = _("Detach Interface")
-    submit_url = "horizon:project:instances:detach_interface"
     success_url = reverse_lazy('horizon:project:instances:index')
 
     def get_context_data(self, **kwargs):
         context = super(DetachInterfaceView, self).get_context_data(**kwargs)
         context['instance_id'] = self.kwargs['instance_id']
-        args = (self.kwargs['instance_id'],)
-        context['submit_url'] = reverse(self.submit_url, args=args)
         return context
 
     def get_initial(self):
-        return {'instance_id': self.kwargs['instance_id']}
+        args = {"instance_id": self.kwargs["instance_id"]}
+        submit_url = "horizon:project:instances:detach_interface"
+        self.submit_url = reverse(submit_url, kwargs=args)
+        return args

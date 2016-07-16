@@ -10,16 +10,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings
+from django.conf.urls import patterns
+from django.conf.urls import url
 
-from horizon.utils.memoized import memoized  # noqa
+from openstack_dashboard.dashboards.project.volumes.cg_snapshots import views
 
-
-class IdentityMixIn(object):
-    @memoized
-    def get_admin_roles(self):
-        _admin_roles = [role.lower() for role in getattr(
-            settings,
-            'OPENSTACK_KEYSTONE_ADMIN_ROLES',
-            ['admin'])]
-        return _admin_roles
+urlpatterns = patterns(
+    '',
+    url(r'^(?P<cg_snapshot_id>[^/]+)/cg_snapshot_detail/$',
+        views.DetailView.as_view(),
+        name='cg_snapshot_detail'),
+    url(r'^(?P<cg_snapshot_id>[^/]+)/create_cgroup/$',
+        views.CreateCGroupView.as_view(),
+        name='create_cgroup'),
+)

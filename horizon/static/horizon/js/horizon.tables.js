@@ -1,30 +1,29 @@
 /* Namespace for core functionality related to DataTables. */
 horizon.datatables = {
   update: function () {
-    var $rows_to_update = $('tr.status_unknown.ajax-update'),
-      rows_to_update = $rows_to_update.length;
-    if ( rows_to_update > 0 ) {
-      var interval = $rows_to_update.attr('data-update-interval'),
-        $table = $rows_to_update.closest('table'),
-        submit_in_progress = $table.closest('form').attr('data-submitted'),
-        decay_constant = $table.attr('decay_constant');
+    var $rows_to_update = $('tr.status_unknown.ajax-update');
+    var $table = $rows_to_update.closest('table');
+    var interval = $rows_to_update.attr('data-update-interval');
+    var decay_constant = $table.attr('decay_constant');
+    var requests = [];
 
-      // Do not update this row if the action column is expanded or the form
-      // is in the process of being submitted. If we update the row while the
-      // form is still submitting any disabled action buttons would potentially
-      // be enabled again, allowing for multiple form submits.
-      if ($rows_to_update.find('.actions_column .btn-group.open').length ||
-          submit_in_progress) {
-        // Wait and try to update again in next interval instead
-        setTimeout(horizon.datatables.update, interval);
-        // Remove interval decay, since this will not hit server
-        $table.removeAttr('decay_constant');
-        return;
-      }
-      // Trigger the update handlers.
-      $rows_to_update.each(function() {
-        var $row = $(this),
-          $table = $row.closest('table.datatable');
+    // do nothing if there are no rows to update.
+    if($rows_to_update.length <= 0) { return; }
+
+    // Do not update this row if the action column is expanded
+    if ($rows_to_update.find('.actions_column .btn-group.open').length) {
+      // Wait and try to update again in next interval instead
+      setTimeout(horizon.datatables.update, interval);
+      // Remove interval decay, since this will not hit server
+      $table.removeAttr('decay_constant');
+      return;
+    }
+
+    $rows_to_update.each(function() {
+      var $row = $(this);
+      var $table = $row.closest('table.datatable');
+
+      requests.push(
         horizon.ajax.queue({
           url: $row.attr('data-update-url'),
           error: function (jqXHR) {
@@ -119,26 +118,20 @@ horizon.datatables = {
           complete: function () {
             // Revalidate the button check for the updated table
             horizon.datatables.validate_button();
-            rows_to_update--;
-            // Schedule next poll when all the rows are updated
-            if ( rows_to_update === 0 ) {
-              // Set interval decay to this table, and increase if it already exist
-              if(decay_constant === undefined) {
-                decay_constant = 1;
-              } else {
-                decay_constant++;
-              }
-              $table.attr('decay_constant', decay_constant);
-              // Poll until there are no rows in an "unknown" state on the page.
-              var next_poll = interval * decay_constant;
-              // Limit the interval to 30 secs
-              if(next_poll > 30 * 1000) { next_poll = 30 * 1000; }
-              setTimeout(horizon.datatables.update, next_poll);
-            }
           }
-        });
-      });
-    }
+        })
+      );
+    });
+
+    $.when.apply($, requests).always(function() {
+      decay_constant = decay_constant || 0;
+      decay_constant++;
+      $table.attr('decay_constant', decay_constant);
+      var next_poll = interval * decay_constant;
+      // Limit the interval to 30 secs
+      if(next_poll > 30 * 1000) { next_poll = 30 * 1000; }
+      setTimeout(horizon.datatables.update, next_poll);
+    });
   },
 
   update_actions: function() {
@@ -233,59 +226,81 @@ horizon.datatables = {
 };
 
 /* Generates a confirmation modal dialog for the given action. */
-horizon.datatables.confirm = function (action) {
-  var $action = $(action),
-    $modal_parent = $(action).closest('.modal'),
-    name_array = [],
-    closest_table_id, action_string, name_string,
-    help_text,
-    title, body, modal, form;
-  if($action.hasClass("disabled")) {
+horizon.datatables.confirm = function(action) {
+  var $action = $(action);
+
+  if ($action.hasClass("disabled")) {
     return;
   }
-  action_string = $action.text();
-  help_text = $action.attr("help_text") || "";
-  name_string = "";
+
+  var $modal_parent = $action.closest('.modal');
+  var name_array = [];
+  var action_string = $action.text();
+  var help_text = $action.attr("help_text") || "";
+  var name_string = "";
+
   // Add the display name defined by table.get_object_display(datum)
-  closest_table_id = $(action).closest("table").attr("id");
+  var $closest_table = $action.closest("table");
+
   // Check if data-display attribute is available
-  if ($("#"+closest_table_id+" tr[data-display]").length > 0) {
-    var actions_div = $(action).closest("div");
-    if(actions_div.hasClass("table_actions") || actions_div.hasClass("table_actions_menu")) {
+  var $data_display = $closest_table.find('tr[data-display]');
+  if ($data_display.length > 0) {
+    var $actions_div = $action.closest("div");
+    if ($actions_div.hasClass("table_actions") || $actions_div.hasClass("table_actions_menu")) {
       // One or more checkboxes selected
-      $("#"+closest_table_id+" tr[data-display]").has(".table-row-multi-select:checked").each(function() {
+      $data_display.has(".table-row-multi-select:checked").each(function() {
         name_array.push(" \"" + $(this).attr("data-display") + "\"");
       });
-      name_array.join(", ");
-      name_string = name_array.toString();
+      name_string = name_array.join(", ");
     } else {
       // If no checkbox is selected
-      name_string = " \"" + $(action).closest("tr").attr("data-display") + "\"";
+      name_string = " \"" + $action.closest("tr").attr("data-display") + "\"";
+      name_array = [name_string];
     }
-    name_string = interpolate(gettext("You have selected %s. "), [name_string]);
   }
-  title = interpolate(gettext("Confirm %s"), [action_string]);
-  body = name_string + gettext("Please confirm your selection. ") + help_text;
-  modal = horizon.modals.create(title, body, action_string);
+
+  var title = interpolate(gettext("Confirm %s"), [action_string]);
+
+  // compose the action string using a template that can be overridden
+  var template = horizon.templates.compiled_templates["#confirm_modal"],
+  params = {
+    selection: name_string,
+    selection_list: name_array,
+    help: help_text
+  };
+
+  var body;
+  try {
+    body = $(template.render(params)).html();
+  } catch (e) {
+    body = name_string + gettext("Please confirm your selection. ") + help_text;
+  }
+
+  var modal = horizon.modals.create(title, body, action_string);
   modal.modal();
-  if($modal_parent.length) {
+
+  if ($modal_parent.length) {
     var child_backdrop = modal.next('.modal-backdrop');
     // re-arrange z-index for these stacking modal
     child_backdrop.css('z-index', $modal_parent.css('z-index')+10);
     modal.css('z-index', child_backdrop.css('z-index')+10);
   }
+
   modal.find('.btn-primary').click(function () {
-    form = $action.closest('form');
+    var $form = $action.closest('form');
     var el = document.createElement("input");
-    el.type='hidden';
+    el.type = 'hidden';
     el.name = $action.attr('name');
     el.value = $action.attr('value');
-    form.append(el);
-    form.submit();
+    $form
+      .append(el)
+      .submit();
+
     modal.modal('hide');
     horizon.modals.modal_spinner(gettext("Working"));
     return false;
   });
+
   return modal;
 };
 
@@ -498,7 +513,9 @@ horizon.datatables.set_table_sorting = function (parent) {
         widgets: ['zebra'],
         selectorHeaders: "thead th[class!='table_header']",
         cancelSelection: false,
-        emptyTo: 'none'
+        emptyTo: 'none',
+        headerTemplate: '{content}{icon}',
+        cssIcon: 'table-sort-indicator'
       });
     }
   });

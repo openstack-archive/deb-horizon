@@ -17,8 +17,10 @@ from django.conf import settings
 from json import loads as to_json
 
 from openstack_dashboard import api
+from openstack_dashboard.api.base import Quota
 from openstack_dashboard.api.rest import nova
 from openstack_dashboard.test import helpers as test
+from openstack_dashboard.usage import quotas
 
 from novaclient import exceptions
 
@@ -665,3 +667,181 @@ class NovaRestTestCase(test.TestCase):
 
         response = nova.Services().get(request)
         self.assertStatusCode(response, 501)
+
+    @test.create_stubs({api.base: ('is_service_enabled',)})
+    @test.create_stubs({quotas: ('get_disabled_quotas',)})
+    @mock.patch.object(nova.api, 'nova')
+    def test_quota_sets_defaults_get(self, nc):
+        filters = {'user': {'tenant_id': 'tenant'}}
+        request = self.mock_rest_request(**{'GET': dict(filters)})
+
+        api.base.is_service_enabled(request, 'compute').AndReturn(True)
+        quotas.get_disabled_quotas(request).AndReturn(['floating_ips'])
+
+        nc.default_quota_get.return_value = [
+            Quota('metadata_items', 100),
+            Quota('floating_ips', 1),
+            Quota('q2', 101)
+        ]
+
+        self.mox.ReplayAll()
+
+        response = nova.DefaultQuotaSets().get(request)
+        self.assertStatusCode(response, 200)
+        self.assertEqual(response.json,
+                         {"items": [
+                             {"limit": 100,
+                              "display_name": "Metadata Items",
+                              "name": "metadata_items"},
+                             {"limit": 101,
+                              "display_name": "Q2",
+                              "name": "q2"}
+                         ]})
+
+        nc.default_quota_get.assert_called_once_with(request,
+                                                     request.user.tenant_id)
+
+    @test.create_stubs({api.base: ('is_service_enabled',)})
+    @mock.patch.object(nova.api, 'nova')
+    def test_quota_sets_defaults_get_when_service_is_disabled(self, nc):
+        filters = {'user': {'tenant_id': 'tenant'}}
+        request = self.mock_rest_request(**{'GET': dict(filters)})
+
+        api.base.is_service_enabled(request, 'compute').AndReturn(False)
+
+        self.mox.ReplayAll()
+
+        response = nova.DefaultQuotaSets().get(request)
+        self.assertStatusCode(response, 501)
+        self.assertEqual(response.content.decode('utf-8'),
+                         '"Service Nova is disabled."')
+
+        nc.default_quota_get.assert_not_called()
+
+    @test.create_stubs({api.base: ('is_service_enabled',)})
+    @test.create_stubs({quotas: ('get_disabled_quotas',)})
+    @mock.patch.object(nova.api, 'nova')
+    def test_quota_sets_defaults_patch(self, nc):
+        request = self.mock_rest_request(body='''
+            {"key_pairs": "15", "metadata_items": "5000",
+            "cores": "10", "instances": "20", "floating_ips": 10,
+            "injected_file_content_bytes": "15",
+            "injected_file_path_bytes": "5000",
+            "injected_files": "5", "ram": "10", "gigabytes": "5"}
+        ''')
+
+        api.base.is_service_enabled(request, 'compute').AndReturn(True)
+        quotas.get_disabled_quotas(request).AndReturn(['floating_ips'])
+
+        self.mox.ReplayAll()
+
+        response = nova.DefaultQuotaSets().patch(request)
+
+        self.assertStatusCode(response, 204)
+        self.assertEqual(response.content.decode('utf-8'), '')
+
+        nc.default_quota_update.assert_called_once_with(
+            request, key_pairs='15',
+            metadata_items='5000', cores='10',
+            instances='20', injected_file_content_bytes='15',
+            injected_file_path_bytes='5000',
+            injected_files='5', ram='10')
+
+    @test.create_stubs({api.base: ('is_service_enabled',)})
+    @mock.patch.object(nova.api, 'nova')
+    def test_quota_sets_defaults_patch_when_service_is_disabled(self, nc):
+        request = self.mock_rest_request(body='''
+            {"key_pairs": "15", "metadata_items": "5000",
+            "cores": "10", "instances": "20", "floating_ips": 10,
+            "injected_file_content_bytes": "15",
+            "injected_file_path_bytes": "5000",
+            "injected_files": "5", "ram": "10", "gigabytes": "5"}
+        ''')
+
+        api.base.is_service_enabled(request, 'compute').AndReturn(False)
+
+        self.mox.ReplayAll()
+
+        response = nova.DefaultQuotaSets().patch(request)
+
+        self.assertStatusCode(response, 501)
+        self.assertEqual(response.content.decode('utf-8'),
+                         '"Service Nova is disabled."')
+
+        nc.default_quota_update.assert_not_called()
+
+    @mock.patch.object(nova, 'quotas')
+    @mock.patch.object(nova.api, 'nova')
+    def test_editable_quotas_get(self, nc, qc):
+        disabled_quotas = ['floating_ips', 'fixed_ips',
+                           'security_groups', 'security_group_rules']
+        editable_quotas = ['cores', 'volumes', 'network', 'fixed_ips']
+        qc.get_disabled_quotas.return_value = disabled_quotas
+        qc.QUOTA_FIELDS = editable_quotas
+        request = self.mock_rest_request()
+        response = nova.EditableQuotaSets().get(request)
+        self.assertStatusCode(response, 200)
+        self.assertItemsCollectionEqual(response,
+                                        ['cores', 'volumes', 'network'])
+
+    @mock.patch.object(nova.api, 'nova')
+    @mock.patch.object(nova.api, 'base')
+    @mock.patch.object(nova, 'quotas')
+    def test_quota_sets_patch(self, qc, bc, nc):
+        quota_data = dict(cores='15', instances='5',
+                          ram='50000', metadata_items='150',
+                          injected_files='5',
+                          injected_file_content_bytes='10240',
+                          floating_ips='50', fixed_ips='5',
+                          security_groups='10',
+                          security_group_rules='100')
+
+        request = self.mock_rest_request(body='''
+            {"cores": "15", "ram": "50000", "instances": "5",
+             "metadata_items": "150", "injected_files": "5",
+             "injected_file_content_bytes": "10240", "floating_ips": "50",
+             "fixed_ips": "5", "security_groups": "10" ,
+             "security_group_rules": "100", "volumes": "10"}
+        ''')
+
+        qc.get_disabled_quotas.return_value = []
+        qc.NOVA_QUOTA_FIELDS = (n for n in quota_data)
+        bc.is_service_enabled.return_value = True
+
+        response = nova.QuotaSets().patch(request, 'spam123')
+
+        self.assertStatusCode(response, 204)
+        self.assertEqual(response.content.decode('utf-8'), '')
+        nc.tenant_quota_update.assert_called_once_with(
+            request, 'spam123', **quota_data)
+
+    @mock.patch.object(nova.api, 'nova')
+    @mock.patch.object(nova.api, 'base')
+    @mock.patch.object(nova, 'quotas')
+    def test_quota_sets_patch_when_service_is_disabled(self, qc, bc, nc):
+        quota_data = dict(cores='15', instances='5',
+                          ram='50000', metadata_items='150',
+                          injected_files='5',
+                          injected_file_content_bytes='10240',
+                          floating_ips='50', fixed_ips='5',
+                          security_groups='10',
+                          security_group_rules='100')
+
+        request = self.mock_rest_request(body='''
+            {"cores": "15", "ram": "50000", "instances": "5",
+             "metadata_items": "150", "injected_files": "5",
+             "injected_file_content_bytes": "10240", "floating_ips": "50",
+             "fixed_ips": "5", "security_groups": "10" ,
+             "security_group_rules": "100", "volumes": "10"}
+        ''')
+
+        qc.get_disabled_quotas.return_value = []
+        qc.NOVA_QUOTA_FIELDS = (n for n in quota_data)
+        bc.is_service_enabled.return_value = False
+
+        response = nova.QuotaSets().patch(request, 'spam123')
+
+        self.assertStatusCode(response, 501)
+        self.assertEqual(response.content.decode('utf-8'),
+                         '"Service Nova is disabled."')
+        nc.tenant_quota_update.assert_not_called()

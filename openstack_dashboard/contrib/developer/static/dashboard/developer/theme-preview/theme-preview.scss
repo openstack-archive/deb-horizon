@@ -12,10 +12,6 @@ themepreview {
     position: relative;
   }
 
-  .bs-component .modal-dialog {
-    width: 90%;
-  }
-
   .bs-component .modal {
     bottom: auto;
     display: block;
@@ -65,5 +61,9 @@ themepreview {
       margin: -$navbar-height 0 0;
       display: block;
     }
+  }
+
+  .line-chart {
+    height: 100% !important; // :( to override inline height: 0
   }
 }

@@ -9,14 +9,14 @@
 # Yuko Katabami <yukokatabami@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev266\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-07-01 00:12+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-05-24 03:40+0000\n"
-"Last-Translator: Akihiro Motoki <amotoki@gmail.com>\n"
+"PO-Revision-Date: 2016-06-30 01:18+0000\n"
+"Last-Translator: Shu Muto <shu-mutou@rf.jp.nec.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
 "X-Generator: Zanata 3.7.3\n"
@@ -201,9 +201,6 @@ msgstr ""
 "そのため、データをアップロードする前に、少なくとも 1 つのコンテナーをアカウン"
 "トに定義する必要があります。"
 
-msgid "A image or external image location must be specified."
-msgstr "イメージまたは外部のイメージの場所を指定する必要があります。"
-
 msgid "A local environment to upload."
 msgstr "アップロードする必要のあるローカルの環境設定データ"
 
@@ -364,14 +361,6 @@ msgid "Active"
 msgstr "稼働中"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "稼働中"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "稼働中"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "稼働中"
 
@@ -686,6 +675,9 @@ msgstr "管理状態"
 msgid "Admin State Up"
 msgstr "管理状態有効"
 
+msgid "Admin URL:"
+msgstr "管理 URL:"
+
 msgid ""
 "Administrator Note: Use the following CLI command to import the default "
 "definitions into Glance: "
@@ -969,6 +961,9 @@ msgstr ""
 "自動: ディスク全体が 1 つのパーティションになります。自動的にリサイズを行いま"
 "す。手動: 構築時間は早いですが、手動でのパーティション設定が必要です。"
 
+msgid "Automatically schedule new host."
+msgstr "自動で新しいホストをスケジュールします。"
+
 msgid "Availability Zone"
 msgstr "アベイラビリティーゾーン"
 
@@ -1122,6 +1117,13 @@ msgctxt "Power state of an Instance"
 msgid "Building"
 msgstr "作成中"
 
+msgid ""
+"By default, volume type is created as public. To create a private volume "
+"type, uncheck this field."
+msgstr ""
+"デフォルトでは、ボリューム種別はパブリックで作成されます。プライベートなボ"
+"リューム種別を作成するには、このフィールドのチェックを外してください。"
+
 msgid "CIDR"
 msgstr "CIDR"
 
@@ -1133,9 +1135,6 @@ msgstr "このイメージの CPU アーキテクチャー。"
 
 msgid "CPU time used"
 msgstr "使用 CPU 時間"
-
-msgid "Can not specify both image and external image location."
-msgstr "イメージと外部のイメージの場所を同時に指定できません。"
 
 msgid "Cancel"
 msgstr "取り消し"
@@ -1205,13 +1204,6 @@ msgstr "チェック中"
 msgid "Check Stack"
 msgid_plural "Check Stacks"
 msgstr[0] "スタックのチェック"
-
-msgid ""
-"Check the &quot;Delete Volumes&quot; box to also delete the volumes "
-"associated with this consistency group."
-msgstr ""
-"この整合性グループに関連付けられているボリュームも削除するには、&quot;ボ"
-"リュームの削除&quot; のボックスにチェックを付けてください。"
 
 msgid "Checked Stack"
 msgid_plural "Checked Stacks"
@@ -1408,6 +1400,15 @@ msgstr "最大接続数"
 
 msgid "Consistency Group Information"
 msgstr "整合性グループの情報"
+
+msgid "Consistency Group Name"
+msgstr "整合性グループ名"
+
+msgid "Consistency Group Snapshots"
+msgstr "整合性グループのスナップショット"
+
+msgid "Consistency Groups"
+msgstr "整合性グループ"
 
 msgid "Console"
 msgstr "コンソール"
@@ -1937,10 +1938,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "作成済み"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "作成済み"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "追加スペック \"%s\" を作成しました。"
@@ -1976,9 +1973,6 @@ msgstr "スペック \"%s\" を作成しました。"
 msgid "Created subnet \"%s\"."
 msgstr "サブネット \"%s\" を作成しました。"
 
-msgid "Created volume transfer."
-msgstr "ボリュームの譲渡を作成しました。"
-
 #, python-format
 msgid "Created volume transfer: \"%s\"."
 msgstr "ボリュームの譲渡 \"%s\" を作成しました。"
@@ -2009,6 +2003,10 @@ msgstr "作成中"
 msgctxt "Current status of a Volume Backup"
 msgid "Creating"
 msgstr "作成中"
+
+#, python-format
+msgid "Creating consistency group \"%s\"."
+msgstr "整合性グループ \"%s\" を作成します。"
 
 msgid ""
 "Creating encryption for a volume type causes all volumes with that volume "
@@ -2216,9 +2214,9 @@ msgctxt "current status of stack"
 msgid "Delete Complete"
 msgstr "削除完了"
 
+#, fuzzy
 msgid "Delete Consistency Group"
-msgid_plural "Delete Consistency Groups"
-msgstr[0] "整合性グループの削除"
+msgstr "整合性グループの削除"
 
 msgid "Delete Container"
 msgid_plural "Delete Containers"
@@ -2359,6 +2357,10 @@ msgstr[0] "ルールの削除"
 msgid "Delete Security Group"
 msgid_plural "Delete Security Groups"
 msgstr[0] "セキュリティーグループの削除"
+
+msgid "Delete Snapshot"
+msgid_plural "Delete Snapshots"
+msgstr[0] "スナップショットの削除"
 
 msgid "Delete Spec"
 msgid_plural "Delete Specs"
@@ -2583,6 +2585,9 @@ msgstr "拒否"
 
 msgid "Description"
 msgstr "説明"
+
+msgid "Description is required."
+msgstr "説明は必要です。"
 
 msgid "Description:"
 msgstr "説明:"
@@ -2852,14 +2857,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "停止中"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "停止中"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "停止中"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "停止中"
@@ -3034,10 +3031,6 @@ msgstr "ボリューム種別の編集"
 msgid "Edit Volume Type Extra Spec"
 msgstr "ボリューム種別の追加スペックの編集"
 
-#, python-format
-msgid "Edit consistency group \"%s\"."
-msgstr "整合性グループ \"%s\" を編集します。"
-
 msgid ""
 "Edit the flavor details. Flavors define the sizes for RAM, disk, number of "
 "cores, and other resources. Flavors are selected when users deploy instances."
@@ -3138,6 +3131,9 @@ msgstr ""
 "ボリューム種別の暗号化設定の情報は、その種別がボリュームで現在使用されている"
 "場合には更新できません。"
 
+msgid "Endpoints"
+msgstr "エンドポイント"
+
 msgid "Energy (Kwapi)"
 msgstr "エネルギー (Kwapi)"
 
@@ -3152,10 +3148,6 @@ msgstr "ICMP コードが (-1, 255) の範囲ではありません"
 
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "ICMP タイプの値が (-1, 255) の範囲ではありません"
-
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr ""
-"0 以上 255 以下の整数値 (またはすべてを意味する -1) を入力してください。"
 
 msgid "Enter an integer value between 1 and 65535."
 msgstr "1 から 65535 までの整数値を入力してください。"
@@ -3213,19 +3205,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "エラー"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "エラー"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "エラー"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "エラー"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "エラー"
 
@@ -3793,6 +3777,9 @@ msgstr "フレーバー情報"
 msgid "Flavor Name"
 msgstr "フレーバー名"
 
+msgid "Flavor name cannot be empty."
+msgstr "フレーバー名を空にすることはできません"
+
 msgid "Flavors"
 msgstr "フレーバー"
 
@@ -3865,6 +3852,9 @@ msgstr "形式"
 
 msgid "Format ="
 msgstr "形式 ="
+
+msgid "Free IPs"
+msgstr "未使用 IP"
 
 msgid "From"
 msgstr "開始"
@@ -4019,6 +4009,9 @@ msgstr "ヘルプ"
 msgid "High Availability Mode"
 msgstr "高可用性 (HA) モード"
 
+msgid "High Availability Status"
+msgstr "高可用性ステータス"
+
 msgid "Home"
 msgstr "ホーム"
 
@@ -4088,6 +4081,9 @@ msgstr "ハイパーバイザー"
 
 msgid "ICMP"
 msgstr "ICMP"
+
+msgid "ICMP code is provided but ICMP type is missing."
+msgstr "ICMP コードが指定されましたが、ICMP タイプがありません。"
 
 msgid "ID"
 msgstr "ID"
@@ -4398,10 +4394,6 @@ msgctxt "Current status of a Pool"
 msgid "Inactive"
 msgstr "非稼働"
 
-msgctxt "Current status of a VPN Service"
-msgid "Inactive"
-msgstr "非稼働"
-
 msgid ""
 "Indicates whether this identity provider should accept federated "
 "authentication requests."
@@ -4538,6 +4530,9 @@ msgstr "インターフェース"
 msgid "Internal Interface"
 msgstr "内部インタフェース"
 
+msgid "Internal URL:"
+msgstr "内部 URL:"
+
 msgid "Invalid MAC Address format"
 msgstr "無効な MAC アドレスの形式"
 
@@ -4619,6 +4614,9 @@ msgstr "強制終了"
 
 msgid "Kwapi"
 msgstr "Kwapi"
+
+msgid "L3 Agent"
+msgstr "L3 エージェント"
 
 msgid "LB Method"
 msgstr "負荷分散方法"
@@ -5112,9 +5110,6 @@ msgstr "スナップショットの名前と説明を変更します。"
 msgid "Modify the name and description of a volume consistency group."
 msgstr "ボリュームの整合性グループの名前と説明を変更します。"
 
-msgid "Modify volume type name and description."
-msgstr "ボリューム種別の名前と説明を変更します。"
-
 msgid "Monitor"
 msgstr "モニター"
 
@@ -5371,9 +5366,6 @@ msgstr "使用可能なプロジェクトがありません"
 
 msgid "No flavors available"
 msgstr "利用可能なフレーバーがありません"
-
-msgid "No flavors meet minimum criteria for selected image."
-msgstr "選択したイメージの最小限の要件を満たすフレーバーがありません。"
 
 msgid "No floating IP addresses allocated"
 msgstr "確保済みの Floating IP アドレスはありません"
@@ -5839,19 +5831,11 @@ msgctxt "Current status of a Pool"
 msgid "Pending Create"
 msgstr "作成待ち"
 
-msgctxt "Current status of a VPN Service"
-msgid "Pending Create"
-msgstr "作成待ち"
-
 msgctxt "Current status of a Firewall"
 msgid "Pending Delete"
 msgstr "削除待ち"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Delete"
-msgstr "削除待ち"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Delete"
 msgstr "削除待ち"
 
@@ -5864,10 +5848,6 @@ msgid "Pending Update"
 msgstr "更新待ち"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Update"
-msgstr "更新待ち"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Update"
 msgstr "更新待ち"
 
@@ -6179,6 +6159,9 @@ msgstr "公開鍵"
 msgid "Public URL"
 msgstr "公開URL"
 
+msgid "Public URL:"
+msgstr "公開 URL:"
+
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU エミュレーター"
 
@@ -6344,6 +6327,9 @@ msgstr "インスタンス %s を再作成中。"
 
 msgid "Recreate EC2 Credentials"
 msgstr "EC2 認証情報の再作成"
+
+msgid "Region"
+msgstr "リージョン"
 
 msgid "Regions:"
 msgstr "リージョン:"
@@ -6840,10 +6826,6 @@ msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "保存中"
 
-msgid "Scheduled deletion of Consistency Group"
-msgid_plural "Scheduled deletion of Consistency Groups"
-msgstr[0] "整合性グループの削除を予約しました"
-
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "ファイアウォールの削除を予約しました"
@@ -6883,6 +6865,10 @@ msgstr[0] "プールの削除を予約しました"
 msgid "Scheduled deletion of Rule"
 msgid_plural "Scheduled deletion of Rules"
 msgstr[0] "ルールの削除を予約しました"
+
+msgid "Scheduled deletion of Snapshot"
+msgid_plural "Scheduled deletion of Snapshots"
+msgstr[0] "スナップショットの削除を予約しました"
 
 msgid "Scheduled deletion of VPN Service"
 msgid_plural "Scheduled deletion of VPN Services"
@@ -7185,8 +7171,17 @@ msgstr "サーバー"
 msgid "Service"
 msgstr "サービス"
 
+msgid "Service Cinder is disabled."
+msgstr "Cinder サービスが無効になっています。"
+
 msgid "Service Endpoint"
 msgstr "サービスエンドポイント"
+
+msgid "Service Neutron is disabled."
+msgstr "Neutron サービスが無効になっています。"
+
+msgid "Service Nova is disabled."
+msgstr "Nova サービスが無効になっています。"
 
 msgid "Services"
 msgstr "サービス"
@@ -7230,8 +7225,8 @@ msgstr "共有"
 msgid "Shared Storage"
 msgstr "共有ストレージ"
 
-msgid "Shared with Me"
-msgstr "自分と共有"
+msgid "Shared with Project"
+msgstr "プロジェクトと共有"
 
 msgid "Shelve Instance"
 msgid_plural "Shelve Instances"
@@ -7378,9 +7373,6 @@ msgstr[0] "インスタンスのソフトリブート"
 msgid "Soft Rebooted Instance"
 msgid_plural "Soft Rebooted Instances"
 msgstr[0] "インスタンスのソフトリブートを行いました"
-
-msgid "Some flavors not meeting minimum image requirements have been disabled."
-msgstr "イメージの最小限の要件を満たしていないフレーバーが無効になっています。"
 
 msgid "Something went wrong!"
 msgstr "どこかがおかしくなりました！"
@@ -7982,14 +7974,8 @@ msgstr ""
 "認証キーはこのページを閉じると参照できなくなるので、必ず今記録するかダウン"
 "ロードしてください。さもないと、作成した譲渡を使えなくなります。"
 
-msgid "The ICMP code is invalid."
-msgstr "ICMP コードが無効です。"
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "ICMP コードが (-1, 255) の範囲ではありません"
-
-msgid "The ICMP type is invalid."
-msgstr "ICMP タイプが無効です。"
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "ICMP タイプが (-1, 255) の範囲ではありません"
@@ -8088,13 +8074,6 @@ msgstr ""
 "ウェイアドレスになります。ここで別の IP アドレスを指定できます。指定した IP "
 "アドレスが所属するサブネットを上にあるリストから選択しなければいけません。"
 
-msgid ""
-"The default action for deleting a consistency group is to first disassociate "
-"all associated volumes."
-msgstr ""
-"整合性グループの削除のデフォルトの操作では、最初にボリュームの関連付けが解除"
-"されます。"
-
 #, python-format
 msgid ""
 "The flavor '%(flavor)s' is too small for requested image.\n"
@@ -8104,9 +8083,8 @@ msgstr ""
 "最小でも %(min_ram)s MB の RAM と %(min_disk)s GB のルートディスクが必要で"
 "す。"
 
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "インスタンスはホスト \"%s\" へのライブマイグレーションを準備中。"
+msgid "The instance is preparing the live migration to a new host."
+msgstr "インスタンスは新しいホストへのライブマイグレーションを準備中。"
 
 msgid "The instance password encrypted with your public key."
 msgstr "秘密鍵で暗号化されたインスタンスのパスワード"
@@ -8433,6 +8411,11 @@ msgstr ""
 "フルスクリーンモードを終了するには、ブラウザーの戻るボタンをクリックして下さ"
 "い。"
 
+msgid "To make volume type private, uncheck this field."
+msgstr ""
+"ボリューム種別をプライベートにするには、このフィールドのチェックを外してくだ"
+"さい。"
+
 msgid ""
 "To specify an allowed IP range, select &quot;CIDR&quot;. To allow access "
 "from all members of another security group select &quot;Security Group&quot;."
@@ -8661,6 +8644,10 @@ msgstr "オブジェクトをコピーできません。"
 msgid "Unable to create QoS Spec."
 msgstr "QoS スペックを作成できません。"
 
+#, python-format
+msgid "Unable to create consistency group \"%s\" from snapshot."
+msgstr "整合性グループ \"%s\" をスナップショットから作成できません"
+
 msgid "Unable to create consistency group."
 msgstr "整合性グループを作成できません。"
 
@@ -8797,9 +8784,6 @@ msgstr "仮想 IP を削除できません。%s"
 msgid "Unable to delete VPN Service. %s"
 msgstr "VPN サービスを削除できません。%s"
 
-msgid "Unable to delete consistency group."
-msgstr "整合性グループを削除できません。"
-
 msgid "Unable to delete container."
 msgstr "コンテナーを削除できません。"
 
@@ -8851,12 +8835,6 @@ msgstr "Floating IP の割り当てを解除できません。"
 
 msgid "Unable to disassociate monitor."
 msgstr "モニターの割り当てを解除できません。"
-
-msgid "Unable to edit consistency group"
-msgstr "整合性グループを編集できません"
-
-msgid "Unable to edit consistency group."
-msgstr "整合性グループを編集できません。"
 
 msgid "Unable to edit spec."
 msgstr "スペックを更新できません。"
@@ -9082,6 +9060,9 @@ msgstr ""
 msgid "Unable to retrieve IP addresses from Neutron."
 msgstr "Neutron から IP アドレスを取得できません。"
 
+msgid "Unable to retrieve IP availability."
+msgstr "IP 使用状況を取得できません"
+
 msgid "Unable to retrieve IPSec Policies list."
 msgstr "IPSec ポリシーの一覧を取得できません。"
 
@@ -9101,6 +9082,9 @@ msgstr "IPSec サイト間接続の詳細を取得できません。 %s"
 
 msgid "Unable to retrieve IPSec Site Connections list."
 msgstr "IPSec サイト間接続の一覧を取得できません。"
+
+msgid "Unable to retrieve MAC learning state"
+msgstr "MAC 学習状態を取得できません"
 
 #, python-format
 msgid "Unable to retrieve Network information for instance \"%s\"."
@@ -9619,6 +9603,9 @@ msgstr "バージョン情報を取得できません。"
 msgid "Unable to retrieve volume backups."
 msgstr "ボリュームバックアップ一覧を取得できません。"
 
+msgid "Unable to retrieve volume consistency group snapshots."
+msgstr "整合性グループのスナップショットの一覧を取得できません。"
+
 msgid "Unable to retrieve volume consistency groups."
 msgstr "ボリュームの整合性グループを取得できません。"
 
@@ -10115,6 +10102,9 @@ msgstr "スナップショットをソースとして使用する"
 msgid "Used <span> %(used)s </span> of <span> %(available)s </span>"
 msgstr "<span>%(used)s</span> / <span>%(available)s</span> 使用中"
 
+msgid "Used IPs"
+msgstr "使用中 IP"
+
 msgid "Used in Policy"
 msgstr "利用中のポリシー"
 
@@ -10414,13 +10404,6 @@ msgid ""
 msgstr ""
 "ボリュームを %(req)iGiB に拡張することができません。利用できるクォータは "
 "%(avail)iGiB しかありません。"
-
-msgid ""
-"Volume consistency groups can only be deleted after all the volumes they "
-"contain are either deleted or unassigned."
-msgstr ""
-"ボリュームの整合性グループの削除は、そのグループに含まれる全ボリュームが削除"
-"または割り当て解除された後にのみ実行可能です。"
 
 msgid ""
 "Volume consistency groups provide a mechanism for creating snapshots of "
@@ -10844,6 +10827,3 @@ msgstr "v1"
 
 msgid "v2"
 msgstr "v2"
-
-msgid "yes,no,-"
-msgstr "はい,いいえ,-"

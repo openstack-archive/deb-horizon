@@ -19,7 +19,10 @@
     .module('horizon.framework.widgets.magic-search')
     .directive('stMagicSearch', stMagicSearch);
 
-  stMagicSearch.$inject = ['$timeout'];
+  stMagicSearch.$inject = [
+    '$timeout',
+    'horizon.framework.widgets.magic-search.events'
+  ];
 
   /**
    * @ngdoc directive
@@ -38,14 +41,42 @@
    *
    * @example
    * ```
-   * <hz-magic-search-context>
+   *
+   *  var filterFacets = [
+   *  {
+   *    label: gettext('Name'),
+   *    name: 'name',
+   *    singleton: true
+   *  },
+   *  {
+   *    label: gettext('VCPUs'),
+   *    name: 'vcpus',
+   *    singleton: true
+   *  },
+   *  {
+   *    label: gettext('RAM'),
+   *    name: 'ram',
+   *    singleton: true
+   *  },
+   *  {
+   *    label: gettext('Public'),
+   *    name: 'isPublic',
+   *    singleton: true,
+   *    options: [
+   *      { label: gettext('No'), key: false },
+   *      { label: gettext('Yes'), key: true }
+   *    ]
+   *  }];
+   *
+   * <hz-magic-search-context
+   *   filter-facets="filterFacets">
    *   <hz-magic-search-bar></hz-magic-search-bar>
    *   <table st-table st-magic-search>
    *   </table>
    * </hz-magic-search-context>
    * ```
    */
-  function stMagicSearch($timeout) {
+  function stMagicSearch($timeout, magicSearchEvents) {
     var directive = {
       link: link,
       require: 'stTable',
@@ -93,7 +124,10 @@
           scope.currentServerSearchParams = serverSearchParams;
 
           if (serverSearchParams.queryStringChanged || serverSearchParams.magicSearchQueryChanged) {
-            scope.$emit('serverSearchUpdated', angular.copy(scope.currentServerSearchParams));
+            scope.$emit(
+              magicSearchEvents.SERVER_SEARCH_UPDATED,
+              angular.copy(scope.currentServerSearchParams)
+            );
           }
         }
       }

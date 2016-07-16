@@ -196,7 +196,7 @@ class ValidatorsTests(test.TestCase):
 
     def test_port_validator(self):
         VALID_PORTS = (1, 65535)
-        INVALID_PORTS = (-1, 0, 65536)
+        INVALID_PORTS = (-1, 65536)
 
         for port in VALID_PORTS:
             self.assertIsNone(validators.validate_port_range(port))
@@ -205,6 +205,30 @@ class ValidatorsTests(test.TestCase):
             self.assertRaises(ValidationError,
                               validators.validate_port_range,
                               port)
+
+    def test_icmp_type_validator(self):
+        VALID_ICMP_TYPES = (1, 0, 255, -1)
+        INVALID_ICMP_TYPES = (256, None, -2)
+
+        for icmp_type in VALID_ICMP_TYPES:
+            self.assertIsNone(validators.validate_icmp_type_range(icmp_type))
+
+        for icmp_type in INVALID_ICMP_TYPES:
+            self.assertRaises(ValidationError,
+                              validators.validate_icmp_type_range,
+                              icmp_type)
+
+    def test_icmp_code_validator(self):
+        VALID_ICMP_CODES = (1, 0, 255, None, -1,)
+        INVALID_ICMP_CODES = (256, -2)
+
+        for icmp_code in VALID_ICMP_CODES:
+            self.assertIsNone(validators.validate_icmp_code_range(icmp_code))
+
+        for icmp_code in INVALID_ICMP_CODES:
+            self.assertRaises(ValidationError,
+                              validators.validate_icmp_code_range,
+                              icmp_code)
 
     def test_ip_proto_validator(self):
         VALID_PROTO = (0, 255)
@@ -223,7 +247,7 @@ class ValidatorsTests(test.TestCase):
                        '1:1')
         INVALID_RANGE = ('22:22:22:22',
                          '1:-1',
-                         '0:65535')
+                         '-1:65535')
 
         test_call = validators.validate_port_or_colon_separated_port_range
         for prange in VALID_RANGE:
@@ -372,6 +396,52 @@ class MemoizedTests(test.TestCase):
         for x in range(0, 5):
             cache_calls(1)
         self.assertEqual(1, len(values_list))
+
+    def test_memoized_with_request_call(self):
+
+        chorus = [
+            "I",
+            "Love",
+            "Rock 'n' Roll",
+            "put another coin",
+            "in the Jukebox Baby."
+        ]
+
+        leader = 'Joan Jett'
+        group = 'Blackhearts'
+
+        for position, chorus_line in enumerate(chorus):
+
+            changed_args = False
+
+            def some_func(some_param):
+                if not changed_args:
+                    self.assertEqual(some_param, chorus_line)
+                else:
+                    self.assertNotEqual(some_param, chorus_line)
+                    self.assertEqual(some_param, group)
+                return leader
+
+            @memoized.memoized_with_request(some_func, position)
+            def some_other_func(*args):
+                return args
+
+            # check chorus_copy[position] is replaced by some_func's
+            # output
+            output1 = some_other_func(*chorus)
+            self.assertEqual(output1[position], leader)
+
+            # Change args used to call the function
+            chorus_copy = list(chorus)
+            chorus_copy[position] = group
+            changed_args = True
+            # check that some_func is called with a different parameter, and
+            # that check chorus_copy[position] is replaced by some_func's
+            # output and some_other_func still called with the same parameters
+            output2 = some_other_func(*chorus_copy)
+            self.assertEqual(output2[position], leader)
+            # check that some_other_func returned a memoized list.
+            self.assertIs(output1, output2)
 
 
 class GetPageSizeTests(test.TestCase):

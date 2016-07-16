@@ -1,4 +1,9 @@
 action-list.btn-group {
+
+  &:not(:first-child) {
+    padding-left: $padding-small-vertical;
+  }
+
   &[button-tooltip] {
     cursor: pointer;
   }

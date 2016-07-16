@@ -356,15 +356,13 @@ class CinderApiTests(test.APITestCase):
 
     def test_cgroup_list_with_vol_type_names(self):
         cgroups = self.cinder_consistencygroups.list()
-        cgroup = self.cinder_consistencygroups.first()
         volume_types_list = self.cinder_volume_types.list()
         cinderclient = self.stub_cinderclient()
         cinderclient.consistencygroups = self.mox.CreateMockAnything()
         cinderclient.consistencygroups.list(search_opts=None).\
             AndReturn(cgroups)
         cinderclient.volume_types = self.mox.CreateMockAnything()
-        for volume_types in volume_types_list:
-            cinderclient.volume_types.get(cgroup.id).AndReturn(volume_types)
+        cinderclient.volume_types.list().AndReturn(volume_types_list)
         self.mox.ReplayAll()
         api_cgroups = api.cinder.volume_cgroup_list_with_vol_type_names(
             self.request)
@@ -372,6 +370,29 @@ class CinderApiTests(test.APITestCase):
         for i in range(len(api_cgroups[0].volume_type_names)):
             self.assertEqual(volume_types_list[i].name,
                              api_cgroups[0].volume_type_names[i])
+
+    def test_cgsnapshot_list(self):
+        cgsnapshots = self.cinder_cg_snapshots.list()
+        cinderclient = self.stub_cinderclient()
+        cinderclient.cgsnapshots = self.mox.CreateMockAnything()
+        cinderclient.cgsnapshots.list(search_opts=None).\
+            AndReturn(cgsnapshots)
+        self.mox.ReplayAll()
+        api_cgsnapshots = api.cinder.volume_cg_snapshot_list(self.request)
+        self.assertEqual(len(cgsnapshots), len(api_cgsnapshots))
+
+    def test_cgsnapshot_get(self):
+        cgsnapshot = self.cinder_cg_snapshots.first()
+        cinderclient = self.stub_cinderclient()
+        cinderclient.cgsnapshots = self.mox.CreateMockAnything()
+        cinderclient.cgsnapshots.get(cgsnapshot.id).AndReturn(cgsnapshot)
+        self.mox.ReplayAll()
+        api_cgsnapshot = api.cinder.volume_cg_snapshot_get(self.request,
+                                                           cgsnapshot.id)
+        self.assertEqual(api_cgsnapshot.name, cgsnapshot.name)
+        self.assertEqual(api_cgsnapshot.description, cgsnapshot.description)
+        self.assertEqual(api_cgsnapshot.consistencygroup_id,
+                         cgsnapshot.consistencygroup_id)
 
 
 class CinderApiVersionTests(test.TestCase):
@@ -417,6 +438,20 @@ class CinderApiVersionTests(test.TestCase):
         setattr(snapshot._apiresource, 'description', description)
         self.assertEqual(name, snapshot.name)
         self.assertEqual(description, snapshot.description)
+
+    def test_get_v2_snapshot_metadata(self):
+        # Get a v2 snapshot with metadata
+        snapshot = self.cinder_volume_snapshots.get(
+            description="v2 volume snapshot with metadata description")
+        self.assertTrue(hasattr(snapshot._apiresource, 'metadata'))
+        self.assertFalse(hasattr(snapshot._apiresource, 'display_name'))
+
+        key_name = "snapshot_meta_key"
+        key_value = "snapshot_meta_value"
+        metadata_value = {key_name: key_value}
+        setattr(snapshot._apiresource, 'metadata', metadata_value)
+        self.assertTrue(key_name in snapshot.metadata.keys())
+        self.assertEqual(key_value, snapshot.metadata['snapshot_meta_key'])
 
     def test_get_id_for_nameless_volume(self):
         volume = self.cinder_volumes.first()

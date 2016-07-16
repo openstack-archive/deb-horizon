@@ -36,18 +36,20 @@
     .constant('horizon.app.core.images.validationRules', validationRules())
     .constant('horizon.app.core.images.imageFormats', imageFormats())
     .constant('horizon.app.core.images.resourceType', 'OS::Glance::Image')
-    .run(registerImageType)
+    .run(run)
     .config(config);
 
-  registerImageType.$inject = [
+  run.$inject = [
     'horizon.framework.conf.resource-type-registry.service',
+    'horizon.app.core.openstack-service-api.glance',
+    'horizon.app.core.images.basePath',
     'horizon.app.core.images.resourceType'
   ];
 
-  function registerImageType(registry, imageResourceType) {
-    registry.getResourceType(imageResourceType, {
-      names: [gettext('Image'), gettext('Images')]
-    })
+  function run(registry, glance, basePath, imageResourceType) {
+    registry.getResourceType(imageResourceType)
+      .setNames(gettext('Image'), gettext('Images'))
+      .setSummaryTemplateUrl(basePath + 'details/drawer.html')
       .setProperty('checksum', {
         label: gettext('Checksum')
       })
@@ -62,6 +64,9 @@
       })
       .setProperty('id', {
         label: gettext('ID')
+      })
+      .setProperty('type', {
+        label: gettext('Type')
       })
       .setProperty('members', {
         label: gettext('Members')
@@ -110,7 +115,122 @@
       })
       .setProperty('ramdisk_id', {
         label: gettext('Ramdisk ID')
+      })
+      .setListFunction(listFunction)
+      .tableColumns
+      .append({
+        id: 'name',
+        priority: 1,
+        sortDefault: true,
+        urlFunction: urlFunction
+      })
+      .append({
+        id: 'type',
+        priority: 1,
+        filters: ['imageType']
+      })
+      .append({
+        id: 'status',
+        priority: 1,
+        filters: ['imageStatus']
+      })
+      .append({
+        id: 'protected',
+        priority: 1,
+        filters: ['yesno']
+      })
+      .append({
+        id: 'disk_format',
+        priority: 2,
+        filters: ['noValue', 'uppercase']
+      })
+      .append({
+        id: 'size',
+        priority: 2,
+        filters: ['bytes']
       });
+
+    registry.getResourceType(imageResourceType).filterFacets
+      .append({
+        label: gettext('Name'),
+        name: 'name',
+        isServer: true,
+        singleton: true,
+        persistent: true
+      })
+      .append({
+        label: gettext('Status'),
+        name: 'status',
+        isServer: true,
+        singleton: true,
+        options: [
+          {label: gettext('Active'), key: 'active'},
+          {label: gettext('Saving'), key: 'saving'},
+          {label: gettext('Queued'), key: 'queued'},
+          {label: gettext('Pending Delete'), key: 'pending_delete'},
+          {label: gettext('Killed'), key: 'killed'},
+          {label: gettext('Deactivated'), key: 'deactivated'},
+          {label: gettext('Deleted'), key: 'deleted'}
+        ]
+      })
+      .append({
+        label: gettext('Protected'),
+        name: 'protected',
+        isServer: true,
+        singleton: true,
+        options: [
+          {label: gettext('Yes'), key: 'true'},
+          {label: gettext('No'), key: 'false'}
+        ]
+      })
+      .append({
+        label: gettext('Format'),
+        name: 'disk_format',
+        isServer: true,
+        singleton: true,
+        options: [
+          {label: gettext('AKI'), key: 'aki'},
+          {label: gettext('AMI'), key: 'ami'},
+          {label: gettext('ARI'), key: 'ari'},
+          {label: gettext('Docker'), key: 'docker'},
+          {label: gettext('ISO'), key: 'iso'},
+          {label: gettext('OVA'), key: 'ova'},
+          {label: gettext('QCOW2'), key: 'qcow2'},
+          {label: gettext('Raw'), key: 'raw'},
+          {label: gettext('VDI'), key: 'vdi'},
+          {label: gettext('VHD'), key: 'vhd'},
+          {label: gettext('VMDK'), key: 'vmdk'}
+        ]
+      })
+      .append({
+        label: gettext('Min. Size (bytes)'),
+        name: 'size_min',
+        isServer: true,
+        singleton: true
+      })
+      .append({
+        label: gettext('Max. Size (bytes)'),
+        name: 'size_max',
+        isServer: true,
+        singleton: true
+      });
+
+    function listFunction(params) {
+      return glance.getImages(params).then(modifyResponse);
+
+      function modifyResponse(response) {
+        return {data: {items: response.data.items.map(addTrackBy)}};
+
+        function addTrackBy(image) {
+          image.trackBy = image.id + image.updated_at;
+          return image;
+        }
+      }
+    }
+
+    function urlFunction(item) {
+      return 'project/ngdetails/OS::Glance::Image/' + item.id;
+    }
   }
 
   /**
@@ -154,10 +274,7 @@
    */
   function events() {
     return {
-      DELETE_SUCCESS: 'horizon.app.core.images.DELETE_SUCCESS',
       VOLUME_CHANGED: 'horizon.app.core.images.VOLUME_CHANGED',
-      UPDATE_METADATA_SUCCESS: 'horizon.app.core.images.UPDATE_METADATA_SUCCESS',
-      UPDATE_SUCCESS: 'horizon.app.core.images.UPDATE_SUCCESS',
       IMAGE_CHANGED: 'horizon.app.core.images.IMAGE_CHANGED',
       IMAGE_METADATA_CHANGED: 'horizon.app.core.images.IMAGE_METADATA_CHANGED'
     };
@@ -180,23 +297,10 @@
   function config($provide, $windowProvider, $routeProvider) {
     var path = $windowProvider.$get().STATIC_URL + 'app/core/images/';
     $provide.constant('horizon.app.core.images.basePath', path);
-    var tableUrl = path + "table/";
-    var projectTableRoute = 'project/ngimages/';
-    var detailsUrl = path + "detail/";
-    var projectDetailsRoute = 'project/ngimages/details/';
 
-    // Share the routes as constants so that views within the images module
-    // can create links to each other.
-    $provide.constant('horizon.app.core.images.tableRoute', projectTableRoute);
-    $provide.constant('horizon.app.core.images.detailsRoute', projectDetailsRoute);
-
-    $routeProvider
-      .when('/' + projectTableRoute, {
-        templateUrl: tableUrl + 'images-table.html'
-      })
-      .when('/' + projectDetailsRoute + ':imageId', {
-        templateUrl: detailsUrl + 'image-detail.html'
-      });
+    $routeProvider.when('/project/ngimages/', {
+      templateUrl: path + 'panel.html'
+    });
   }
 
 })();

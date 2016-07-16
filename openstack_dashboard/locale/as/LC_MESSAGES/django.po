@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev230\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-06-28 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -143,9 +143,6 @@ msgstr ""
 "কৰাটো অপৰিহাৰ্য সেয়ে ডাটা আপলোড কৰাৰ আগতে আপুনি আপোনাৰ একাউন্টত অতিকমেও এটা "
 "ধাৰক বাখ্যা কৰাটো অপৰিহাৰ্য."
 
-msgid "A image or external image location must be specified."
-msgstr "এটা ছবি বা বাহ্যিক ছবিৰ স্থানটো নিৰ্ধাৰণ কৰাটো অপৰিহাৰ্য."
-
 msgid "A local environment to upload."
 msgstr "আপলোড কৰিবলৈ এটা স্থানীয় পৰিৱেশ."
 
@@ -236,14 +233,6 @@ msgid "Active"
 msgstr "সক্ৰিয়"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "সক্ৰিয়"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "সক্ৰিয়"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "সক্ৰিয়"
 
@@ -762,9 +751,6 @@ msgstr "CIDR নিৰ্ধাৰিত কৰাটো অপৰিহাৰ�
 msgid "CPU time used"
 msgstr "CPU সময় ব্যৱহাৰ কৰা হল"
 
-msgid "Can not specify both image and external image location."
-msgstr "ছবি আৰু বাহ্যিক ছবিৰ স্থান দুয়োটা নিৰ্ধাৰণ কৰিব নোৱাৰি."
-
 msgid "Cancel"
 msgstr "বাতিল কৰক"
 
@@ -1213,10 +1199,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "তৈয়াৰ কৰা হল"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "তৈয়াৰ কৰা হল"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "অতিৰিক্ত স্পেক \"%s\" তৈয়াৰ কৰা হল."
@@ -1628,14 +1610,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "তললৈ"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "তললৈ"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "তললৈ"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "তললৈ"
@@ -1833,9 +1807,6 @@ msgstr "(-1: 255) পৰিসৰটোত ICMP প্ৰসাৰটোৰ ব�
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "(-1: 255) পৰিসৰটোত ICMP প্ৰসাৰটোৰ বাবে মান এটা ভৰাওক"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "0 আৰু 255 ৰ মাজত অখণ্ড মান এটা ভৰাওক. (বা -1 যিটো মানে হল ৱাইল্ডকাৰ্ড)."
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "1 আৰু 65535 ৰ মাজত অখণ্ড মান এটা ভৰাওক."
 
@@ -1890,19 +1861,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "ভুল"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "ভুল"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "ভুল"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "ভুল"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "ভুল"
 
@@ -4562,9 +4525,6 @@ msgstr "বিনিময় কৰা হল"
 msgid "Shared Storage"
 msgstr "ভঁৰাল বিনিময় কৰা হল"
 
-msgid "Shared with Me"
-msgstr "মোৰ সৈতে বিনিময় কৰক"
-
 msgctxt "Current status of an Instance"
 msgid "Shelved"
 msgstr "জমা কৰা হল"
@@ -5037,14 +4997,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "গড়টো আপডেট কৰা হৈছিল."
 
-msgid "The ICMP code is invalid."
-msgstr "ICMP কোডটো অবৈধ."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "ICMP কোডটো পৰিসৰত (-1, 255) নাই"
-
-msgid "The ICMP type is invalid."
-msgstr "ICMP প্ৰকাৰটো অবৈধ."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "ICMP প্ৰকাৰটো (-1, 255) পৰিসৰৰ ভিতৰত নাই"
@@ -5098,10 +5052,6 @@ msgid ""
 msgstr ""
 "দাবী কৰা ছবিটোৰ বাবে '%(flavor)s' ফ্লেভাৰটো অতি সৰু.\n"
 "নূন্যতম প্ৰয়োজনীয়তাবোৰ: RAM ৰ %(min_ram)s MB  আৰু মুখ্য ডিস্কৰ %(min_disk)s GB."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "উদাহৰণটোৱে \"%s\" হষ্টলৈ জীৱন্ত প্ৰব্ৰজন কৰিবলৈ প্ৰস্তুত কৰিছে."
 
 msgid "The instance password encrypted with your public key."
 msgstr "আপোনাৰ ৰাজহুৱা কীৰ সৈতে উদাহৰণ পাছৱৰ্ডটো এনক্ৰিপ্ট কৰা হল."

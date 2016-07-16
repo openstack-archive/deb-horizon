@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev230\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-06-28 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -135,9 +135,6 @@ msgstr ""
 "تُہندِس کھاتس مَنز۔ ڈیٹا گژہ آسون جمع ٲسُن کنٹینر مَنزتاکہ توہیہ آسہ اَکھ کنٹینر "
 "تُہندِس کھاتس مَنز ڈیٹا اَپلوڈ برونٹھ"
 
-msgid "A image or external image location must be specified."
-msgstr " وَضاحت کریو دونوے شکل تہ نیبرِم شکل جٲے"
-
 msgid "A local environment to upload."
 msgstr "اَکھ لوکل ماحول اَپلوڈ کئرنہٕ خآطرہ"
 
@@ -226,14 +223,6 @@ msgid "Active"
 msgstr "چآلو"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "چآلو"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "چآلو"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "چآلو"
 
@@ -719,9 +708,6 @@ msgstr "CIDR کئریو وَضاحت"
 msgid "CPU time used"
 msgstr "CPU وَقت اِستعمال"
 
-msgid "Can not specify both image and external image location."
-msgstr "ہیکو نہ وَضاحت کریتھ دونوے شکل تہ نیبرِم شکل جٲے"
-
 msgid "Cancel"
 msgstr "مَنسوخ"
 
@@ -1157,10 +1143,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "بَناومُت"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "بَناومُت"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "بَناویتھ علاوہ  سِپیک \"%s\""
@@ -1576,14 +1558,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "ڈاون"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "ڈاون"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "ڈاون"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "ڈاون"
@@ -1780,9 +1754,6 @@ msgstr "داخل کریو ICMP کوڈ یَتھ رینج مَنز  (-1: 255)"
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "داخل کریو ICMP رینج یَتھ رینج مَنز  (-1: 255)"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "داخل کریو اَکھ اینٹیجر  ویلیو ۰ تہ ۲۵۵ مَنز(یا -۱ یَمُک مَطلب چُھ)"
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "داخل کریو اَکھ اینٹیجر  ویلیو ۱ تہ ۶۵۵۳۵ مَنز"
 
@@ -1837,19 +1808,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "غَلطی"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "غَلطی"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "غَلطی"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "غَلطی"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "غَلطی"
 
@@ -4364,9 +4327,6 @@ msgstr "بئگراویتھ"
 msgid "Shared Storage"
 msgstr "بئگراویتھ ہوسٹ"
 
-msgid "Shared with Me"
-msgstr "بئگرایئو میہ سیتھ"
-
 msgid "Sign Out"
 msgstr "سآئن آوٹ"
 
@@ -4785,14 +4745,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr " ایگریگیٹ آو اَپڈیٹ کئرنہٕ"
 
-msgid "The ICMP code is invalid."
-msgstr "کوڈ چُھ نہ واجِب  ICMP "
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "کوڈ چُھ نہ چُھ نہ رینج مَنز  ICMP  (-1, 255)"
-
-msgid "The ICMP type is invalid."
-msgstr "قِسم چُھ نہ واجِب  ICMP "
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "قِسم چُھ نہ رینج مَنز  ICMP  (-1, 255)"
@@ -4845,10 +4799,6 @@ msgid ""
 msgstr ""
 "The flavor '%(flavor)s' is too small for requested image.\n"
 "Minimum requirements: %(min_ram)s MB of RAM and %(min_disk)s GB of Root Disk."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "اِنسٹنس چھ تَیآری کران لآیو مےگریشن ہوسٹ خآطرہ \"%s\""
 
 msgid "The instance password encrypted with your public key."
 msgstr "اِنسٹنس پٲس ورڈ چُھ اینکریپٹ تُہندِ عام کی سیتھ"

@@ -45,7 +45,10 @@
       getQoSSpecs: getQoSSpecs,
       createVolume: createVolume,
       getAbsoluteLimits: getAbsoluteLimits,
-      getServices: getServices
+      getServices: getServices,
+      getDefaultQuotaSets: getDefaultQuotaSets,
+      setDefaultQuotaSets: setDefaultQuotaSets,
+      updateProjectQuota: updateProjectQuota
     };
 
     return service;
@@ -197,8 +200,7 @@
       var config = params ? {'params': params} : {};
       return apiService.get('/api/cinder/volumesnapshots/', config)
         .error(function () {
-          toastService.add('error',
-                        gettext('Unable to retrieve the volume snapshots.'));
+          toastService.add('error', gettext('Unable to retrieve the volume snapshots.'));
         });
     }
 
@@ -288,5 +290,56 @@
             gettext('Unable to retrieve the Absolute Limits.'));
         });
     }
+
+    // Default Quota Sets
+
+    /**
+     * @name horizon.app.core.openstack-service-api.cinder.getDefaultQuotaSets
+     * @description
+     * Get default quotasets
+     *
+     * The listing result is an object with property "items." Each item is
+     * a quota.
+     *
+     */
+    function getDefaultQuotaSets() {
+      return apiService.get('/api/cinder/quota-sets/defaults/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve the default quotas.'));
+        });
+    }
+
+    /**
+     * @name horizon.app.core.openstack-service-api.cinder.setDefaultQuotaSets
+     * @description
+     * Set default quota sets
+     *
+     */
+    function setDefaultQuotaSets(quotas) {
+      return apiService.patch('/api/cinder/quota-sets/defaults/', quotas)
+        .error(function () {
+          toastService.add('error', gettext('Unable to set the default quotas.'));
+        });
+    }
+
+    // Quota Sets
+
+    /**
+     * @name updateProjectQuota
+     * @description
+     * Update a single project quota data.
+     * @param {application/json} quota
+     * A JSON object with the atributes to set to new quota values.
+     * @param {string} projectId
+     * Specifies the id of the project that'll have the quota data updated.
+     */
+    function updateProjectQuota(quota, projectId) {
+      var url = '/api/cinder/quota-sets/' + projectId;
+      return apiService.patch(url, quota)
+        .error(function() {
+          toastService.add('error', gettext('Unable to update project quota data.'));
+        });
+    }
   }
+
 }());

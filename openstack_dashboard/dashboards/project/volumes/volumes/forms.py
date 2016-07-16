@@ -80,28 +80,29 @@ class CreateForm(forms.SelfHandlingForm):
     description = forms.CharField(max_length=255, widget=forms.Textarea(
         attrs={'rows': 4}),
         label=_("Description"), required=False)
-    volume_source_type = forms.ChoiceField(label=_("Volume Source"),
-                                           required=False,
-                                           widget=forms.Select(attrs={
-                                               'class': 'switchable',
-                                               'data-slug': 'source'}))
+    volume_source_type = forms.ChoiceField(
+        label=_("Volume Source"),
+        required=False,
+        widget=forms.ThemableSelectWidget(attrs={
+            'class': 'switchable',
+            'data-slug': 'source'}))
     snapshot_source = forms.ChoiceField(
         label=_("Use snapshot as a source"),
-        widget=forms.SelectWidget(
+        widget=forms.ThemableSelectWidget(
             attrs={'class': 'snapshot-selector'},
             data_attrs=('size', 'name'),
             transform=lambda x: "%s (%s GiB)" % (x.name, x.size)),
         required=False)
     image_source = forms.ChoiceField(
         label=_("Use image as a source"),
-        widget=forms.SelectWidget(
+        widget=forms.ThemableSelectWidget(
             attrs={'class': 'image-selector'},
             data_attrs=('size', 'name', 'min_disk'),
             transform=lambda x: "%s (%s)" % (x.name, filesizeformat(x.bytes))),
         required=False)
     volume_source = forms.ChoiceField(
         label=_("Use a volume as source"),
-        widget=forms.SelectWidget(
+        widget=forms.ThemableSelectWidget(
             attrs={'class': 'image-selector'},
             data_attrs=('size', 'name'),
             transform=lambda x: "%s (%s GiB)" % (x.name, x.size)),
@@ -109,7 +110,7 @@ class CreateForm(forms.SelfHandlingForm):
     type = forms.ChoiceField(
         label=_("Type"),
         required=False,
-        widget=forms.Select(
+        widget=forms.ThemableSelectWidget(
             attrs={'class': 'switched',
                    'data-switch-on': 'source',
                    'data-source-no_source_type': _('Type'),
@@ -118,7 +119,7 @@ class CreateForm(forms.SelfHandlingForm):
     availability_zone = forms.ChoiceField(
         label=_("Availability Zone"),
         required=False,
-        widget=forms.Select(
+        widget=forms.ThemableSelectWidget(
             attrs={'class': 'switched',
                    'data-switch-on': 'source',
                    'data-source-no_source_type': _('Availability Zone'),
@@ -262,7 +263,7 @@ class CreateForm(forms.SelfHandlingForm):
     def __init__(self, request, *args, **kwargs):
         super(CreateForm, self).__init__(request, *args, **kwargs)
         volume_types = cinder.volume_type_list(request)
-        self.fields['type'].choices = [("no_type", _("No volume type"))] + \
+        self.fields['type'].choices = [("", _("No volume type"))] + \
                                       [(type.name, type.name)
                                        for type in volume_types]
         if 'initial' in kwargs and 'type' in kwargs['initial']:
@@ -380,9 +381,6 @@ class CreateForm(forms.SelfHandlingForm):
 
             metadata = {}
 
-            if data['type'] == 'no_type':
-                data['type'] = ''
-
             volume = cinder.volume_create(request,
                                           data['size'],
                                           data['name'],
@@ -419,9 +417,9 @@ class CreateForm(forms.SelfHandlingForm):
 
 
 class AttachForm(forms.SelfHandlingForm):
-    instance = forms.ChoiceField(label=_("Attach to Instance"),
-                                 help_text=_("Select an instance to "
-                                             "attach to."))
+    instance = forms.ThemableChoiceField(label=_("Attach to Instance"),
+                                         help_text=_("Select an instance to "
+                                                     "attach to."))
 
     device = forms.CharField(label=_("Device Name"),
                              widget=forms.TextInput(attrs={'placeholder':
@@ -537,18 +535,22 @@ class CreateSnapshotForm(forms.SelfHandlingForm):
 
 
 class CreateTransferForm(forms.SelfHandlingForm):
-    name = forms.CharField(max_length=255, label=_("Transfer Name"),
-                           required=False)
+    name = forms.CharField(max_length=255, label=_("Transfer Name"))
+
+    def clean_name(self):
+        cleaned_name = self.cleaned_data['name']
+        if cleaned_name.isspace():
+            msg = _('Volume transfer name cannot be empty.')
+            self._errors['name'] = self.error_class([msg])
+
+        return cleaned_name
 
     def handle(self, request, data):
         try:
             volume_id = self.initial['volume_id']
             transfer = cinder.transfer_create(request, volume_id, data['name'])
 
-            if data['name']:
-                msg = _('Created volume transfer: "%s".') % data['name']
-            else:
-                msg = _('Created volume transfer.')
+            msg = _('Created volume transfer: "%s".') % data['name']
             messages.success(request, msg)
             response = http.HttpResponseRedirect(
                 reverse("horizon:project:volumes:volumes:show_transfer",
@@ -645,7 +647,7 @@ class UploadToImageForm(forms.SelfHandlingForm):
                                attrs={'readonly': 'readonly'}))
     image_name = forms.CharField(max_length=255, label=_('Image Name'))
     disk_format = forms.ChoiceField(label=_('Disk Format'),
-                                    widget=forms.Select(),
+                                    widget=forms.ThemableSelectWidget(),
                                     required=False)
     force = forms.BooleanField(
         label=pgettext_lazy("Force upload volume in in-use status to image",
@@ -751,11 +753,11 @@ class RetypeForm(forms.SelfHandlingForm):
     name = forms.CharField(label=_('Volume Name'),
                            widget=forms.TextInput(
                                attrs={'readonly': 'readonly'}))
-    volume_type = forms.ChoiceField(label=_('Type'))
+    volume_type = forms.ThemableChoiceField(label=_('Type'))
     MIGRATION_POLICY_CHOICES = [('never', _('Never')),
                                 ('on-demand', _('On Demand'))]
     migration_policy = forms.ChoiceField(label=_('Migration Policy'),
-                                         widget=forms.Select(),
+                                         widget=forms.ThemableSelectWidget(),
                                          choices=(MIGRATION_POLICY_CHOICES),
                                          initial='never',
                                          required=False)

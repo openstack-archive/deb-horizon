@@ -2,9 +2,9 @@
 # Joris S'heeren <joris.sheeren@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev230\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-06-28 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -102,10 +102,6 @@ msgstr ""
 "houders dus u moet voor het uploaden van gegevens minimaal één houder "
 "definiëren binnen uw registratie."
 
-msgid "A image or external image location must be specified."
-msgstr ""
-"Een afbeelding of externe afbeeldingslocatie dient te worden gespecificeerd."
-
 msgid "A local environment to upload."
 msgstr "Een lokale omgeving om te versturen."
 
@@ -192,14 +188,6 @@ msgid "Active"
 msgstr "Actief"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "Actief"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "Actief"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "Actief"
 
@@ -610,11 +598,6 @@ msgstr "CIDR moet worden gespecificeerd."
 msgid "CPU time used"
 msgstr "CPU tijd gebruikt"
 
-msgid "Can not specify both image and external image location."
-msgstr ""
-"U mag niet zowel een afbeelding als een externe afbeeldingslocatie "
-"specificeren."
-
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -928,10 +911,6 @@ msgid "Created"
 msgstr "Gecreëerd"
 
 msgctxt "Current status of a Pool"
-msgid "Created"
-msgstr "Gecreëerd"
-
-msgctxt "Current status of a VPN Service"
 msgid "Created"
 msgstr "Gecreëerd"
 
@@ -1359,14 +1338,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "Omlaag"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "Omlaag"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "Omlaag"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "Omlaag"
@@ -1524,9 +1495,6 @@ msgstr "Voer een waarde in voor ICMP code in het bereik (-1: 255)"
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "Voer een waarde in voor ICMP type in het bereik (-1: 255)"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "Voor een geheel getal in tussen 0 en 255 (of -1 als jokerteken)."
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "Voor een geheel getal in tussen 1 en 65535."
 
@@ -1561,19 +1529,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "Fout"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "Fout"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "Fout"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "Fout"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "Fout"
 
@@ -2239,10 +2199,6 @@ msgid "Inactive"
 msgstr "Inactief"
 
 msgctxt "Current status of a Pool"
-msgid "Inactive"
-msgstr "Inactief"
-
-msgctxt "Current status of a VPN Service"
 msgid "Inactive"
 msgstr "Inactief"
 
@@ -3768,9 +3724,6 @@ msgstr "Gedeeld"
 msgid "Shared Storage"
 msgstr "Gedeelde Opslag"
 
-msgid "Shared with Me"
-msgstr "Gedeeld met mij"
-
 msgctxt "Power state of an Instance"
 msgid "Shut Off"
 msgstr "Uitzetten"
@@ -4066,14 +4019,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "Het aggregaat is aangepast."
 
-msgid "The ICMP code is invalid."
-msgstr "De ICMP code is ongeldig."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "De ICMP code valt niet binnen het geldige bereik (-1, 255)"
-
-msgid "The ICMP type is invalid."
-msgstr "Het ICMP type is ongeldig."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "Het ICMP tpye valt niet binnen het geldige bereik (-1, 255)"
@@ -4127,12 +4074,6 @@ msgstr ""
 "De smaak '%(flavor)s' is te klein voor de aangevraagde afbeelding.\n"
 "Minimale vereisten: %(min_ram)s MB aan werkgeheugen en %(min_disk)s GB voor "
 "de hoofdschijf."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr ""
-"Het exemplaar is de live verplaatsing naar gastheer \"%s\" aan het "
-"voorbereiden."
 
 msgid "The instance password encrypted with your public key."
 msgstr "Het exemplaar wachtwoord versleuteld met uw publieke sleutel."

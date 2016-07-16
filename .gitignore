@@ -9,6 +9,7 @@
 .coverage*
 .noseids
 .DS_STORE
+/cover
 coverage.xml
 coverage-karma
 nosetests.xml
@@ -41,3 +42,4 @@ ChangeLog
 tags
 ghostdriver.log
 .testrepository
+.idea

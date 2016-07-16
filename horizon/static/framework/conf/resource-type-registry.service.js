@@ -94,8 +94,15 @@
       // type, with the data as a result in a promise.  For example, Images code
       // would register a list function that returns a promise that will resolve
       // to all the Images data in list form.
-      this.listFunction = angular.noop;
+      this.listFunction = function def() {
+        return Promise.resolve({data: {items: []}});
+      };
       this.setListFunction = setListFunction;
+
+      // The filter facets registered here may be used in a magic-search bar.
+      // The facets are extensible so plugins may register additional facets.
+      this.filterFacets = [];
+      extensibleService(this.filterFacets, this.filterFacets);
 
       // The table columns are an extensible registration of columns of data
       // that could be displayed in a table/grid format.  The specification
@@ -506,10 +513,6 @@
     }
 
     var resourceTypes = {};
-    // The slugs are only used to align Django routes with heat
-    // type names.  In a context without Django routing this is
-    // not needed.
-    var slugs = {};
     var defaultSummaryTemplateUrl = false;
     var defaultDetailsTemplateUrl = false;
     var registry = {
@@ -519,19 +522,8 @@
       setDefaultSummaryTemplateUrl: setDefaultSummaryTemplateUrl,
       getDefaultSummaryTemplateUrl: getDefaultSummaryTemplateUrl,
       setDefaultDetailsTemplateUrl: setDefaultDetailsTemplateUrl,
-      getDefaultDetailsTemplateUrl: getDefaultDetailsTemplateUrl,
-      setSlug: setSlug,
-      getTypeNameBySlug: getTypeNameBySlug
+      getDefaultDetailsTemplateUrl: getDefaultDetailsTemplateUrl
     };
-
-    function getTypeNameBySlug(slug) {
-      return slugs[slug];
-    }
-
-    function setSlug(slug, typeName) {
-      slugs[slug] = typeName;
-      return this;
-    }
 
     function getDefaultSummaryTemplateUrl() {
       return defaultSummaryTemplateUrl;
@@ -602,10 +594,13 @@
      * for the given type.  This requires the proper scope be passed.
      * If an action does not have an initScope() function, it is ignored.
      */
-    function initActions(type, scope) {
-      angular.forEach(resourceTypes[type].itemActions, setActionScope);
-      angular.forEach(resourceTypes[type].batchActions, setActionScope);
-      angular.forEach(resourceTypes[type].globalActions, setActionScope);
+    function initActions(typeName, scope) {
+      var type = resourceTypes[typeName];
+      if (type) {
+        angular.forEach(type.itemActions, setActionScope);
+        angular.forEach(type.batchActions, setActionScope);
+        angular.forEach(type.globalActions, setActionScope);
+      }
 
       function setActionScope(action) {
         if (action.service.initScope) {

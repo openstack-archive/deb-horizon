@@ -9,9 +9,9 @@
 # Renato Lipi <renatolipi@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev266\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-07-01 00:12+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -177,9 +177,6 @@ msgstr ""
 "armazenados em um contêiner então você deve ter ao menos um contêiner na sua "
 "conta antes de enviar dados."
 
-msgid "A image or external image location must be specified."
-msgstr "Uma imagem ou localização de imagem externa deve se especificada."
-
 msgid "A local environment to upload."
 msgstr "Um ambiente local para enviar."
 
@@ -331,14 +328,6 @@ msgid "Active"
 msgstr "Ativo"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "Ativo"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "Ativo"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "Ativo"
 
@@ -1075,9 +1064,6 @@ msgstr "CIDR precisa ser especificado."
 msgid "CPU time used"
 msgstr "Tempo de CPU utilizado"
 
-msgid "Can not specify both image and external image location."
-msgstr "Não é possível especificar a imagem e a localização de imagem externa."
-
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -1143,13 +1129,6 @@ msgid "Check Stack"
 msgid_plural "Check Stacks"
 msgstr[0] "Checar Pilha"
 msgstr[1] "Checar Pilhas"
-
-msgid ""
-"Check the &quot;Delete Volumes&quot; box to also delete the volumes "
-"associated with this consistency group."
-msgstr ""
-"Verifique a &quot; Excluir Volumes&quot; caixa para também excluir os "
-"volumes associados a este grupo de consistência."
 
 msgid "Checked Stack"
 msgid_plural "Checked Stacks"
@@ -1869,10 +1848,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "Criado"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "Criado"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "Criada especificação extra \"%s\"."
@@ -1907,9 +1882,6 @@ msgstr "Especificação \"%s\" criada."
 #, python-format
 msgid "Created subnet \"%s\"."
 msgstr "Criada sub-rede \"%s\"."
-
-msgid "Created volume transfer."
-msgstr "Criada transferência de volume."
 
 #, python-format
 msgid "Created volume transfer: \"%s\"."
@@ -2145,10 +2117,9 @@ msgctxt "current status of stack"
 msgid "Delete Complete"
 msgstr "Exclusão Concluída"
 
+#, fuzzy
 msgid "Delete Consistency Group"
-msgid_plural "Delete Consistency Groups"
-msgstr[0] "Remover Grupo de Consistência"
-msgstr[1] "Remover Grupos de Consistência"
+msgstr "Remover Grupo de Consistência"
 
 msgid "Delete Container"
 msgid_plural "Delete Containers"
@@ -2857,14 +2828,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "Inativo"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "Inativo"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "Inativo"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "Inativo"
@@ -3027,10 +2990,6 @@ msgstr "Editar o Tipo de Volume"
 msgid "Edit Volume Type Extra Spec"
 msgstr "Edita Especificações Extra de Tipo de Volume"
 
-#, python-format
-msgid "Edit consistency group \"%s\"."
-msgstr "Editar grupo \"%s\" de consistência."
-
 msgid ""
 "Edit the flavor details. Flavors define the sizes for RAM, disk, number of "
 "cores, and other resources. Flavors are selected when users deploy instances."
@@ -3152,11 +3111,6 @@ msgstr "Digite um valor para o código ICMP na faixa (-1: 255)"
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "Digite um valor para o tipo ICMP na faixa (-1: 255)"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr ""
-"Digite um número inteiro entre 0 e 255 (ou -1 que significa caractere "
-"curinga)."
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "Digite um valor inteiro entre 1 e 65535."
 
@@ -3215,19 +3169,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "Erro"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "Erro"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "Erro"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "Erro"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "Erro"
 
@@ -4365,10 +4311,6 @@ msgctxt "Current status of a Pool"
 msgid "Inactive"
 msgstr "Inativo"
 
-msgctxt "Current status of a VPN Service"
-msgid "Inactive"
-msgstr "Inativo"
-
 msgid ""
 "Indicates whether this identity provider should accept federated "
 "authentication requests."
@@ -5074,9 +5016,6 @@ msgstr "Modificar o nome e a descrição de um snapshot."
 
 msgid "Modify the name and description of a volume consistency group."
 msgstr "Modificar o nome e a descrição de um grupo de consistência de volume."
-
-msgid "Modify volume type name and description."
-msgstr "Modificar o nome e descrição do tipo de volume."
 
 msgid "Monitor"
 msgstr "Monitor"
@@ -5798,19 +5737,11 @@ msgctxt "Current status of a Pool"
 msgid "Pending Create"
 msgstr "Aguardando a Criação"
 
-msgctxt "Current status of a VPN Service"
-msgid "Pending Create"
-msgstr "Aguardando a Criação"
-
 msgctxt "Current status of a Firewall"
 msgid "Pending Delete"
 msgstr "Aguardando a Exclusão"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Delete"
-msgstr "Aguardando a Exclusão"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Delete"
 msgstr "Aguardando a Exclusão"
 
@@ -5823,10 +5754,6 @@ msgid "Pending Update"
 msgstr "Aguardando a Atualização"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Update"
-msgstr "Aguardando a Atualização"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Update"
 msgstr "Aguardando a Atualização"
 
@@ -6748,11 +6675,6 @@ msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "Salvando"
 
-msgid "Scheduled deletion of Consistency Group"
-msgid_plural "Scheduled deletion of Consistency Groups"
-msgstr[0] "Remoção de Grupo de Consistência Agendada"
-msgstr[1] "Remoção de Grupos de Consistência Agendadas"
-
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "Exclusão agendada de Firewall"
@@ -7149,9 +7071,6 @@ msgstr "Compartilhado"
 
 msgid "Shared Storage"
 msgstr "Storage Compartilhado"
-
-msgid "Shared with Me"
-msgstr "Compartilhado Comigo"
 
 msgid "Shelve Instance"
 msgid_plural "Shelve Instances"
@@ -7875,14 +7794,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "O Agregado foi atualizado."
 
-msgid "The ICMP code is invalid."
-msgstr "O código ICMP é inválido."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "O código de ICMP não está no range (-1,255)"
-
-msgid "The ICMP type is invalid."
-msgstr "O tipo ICMP é inválido."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "O tipo ICMP não está na faixa (-1,255)"
@@ -7970,13 +7883,6 @@ msgstr ""
 "deve selecionar uma sub-rede da lista acima a qual o endereço IP "
 "especificado pertença."
 
-msgid ""
-"The default action for deleting a consistency group is to first disassociate "
-"all associated volumes."
-msgstr ""
-"A ação padrão para a exclusão de um grupo de consistência é a primeira a "
-"dissociar todos os volumes associados."
-
 #, python-format
 msgid ""
 "The flavor '%(flavor)s' is too small for requested image.\n"
@@ -7984,12 +7890,6 @@ msgid ""
 msgstr ""
 "O Flavor '%(flavor)s' é muito pequeno para a imagem requisitada.\n"
 "Requerimentos mínimos: %(min_ram)s MB de RAM e %(min_disk)s GB no disco raiz."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr ""
-"A instância está se preparando para a migração em tempo real para o host \"%s"
-"\"."
 
 msgid "The instance password encrypted with your public key."
 msgstr "A senha da instância criptografada com sua chave pública."
@@ -8660,9 +8560,6 @@ msgstr "Não é possível excluir vIP. %s"
 msgid "Unable to delete VPN Service. %s"
 msgstr "Não foi possível deletar o serviço de VPN. %s"
 
-msgid "Unable to delete consistency group."
-msgstr "Não foi possível remover grupos de consistência."
-
 msgid "Unable to delete container."
 msgstr "Não foi possível excluír container."
 
@@ -8715,12 +8612,6 @@ msgstr "Não é possível desassociar IP flutuante."
 
 msgid "Unable to disassociate monitor."
 msgstr "Não é possível associar monitor."
-
-msgid "Unable to edit consistency group"
-msgstr "Não é possível editar o grupo de consistência"
-
-msgid "Unable to edit consistency group."
-msgstr "Não é possível editar o grupo de consistência."
 
 msgid "Unable to edit spec."
 msgstr "Não é possível editar especificação."
@@ -10274,13 +10165,6 @@ msgstr ""
 "%(avail)iGiB da sua quota disponível."
 
 msgid ""
-"Volume consistency groups can only be deleted after all the volumes they "
-"contain are either deleted or unassigned."
-msgstr ""
-"Grupos de consistência de volume só podem ser excluídos após todos os seus "
-"volumes serem excluídos ou não estiverem mais atribuídos."
-
-msgid ""
 "Volume consistency groups provide a mechanism for creating snapshots of "
 "multiple volumes at the same point-in-time to ensure data consistency\n"
 "\n"
@@ -10662,6 +10546,3 @@ msgstr "v1"
 
 msgid "v2"
 msgstr "v2"
-
-msgid "yes,no,-"
-msgstr "yes,no,-"

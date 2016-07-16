@@ -7,9 +7,9 @@
 # Zhang Xiaowei <zero00072@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev266\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-07-01 00:12+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -168,9 +168,6 @@ msgstr ""
 "不同在於容器不能階層化。無論如何，您可以以您的帳戶新增無限數量的容器。資料必"
 "須儲存在容器裡，所以您必須在上傳資料前最少定義一個容器在您的帳戶裡。"
 
-msgid "A image or external image location must be specified."
-msgstr "映像檔或外部映像檔位置必須指定。"
-
 msgid "A local environment to upload."
 msgstr "上傳本地的環境。"
 
@@ -309,14 +306,6 @@ msgid "Active"
 msgstr "使用中"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "使用中"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "使用中"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "使用中"
 
@@ -1024,9 +1013,6 @@ msgstr "必須指定 CIDR。"
 msgid "CPU time used"
 msgstr "已使用的處理器時數"
 
-msgid "Can not specify both image and external image location."
-msgstr "不能同時指定映像檔及外部映像檔位置。"
-
 msgid "Cancel"
 msgstr "取消"
 
@@ -1087,11 +1073,6 @@ msgstr "正在檢查"
 msgid "Check Stack"
 msgid_plural "Check Stacks"
 msgstr[0] "檢查機櫃"
-
-msgid ""
-"Check the &quot;Delete Volumes&quot; box to also delete the volumes "
-"associated with this consistency group."
-msgstr "勾選「刪除雲硬碟」方框，以同時刪除與此一致性群組相關聯的雲硬碟。"
 
 msgid "Checked Stack"
 msgid_plural "Checked Stacks"
@@ -1759,10 +1740,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "已新增"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "已新增"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "新增額外的規格「%s」。"
@@ -1797,9 +1774,6 @@ msgstr "已新增額外的規格「%s」。"
 #, python-format
 msgid "Created subnet \"%s\"."
 msgstr "已新增子網路「%s」。"
-
-msgid "Created volume transfer."
-msgstr "已新增雲硬碟轉移。"
 
 #, python-format
 msgid "Created volume transfer: \"%s\"."
@@ -2028,9 +2002,9 @@ msgctxt "current status of stack"
 msgid "Delete Complete"
 msgstr "刪除完成"
 
+#, fuzzy
 msgid "Delete Consistency Group"
-msgid_plural "Delete Consistency Groups"
-msgstr[0] "刪除一致性群組"
+msgstr "刪除一致性群組"
 
 msgid "Delete Container"
 msgid_plural "Delete Containers"
@@ -2656,14 +2630,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "離線"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "離線"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "離線"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "離線"
@@ -2826,10 +2792,6 @@ msgstr "編輯雲硬碟類型"
 msgid "Edit Volume Type Extra Spec"
 msgstr "編輯雲硬碟類型的額外規格"
 
-#, python-format
-msgid "Edit consistency group \"%s\"."
-msgstr "編輯一致性群組「%s」。"
-
 msgid ""
 "Edit the flavor details. Flavors define the sizes for RAM, disk, number of "
 "cores, and other resources. Flavors are selected when users deploy instances."
@@ -2943,9 +2905,6 @@ msgstr "為 ICMP 代碼輸入數值（範圍：-1 到 255）"
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "為 ICMP 類型輸入數值（範圍：-1 到 255）"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "輸入 0 到 255 之間的整數（或者以 -1 代表萬用符號）。"
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "輸入 1 到 65535 之間的整數。"
 
@@ -3003,19 +2962,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "錯誤"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "錯誤"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "錯誤"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "錯誤"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "錯誤"
 
@@ -4111,10 +4062,6 @@ msgctxt "Current status of a Pool"
 msgid "Inactive"
 msgstr "未使用"
 
-msgctxt "Current status of a VPN Service"
-msgid "Inactive"
-msgstr "未使用"
-
 msgid ""
 "Indicates whether this identity provider should accept federated "
 "authentication requests."
@@ -4783,9 +4730,6 @@ msgstr "更改即時存檔的名稱和描述。"
 
 msgid "Modify the name and description of a volume consistency group."
 msgstr "修改雲硬碟一致性群組的名稱及說明。"
-
-msgid "Modify volume type name and description."
-msgstr "更改雲碟碟類型名稱及描述。"
 
 msgid "Monitor"
 msgstr "監視器"
@@ -5478,19 +5422,11 @@ msgctxt "Current status of a Pool"
 msgid "Pending Create"
 msgstr "等候新增"
 
-msgctxt "Current status of a VPN Service"
-msgid "Pending Create"
-msgstr "等候新增"
-
 msgctxt "Current status of a Firewall"
 msgid "Pending Delete"
 msgstr "等候刪除"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Delete"
-msgstr "等候刪除"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Delete"
 msgstr "等候刪除"
 
@@ -5503,10 +5439,6 @@ msgid "Pending Update"
 msgstr "等候更新"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Update"
-msgstr "等候更新"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Update"
 msgstr "等候更新"
 
@@ -6399,10 +6331,6 @@ msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "正在儲存"
 
-msgid "Scheduled deletion of Consistency Group"
-msgid_plural "Scheduled deletion of Consistency Groups"
-msgstr[0] "已排程一致性群組的刪除"
-
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "已排程防火牆的刪除"
@@ -6774,9 +6702,6 @@ msgstr "已分享"
 
 msgid "Shared Storage"
 msgstr "已分享的儲存容量"
-
-msgid "Shared with Me"
-msgstr "與我分享"
 
 msgid "Shelve Instance"
 msgid_plural "Shelve Instances"
@@ -7459,14 +7384,8 @@ msgstr "<strong>提供者</strong>是提供加密的類別（例如 LuksEncrypto
 msgid "The Aggregate was updated."
 msgstr "已更新聚合。"
 
-msgid "The ICMP code is invalid."
-msgstr "ICMP 代碼是無效的"
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "ICMP 代碼沒有在範圍裡（-1 到 255）"
-
-msgid "The ICMP type is invalid."
-msgstr "ICMP 類型是無效的。"
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "ICMP 類型沒有在範圍裡（-1 到 255）"
@@ -7541,11 +7460,6 @@ msgstr ""
 "新增網路卡時預設的 IP 位址是已選擇子網路的閘道。您可以在此指定另外的網路卡介"
 "面 IP 位址。您必須選擇上列清單上有包含指定 IP 的子網路。"
 
-msgid ""
-"The default action for deleting a consistency group is to first disassociate "
-"all associated volumes."
-msgstr "刪除一致性群組的預設動作，是先與所有相關聯的雲硬盤斷開關聯。"
-
 #, python-format
 msgid ""
 "The flavor '%(flavor)s' is too small for requested image.\n"
@@ -7553,10 +7467,6 @@ msgid ""
 msgstr ""
 "虛擬硬體樣板「%(flavor)s」對所要求的映像檔太小。\n"
 "最低需求：%(min_ram)s MB 記憶體及 %(min_disk)s GB 根硬碟。"
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "雲實例已準備要即時轉移到主機「%s」。"
 
 msgid "The instance password encrypted with your public key."
 msgstr "已用您的公鑰為雲實例加密。"
@@ -8185,9 +8095,6 @@ msgstr "無法刪除虛擬 IP。%s"
 msgid "Unable to delete VPN Service. %s"
 msgstr "無法刪除虛擬私人網路伺服器。%s"
 
-msgid "Unable to delete consistency group."
-msgstr "無法刪除一致性群組。"
-
 msgid "Unable to delete container."
 msgstr "無法刪除容器。"
 
@@ -8239,12 +8146,6 @@ msgstr "無法解除浮動 IP 的連結。"
 
 msgid "Unable to disassociate monitor."
 msgstr "無法解除監視器的聯結。"
-
-msgid "Unable to edit consistency group"
-msgstr "無法編輯一致性群組"
-
-msgid "Unable to edit consistency group."
-msgstr "無法編輯一致性群組。"
 
 msgid "Unable to edit spec."
 msgstr "無法編輯規格。"
@@ -9743,13 +9644,6 @@ msgid ""
 msgstr "您只擁有 %(avail)iGiB 配額可用，所以您不能擴充雲硬碟到 %(req)iGiB。"
 
 msgid ""
-"Volume consistency groups can only be deleted after all the volumes they "
-"contain are either deleted or unassigned."
-msgstr ""
-"僅當已刪除或取消指派雲硬碟一致性群組包含的所有雲硬碟之後，才可以刪除雲硬碟一"
-"致性群組。"
-
-msgid ""
 "Volume consistency groups provide a mechanism for creating snapshots of "
 "multiple volumes at the same point-in-time to ensure data consistency\n"
 "\n"
@@ -10102,6 +9996,3 @@ msgstr "第一版"
 
 msgid "v2"
 msgstr "第二版"
-
-msgid "yes,no,-"
-msgstr "是，否，-"

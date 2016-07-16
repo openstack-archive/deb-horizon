@@ -26,13 +26,16 @@
    * @description
    * The `hzTable` directive extends the Smart-Table module to provide
    * support for saving the checkbox selection state of each row in the
-   * table. A default sort key can be specified to sort the table
-   * initially by this key. To reverse, add default-sort-reverse='true'
-   * as well.
+   * table.
    *
    * Required: Use `st-table` attribute to pass in the displayed
    * row collection and `st-safe-src` attribute to pass in the
    * safe row collection.
+   *
+   * If rows are identified by some property other than "id" (for the
+   * purposes of selection) then use the track-rows-by attribute to
+   * identify the property that should be used. In the example below,
+   * the unique property for the rows is "name", not "id" (the default).
    *
    * @restrict A
    * @scope true
@@ -40,7 +43,7 @@
    *
    * ```
    * <table st-table='displayedCollection' st-safe-src='rowCollection'
-   *   hz-table default-sort="email">
+   *   hz-table track-rows-by="name">
    *  <thead>
    *    <tr>
    *      <th>
@@ -63,7 +66,7 @@
    *
    */
   function hzTable() {
-    var directive = {
+    return {
       restrict: 'A',
       require: 'stTable',
       scope: true,
@@ -71,14 +74,12 @@
       controllerAs: 'tCtrl',
       link: link
     };
-    return directive;
 
     ///////////////////
 
-    function link(scope, element, attrs, stTableCtrl) {
-      if (attrs.defaultSort) {
-        var reverse = attrs.defaultSortReverse === 'true';
-        stTableCtrl.sortBy(attrs.defaultSort, reverse);
+    function link(scope, element, attrs) {
+      if (attrs.trackRowsBy) {
+        scope.tCtrl.trackId = attrs.trackRowsBy;
       }
     }
   }

@@ -72,7 +72,7 @@ class NeutronAPIDictWrapper(base.APIDictWrapper):
 
     def set_id_as_name_if_empty(self, length=8):
         try:
-            if not self._apidict['name']:
+            if not self._apidict['name'].strip():
                 id = self._apidict['id']
                 if length:
                     id = id[:length]
@@ -85,7 +85,7 @@ class NeutronAPIDictWrapper(base.APIDictWrapper):
 
     @property
     def name_or_id(self):
-        return (self._apidict.get('name') or
+        return (self._apidict.get('name').strip() or
                 '(%s)' % self._apidict['id'][:13])
 
 
@@ -1062,6 +1062,12 @@ def list_l3_agent_hosting_router(request, router, **params):
     agents = neutronclient(request).list_l3_agent_hosting_routers(router,
                                                                   **params)
     return [Agent(a) for a in agents['agents']]
+
+
+def show_network_ip_availability(request, network_id):
+    ip_availability = neutronclient(request).show_network_ip_availability(
+        network_id)
+    return ip_availability
 
 
 def add_network_to_dhcp_agent(request, dhcp_agent, network_id):

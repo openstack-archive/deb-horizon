@@ -815,6 +815,22 @@ Used to customize features related to the image service, such as the list of
 supported image formats.
 
 
+``OVERVIEW_DAYS_RANGE``
+-----------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Default:: ``1``
+
+When set to an integer N (as by default), the start date in the Overview panel
+meters will be today minus N days. This setting is used to limit the amount of
+data fetched by default when rendering the Overview panel. If set to ``None``
+(which corresponds to the behavior in past Horizon versions), the start date
+will be from the beginning of the current month until the current date. The
+legacy behaviour is not recommended for large deployments as Horizon suffers
+significant lags in this case.
+
+
 ``IMAGE_CUSTOM_PROPERTY_TITLES``
 --------------------------------
 
@@ -1354,12 +1370,18 @@ library.
 
 .. versionadded:: 8.0.0(Liberty)
 
+(Deprecated)
+
 Default: ``True``
 
 Hashing tokens from Keystone keeps the Horizon session data smaller, but it
 doesn't work in some cases when using PKI tokens.  Uncomment this value and
 set it to False if using PKI tokens and there are 401 errors due to token
 hashing.
+
+This option is now marked as "deprecated" and will be removed in Ocata or a
+later release. PKI tokens currently work with hashing, and Keystone will soon
+deprecate usage of PKI tokens.
 
 
 ``POLICY_FILES``
@@ -1519,6 +1541,17 @@ Ignore all listed Nova extensions, and behave as if they were unsupported.
 Can be used to selectively disable certain costly extensions for performance
 reasons.
 
+
+``ADMIN_FILTER_DATA_FIRST``
+---------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Default: ``False``
+
+If True, when admin views load, an empty table will be rendered and the
+user will be asked to provide a search criteria first (in case no search
+criteria was provided) before loading any data.
 
 ``OPERATION_LOG_ENABLED``
 -------------------------

@@ -2,9 +2,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev230\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-06-28 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -143,9 +143,6 @@ msgstr ""
 "तुम्ही डाटा अपलोड करण्यापूर्वी तुमच्या खात्यामध्ये किमान एक धारक निश्चित केलेला असला "
 "पाहिजे."
 
-msgid "A image or external image location must be specified."
-msgstr "एक चित्र किंवा बाह्य चित्र ठिकाण नमूद केले असले पाहिजे."
-
 msgid "A local environment to upload."
 msgstr "अपलोड करण्यासाठी स्थानिक पर्यावरण."
 
@@ -234,14 +231,6 @@ msgid "Active"
 msgstr "सक्रिय [बदलत्या आयपीची सध्याची स्थिती]"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "सक्रिय [बदलत्या आयपीची सध्याची स्थिती]"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "सक्रिय [बदलत्या आयपीची सध्याची स्थिती]"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "सक्रिय [बदलत्या आयपीची सध्याची स्थिती]"
 
@@ -759,9 +748,6 @@ msgstr "सीआयडीआर नमूद केला असला पा�
 msgid "CPU time used"
 msgstr "CPU वापरलेला वेळ"
 
-msgid "Can not specify both image and external image location."
-msgstr "चित्र व बाह्य चित्र ठिकाण नमूद करु शकत नाही."
-
 msgid "Cancel"
 msgstr "रद्द करा"
 
@@ -1205,10 +1191,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "तयार करण्यात आले"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "तयार करण्यात आले"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "अतिरिक्त निर्देश तयार करा\"%s\"."
@@ -1619,14 +1601,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "खाली"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "खाली"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "खाली"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "खाली"
@@ -1823,10 +1797,6 @@ msgstr "श्रेणीमध्ये आयसीएमपी संके�
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "श्रेणीमध्ये आयसीएमपी प्रकारासाठी मूल्य घाला (-१: २५५)"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr ""
-"० ते २५५ दरम्यानची पूर्णांक संख्या घाला (किंवा -१ज्याचा अर्थ वाईल्डकार्ड असा होतो)."
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "१ ते ६५५३५ दरम्यानची पूर्ण संख्या घाला."
 
@@ -1881,19 +1851,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "चूक [बदलत्या आयपीची सध्याची स्थिती]"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "चूक [बदलत्या आयपीची सध्याची स्थिती]"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "चूक [बदलत्या आयपीची सध्याची स्थिती]"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "चूक [बदलत्या आयपीची सध्याची स्थिती]"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "चूक [बदलत्या आयपीची सध्याची स्थिती]"
 
@@ -4544,9 +4506,6 @@ msgstr "विभाजित"
 msgid "Shared Storage"
 msgstr "विभागलेला साठा"
 
-msgid "Shared with Me"
-msgstr "माझ्यासोबत वाटून घेतले"
-
 msgctxt "Current status of an Instance"
 msgid "Shelved"
 msgstr "साठवून ठेवला"
@@ -5016,14 +4975,8 @@ msgstr "<सशक्त> पुरवठादार</सशक्त> हा �
 msgid "The Aggregate was updated."
 msgstr "सरासरी सुधारित करण्यात आली."
 
-msgid "The ICMP code is invalid."
-msgstr "आयसीएमपी संकेत अवैध आहे."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "आयसीएमपी संकेत श्रेणीमध्ये नाही (-१, २५५)"
-
-msgid "The ICMP type is invalid."
-msgstr "आयसीएमपी प्रकार अवैध आहे."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "आयसीएमपी प्रकार श्रेणीमध्ये नाही (-१, २५५)"
@@ -5076,10 +5029,6 @@ msgid ""
 msgstr ""
 "साचा '%(flavor)s' विनंती केलेल्या चित्रासाठी अतिशय लहान आहे.\n"
 "किमान आवश्यकता: %(min_ram)s एमबी रॅम व %(min_disk)s जीबी मूळ डिस्क."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "घटक होस्टवर थेट स्थलांतरासाठी तयारी करत आहे \"%s\"."
 
 msgid "The instance password encrypted with your public key."
 msgstr "तुमच्या सार्वजनिक कळीसोबत सांकेतिकरण करण्यात आलेला घटक पासवर्ड."

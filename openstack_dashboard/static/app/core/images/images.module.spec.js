@@ -22,70 +22,39 @@
     });
   });
 
-  describe('horizon.app.core.images.tableRoute constant', function () {
-    var tableRoute;
+  describe('loading the module', function () {
+    var registry;
 
     beforeEach(module('horizon.app.core.images'));
-    beforeEach(inject(function ($injector) {
-      tableRoute = $injector.get('horizon.app.core.images.tableRoute');
+    beforeEach(inject(function($injector) {
+      registry = $injector.get('horizon.framework.conf.resource-type-registry.service');
     }));
 
-    it('should be defined', function () {
-      expect(tableRoute).toBeDefined();
+    it('registers names', function() {
+      // I don't really like testing this at this level, as in a way it's more
+      // testing the registry features.  It's more complicated to mock the entire
+      // registry in the way you'd basically have to in order to spy on the
+      // setNames call.  It's my opinion that we shouldn't be testing for these
+      // configurations as part of a module unit test, but I don't have a good
+      // answer as to how one properly tests that their plugin-based system is
+      // configured the way they expect it to be.
+      expect(registry.getResourceType('OS::Glance::Image').getName()).toBe("Images");
     });
 
-    it('should equal to "project/ngimages/"', function () {
-      expect(tableRoute).toEqual('project/ngimages/');
-    });
-  });
+    it('should set facets for search', function () {
+      var names = registry.getResourceType('OS::Glance::Image').filterFacets
+        .map(getName);
+      expect(names).toContain('name');
+      expect(names).toContain('status');
+      expect(names).toContain('protected');
+      expect(names).toContain('disk_format');
+      expect(names).toContain('size_min');
+      expect(names).toContain('size_max');
 
-  describe('horizon.app.core.images.detailsRoute constant', function () {
-    var detailsRoute;
-
-    beforeEach(module('horizon.app.core'));
-    beforeEach(module('horizon.app.core.images'));
-    beforeEach(inject(function ($injector) {
-      detailsRoute = $injector.get('horizon.app.core.images.detailsRoute');
-    }));
-
-    it('should be defined', function () {
-      expect(detailsRoute).toBeDefined();
-    });
-
-    it('should equal to "project/ngimages/details/"', function () {
-      expect(detailsRoute).toEqual('project/ngimages/details/');
-    });
-  });
-
-  describe('$routeProvider should be configured for images', function() {
-    var staticUrl, $routeProvider;
-
-    beforeEach(function() {
-      module('ngRoute');
-      angular.module('routeProviderConfig', [])
-        .config(function(_$routeProvider_) {
-          $routeProvider = _$routeProvider_;
-          spyOn($routeProvider, 'when').and.callThrough();
-        });
-
-      module('routeProviderConfig');
-      module('horizon.app.core');
-
-      inject(function ($injector) {
-        staticUrl = $injector.get('$window').STATIC_URL;
-      });
-    });
-
-    it('should set table and detail path', function() {
-      var imagesRouteCallArgs = $routeProvider.when.calls.argsFor(0);
-      expect(imagesRouteCallArgs).toEqual([
-        '/project/ngimages/', {templateUrl: staticUrl + 'app/core/images/table/images-table.html'}
-      ]);
-      var imagesDetailsCallArgs = $routeProvider.when.calls.argsFor(1);
-      expect(imagesDetailsCallArgs).toEqual([
-        '/project/ngimages/details/:imageId',
-        { templateUrl: staticUrl + 'app/core/images/detail/image-detail.html'}
-      ]);
+      function getName(x) {
+        // underscore.js and .pluck() would be great here.
+        return x.name;
+      }
     });
   });
 

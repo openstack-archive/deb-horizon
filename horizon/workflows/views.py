@@ -89,6 +89,7 @@ class WorkflowView(hz_views.ModalBackdropMixin, generic.TemplateView):
         """
         context = super(WorkflowView, self).get_context_data(**kwargs)
         workflow = self.get_workflow()
+        workflow.verify_integrity()
         context[self.context_object_name] = workflow
         next = self.request.GET.get(workflow.redirect_param_name)
         context['REDIRECT_URL'] = next
@@ -106,8 +107,6 @@ class WorkflowView(hz_views.ModalBackdropMixin, generic.TemplateView):
         """
         if self.request.is_ajax():
             layout = ['modal', ]
-            if self.workflow_class.fullscreen:
-                layout += ['fullscreen', ]
         else:
             layout = ['static_page', ]
 
@@ -141,7 +140,10 @@ class WorkflowView(hz_views.ModalBackdropMixin, generic.TemplateView):
 
     def get(self, request, *args, **kwargs):
         """Handler for HTTP GET requests."""
-        context = self.get_context_data(**kwargs)
+        try:
+            context = self.get_context_data(**kwargs)
+        except exceptions.NotAvailable:
+            exceptions.handle(request)
         self.set_workflow_step_errors(context)
         return self.render_to_response(context)
 

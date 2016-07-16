@@ -109,6 +109,7 @@ class NetworkAgentTests(test.BaseAdminViewTests):
     @test.create_stubs({api.neutron: ('subnet_list',
                                       'port_list',
                                       'list_dhcp_agent_hosting_networks',
+                                      'show_network_ip_availability',
                                       'is_extension_supported',
                                       'remove_network_from_dhcp_agent',)})
     def test_agent_delete(self):
@@ -117,12 +118,11 @@ class NetworkAgentTests(test.BaseAdminViewTests):
         api.neutron.list_dhcp_agent_hosting_networks(IsA(http.HttpRequest),
                                                      network_id).\
             AndReturn(self.agents.list())
-        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network_id)\
-            .AndReturn([self.subnets.first()])
-        api.neutron.port_list(IsA(http.HttpRequest), network_id=network_id)\
-            .AndReturn([self.ports.first()])
         api.neutron.remove_network_from_dhcp_agent(IsA(http.HttpRequest),
                                                    agent_id, network_id)
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest),
+            'network-ip-availability').AndReturn(True)
         api.neutron.is_extension_supported(IsA(http.HttpRequest),
                                            'mac-learning')\
             .AndReturn(False)
@@ -131,8 +131,9 @@ class NetworkAgentTests(test.BaseAdminViewTests):
             .AndReturn(True)
         self.mox.ReplayAll()
 
+        url = NETWORKS_DETAIL_URL
         form_data = {'action': 'agents__delete__%s' % agent_id}
-        url = reverse(NETWORKS_DETAIL_URL, args=[network_id])
+        url = reverse(url, args=[network_id])
         res = self.client.post(url, form_data)
 
         self.assertRedirectsNoFollow(res, url)
@@ -140,6 +141,7 @@ class NetworkAgentTests(test.BaseAdminViewTests):
     @test.create_stubs({api.neutron: ('subnet_list',
                                       'port_list',
                                       'list_dhcp_agent_hosting_networks',
+                                      'show_network_ip_availability',
                                       'is_extension_supported',
                                       'remove_network_from_dhcp_agent',)})
     def test_agent_delete_exception(self):
@@ -148,13 +150,12 @@ class NetworkAgentTests(test.BaseAdminViewTests):
         api.neutron.list_dhcp_agent_hosting_networks(IsA(http.HttpRequest),
                                                      network_id).\
             AndReturn(self.agents.list())
-        api.neutron.subnet_list(IsA(http.HttpRequest), network_id=network_id)\
-            .AndReturn([self.subnets.first()])
-        api.neutron.port_list(IsA(http.HttpRequest), network_id=network_id)\
-            .AndReturn([self.ports.first()])
         api.neutron.remove_network_from_dhcp_agent(IsA(http.HttpRequest),
                                                    agent_id, network_id)\
             .AndRaise(self.exceptions.neutron)
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest),
+            'network-ip-availability').AndReturn(True)
         api.neutron.is_extension_supported(IsA(http.HttpRequest),
                                            'mac-learning')\
             .AndReturn(False)

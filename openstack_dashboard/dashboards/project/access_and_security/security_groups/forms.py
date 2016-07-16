@@ -50,9 +50,7 @@ class GroupBase(forms.SelfHandlingForm):
         which will be replaced by the error message.
     """
     name = forms.CharField(label=_("Name"),
-                           max_length=255,
-                           validators=[
-                               utils_validators.validate_printable_ascii])
+                           max_length=255)
     description = forms.CharField(label=_("Description"),
                                   required=False,
                                   widget=forms.Textarea(attrs={'rows': 4}))
@@ -130,8 +128,7 @@ class AddRule(forms.SelfHandlingForm):
 
     ip_protocol = forms.IntegerField(
         label=_('IP Protocol'), required=False,
-        help_text=_("Enter an integer value between 0 and 255 "
-                    "(or -1 which means wildcard)."),
+        help_text=_("Enter an integer value between 0 and 255."),
         validators=[utils_validators.validate_ip_protocol],
         widget=forms.TextInput(attrs={
             'class': 'switched',
@@ -191,7 +188,8 @@ class AddRule(forms.SelfHandlingForm):
                                        'data-switch-on': 'rule_menu',
                                        'data-rule_menu-icmp': _('Type')}),
                                    validators=[
-                                       utils_validators.validate_port_range])
+                                       utils_validators.
+                                       validate_icmp_type_range])
 
     icmp_code = forms.IntegerField(label=_("Code"),
                                    required=True,
@@ -202,7 +200,8 @@ class AddRule(forms.SelfHandlingForm):
                                        'data-switch-on': 'rule_menu',
                                        'data-rule_menu-icmp': _('Code')}),
                                    validators=[
-                                       utils_validators.validate_port_range])
+                                       utils_validators.
+                                       validate_icmp_code_range])
 
     remote = forms.ChoiceField(label=_('Remote'),
                                choices=[('cidr', _('CIDR')),
@@ -295,18 +294,16 @@ class AddRule(forms.SelfHandlingForm):
         icmp_code = cleaned_data.get("icmp_code", None)
 
         self._update_and_pop_error(cleaned_data, 'ip_protocol', rule_menu)
-        if icmp_type is None:
-            msg = _('The ICMP type is invalid.')
+        if icmp_type == -1 and icmp_code != -1:
+            msg = _('ICMP code is provided but ICMP type is missing.')
             raise ValidationError(msg)
-        if icmp_code is None:
-            msg = _('The ICMP code is invalid.')
-            raise ValidationError(msg)
-        if icmp_type not in range(-1, 256):
+        if self.errors.get('icmp_type'):
             msg = _('The ICMP type not in range (-1, 255)')
             raise ValidationError(msg)
-        if icmp_code not in range(-1, 256):
+        if self.errors.get('icmp_code'):
             msg = _('The ICMP code not in range (-1, 255)')
             raise ValidationError(msg)
+
         self._update_and_pop_error(cleaned_data, 'from_port', icmp_type)
         self._update_and_pop_error(cleaned_data, 'to_port', icmp_code)
         self._update_and_pop_error(cleaned_data, 'port', None)

@@ -104,6 +104,10 @@ class VolumesPage(basepage.BaseNavigationPage):
         return self.volumes_table.get_row(
             self.VOLUMES_TABLE_NAME_COLUMN, name)
 
+    def _get_rows_with_volumes_names(self, names):
+        return [self.volumes_table.get_row(self.VOLUMES_TABLE_NAME_COLUMN, n)
+                for n in names]
+
     @property
     def volumes_table(self):
         return VolumesTable(self.driver, self.conf)
@@ -137,6 +141,12 @@ class VolumesPage(basepage.BaseNavigationPage):
         confirm_delete_volumes_form = self.volumes_table.delete_volume()
         confirm_delete_volumes_form.submit()
 
+    def delete_volumes(self, volumes_names):
+        for volume_name in volumes_names:
+            self._get_row_with_volume_name(volume_name).mark()
+        confirm_delete_volumes_form = self.volumes_table.delete_volume()
+        confirm_delete_volumes_form.submit()
+
     def edit_volume(self, name, new_name=None, description=None):
         row = self._get_row_with_volume_name(name)
         volume_edit_form = self.volumes_table.edit_volume(row)
@@ -150,14 +160,19 @@ class VolumesPage(basepage.BaseNavigationPage):
         return bool(self._get_row_with_volume_name(name))
 
     def is_volume_status(self, name, status):
-        row = self._get_row_with_volume_name(name)
-        return bool(self.volumes_table.wait_cell_status(
-            lambda: row and row.cells[self.VOLUMES_TABLE_STATUS_COLUMN],
-            status))
+        def cell_getter():
+            row = self._get_row_with_volume_name(name)
+            return row and row.cells[self.VOLUMES_TABLE_STATUS_COLUMN]
+
+        return bool(self.volumes_table.wait_cell_status(cell_getter, status))
 
     def is_volume_deleted(self, name):
         return self.volumes_table.is_row_deleted(
             lambda: self._get_row_with_volume_name(name))
+
+    def are_volumes_deleted(self, volumes_names):
+        return self.volumes_table.are_rows_deleted(
+            lambda: self._get_rows_with_volumes_names(volumes_names))
 
     def _get_source_name(self, volume_form, volume_source_type, conf,
                          volume_source):
@@ -228,7 +243,7 @@ class VolumesPage(basepage.BaseNavigationPage):
 
 
 class VolumeAttachForm(forms.BaseFormRegion):
-    _attach_to_instance_selector = (By.CSS_SELECTOR, 'select[name="instance"]')
+    _attach_to_instance_selector = (By.CSS_SELECTOR, 'div > .themable-select')
     _attachments_table_selector = (By.CSS_SELECTOR, 'table[id="attachments"]')
     _detach_template = 'tr[data-display="Volume {0} on instance {1}"] button'
 
@@ -239,7 +254,9 @@ class VolumeAttachForm(forms.BaseFormRegion):
     @property
     def instance_selector(self):
         src_elem = self._get_element(*self._attach_to_instance_selector)
-        return forms.SelectFormFieldRegion(self.driver, self.conf, src_elem)
+        return forms.ThemableSelectFormFieldRegion(
+            self.driver, self.conf, src_elem=src_elem,
+            strict_options_match=False)
 
     def detach(self, volume, instance):
         detach_button = self.attachments_table.find_element(
@@ -248,9 +265,5 @@ class VolumeAttachForm(forms.BaseFormRegion):
         return forms.BaseFormRegion(self.driver, self.conf)
 
     def attach_instance(self, instance_name):
-        instance = filter(lambda x: x.startswith(instance_name),
-                          self.instance_selector.options.values())
-        if not instance:
-            raise AttributeError("Unable to select {0}".format(instance_name))
-        self.instance_selector.text = instance[0]
+        self.instance_selector.text = instance_name
         self.submit()

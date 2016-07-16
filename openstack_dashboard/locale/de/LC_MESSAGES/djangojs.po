@@ -2,16 +2,17 @@
 # Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
 # Frank Kloeker <eumel@arcor.de>, 2016. #zanata
 # Monika Wolf <vcomas3@de.ibm.com>, 2016. #zanata
+# Robert Simai <robert.simai@suse.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev303\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:48+0000\n"
+"POT-Creation-Date: 2016-07-08 14:43+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-04-26 01:15+0000\n"
-"Last-Translator: Andreas Jaeger <jaegerandi@gmail.com>\n"
+"PO-Revision-Date: 2016-07-08 10:30+0000\n"
+"Last-Translator: Robert Simai <robert.simai@suse.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
 "X-Generator: Zanata 3.7.3\n"
@@ -49,6 +50,33 @@ msgstr "6"
 
 msgid "7"
 msgstr "7"
+
+msgid ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button> "
+"<strong>Heads up!</strong> This <a href=\"#\" class=\"alert-link\">alert "
+"needs your attention</a>, but it's not super important."
+msgstr ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button> "
+"<strong>Achtung!</strong> Dieser <a href=\"#\" class=\"alert-link\">Alarm "
+"braucht Ihre Aufmerksamkeit</a>, ist aber nicht extrem wichtig."
+
+msgid ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button> "
+"<strong>Oh snap!</strong> <a href=\"#\" class=\"alert-link\">Change a few "
+"things up</a> and try submitting again."
+msgstr ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button> "
+"<strong>Oh nein!</strong> <a href=\"#\" class=\"alert-link\">Ändern Sie ein "
+"paar Dinge</a> und versuchen Sie es noch einmal."
+
+msgid ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button> "
+"<strong>Well done!</strong> You successfully read <a href=\"#\" class="
+"\"alert-link\">this important alert message</a>."
+msgstr ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button> "
+"<strong>Gut gemacht!</strong> Sie haben erfolgreich <a href=\"#\" class="
+"\"alert-link\">diese wichtige Benachrichtigung gelesen</a>."
 
 msgid ""
 "<li><b>Image (with Create New Volume checked)</b>: This options uses an "
@@ -99,33 +127,46 @@ msgid "<small>This line of text is meant to be treated as fine print.</small>"
 msgstr "<small>Diese Textzeile soll wie Kleindruck behandelt werden.</small>"
 
 msgid ""
-"A floating IP allows instances to be addressable from an external network.\n"
-"    Floating IPs are not allocated to instances at creation time and may be "
-"assigned\n"
-"    after the instance is created. To attach a floating IP, go to the "
-"<b>Instances</b>\n"
-"    view and click the <b>Actions</b> menu to the right of an instance.\n"
-"    Then, select the <b>Associate Floating IP</b> option and enter the "
+"A container is a storage compartment for your data and provides a way for "
+"you to organize your data. You can think of a container as a folder in "
+"Windows® or a directory in UNIX®. The primary difference between a container "
+"and these other file system concepts is that containers cannot be nested. "
+"You can, however, create an unlimited number of containers within your "
+"account. Data must be stored in a container so you must have at least one "
+"container defined in your account prior to uploading data."
+msgstr ""
+"Ein Container ist ein Speicherbehälter für Ihre Daten und bietet Ihnen eine "
+"Möglichkeit, Ihre Daten zu organisieren. Sie können sich einen Container wie "
+"einen Ordner unter Windows oder in UNIX  vorstellen. Der Hauptunterschied "
+"zwischen einem Container und anderen Dateisystemkonzepten ist, dass "
+"Container nicht verschachtelt werden können. Sie können jedoch in Ihrem "
+"Konto eine unbegrenzte Anzahl an Containern erstellen. Da Daten in einem "
+"Container gespeichert werden müssen, müssen Sie mindestens einen Container "
+"in Ihrem Konto angegeben haben, bevor Sie Daten hochladen können."
+
+msgid ""
+"A floating IP allows instances to be addressable from an external network. "
+"Floating IPs are not allocated to instances at creation time and may be "
+"assigned after the instance is created. To attach a floating IP, go to the "
+"<b>Instances</b> view and click the <b>Actions</b> menu to the right of an "
+"instance. Then, select the <b>Associate Floating IP</b> option and enter the "
 "necessary details."
 msgstr ""
 "Eine Floating IP ermöglicht Instanzen, von einem externen Netzwerk aus "
-"erreichbar zu sein.\n"
-"Floating IPs werden einer Instanz nicht in der Entstehungsphase zugewiesen "
-"und können \n"
-"nach der Instanzerstellung zugewiesen werden. Um eine Floating IP \n"
-"zuzuweisen, rufen Sie die Ansicht <b>Instanzen</b> auf und klicken Sie auf "
-"das Menü <b>Aktionen</b> \n"
-"rechts neben der Instanz. Wählen Sie dann <b>Floating IP zuweisen</b> aus "
-"und geben Sie die notwendigen Details ein."
+"erreichbar zu sein. Floating IPs werden einer Instanz nicht in der "
+"Entstehungsphase zugewiesen und können nach der Instanzerstellung zugewiesen "
+"werden. Um eine Floating IP zuzuweisen, rufen Sie die Ansicht <b>Instanzen</"
+"b> auf und klicken Sie auf das Menü <b>Aktionen</b> rechts neben der "
+"Instanz. Wählen Sie dann <b>Floating IP zuweisen</b> aus und geben Sie die "
+"notwendigen Details ein."
 
 msgid ""
-"A key pair allows you to SSH into your newly created instance.\n"
-"    You may select an existing key pair, import a key pair, or generate a "
-"new key pair."
+"A key pair allows you to SSH into your newly created instance. You may "
+"select an existing key pair, import a key pair, or generate a new key pair."
 msgstr ""
-"Ein Schlüsselpaar erlaubt Ihnen den SSH-Zugang zur neu erstellten Instanz. \n"
-"Sie können ein vorhandenes Schlüsselpaar verwenden, eines importieren oder "
-"neu erzeugen."
+"Ein Schlüsselpaar erlaubt Ihnen den SSH-Zugang in die neu erzeugte Instanz. "
+"Sie können ein vorhandenes Schlüsselpaar auswählen, eines importieren oder "
+"ein neues erzeugen."
 
 msgid ""
 "A key pair named '{$ctrl.createdKeypair.name$}' was successfully created. "
@@ -153,11 +194,20 @@ msgstr ""
 msgid "AKI"
 msgstr "AKI"
 
+msgid "AKI - Amazon Kernel Image"
+msgstr "AKI - Amazon Kernel Image"
+
 msgid "AMI"
 msgstr "AMI"
 
+msgid "AMI - Amazon Machine Image"
+msgstr "AMI - Amazon Machine Image"
+
 msgid "ARI"
 msgstr "ARI"
+
+msgid "ARI - Amazon Ramdisk Image"
+msgstr "ARI - Amazon Ramdisk Image"
 
 msgid "Action"
 msgstr "Aktion"
@@ -194,19 +244,24 @@ msgid "Alerts"
 msgstr "Alarme"
 
 msgid ""
-"An <b>External</b> network is set up by an administrator.\n"
-"    If you want an instance to communicate outside of the data center,\n"
-"    then attach a router between your <b>Project</b> network and the "
-"<b>External</b> network.\n"
-"    You can use the <b>Network Topology</b> view to connect the router to "
-"the two networks."
+"An <b>External</b> network is set up by an administrator. If you want an "
+"instance to communicate outside of the data center, then attach a router "
+"between your <b>Project</b> network and the <b>External</b> network. You can "
+"use the <b>Network Topology</b> view to connect the router to the two "
+"networks."
 msgstr ""
-"Ein <b>externes</b> Netzwerk wird von einem Administrator eingerichtet.\n"
-"    Wenn eine Instanz außerhalb des Rechenzentrums kommunizieren soll, \n"
-"     dann fügen Sie einen Router zwischen Ihrem <b>Projektnetzwerk</b> und "
-"dem <b>externen</b> Netzwerk ein.\n"
-"     Sie können die Ansicht <b>Netzwerktopologie</b> verwenden, um den "
-"Router mit den zwei Netzwerken zu verbinden."
+"Ein <b>externes</b> Netzwerk wird von einem Administrator eingerichtet. Wenn "
+"eine Instanz außerhalb des Rechenzentrums kommunizieren soll, dann fügen Sie "
+"einen Router zwischen Ihrem <b>Projektnetzwerk</b> und dem <b>externen</b> "
+"Netzwerk ein. Sie können die Ansicht <b>Netzwerktopologie</b> verwenden, um "
+"den Router mit den zwei Netzwerken zu verbinden."
+
+msgid ""
+"An abbreviation of the word attribute is <abbr title=\"attribute\">attr</"
+"abbr>."
+msgstr ""
+"Eine Abkürzung für das Wort Attribut ist <abbr title=\"attribute\">attr</"
+"abbr>."
 
 msgid ""
 "An advanced option available when launching an instance is disk "
@@ -219,6 +274,32 @@ msgstr ""
 "Festplattenpartitionierung. <b>Automatisch</b> passt die Größe der "
 "Festplatte an und legt eine einzelne Partition an. Mit der Option "
 "<b>Manuell</b> können Sie mehrere Partitionen auf der Festplatte erstellen."
+
+msgid "An external (HTTP) URL is required"
+msgstr "Eine externe (HTTP) URL ist erforderlich"
+
+msgid "An external (HTTP) URL to load the image from"
+msgstr "Eine externe Adresse (HTTP URL) von der das Abbild geladen wird"
+
+msgid "An image description less than 256 characters is required."
+msgstr "Eine Abbildbeschreibung mit weniger als 256 Zeichen ist erforderlich."
+
+msgid ""
+"An image description less than {$ctrl.validationRules.fieldMaxLength + 1$} "
+"characters is required."
+msgstr ""
+"Eine Abbildbeschreibung mit weniger als {$ctrl.validationRules."
+"fieldMaxLength + 1$} Zeichen ist erforderlich."
+
+msgid "An image name less than 256 characters is required."
+msgstr "Ein Abbildname mit weniger als 256 Zeichen ist erforderlich."
+
+msgid ""
+"An image name less than {$ctrl.validationRules.fieldMaxLength + 1$} "
+"characters is required."
+msgstr ""
+"Ein Abbildname mit weniger als {$ctrl.validationRules.fieldMaxLength + 1$} "
+"Zeichen ist erforderlich."
 
 msgid ""
 "An instance name is required and used to help you uniquely identify your "
@@ -248,6 +329,9 @@ msgstr "Verfügbarkeitszone"
 
 msgid "Available"
 msgstr "Verfügbar"
+
+msgid "Available Scheduler Hints"
+msgstr "Verfügbare Schedulerhinweise"
 
 msgid "Badges"
 msgstr "Ausweis"
@@ -291,6 +375,9 @@ msgstr "Dienstkatalog kann nicht von Keystone abgerufen werden."
 msgid "Cannot get the extension list."
 msgstr "List der Erweiterungen kann nicht abgerufen werden."
 
+msgid "Charts"
+msgstr "Diagramme"
+
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
 "special configuration drive. When the instance boots, it attaches to the "
@@ -307,11 +394,17 @@ msgstr "Kontrollkästchen"
 msgid "Checksum"
 msgstr "Prüfsumme"
 
+msgid "Choose an image"
+msgstr "Wählen Sie ein Abbild"
+
 msgid "Click to see more details"
 msgstr "Klicken um mehr Details zu sehen"
 
 msgid "Close"
 msgstr "Schließen"
+
+msgid "Collecting information for deletion:"
+msgstr "Sammle Informationen zum löschen:"
 
 msgid "Color"
 msgstr "Farbe"
@@ -324,6 +417,9 @@ msgstr "Spaltenüberschrift"
 
 msgid "Configuration"
 msgstr "Konfiguration"
+
+msgid "Configuration Drive"
+msgstr "Konfigurationslaufwerk"
 
 msgid "Confirm Delete"
 msgstr "Löschvorgang bestätigen"
@@ -369,6 +465,12 @@ msgstr "Inhaltstyp"
 msgid "Contextual alternatives"
 msgstr "Kontextbezogene Alternativen"
 
+msgid "Copy Data"
+msgstr "Daten kopieren"
+
+msgid "Count"
+msgstr "Anzahl"
+
 msgid "Create"
 msgstr "Erstellen"
 
@@ -377,6 +479,12 @@ msgstr "Container erstellen"
 
 msgid "Create Folder"
 msgstr "Ordner erstellen"
+
+msgid "Create Folder In: {$ ctrl.model.container.name $}"
+msgstr "Ordner erstellen in: {$ ctrl.model.container.name $}"
+
+msgid "Create Image"
+msgstr "Abbild erstellen"
 
 msgid "Create Key Pair"
 msgstr "Schlüsselpaar erstellen"
@@ -401,6 +509,15 @@ msgstr "Erstelltes Schlüsselpaar:"
 
 msgid "Creating"
 msgstr "Wird erstellt"
+
+msgid ""
+"Currently only images available via an HTTP URL are supported. The image "
+"location must be accessible to the Image Service. Compressed image binaries "
+"are supported (.zip and .tar.gz.)"
+msgstr ""
+"Momentan werden nur Abbilder unterstützt, die über eine HTTP URL erreichbar "
+"sind. Die URL muss für den Dienst zugänglich sein. Komprimierte Abbilder (."
+"zip und .tar.gz) werden unterstützt."
 
 msgid "Custom Properties"
 msgstr "Angepasste Eigenschaften"
@@ -432,6 +549,12 @@ msgstr "DNS-Datensätze"
 msgid "Danger"
 msgstr "Gefahr"
 
+msgid "Danger Anchor"
+msgstr "Gefahr-Anker"
+
+msgid "Danger Button"
+msgstr "Gefahr-Schaltfläche"
+
 msgid "Data"
 msgstr "Daten"
 
@@ -444,8 +567,17 @@ msgstr "Erstellungsdatum"
 msgid "Datetime"
 msgstr "Datum/Uhrzeit"
 
+msgid "Deactivated"
+msgstr "Deaktiviert"
+
 msgid "Default"
 msgstr "Standard"
+
+msgid "Default Anchor"
+msgstr "Standard-Anker"
+
+msgid "Default Button"
+msgstr "Standardschaltfläche"
 
 msgid "Default button"
 msgstr "Standardschaltfläche"
@@ -459,6 +591,9 @@ msgstr "Löschen"
 msgid "Delete Container"
 msgstr "Container löschen"
 
+msgid "Delete Files in {$ ctrl.model.container.name $}"
+msgstr "Lösche Dateien in {$ ctrl.model.container.name $}"
+
 msgid "Delete Image"
 msgid_plural "Delete Images"
 msgstr[0] "Abbild löschen"
@@ -466,9 +601,6 @@ msgstr[1] "Abbilder löschen"
 
 msgid "Delete Images"
 msgstr "Abbilder löschen"
-
-msgid "Delete Selection"
-msgstr "Auswahl löschen"
 
 msgid "Delete Volume on Instance Delete"
 msgstr "Lösche Datenträger beim Löschen der Instanz"
@@ -484,6 +616,9 @@ msgstr[1] "Gelöschte Abbilder: %s."
 
 msgid "Deleting"
 msgstr "Wird gelöscht"
+
+msgid "Deleting:"
+msgstr "Löschen:"
 
 msgid "Description"
 msgstr "Beschreibung"
@@ -521,6 +656,9 @@ msgstr "Festplattenformat"
 msgid "Disk Partition"
 msgstr "Festplattenpartition"
 
+msgid "Distribution Charts"
+msgstr "Verteilungsdiagramme"
+
 msgid "Docker"
 msgstr "Docker"
 
@@ -542,6 +680,9 @@ msgstr "Dropdown-Header"
 msgid "Dropdown link"
 msgstr "Auswahl-Link"
 
+msgid "Edit Image"
+msgstr "Abbild bearbeiten"
+
 msgid "Email"
 msgstr "E-Mail"
 
@@ -551,8 +692,17 @@ msgstr "Attributklassen"
 msgid "Enabled"
 msgstr "Aktiviert"
 
+msgid "Encountered {$ ctrl.model.counted.folders $} failures."
+msgstr "{$ ctrl.model.counted.folders $} Fehler aufgetreten."
+
 msgid "Encrypted"
 msgstr "Verschlüsselt"
+
+msgid "Enter an Image Description"
+msgstr "Geben Sie eine Abbildbeschreibung an"
+
+msgid "Enter an Image name"
+msgstr "Geben Sie einen Abbildnamen an"
 
 msgid "Ephemeral Disk"
 msgstr "Flüchtige Festplatte"
@@ -568,6 +718,9 @@ msgstr "Netzwerktyp"
 
 msgid "Example body text"
 msgstr "Beispieltext für Hauptteil"
+
+msgid "Existing Scheduler Hints"
+msgstr "Vorhandene Schedulerhinweise"
 
 #, python-format
 msgid "Extension is not enabled: %(extension)s."
@@ -608,6 +761,12 @@ msgstr ""
 "Varianten beinhalten die Größen der Compute-, Speicher- und Storage-"
 "Kapazität einer Instanz."
 
+msgid "Floating IP"
+msgstr "Floating IP"
+
+msgid "Floating IPs"
+msgstr "Floating IPs"
+
 msgid "Focused input"
 msgstr "Gezielte Eingabe"
 
@@ -628,18 +787,15 @@ msgid "Forms"
 msgstr "Formen"
 
 msgid ""
-"From a Windows system, you can use PuTTYGen to create private/public keys.\n"
-"  Use the PuTTY Key Generator to create and save the keys, then copy\n"
-"  the public key in the red highlighted box to your <samp>.ssh/"
-"authorized_keys</samp>\n"
-"  file."
+"From a Windows system, you can use PuTTYGen to create private/public keys. "
+"Use the PuTTY Key Generator to create and save the keys, then copy the "
+"public key in the red highlighted box to your <samp>.ssh/authorized_keys</"
+"samp> file."
 msgstr ""
 "Bei Windows erstellen Sie einen privaten/öffentlichen Schlüssel mit "
-"PuTTYGen. \n"
-"Mit dem PuTTYGen Key Generator erzeugen und speichern Sie die \n"
-"Schlüssel, anschließend kopieren Sie den öffentlichen Schlüssel \n"
-"in der rot hervorgehobenen Box in Ihre Datei <samp>.ssh/authorized_keys</"
-"samp>"
+"PuTTYGen. Mit dem PuTTYGen Key Generator erzeugen und speichern Sie die "
+"Schlüssel, anschließend kopieren Sie den öffentlichen Schlüssel in der rot "
+"hervorgehobenen Box in Ihre Datei <samp>.ssh/authorized_keys</samp>"
 
 msgid "Hash"
 msgstr "Raute"
@@ -667,6 +823,12 @@ msgstr "Home"
 
 msgid "Host ID"
 msgstr "Host-ID"
+
+msgid "Hypervisor"
+msgstr "Hypervisor"
+
+msgid "Hypervisors"
+msgstr "Hypervisoren"
 
 msgid "ID"
 msgstr "Kennung"
@@ -738,8 +900,41 @@ msgstr ""
 msgid "Image"
 msgstr "Abbild"
 
+#, python-format
+msgid "Image %s was successfully created."
+msgstr "Abbild %s wurde erfolgreich erstellt."
+
+#, python-format
+msgid "Image %s was successfully updated."
+msgstr "Abbild %s wurde erfolgreich aktualisiert."
+
+msgid "Image Description"
+msgstr "Abbild Beschreibung"
+
+msgid "Image Detail"
+msgstr "Abbild Details"
+
+msgid "Image Details"
+msgstr "Abbilddetails"
+
+msgid "Image Metadata"
+msgstr "Abbild Metadaten"
+
 msgid "Image Name"
 msgstr "Abbildname"
+
+msgid "Image Requirements"
+msgstr "Abbild Anforderungen"
+
+msgid "Image Sharing"
+msgstr "Abbild teilen"
+
+msgid "Image Source"
+msgstr "Abbildquelle"
+
+#, python-format
+msgid "Image metadata %s was successfully updated."
+msgstr "Abbild-Metadaten %s wurden erfolgreich aktualisiert."
 
 msgid "Images"
 msgstr "Abbilder"
@@ -755,6 +950,15 @@ msgstr "Indikator"
 
 msgid "Info"
 msgstr "Info"
+
+msgid "Info Anchor"
+msgstr "Info-Anker"
+
+msgid "Info Button"
+msgstr "Info-Schaltfläche"
+
+msgid "Inline Form"
+msgstr "Eingebettetes Formular"
 
 msgid "Input Sizes"
 msgstr "Eingabegrößen"
@@ -777,6 +981,9 @@ msgstr "Eingabewarnung"
 msgid "Instance"
 msgstr "Instanz"
 
+msgid "Instance Name"
+msgstr "Instanzname"
+
 msgid "Instance Snapshot"
 msgstr "Instanz Snapshot"
 
@@ -785,14 +992,31 @@ msgstr ""
 "Anzahl der Instanzen ist erforderlich und muss eine Ganzzahl bzw. mindestens "
 "1 sein."
 
+msgid ""
+"Instance source is the template used to create an instance. You can use a "
+"snapshot of an existing instance, an image, or a volume (if enabled). You "
+"can also choose to use persistent storage by creating a new volume."
+msgstr ""
+"Die Instanz-Quelle ist die Vorlage zur Erstellung einer Instanz. Sie können "
+"eine Schattenkopie einer vorhandenen Instanz verwenden, ein Abbild oder "
+"einen Datenträger (sofern freigegeben). Durch die Erzeugung eines neuen "
+"Datenträgers können Sie auch die Verwendung von beständigem Speicher "
+"auswählen."
+
 msgid "Instances"
 msgstr "Instanzen"
 
 msgid "Insufficient privilege level to view user information."
 msgstr "Unzureichende Berechtigungsebene um Benutzerinformationen einzusehen."
 
+msgid "Is Public"
+msgstr "Ist Öffentlich"
+
 msgid "Jumbotron"
 msgstr "Jumbotron"
+
+msgid "Kernel"
+msgstr "Kernel"
 
 msgid "Kernel ID"
 msgstr "Kernel-ID"
@@ -800,31 +1024,31 @@ msgstr "Kernel-ID"
 msgid "Key Pair"
 msgstr "Schlüsselpaar"
 
+msgid "Key Pair Name <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+msgstr ""
+"Schlüsselpaarname <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+
 msgid "Key Pairs"
 msgstr "Schlüsselpaare"
 
 msgid ""
-"Key Pairs are how you login to your instance after it is launched.\n"
-"      Choose a key pair name you will recognize and paste your SSH public "
-"key into the\n"
-"      space provided."
+"Key Pairs are how you login to your instance after it is launched. Choose a "
+"key pair name you will recognize and paste your SSH public key into the "
+"space provided."
 msgstr ""
-"Mit Schlüsselpaaren erhalten Sie Zugriff auf Ihre Instanz, nachdem sie "
-"gestartet wurde.\n"
-" Wählen Sie einen wiedererkennbaren Schlüsselpaarnamen und fügen Sie Ihren "
-"öffentlichen\n"
-" SSH-Schlüssel im angebotenen Feld ein."
+"Verwenden Sie Schlüsselpaare zum Einloggen nachdem eine Instanz gestartet "
+"wurde. Wählen Sie einen wiedererkennbaren Schlüsselpaarnamen und fügen Sie "
+"Ihren öffentlichen SSH-Schlüssel im vorgegebenen Feld ein."
 
 msgid ""
-"Key Pairs are how you login to your instance after it is launched.\n"
-"      Choose a key pair name you will recognize.\n"
-"      Names may only include alphanumeric characters, spaces, or dashes."
+"Key Pairs are how you login to your instance after it is launched. Choose a "
+"key pair name you will recognize. Names may only include alphanumeric "
+"characters, spaces, or dashes."
 msgstr ""
 "Mit Schlüsselpaaren erhalten Sie Zugriff auf Ihre Instanz, nachdem sie "
-"gestartet wurde. \n"
-"      Wählen Sie einen wiedererkennbaren Schlüsselpaarnamen aus.\n"
-"      Die Namen dürfen nur alphanumerische Zeichen, Leerzeichen und "
-"Bindestriche enthalten."
+"gestartet wurde. Wählen Sie einen wiedererkennbaren Schlüsselpaarnamen aus. "
+"Die Namen dürfen nur alphanumerische Zeichen, Leerzeichen und Bindestriche "
+"enthalten."
 
 msgid "Keypair already exists or name contains bad characters."
 msgstr ""
@@ -833,6 +1057,9 @@ msgstr ""
 
 msgid "Killed"
 msgstr "Getötet"
+
+msgid "Large Modal"
+msgstr "Groß Modal"
 
 msgid "Large button"
 msgstr "Große Schaltfläche"
@@ -858,6 +1085,9 @@ msgstr "Legende"
 msgid "Library"
 msgstr "Bibliothek"
 
+msgid "Line Charts"
+msgstr "Liniendiagramme"
+
 msgid "Link"
 msgstr "Link"
 
@@ -882,6 +1112,9 @@ msgstr "Loadbalancer-Pools"
 msgid "Loading"
 msgstr "Wird geladen"
 
+msgid "Location"
+msgstr "Ort"
+
 msgid "Look, I'm in a large well!"
 msgstr "Dies ist ein großer Container!"
 
@@ -899,6 +1132,9 @@ msgstr "Manuell"
 
 msgid "Max Port"
 msgstr "Max Port"
+
+msgid "Max. Size (bytes)"
+msgstr "Max. Größe (Bytes)"
 
 msgid "Members"
 msgstr "Mitglieder"
@@ -918,6 +1154,24 @@ msgstr "Metadatendefinitionen"
 msgid "Metadata Help"
 msgstr "Metadaten Hilfe"
 
+msgid ""
+"Metadata is a collection of key-value pairs associated with an instance. The "
+"maximum length for each metadata key and value is 255 characters."
+msgstr ""
+"Metadaten sind mit einer Instanz verbundene Schlüssel-Wert Paare. Die "
+"maximale Länge für einen einzelnen Schlüssel oder Wert ist 255 Zeichen."
+
+msgid ""
+"Metadata is used to provide additional information about the image. "
+"Sometimes this information is only used for sorting and viewing. In some "
+"installations this information may affect how the instance is deployed or "
+"behaves."
+msgstr ""
+"Metadaten werden verwendet, um zusätzliche Informationen zu einem Abbild zu "
+"geben. Teilweise werden diese Informationen nur zum Sortieren und zur "
+"Darstellung verwendet. In manchen Installationen können die Informationen "
+"beeinflussen, wie eine Instanz eingesetzt wird oder sich verhält."
+
 msgid "Middle"
 msgstr "Mitte"
 
@@ -936,11 +1190,17 @@ msgstr "Min. Festplatte"
 msgid "Min. RAM"
 msgstr "Min. RAM"
 
+msgid "Min. Size (bytes)"
+msgstr "Min. Größe (MB)"
+
 msgid "Mini button"
 msgstr "Minischaltfläche"
 
-msgid "Modal title"
-msgstr "Modaldialogtitel"
+msgid "Minimum Disk (GB)"
+msgstr "Minimum Festplatte (GB)"
+
+msgid "Minimum RAM (MB)"
+msgstr "Minimum RAM (MB)"
 
 msgid "Modals"
 msgstr "Modaldialoge"
@@ -1010,33 +1270,37 @@ msgstr "Nein"
 msgid "No available items"
 msgstr "Keine verfügbaren Einträge"
 
+msgid "No available scheduler hints"
+msgstr "Keine verfügbaren Schedulerhinweise"
+
+msgid "No existing scheduler hints"
+msgstr "Keine vorhandenen Schedulerhinweise"
+
 msgid "Normal"
 msgstr "Normal"
 
 msgid ""
-"Note: A Public Container will allow anyone with the Public URL to\n"
-"          gain access to your objects in the container."
+"Note: A Public Container will allow anyone with the Public URL to gain "
+"access to your objects in the container."
 msgstr ""
-"Anmerkung: Ein öffentlicher Container erlaubt jedem Zugriff auf\n"
-"          Objekte in dem Container, der die öffentliche URL hat."
+"Anmerkung: Ein öffentlicher Container erlaubt jedem Zugriff auf Objekte in "
+"dem Container, der die öffentliche URL hat."
 
 msgid ""
-"Note: Delimiters ('{$ ctrl.model.DELIMETER $}') are allowed in the\n"
-"          file name to place the new file into a folder that will be "
-"created\n"
-"          when the file is uploaded (to any depth of folders)."
+"Note: Delimiters ('{$ ctrl.model.DELIMETER $}') are allowed in the file name "
+"to place the new file into a folder that will be created when the file is "
+"uploaded (to any depth of folders)."
 msgstr ""
-"Anmerkung: Trennzeichen ('{$ ctrl.model.DELIMETER $}') sind im \n"
-"          Dateinamen zugelassen, um die neue Datei einem Ordner zuzuordnen,\n"
-"          der erstellt wird, wenn die Datei hochgeladen ist (bei jeder "
-"Ordnertiefe)."
+"Anmerkung: Trennzeichen ('{$ ctrl.model.DELIMETER $}') sind im Dateinamen "
+"zugelassen, um die neue Datei einem Ordner zuzuordnen, der erstellt wird, "
+"wenn die Datei hochgeladen ist (bei jeder Ordnertiefe)."
 
 msgid ""
-"Note: Delimiters ('{$ ctrl.model.DELIMETER $}') are allowed in the\n"
-"          folder name to create deep folders."
+"Note: Delimiters ('{$ ctrl.model.DELIMETER $}') are allowed in the folder "
+"name to create deep folders."
 msgstr ""
-"Anmerkung: Trennzeichen ('{$ ctrl.model.DELIMETER $}') sind im Ordnernamen\n"
-"          für die Erstellung von tiefen Ordnern zugelassen."
+"Anmerkung: Trennzeichen ('{$ ctrl.model.DELIMETER $}') sind im Ordnernamen "
+"für die Erstellung von tiefen Ordnern zugelassen."
 
 msgid "Note: you will not be able to download this later."
 msgstr ""
@@ -1045,6 +1309,9 @@ msgstr ""
 
 msgid "Number"
 msgstr "Zahl"
+
+msgid "OK"
+msgstr "OK"
 
 msgid "OVA"
 msgstr "OVA"
@@ -1076,14 +1343,29 @@ msgstr "Objektdetails"
 msgid "Objects"
 msgstr "Objekte"
 
+msgid "Ok"
+msgstr "Ok"
+
 msgid "Older"
 msgstr "Älter"
 
 msgid "One fine body…"
 msgstr "Ein Textteil..."
 
+msgid "One large body…"
+msgstr "Ein großer Rumpf..."
+
 msgid "One more separated link"
 msgstr "Weiterer getrennter Link"
+
+msgid "One small body…"
+msgstr "Ein kleiner Rumpf..."
+
+msgid "One super large body…"
+msgstr "Ein super großer Rumpf..."
+
+msgid "One tiny body…"
+msgstr "Ein winziger Rumpf..."
 
 msgid "Option one is this"
 msgstr "Das ist Option 1"
@@ -1145,13 +1427,16 @@ msgstr "Physikalisches Netzwerk"
 msgid "Pills"
 msgstr "Pills"
 
+msgid "Please note:"
+msgstr "Bitte beachten:"
+
 msgid ""
 "Please provide the initial hostname for the instance, the availability zone "
-"where it will be deployed, and the instance count.\n"
-"    Increase the Count to create multiple instances with the same settings."
+"where it will be deployed, and the instance count. Increase the Count to "
+"create multiple instances with the same settings."
 msgstr ""
 "Geben Sie bitte den initialen Hostnamen der Instanz an, die "
-"Verfügbarkeitszone, in der sie erstellt wird und die Anzahl der Instanzen.\n"
+"Verfügbarkeitszone, in der sie erstellt wird und die Anzahl der Instanzen. "
 "Erhöhen Sie die Anzahl, um eine Vielzahl von Instanzen mit den gleichen "
 "Einstellungen zu erzeugen."
 
@@ -1181,6 +1466,12 @@ msgstr "Zurück"
 msgid "Primary"
 msgstr "Primär"
 
+msgid "Primary Anchor"
+msgstr "Primärer Anker"
+
+msgid "Primary Button"
+msgstr "Primäre Schaltfläche"
+
 msgid "Private"
 msgstr "Privat"
 
@@ -1197,11 +1488,11 @@ msgid "Project ID"
 msgstr "Projekt-ID"
 
 msgid ""
-"Project networks are created by users.\n"
-"    These networks are fully isolated and are project-specific."
+"Project networks are created by users. These networks are fully isolated and "
+"are project-specific."
 msgstr ""
-"Projektnetzwerke werden von Benutzern angelegt.\n"
-"Diese Netzwerke sind vollständig isoliert und projektspezifisch."
+"Projektnetzwerke werden von Benutzern angelegt. Diese Netzwerke sind "
+"vollständig isoliert und projektspezifisch."
 
 msgid "Protected"
 msgstr "Geschützt"
@@ -1213,12 +1504,11 @@ msgid "Provider Network"
 msgstr "Anbieternetzwerk"
 
 msgid ""
-"Provider networks are created by administrators.\n"
-"    These networks map to an existing physical network in the data center."
+"Provider networks are created by administrators. These networks map to an "
+"existing physical network in the data center."
 msgstr ""
-"Anbieternetzwerke werden von den Administratoren erstellt.\n"
-"Diese Netzwerke werden auf vorhandenen physikalischen Netzwerken im "
-"Rechenzentrum abgebildet."
+"Anbieternetzwerke werden von den Administratoren erstellt. Diese Netzwerke "
+"werden auf vorhandenen physikalischen Netzwerken im Rechenzentrum abgebildet."
 
 msgid "Public"
 msgstr "Öffentlich"
@@ -1228,6 +1518,11 @@ msgstr "Öffentlicher Zugriff"
 
 msgid "Public Key"
 msgstr "Öffentlicher Schlüssel"
+
+msgid "Public Key <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+msgstr ""
+"Öffentlicher Schlüssel <span class=\"hz-icon-required fa fa-asterisk\"></"
+"span>"
 
 msgid "QCOW2"
 msgstr "QCOW2"
@@ -1249,6 +1544,9 @@ msgstr "RX/TX Faktor"
 
 msgid "Radios"
 msgstr "Optionsfelder"
+
+msgid "Ramdisk"
+msgstr "Ramdisk"
 
 msgid "Ramdisk ID"
 msgstr "Ramdisk-ID"
@@ -1283,11 +1581,24 @@ msgstr "Änderungen speichern"
 msgid "Saving"
 msgstr "Speichern"
 
+msgid "Scheduler Hints"
+msgstr "Schedulerhinweise"
+
+msgid ""
+"Scheduler hints allow you to pass additional placement related information "
+"to the compute scheduler."
+msgstr ""
+"Schedulerhinweise erlauben es Ihnen, zusätzliche platzierungsbezogene "
+"Informationen an den Compute-Scheduler zu übergeben."
+
 msgid "Search"
 msgstr "Suche"
 
 msgid "Security"
 msgstr "Sicherheit"
+
+msgid "Security Group"
+msgstr "Sicherheitsgruppe"
 
 msgid "Security Groups"
 msgstr "Sicherheitsgruppen"
@@ -1317,11 +1628,11 @@ msgstr ""
 msgid "Segmentation ID"
 msgstr "Segmentierungskennung"
 
-msgid "Select All"
-msgstr "Alle auswählen"
-
 msgid "Select Boot Source"
 msgstr "Bootquelle auswählen"
+
+msgid "Select Title"
+msgstr "Titel auswählen"
 
 msgid "Select a container to browse."
 msgstr "Wähle einen Container zum Durchsuchen."
@@ -1366,6 +1677,9 @@ msgstr ""
 msgid "Selects"
 msgstr "Auswahloptionen"
 
+msgid "Send invitation"
+msgstr "Sende Einladung"
+
 msgid "Separated link"
 msgstr "Getrennter Link"
 
@@ -1380,14 +1694,17 @@ msgstr "Einstellung ist nicht aktiviert: %(setting)s"
 msgid "Shared"
 msgstr "Gemeinsam verwendet"
 
-msgid "Shared with Me"
-msgstr "Mit mir geteilt"
+msgid "Shared with Project"
+msgstr "Mit Projekt geteilt"
 
 msgid "Size"
 msgstr "Größe"
 
 msgid "Size (GB)"
 msgstr "Größe (GB)"
+
+msgid "Small Modal"
+msgstr "Klein Modal"
 
 msgid "Small button"
 msgstr "Kleine Schaltfläche"
@@ -1413,8 +1730,14 @@ msgstr "Quellcode"
 msgid "Source Title"
 msgstr "Quellenbezeichnung"
 
+msgid "Specify an image to upload to the Image Service."
+msgstr "Wählen Sie ein Abbild zum Hochladen an den Abbilddienst aus."
+
 msgid "Stacked"
 msgstr "Gestapelt"
+
+msgid "Standard Modal"
+msgstr "Standard Modal"
 
 msgid "Standard Table"
 msgstr "Standardtabelle"
@@ -1455,6 +1778,13 @@ msgstr "Tel"
 
 msgid "Textarea"
 msgstr "Textbereich"
+
+msgid ""
+"The Image Location field MUST be a valid and direct URL to the image binary. "
+"URLs that redirect or serve error pages will result in unusable images."
+msgstr ""
+"Das Abbild muss über eine gültige und direkte URL zur Binärdatei erreichbar "
+"sein. Weiterleitungen oder Fehlerseiten führen zu unbenutzbaren Abbildern."
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -1503,6 +1833,20 @@ msgstr ""
 "Die maximal zulässige Anzahl von Schlüssel/Werte-Paaren, die pro Instanz "
 "bereitgestellt werden können, legt der Compute-Provider fest."
 
+msgid ""
+"The minimum disk size required to boot the image. If unspecified, this value "
+"defaults to 0 (no minimum)."
+msgstr ""
+"Die minimale Größe der Festplatte, um das Abbild zu starten. Falls nicht "
+"angegeben, wird der Wert 0 (kein Minimum) verwendet."
+
+msgid ""
+"The minimum memory size required to boot the image. If unspecified, this "
+"value defaults to 0 (no minimum)."
+msgstr ""
+"Die minimale Größe des Speichers, um das Abbild zu starten. Falls nicht "
+"angegeben, wird der Wert 0 (kein Minimum) verwendet."
+
 #, python-format
 msgid ""
 "The selected %(sourceType)s source requires a flavor with at least "
@@ -1531,31 +1875,38 @@ msgstr "Der Status zeigt an, ob der Port eine aktive Verbindung hat."
 
 msgid ""
 "The subnet identifies a sub-section of a network. A subnet is specified in "
-"CIDR format.\n"
-"    A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
+"CIDR format. A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
 msgstr ""
 "Das Subnetz identifiziert einen Teilabschnitt eines Netzwerks. Ein Subnetz "
-"ist spezifiziert im CIDR Format.\n"
-"Ein typisches CIDR Format sieht aus wie <samp>192.xxx.xx.x/24</samp>."
+"ist spezifiziert im CIDR Format. Ein typisches CIDR Format sieht "
+"folgendermaßen aus: <samp>192.xxx.xx.x/24</samp>."
 
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
 msgstr "Die Datenträgergröße muss mindestens %(minVolumeSize)s GB betragen"
 
-msgid ""
-"There are two ways to generate a key pair. From a Linux system,\n"
-"  generate the key pair with the <samp>ssh-keygen</samp> command:"
-msgstr ""
-"Es gibt zwei Wege ein Schlüsselpaar zu erzeugen.\n"
-"Verwenden Sie das <samp>ssh-keygen</samp> Kommando auf einem Linux-System:"
+msgid "Themable Checkbox"
+msgstr "Thema-fähiges Kontrollkästchen"
+
+msgid "Themable Selects"
+msgstr "Thema-fähige Auswahl"
+
+msgid "There are no Availability Zones."
+msgstr "Es gibt keine Verfügbarkeitszonen."
 
 msgid ""
-"This command generates a pair of keys: a private key (cloud.key)\n"
-"  and a public key (cloud.key.pub)."
+"There are two ways to generate a key pair. From a Linux system, generate the "
+"key pair with the <samp>ssh-keygen</samp> command:"
+msgstr ""
+"Es gibt zwei Wege ein Schlüsselpaar zu erzeugen. Verwenden Sie das <samp>ssh-"
+"keygen</samp> Kommando auf einem Linux-System:"
+
+msgid ""
+"This command generates a pair of keys: a private key (cloud.key) and a "
+"public key (cloud.key.pub)."
 msgstr ""
 "Dieses Kommando erzeugt ein Schlüsselpaar: einen privaten Schlüssel (cloud."
-"key)\n"
-" und einen öffentlichen Schlüssel (cloud.key.pub)."
+"key) und einen öffentlichen Schlüssel (cloud.key.pub)."
 
 msgid ""
 "This flavor requires more RAM than your quota allows. Please select a "
@@ -1594,11 +1945,24 @@ msgid "This step allows you to add Metadata items to your instance."
 msgstr ""
 "Mit diesem Schritt können Sie Ihrer Instanz Metadateneinträge hinzufügen."
 
+msgid "This step allows you to add scheduler hints to your instance."
+msgstr ""
+"Mit diesem Schritt können Sie Schedulerhinweise zu Ihrer Instanz hinzufügen."
+
 msgid "Time"
 msgstr "Zeit"
 
 msgid "Timestamp"
 msgstr "Zeitstempel"
+
+msgid ""
+"To view source code, hover over a section, then click the <a class=\"btn btn-"
+"primary btn-xs\"><span class=\"fa fa-code\"></span></a> button in the top "
+"right of that section."
+msgstr ""
+"Um den Quellcode zu sehen, fahren Sie über eine Sektion, klicken Sie dann "
+"den <a class=\"btn btn-primary btn-xs\"><span class=\"fa fa-code\"></span></"
+"a> Knopf oben rechts in dieser Sektion."
 
 msgid "Tooltips"
 msgstr "QuickInfo"
@@ -1830,6 +2194,9 @@ msgstr "Die Cinder-Dienste können nicht abgerufen werden."
 msgid "Unable to retrieve the current user session."
 msgstr "Die aktuelle Benutzersitzung kann nicht abgerufen werden."
 
+msgid "Unable to retrieve the default quotas."
+msgstr "Standard-Kontingente können nicht abgerufen werden."
+
 msgid "Unable to retrieve the default volume type."
 msgstr "Voreingestellter Datenträgertyp kann nicht abgerufen werden."
 
@@ -1838,6 +2205,9 @@ msgstr "Die Domäne kann nicht abgerufen werden."
 
 msgid "Unable to retrieve the domains."
 msgstr "Die Domänen können nicht abgerufen werden."
+
+msgid "Unable to retrieve the editable quotas."
+msgstr "Veränderbare Kontingente können nicht abgerufen werden."
 
 msgid "Unable to retrieve the extensions."
 msgstr "Die Erweiterungen können nicht abgerufen werden."
@@ -1926,6 +2296,12 @@ msgstr "Datenträger kann nicht angerufen werden."
 msgid "Unable to retrieve the volumes."
 msgstr "Die Datenträger können nicht abgerufen werden."
 
+msgid "Unable to set the default quotas."
+msgstr "Standard-Kontingente können nicht gesetzt werden."
+
+msgid "Unable to update project quota data."
+msgstr "Projekt-Kontingente können nicht aktualisiert werden."
+
 msgid "Unable to update the flavor."
 msgstr "Die Variante kann nicht aktualisiert werden."
 
@@ -1950,6 +2326,9 @@ msgstr "Aggregat-Metadaten bearbeiten."
 msgid "Update Flavor Metadata"
 msgstr "Varianten Metadaten aktualisieren"
 
+msgid "Update Image"
+msgstr "Abbild aktualisieren"
+
 msgid "Update Image Metadata"
 msgstr "Abbild-Metadaten erneuern"
 
@@ -1968,14 +2347,23 @@ msgstr "Aktualisiert am"
 msgid "Upload File"
 msgstr "Datei hochladen"
 
+msgid "Upload File To: {$ ctrl.model.container.name $}"
+msgstr "Datei hochladen nach: {$ ctrl.model.container.name $}"
+
 msgid "Uploading"
 msgstr "Wird hochgeladen"
 
 msgid "Url"
 msgstr "URL"
 
+msgid "Usage Charts"
+msgstr "Verwendungsdiagramme"
+
 msgid "Use image as a source"
 msgstr "Abbild als Quelle verwenden"
+
+msgid "Use this page to edit information about the image."
+msgstr "Auf dieser Seite können Sie Informationen zum Abbild bearbeiten."
 
 msgid "User ID"
 msgstr "Benutzerkennung"
@@ -2003,6 +2391,9 @@ msgstr "VHD - Virtuelle Festplatte"
 
 msgid "VMDK"
 msgstr "VMDK"
+
+msgid "VMDK - Virtual Machine Disk"
+msgstr "VMDK - Virtual Machine Disk"
 
 msgid "VNIC type"
 msgstr "VNIC-Typ"
@@ -2038,6 +2429,11 @@ msgstr "Datenträgerdetails"
 msgid "Volume Quota"
 msgstr "Datenträgerkontingent"
 
+msgid ""
+"Volume Size (GB) <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+msgstr ""
+"Datenträgergröße (GB) <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+
 msgid "Volume Snapshot"
 msgstr "Datenträger Snapshot"
 
@@ -2072,6 +2468,12 @@ msgstr ""
 msgid "Warning"
 msgstr "Warnung"
 
+msgid "Warning Anchor"
+msgstr "Warnungs-Anker"
+
+msgid "Warning Button"
+msgstr "Warnungs-Schaltfläche"
+
 msgid "Warning!"
 msgstr "Warnung!"
 
@@ -2099,29 +2501,31 @@ msgstr ""
 "sind."
 
 msgid ""
-"When the <b>Admin State</b> for a network is set to <b>Up</b>,\n"
-"    then the network is available for use. You can set the <b>Admin State</"
-"b> to <b>Down</b>\n"
-"    if you are not ready for other users to access the network."
+"When the <b>Admin State</b> for a network is set to <b>Up</b>, then the "
+"network is available for use. You can set the <b>Admin State</b> to <b>Down</"
+"b> if you are not ready for other users to access the network."
 msgstr ""
-"Wenn der <b>Admin-Status</b> für ein Netzwerk gesetzt ist auf  <b>Aktiv</"
-"b>,\n"
+"Wenn der <b>Admin-Status</b> für ein Netzwerk gesetzt ist auf  <b>Aktiv</b>, "
 "dann ist das Netzwerk bereit zur Benutzung. Sie können den <b>Admin-Status</"
-"b> auf <b>Inaktiv</b> setzen,\n"
-"wenn andere Benutzer das Netzwerk noch nicht benutzen sollen."
+"b> auf <b>Inaktiv</b> setzen, wenn andere Benutzer das Netzwerk noch nicht "
+"benutzen sollen."
 
 msgid ""
 "When the <b>Admin State</b> for a port is set to <b>Up</b> and it has no "
-"<b>Device Owner</b>,\n"
-"    then the port is available for use. You can set the <b>Admin State</b> "
-"to <b>Down</b>\n"
-"    if you are not ready for other users to use the port."
+"<b>Device Owner</b>, then the port is available for use. You can set the "
+"<b>Admin State</b> to <b>Down</b> if you are not ready for other users to "
+"use the port."
 msgstr ""
 "Wenn der <b>Admin-Status</b> für einen Port auf den Status <b>Aktiv</b> "
-"gesetzt ist und es keinen <b>Geräteeigner</b> gibt,\n"
-"    ist der Port für die Verwendung bereit. Sie können den <b>Admin-Status</"
-"b> auf <b>Inaktiv</b> setzen, wenn andere\n"
-"    Benutzer den Port noch nicht verwenden sollen. "
+"gesetzt ist und es keinen <b>Geräteeigner</b> gibt, ist der Port für die "
+"Verwendung bereit. Sie können den <b>Admin-Status</b> auf <b>Inaktiv</b> "
+"setzen, wenn andere Benutzer den Port noch nicht verwenden sollen. "
+
+msgid "XL Modal"
+msgstr "XL Modal"
+
+msgid "XS"
+msgstr "XS"
 
 msgid "Yes"
 msgstr "Ja"
@@ -2129,6 +2533,9 @@ msgstr "Ja"
 #, python-format
 msgid "You are not allowed to delete images: %s"
 msgstr "Sie sind nicht berechtigt, Abbilder zu löschen: %s"
+
+msgid "You can add arbitrary metadata to your image."
+msgstr "Sie können Ihrem Abbild beliebige Metadaten hinzufügen."
 
 msgid ""
 "You can add arbitrary metadata to your instance so that you can more easily "
@@ -2144,12 +2551,24 @@ msgstr ""
 
 msgid ""
 "You can customize your instance after it has launched using the options "
-"available here.\n"
-"    \"Customization Script\" is analogous to \"User Data\" in other systems."
+"available here. \"Customization Script\" is analogous to \"User Data\" in "
+"other systems."
 msgstr ""
 "Die Instanz kann, nachdem sie gestartet wurde, mit den hier verfügbaren "
-"Optionen angepasst werden.\n"
-"    \"Anpassungsskript\" entspricht \"Benutzerdaten\" in anderen Systemen."
+"Optionen angepasst werden. \"Anpassungsskript\" entspricht \"Benutzerdaten\" "
+"in anderen Systemen."
+
+msgid ""
+"You can specify scheduler hints by moving items from the left column to the "
+"right column. In the left column there are scheduler hint definitions from "
+"the Glance Metadata Catalog. Use the \"Custom\" option to add scheduler "
+"hints with the key of your choice."
+msgstr ""
+"Sie können Schedulerhinweise angeben, in dem Sie Elemente aus der linken "
+"Spalte in die rechte bewegen. In der linken Spalte finden Sie "
+"Schedulerhinweisdefinitionen aus dem Glance Metadatenkatalog. Verwenden Sie "
+"die \"Angepasst\" Option um Schedulerhinweise mit dem Schlüssel Ihrer Wahl "
+"hinzuzufügen."
 
 #, python-format
 msgid "You have selected \"%s\". Deleted image is not recoverable."
@@ -2197,6 +2616,13 @@ msgid "title"
 msgid_plural "titles"
 msgstr[0] "Titel"
 msgstr[1] "Titel"
+
+msgid ""
+"{$ ctrl.model.counted.files $} files in {$ ctrl.model.counted.folders $} "
+"folders."
+msgstr ""
+"{$ ctrl.model.counted.files $} Dateien in {$ ctrl.model.counted.folders $} "
+"Ordnern."
 
 msgid "{$ row['provider:network_type'] $}"
 msgstr "{$ row['provider:network_type'] $}"

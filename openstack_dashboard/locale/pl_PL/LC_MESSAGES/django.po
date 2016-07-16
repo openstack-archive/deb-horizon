@@ -3,9 +3,9 @@
 # Łukasz Jernas <deejay1@srem.org>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev230\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-06-28 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -161,9 +161,6 @@ msgstr ""
 "swojego konta. Dane muszą być przechowywane w kontenerze, więc przed "
 "przesłaniem jakichkolwiek danych należy zdefiniować przynajmniej jeden."
 
-msgid "A image or external image location must be specified."
-msgstr "Obraz lub zewnętrzne położenie obrazu musi zostać podane."
-
 msgid "A local environment to upload."
 msgstr "Lokalne środowisko do przesłania."
 
@@ -280,14 +277,6 @@ msgid "Active"
 msgstr "Aktywny"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "Aktywny"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "Aktywny"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "Aktywny"
 
@@ -968,9 +957,6 @@ msgstr "Należy podać CIDR."
 msgid "CPU time used"
 msgstr "Wykorzystany czas CPU"
 
-msgid "Can not specify both image and external image location."
-msgstr "Nie można równocześnie podać obrazu jak i jego zewnętrznego położenie."
-
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -1557,10 +1543,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "Utworzono"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "Utworzono"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "Utworzono dodatkową opcję „%s”."
@@ -1592,9 +1574,6 @@ msgstr "Utworzono specyfikację „%s”."
 #, python-format
 msgid "Created subnet \"%s\"."
 msgstr "Utworzono podsieć „%s”."
-
-msgid "Created volume transfer."
-msgstr "Utworzono przeniesienie wolumenu."
 
 #, python-format
 msgid "Created volume transfer: \"%s\"."
@@ -2507,14 +2486,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "Położono"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "Położono"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "Położono"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "Położono"
@@ -2782,10 +2753,6 @@ msgstr "Należy podać kod ICMP z zakresu (-1 : 255)"
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "Należy podać typ ICMP z zakresu (-1 :255)"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr ""
-"Należy podać liczbę całkowitą z przedziału od 0 do 255 (lub -1 dla dowolnej)."
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "Należy podać wartość całkowitą z przedziału 1 do 65535."
 
@@ -2840,19 +2807,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "Błąd"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "Błąd"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "Błąd"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "Błąd"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "Błąd"
 
@@ -3903,10 +3862,6 @@ msgctxt "Current status of a Pool"
 msgid "Inactive"
 msgstr "Nieaktywne"
 
-msgctxt "Current status of a VPN Service"
-msgid "Inactive"
-msgstr "Nieaktywne"
-
 msgid "Info"
 msgstr "Info"
 
@@ -4536,9 +4491,6 @@ msgstr "Zmiana nazwy i opisu wolumenu."
 
 msgid "Modify the name and description of a snapshot."
 msgstr "Zmiana nazwy i opisu migawki."
-
-msgid "Modify volume type name and description."
-msgstr "Modyfikacja typu wolumenu i jego opisu"
 
 msgid "Monitor"
 msgstr "Monitor"
@@ -5200,19 +5152,11 @@ msgctxt "Current status of a Pool"
 msgid "Pending Create"
 msgstr "Oczekuje na utworzenie"
 
-msgctxt "Current status of a VPN Service"
-msgid "Pending Create"
-msgstr "Oczekuje na utworzenie"
-
 msgctxt "Current status of a Firewall"
 msgid "Pending Delete"
 msgstr "Oczekuje na usunięcie"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Delete"
-msgstr "Oczekuje na usunięcie"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Delete"
 msgstr "Oczekuje na usunięcie"
 
@@ -5225,10 +5169,6 @@ msgid "Pending Update"
 msgstr "Oczekuje na aktualizację"
 
 msgctxt "Current status of a Pool"
-msgid "Pending Update"
-msgstr "Oczekuje na aktualizację"
-
-msgctxt "Current status of a VPN Service"
 msgid "Pending Update"
 msgstr "Oczekuje na aktualizację"
 
@@ -6419,9 +6359,6 @@ msgstr "Współdzielone"
 msgid "Shared Storage"
 msgstr "Współdzielony storage"
 
-msgid "Shared with Me"
-msgstr "Współdzielone ze mną"
-
 msgid "Shelve Instance"
 msgid_plural "Shelve Instances"
 msgstr[0] "Odłóż instancję na półkę"
@@ -7113,14 +7050,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "Zaktualizowano agregat."
 
-msgid "The ICMP code is invalid."
-msgstr "Niepoprawny kod ICMP."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "Kod ICMP nie znajduje się zakresie od -1 do 255"
-
-msgid "The ICMP type is invalid."
-msgstr "Niepoprawny typ ICMP."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "Typ ICMP nie znajduje się w zakresie od -1 do 255"
@@ -7207,10 +7138,6 @@ msgid ""
 msgstr ""
 "Odmiana „%(flavor)s” jest za mała dla żądanego obrazu.\n"
 "Minimalne wymagania: %(min_ram)s MB RAM oraz %(min_disk)s GB głównego dysku."
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "Trwa przygotowywanie migracji na żywo instancji na hosta „%s”."
 
 msgid "The instance password encrypted with your public key."
 msgstr "Hasło instancji zaszyfrowane kluczem publicznym."

@@ -26,7 +26,8 @@ from horizon.utils import memoized
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.networks.subnets \
     import tables as proj_tables
-
+from openstack_dashboard.dashboards.project.networks.subnets.tabs \
+    import SubnetsTab as project_tabs_subnets_tab
 
 LOG = logging.getLogger(__name__)
 
@@ -88,12 +89,27 @@ class UpdateSubnet(proj_tables.SubnetPolicyTargetMixin, tables.LinkAction):
         return reverse(self.url, args=(network_id, subnet.id))
 
 
+def subnet_ip_availability(availability):
+    subnet_availability = availability.get("free_ips")
+    if subnet_availability:
+        if subnet_availability > 10000:
+            return ">10000"
+        else:
+            return str(subnet_availability)
+    else:
+        return str("Not Available")
+
+
 class SubnetsTable(tables.DataTable):
     name = tables.Column("name_or_id", verbose_name=_("Name"),
                          link='horizon:admin:networks:subnets:detail')
     cidr = tables.Column("cidr", verbose_name=_("CIDR"))
     ip_version = tables.Column("ipver_str", verbose_name=_("IP Version"))
     gateway_ip = tables.Column("gateway_ip", verbose_name=_("Gateway IP"))
+    subnet_used_ips = tables.Column("used_ips",
+                                    verbose_name=_("Used IPs"))
+    subnet_free_ips = tables.Column(subnet_ip_availability,
+                                    verbose_name=_("Free IPs"))
     failure_url = reverse_lazy('horizon:admin:networks:index')
 
     def get_object_display(self, subnet):
@@ -114,6 +130,67 @@ class SubnetsTable(tables.DataTable):
     class Meta(object):
         name = "subnets"
         verbose_name = _("Subnets")
-        table_actions = (CreateSubnet, DeleteSubnet)
+        table_actions = (CreateSubnet, DeleteSubnet, tables.FilterAction,)
         row_actions = (UpdateSubnet, DeleteSubnet,)
         hidden_title = False
+
+    def __init__(self, request, data=None, needs_form_wrapper=None, **kwargs):
+        super(SubnetsTable, self).__init__(
+            request, data=data,
+            needs_form_wrapper=needs_form_wrapper,
+            **kwargs)
+        if not api.neutron.is_extension_supported(request,
+                                                  'network-ip-availability'):
+            del self.columns['subnet_used_ips']
+            del self.columns['subnet_free_ips']
+
+
+class SubnetsTab(project_tabs_subnets_tab):
+    table_classes = (SubnetsTable,)
+
+    def _get_subnet_availability(self, network_id):
+        subnet_availabilities_list = []
+        try:
+            availability = api.neutron.\
+                show_network_ip_availability(self.request, network_id)
+            availabilities = availability.get("network_ip_availability",
+                                              {})
+            subnet_availabilities_list = availabilities.\
+                get("subnet_ip_availability", [])
+        except Exception:
+            msg = _("Unable to retrieve IP availability.")
+            exceptions.handle(self.request, msg)
+        return subnet_availabilities_list
+
+    def _add_subnet_availability(self, subnet_usage_list, subnets_dict):
+        try:
+            for subnet_usage in subnet_usage_list:
+                subnet_id = subnet_usage.get("subnet_id")
+                subnet_used_ips = subnet_usage.get("used_ips")
+                subnet_total_ips = subnet_usage.get("total_ips")
+                subnet_free_ips = subnet_total_ips - subnet_used_ips
+                for item in subnets_dict:
+                    id = item.get("id")
+                    if id == subnet_id:
+                        item._apidict.update({"used_ips": subnet_used_ips})
+                        item._apidict.update({"free_ips": subnet_free_ips})
+        except Exception:
+            msg = _("Unable to update subnets with availability.")
+            exceptions.handle(self.request, msg)
+        return subnets_dict
+
+    def get_subnets_data(self):
+        try:
+            subnets = super(SubnetsTab, self).get_subnets_data()
+            network_id = self.tab_group.kwargs['network_id']
+
+            if api.neutron.is_extension_supported(self.request,
+                                                  'network-ip-availability'):
+                subnets_list = self._get_subnet_availability(network_id)
+                subnets = self._add_subnet_availability(subnets_list, subnets)
+        except Exception:
+            subnets = []
+            msg = _('Failed to check if network-ip-availability '
+                    'extension is supported.')
+            exceptions.handle(self.request, msg)
+        return subnets

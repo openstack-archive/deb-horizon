@@ -5,13 +5,13 @@
 # Rob Cresswell <robert.cresswell@outlook.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev277\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-07-05 10:45+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-05-20 10:53+0000\n"
+"PO-Revision-Date: 2016-07-05 11:59+0000\n"
 "Last-Translator: Andi Chandler <andi@gowling.com>\n"
 "Language-Team: English (United Kingdom)\n"
 "Language: en-GB\n"
@@ -41,6 +41,15 @@ msgid ""
 "\"Customization Script\" is analogous to \"User Data\" in other systems."
 msgstr ""
 "\"Customisation Script\" is analogous to \"User Data\" in other systems."
+
+msgid ""
+"\"Manage\" an existing volume from a Cinder host. This will make the volume "
+"visible within OpenStack. <br> <br> This is equivalent to the <tt>cinder "
+"manage</tt> command."
+msgstr ""
+"\"Manage\" an existing volume from a Cinder host. This will make the volume "
+"visible within OpenStack. <br> <br> This is equivalent to the <tt>cinder "
+"manage</tt> command."
 
 msgid ""
 "\"None\" indicates that no QoS Spec is currently associated. Conversely, "
@@ -154,6 +163,22 @@ msgstr "--"
 msgid "3des"
 msgstr "3des"
 
+#, python-format
+msgid "<a href=\"%(instance_url)s\">%(instance_name)s</a> on %(device)s"
+msgstr "<a href=\"%(instance_url)s\">%(instance_name)s</a> on %(device)s"
+
+#, python-format
+msgid "<a href=\"%(volume_url)s\">%(volume_label)s</a> on %(volume_device)s"
+msgstr "<a href=\"%(volume_url)s\">%(volume_label)s</a> on %(volume_device)s"
+
+#, python-format
+msgid "<span class=\"pull-right\">%(used)s of %(quota)s MB Used</span>"
+msgstr "<span class=\"pull-right\">%(used)s of %(quota)s MB Used</span>"
+
+#, python-format
+msgid "<span class=\"pull-right\">%(used)s of %(quota)s Used</span>"
+msgstr "<span class=\"pull-right\">%(used)s of %(quota)s Used</span>"
+
 msgid ""
 "A container is a storage compartment for your data and provides a way for "
 "you to organize your data. You can think of a container as a folder in "
@@ -170,9 +195,6 @@ msgstr ""
 "nested. You can, however, create an unlimited number of containers within "
 "your account. Data must be stored in a container so you must have at least "
 "one container defined in your account prior to uploading data."
-
-msgid "A image or external image location must be specified."
-msgstr "A image or external image location must be specified."
 
 msgid "A local environment to upload."
 msgstr "A local environment to upload."
@@ -332,11 +354,7 @@ msgctxt "Current status of a Pool"
 msgid "Active"
 msgstr "Active"
 
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "Active"
-
-msgctxt "Current status of an IPSec Site Connection"
+msgctxt "Current status of an IPSec Site Connection and VPN Service"
 msgid "Active"
 msgstr "Active"
 
@@ -650,6 +668,9 @@ msgstr "Admin State"
 msgid "Admin State Up"
 msgstr "Admin State Up"
 
+msgid "Admin URL:"
+msgstr "Admin URL:"
+
 msgid ""
 "Administrator Note: Use the following CLI command to import the default "
 "definitions into Glance: "
@@ -751,6 +772,13 @@ msgstr "Allocated"
 msgid "Allocated Floating IP %(ip)s."
 msgstr "Allocated Floating IP %(ip)s."
 
+msgid ""
+"Allocates requests to the instance with the least number of active "
+"connections."
+msgstr ""
+"Allocates requests to the instance with the least number of active "
+"connections."
+
 msgid "Allocation Pools"
 msgstr "Allocation Pools"
 
@@ -805,6 +833,15 @@ msgstr "Any Availability Zone"
 msgid "Architecture"
 msgstr "Architecture"
 
+msgid ""
+"Assign a name and description for the pool. Choose one subnet where all "
+"members of this pool must be on. Select the protocol and load balancing "
+"method for this pool. Admin State is UP (checked) by default."
+msgstr ""
+"Assign a name and description for the pool. Choose one subnet where all "
+"members of this pool must be on. Select the protocol and load balancing "
+"method for this pool. Admin State is UP (checked) by default."
+
 msgid "Associate"
 msgstr "Associate"
 
@@ -844,6 +881,9 @@ msgstr "At least one member must be specified"
 msgid "At least one network must be specified."
 msgstr "At least one network must be specified."
 
+msgid "At least one volume type must be assigned to a consistency group."
+msgstr "At least one volume type must be assigned to a consistency group."
+
 msgid "Attach Interface"
 msgstr "Attach Interface"
 
@@ -852,6 +892,12 @@ msgstr "Attach To Instance"
 
 msgid "Attach Volume"
 msgstr "Attach Volume"
+
+msgid "Attach Volume to Running Instance."
+msgstr "Attach Volume to Running Instance."
+
+msgid "Attach a Volume"
+msgstr "Attach a Volume"
 
 msgid "Attach to Instance"
 msgstr "Attach to Instance"
@@ -918,6 +964,9 @@ msgstr ""
 "Automatic: The entire disk is a single partition and automatically resizes. "
 "Manual: Results in faster build times but requires manual partitioning."
 
+msgid "Automatically schedule new host."
+msgstr "Automatically schedule new host."
+
 msgid "Availability Zone"
 msgstr "Availability Zone"
 
@@ -934,6 +983,10 @@ msgid "Available"
 msgstr "Available"
 
 msgctxt "Current status of Consistency Group"
+msgid "Available"
+msgstr "Available"
+
+msgctxt "Current status of Consistency Group Snapshot"
 msgid "Available"
 msgstr "Available"
 
@@ -1071,6 +1124,13 @@ msgctxt "Power state of an Instance"
 msgid "Building"
 msgstr "Building"
 
+msgid ""
+"By default, volume type is created as public. To create a private volume "
+"type, uncheck this field."
+msgstr ""
+"By default, volume type is created as public. To create a private volume "
+"type, uncheck this field."
+
 msgid "CIDR"
 msgstr "CIDR"
 
@@ -1082,9 +1142,6 @@ msgstr "CPU architecture of the image."
 
 msgid "CPU time used"
 msgstr "CPU time used"
-
-msgid "Can not specify both image and external image location."
-msgstr "Can not specify both image and external image location."
 
 msgid "Cancel"
 msgstr "Cancel"
@@ -1121,6 +1178,13 @@ msgstr "Change Template"
 msgid "Change Volume Type"
 msgstr "Change Volume Type"
 
+msgid ""
+"Change the volume type of a volume after its creation. This is equivalent to "
+"the <tt>cinder retype</tt> command."
+msgstr ""
+"Change the volume type of a volume after its creation. This is equivalent to "
+"the <tt>cinder retype</tt> command."
+
 msgid "Change user's password. We highly recommend you create a strong one."
 msgstr "Change user's password. We highly recommend you create a strong one."
 
@@ -1148,10 +1212,10 @@ msgstr[0] "Check Stack"
 msgstr[1] "Check Stacks"
 
 msgid ""
-"Check the &quot;Delete Volumes&quot; box to also delete the volumes "
+"Check the &quot;Delete Volumes&quot; box to also delete any volumes "
 "associated with this consistency group."
 msgstr ""
-"Check the &quot;Delete Volumes&quot; box to also delete the volumes "
+"Check the &quot;Delete Volumes&quot; box to also delete any volumes "
 "associated with this consistency group."
 
 msgid "Checked Stack"
@@ -1161,6 +1225,13 @@ msgstr[1] "Checked Stacks"
 
 msgid "Checksum"
 msgstr "Checksum"
+
+msgid ""
+"Choose \"Disk Format\" for the image. The volume images are created with the "
+"QEMU disk image utility."
+msgstr ""
+"Choose \"Disk Format\" for the image. The volume images are created with the "
+"QEMU disk image utility."
 
 msgid "Choose Your Boot Source Type."
 msgstr "Choose Your Boot Source Type."
@@ -1209,6 +1280,13 @@ msgid ""
 msgstr ""
 "Choose router(s) from Available Routers to Selected Routers by push button "
 "or drag and drop. "
+
+msgid ""
+"Choose rule(s) from Available Rules to Selected Rule by push button or drag "
+"and drop, you may change their order by drag and drop as well."
+msgstr ""
+"Choose rule(s) from Available Rules to Selected Rule by push button or drag "
+"and drop, you may change their order by drag and drop as well."
 
 msgid "Choose the flavor to launch."
 msgstr "Choose the flavour to launch."
@@ -1260,6 +1338,16 @@ msgstr[1] "Cleared Gateways"
 
 msgid "Click here to show only console"
 msgstr "Click here to show only console"
+
+msgid "Clone Consistency Group"
+msgstr "Clone Consistency Group"
+
+msgid ""
+"Clone each of the volumes in the source Consistency Group, and then add them "
+"to a newly created Consistency Group."
+msgstr ""
+"Clone each of the volumes in the source Consistency Group, and then add them "
+"to a newly created Consistency Group."
 
 msgid "Close"
 msgstr "Close"
@@ -1337,8 +1425,20 @@ msgstr "Conflicting Rule"
 msgid "Connection Limit"
 msgstr "Connection Limit"
 
+msgid "Consistency Group"
+msgstr "Consistency Group"
+
 msgid "Consistency Group Information"
 msgstr "Consistency Group Information"
+
+msgid "Consistency Group Name"
+msgstr "Consistency Group Name"
+
+msgid "Consistency Group Snapshots"
+msgstr "Consistency Group Snapshots"
+
+msgid "Consistency Groups"
+msgstr "Consistency Groups"
 
 msgid "Console"
 msgstr "Console"
@@ -1455,6 +1555,9 @@ msgstr "Create Complete"
 
 msgid "Create Consistency Group"
 msgstr "Create Consistency Group"
+
+msgid "Create Consistency Group Snapshot"
+msgstr "Create Consistency Group Snapshot"
 
 msgid "Create Container"
 msgstr "Create Container"
@@ -1671,6 +1774,13 @@ msgstr "Create Volume Type Encryption"
 msgid "Create Volume Type Extra Spec"
 msgstr "Create Volume Type Extra Spec"
 
+msgid ""
+"Create a Consistency Group that will contain newly created volumes cloned "
+"from each of the snapshots in the source Consistency Group Snapshot."
+msgstr ""
+"Create a Consistency Group that will contain newly created volumes cloned "
+"from each of the snapshots in the source Consistency Group Snapshot."
+
 msgid "Create a Metadata Namespace"
 msgstr "Create a Metadata Namespace"
 
@@ -1686,11 +1796,23 @@ msgstr "Create a Router"
 msgid "Create a Snapshot"
 msgstr "Create a Snapshot"
 
+msgid ""
+"Create a VIP for this pool. Assign a name, description, IP address, port, "
+"and maximum connections allowed for the VIP. Choose the protocol and session "
+"persistence method for the VIP. Admin State is UP (checked) by default."
+msgstr ""
+"Create a VIP for this pool. Assign a name, description, IP address, port, "
+"and maximum connections allowed for the VIP. Choose the protocol and session "
+"persistence method for the VIP. Admin State is UP (checked) by default."
+
 msgid "Create a Volume"
 msgstr "Create a Volume"
 
 msgid "Create a Volume Backup"
 msgstr "Create a Volume Backup"
+
+msgid "Create a Volume Consistency Group from Snapshot"
+msgstr "Create a Volume Consistency Group from Snapshot"
 
 msgid "Create a Volume Snapshot"
 msgstr "Create a Volume Snapshot"
@@ -1829,6 +1951,9 @@ msgstr "Create a policy with selected rules."
 msgid "Create a project to organize users."
 msgstr "Create a project to organise users."
 
+msgid "Create a snapshot for each volume contained in the Consistency Group."
+msgstr "Create a snapshot for each volume contained in the Consistency Group."
+
 msgid ""
 "Create a subnet associated with the network. Advanced configuration is "
 "available by clicking on the \"Subnet Details\" tab."
@@ -1858,7 +1983,7 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "Created"
 
-msgctxt "Current status of a VPN Service"
+msgctxt "Current status of an IPSec Site Connection and VPN Service"
 msgid "Created"
 msgstr "Created"
 
@@ -1897,9 +2022,6 @@ msgstr "Created spec \"%s\"."
 msgid "Created subnet \"%s\"."
 msgstr "Created subnet \"%s\"."
 
-msgid "Created volume transfer."
-msgstr "Created volume transfer."
-
 #, python-format
 msgid "Created volume transfer: \"%s\"."
 msgstr "Created volume transfer: \"%s\"."
@@ -1930,6 +2052,14 @@ msgstr "Creating"
 msgctxt "Current status of a Volume Backup"
 msgid "Creating"
 msgstr "Creating"
+
+#, python-format
+msgid "Creating consistency group \"%s\"."
+msgstr "Creating consistency group \"%s\"."
+
+#, python-format
+msgid "Creating consistency group snapshot \"%s\"."
+msgstr "Creating consistency group snapshot \"%s\"."
 
 msgid ""
 "Creating encryption for a volume type causes all volumes with that volume "
@@ -2138,9 +2268,7 @@ msgid "Delete Complete"
 msgstr "Delete Complete"
 
 msgid "Delete Consistency Group"
-msgid_plural "Delete Consistency Groups"
-msgstr[0] "Delete Consistency Group"
-msgstr[1] "Delete Consistency Groups"
+msgstr "Delete Consistency Group"
 
 msgid "Delete Container"
 msgid_plural "Delete Containers"
@@ -2315,6 +2443,11 @@ msgid_plural "Delete Security Groups"
 msgstr[0] "Delete Security Group"
 msgstr[1] "Delete Security Groups"
 
+msgid "Delete Snapshot"
+msgid_plural "Delete Snapshots"
+msgstr[0] "Delete Snapshot"
+msgstr[1] "Delete Snapshots"
+
 msgid "Delete Spec"
 msgid_plural "Delete Specs"
 msgstr[0] "Delete Spec"
@@ -2370,6 +2503,9 @@ msgstr[1] "Delete Volume Types"
 
 msgid "Delete Volume on Instance Delete"
 msgstr "Delete Volume on Instance Delete"
+
+msgid "Delete Volumes"
+msgstr "Delete Volumes"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
@@ -2554,6 +2690,19 @@ msgstr "Deleted images are not recoverable."
 msgid "Deleted instances are not recoverable."
 msgstr "Deleted instances are not recoverable."
 
+msgid "Deleted volume backups are not recoverable."
+msgstr "Deleted volume backups are not recoverable."
+
+msgid "Deleted volume snapshots are not recoverable."
+msgstr "Deleted volume snapshots are not recoverable."
+
+msgid ""
+"Deleted volumes are not recoverable. All data stored in the volume will be "
+"removed."
+msgstr ""
+"Deleted volumes are not recoverable. All data stored in the volume will be "
+"removed."
+
 msgid "Deleting"
 msgstr "Deleting"
 
@@ -2573,11 +2722,18 @@ msgstr "Deleting"
 msgid "Deleting VIP %s from this pool cannot be undone."
 msgstr "Deleting VIP %s from this pool cannot be undone."
 
+#, python-format
+msgid "Deleting volume consistency group \"%s\""
+msgstr "Deleting volume consistency group \"%s\""
+
 msgid "Deny"
 msgstr "Deny"
 
 msgid "Description"
 msgstr "Description"
+
+msgid "Description is required."
+msgstr "Description is required."
 
 msgid "Description:"
 msgstr "Description:"
@@ -2629,6 +2785,12 @@ msgid_plural "Detach Volumes"
 msgstr[0] "Detach Volume"
 msgstr[1] "Detach Volumes"
 
+msgid "Detach Volume from Running Instance."
+msgstr "Detach Volume from Running Instance."
+
+msgid "Detach a Volume"
+msgstr "Detach a Volume"
+
 msgid "Detached"
 msgstr "Detached"
 
@@ -2647,6 +2809,10 @@ msgid "Detaching Volume"
 msgid_plural "Detaching Volumes"
 msgstr[0] "Detaching Volume"
 msgstr[1] "Detaching Volumes"
+
+#, python-format
+msgid "Detaching volume %(vol)s from instance %(inst)s."
+msgstr "Detaching volume %(vol)s from instance %(inst)s."
 
 msgid "Details"
 msgstr "Details"
@@ -2854,11 +3020,7 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "Down"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "Down"
-
-msgctxt "Current status of an IPSec Site Connection"
+msgctxt "Current status of an IPSec Site Connection and VPN Service"
 msgid "Down"
 msgstr "Down"
 
@@ -2899,6 +3061,15 @@ msgstr "EC2 Secret Key"
 
 msgid "EC2 URL"
 msgstr "EC2 URL"
+
+msgid ""
+"Each QoS Specs entity will have a \"Consumer\" value which indicates where "
+"the administrator would like the QoS policy to be enforced. This value can "
+"be \"front-end\" (Nova Compute), \"back-end\" (Cinder back-end), or \"both\"."
+msgstr ""
+"Each QoS Specs entity will have a \"Consumer\" value which indicates where "
+"the administrator would like the QoS policy to be enforced. This value can "
+"be \"front-end\" (Nova Compute), \"back-end\" (Cinder back-end), or \"both\"."
 
 msgid "Edit"
 msgstr "Edit"
@@ -3027,10 +3198,6 @@ msgstr "Edit Volume Type"
 msgid "Edit Volume Type Extra Spec"
 msgstr "Edit Volume Type Extra Spec"
 
-#, python-format
-msgid "Edit consistency group \"%s\"."
-msgstr "Edit consistency group \"%s\"."
-
 msgid ""
 "Edit the flavor details. Flavors define the sizes for RAM, disk, number of "
 "cores, and other resources. Flavors are selected when users deploy instances."
@@ -3137,6 +3304,9 @@ msgstr ""
 "Encryption information cannot be updated for a volume type if volumes are "
 "currently in use with the volume type."
 
+msgid "Endpoints"
+msgstr "Endpoints"
+
 msgid "Energy (Kwapi)"
 msgstr "Energy (Kwapi)"
 
@@ -3152,8 +3322,8 @@ msgstr "Enter a value for ICMP code in the range (-1: 255)"
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "Enter a value for ICMP type in the range (-1: 255)"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
+msgid "Enter an integer value between 0 and 255."
+msgstr "Enter an integer value between 0 and 255."
 
 msgid "Enter an integer value between 1 and 65535."
 msgstr "Enter an integer value between 1 and 65535."
@@ -3197,6 +3367,10 @@ msgctxt "Current status of Consistency Group"
 msgid "Error"
 msgstr "Error"
 
+msgctxt "Current status of Consistency Group Snapshot"
+msgid "Error"
+msgstr "Error"
+
 msgctxt "Current status of a Firewall"
 msgid "Error"
 msgstr "Error"
@@ -3213,10 +3387,6 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "Error"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "Error"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "Error"
@@ -3225,7 +3395,7 @@ msgctxt "Current status of a Volume Backup"
 msgid "Error"
 msgstr "Error"
 
-msgctxt "Current status of an IPSec Site Connection"
+msgctxt "Current status of an IPSec Site Connection and VPN Service"
 msgid "Error"
 msgstr "Error"
 
@@ -3293,6 +3463,12 @@ msgstr "Error when adding or removing hosts."
 #, python-format
 msgid "Error writing zipfile: %(exc)s"
 msgstr "Error writing zipfile: %(exc)s"
+
+msgid "Errors occurred in deleting consistency group."
+msgstr "Errors occurred in deleting consistency group."
+
+msgid "Errors occurred in removing volumes from consistency group."
+msgstr "Errors occurred in removing volumes from consistency group."
 
 msgid "Ether Type"
 msgstr "Ether Type"
@@ -3443,6 +3619,9 @@ msgstr "Failed to check Neutron '%s' extension is not supported"
 
 msgid "Failed to check if Neutron extraroute extension is supported"
 msgstr "Failed to check if Neutron extraroute extension is supported"
+
+msgid "Failed to check if network-ip-availability extension is supported."
+msgstr "Failed to check if network-ip-availability extension is supported."
 
 #, python-format
 msgid "Failed to create a port for network %s"
@@ -3783,6 +3962,9 @@ msgstr "Flavour Information"
 msgid "Flavor Name"
 msgstr "Flavour Name"
 
+msgid "Flavor name cannot be empty."
+msgstr "Flavour name cannot be empty."
+
 msgid "Flavors"
 msgstr "Flavours"
 
@@ -3854,6 +4036,9 @@ msgstr "Format"
 
 msgid "Format ="
 msgstr "Format ="
+
+msgid "Free IPs"
+msgstr "Free IPs"
 
 msgid "From"
 msgstr "From"
@@ -4009,6 +4194,9 @@ msgstr "Help"
 msgid "High Availability Mode"
 msgstr "High Availability Mode"
 
+msgid "High Availability Status"
+msgstr "High Availability Status"
+
 msgid "Home"
 msgstr "Home"
 
@@ -4077,6 +4265,9 @@ msgstr "Hypervisors"
 
 msgid "ICMP"
 msgstr "ICMP"
+
+msgid "ICMP code is provided but ICMP type is missing."
+msgstr "ICMP code is provided but ICMP type is missing."
 
 msgid "ID"
 msgstr "ID"
@@ -4375,6 +4566,10 @@ msgctxt "Current status of Consistency Group"
 msgid "In-use"
 msgstr "In-use"
 
+msgctxt "Current status of Consistency Group Snapshot"
+msgid "In-use"
+msgstr "In-use"
+
 msgctxt "Current status of a Volume"
 msgid "In-use"
 msgstr "In-use"
@@ -4387,7 +4582,7 @@ msgctxt "Current status of a Pool"
 msgid "Inactive"
 msgstr "Inactive"
 
-msgctxt "Current status of a VPN Service"
+msgctxt "Current status of an IPSec Site Connection and VPN Service"
 msgid "Inactive"
 msgstr "Inactive"
 
@@ -4527,6 +4722,9 @@ msgstr "Interfaces"
 msgid "Internal Interface"
 msgstr "Internal Interface"
 
+msgid "Internal URL:"
+msgstr "Internal URL:"
+
 msgid "Invalid MAC Address format"
 msgstr "Invalid MAC Address format"
 
@@ -4610,6 +4808,9 @@ msgstr "Killed"
 
 msgid "Kwapi"
 msgstr "Kwapi"
+
+msgid "L3 Agent"
+msgstr "L3 Agent"
 
 msgid "LB Method"
 msgstr "LB Method"
@@ -4993,6 +5194,15 @@ msgid "Migrate Volume"
 msgstr "Migrate Volume"
 
 msgid ""
+"Migrate a volume to a specific host. <br> <br> Force Host Copy: Enables or "
+"disables generic host-based force-migration, which bypasses driver "
+"optimizations."
+msgstr ""
+"Migrate a volume to a specific host. <br> <br> Force Host Copy: Enables or "
+"disables generic host-based force-migration, which bypasses driver "
+"optimisations."
+
+msgid ""
 "Migrate all instances from a host with disabled nova-compute service. "
 "Optionally you can choose type of migration. All running instances of the "
 "host can be Live Migrated. Cold Migration is trying to use 'nova migrate' on "
@@ -5093,11 +5303,15 @@ msgstr "Modify name and description of a volume."
 msgid "Modify the name and description of a snapshot."
 msgstr "Modify the name and description of a snapshot."
 
+msgid "Modify the name and description of a volume consistency group snapshot."
+msgstr ""
+"Modify the name and description of a volume consistency group snapshot."
+
 msgid "Modify the name and description of a volume consistency group."
 msgstr "Modify the name and description of a volume consistency group."
 
-msgid "Modify volume type name and description."
-msgstr "Modify volume type name and description."
+msgid "Modify volume type name, description, and public status."
+msgstr "Modify volume type name, description, and public status."
 
 msgid "Monitor"
 msgstr "Monitor"
@@ -5357,8 +5571,8 @@ msgstr "No available projects"
 msgid "No flavors available"
 msgstr "No flavours available"
 
-msgid "No flavors meet minimum criteria for selected image."
-msgstr "No flavours meet minimum criteria for selected image."
+msgid "No flavors meet minimum criteria for selected boot source."
+msgstr "No flavours meet minimum criteria for selected boot source."
 
 msgid "No floating IP addresses allocated"
 msgstr "No floating IP addresses allocated"
@@ -5483,6 +5697,9 @@ msgstr "No volume types found."
 
 msgid "No volume types selected."
 msgstr "No volume types selected."
+
+msgid "No volumes attached"
+msgstr "No volumes attached"
 
 msgid "No volumes attached."
 msgstr "No volumes attached."
@@ -5695,6 +5912,12 @@ msgstr "Orchestration service is disabled."
 msgid "Other"
 msgstr "Other"
 
+#, python-format
+msgid ""
+"Other IPv6 modes: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode=%(addr_mode)s"
+msgstr ""
+"Other IPv6 modes: ipv6_ra_mode=%(ra_mode)s, ipv6_address_mode=%(addr_mode)s"
+
 msgid "Other Protocol"
 msgstr "Other Protocol"
 
@@ -5819,7 +6042,7 @@ msgctxt "Current status of a Pool"
 msgid "Pending Create"
 msgstr "Pending Create"
 
-msgctxt "Current status of a VPN Service"
+msgctxt "Current status of an IPSec Site Connection and VPN Service"
 msgid "Pending Create"
 msgstr "Pending Create"
 
@@ -5831,7 +6054,7 @@ msgctxt "Current status of a Pool"
 msgid "Pending Delete"
 msgstr "Pending Delete"
 
-msgctxt "Current status of a VPN Service"
+msgctxt "Current status of an IPSec Site Connection and VPN Service"
 msgid "Pending Delete"
 msgstr "Pending Delete"
 
@@ -5847,7 +6070,7 @@ msgctxt "Current status of a Pool"
 msgid "Pending Update"
 msgstr "Pending Update"
 
-msgctxt "Current status of a VPN Service"
+msgctxt "Current status of an IPSec Site Connection and VPN Service"
 msgid "Pending Update"
 msgstr "Pending Update"
 
@@ -6159,6 +6382,9 @@ msgstr "Public Key"
 msgid "Public URL"
 msgstr "Public URL"
 
+msgid "Public URL:"
+msgstr "Public URL:"
+
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU Emulator"
 
@@ -6180,6 +6406,25 @@ msgstr "QoS Spec: {{ qos_spec_name }}"
 
 msgid "QoS Specs"
 msgstr "QoS Specs"
+
+msgid ""
+"QoS Specs can be associated with volume types. It is used to map to a set of "
+"quality of service capabilities requested by the volume owner. This is "
+"equivalent to the <tt>cinder qos-create</tt> command. Once the QoS Spec gets "
+"created, click the \"Manage Specs\" button to manage the key-value specs for "
+"the QoS Spec. <br> <br> Each QoS Specs entity will have a \"Consumer\" value "
+"which indicates where the administrator would like the QoS policy to be "
+"enforced. This value can be \"front-end\" (Nova Compute), \"back-end"
+"\" (Cinder back-end), or \"both\"."
+msgstr ""
+"QoS Specs can be associated with volume types. It is used to map to a set of "
+"quality of service capabilities requested by the volume owner. This is "
+"equivalent to the <tt>cinder qos-create</tt> command. Once the QoS Spec gets "
+"created, click the \"Manage Specs\" button to manage the key-value specs for "
+"the QoS Spec. <br> <br> Each QoS Specs entity will have a \"Consumer\" value "
+"which indicates where the administrator would like the QoS policy to be "
+"enforced. This value can be \"front-end\" (Nova Compute), \"back-end"
+"\" (Cinder back-end), or \"both\"."
 
 msgctxt "Current status of an Image"
 msgid "Queued"
@@ -6307,6 +6552,9 @@ msgstr "Rebuilding instance %s."
 msgid "Recreate EC2 Credentials"
 msgstr "Recreate EC2 Credentials"
 
+msgid "Region"
+msgstr "Region"
+
 msgid "Regions:"
 msgstr "Regions:"
 
@@ -6398,6 +6646,9 @@ msgid_plural "Remove Users"
 msgstr[0] "Remove User"
 msgstr[1] "Remove Users"
 
+msgid "Remove Volumes from Consistency Group"
+msgstr "Remove Volumes from Consistency Group"
+
 msgid "Removed User"
 msgid_plural "Removed Users"
 msgstr[0] "Removed User"
@@ -6409,6 +6660,10 @@ msgid ""
 msgstr ""
 "Removing a key pair can leave OpenStack resources orphaned. You should not "
 "remove a key pair unless you are certain it is not being used anywhere."
+
+#, python-format
+msgid "Removing volumes from volume consistency group \"%s\""
+msgstr "Removing volumes from volume consistency group \"%s\""
 
 msgid "Report Bug"
 msgstr "Report Bug"
@@ -6434,6 +6689,13 @@ msgstr ""
 
 msgid "Requested snapshot would exceed the allowed quota."
 msgstr "Requested snapshot would exceed the allowed quota."
+
+msgid ""
+"Requests from a unique source IP address are consistently directed to the "
+"same instance."
+msgstr ""
+"Requests from a unique source IP address are consistently directed to the "
+"same instance."
 
 msgid "Required for APP_COOKIE persistence; Ignored otherwise."
 msgstr "Required for APP_COOKIE persistence; Ignored otherwise."
@@ -6463,6 +6725,15 @@ msgstr "Resize"
 msgid "Resize Instance"
 msgstr "Resize Instance"
 
+msgid ""
+"Resize the canvas by scrolling up/down with your mouse/trackpad on the "
+"topology. Pan around the canvas by clicking and dragging the space behind "
+"the topology."
+msgstr ""
+"Resize the canvas by scrolling up/down with your mouse/trackpad on the "
+"topology. Pan around the canvas by clicking and dragging the space behind "
+"the topology."
+
 msgctxt "Current status of an Instance"
 msgid "Resize/Migrate"
 msgstr "Resize/Migrate"
@@ -6490,6 +6761,9 @@ msgstr "Resource Metadata"
 
 msgid "Resource Types"
 msgstr "Resource Types"
+
+msgid "Resource Types ="
+msgstr "Resource Types ="
 
 msgid "Resource Usage"
 msgstr "Resource Usage"
@@ -6787,11 +7061,6 @@ msgctxt "Current status of an Image"
 msgid "Saving"
 msgstr "Saving"
 
-msgid "Scheduled deletion of Consistency Group"
-msgid_plural "Scheduled deletion of Consistency Groups"
-msgstr[0] "Scheduled deletion of Consistency Group"
-msgstr[1] "Scheduled deletion of Consistency Groups"
-
 msgid "Scheduled deletion of Firewall"
 msgid_plural "Scheduled deletion of Firewalls"
 msgstr[0] "Scheduled deletion of Firewall"
@@ -6841,6 +7110,11 @@ msgid "Scheduled deletion of Rule"
 msgid_plural "Scheduled deletion of Rules"
 msgstr[0] "Scheduled deletion of Rule"
 msgstr[1] "Scheduled deletion of Rules"
+
+msgid "Scheduled deletion of Snapshot"
+msgid_plural "Scheduled deletion of Snapshots"
+msgstr[0] "Scheduled deletion of Snapshot"
+msgstr[1] "Scheduled deletion of Snapshots"
 
 msgid "Scheduled deletion of VPN Service"
 msgid_plural "Scheduled deletion of VPN Services"
@@ -7036,6 +7310,15 @@ msgstr "Select a target host"
 msgid "Select a template to launch a stack."
 msgstr "Select a template to launch a stack."
 
+msgid "Select a volume"
+msgstr "Select a volume"
+
+msgid "Select a volume to attach to this instance."
+msgstr "Select a volume to attach to this instance."
+
+msgid "Select a volume to detach from this instance."
+msgstr "Select a volume to detach from this instance."
+
 msgid "Select a volume to restore to."
 msgstr "Select a volume to restore to."
 
@@ -7149,8 +7432,20 @@ msgstr "Servers"
 msgid "Service"
 msgstr "Service"
 
+msgid "Service Cinder is disabled."
+msgstr "Service Cinder is disabled."
+
 msgid "Service Endpoint"
 msgstr "Service Endpoint"
+
+msgid "Service Neutron is disabled or quotas extension not available."
+msgstr "Service Neutron is disabled or quotas extension not available."
+
+msgid "Service Neutron is disabled."
+msgstr "Service Neutron is disabled."
+
+msgid "Service Nova is disabled."
+msgstr "Service Nova is disabled."
 
 msgid "Services"
 msgstr "Services"
@@ -7193,8 +7488,8 @@ msgstr "Shared"
 msgid "Shared Storage"
 msgstr "Shared Storage"
 
-msgid "Shared with Me"
-msgstr "Shared with Me"
+msgid "Shared with Project"
+msgstr "Shared with Project"
 
 msgid "Shelve Instance"
 msgid_plural "Shelve Instances"
@@ -7321,8 +7616,19 @@ msgstr "Snapshot Limits"
 msgid "Snapshot Name"
 msgstr "Snapshot Name"
 
+msgid "Snapshot Volume Types"
+msgstr "Snapshot Volume Types"
+
+msgid "Snapshot Volumes"
+msgstr "Snapshot Volumes"
+
 msgid "Snapshot source must be specified"
 msgstr "Snapshot source must be specified"
+
+msgid ""
+"Snapshots can only be created for Consistency Groups that contain volumes."
+msgstr ""
+"Snapshots can only be created for Consistency Groups that contain volumes."
 
 msgctxt "Task status of an Instance"
 msgid "Snapshotting"
@@ -7346,9 +7652,11 @@ msgid_plural "Soft Rebooted Instances"
 msgstr[0] "Soft Rebooted Instance"
 msgstr[1] "Soft Rebooted Instances"
 
-msgid "Some flavors not meeting minimum image requirements have been disabled."
+msgid ""
+"Some flavors not meeting minimum boot source requirements have been disabled."
 msgstr ""
-"Some flavours not meeting minimum image requirements have been disabled."
+"Some flavours not meeting minimum boot source requirements have been "
+"disabled."
 
 msgid "Something went wrong!"
 msgstr "Something went wrong!"
@@ -7866,6 +8174,22 @@ msgstr ""
 "The \"Bootable\" flag specifies that this volume can be used to launch an "
 "instance."
 
+msgid ""
+"The \"Migration Policy\" is only used if the volume retype cannot be "
+"completed. If the \"Migration Policy\" is \"On Demand\", the back end will "
+"perform volume migration. Note that migration may take a significant amount "
+"of time to complete, in some cases hours."
+msgstr ""
+"The \"Migration Policy\" is only used if the volume retype cannot be "
+"completed. If the \"Migration Policy\" is \"On Demand\", the back end will "
+"perform volume migration. Note that migration may take a significant amount "
+"of time to complete, in some cases hours."
+
+msgid ""
+"The \"Volume Type\" selected must be different from the current volume type."
+msgstr ""
+"The \"Volume Type\" selected must be different from the current volume type."
+
 msgid "The \"from\" port number is invalid."
 msgstr "The \"from\" port number is invalid."
 
@@ -7939,14 +8263,8 @@ msgstr ""
 "must capture it now or download it, or else you will be unable to use the "
 "transfer."
 
-msgid "The ICMP code is invalid."
-msgstr "The ICMP code is invalid."
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "The ICMP code not in range (-1, 255)"
-
-msgid "The ICMP type is invalid."
-msgstr "The ICMP type is invalid."
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "The ICMP type not in range (-1, 255)"
@@ -7974,6 +8292,9 @@ msgstr "The JSON formatted contents of a namespace."
 
 msgid "The Key Pair name that was associated with the instance"
 msgstr "The Key Pair name that was associated with the instance"
+
+msgid "The L3 agent information could not be located."
+msgstr "The L3 agent information could not be located."
 
 msgid ""
 "The Transfer ID and the Authorization Key are needed by the recipient in "
@@ -8008,6 +8329,21 @@ msgstr ""
 "The chart below shows the resources used by this project in relation to the "
 "project's quotas."
 
+msgid ""
+"The color and icon of an intersection indicates whether or not traffic is "
+"permitted from the source (row) to the destination (column). Clicking the "
+"<span class=\"fa fa-random\"></span> button in the intersection will install "
+"a rule to switch the traffic behavior.<br/> <b>Note:</b> Rules only affect "
+"one direction of traffic. The opposite direction is outlined when hovering "
+"over an intersection."
+msgstr ""
+"The colour and icon of an intersection indicates whether or not traffic is "
+"permitted from the source (row) to the destination (column). Clicking the "
+"<span class=\"fa fa-random\"></span> button in the intersection will install "
+"a rule to switch the traffic behaviour.<br/> <b>Note:</b> Rules only affect "
+"one direction of traffic. The opposite direction is outlined when hovering "
+"over an intersection."
+
 msgid "The container cannot be deleted since it is not empty."
 msgstr "The container cannot be deleted since it is not empty."
 
@@ -8032,13 +8368,6 @@ msgstr ""
 "select a subnet to which the specified IP address belongs to from the above "
 "list."
 
-msgid ""
-"The default action for deleting a consistency group is to first disassociate "
-"all associated volumes."
-msgstr ""
-"The default action for deleting a consistency group is to first disassociate "
-"all associated volumes."
-
 #, python-format
 msgid ""
 "The flavor '%(flavor)s' is too small for requested image.\n"
@@ -8047,9 +8376,8 @@ msgstr ""
 "The flavour '%(flavor)s' is too small for requested image.\n"
 "Minimum requirements: %(min_ram)s MB of RAM and %(min_disk)s GB of Root Disk."
 
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "The instance is preparing the live migration to host \"%s\"."
+msgid "The instance is preparing the live migration to a new host."
+msgstr "The instance is preparing the live migration to a new host."
 
 msgid "The instance password encrypted with your public key."
 msgstr "The instance password encrypted with your public key."
@@ -8216,6 +8544,26 @@ msgstr ""
 msgid "The state to start the network in."
 msgstr "The state to start the network in."
 
+msgid ""
+"The status of a volume is normally managed automatically.  In some "
+"circumstances an administrator may need to explicitly update the status "
+"value.  This is equivalent to the <tt>cinder reset-state</tt> command."
+msgstr ""
+"The status of a volume is normally managed automatically.  In some "
+"circumstances an administrator may need to explicitly update the status "
+"value.  This is equivalent to the <tt>cinder reset-state</tt> command."
+
+msgid ""
+"The status of a volume snapshot is normally managed automatically.  In some "
+"circumstances an administrator may need to explicitly update the status "
+"value. This is equivalent to the <tt>cinder snapshot-reset-state</tt> "
+"command."
+msgstr ""
+"The status of a volume snapshot is normally managed automatically.  In some "
+"circumstances an administrator may need to explicitly update the status "
+"value. This is equivalent to the <tt>cinder snapshot-reset-state</tt> "
+"command."
+
 #, python-format
 msgid "The subnet in the Network Address is too small (/%s)."
 msgstr "The subnet in the Network Address is too small (/%s)."
@@ -8276,6 +8624,13 @@ msgid ""
 msgstr ""
 "This action cannot be undone. Current EC2 credentials will be deleted and "
 "not recoverable."
+
+msgid ""
+"This action will unassign all volumes that are currently contained in this "
+"consistency group."
+msgstr ""
+"This action will unassign all volumes that are currently contained in this "
+"consistency group."
 
 msgid "This application requires JavaScript to be enabled in your web browser."
 msgstr ""
@@ -8359,6 +8714,9 @@ msgstr ""
 
 msgid "To exit the fullscreen mode, click the browser's back button."
 msgstr "To exit the fullscreen mode, click the browser's back button."
+
+msgid "To make volume type private, uncheck this field."
+msgstr "To make volume type private, uncheck this field."
 
 msgid ""
 "To specify an allowed IP range, select &quot;CIDR&quot;. To allow access "
@@ -8574,9 +8932,18 @@ msgstr "Unable to change password."
 msgid "Unable to change the volume type for volume: \"%s\""
 msgstr "Unable to change the volume type for volume: \"%s\""
 
+msgid "Unable to check if DHCP agent scheduler extension is supported"
+msgstr "Unable to check if DHCP agent scheduler extension is supported"
+
 #, python-format
 msgid "Unable to clear gateway for router \"%(name)s\": \"%(msg)s\""
 msgstr "Unable to clear gateway for router \"%(name)s\": \"%(msg)s\""
+
+msgid "Unable to clone consistency group."
+msgstr "Unable to clone consistency group."
+
+msgid "Unable to clone empty consistency group."
+msgstr "Unable to clone empty consistency group."
 
 msgid "Unable to connect to Neutron."
 msgstr "Unable to connect to Neutron."
@@ -8586,6 +8953,17 @@ msgstr "Unable to copy object."
 
 msgid "Unable to create QoS Spec."
 msgstr "Unable to create QoS Spec."
+
+#, python-format
+msgid "Unable to create consistency group \"%s\" from snapshot."
+msgstr "Unable to create consistency group \"%s\" from snapshot."
+
+msgid "Unable to create consistency group due to exceeding volume quota limit."
+msgstr ""
+"Unable to create consistency group due to exceeding volume quota limit."
+
+msgid "Unable to create consistency group snapshot."
+msgstr "Unable to create consistency group snapshot."
 
 msgid "Unable to create consistency group."
 msgstr "Unable to create consistency group."
@@ -8672,6 +9050,12 @@ msgstr "Unable to create security group: %s"
 msgid "Unable to create snapshot."
 msgstr "Unable to create snapshot."
 
+msgid "Unable to create snapshot. Consistency group must contain volumes."
+msgstr "Unable to create snapshot. Consistency group must contain volumes."
+
+msgid "Unable to create snapshots due to exceeding snapshot quota limit."
+msgstr "Unable to create snapshots due to exceeding snapshot quota limit."
+
 msgid "Unable to create spec."
 msgstr "Unable to create spec."
 
@@ -8720,9 +9104,6 @@ msgstr "Unable to delete VIP. %s"
 msgid "Unable to delete VPN Service. %s"
 msgstr "Unable to delete VPN Service. %s"
 
-msgid "Unable to delete consistency group."
-msgstr "Unable to delete consistency group."
-
 msgid "Unable to delete container."
 msgstr "Unable to delete container."
 
@@ -8763,6 +9144,9 @@ msgstr "Unable to delete volume transfer."
 msgid "Unable to detach interface."
 msgstr "Unable to detach interface."
 
+msgid "Unable to detach volume."
+msgstr "Unable to detach volume."
+
 msgid "Unable to determine if availability zones extension is supported."
 msgstr "Unable to determine if availability zones extension is supported."
 
@@ -8775,11 +9159,8 @@ msgstr "Unable to disassociate floating IP."
 msgid "Unable to disassociate monitor."
 msgstr "Unable to disassociate monitor."
 
-msgid "Unable to edit consistency group"
-msgstr "Unable to edit consistency group"
-
-msgid "Unable to edit consistency group."
-msgstr "Unable to edit consistency group."
+msgid "Unable to display consistency group."
+msgstr "Unable to display consistency group."
 
 msgid "Unable to edit spec."
 msgstr "Unable to edit spec."
@@ -8911,6 +9292,9 @@ msgstr "Unable to list dhcp agents hosting network."
 msgid "Unable to load console. Please reload page to try again."
 msgstr "Unable to load console. Please reload page to try again."
 
+msgid "Unable to load the specified consistency group."
+msgstr "Unable to load the specified consistency group."
+
 #, python-format
 msgid "Unable to load the specified image. %s"
 msgstr "Unable to load the specified image. %s"
@@ -9002,6 +9386,9 @@ msgstr ""
 msgid "Unable to retrieve IP addresses from Neutron."
 msgstr "Unable to retrieve IP addresses from Neutron."
 
+msgid "Unable to retrieve IP availability."
+msgstr "Unable to retrieve IP availability."
+
 msgid "Unable to retrieve IPSec Policies list."
 msgstr "Unable to retrieve IPSec Policies list."
 
@@ -9021,6 +9408,9 @@ msgstr "Unable to retrieve IPSec Site Connection details. %s"
 
 msgid "Unable to retrieve IPSec Site Connections list."
 msgstr "Unable to retrieve IPSec Site Connections list."
+
+msgid "Unable to retrieve MAC learning state"
+msgstr "Unable to retrieve MAC learning state"
 
 #, python-format
 msgid "Unable to retrieve Network information for instance \"%s\"."
@@ -9098,6 +9488,12 @@ msgstr "Unable to retrieve compute limit information."
 
 msgid "Unable to retrieve consistency group details."
 msgstr "Unable to retrieve consistency group details."
+
+msgid "Unable to retrieve consistency group information."
+msgstr "Unable to retrieve consistency group information."
+
+msgid "Unable to retrieve consistency group snapshot details."
+msgstr "Unable to retrieve consistency group snapshot details."
 
 msgid "Unable to retrieve container list."
 msgstr "Unable to retrieve container list."
@@ -9537,6 +9933,9 @@ msgstr "Unable to retrieve version information."
 msgid "Unable to retrieve volume backups."
 msgstr "Unable to retrieve volume backups."
 
+msgid "Unable to retrieve volume consistency group snapshots."
+msgstr "Unable to retrieve volume consistency group snapshots."
+
 msgid "Unable to retrieve volume consistency groups."
 msgstr "Unable to retrieve volume consistency groups."
 
@@ -9686,6 +10085,9 @@ msgstr "Unable to update security group: %s"
 msgid "Unable to update subnet \"%s\"."
 msgstr "Unable to update subnet \"%s\"."
 
+msgid "Unable to update subnets with availability."
+msgstr "Unable to update subnets with availability."
+
 msgid "Unable to update the aggregate."
 msgstr "Unable to update the aggregate."
 
@@ -9720,12 +10122,18 @@ msgstr "Unable to update volume type."
 msgid "Unable to update volume."
 msgstr "Unable to update volume."
 
+msgid "Unable to update volumes for consistency group"
+msgstr "Unable to update volumes for consistency group"
+
 msgid "Unable to upload object."
 msgstr "Unable to upload object."
 
 #, python-format
 msgid "Unable to upload volume to image for volume: \"%s\""
 msgstr "Unable to upload volume to image for volume: \"%s\""
+
+msgid "Unable to verify the VNIC types extension in Neutron"
+msgstr "Unable to verify the VNIC types extension in Neutron"
 
 msgid "Unit"
 msgstr "Unit"
@@ -9738,6 +10146,9 @@ msgstr "Unknown Instance"
 
 msgid "Unknown instance (None)"
 msgstr "Unknown instance (None)"
+
+msgid "Unknown volume (None)"
+msgstr "Unknown volume (None)"
 
 msgid "Unlock Instance"
 msgid_plural "Unlock Instances"
@@ -9933,6 +10344,10 @@ msgstr "Updated At"
 msgid "Updated subnet \"%s\"."
 msgstr "Updated subnet \"%s\"."
 
+#, python-format
+msgid "Updated volumes for consistency group \"%s\"."
+msgstr "Updated volumes for consistency group \"%s\"."
+
 msgctxt "Task status of an Instance"
 msgid "Updating Password"
 msgstr "Updating Password"
@@ -9972,6 +10387,13 @@ msgstr "Upload Objects"
 msgid "Upload Volume to Image"
 msgstr "Upload Volume to Image"
 
+msgid ""
+"Upload the volume to the Image Service as an image. This is equivalent to "
+"the <tt>cinder upload-to-image</tt> command."
+msgstr ""
+"Upload the volume to the Image Service as an image. This is equivalent to "
+"the <tt>cinder upload-to-image</tt> command."
+
 msgid "Upload to Image"
 msgstr "Upload to Image"
 
@@ -9995,6 +10417,9 @@ msgstr "Usage Report For Period:"
 
 msgid "Use Server Default"
 msgstr "Use Server Default"
+
+msgid "Use a consistency group as source"
+msgstr "Use a consistency group as source"
 
 msgid "Use a volume as source"
 msgstr "Use a volume as source"
@@ -10027,6 +10452,9 @@ msgstr "Use snapshot as a source"
 #, python-format
 msgid "Used <span> %(used)s </span> of <span> %(available)s </span>"
 msgstr "Used <span> %(used)s </span> of <span> %(available)s </span>"
+
+msgid "Used IPs"
+msgstr "Used IPs"
 
 msgid "Used in Policy"
 msgstr "Used in Policy"
@@ -10177,6 +10605,10 @@ msgstr "Value:"
 msgid "Version"
 msgstr "Version"
 
+#, python-format
+msgid "Version: %(version_info)s"
+msgstr "Version: %(version_info)s"
+
 msgid "View Container"
 msgstr "View Container"
 
@@ -10248,6 +10680,9 @@ msgstr "Volume Encryption Details: {{ volume.name }}"
 
 msgid "Volume Encryption Overview"
 msgstr "Volume Encryption Overview"
+
+msgid "Volume ID"
+msgstr "Volume ID"
 
 msgid "Volume Limits"
 msgstr "Volume Limits"
@@ -10323,12 +10758,8 @@ msgstr ""
 "Volume cannot be extended to %(req)iGiB as you only have %(avail)iGiB of "
 "your quota available."
 
-msgid ""
-"Volume consistency groups can only be deleted after all the volumes they "
-"contain are either deleted or unassigned."
-msgstr ""
-"Volume consistency groups can only be deleted after all the volumes they "
-"contain are either deleted or unassigned."
+msgid "Volume consistency groups can not be deleted if they contain volumes."
+msgstr "Volume consistency groups can not be deleted if they contain volumes."
 
 msgid ""
 "Volume consistency groups provide a mechanism for creating snapshots of "
@@ -10399,6 +10830,24 @@ msgstr "Volume size must be greater than 0"
 msgid "Volume source must be specified"
 msgstr "Volume source must be specified"
 
+msgid "Volume transfer name cannot be empty."
+msgstr "Volume transfer name cannot be empty."
+
+msgid ""
+"Volume type is a type or label that can be selected at volume creation time "
+"in OpenStack. It usually maps to a set of capabilities of the storage back-"
+"end driver to be used for this volume. Examples: \"Performance\", \"SSD\", "
+"\"Backup\", etc. This is equivalent to the <tt>cinder type-create</tt> "
+"command. Once the volume type gets created, click the \"View Extra Specs\" "
+"button to set up extra specs key-value pair(s) for that volume type."
+msgstr ""
+"Volume type is a type or label that can be selected at volume creation time "
+"in OpenStack. It usually maps to a set of capabilities of the storage back-"
+"end driver to be used for this volume. Examples: \"Performance\", \"SSD\", "
+"\"Backup\", etc. This is equivalent to the <tt>cinder type-create</tt> "
+"command. Once the volume type gets created, click the \"View Extra Specs\" "
+"button to set up extra specs key-value pair(s) for that volume type."
+
 #, python-format
 msgid "Volume type name \"%s\" already exists."
 msgstr "Volume type name \"%s\" already exists."
@@ -10419,8 +10868,36 @@ msgstr "Volumes are block devices that can be attached to instances."
 msgid "Volumes of Type %(type)s"
 msgstr "Volumes of Type %(type)s"
 
+msgid "Warning: "
+msgstr "Warning: "
+
 msgid "Weight"
 msgstr "Weight"
+
+msgid ""
+"When a volume is \"unmanaged\", the volume will no longer be visible within "
+"OpenStack. Note that the volume will not be deleted from the Cinder host. "
+"<br> <br> This is equivalent to the <tt>cinder unmanage</tt> command."
+msgstr ""
+"When a volume is \"unmanaged\", the volume will no longer be visible within "
+"OpenStack. Note that the volume will not be deleted from the Cinder host. "
+"<br> <br> This is equivalent to the <tt>cinder unmanage</tt> command."
+
+msgid ""
+"When no IP address is provided, the VIP will obtain an address from the "
+"selected subnet. If a specific IP address is desired, it may be provided and "
+"must also be an address within the selected subnet."
+msgstr ""
+"When no IP address is provided, the VIP will obtain an address from the "
+"selected subnet. If a specific IP address is desired, it may be provided and "
+"must also be an address within the selected subnet."
+
+msgid ""
+"When the volume status is \"in-use\", you can use \"Force\" to upload the "
+"volume to an image."
+msgstr ""
+"When the volume status is \"in-use\", you can use \"Force\" to upload the "
+"volume to an image."
 
 msgid ""
 "Within a container you can group your objects into pseudo-folders, which "
@@ -10497,6 +10974,16 @@ msgstr ""
 "You cannot revoke your administrative privileges from the project you are "
 "currently logged into. Please switch to another project with administrative "
 "privileges or remove the administrative role manually via the CLI."
+
+msgid ""
+"You do not have the required privileges to access this content. If you "
+"believe this message to be in error, please contact your project manager."
+msgstr ""
+"You do not have the required privileges to access this content. If you "
+"believe this message to be in error, please contact your project manager."
+
+msgid "You have selected:"
+msgstr "You have selected:"
 
 msgid "You may have mistyped the address or the page may have moved."
 msgstr "You may have mistyped the address or the page may have moved."
@@ -10702,6 +11189,3 @@ msgstr "v1"
 
 msgid "v2"
 msgstr "v2"
-
-msgid "yes,no,-"
-msgstr "yes,no,-"

@@ -140,10 +140,9 @@ class TestVolumesBasic(helpers.TestCase):
         settings_page.find_message_and_dismiss(messages.SUCCESS)
 
         volumes_page = self.volumes_page
-        for volume_name in volumes_names:
-            volumes_page.delete_volume(volume_name)
-            volumes_page.find_message_and_dismiss(messages.SUCCESS)
-            self.assertTrue(volumes_page.is_volume_deleted(volume_name))
+        volumes_page.delete_volumes(volumes_names)
+        volumes_page.find_message_and_dismiss(messages.SUCCESS)
+        self.assertTrue(volumes_page.are_volumes_deleted(volumes_names))
 
 
 class TestAdminVolumes(helpers.AdminTestCase, TestVolumesBasic):
@@ -239,6 +238,17 @@ class TestVolumesActions(helpers.TestCase):
         self.assertTrue(self.volumes_page.is_volume_status(self.VOLUME_NAME,
                                                            'Available'))
 
+        def cleanup():
+            self.volumes_page.delete_volume(self.VOLUME_NAME)
+            self.assertTrue(
+                self.volumes_page.find_message_and_dismiss(messages.SUCCESS))
+            self.assertFalse(
+                self.volumes_page.find_message_and_dismiss(messages.ERROR))
+            self.assertTrue(
+                self.volumes_page.is_volume_deleted(self.VOLUME_NAME))
+
+        self.addCleanup(cleanup)
+
     def test_volume_extend(self):
         """This test case checks extend volume functionality:
             Steps:
@@ -254,6 +264,8 @@ class TestVolumesActions(helpers.TestCase):
             self.volumes_page.find_message_and_dismiss(messages.INFO))
         self.assertFalse(
             self.volumes_page.find_message_and_dismiss(messages.ERROR))
+        self.assertTrue(self.volumes_page.is_volume_status(self.VOLUME_NAME,
+                                                           'Available'))
         new_size = self.volumes_page.get_size(self.VOLUME_NAME)
         self.assertFalse(orig_size >= new_size)
 
@@ -322,12 +334,3 @@ class TestVolumesActions(helpers.TestCase):
             instances_page.find_message_and_dismiss(messages.ERROR))
         self.assertTrue(instances_page.is_instance_deleted(self.INSTANCE_NAME))
         self.volumes_page = self.home_pg.go_to_compute_volumes_volumespage()
-
-    def tearDown(self):
-        self.volumes_page.delete_volume(self.VOLUME_NAME)
-        self.assertTrue(
-            self.volumes_page.find_message_and_dismiss(messages.SUCCESS))
-        self.assertFalse(
-            self.volumes_page.find_message_and_dismiss(messages.ERROR))
-        self.assertTrue(self.volumes_page.is_volume_deleted(self.VOLUME_NAME))
-        super(TestVolumesActions, self).tearDown()

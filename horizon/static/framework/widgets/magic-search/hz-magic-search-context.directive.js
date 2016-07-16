@@ -20,7 +20,10 @@
     .module('horizon.framework.widgets.magic-search')
     .directive('hzMagicSearchContext', hzMagicSearchContext);
 
-  hzMagicSearchContext.$inject = ['$parse'];
+  hzMagicSearchContext.$inject = [
+    '$parse',
+    'horizon.framework.widgets.magic-search.events'
+  ];
 
   /**
    * @ngdoc directive
@@ -38,7 +41,9 @@
    *
    * @param {object} filterFacets Facets allowed for searching
    * @param {object=} filterStrings Help content shown in search bar
-   * @param {object=} clientFullTextSearch if full text search is to be done on the client
+   * @param {boolean=} clientFullTextSearch if true, performs full text search
+   *   exclusively on the client
+   *
    * Facets:
    * ```
    * var nameFacet = {
@@ -69,16 +74,15 @@
    * @example
    * ```
    * <hz-magic-search-context
-   *   template="/static/framework/widgets/magic-search/magic-search.html"
-   *   strings="filterStrings"
-   *   facets="{{ filterFacets }}">
+   *   filter-strings="filterStrings"
+   *   filter-facets="filterFacets">
    *   <magic-search></magic-search>
    *   <table st-magic-search st-table="controller.data">
    *   </table>
    * </hz-magic-search-context>
    * ```
    */
-  function hzMagicSearchContext($parse) {
+  function hzMagicSearchContext($parse, magicSearchEvents) {
     var directive = {
       link: link,
       restrict: 'E',
@@ -114,11 +118,11 @@
         scope.showSettings = false;
       }
 
-      scope.$on('searchUpdated', resend);
-      scope.$on('textSearch', resend);
-      scope.$on('checkFacets', resend);
-      scope.$on('facetsChanged', resend);
-      scope.$on('serverSearchUpdated', resend);
+      scope.$on(magicSearchEvents.SEARCH_UPDATED, resend);
+      scope.$on(magicSearchEvents.TEXT_SEARCH, resend);
+      scope.$on(magicSearchEvents.CHECK_FACETS, resend);
+      scope.$on(magicSearchEvents.FACETS_CHANGED, resend);
+      scope.$on(magicSearchEvents.SERVER_SEARCH_UPDATED, resend);
 
       function resend(event, data) {
         scope.$broadcast(event.name + '-ms-context', data);

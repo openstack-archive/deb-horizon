@@ -11,7 +11,7 @@
   box-shadow: none;
   border-radius: 0;
   margin: 0; // prevent the form-inline styles from messing with margin
-  padding: $dropdown-item-padding-vertical $dropdown-item-padding-horizontal;
+  padding: $bs-dropdown-item-padding-vertical $bs-dropdown-item-padding-horizontal;
   white-space: nowrap; // prevent links from breaking onto new lines
   min-width: 100%;
   text-align: left;
@@ -37,16 +37,18 @@
   &.btn-primary {
     color: $brand-primary;
   }
+
   &.btn-danger {
     color: $brand-danger;
   }
+
   &.btn-warning {
     color: $brand-warning;
   }
+
   &.btn-info {
     color: $brand-info;
   }
-
 
   @include dropdown-button('default', $dropdown-link-color, $dropdown-link-hover-bg);
   @include dropdown-button('primary', $btn-primary-bg, $btn-primary-bg, $btn-primary-color);

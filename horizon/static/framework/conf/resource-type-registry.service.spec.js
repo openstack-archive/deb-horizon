@@ -38,6 +38,10 @@
       expect(service.getResourceType('something').detailsViews).toBeDefined();
     });
 
+    it('establishes filterFacets on a resourceType object', function() {
+      expect(service.getResourceType('something').filterFacets).toBeDefined();
+    });
+
     it('init calls initScope on item and batch actions', function() {
       var action = { service: { initScope: angular.noop } };
       spyOn(action.service, 'initScope');
@@ -50,6 +54,12 @@
       var action = { service: { } };
       service.getResourceType('newthing').batchActions.push(action);
       var returned = service.initActions('newthing', {} );
+      // but we got here
+      expect(returned).toBeUndefined();
+    });
+
+    it('init ignores initScope when not type is not present', function() {
+      var returned = service.initActions('was-never-registered', {} );
       // but we got here
       expect(returned).toBeUndefined();
     });
@@ -158,11 +168,6 @@
       it('returns the value_mapping_default_function result when no matching mapping', function() {
         expect(format('default-func', 'missing')).toBe('massing');
       });
-    });
-
-    it("sets and retrieves slugs", function() {
-      service.setSlug('image', 'OS::Glance::Image');
-      expect(service.getTypeNameBySlug('image')).toBe('OS::Glance::Image');
     });
 
     describe('getName', function() {

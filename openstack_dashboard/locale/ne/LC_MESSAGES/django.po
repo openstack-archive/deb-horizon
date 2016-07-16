@@ -1,9 +1,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 9.0.1.dev356\n"
+"Project-Id-Version: horizon 10.0.0.0b2.dev230\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-05-24 18:49+0000\n"
+"POT-Creation-Date: 2016-06-28 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -136,9 +136,6 @@ msgstr ""
 "कन्टेनरहरू बनाउन सक्नुहुन्छ। डाटा आवश्यक रूपमा कन्टेनरमा संरक्षण गर्नुपर्छ जसको लागि डाटा "
 "अपलोड गर्नभन्दा पहिला तपाईँको खातामा एउटा सन्टेनर परिभाषित गरिएको हुनुपर्छ। "
 
-msgid "A image or external image location must be specified."
-msgstr "एउटा चित्र वा बाह्य चित्र स्थान आवश्यक रूपमा निश्चित गरिनुपर्छ।"
-
 msgid "A local environment to upload."
 msgstr "अपलोड गर्नका लागि लोकल वातावरण"
 
@@ -228,14 +225,6 @@ msgid "Active"
 msgstr "सक्रीय"
 
 msgctxt "Current status of a Pool"
-msgid "Active"
-msgstr "सक्रीय"
-
-msgctxt "Current status of a VPN Service"
-msgid "Active"
-msgstr "सक्रीय"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Active"
 msgstr "सक्रीय"
 
@@ -722,9 +711,6 @@ msgstr "CIDR  आवश्यक रूपमा तोकिएको हुन
 msgid "CPU time used"
 msgstr "CPU को प्रयोग समय "
 
-msgid "Can not specify both image and external image location."
-msgstr "चित्र वा बाह्य दुवै चित्र स्थान निश्चित गर्न सकिएन।"
-
 msgid "Cancel"
 msgstr "रद्ध गर्नुहोस्"
 
@@ -1160,10 +1146,6 @@ msgctxt "Current status of a Pool"
 msgid "Created"
 msgstr "सृष्टि भयो"
 
-msgctxt "Current status of a VPN Service"
-msgid "Created"
-msgstr "सृष्टि भयो"
-
 #, python-format
 msgid "Created extra spec \"%s\"."
 msgstr "अतिरिक्त मूल्य \"%s\" बनाउनुहोस्"
@@ -1573,14 +1555,6 @@ msgctxt "Current status of a Pool"
 msgid "Down"
 msgstr "तल"
 
-msgctxt "Current status of a VPN Service"
-msgid "Down"
-msgstr "तल"
-
-msgctxt "Current status of an IPSec Site Connection"
-msgid "Down"
-msgstr "तल"
-
 msgctxt "current status of port"
 msgid "Down"
 msgstr "तल"
@@ -1777,9 +1751,6 @@ msgstr "रेन्ज (-1: 255)मा ICMP प्रकारको लाग�
 msgid "Enter a value for ICMP type in the range (-1: 255)"
 msgstr "रेन्ज (-1: 255)मा ICMP प्रकारको लागि एउटा मूल्य दर्ता गर्नुहोस्"
 
-msgid "Enter an integer value between 0 and 255 (or -1 which means wildcard)."
-msgstr "एउटा 0 अनि 255 बिचको पूर्णाङ्क दर्ता (वा -1 जसको अर्थ वाइल्डकार्ड हो) गर्नुहोस्"
-
 msgid "Enter an integer value between 1 and 65535."
 msgstr "1 अनि 65535 माझको एउटा पूर्णाङ्क मुल्य दर्ता गर्नुहोस्"
 
@@ -1834,19 +1805,11 @@ msgctxt "Current status of a Pool"
 msgid "Error"
 msgstr "त्रुटि"
 
-msgctxt "Current status of a VPN Service"
-msgid "Error"
-msgstr "त्रुटि"
-
 msgctxt "Current status of a Volume"
 msgid "Error"
 msgstr "त्रुटि"
 
 msgctxt "Current status of a Volume Backup"
-msgid "Error"
-msgstr "त्रुटि"
-
-msgctxt "Current status of an IPSec Site Connection"
 msgid "Error"
 msgstr "त्रुटि"
 
@@ -4356,9 +4319,6 @@ msgstr "शेयर गरिएको"
 msgid "Shared Storage"
 msgstr "शेयर गरिएको स्टोरेज"
 
-msgid "Shared with Me"
-msgstr "मसिट बाँडिएको"
-
 msgid "Sign Out"
 msgstr "साइन आउट"
 
@@ -4770,14 +4730,8 @@ msgstr ""
 msgid "The Aggregate was updated."
 msgstr "मोठ अपडेट गरियो"
 
-msgid "The ICMP code is invalid."
-msgstr "ICMP कोड अवैध छ।"
-
 msgid "The ICMP code not in range (-1, 255)"
 msgstr "ICMP प्रकार रेनजमा छैन(-1, 255)"
-
-msgid "The ICMP type is invalid."
-msgstr "ICMP प्रकार अवैध छ।"
 
 msgid "The ICMP type not in range (-1, 255)"
 msgstr "ICMP प्रकार रेनजमा छैन(-1, 255)"
@@ -4831,10 +4785,6 @@ msgid ""
 msgstr ""
 "अनुरोध गरिएका चित्रभन्दा फ्लेभर '%(flavor)s' अति नै सानो छ \n"
 "न्युनतम आवश्यकताहरूः रूट डिस्कको %(min_ram)s MB of RAM अनि %(min_disk)s GB "
-
-#, python-format
-msgid "The instance is preparing the live migration to host \"%s\"."
-msgstr "इन्सटेन्सले होस्ट\"%s\" मा लाइभ माइग्रेसनोको तयारी गर्दैछ"
 
 msgid "The instance password encrypted with your public key."
 msgstr "तपाईँको पब्लिक चाबीद्वारा इन्क्रिप्ट गरिएको इन्सटेन्स पासवर्ड"

@@ -13,8 +13,10 @@
 import contextlib
 import logging
 import os
+import shutil
 from six import StringIO
 import socket
+import subprocess
 import tempfile
 import time
 import traceback
@@ -30,10 +32,20 @@ from horizon.test import webdriver
 from openstack_dashboard.test.integration_tests import config
 from openstack_dashboard.test.integration_tests.pages import loginpage
 from openstack_dashboard.test.integration_tests.regions import messages
+from openstack_dashboard.test.integration_tests.video_recorder import \
+    VideoRecorder
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.DEBUG)
+IS_SELENIUM_HEADLESS = os.environ.get('SELENIUM_HEADLESS', False)
 ROOT_PATH = os.path.dirname(os.path.abspath(config.__file__))
+
+if not subprocess.call('which xdpyinfo > /dev/null 2>&1', shell=True):
+    SCREEN_SIZE = subprocess.check_output('xdpyinfo | grep dimensions',
+                                          shell=True).split()[1].split('x')
+else:
+    SCREEN_SIZE = (None, None)
+    LOGGER.info("X11 isn't installed. Should use xvfb to run tests.")
 
 
 def gen_random_resource_name(resource="", timestamp=True):
@@ -83,15 +95,27 @@ class BaseTestCase(testtools.TestCase):
     CONFIG = config.get_config()
 
     def setUp(self):
+        if not os.environ.get('INTEGRATION_TESTS', False):
+            raise self.skipException(
+                "The INTEGRATION_TESTS env variable is not set.")
+
         self._configure_log()
 
-        if not os.environ.get('INTEGRATION_TESTS', False):
-            msg = "The INTEGRATION_TESTS env variable is not set."
-            raise self.skipException(msg)
+        self.addOnException(
+            lambda exc_info: setattr(self, '_need_attach_test_log', True))
 
+        def cleanup():
+            if getattr(self, '_need_attach_test_log', None):
+                self._attach_test_log()
+
+        self.addCleanup(cleanup)
+
+        width, height = SCREEN_SIZE
+        display = '0.0'
         # Start a virtual display server for running the tests headless.
-        if os.environ.get('SELENIUM_HEADLESS', False):
-            self.vdisplay = xvfbwrapper.Xvfb(width=1920, height=1080)
+        if IS_SELENIUM_HEADLESS:
+            width, height = 1920, 1080
+            self.vdisplay = xvfbwrapper.Xvfb(width=width, height=height)
             args = []
 
             # workaround for memory leak in Xvfb taken from:
@@ -107,6 +131,25 @@ class BaseTestCase(testtools.TestCase):
             else:
                 self.vdisplay.xvfb_cmd.extend(args)
             self.vdisplay.start()
+            display = self.vdisplay.new_display
+
+            self.addCleanup(self.vdisplay.stop)
+
+        self.video_recorder = VideoRecorder(width, height, display=display)
+        self.video_recorder.start()
+
+        self.addOnException(
+            lambda exc_info: setattr(self, '_need_attach_video', True))
+
+        def cleanup():
+            self.video_recorder.stop()
+            if getattr(self, '_need_attach_video', None):
+                self._attach_video()
+            else:
+                self.video_recorder.clear()
+
+        self.addCleanup(cleanup)
+
         # Increase the default Python socket timeout from nothing
         # to something that will cope with slow webdriver startup times.
         # This *just* affects the communication between this test process
@@ -120,15 +163,35 @@ class BaseTestCase(testtools.TestCase):
         )
         if self.CONFIG.selenium.maximize_browser:
             self.driver.maximize_window()
+            if IS_SELENIUM_HEADLESS:  # force full screen in xvfb
+                self.driver.set_window_size(width, height)
+
         self.driver.implicitly_wait(self.CONFIG.selenium.implicit_wait)
         self.driver.set_page_load_timeout(
             self.CONFIG.selenium.page_timeout)
+
         self.addOnException(self._attach_page_source)
         self.addOnException(self._attach_screenshot)
-        self.addOnException(self._attach_browser_log)
-        self.addOnException(self._attach_test_log)
+        self.addOnException(
+            lambda exc_info: setattr(self, '_need_attach_browser_log', True))
+
+        def cleanup():
+            if getattr(self, '_need_attach_browser_log', None):
+                self._attach_browser_log()
+            self.driver.quit()
+
+        self.addCleanup(cleanup)
 
         super(BaseTestCase, self).setUp()
+
+    def addOnException(self, exception_handler):
+
+        def wrapped_handler(exc_info):
+            if issubclass(exc_info[0], testtools.testcase.TestSkipped):
+                return
+            return exception_handler(exc_info)
+
+        super(BaseTestCase, self).addOnException(wrapped_handler)
 
     def _configure_log(self):
         """Configure log to capture test logs include selenium logs in order
@@ -146,7 +209,8 @@ class BaseTestCase(testtools.TestCase):
     @property
     def _test_report_dir(self):
         report_dir = os.path.join(ROOT_PATH, 'test_reports',
-                                  self._testMethodName)
+                                  '{}.{}'.format(self.__class__.__name__,
+                                                 self._testMethodName))
         if not os.path.isdir(report_dir):
             os.makedirs(report_dir)
         return report_dir
@@ -162,14 +226,24 @@ class BaseTestCase(testtools.TestCase):
         with self.log_exception("Attach screenshot"):
             self.driver.get_screenshot_as_file(screen_path)
 
-    def _attach_browser_log(self, exc_info):
+    def _attach_video(self, exc_info=None):
+        with self.log_exception("Attach video"):
+            if not os.path.isfile(self.video_recorder.file_path):
+                LOGGER.warn("Can't find video {!r}".format(
+                    self.video_recorder.file_path))
+                return
+
+            shutil.move(self.video_recorder.file_path,
+                        os.path.join(self._test_report_dir, 'video.mp4'))
+
+    def _attach_browser_log(self, exc_info=None):
         browser_log_path = os.path.join(self._test_report_dir, 'browser.log')
         with self.log_exception("Attach browser log"):
             with open(browser_log_path, 'w') as f:
                 f.write(
                     self._unwrap_browser_log(self.driver.get_log('browser')))
 
-    def _attach_test_log(self, exc_info):
+    def _attach_test_log(self, exc_info=None):
         test_log_path = os.path.join(self._test_report_dir, 'test.log')
         with self.log_exception("Attach test log"):
             with open(test_log_path, 'w') as f:
@@ -214,13 +288,6 @@ class BaseTestCase(testtools.TestCase):
         html_elem = self.driver.find_element_by_tag_name("html")
         return html_elem.get_attribute("innerHTML").encode("utf-8")
 
-    def tearDown(self):
-        if os.environ.get('INTEGRATION_TESTS', False):
-            self.driver.quit()
-        if hasattr(self, 'vdisplay'):
-            self.vdisplay.stop()
-        super(BaseTestCase, self).tearDown()
-
 
 class TestCase(BaseTestCase, AssertsMixin):
 
@@ -232,7 +299,9 @@ class TestCase(BaseTestCase, AssertsMixin):
         super(TestCase, self).setUp()
         self.login_pg = loginpage.LoginPage(self.driver, self.CONFIG)
         self.login_pg.go_to_login_page()
-        self.zoom_out()
+        # TODO(schipiga): lets check that tests work without viewport changing,
+        # otherwise will uncomment.
+        # self.zoom_out()
         self.home_pg = self.login_pg.login(self.TEST_USER_NAME,
                                            self.TEST_PASSWORD)
         self.home_pg.change_project(self.HOME_PROJECT)
@@ -241,13 +310,12 @@ class TestCase(BaseTestCase, AssertsMixin):
         self.assertFalse(
             self.home_pg.find_message_and_dismiss(messages.ERROR))
 
-    def tearDown(self):
-        try:
+        def cleanup():
             if self.home_pg.is_logged_in:
                 self.home_pg.go_to_home_page()
                 self.home_pg.log_out()
-        finally:
-            super(TestCase, self).tearDown()
+
+        self.addCleanup(cleanup)
 
 
 class AdminTestCase(TestCase, AssertsMixin):

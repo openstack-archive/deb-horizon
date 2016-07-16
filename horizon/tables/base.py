@@ -323,9 +323,10 @@ class Column(html.HTMLElement):
         self.display_choices = display_choices
 
         if summation is not None and summation not in self.summation_methods:
-            raise ValueError("Summation method %s must be one of %s."
-                             % (summation,
-                                ", ".join(self.summation_methods.keys())))
+            raise ValueError(
+                "Summation method %(summation)s must be one of %(keys)s.",
+                {'summation': summation,
+                 'keys': ", ".join(self.summation_methods.keys())})
         self.summation = summation
 
         self.creation_counter = Column.creation_counter
@@ -1062,6 +1063,11 @@ class DataTableOptions(object):
                                       'data_type_name',
                                       "_table_data_type")
 
+        self.filter_first_message = \
+            getattr(options,
+                    'filter_first_message',
+                    _('Please specify a search criteria first.'))
+
 
 class DataTableMetaclass(type):
     """Metaclass to add options to DataTable class and collect columns."""
@@ -1176,6 +1182,8 @@ class DataTable(object):
         self.breadcrumb = None
         self.current_item_id = None
         self.permissions = self._meta.permissions
+        self.needs_filter_first = False
+        self._filter_first_message = self._meta.filter_first_message
 
         # Create a new set
         columns = []
@@ -1322,6 +1330,12 @@ class DataTable(object):
     def get_empty_message(self):
         """Returns the message to be displayed when there is no data."""
         return self._no_data_message
+
+    def get_filter_first_message(self):
+        """Return the message to be displayed when the user needs to provide
+        first a search criteria before loading any data.
+        """
+        return self._filter_first_message
 
     def get_object_by_id(self, lookup):
         """Returns the data object from the table's dataset which matches

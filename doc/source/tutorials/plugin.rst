@@ -92,8 +92,6 @@ Below is a skeleton of what your plugin should look like.::
   │   |                   └── mypanel.scss
   │   │
   │   └── locale
-  │       ├── django.pot
-  │       ├── djangojs.pot
   │       └── <lang>
   │            └── LC_MESSAGES
   │                ├── django.po
@@ -289,7 +287,6 @@ setup.cfg
 
     [metadata]
     name = myplugin
-    version = 0.0.1
     summary = A panel plugin for OpenStack Dashboard
     description-file =
         README.rst
@@ -459,8 +456,8 @@ This comes from the combination of the following two reasons.
 myplugin/locale
 ---------------
 
-Translation catalog template (POT) files and translated message catalog files
-(PO files) are placed under this directory.
+Translated message catalog files (PO files) are placed under this
+directory.
 
 babel-django.cfg, babel-djangojs.cfg
 ------------------------------------

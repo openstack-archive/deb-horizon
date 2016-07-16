@@ -29,6 +29,9 @@ from openstack_dashboard.static_settings import find_static_files  # noqa
 from openstack_dashboard.static_settings import get_staticfiles_dirs  # noqa
 from openstack_dashboard import theme_settings
 
+from horizon.utils.escape import monkeypatch_escape
+
+monkeypatch_escape()
 
 warnings.formatwarning = lambda message, category, *args, **kwargs: \
     '%s: %s' % (category.__name__, message)
@@ -408,7 +411,7 @@ def check(actions, request, target=None):
     # Note(Itxaka): This is to prevent circular dependencies and apps not ready
     # If you do django imports in your settings, you are gonna have a bad time
     from openstack_auth import policy
-    return policy.check(actions, request, target=None)
+    return policy.check(actions, request, target)
 
 if POLICY_CHECK_FUNCTION is None:
     POLICY_CHECK_FUNCTION = check

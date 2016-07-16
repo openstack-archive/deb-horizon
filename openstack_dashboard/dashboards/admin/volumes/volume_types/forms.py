@@ -28,10 +28,16 @@ class CreateVolumeType(forms.SelfHandlingForm):
         widget=forms.Textarea(attrs={'rows': 4}),
         label=_("Description"),
         required=False)
+    is_public = forms.BooleanField(
+        label=_("Public"),
+        initial=True,
+        required=False,
+        help_text=_("By default, volume type is created as public. To "
+                    "create a private volume type, uncheck this field."))
 
     def clean_name(self):
         cleaned_name = self.cleaned_data['name']
-        if len(cleaned_name.strip()) == 0:
+        if cleaned_name.isspace():
             raise ValidationError(_('Volume type name can not be empty.'))
 
         return cleaned_name
@@ -42,7 +48,8 @@ class CreateVolumeType(forms.SelfHandlingForm):
             volume_type = cinder.volume_type_create(
                 request,
                 data['name'],
-                data['vol_type_description'])
+                data['vol_type_description'],
+                data['is_public'])
             messages.success(request, _('Successfully created volume type: %s')
                              % data['name'])
             return volume_type
@@ -60,8 +67,8 @@ class CreateVolumeType(forms.SelfHandlingForm):
 
 class CreateQosSpec(forms.SelfHandlingForm):
     name = forms.CharField(max_length=255, label=_("Name"))
-    consumer = forms.ChoiceField(label=_("Consumer"),
-                                 choices=cinder.CONSUMER_CHOICES)
+    consumer = forms.ThemableChoiceField(label=_("Consumer"),
+                                         choices=cinder.CONSUMER_CHOICES)
 
     def handle(self, request, data):
         try:
@@ -89,12 +96,12 @@ class CreateVolumeTypeEncryption(forms.SelfHandlingForm):
                            widget=forms.TextInput(attrs={'readonly':
                                                          'readonly'}))
     provider = forms.CharField(max_length=255, label=_("Provider"))
-    control_location = forms.ChoiceField(label=_("Control Location"),
-                                         choices=(('front-end',
-                                                   _('front-end')),
-                                                  ('back-end',
-                                                   _('back-end')))
-                                         )
+    control_location = forms.ThemableChoiceField(label=_("Control Location"),
+                                                 choices=(('front-end',
+                                                           _('front-end')),
+                                                          ('back-end',
+                                                           _('back-end')))
+                                                 )
     cipher = forms.CharField(label=_("Cipher"), required=False)
     key_size = forms.IntegerField(label=_("Key Size (bits)"),
                                   required=False,
@@ -151,7 +158,7 @@ class UpdateVolumeTypeEncryption(CreateVolumeTypeEncryption):
 
 
 class ManageQosSpecAssociation(forms.SelfHandlingForm):
-    qos_spec_choice = forms.ChoiceField(
+    qos_spec_choice = forms.ThemableChoiceField(
         label=_("QoS Spec to be associated"),
         help_text=_("Choose associated QoS Spec."))
 
@@ -222,7 +229,7 @@ class EditQosSpecConsumer(forms.SelfHandlingForm):
                                        widget=forms.TextInput(
                                        attrs={'readonly': 'readonly'}),
                                        required=False)
-    consumer_choice = forms.ChoiceField(
+    consumer_choice = forms.ThemableChoiceField(
         label=_("New QoS Spec Consumer"),
         choices=cinder.CONSUMER_CHOICES,
         help_text=_("Choose consumer for this QoS Spec."))
@@ -262,10 +269,14 @@ class EditVolumeType(forms.SelfHandlingForm):
                                   widget=forms.Textarea(attrs={'rows': 4}),
                                   label=_("Description"),
                                   required=False)
+    is_public = forms.BooleanField(label=_("Public"), required=False,
+                                   help_text=_(
+                                       "To make volume type private, uncheck "
+                                       "this field."))
 
     def clean_name(self):
         cleaned_name = self.cleaned_data['name']
-        if len(cleaned_name.strip()) == 0:
+        if cleaned_name.isspace():
             msg = _('New name cannot be empty.')
             self._errors['name'] = self.error_class([msg])
 
@@ -277,7 +288,8 @@ class EditVolumeType(forms.SelfHandlingForm):
             cinder.volume_type_update(request,
                                       volume_type_id,
                                       data['name'],
-                                      data['description'])
+                                      data['description'],
+                                      data['is_public'])
             message = _('Successfully updated volume type.')
             messages.success(request, message)
             return True

@@ -166,6 +166,13 @@ def get_volume_type_encryption(volume_type):
     return provider
 
 
+def get_volume_type_encryption_link(volume_type):
+    if _does_vol_type_enc_exist(volume_type):
+        return reverse("horizon:admin:volumes:volume_types:"
+                       "type_encryption_detail",
+                       kwargs={'volume_type_id': volume_type.id})
+
+
 class VolumeTypesFilterAction(tables.FilterAction):
 
     def filter(self, table, volume_types, filter_string):
@@ -203,12 +210,14 @@ class UpdateCell(tables.UpdateAction):
             setattr(vol_type_obj, cell_name, new_cell_value)
             name_value = getattr(vol_type_obj, 'name', None)
             desc_value = getattr(vol_type_obj, 'description', None)
+            public_value = getattr(vol_type_obj, 'public', None)
 
             cinder.volume_type_update(
                 request,
                 volume_type_id,
                 name=name_value,
-                description=desc_value)
+                description=desc_value,
+                is_public=public_value)
         except Exception as ex:
             if ex.code and ex.code == 409:
                 error_message = _('New name conflicts with another '
@@ -237,8 +246,13 @@ class VolumeTypesTable(tables.DataTable):
                                    verbose_name=_("Associated QoS Spec"))
     encryption = tables.Column(get_volume_type_encryption,
                                verbose_name=_("Encryption"),
-                               link="horizon:admin:volumes:volume_types:"
-                                    "type_encryption_detail")
+                               link=get_volume_type_encryption_link)
+    public = tables.Column("is_public",
+                           verbose_name=_("Public"),
+                           filters=(filters.yesno, filters.capfirst),
+                           update_action=UpdateCell,
+                           form_field=forms.BooleanField(
+                               label=_('Public'), required=False))
 
     def get_object_display(self, vol_type):
         return vol_type.name

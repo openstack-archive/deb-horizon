@@ -60,7 +60,11 @@
       getRegenerateKeypairUrl: getRegenerateKeypairUrl,
       createFlavor: createFlavor,
       updateFlavor: updateFlavor,
-      deleteFlavor: deleteFlavor
+      deleteFlavor: deleteFlavor,
+      getDefaultQuotaSets: getDefaultQuotaSets,
+      setDefaultQuotaSets: setDefaultQuotaSets,
+      getEditableQuotas: getEditableQuotas,
+      updateProjectQuota: updateProjectQuota
     };
 
     return service;
@@ -509,6 +513,71 @@
       ).error(function () {
         toastService.add('error', gettext('Unable to edit instance metadata.'));
       });
+    }
+
+    // Default Quota Sets
+
+    /**
+     * @name getDefaultQuotaSets
+     * @description
+     * Get default quotasets
+     *
+     * The listing result is an object with property "items." Each item is
+     * a quota.
+     *
+     */
+    function getDefaultQuotaSets() {
+      return apiService.get('/api/nova/quota-sets/defaults/')
+        .error(function () {
+          toastService.add('error', gettext('Unable to retrieve the default quotas.'));
+        });
+    }
+
+    /**
+     * @name setDefaultQuotaSets
+     * @description
+     * Set default quotasets
+     *
+     */
+    function setDefaultQuotaSets(quotas) {
+      return apiService.patch('/api/nova/quota-sets/defaults/', quotas)
+        .error(function () {
+          toastService.add('error', gettext('Unable to set the default quotas.'));
+        });
+    }
+
+    // Quota Sets
+
+    /**
+     * @name getEditableQuotas
+     * @description
+     * Get a list of editable quota fields.
+     * The listing result is an object with property "items." Each item is
+     * an editable quota field.
+     *
+     */
+    function getEditableQuotas() {
+      return apiService.get('/api/nova/quota-sets/editable/')
+        .error(function() {
+          toastService.add('error', gettext('Unable to retrieve the editable quotas.'));
+        });
+    }
+
+    /**
+     * @name updateProjectQuota
+     * @description
+     * Update a single project quota data.
+     * @param {application/json} quota
+     * A JSON object with the atributes to set to new quota values.
+     * @param {string} projectId
+     * Specifies the id of the project that'll have the quota data updated.
+     */
+    function updateProjectQuota(quota, projectId) {
+      var url = '/api/nova/quota-sets/' + projectId;
+      return apiService.patch(url, quota)
+        .error(function() {
+          toastService.add('error', gettext('Unable to update project quota data.'));
+        });
     }
 
     /**
