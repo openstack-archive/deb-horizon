@@ -1,0 +1,18 @@
+Description: [Django 1.10] get_form() form_class default value
+ The backwards compatibility shim to allow FormMixin.get_form() to be defined
+ with no default value for its form_class argument is removed.
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2016-07-20
+
+--- horizon-10.0.0~b2.orig/horizon/forms/views.py
++++ horizon-10.0.0~b2/horizon/forms/views.py
+@@ -165,7 +165,7 @@ class ModalFormView(ModalFormMixin, view
+         """
+         return obj.name
+ 
+-    def get_form(self, form_class):
++    def get_form(self, form_class=None):
+         """Returns an instance of the form to be used in this view."""
+         return form_class(self.request, **self.get_form_kwargs())
+ 
