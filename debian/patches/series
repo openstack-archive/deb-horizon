@@ -4,3 +4,4 @@ fixed-horizon-MANIFEST.in.patch
 BaseCommand.option_list-is-gone-from-django1.10.patch
 django-1.10-django.conf.urls.patterns-removed.patch
 django-1.10-get_form-form_class-default-value.patch
+django-1.10-define-TEMPLATES.patch
