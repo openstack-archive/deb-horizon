@@ -2,3 +2,4 @@ fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 BaseCommand.option_list-is-gone-from-django1.10.patch
+django-1.10-django.conf.urls.patterns-removed.patch

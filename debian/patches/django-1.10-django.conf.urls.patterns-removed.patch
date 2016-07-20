@@ -1,0 +1,34 @@
+Description: [Django 1.10] django.conf.urls.patterns() removed
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2016-07-20
+
+--- horizon-10.0.0~b2.orig/openstack_dashboard/dashboards/project/ngdetails/urls.py
++++ horizon-10.0.0~b2/openstack_dashboard/dashboards/project/ngdetails/urls.py
+@@ -18,7 +18,6 @@ from django.conf.urls import url
+ from openstack_dashboard.dashboards.project.ngdetails import views
+ 
+ 
+-urlpatterns = patterns(
+-    'openstack_dashboard.dashboards.project.ngdetails.views',
++urlpatterns = [
+     url('', views.IndexView.as_view(), name='index'),
+-)
++]
+--- horizon-10.0.0~b2.orig/openstack_dashboard/dashboards/project/volumes/cg_snapshots/urls.py
++++ horizon-10.0.0~b2/openstack_dashboard/dashboards/project/volumes/cg_snapshots/urls.py
+@@ -15,12 +15,11 @@ from django.conf.urls import url
+ 
+ from openstack_dashboard.dashboards.project.volumes.cg_snapshots import views
+ 
+-urlpatterns = patterns(
+-    '',
++urlpatterns = [
+     url(r'^(?P<cg_snapshot_id>[^/]+)/cg_snapshot_detail/$',
+         views.DetailView.as_view(),
+         name='cg_snapshot_detail'),
+     url(r'^(?P<cg_snapshot_id>[^/]+)/create_cgroup/$',
+         views.CreateCGroupView.as_view(),
+         name='create_cgroup'),
+-)
++]
