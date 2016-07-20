@@ -5,7 +5,13 @@ Last-Update: 2016-07-20
 
 --- horizon-10.0.0~b2.orig/openstack_dashboard/dashboards/project/ngdetails/urls.py
 +++ horizon-10.0.0~b2/openstack_dashboard/dashboards/project/ngdetails/urls.py
-@@ -18,7 +18,6 @@ from django.conf.urls import url
+@@ -12,13 +12,11 @@
+ # License for the specific language governing permissions and limitations
+ # under the License.
+ 
+-from django.conf.urls import patterns
+ from django.conf.urls import url
+ 
  from openstack_dashboard.dashboards.project.ngdetails import views
  
  
@@ -17,7 +23,12 @@ Last-Update: 2016-07-20
 +]
 --- horizon-10.0.0~b2.orig/openstack_dashboard/dashboards/project/volumes/cg_snapshots/urls.py
 +++ horizon-10.0.0~b2/openstack_dashboard/dashboards/project/volumes/cg_snapshots/urls.py
-@@ -15,12 +15,11 @@ from django.conf.urls import url
+@@ -10,17 +10,15 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
+-from django.conf.urls import patterns
+ from django.conf.urls import url
  
  from openstack_dashboard.dashboards.project.volumes.cg_snapshots import views
  
