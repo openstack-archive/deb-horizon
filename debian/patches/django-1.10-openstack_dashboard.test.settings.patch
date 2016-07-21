@@ -5,7 +5,7 @@ Last-Update: 2016-07-21
 
 --- horizon-10.0.0~b2.orig/openstack_dashboard/test/settings.py
 +++ horizon-10.0.0~b2/openstack_dashboard/test/settings.py
-@@ -242,3 +242,23 @@ REST_API_SETTING_2 = 'bar'
+@@ -242,3 +242,29 @@ REST_API_SETTING_2 = 'bar'
  REST_API_SECURITY = 'SECURITY'
  REST_API_REQUIRED_SETTINGS = ['REST_API_SETTING_1']
  REST_API_ADDITIONAL_SETTINGS = ['REST_API_SETTING_2']
@@ -13,7 +13,6 @@ Last-Update: 2016-07-21
 +TEMPLATES = [
 +    {
 +        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-+        'APP_DIRS': True,
 +        'DIRS': [os.path.join(TEST_DIR, 'templates'), ],
 +        'OPTIONS': {
 +            'context_processors': [
@@ -25,6 +24,13 @@ Last-Update: 2016-07-21
 +                'django.contrib.messages.context_processors.messages',
 +                'horizon.context_processors.horizon',
 +                'openstack_dashboard.context_processors.openstack',
++            ],
++            'loaders': [
++                'django.template.loaders.filesystem.Loader',
++                'django.template.loaders.app_directories.Loader',
++                'django.template.loaders.cached.Loader',
++                'horizon.themes.ThemeTemplateLoader',
++                'horizon.loaders.TemplateLoader',
 +            ],
 +        },
 +    },
