@@ -1,0 +1,84 @@
+Description: [Django 1.10] Do not use django.template.Context()
+ See:
+  https://docs.djangoproject.com/en/1.10/ref/templates/upgrading/
+ section:
+  get_template() and select_template()
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2016-07-21
+
+--- horizon-10.0.0~b2.orig/horizon/forms/fields.py
++++ horizon-10.0.0~b2/horizon/forms/fields.py
+@@ -24,7 +24,6 @@ from django.core import urlresolvers
+ from django.forms import fields
+ from django.forms.utils import flatatt  # noqa
+ from django.forms import widgets
+-from django.template import Context  # noqa
+ from django.template.loader import get_template  # noqa
+ from django.utils.encoding import force_text
+ from django.utils.functional import Promise  # noqa
+@@ -261,14 +260,14 @@ class ThemableSelectWidget(SelectWidget)
+         id = attrs.pop('id', 'id_%s' % name)
+ 
+         template = get_template('horizon/common/fields/_themable_select.html')
+-        context = Context({
++        context = {
+             'name': name,
+             'options': new_choices,
+             'id': id,
+             'value': value,
+             'initial_value': initial_value,
+             'select_attrs': attrs,
+-        })
++        }
+         return template.render(context)
+ 
+ 
+--- horizon-10.0.0~b2.orig/horizon/test/tests/templatetags.py
++++ horizon-10.0.0~b2/horizon/test/tests/templatetags.py
+@@ -19,7 +19,6 @@
+ import re
+ 
+ from django.conf import settings
+-from django.template import Context  # noqa
+ from django.template import Template  # noqa
+ from django.utils.text import normalize_newlines  # noqa
+ 
+@@ -48,7 +47,7 @@ class TemplateTagTests(test.TestCase):
+         context = context or {}
+         template = Template("{%% load %s %%} %s"
+                             % (tag_require, template_text))
+-        return template.render(Context(context))
++        return template.render(context)
+ 
+     def test_site_branding_tag(self):
+         """Test if site_branding tag renders the correct setting."""
+--- horizon-10.0.0~b2.orig/openstack_dashboard/management/commands/make_web_conf.py
++++ horizon-10.0.0~b2/openstack_dashboard/management/commands/make_web_conf.py
+@@ -23,7 +23,7 @@ import warnings
+ 
+ from django.conf import settings
+ from django.core.management.base import BaseCommand  # noqa
+-from django.template import Context, Template  # noqa
++from django.template import Template  # noqa
+ 
+ # Suppress DeprecationWarnings which clutter the output to the point of
+ # rendering it unreadable.
+@@ -66,7 +66,7 @@ def _getattr(obj, name, default):
+         return default
+ 
+ 
+-context = Context({
++context = {
+     'DJANGO_SETTINGS_MODULE': os.environ['DJANGO_SETTINGS_MODULE'],
+     'HOSTNAME': socket.getfqdn(),
+     'PROJECT_PATH': os.path.realpath(
+@@ -76,7 +76,7 @@ context = Context({
+     'SSLCERT': '/etc/pki/tls/certs/ca.crt',
+     'SSLKEY': '/etc/pki/tls/private/ca.key',
+     'CACERT': None,
+-})
++}
+ 
+ context['PROJECT_ROOT'] = os.path.dirname(context['PROJECT_PATH'])
+ context['PROJECT_DIR_NAME'] = os.path.basename(
