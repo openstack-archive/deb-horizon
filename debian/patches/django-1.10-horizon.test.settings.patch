@@ -22,7 +22,7 @@ Last-Update: 2016-07-21
      'django.contrib.messages.context_processors.messages',
      'horizon.context_processors.horizon')
  
-@@ -170,3 +170,27 @@ LOGGING = {
+@@ -170,3 +170,26 @@ LOGGING = {
          }
      }
  }
@@ -30,7 +30,6 @@ Last-Update: 2016-07-21
 +TEMPLATES = [
 +    {
 +        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-+        'APP_DIRS': True,
 +        'DIRS': [ os.path.join( os.path.dirname(os.path.abspath(__file__)), 'tests', 'templates'), ],
 +        'OPTIONS': {
 +            'context_processors': [
@@ -42,11 +41,11 @@ Last-Update: 2016-07-21
 +                'django.contrib.messages.context_processors.messages',
 +                'horizon.context_processors.horizon'
 +            ],
++            'loaders': [
++                'django.template.loaders.filesystem.Loader',
++                'django.template.loaders.app_directories.Loader',
++                'horizon.loaders.TemplateLoader'
++            ],
 +        },
-+        'loaders': [
-+            'django.template.loaders.filesystem.Loader',
-+            'django.template.loaders.app_directories.Loader',
-+            'horizon.loaders.TemplateLoader'
-+        ],
 +    },
 +]
