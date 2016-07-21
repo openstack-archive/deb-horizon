@@ -6,3 +6,4 @@ django-1.10-django.conf.urls.patterns-removed.patch
 django-1.10-fix-wrong-django.conf.urls.url-call.patch
 django-1.10-define-TEMPLATES.patch
 django-1.10-fixes-get-form-uses-kwargs.patch
+django-1.10-openstack_dashboard.test.settings.patch
