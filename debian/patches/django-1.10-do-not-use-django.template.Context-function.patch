@@ -7,8 +7,10 @@ Author: Thomas Goirand <zigo@debian.org>
 Forwarded: no
 Last-Update: 2016-07-21
 
---- horizon-10.0.0~b2.orig/horizon/forms/fields.py
-+++ horizon-10.0.0~b2/horizon/forms/fields.py
+Index: horizon/horizon/forms/fields.py
+===================================================================
+--- horizon.orig/horizon/forms/fields.py
++++ horizon/horizon/forms/fields.py
 @@ -24,7 +24,6 @@ from django.core import urlresolvers
  from django.forms import fields
  from django.forms.utils import flatatt  # noqa
@@ -34,8 +36,10 @@ Last-Update: 2016-07-21
          return template.render(context)
  
  
---- horizon-10.0.0~b2.orig/horizon/test/tests/templatetags.py
-+++ horizon-10.0.0~b2/horizon/test/tests/templatetags.py
+Index: horizon/horizon/test/tests/templatetags.py
+===================================================================
+--- horizon.orig/horizon/test/tests/templatetags.py
++++ horizon/horizon/test/tests/templatetags.py
 @@ -19,7 +19,6 @@
  import re
  
@@ -53,9 +57,11 @@ Last-Update: 2016-07-21
  
      def test_site_branding_tag(self):
          """Test if site_branding tag renders the correct setting."""
---- horizon-10.0.0~b2.orig/openstack_dashboard/management/commands/make_web_conf.py
-+++ horizon-10.0.0~b2/openstack_dashboard/management/commands/make_web_conf.py
-@@ -23,7 +23,7 @@ import warnings
+Index: horizon/openstack_dashboard/management/commands/make_web_conf.py
+===================================================================
+--- horizon.orig/openstack_dashboard/management/commands/make_web_conf.py
++++ horizon/openstack_dashboard/management/commands/make_web_conf.py
+@@ -22,7 +22,7 @@ import warnings
  
  from django.conf import settings
  from django.core.management.base import BaseCommand  # noqa
@@ -64,7 +70,7 @@ Last-Update: 2016-07-21
  
  # Suppress DeprecationWarnings which clutter the output to the point of
  # rendering it unreadable.
-@@ -66,7 +66,7 @@ def _getattr(obj, name, default):
+@@ -65,7 +65,7 @@ def _getattr(obj, name, default):
          return default
  
  
@@ -73,7 +79,7 @@ Last-Update: 2016-07-21
      'DJANGO_SETTINGS_MODULE': os.environ['DJANGO_SETTINGS_MODULE'],
      'HOSTNAME': socket.getfqdn(),
      'PROJECT_PATH': os.path.realpath(
-@@ -76,7 +76,7 @@ context = Context({
+@@ -75,7 +75,7 @@ context = Context({
      'SSLCERT': '/etc/pki/tls/certs/ca.crt',
      'SSLKEY': '/etc/pki/tls/private/ca.key',
      'CACERT': None,
