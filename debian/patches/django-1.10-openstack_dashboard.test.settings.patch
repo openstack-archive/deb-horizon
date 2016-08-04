@@ -3,17 +3,14 @@ Author: Thomas Goirand <zigo@debian.org>
 Forwarded: no
 Last-Update: 2016-08-04
 
---- horizon-10.0.0~b2.orig/openstack_dashboard/test/settings.py
-+++ horizon-10.0.0~b2/openstack_dashboard/test/settings.py
-@@ -242,3 +242,35 @@ REST_API_SETTING_2 = 'bar'
+Index: horizon/openstack_dashboard/test/settings.py
+===================================================================
+--- horizon.orig/openstack_dashboard/test/settings.py
++++ horizon/openstack_dashboard/test/settings.py
+@@ -258,3 +258,30 @@ REST_API_SETTING_2 = 'bar'
  REST_API_SECURITY = 'SECURITY'
  REST_API_REQUIRED_SETTINGS = ['REST_API_SETTING_1']
  REST_API_ADDITIONAL_SETTINGS = ['REST_API_SETTING_2']
-+
-+AVAILABLE_THEMES = [
-+    ('default', 'Default', 'themes/default'),
-+    ('material', 'Material', 'themes/material'),
-+]
 +
 +TEMPLATES = [
 +    {

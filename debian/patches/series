@@ -2,9 +2,7 @@ fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 django-1.10-use-argparse-instead-of-optparse.patch
-django-1.10-django.conf.urls.patterns-removed.patch
 django-1.10-fix-wrong-django.conf.urls.url-call.patch
-django-1.10-fixes-get-form-uses-kwargs.patch
 django-1.10-horizon.test.settings.patch
 django-1.10-openstack_dashboard.test.settings.patch
 #django-1.10-do-not-use-django.template.Context-function.patch
