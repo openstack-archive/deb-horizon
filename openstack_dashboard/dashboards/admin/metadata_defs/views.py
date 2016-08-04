@@ -71,25 +71,13 @@ class AdminIndexView(tables.DataTableView):
 
             if prev_marker is not None:
                 namespaces = sorted(namespaces,
-                                    key=lambda ns: getattr(ns, 'namespace'),
-                                    reverse=True)
+                                    key=lambda ns: getattr(ns, 'namespace'))
         except Exception:
             self._prev = False
             self._more = False
             msg = _('Error getting metadata definitions.')
             exceptions.handle(self.request, msg)
         return namespaces
-
-    def get_filters(self, filters=None):
-        if not filters:
-            filters = {}
-        filter_field = self.table.get_filter_field()
-        filter_action = self.table._meta._filter_action
-        if filter_action.is_api_filter(filter_field):
-            filter_string = self.table.get_filter_string().strip()
-            if filter_field and filter_string:
-                filters[filter_field] = filter_string
-        return filters
 
 
 class CreateView(forms.ModalFormView):

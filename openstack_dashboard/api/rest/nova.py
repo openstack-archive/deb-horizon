@@ -167,8 +167,8 @@ class Limits(generic.View):
         The following get parameters may be passed in the GET
         request:
 
-        :param reserved: This may be set to "true" but it's not
-            clear what the result of that is.
+        :param reserved: Take into account the reserved limits. Reserved limits
+        may be instances in the rebuild process for example.
 
         The result is an object with limits as properties.
         """
@@ -266,6 +266,22 @@ class Server(generic.View):
         http://localhost/api/nova/servers/1
         """
         return api.nova.server_get(request, server_id).to_dict()
+
+
+@urls.register
+class ServerGroups(generic.View):
+    """API for nova server groups.
+    """
+    url_regex = r'nova/servergroups/$'
+
+    @rest_utils.ajax()
+    def get(self, request):
+        """Get a list of server groups.
+
+        The listing result is an object with property "items".
+        """
+        result = api.nova.server_group_list(request)
+        return {'items': [u.to_dict() for u in result]}
 
 
 @urls.register

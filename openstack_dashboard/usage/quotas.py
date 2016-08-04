@@ -129,7 +129,8 @@ class QuotaUsage(dict):
 
     def update_available(self, name):
         """Updates the "available" metric for the given quota."""
-        available = self.usages[name]['quota'] - self.usages[name]['used']
+        quota = self.usages.get(name, {}).get('quota', float('inf'))
+        available = quota - self.usages[name]['used']
         if available < 0:
             available = 0
         self.usages[name]['available'] = available
@@ -140,15 +141,19 @@ def _get_quota_data(request, method_name, disabled_quotas=None,
     quotasets = []
     if not tenant_id:
         tenant_id = request.user.tenant_id
-    quotasets.append(getattr(nova, method_name)(request, tenant_id))
-    qs = base.QuotaSet()
     if disabled_quotas is None:
         disabled_quotas = get_disabled_quotas(request)
+
+    qs = base.QuotaSet()
+
+    if 'instances' not in disabled_quotas:
+        quotasets.append(getattr(nova, method_name)(request, tenant_id))
+
     if 'volumes' not in disabled_quotas:
         try:
             quotasets.append(getattr(cinder, method_name)(request, tenant_id))
         except cinder.cinder_exception.ClientException:
-            disabled_quotas.extend(CINDER_QUOTA_FIELDS)
+            disabled_quotas.update(CINDER_QUOTA_FIELDS)
             msg = _("Unable to retrieve volume limit information.")
             exceptions.handle(request, msg)
     for quota in itertools.chain(*quotasets):
@@ -228,37 +233,52 @@ def get_tenant_quota_data(request, disabled_quotas=None, tenant_id=None):
 
 
 def get_disabled_quotas(request):
-    disabled_quotas = []
+    disabled_quotas = set([])
 
     # Cinder
     if not cinder.is_volume_service_enabled(request):
-        disabled_quotas.extend(CINDER_QUOTA_FIELDS)
+        disabled_quotas.update(CINDER_QUOTA_FIELDS)
 
     # Neutron
     if not base.is_service_enabled(request, 'network'):
-        disabled_quotas.extend(NEUTRON_QUOTA_FIELDS)
+        disabled_quotas.update(NEUTRON_QUOTA_FIELDS)
     else:
         # Remove the nova network quotas
-        disabled_quotas.extend(['floating_ips', 'fixed_ips'])
+        disabled_quotas.update(['floating_ips', 'fixed_ips'])
 
         if neutron.is_extension_supported(request, 'security-group'):
             # If Neutron security group is supported, disable Nova quotas
-            disabled_quotas.extend(['security_groups', 'security_group_rules'])
+            disabled_quotas.update(['security_groups', 'security_group_rules'])
         else:
             # If Nova security group is used, disable Neutron quotas
-            disabled_quotas.extend(['security_group', 'security_group_rule'])
+            disabled_quotas.update(['security_group', 'security_group_rule'])
 
         try:
             if not neutron.is_quotas_extension_supported(request):
-                disabled_quotas.extend(NEUTRON_QUOTA_FIELDS)
+                disabled_quotas.update(NEUTRON_QUOTA_FIELDS)
         except Exception:
             LOG.exception("There was an error checking if the Neutron "
                           "quotas extension is enabled.")
 
+    # Nova
+    if not (base.is_service_enabled(request, 'compute') and
+            nova.can_set_quotas()):
+        disabled_quotas.update(NOVA_QUOTA_FIELDS)
+        # The 'missing' quota fields are all nova (this is hardcoded in
+        # dashboards.admin.defaults.workflows)
+        disabled_quotas.update(MISSING_QUOTA_FIELDS)
+
+    # There appear to be no glance quota fields currently
     return disabled_quotas
 
 
 def _get_tenant_compute_usages(request, usages, disabled_quotas, tenant_id):
+    # Unlike the other services it can be the case that nova is enabled but
+    # doesn't support quotas, in which case we still want to get usage info,
+    # so don't rely on '"instances" in disabled_quotas' as elsewhere
+    if not base.is_service_enabled(request, 'compute'):
+        return
+
     if tenant_id:
         # determine if the user has permission to view across projects
         # there are cases where an administrator wants to check the quotas
@@ -391,7 +411,8 @@ def tenant_limit_usages(request):
     limits = {}
 
     try:
-        limits.update(nova.tenant_absolute_limits(request, reserved=True))
+        if base.is_service_enabled(request, 'compute'):
+            limits.update(nova.tenant_absolute_limits(request, reserved=True))
     except Exception:
         msg = _("Unable to retrieve compute limit information.")
         exceptions.handle(request, msg)
@@ -414,3 +435,8 @@ def tenant_limit_usages(request):
             exceptions.handle(request, msg)
 
     return limits
+
+
+def enabled_quotas(request):
+    """Returns the list of quotas available minus those that are disabled"""
+    return set(QUOTA_FIELDS) - get_disabled_quotas(request)

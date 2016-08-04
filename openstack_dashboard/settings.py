@@ -56,6 +56,7 @@ MEDIA_URL = None
 STATIC_ROOT = None
 STATIC_URL = None
 INTEGRATION_TESTS_SUPPORT = False
+NG_TEMPLATE_CACHE_AGE = 2592000
 
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
@@ -80,11 +81,6 @@ HORIZON_CONFIG = {
     'plugins': [],
     'integration_tests_support': INTEGRATION_TESTS_SUPPORT
 }
-
-# Set to True to allow users to upload images to glance via Horizon server.
-# When enabled, a file form field will appear on the create image form.
-# See documentation for deployment considerations.
-HORIZON_IMAGES_ALLOW_UPLOAD = True
 
 # The OPENSTACK_IMAGE_BACKEND settings can be used to customize features
 # in the OpenStack Dashboard related to the Image service, such as the list
@@ -307,12 +303,15 @@ try:
 except ImportError:
     logging.warning("No local_settings file found.")
 
+# Template loaders
 if DEBUG:
     TEMPLATE_LOADERS += CACHED_TEMPLATE_LOADERS + tuple(ADD_TEMPLATE_LOADERS)
 else:
     TEMPLATE_LOADERS += (
         ('django.template.loaders.cached.Loader', CACHED_TEMPLATE_LOADERS),
     ) + tuple(ADD_TEMPLATE_LOADERS)
+
+NG_TEMPLATE_CACHE_AGE = NG_TEMPLATE_CACHE_AGE if not DEBUG else 0
 
 # allow to drop settings snippets into a local_settings_dir
 LOCAL_SETTINGS_DIR_PATH = os.path.join(ROOT_PATH, "local", "local_settings.d")
@@ -376,7 +375,8 @@ if DEFAULT_THEME_PATH is not None:
 
 # populate HORIZON_CONFIG with auto-discovered JavaScript sources, mock files,
 # specs files and external templates.
-find_static_files(HORIZON_CONFIG)
+find_static_files(HORIZON_CONFIG, AVAILABLE_THEMES,
+                  THEME_COLLECTION_DIR, ROOT_PATH)
 
 # Ensure that we always have a SECRET_KEY set, even when no local_settings.py
 # file is present. See local_settings.py.example for full documentation on the
@@ -416,13 +416,29 @@ def check(actions, request, target=None):
 if POLICY_CHECK_FUNCTION is None:
     POLICY_CHECK_FUNCTION = check
 
+NG_TEMPLATE_CACHE_AGE = NG_TEMPLATE_CACHE_AGE if not DEBUG else 0
+
 # This base context objects gets added to the offline context generator
 # for each theme configured.
 HORIZON_COMPRESS_OFFLINE_CONTEXT_BASE = {
     'WEBROOT': WEBROOT,
     'STATIC_URL': STATIC_URL,
-    'HORIZON_CONFIG': HORIZON_CONFIG
+    'HORIZON_CONFIG': HORIZON_CONFIG,
+    'NG_TEMPLATE_CACHE_AGE': NG_TEMPLATE_CACHE_AGE,
 }
 
 if DEBUG:
     logging.basicConfig(level=logging.DEBUG)
+
+
+# Here comes the Django settings deprecation section. Being at the very end
+# of settings.py allows it to catch the settings defined in local_settings.py
+# or inside one of local_settings.d/ snippets.
+if 'HORIZON_IMAGES_ALLOW_UPLOAD' in globals():
+    message = 'The setting HORIZON_IMAGES_ALLOW_UPLOAD is deprecated in ' \
+              'Newton and will be removed in P release. Use the setting ' \
+              'HORIZON_IMAGES_UPLOAD_MODE instead.'
+    if not HORIZON_IMAGES_ALLOW_UPLOAD:
+        message += ' Keep in mind that HORIZON_IMAGES_ALLOW_UPLOAD set to ' \
+                   'False overrides the value of HORIZON_IMAGES_UPLOAD_MODE.'
+    logging.warning(message)

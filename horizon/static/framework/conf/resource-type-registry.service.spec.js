@@ -42,28 +42,6 @@
       expect(service.getResourceType('something').filterFacets).toBeDefined();
     });
 
-    it('init calls initScope on item and batch actions', function() {
-      var action = { service: { initScope: angular.noop } };
-      spyOn(action.service, 'initScope');
-      service.getResourceType('newthing').batchActions.push(action);
-      service.initActions('newthing', { '$new': function() { return 4; }} );
-      expect(action.service.initScope).toHaveBeenCalledWith(4);
-    });
-
-    it('init ignores initScope when not present', function() {
-      var action = { service: { } };
-      service.getResourceType('newthing').batchActions.push(action);
-      var returned = service.initActions('newthing', {} );
-      // but we got here
-      expect(returned).toBeUndefined();
-    });
-
-    it('init ignores initScope when not type is not present', function() {
-      var returned = service.initActions('was-never-registered', {} );
-      // but we got here
-      expect(returned).toBeUndefined();
-    });
-
     describe('getResourceType', function() {
       it('returns a new resource type object even without a config', function() {
         var value = service.getResourceType('something');
@@ -119,57 +97,6 @@
       });
     });
 
-    describe('format', function() {
-      var format;
-      beforeEach(function() {
-        var value = service.getResourceType('something', {})
-          .setProperty('mapping', {value_mapping: {'a': 'apple', 'j': 'jacks'}})
-          .setProperty('func', {value_function: function(x) { return x.replace('a', 'y'); }})
-          .setProperty('default-func', {value_mapping: {a: 'apple'},
-             value_mapping_default_function: function(x) { return x.replace('i', 'a'); }})
-          .setProperty('multi-func', {value_function: [
-            function(x) { return x.replace('a', 'y'); },
-            function(x) { return x.replace('y', 'x'); }
-          ]})
-          .setProperty('default', {value_mapping: {},
-            value_mapping_default_value: 'Fell Thru'})
-          .setProperty('bad_example', {});
-        format = value.format;
-      });
-
-      it('returns the value if there is no such property', function() {
-        expect(format('not_exist', 'apple')).toBe('apple');
-      });
-
-      it('returns the value if there is no mapping, function, or default', function() {
-        expect(format('bad_example', 'apple')).toBe('apple');
-      });
-
-      it('returns the mapped value if there is one', function() {
-        expect(format('mapping', 'a')).toBe('apple');
-      });
-
-      it('returns the function return value if there is a value', function() {
-        expect(format('func', 'apple')).toBe('ypple');
-      });
-
-      it('returns the multiple function return value if there is an array', function() {
-        expect(format('multi-func', 'apple')).toBe('xpple');
-      });
-
-      it('returns the default mapping value if there is no mapping or function', function() {
-        expect(format('default', 'apple')).toBe('Fell Thru');
-      });
-
-      it('returns the original value if there is no matching mapping & no default', function() {
-        expect(format('mapping', 'what')).toBe('what');
-      });
-
-      it('returns the value_mapping_default_function result when no matching mapping', function() {
-        expect(format('default-func', 'missing')).toBe('massing');
-      });
-    });
-
     describe('getName', function() {
       it('returns nothing if names not provided', function() {
         var type = service.getResourceType('something');
@@ -203,6 +130,21 @@
         {title: "im-a-title"}]);
     });
 
+    it('places property .values and .filters on table', function() {
+      var type = service.getResourceType('something');
+      var func = angular.noop;
+      type.setProperty('im-an-id', {filters: [func], values: {a: 'apple'}});
+      type.tableColumns.push({id: "im-an-id"});
+      expect(type.getTableColumns()[0].filters).toEqual([func]);
+      expect(type.getTableColumns()[0].values).toEqual({a: 'apple'});
+    });
+
+    it('getProperties returns a copy of the properties', function() {
+      var type = service.getResourceType('something');
+      type.setProperty('im-an-id', {values: {a: 'apple'}});
+      expect(type.getProperties()['im-an-id']).toEqual({values: {a: 'apple'}});
+    });
+
     it('manages the globalActions', function() {
       var typeA = service.getResourceType('a');
       var typeB = service.getResourceType('b');
@@ -217,12 +159,32 @@
         type = service.getResourceType('something');
       });
 
+      it('initActions calls initScope on item and batch actions', function () {
+        var action = {service: {initScope: angular.noop}};
+        spyOn(action.service, 'initScope');
+        type.batchActions.push(action);
+        type.initActions({
+          '$new': function () {
+            return 4;
+          }
+        });
+        expect(action.service.initScope).toHaveBeenCalledWith(4);
+      });
+
+      it('initActions ignores initScope when not present', function () {
+        var action = {service: {}};
+        type.batchActions.push(action);
+        var returned = type.initActions({});
+        // but we got here
+        expect(returned).toBeUndefined();
+      });
+
       it("sets a default path generator", function() {
-        expect(type.pathGenerator('hello')).toBe('hello');
+        expect(type.path({id: 'hello'})).toBe('hello');
       });
 
       it("default load function returns a promise", function() {
-        expect(type.loadFunction()).toBeDefined();
+        expect(type.load()).toBeDefined();
       });
 
       it("allows setting a list function", function() {
@@ -230,7 +192,7 @@
           return 'this would be a promise';
         }
         type.setListFunction(list);
-        expect(type.listFunction()).toBe('this would be a promise');
+        expect(type.list()).toBe('this would be a promise');
       });
 
       it("allows setting of a summary template URL", function() {
@@ -251,12 +213,8 @@
         expect(type.itemName(item)).toBe('Mr. MegaMan');
       });
 
-      it("pathParser return has resourceTypeCode embedded", function() {
-        expect(type.parsePath('abcd').resourceTypeCode).toBe('something');
-      });
-
       it("pathParser defaults to using the full path as the id", function() {
-        expect(type.parsePath('abcd').identifier).toBe('abcd');
+        expect(type.parsePath('abcd')).toBe('abcd');
       });
 
       it("setPathParser sets the function for parsing the path", function() {
@@ -264,16 +222,13 @@
           var y = x.split('/');
           return {poolId: y[0], memberId: y[1]};
         };
-        var expected = {
-          identifier: {poolId: '12', memberId: '42'},
-          resourceTypeCode: 'something'
-        };
+        var expected = {poolId: '12', memberId: '42'};
         type.setPathParser(func);
         expect(type.parsePath('12/42')).toEqual(expected);
       });
 
       it("pathParser defaults to using the full path as the id", function() {
-        expect(type.parsePath('abcd').identifier).toBe('abcd');
+        expect(type.parsePath('abcd')).toBe('abcd');
       });
 
       it("setPathParser sets the function for parsing the path", function() {
@@ -281,10 +236,7 @@
           var y = x.split('/');
           return {poolId: y[0], memberId: y[1]};
         };
-        var expected = {
-          identifier: {poolId: '12', memberId: '42'},
-          resourceTypeCode: 'something'
-        };
+        var expected = {poolId: '12', memberId: '42'};
         type.setPathParser(func);
         expect(type.parsePath('12/42')).toEqual(expected);
       });
@@ -294,8 +246,8 @@
           return x.poolId + '/' + x.memberId;
         };
         type.setPathGenerator(func);
-        var identifier = {poolId: '12', memberId: '42'};
-        expect(type.pathGenerator(identifier)).toBe('12/42');
+        var item = {poolId: '12', memberId: '42'};
+        expect(type.path(item)).toBe('12/42');
       });
 
       it('setLoadFunction sets the function used by "load"', function() {
@@ -304,6 +256,24 @@
         };
         type.setLoadFunction(api.loadMe);
         expect(type.load()).toEqual({an: 'object'});
+      });
+
+      it('detects that a load function has not been set', function() {
+        expect(type.isLoadFunctionSet()).toEqual(false);
+      });
+
+      it('detects that a load function has been set', function() {
+        type.setLoadFunction(angular.noop);
+        expect(type.isLoadFunctionSet()).toEqual(true);
+      });
+
+      it('detects that a list function has not been set', function() {
+        expect(type.isListFunctionSet()).toEqual(false);
+      });
+
+      it('detects that a list function has been set', function() {
+        type.setListFunction(angular.noop);
+        expect(type.isListFunctionSet()).toEqual(true);
       });
     });
   });

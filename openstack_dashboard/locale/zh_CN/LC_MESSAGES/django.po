@@ -7,21 +7,23 @@
 # Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
 # Long Yu <yulong10@163.com>, 2016. #zanata
 # OpenStack Infra <zanata@openstack.org>, 2016. #zanata
+# Petro <wang-junjie@outlook.com>, 2016. #zanata
 # Shengjing Zhu <zsj950618@gmail.com>, 2016. #zanata
 # liujunpeng <liujunpeng@inspur.com>, 2016. #zanata
+# maoshuai <fwsakura@163.com>, 2016. #zanata
 # vuuv <froms2008@gmail.com>, 2016. #zanata
 # yan <yyyan123@outlook.com>, 2016. #zanata
 # zzxwill <zzxwill@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 10.0.0.0b2.dev275\n"
+"Project-Id-Version: horizon 10.0.0.0b3.dev96\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-07-03 14:05+0000\n"
+"POT-Creation-Date: 2016-07-31 18:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-07-04 01:56+0000\n"
-"Last-Translator: yan <yyyan123@outlook.com>\n"
+"PO-Revision-Date: 2016-07-31 02:00+0000\n"
+"Last-Translator: maoshuai <fwsakura@163.com>\n"
 "Language-Team: Chinese (China)\n"
 "Language: zh-CN\n"
 "X-Generator: Zanata 3.7.3\n"
@@ -39,7 +41,7 @@ msgid ""
 "supported protocols."
 msgstr ""
 "协议入点包含信息，这些信息表明对于给定入口请求那个映射规则来使用。一个身份提"
-"供者可以包含多个支持的协议。"
+"供者可以包含多个支持协议。"
 
 #, python-format
 msgid " Also failed to delete port %s"
@@ -580,7 +582,7 @@ msgid ""
 "resource type (for example, flavor vs image)."
 msgstr ""
 "另外，某些类型的资源在应用元数据时可能需要添加一个前缀，不同的资源类型也会使"
-"用不同的前缀（比如，云主机类型和镜像）。"
+"用不同前缀（比如，云主机类型和镜像）。"
 
 msgid "Address"
 msgstr "地址"
@@ -609,7 +611,7 @@ msgstr "Admin URL"
 msgid ""
 "Administrator Note: Use the following CLI command to import the default "
 "definitions into Glance: "
-msgstr "管理员注意：使用下面命令行指令来导入默认的定义到Glance:"
+msgstr "管理员注意：使用下面命令行来导入默认的定义到Glance:"
 
 msgctxt "current status of stack"
 msgid "Adopt Complete"
@@ -2561,7 +2563,7 @@ msgstr "分布式"
 msgid ""
 "Do not use a colon ':' with OS::Glance::Images. This resource type does not "
 "support the use of colons."
-msgstr "不要在 OS::Glance::Images 里使用 “:” ，因为这种资源类型不支持前缀。"
+msgstr "不要在 OS::Glance::Images 里用 “:” ，因为这种资源类型不支持前缀。"
 
 msgid "Docker"
 msgstr "Docker"
@@ -2803,8 +2805,8 @@ msgid ""
 "Edit the flavor details. Flavors define the sizes for RAM, disk, number of "
 "cores, and other resources. Flavors are selected when users deploy instances."
 msgstr ""
-"编辑云主机类型详情。云主机类型定义了RAM和磁盘的大小、CPU数，以及其他资源，用"
-"户在部署云主机的时候可选用。"
+"编辑云主机类型详情。云主机类型定义了RAM和磁盘大小、CPU数，以及其他资源，用户"
+"在部署云主机的时候可选用。"
 
 msgid "Edit the identity provider's details."
 msgstr "编辑身份提供者详情。"
@@ -3061,7 +3063,7 @@ msgid ""
 "tt>, for <tt>mod_auth_openidc</tt>, this could be <tt>HTTP_OIDC_ISS</tt>."
 msgstr ""
 "比如：<tt>mod_shib</tt>将会是<tt>Shib-Identity-Provider</tt>，对于"
-"<tt>mod_auth_openidc</tt>，将可能是<tt>HTTP_OIDC_ISS</tt>。"
+"<tt>mod_auth_openidc</tt>，将会是<tt>HTTP_OIDC_ISS</tt>。"
 
 msgid ""
 "Example: The prefix 'hw:' is added to OS::Nova::Flavor for the Virtual CPU "
@@ -3069,7 +3071,7 @@ msgid ""
 "applied to flavors."
 msgstr ""
 "示例：在虚拟 CPU 拓扑命名空间中，OS::Nova::Flavor 会使用 “hw:” 前缀，这样在更"
-"新云主机类型的元数据时相应的属性都会加上 “hw:” 前缀。"
+"新云主机类型的元数据时相应的属性都会加上 “hw:” 的前缀。"
 
 msgid "Existence of floating ip"
 msgstr "存在的浮动IP"
@@ -3186,6 +3188,9 @@ msgstr "无法检查不支持的Neutron扩展 ‘%s’。"
 
 msgid "Failed to check if Neutron extraroute extension is supported"
 msgstr "检查失败如果Neutron支持额外路由扩展"
+
+msgid "Failed to check if network-ip-availability extension is supported."
+msgstr "无法检查是否支持网络IP可用性扩展。"
 
 #, python-format
 msgid "Failed to create a port for network %s"
@@ -3512,6 +3517,9 @@ msgstr "云主机类型信息"
 msgid "Flavor Name"
 msgstr "云主机类型名称"
 
+msgid "Flavor name cannot be empty."
+msgstr "新名称不能为空。"
+
 msgid "Flavors"
 msgstr "云主机类型"
 
@@ -3541,6 +3549,10 @@ msgstr "浮动IP:"
 msgid "Folder created successfully."
 msgstr "目录创建成功。"
 
+#, python-format
+msgid "For %(type)s networks, valid IDs are %(min)s to %(max)s."
+msgstr "对于 %(type)s 网络，有效ID为 %(min)s 到 %(max)s."
+
 msgid ""
 "For TCP and UDP rules you may choose to open either a single port or a range "
 "of ports. Selecting the \"Port Range\" option will provide you with space to "
@@ -3549,6 +3561,12 @@ msgid ""
 msgstr ""
 "你选择的TCP和UDP规则可能会打开一个或一组端口.选择\"端口范围\"，你需要提供开始"
 "和结束端口的范围.对于ICMP规则你需要指定ICMP类型和代码."
+
+#, python-format
+msgid ""
+"For a %(network_type)s network, valid segmentation IDs are %(min)s through "
+"%(max)s."
+msgstr "对于 %(network_type)s 网络，有效segmentation ID为 %(min)s 到 %(max)s."
 
 msgid "Forbidden"
 msgstr "禁止"
@@ -3569,6 +3587,9 @@ msgstr "镜像格式"
 
 msgid "Format ="
 msgstr "格式 ="
+
+msgid "Free IPs"
+msgstr "可用IP"
 
 msgid "From"
 msgstr "自"
@@ -3609,6 +3630,9 @@ msgstr "网关IP和IP版本是可变的"
 msgid "Gateway interface is added"
 msgstr "已新增网关接口"
 
+msgid "Geneve"
+msgstr "Geneve"
+
 msgid "GiB"
 msgstr "GiB"
 
@@ -3648,11 +3672,6 @@ msgid ""
 "After creating the group, edit the group to add users."
 msgstr ""
 "组被用于管理使用权，同时为多个用于分配角色。创建组之后，编辑组，添加用户."
-
-msgid ""
-"Groups are used to manage access and assign roles to multiple users at once. "
-"Edit the group to add users."
-msgstr "组被用于管理使用权，同时为多个用于分配角色。编辑组，添加用户."
 
 #. Translators: High Availability mode of Neutron router
 msgid "HA mode"
@@ -4049,7 +4068,7 @@ msgstr "正在使用"
 msgid ""
 "In addition, you can create an external network or a shared network by "
 "checking the corresponding checkbox."
-msgstr "此外，你可以勾选相应的复选框来创建外部网络或者共享网络。"
+msgstr "此外，你可以勾选相应复选框来创建外部网络或者共享网络。"
 
 msgctxt "Current status of Consistency Group"
 msgid "In-use"
@@ -4626,13 +4645,18 @@ msgstr "计量"
 msgid "Metric:"
 msgstr "度量："
 
+msgid "MidoNet"
+msgstr "MidoNet"
+
+msgid "MidoNet Uplink"
+msgstr "MidoNet Uplink"
+
 msgid "Migrate"
 msgstr "迁移"
 
 #, fuzzy
 msgid "Migrate Host"
-msgid_plural "Migrate Hosts"
-msgstr[0] "迁移主机"
+msgstr "迁移主机"
 
 msgid "Migrate Instance"
 msgid_plural "Migrate Instances"
@@ -4647,13 +4671,9 @@ msgid ""
 "host can be Live Migrated. Cold Migration is trying to use 'nova migrate' on "
 "each instance of migrated host."
 msgstr ""
-"迁移一个nova-compute服务已被关闭的主机上的所有云主机，您可以选择迁移类型。所"
-"有正在运行的云主机都可以进行热迁移（Live Migration）。冷迁移（Cold "
+"迁移一个nova-compute计算服务已被关闭的主机上的所有云主机，您可以选择迁移类"
+"型。所有正在运行的云主机都可以进行热迁移（Live Migration）。冷迁移（Cold "
 "Migration）会尝试在被迁移主机上使用 'nova migrate’ 迁移每个云主机。"
-
-msgid "Migrated Host"
-msgid_plural "Migrated Hosts"
-msgstr[0] "已迁移主机"
 
 msgctxt "Current status of an Instance"
 msgid "Migrating"
@@ -4825,8 +4845,8 @@ msgid ""
 "properties in the namespace visible in the 'Update Metadata' action for that "
 "type of resource."
 msgstr ""
-"命名空间可以和不同的资源类型进行关联，当对该类型的资源执行“更新元数据”的操作"
-"时，就可以看到相应的属性。"
+"命名空间可以和不同资源类型进行关联，当对该类型的资源执行“更新元数据”的操作"
+"时，就可以看到相应属性。"
 
 msgid "Network"
 msgstr "网络"
@@ -5729,7 +5749,7 @@ msgid ""
 "network type (like Flat, VLAN, GRE, and VXLAN) and its segmentation_id or "
 "physical network name for a new virtual network."
 msgstr ""
-"可以创建供应商规定的网络。您可以为新的虚拟网络指定物理网络类型(如Flat, VLAN, "
+"可以创建供应商规定网络。您可以为新的虚拟网络指定物理网络类型(如Flat, VLAN, "
 "GRE, 和 VXLAN)及其段ID（segmentation_id），或者物理网络名称。"
 
 msgid "Pseudo-folder Name"
@@ -5774,6 +5794,22 @@ msgstr "QoS规格: {{ qos_spec_name }}"
 
 msgid "QoS Specs"
 msgstr "QoS规格"
+
+msgid ""
+"QoS Specs can be associated with volume types. It is used to map to a set of "
+"quality of service capabilities requested by the volume owner. This is "
+"equivalent to the <tt>cinder qos-create</tt> command. Once the QoS Spec gets "
+"created, click the \"Manage Specs\" button to manage the key-value specs for "
+"the QoS Spec. <br> <br> Each QoS Specs entity will have a \"Consumer\" value "
+"which indicates where the administrator would like the QoS policy to be "
+"enforced. This value can be \"front-end\" (Nova Compute), \"back-end"
+"\" (Cinder back-end), or \"both\"."
+msgstr ""
+"QoS 规则可以和卷类型进行绑定。它对应与卷所有者发出的一组服务能力质量请求。它"
+"等价于<tt>cinder qos-create</tt> 命令。当 QoS 规则创建成功之后，单击 “管理规"
+"则”可对 QoS 规范中的规范键/值对进行修改。<br><br>每一个QoS 规则都有一个 "
+"“Consumer”值，表示管理员希望实施 QoS 策略的位置。该属性可以设置为“front-"
+"end”(Nova 计算)、“back-end”(Cinder 后端)或 “both” 。"
 
 msgctxt "Current status of an Image"
 msgid "Queued"
@@ -5942,7 +5978,7 @@ msgid ""
 "protocol attributes to Identity API objects. If no value is provided, the "
 "list will be set to empty."
 msgstr ""
-"远端ID与身份提供者绑定，并且全局唯一。这表明头属性用例映射联邦协议属性到认证"
+"远端ID与身份提供者绑定，并且全局唯一。这表明头属性用例映射联盟协议属性到认证"
 "API对象。如果没有提供值，列表将会被设置为空。"
 
 msgid "Remote IP Prefix"
@@ -6057,6 +6093,9 @@ msgid "Resource Metadata"
 msgstr "资源元数据"
 
 msgid "Resource Types"
+msgstr "资源类型"
+
+msgid "Resource Types ="
 msgstr "资源类型"
 
 msgid "Resource Usage"
@@ -6215,22 +6254,6 @@ msgid "Router"
 msgstr "路由"
 
 #, python-format
-msgid ""
-"Router %(name)s was created but connecting to an external network failed. "
-"Attempts to delete the new router also failed. Router %(name)s still exists "
-"but is not connect to the desired external network."
-msgstr ""
-"路由 器%(name)s 被创建，但是连接到外部网络失败。尝试删除新路由同样失败。路由"
-"器%(name)s 仍然存在，但是它不能连接到期望的外部网络。"
-
-#, python-format
-msgid ""
-"Router %s was created but connecting to an external network failed. The "
-"created router has been deleted, as the overall operation failed."
-msgstr ""
-"路由%s 被创建，但是连接到外部网络失败。当所有操作失败时，创建的路由器被删除。"
-
-#, python-format
 msgid "Router %s was successfully created."
 msgstr "路由器 %s 创建成功。"
 
@@ -6269,6 +6292,10 @@ msgstr "路由已经成动加入到防火墙：%(firewall)s 。"
 
 msgid "Routers"
 msgstr "路由"
+
+#, python-format
+msgid "Routers on %(host)s"
+msgstr "%(host)s 上的路由器"
 
 msgid ""
 "Routing rules to apply to router. Rules are matched by most specific source "
@@ -6570,6 +6597,9 @@ msgstr "选择一个目标主机"
 msgid "Select a template to launch a stack."
 msgstr "选择模板创建stack"
 
+msgid "Select a volume"
+msgstr "选择一个卷"
+
 msgid "Select a volume to restore to."
 msgstr "选择一个云硬盘用来恢复。"
 
@@ -6623,8 +6653,7 @@ msgstr "选择要分离的端口"
 msgid ""
 "Select the projects where the flavors will be used. If no projects are "
 "selected, then the flavor will be available in all projects."
-msgstr ""
-"选择该云主机类型适用的项目。如果不选择任何项目，则可以在所有项目中使用。"
+msgstr "选择云主机类型适用的项目。如果不选择任何项目，则可以在所有项目中使用。"
 
 msgid "Selected Hosts"
 msgstr "选中的主机"
@@ -7423,14 +7452,14 @@ msgid ""
 "The ID of the host where the port is allocated. In some cases, different "
 "implementations can run on different hosts."
 msgstr ""
-"端口被分配到的目标主机ID 。某些情况下，不同的实现方式可在运行在不同的主机上。"
+"端口被分配到的目标主机ID 。某些情况下，不同实现方式可在运行在不同的主机上。"
 
 msgid ""
 "The Image Location field MUST be a valid and direct URL to the image binary. "
 "URLs that redirect or serve error pages will result in unusable images."
 msgstr ""
-"镜像地址必须是有效的直接指向镜像二进制文件的URL。URL被重定向或者服务器返回错"
-"误页面将导致镜像不可用。"
+"镜像地址必须是有效的直接指向镜像二进制文件URL。URL被重定向或者服务器返回错误"
+"页面将导致镜像不可用。"
 
 msgid "The JSON formatted contents of a namespace."
 msgstr "内容为JSON格式的命名空间定义"
@@ -7627,6 +7656,15 @@ msgstr "VPN服务开始使用的状态。如果为 DOWN (假)，VPN服务不转�
 msgid "The state to start the network in."
 msgstr "状态是启动网络"
 
+msgid ""
+"The status of a volume snapshot is normally managed automatically.  In some "
+"circumstances an administrator may need to explicitly update the status "
+"value. This is equivalent to the <tt>cinder snapshot-reset-state</tt> "
+"command."
+msgstr ""
+"正常情况下，卷快照的状态是被自动管理的。某些情况下，管理员可能需要手动更新卷"
+"快照的状态值。可以通过命令<tt>cinder snapshot-reset-state</tt>执行该操作。"
+
 #, python-format
 msgid "The subnet in the Network Address is too small (/%s)."
 msgstr "子网地址太小 (/%s)."
@@ -7737,6 +7775,9 @@ msgstr "从创建以来"
 
 msgid "Time since created (Seconds)"
 msgstr "从创建以来(秒)"
+
+msgid "Time since update"
+msgstr "创建以来的时间"
 
 msgid "Timeout"
 msgstr "超时"
@@ -8351,7 +8392,7 @@ msgstr "无法注册身份提供者（identity provider）"
 msgid ""
 "Unable to register identity provider. Please check that the Identity "
 "Provider ID and Remote IDs provided are not already in use."
-msgstr "无法注册身份提供者。请检查身份提供ID与远端提供的ID是否还在使用。"
+msgstr "无法注册身份提供者。请检查身份提供ID与远端提供ID是否还在使用。"
 
 #, python-format
 msgid "Unable to resize instance \"%s\"."
@@ -9034,7 +9075,7 @@ msgstr "无法更新身份提供者。"
 msgid ""
 "Unable to update identity provider. Please check that the Remote IDs "
 "provided are not already in use."
-msgstr "不能更新身份提供者。请检查远程IDs提供者是否还在使用。"
+msgstr "不能更新身份提供者。请检查远程IDs提供者是否在使用。"
 
 #, python-format
 msgid "Unable to update image \"%s\"."
@@ -9059,6 +9100,9 @@ msgstr "无法更新安全组: %s"
 #, python-format
 msgid "Unable to update subnet \"%s\"."
 msgstr "无法更新子网\"%s\""
+
+msgid "Unable to update subnets with availability."
+msgstr "无法获取子网。"
 
 msgid "Unable to update the aggregate."
 msgstr "无法更新主机聚合。"
@@ -9100,6 +9144,9 @@ msgstr "无法上传对象。"
 #, python-format
 msgid "Unable to upload volume to image for volume: \"%s\""
 msgstr "无法为云硬盘: \"%s\"上传云硬盘到镜像"
+
+msgid "Unable to verify the VNIC types extension in Neutron"
+msgstr "无法验证Neutron中的VNIC类型扩展。"
 
 msgid "Unit"
 msgstr "单位"
@@ -9804,7 +9851,7 @@ msgid ""
 "You can create a port for the network. If you specify device ID to be "
 "attached, the device specified will be attached to the port created."
 msgstr ""
-"你可以为网络创建端口。如果指定要连接的设备ID，该设备将连接到创建的端口上。"
+"你可以为网络创建端口。如果指定要连接的设备ID，该设备将连接到创建端口上。"
 
 msgid ""
 "You can customize your instance after it has launched using the options "

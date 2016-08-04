@@ -385,10 +385,13 @@ class UpdateProjectGroups(workflows.UpdateMembersStep):
 
 class CommonQuotaWorkflow(workflows.Workflow):
     def _update_project_quota(self, request, data, project_id):
-        # Update the project quota.
-        nova_data = dict(
-            [(key, data[key]) for key in quotas.NOVA_QUOTA_FIELDS])
-        nova.tenant_quota_update(request, project_id, **nova_data)
+        disabled_quotas = quotas.get_disabled_quotas(request)
+
+        # Update the project quotas.
+        if api.base.is_service_enabled(request, 'compute'):
+            nova_data = {key: data[key] for key in
+                         set(quotas.NOVA_QUOTA_FIELDS) - disabled_quotas}
+            nova.tenant_quota_update(request, project_id, **nova_data)
 
         if cinder.is_volume_service_enabled(request):
             cinder_data = dict([(key, data[key]) for key in
@@ -400,7 +403,6 @@ class CommonQuotaWorkflow(workflows.Workflow):
         if api.base.is_service_enabled(request, 'network') and \
                 api.neutron.is_quotas_extension_supported(request):
             neutron_data = {}
-            disabled_quotas = quotas.get_disabled_quotas(request)
             for key in quotas.NEUTRON_QUOTA_FIELDS:
                 if key not in disabled_quotas:
                     neutron_data[key] = data[key]

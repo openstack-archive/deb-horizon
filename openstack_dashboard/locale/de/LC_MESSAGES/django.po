@@ -6,13 +6,13 @@
 # Robert Simai <robert.simai@suse.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 10.0.0.0b2.dev310\n"
+"Project-Id-Version: horizon 10.0.0.0b3.dev89\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-07-11 21:28+0000\n"
+"POT-Creation-Date: 2016-07-28 12:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-07-11 07:10+0000\n"
+"PO-Revision-Date: 2016-07-27 01:57+0000\n"
 "Last-Translator: Robert Simai <robert.simai@suse.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -4065,6 +4065,10 @@ msgstr "Floating IPs:"
 msgid "Folder created successfully."
 msgstr "Ordner erfolgreich erstellt."
 
+#, python-format
+msgid "For %(type)s networks, valid IDs are %(min)s to %(max)s."
+msgstr "Gültige IDs für Netzwerke vom Typ %(type)s sind %(min)s bis %(max)s."
+
 msgid ""
 "For TCP and UDP rules you may choose to open either a single port or a range "
 "of ports. Selecting the \"Port Range\" option will provide you with space to "
@@ -4199,11 +4203,11 @@ msgstr ""
 
 msgid ""
 "Groups are used to manage access and assign roles to multiple users at once. "
-"Edit the group to add users."
+"Edit the group's name and description."
 msgstr ""
-"Gruppen werden benutzt, um den Zugriff zu verwalten und mehreren Benutzer "
-"zugleich Rollen zuzuweisen. Bearbeiten Sie die Gruppe, um Benutzer "
-"hinzuzufügen."
+"Gruppen werden verwendet, um Zugriff und Zugehörigkeiten zu Rollen für "
+"mehrere Benutzer gleichzeitig zu regeln. Bearbeiten Sie hier den "
+"Gruppennamen und deren Beschreibung."
 
 #. Translators: High Availability mode of Neutron router
 msgid "HA mode"
@@ -5263,9 +5267,7 @@ msgid "Migrate"
 msgstr "Migriere"
 
 msgid "Migrate Host"
-msgid_plural "Migrate Hosts"
-msgstr[0] "Host migrieren"
-msgstr[1] "Hosts migrieren"
+msgstr "Host migrieren"
 
 msgid "Migrate Instance"
 msgid_plural "Migrate Instances"
@@ -5294,11 +5296,6 @@ msgstr ""
 "Dienst. Sie können optional den Migrationstyp wählen. Alle laufenden "
 "Instanzen können live migriert werden. Kalte Migration versucht 'nova "
 "migrate' auf jede Instanz des migrierten Hosts anzuwenden."
-
-msgid "Migrated Host"
-msgid_plural "Migrated Hosts"
-msgstr[0] "Migrierter Host"
-msgstr[1] "Migrierte Hosts"
 
 msgctxt "Current status of an Instance"
 msgid "Migrating"
@@ -6776,6 +6773,10 @@ msgid "Request ID"
 msgstr "Anfrage ID"
 
 #, python-format
+msgid "Request for launching %(count)s named \"%(name)s\" has been submitted."
+msgstr "Anfrage zum starten von %(count)s \"%(name)s\" wurde übermittelt."
+
+#, python-format
 msgid "Request for resizing of instance \"%s\" has been submitted."
 msgstr "Anfrage zur Skalierung der Instanz \"%s\" wurde übermittelt."
 
@@ -7017,26 +7018,6 @@ msgstr "Routingmodus"
 
 msgid "Router"
 msgstr "Router"
-
-#, python-format
-msgid ""
-"Router %(name)s was created but connecting to an external network failed. "
-"Attempts to delete the new router also failed. Router %(name)s still exists "
-"but is not connect to the desired external network."
-msgstr ""
-"Der Router %(name)s wurde erstellt, aber die Verbindung zu einem externen "
-"Netzwerk ist fehlgeschlagen. Der Versuch, den Router zu entfernen, ist "
-"ebenfalls fehlgeschlagen. Der Router %(name)s ist noch vorhanden, ist aber "
-"nicht mit dem vorgesehenen Netzwerk verbunden."
-
-#, python-format
-msgid ""
-"Router %s was created but connecting to an external network failed. The "
-"created router has been deleted, as the overall operation failed."
-msgstr ""
-"Der Router %s wurde erstellt, aber die Verbindung zu einem externen Netzwerk "
-"ist fehlgeschlagen. Der Router wurde gelöscht, da die Operation insgesamt "
-"fehlgeschlagen ist."
 
 #, python-format
 msgid "Router %s was successfully created."
@@ -8823,6 +8804,9 @@ msgstr "Zeit seit Erzeugung"
 
 msgid "Time since created (Seconds)"
 msgstr "Zeit seit Erzeugung (Sekunden)"
+
+msgid "Time since update"
+msgstr "Zeit seit Update"
 
 msgid "Timeout"
 msgstr "Zeitüberschreitung"

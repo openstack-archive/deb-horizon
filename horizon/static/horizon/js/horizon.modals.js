@@ -113,7 +113,7 @@ horizon.modals.init_wizard = function () {
             // Add global errors.
             $.each(errors, function (index, error) {
               $fieldset.find('div.row').prepend(
-                '<div class="alert alert-message alert-danger">' +
+                '<div class="alert alert-danger">' +
                 error + '</div>');
             });
             $fieldset.find('input,  select, textarea').first().focus();
@@ -124,7 +124,7 @@ horizon.modals.init_wizard = function () {
           $field.closest('.form-group').addClass('has-error');
           $.each(errors, function (index, error) {
             $field.after(
-              '<span class="help-block alert alert-danger">' +
+              '<span class="help-block">' +
               error + '</span>');
           });
           // Focus the first invalid field.
@@ -399,9 +399,9 @@ horizon.addInitFunction(horizon.modals.init = function() {
   $(document).on('click', '.openstack-spin', function(ev) {
     // NOTE(tsufiev): prevent infinite 'Loading' spinner when opening link
     // in the other browser tab with mouse wheel or mouse lbutton + modifier
-    if ( ev.which !== MOUSE_WHEEL_CODE_NORMALIZED &&
-        !( ev.which === MOUSE_LBUTTON_CODE_NORMALIZED &&
-        ( ev.shiftKey || ev.ctrlKey || ev.metaKey ) ) ) {
+    if (ev.which !== MOUSE_WHEEL_CODE_NORMALIZED &&
+        !(ev.which === MOUSE_LBUTTON_CODE_NORMALIZED &&
+        (ev.shiftKey || ev.ctrlKey || ev.metaKey))) {
       horizon.modals.modal_spinner(gettext("Loading"));
     }
   });

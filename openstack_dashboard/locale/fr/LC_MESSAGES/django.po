@@ -16,9 +16,9 @@
 # OpenStack Infra <zanata@openstack.org>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 10.0.0.0b2.dev276\n"
+"Project-Id-Version: horizon 10.0.0.0b3.dev89\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-07-04 09:37+0000\n"
+"POT-Creation-Date: 2016-07-28 12:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -3925,14 +3925,6 @@ msgstr ""
 "plusieurs utilisateurs à la fois. Après création du groupe, éditer le groupe "
 "et ajouter les utilisateurs. "
 
-msgid ""
-"Groups are used to manage access and assign roles to multiple users at once. "
-"Edit the group to add users."
-msgstr ""
-"Les groupes sont utilisés pour gérer l'accès et attribuer des rôles à "
-"plusieurs utilisateurs en même temps. Éditer le groupe pour ajouter des "
-"utilisateurs."
-
 #. Translators: High Availability mode of Neutron router
 msgid "HA mode"
 msgstr "Mode HA"
@@ -4963,9 +4955,7 @@ msgstr "Migrer"
 
 #, fuzzy
 msgid "Migrate Host"
-msgid_plural "Migrate Hosts"
-msgstr[0] "Migrer Hôte"
-msgstr[1] "Migrer Hôtes"
+msgstr "Migrer Hôte"
 
 msgid "Migrate Instance"
 msgid_plural "Migrate Instances"
@@ -4986,11 +4976,6 @@ msgstr ""
 "Toutes les instances en cours de l'hôte peuvent être en Migration Live. La "
 "Migration à froid essaie d'utiliser « nova migrate » sur chaque instance "
 "d'un hôte migré."
-
-msgid "Migrated Host"
-msgid_plural "Migrated Hosts"
-msgstr[0] "Hôte migré"
-msgstr[1] "Hôtes migrés"
 
 msgctxt "Current status of an Instance"
 msgid "Migrating"
@@ -6623,25 +6608,6 @@ msgstr "mode Route"
 
 msgid "Router"
 msgstr "Routeur"
-
-#, python-format
-msgid ""
-"Router %(name)s was created but connecting to an external network failed. "
-"Attempts to delete the new router also failed. Router %(name)s still exists "
-"but is not connect to the desired external network."
-msgstr ""
-"Le routeur  %(name)s a été créé mais sa connexion à un réseau externe a "
-"échoué.  Les tentatives de suppression de ce nouveau routeur ont également "
-"échoué. Le routeur %(name)s existe toujours mais n'est pas connecté au "
-"réseau externe souhaité."
-
-#, python-format
-msgid ""
-"Router %s was created but connecting to an external network failed. The "
-"created router has been deleted, as the overall operation failed."
-msgstr ""
-"Le routeur %s a été créé mais la connexion au réseau externe a échoué. Le "
-"routeur créé a été supprimé car l'opération a échoué."
 
 #, python-format
 msgid "Router %s was successfully created."

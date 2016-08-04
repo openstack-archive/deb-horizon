@@ -41,7 +41,7 @@
     ctrl.config = {
       detailsTemplateUrl: ctrl.resourceType.summaryTemplateUrl,
       selectAll: true,
-      expand: true,
+      expand: ctrl.resourceType.summaryTemplateUrl,
       trackId: ctrl.trackBy || 'id',
       columns: ctrl.resourceType.getTableColumns()
     };
@@ -52,8 +52,8 @@
 
     // Controller Initialization/Loading
 
-    ctrl.resourceType.listFunction().then(onLoad);
-    registry.initActions(ctrl.resourceType.type, $scope);
+    ctrl.resourceType.list().then(onLoad);
+    ctrl.resourceType.initActions($scope);
     $scope.$on(events.SERVER_SEARCH_UPDATED, handleServerSearch);
 
     // Local functions
@@ -62,7 +62,7 @@
       var params = searchService
         .getSearchTermsFromQueryString(magicSearchQueryObj.magicSearchQuery)
         .reduce(queryToObject, {});
-      ctrl.resourceType.listFunction(params).then(onLoad);
+      ctrl.resourceType.list(params).then(onLoad);
 
       function queryToObject(orig, curr) {
         var fields = searchService.getSearchTermObject(curr);
@@ -92,7 +92,7 @@
       // the items page (like create "volume" from image).
       var deletedIds, updatedIds, createdIds, failedIds;
 
-      if ( result ) {
+      if (result) {
         // Reduce the results to just item ids ignoring other types the action
         // may have produced
         deletedIds = actionResultService.getIdsOfType(result.deleted, ctrl.resourceType.type);
@@ -106,11 +106,11 @@
         }
 
         // Handle updated and created items
-        if ( updatedIds.length || createdIds.length ) {
+        if (updatedIds.length || createdIds.length) {
           // Ideally, get each created item individually, but
           // this is simple and robust for the common use case.
           // TODO: If we want more detailed updates, we could do so here.
-          ctrl.resourceType.listFunction().then(onLoad);
+          ctrl.resourceType.list().then(onLoad);
         }
 
         // Handle failed items
@@ -122,7 +122,7 @@
       } else {
         // promise resolved, but no result returned. Because the action didn't
         // tell us what happened...reload the displayed items just in case.
-        ctrl.resourceType.listFunction().then(onLoad);
+        ctrl.resourceType.list().then(onLoad);
       }
     }
 

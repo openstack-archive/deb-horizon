@@ -12,6 +12,7 @@
 
 import os
 
+from django.utils.translation import pgettext_lazy
 from horizon.test.settings import *  # noqa
 from horizon.utils import secret_key
 from openstack_dashboard import exceptions
@@ -42,6 +43,22 @@ TEMPLATE_DIRS = (
 )
 
 CUSTOM_THEME_PATH = 'themes/default'
+
+# 'key', 'label', 'path'
+AVAILABLE_THEMES = [
+    (
+        'default',
+        pgettext_lazy('Default style theme', 'Default'),
+        'themes/default'
+    ), (
+        'material',
+        pgettext_lazy("Google's Material Design style theme", "Material"),
+        'themes/material'
+    ),
+]
+
+# Theme Static Directory
+THEME_COLLECTION_DIR = 'themes'
 
 TEMPLATE_CONTEXT_PROCESSORS += (
     'openstack_dashboard.context_processors.openstack',
@@ -83,30 +100,29 @@ HORIZON_CONFIG = {
 
 # Load the pluggable dashboard settings
 import openstack_dashboard.enabled
-import openstack_dashboard.local.enabled
 from openstack_dashboard.utils import settings
 
 INSTALLED_APPS = list(INSTALLED_APPS)  # Make sure it's mutable
 settings.update_dashboards(
     [
         openstack_dashboard.enabled,
-        openstack_dashboard.local.enabled,
     ],
     HORIZON_CONFIG,
     INSTALLED_APPS,
 )
-INSTALLED_APPS[0:0] = []
 
 # Remove this when the legacy panel is removed, along with its tests and
 # the stacks MappingsTests are updated with the new URL path.
 HORIZON_CONFIG['swift_panel'] = 'legacy'
 
-find_static_files(HORIZON_CONFIG)
+find_static_files(HORIZON_CONFIG, AVAILABLE_THEMES,
+                  THEME_COLLECTION_DIR, ROOT_PATH)
 
-# Set to True to allow users to upload images to glance via Horizon server.
-# When enabled, a file form field will appear on the create image form.
-# See documentation for deployment considerations.
-HORIZON_IMAGES_ALLOW_UPLOAD = True
+# Set to 'legacy' or 'direct' to allow users to upload images to glance via
+# Horizon server. When enabled, a file form field will appear on the create
+# image form. If set to 'off', there will be no file form field on the create
+# image form. See documentation for deployment considerations.
+HORIZON_IMAGES_UPLOAD_MODE = 'legacy'
 
 AVAILABLE_REGIONS = [
     ('http://localhost:5000/v2.0', 'local'),

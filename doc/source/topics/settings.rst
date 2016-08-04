@@ -567,6 +567,16 @@ This setting sets the maximum number of items displayed in a dropdown.
 Dropdowns that limit based on this value need to support a way to observe
 the entire list.
 
+``ENABLE_CLIENT_TOKEN``
+--------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Default: ``True``
+
+This setting will Enable/Disable access to the Keystone Token to the
+browser.
+
 ``ENFORCE_PASSWORD_CHECK``
 --------------------------
 
@@ -771,6 +781,7 @@ Default::
         'can_set_mount_point': False,
         'can_set_password': False,
         'requires_keypair': False,
+        'enable_quotas': True
     }
 
 A dictionary containing settings which can be used to identify the
@@ -787,6 +798,9 @@ an administrator password when launching or rebuilding an instance.
 Setting ``requires_keypair`` to ``True`` will require users to select
 a key pair when launching an instance.
 
+Setting ``enable_quotas`` to ``False`` will make Horizon treat all Nova
+quotas as disabled, thus it won't try to modify them. By default, quotas are
+enabled.
 
 ``OPENSTACK_IMAGE_BACKEND``
 ---------------------------
@@ -852,21 +866,64 @@ appear on image detail pages.
 
 
 ``HORIZON_IMAGES_ALLOW_UPLOAD``
---------------------------------
+-------------------------------
 
 .. versionadded:: 2013.1(Grizzly)
 
 Default: ``True``
+
+(Deprecated)
 
 If set to ``False``, this setting disables *local* uploads to prevent filling
 up the disk on the dashboard server since uploads to the Glance image store
 service tend to be particularly large - in the order of hundreds of megabytes
 to multiple gigabytes.
 
+The setting is marked as deprecated and will be removed in P or later release.
+It is superseded by the setting HORIZON_IMAGES_UPLOAD_MODE. Until the removal
+the ``False`` value of HORIZON_IMAGES_ALLOW_UPLOAD overrides the value of
+HORIZON_IMAGES_UPLOAD_MODE.
+
 .. note::
 
     This will not disable image creation altogether, as this setting does not
     affect images created by specifying an image location (URL) as the image source.
+
+
+``HORIZON_IMAGES_UPLOAD_MODE``
+------------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Default: ``"legacy"``
+
+Valid values are  ``"direct"``, ``"legacy"`` (default) and ``"off"``. ``"off"``
+disables the ability to upload images via Horizon. It is equivalent to setting
+``False`` on the deprecated setting ``HORIZON_IMAGES_ALLOW_UPLOAD``. ``legacy``
+enables local file upload by piping the image file through the Horizon's
+web-server. It is equivalent to setting ``True`` on the deprecated setting
+``HORIZON_IMAGES_ALLOW_UPLOAD``. ``direct`` sends the image file directly from
+the web browser to Glance. This bypasses Horizon web-server which both reduces
+network hops and prevents filling up Horizon web-server's filesystem. ``direct``
+is the preferred mode, but due to the following requirements it is not the default.
+The ``direct`` setting requires a modern web browser, network access from the
+browser to the public Glance endpoint, and CORS support to be enabled on the
+Glance API service. Without CORS support, the browser will forbid the PUT request
+to a location different than the Horizon server. To enable CORS support for Glance
+API service, you will need to edit [cors] section of glance-api.conf file (see
+`here`_ how to do it). Set `allowed_origin` to the full hostname of Horizon
+web-server (e.g. http://<HOST_IP>/dashboard) and restart glance-api process.
+
+.. _here: http://docs.openstack.org/developer/oslo.middleware/cors.html#configuration-for-oslo-config
+
+.. note::
+
+    To maintain the compatibility with the deprecated HORIZON_IMAGES_ALLOW_UPLOAD
+    setting, neither ``"direct"``, nor ``"legacy"`` modes will have an effect if
+    HORIZON_IMAGES_ALLOW_UPLOAD is set to ``False`` - as if HORIZON_IMAGES_UPLOAD_MODE
+    was set to ``"off"`` itself. When HORIZON_IMAGES_ALLOW_UPLOAD is set to ``True``,
+    all three modes are considered, as if HORIZON_IMAGES_ALLOW_UPLOAD setting
+    was removed.
 
 
 ``OPENSTACK_KEYSTONE_BACKEND``
@@ -1686,12 +1743,20 @@ Template loaders defined here will have their output cached if DEBUG
 is set to False.
 
 ``ADD_TEMPLATE_LOADERS``
----------------------------
+------------------------
 
 .. versionadded:: 10.0.0(Newton)
 
 Template loaders defined here will be be loaded at the end of TEMPLATE_LOADERS,
 after the CACHED_TEMPLATE_LOADERS and will never have a cached output.
+
+``NG_TEMPLATE_CACHE_AGE``
+-------------------------
+
+.. versionadded:: 10.0.0(Newton)
+
+Angular Templates are cached using this duration (in seconds) if DEBUG
+is set to False.  Default value is ``2592000`` (or 30 days).
 
 ``SECRET_KEY``
 --------------
