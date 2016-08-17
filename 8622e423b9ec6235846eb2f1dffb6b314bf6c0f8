@@ -1,0 +1,10 @@
+Code-Review+2: Timur Sufiev <tsufiev@mirantis.com>
+Code-Review+1: Cindy Lu <clu@us.ibm.com>
+Code-Review+2: Travis Tripp <travis.tripp@hpe.com>
+Workflow+1: Travis Tripp <travis.tripp@hpe.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 04 Aug 2016 22:07:08 +0000
+Reviewed-on: https://review.openstack.org/351290
+Project: openstack/deb-horizon
+Branch: refs/heads/master

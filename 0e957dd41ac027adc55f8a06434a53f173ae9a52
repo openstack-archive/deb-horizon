@@ -1,0 +1,13 @@
+Code-Review+2: Timur Sufiev <tsufiev@mirantis.com>
+Code-Review+1: Matt Borland <matt.borland@hpe.com>
+Code-Review-1: Thai Tran <tqtran@us.ibm.com>
+Code-Review+2: Diana Whitten <hurgleburgler@gmail.com>
+Workflow+1: Diana Whitten <hurgleburgler@gmail.com>
+Code-Review+1: Rahul U Nair <rahulunair@gmail.com>
+Code-Review+1: Liuqing Jing <lawrancejing@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 05 Aug 2016 16:45:57 +0000
+Reviewed-on: https://review.openstack.org/332745
+Project: openstack/deb-horizon
+Branch: refs/heads/master
