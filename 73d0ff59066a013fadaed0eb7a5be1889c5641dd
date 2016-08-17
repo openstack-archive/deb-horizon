@@ -1,0 +1,9 @@
+Verified+1: Sahara Hadoop Cluster CI <elastic-hadoop-ci@mirantis.com>
+Code-Review+2: Ihar Hrachyshka <ihrachys@redhat.com>
+Workflow+1: Ihar Hrachyshka <ihrachys@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 17 Oct 2014 11:00:28 +0000
+Reviewed-on: https://review.openstack.org/128946
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/juno

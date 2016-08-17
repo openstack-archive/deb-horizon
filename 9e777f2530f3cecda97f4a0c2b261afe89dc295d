@@ -1,0 +1,17 @@
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Code-Review+1: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+1: Zhenguo Niu <Niu.ZGlinux@gmail.com>
+Verified+1: Sahara Hadoop Cluster CI <elastic-hadoop-ci@mirantis.com>
+Code-Review+1: Masco <mkaliyam@redhat.com>
+Code-Review+1: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Code-Review+1: Paul Karikh <pkarikh@mirantis.com>
+Code-Review+1: Ana Krivokapic <akrivoka@redhat.com>
+Code-Review+1: Cindy Lu <clu@us.ibm.com>
+Code-Review+2: Matthias Runge <mrunge@redhat.com>
+Workflow+1: Matthias Runge <mrunge@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 21 Oct 2014 10:25:54 +0000
+Reviewed-on: https://review.openstack.org/129219
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/juno

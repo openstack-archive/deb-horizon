@@ -1,0 +1,11 @@
+Code-Review+2: Lin Hua Cheng <os.lcheng@gmail.com>
+Code-Review+1: ZhiQiang Fan <aji.zqfan@gmail.com>
+Code-Review+2: Thierry Carrez <thierry@openstack.org>
+Workflow+1: Thierry Carrez <thierry@openstack.org>
+Code-Review+1: Jeffrey J. Walls <jeff.walls@hpe.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 08 Oct 2013 22:25:57 +0000
+Reviewed-on: https://review.openstack.org/49868
+Project: openstack/deb-horizon
+Branch: refs/heads/milestone-proposed

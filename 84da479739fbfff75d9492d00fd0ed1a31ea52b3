@@ -1,0 +1,11 @@
+Code-Review+2: Lin Hua Cheng <os.lcheng@gmail.com>
+Code-Review+1: Doug Fish <drfish@us.ibm.com>
+Code-Review+1: Thai Tran <tqtran@us.ibm.com>
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Workflow+1: David Lyle <dklyle0@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 09 Jun 2015 23:12:32 +0000
+Reviewed-on: https://review.openstack.org/189822
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/kilo

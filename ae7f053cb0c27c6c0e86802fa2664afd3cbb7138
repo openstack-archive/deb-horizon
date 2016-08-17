@@ -1,0 +1,10 @@
+Code-Review+2: Alan Pevec <alan.pevec@redhat.com>
+Code-Review+1: Doug Fish <drfish@us.ibm.com>
+Code-Review+2: Matthias Runge <mrunge@redhat.com>
+Workflow+1: Matthias Runge <mrunge@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 03 Dec 2014 20:56:41 +0000
+Reviewed-on: https://review.openstack.org/138798
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/juno

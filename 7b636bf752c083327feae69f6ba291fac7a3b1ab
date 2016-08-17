@@ -1,0 +1,12 @@
+Verified+1: Sahara Hadoop Cluster CI <elastic-hadoop-ci@mirantis.com>
+Code-Review+1: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Code-Review+1: Julie Pichon <jpichon@redhat.com>
+Code-Review+1: Vlad Okhrimenko <vokhrimenko@mirantis.com>
+Code-Review+2: Alan Pevec <alan.pevec@redhat.com>
+Workflow+1: Alan Pevec <alan.pevec@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 28 Nov 2014 16:43:38 +0000
+Reviewed-on: https://review.openstack.org/137575
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/juno

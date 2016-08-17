@@ -1,0 +1,9 @@
+Code-Review+2: Thierry Carrez <thierry@openstack.org>
+Workflow+1: Thierry Carrez <thierry@openstack.org>
+Code-Review+1: Joe Gordon <joe.gordon0@gmail.com>
+Verified+1: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 03 Apr 2012 23:14:57 +0000
+Reviewed-on: https://review.openstack.org/6194
+Project: openstack/deb-horizon
+Branch: refs/heads/milestone-proposed

@@ -1,0 +1,13 @@
+Code-Review+1: Zhenguo Niu <Niu.ZGlinux@gmail.com>
+Code-Review+1: Lin Hua Cheng <os.lcheng@gmail.com>
+Code-Review+1: Julie Pichon <jpichon@redhat.com>
+Code-Review+1: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Code-Review+1: LIU Yulong <liuyulong@letv.com>
+Code-Review+2: Alan Pevec <alan.pevec@redhat.com>
+Workflow+1: Alan Pevec <alan.pevec@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 29 May 2014 21:38:19 +0000
+Reviewed-on: https://review.openstack.org/94964
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/icehouse

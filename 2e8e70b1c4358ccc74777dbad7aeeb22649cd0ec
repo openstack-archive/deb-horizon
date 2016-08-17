@@ -1,0 +1,10 @@
+Code-Review+2: Matt Riedemann <mriedem@us.ibm.com>
+Code-Review+1: Thai Tran <tqtran@us.ibm.com>
+Code-Review+2: Matthias Runge <mrunge@redhat.com>
+Workflow+1: Matthias Runge <mrunge@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 03 Jun 2015 22:11:21 +0000
+Reviewed-on: https://review.openstack.org/188048
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/kilo

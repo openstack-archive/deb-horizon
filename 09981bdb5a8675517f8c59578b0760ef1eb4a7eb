@@ -1,0 +1,10 @@
+Code-Review+1: alejandro emanuel paredes <alejandro.e.paredes@intel.com>
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Code-Review+2: Thierry Carrez <thierry@openstack.org>
+Workflow+1: Thierry Carrez <thierry@openstack.org>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 04 Apr 2014 19:21:31 +0000
+Reviewed-on: https://review.openstack.org/85263
+Project: openstack/deb-horizon
+Branch: refs/heads/milestone-proposed

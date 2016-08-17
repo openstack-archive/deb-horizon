@@ -1,0 +1,10 @@
+Code-Review+2: Gabriel Hurley <gabriel.hurley@nebula.com>
+Code-Review+1: Matthias Runge <mrunge@redhat.com>
+Code-Review+1: Tihomir Trifonov <t.trifonov@gmail.com>
+Workflow+1: Gabriel Hurley <gabriel.hurley@nebula.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 13 Nov 2012 21:29:12 +0000
+Reviewed-on: https://review.openstack.org/15898
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/folsom
