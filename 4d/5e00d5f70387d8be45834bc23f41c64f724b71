@@ -1,0 +1,11 @@
+Code-Review+1: Allen <chen.qiaomin@99cloud.net>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Code-Review+1: melissaml <ma.lei@99cloud.net>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 18 Aug 2016 03:38:24 +0000
+Reviewed-on: https://review.openstack.org/348161
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/mitaka
