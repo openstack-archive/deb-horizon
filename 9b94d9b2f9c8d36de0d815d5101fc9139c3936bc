@@ -1,0 +1,10 @@
+Code-Review+2: Matthias Runge <mrunge@redhat.com>
+Code-Review+1: Thai Tran <tqtran@us.ibm.com>
+Code-Review+2: Lin Hua Cheng <os.lcheng@gmail.com>
+Workflow+1: Lin Hua Cheng <os.lcheng@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Sat, 13 Feb 2016 03:56:31 +0000
+Reviewed-on: https://review.openstack.org/276758
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/liberty

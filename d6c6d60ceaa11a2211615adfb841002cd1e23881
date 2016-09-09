@@ -1,0 +1,9 @@
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Code-Review+2: Matthias Runge <mrunge@redhat.com>
+Workflow+1: Matthias Runge <mrunge@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 27 Jun 2016 07:54:04 +0000
+Reviewed-on: https://review.openstack.org/330957
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/liberty
