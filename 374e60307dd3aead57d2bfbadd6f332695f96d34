@@ -1,0 +1,9 @@
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+2: Timur Sufiev <tsufiev@mirantis.com>
+Workflow+1: Timur Sufiev <tsufiev@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 23 Aug 2016 07:23:17 +0000
+Reviewed-on: https://review.openstack.org/345998
+Project: openstack/deb-horizon
+Branch: refs/heads/master

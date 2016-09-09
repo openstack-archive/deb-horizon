@@ -1,0 +1,8 @@
+Code-Review+2: Timur Sufiev <tsufiev@mirantis.com>
+Workflow+1: Timur Sufiev <tsufiev@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 19 Aug 2016 03:17:18 +0000
+Reviewed-on: https://review.openstack.org/204838
+Project: openstack/deb-horizon
+Branch: refs/heads/master

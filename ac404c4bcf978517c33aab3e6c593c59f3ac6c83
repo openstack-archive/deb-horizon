@@ -1,0 +1,9 @@
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+2: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Workflow+1: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 16 Aug 2016 20:19:08 +0000
+Reviewed-on: https://review.openstack.org/355722
+Project: openstack/deb-horizon
+Branch: refs/heads/master

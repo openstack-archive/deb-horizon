@@ -1,0 +1,10 @@
+Code-Review+1: Andreas Jaeger <jaegerandi@gmail.com>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 06 Sep 2016 23:04:11 +0000
+Reviewed-on: https://review.openstack.org/365818
+Project: openstack/deb-horizon
+Branch: refs/heads/master

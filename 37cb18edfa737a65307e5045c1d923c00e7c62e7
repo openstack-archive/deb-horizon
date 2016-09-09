@@ -1,0 +1,13 @@
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Code-Review+1: zhurong <zhu.rong@99cloud.net>
+Code-Review+1: melissaml <ma.lei@99cloud.net>
+Code-Review+1: Paul Karikh <pkarikh@mirantis.com>
+Code-Review+1: liujunpeng <liujunpeng@inspur.com>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 30 Aug 2016 00:57:18 +0000
+Reviewed-on: https://review.openstack.org/361299
+Project: openstack/deb-horizon
+Branch: refs/heads/master

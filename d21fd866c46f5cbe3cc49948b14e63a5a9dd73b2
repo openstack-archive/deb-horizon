@@ -1,0 +1,9 @@
+Code-Review+2: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Code-Review+2: Zhenguo Niu <Niu.ZGlinux@gmail.com>
+Workflow+1: Zhenguo Niu <Niu.ZGlinux@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 12 Aug 2016 08:46:36 +0000
+Reviewed-on: https://review.openstack.org/354299
+Project: openstack/deb-horizon
+Branch: refs/heads/master

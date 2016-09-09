@@ -1,0 +1,9 @@
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 29 Aug 2016 19:16:48 +0000
+Reviewed-on: https://review.openstack.org/361864
+Project: openstack/deb-horizon
+Branch: refs/heads/master

@@ -1,0 +1,10 @@
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+2: Travis Tripp <travis.tripp@hpe.com>
+Code-Review+1: Brad Pokorny <brad_pokorny@symantec.com>
+Workflow+1: Timur Sufiev <tsufiev@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 18 Aug 2016 16:39:30 +0000
+Reviewed-on: https://review.openstack.org/353987
+Project: openstack/deb-horizon
+Branch: refs/heads/master
