@@ -1,0 +1,10 @@
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Code-Review+1: huyupeng <huyp@inspur.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 16 Sep 2016 06:16:44 +0000
+Reviewed-on: https://review.openstack.org/371098
+Project: openstack/deb-horizon
+Branch: refs/heads/master
