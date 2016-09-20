@@ -1,0 +1,9 @@
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Code-Review+2: Travis Tripp <travis.tripp@hpe.com>
+Workflow+1: Travis Tripp <travis.tripp@hpe.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 20 Sep 2016 00:40:53 +0000
+Reviewed-on: https://review.openstack.org/349629
+Project: openstack/deb-horizon
+Branch: refs/heads/master
