@@ -16,7 +16,6 @@ from django.template import defaultfilters as filters
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
-from horizon import exceptions
 from horizon import forms
 from horizon import tables
 
@@ -32,6 +31,13 @@ class ImportNamespace(tables.LinkAction):
     classes = ("ajax-modal",)
     icon = "plus"
     policy_rules = (("image", "add_metadef_namespace"),)
+
+
+class EditNamespace(tables.LinkAction):
+    name = 'update'
+    verbose_name = _('Edit Namespace')
+    url = constants.METADATA_UPDATE_URL
+    classes = ('ajax-modal',)
 
 
 class DeleteNamespace(tables.DeleteAction):
@@ -95,33 +101,6 @@ class UpdateRow(tables.Row):
                                              wrap=True)
 
 
-class UpdateCell(tables.UpdateAction):
-    policy_rules = (("image", "modify_metadef_namespace"),)
-
-    def update_cell(self, request, datum, namespace_name,
-                    cell_name, new_cell_value):
-        # inline update namespace info
-        try:
-            namespace_obj = datum
-            # updating changed value by new value
-            if cell_name == 'public':
-                cell_name = 'visibility'
-                if new_cell_value:
-                    new_cell_value = 'public'
-                else:
-                    new_cell_value = 'private'
-            setattr(namespace_obj, cell_name, new_cell_value)
-            properties = {cell_name: new_cell_value}
-            glance.metadefs_namespace_update(
-                request,
-                namespace_name,
-                **properties)
-        except Exception:
-            exceptions.handle(request, ignore=True)
-            return False
-        return True
-
-
 class AdminNamespacesTable(tables.DataTable):
     display_name = tables.Column(
         "display_name",
@@ -143,15 +122,13 @@ class AdminNamespacesTable(tables.DataTable):
         verbose_name=_("Public"),
         empty_value=False,
         form_field=forms.BooleanField(required=False),
-        filters=(filters.yesno, filters.capfirst),
-        update_action=UpdateCell)
+        filters=(filters.yesno, filters.capfirst))
     protected = tables.Column(
         "protected",
         verbose_name=_("Protected"),
         empty_value=False,
         form_field=forms.BooleanField(required=False),
-        filters=(filters.yesno, filters.capfirst),
-        update_action=UpdateCell)
+        filters=(filters.yesno, filters.capfirst))
 
     def get_object_id(self, datum):
         return datum.namespace
@@ -168,6 +145,7 @@ class AdminNamespacesTable(tables.DataTable):
         table_actions = (AdminMetadataFilterAction,
                          ImportNamespace,
                          DeleteNamespace,)
-        row_actions = (ManageResourceTypeAssociations,
+        row_actions = (EditNamespace,
+                       ManageResourceTypeAssociations,
                        DeleteNamespace,)
         pagination_param = "namespace_marker"

@@ -6,9 +6,9 @@
 # Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 10.0.0.0b3.dev89\n"
+"Project-Id-Version: horizon 10.0.0.0b4.dev98\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-07-28 12:36+0000\n"
+"POT-Creation-Date: 2016-09-07 18:08+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -199,15 +199,6 @@ msgstr ""
 "protocollo. Un'associazione è semplicemente un elenco di regole. Gli unici "
 "oggetti API di identità che supportano l'associazione sono: utente e gruppo."
 
-msgid ""
-"A more specific rule affects a portion of this traffic so a rule cannot be "
-"automatically generated to control the behavior of the entire source/"
-"destination combination."
-msgstr ""
-"Una regola più specifica interessa una parte di questo traffico e quindi una "
-"regola non può essere generata automaticamente per controllare il "
-"comportamento dell'intera combinazione origine/destinazione"
-
 msgid "A new uploaded file will replace the content of the current object"
 msgstr "Un nuovo file caricato sostituirà il contenuto dell'oggetto corrente"
 
@@ -260,14 +251,6 @@ msgstr "CONSENTI"
 msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 msgstr "CONSENTI %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
-#, python-format
-msgid "ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(cidr)s"
-msgstr "CONSENTI %(from)s:%(to)s/%(ip_protocol)s da %(cidr)s"
-
-#, python-format
-msgid "ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(group)s"
-msgstr "CONSENTI %(from)s:%(to)s/%(ip_protocol)s da %(group)s"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon Machine Image"
 
@@ -282,9 +265,6 @@ msgstr "Endpoint API"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdisk Image"
-
-msgid "AWS compatible"
-msgstr "AWS compatibile"
 
 msgid "Accept Transfer"
 msgstr "Accetta trasferimento"
@@ -309,9 +289,6 @@ msgstr "Log azione"
 
 msgid "Action for the firewall rule"
 msgstr "Azione per la regola del firewall"
-
-msgid "Action:"
-msgstr "Azione:"
 
 msgctxt "Current status of a Firewall"
 msgid "Active"
@@ -434,9 +411,6 @@ msgstr "Aggiungi router"
 
 msgid "Add Router Route"
 msgstr "Aggiungi instradamento router"
-
-msgid "Add Router Rule"
-msgstr "Aggiungi regola router"
 
 msgid "Add Router to Firewall"
 msgstr "Aggiungi router al firewall"
@@ -1254,9 +1228,6 @@ msgstr ""
 msgid "Comma-separated key=value pairs"
 msgstr "Coppie key=value separate da virgola"
 
-msgid "Component"
-msgstr "Componente"
-
 msgid "Compute"
 msgstr "Compute"
 
@@ -1308,9 +1279,6 @@ msgstr "Conferma o ripristina Ridimensiona/Migra"
 msgctxt "Task status of an Instance"
 msgid "Confirming Resize or Migrate"
 msgstr "Conferma del ridimensionamento o della migrazione"
-
-msgid "Conflicting Rule"
-msgstr "Regola in conflitto"
 
 msgid "Connection Limit"
 msgstr "Limite di connessioni"
@@ -1459,76 +1427,6 @@ msgstr "Creare il Gruppo"
 msgid "Create Host Aggregate"
 msgstr "Crea aggregato host"
 
-msgid ""
-"Create IKE Policy for current project.\n"
-"\n"
-"An IKE policy is an association of the following attributes:\n"
-"\n"
-"<li>Authorization algorithm: Auth algorithm limited to SHA1 only.</"
-"li><li>Encryption algorithm: The type of algorithm (3des, aes-128, aes-192, "
-"aes-256) used in the IKE Policy.</li><li>IKE version: The type of version "
-"(v1/v2) that needs to be filtered.</li><li>Lifetime: Life time consists of "
-"units and value. Units in 'seconds' and the default value is 3600.</"
-"li><li>Perfect Forward Secrecy: PFS limited to using Diffie-Hellman groups "
-"2, 5(default) and 14.</li><li>IKE Phase 1 negotiation mode: Limited to "
-"'main' mode only.</li>\n"
-"All fields are optional."
-msgstr ""
-"Creare una politica IKE per il progetto corrente.\n"
-"\n"
-"Una politica IKE è un'associazione dei seguenti attributi:\n"
-"\n"
-"<li>Algoritmo di autorizzazione: l'algoritmo di autorizzazione limitato solo "
-"a SHA1.</li><li>Algoritmo di codifica: il tipo di algoritmo (3des, aes-128, "
-"aes-192, aes-256) utilizzato nella politica IKE.</li><li>Versione IKE: il "
-"tipo di versione (v1/v2) da filtrare.</li><li>Durata: la durata consiste in "
-"unità e valore. Le unità sono in 'secondi' e il valore predefinito è 3600.</"
-"li><li>Perfect Forward Secrecy: PFS limitato all'utilizzo di gruppi Diffie-"
-"Hellman 2, 5 (predefinito) e 14.</li><li>Modalità di negoziazione IKE Fase "
-"1: limitato solo alla modalità 'principale'.</li>\n"
-"Tutti i campi sono facoltativi."
-
-msgid ""
-"Create IPSec Policy for current project.\n"
-"\n"
-"An IPSec policy is an association of the following attributes:\n"
-"\n"
-"<li>Authorization algorithm: Auth_algorithm limited to SHA1 only.</"
-"li><li>Encapsulation mode: The type of IPsec tunnel (tunnel/transport) to be "
-"used.</li><li>Encryption algorithm: The type of algorithm (3des, aes-128, "
-"aes-192, aes-256) used in the IPSec Policy.</li><li>Lifetime: Life time "
-"consists of units and value. Units in 'seconds' and the default value is "
-"3600.</li><li>Perfect Forward Secrecy: PFS limited to using Diffie-Hellman "
-"groups 2, 5(default) and 14.</li><li>Transform Protocol: The type of "
-"protocol (esp, ah, ah-esp) used in IPSec Policy.</li>\n"
-"All fields are optional."
-msgstr ""
-"Creare una politica IPSec per il progetto corrente.\n"
-"\n"
-"Una politica IPSec è un'associazione dei seguenti attributi:\n"
-"\n"
-"<li>Algoritmo di autorizzazione: Auth_algorithm limitato solo a SHA1.</"
-"li><li>Modalità di incapsulamento: il tipo di tunnel IPsec (tunnel/"
-"trasporto) da utilizzare.</li><li>Algoritmo di codifica: il tipo di "
-"algoritmo (3des, aes-128, aes-192, aes-256) utilizzato nella politica IPSec."
-"</li><li>Durata: la durata consiste di unità e valore. Le unità sono in "
-"'secondi' e il valore predefinito è 3600.</li><li>Perfect Forward Secrecy: "
-"PFS limitato all'utilizzo di gruppi Diffie-Hellman 2, 5 (predefinito) e 14.</"
-"li><li>Protocollo di trasformazione: il tipo di protocollo (esp, ah, ah-esp) "
-"utilizzato nella politica IPSec.</li>\n"
-"Tutti i campi sono facoltativi."
-
-msgid ""
-"Create IPSec Site Connection for current project.\n"
-"\n"
-"Assign a name and description for the IPSec Site Connection. All fields in "
-"this tab are required."
-msgstr ""
-"Creare la  connessione al sito IPSec per il progetto corrente. \n"
-"\n"
-"Assegnare un nome e una descrizione alla connessione al sito IPSec. Tutti i "
-"campi di questa scheda sono obbligatori."
-
 msgid "Create Image"
 msgstr "Creare un'Immagine"
 
@@ -1598,27 +1496,6 @@ msgstr "Crea trasferimento"
 
 msgid "Create User"
 msgstr "Crea utente"
-
-msgid ""
-"Create VPN Service for current project.\n"
-"\n"
-"The VPN service is attached to a router and references to a single subnet to "
-"push to a remote site.\n"
-"Specify a name, description, router, and subnet for the VPN Service. Admin "
-"State is UP (True) by default.\n"
-"\n"
-"The router, subnet and admin state fields are required, all others are "
-"optional."
-msgstr ""
-"Creare un servizio VPN per il progetto corrente. \n"
-"\n"
-"Il servizio VPN è collegato a un router e fa riferimento ad una singola "
-"sottorete per accedere ad un sito remoto.\n"
-"Specificare un nome, una descrizione, un router e una sottorete per il "
-"servizio VPN. Lo stato Admin è UP (True) per impostazione predefinita.\n"
-"\n"
-"I campi router, sottorete e stato admin sono obbligatori, tutti gli altri "
-"sono facoltativi. "
 
 msgid "Create Volume"
 msgstr "Crea volume"
@@ -2273,11 +2150,6 @@ msgid_plural "Delete Routers"
 msgstr[0] "Elimina router"
 msgstr[1] "Elimina router"
 
-msgid "Delete Router Rule"
-msgid_plural "Delete Router Rules"
-msgstr[0] "Elimina regola router"
-msgstr[1] "Elimina regole router"
-
 msgid "Delete Rule"
 msgid_plural "Delete Rules"
 msgstr[0] "Elimina regola"
@@ -2469,11 +2341,6 @@ msgid_plural "Deleted Routers"
 msgstr[0] "Router eliminato"
 msgstr[1] "Router eliminati"
 
-msgid "Deleted Router Rule"
-msgid_plural "Deleted Router Rules"
-msgstr[0] "Regola router eliminata"
-msgstr[1] "Regole router eliminate"
-
 msgid "Deleted Rule"
 msgid_plural "Deleted Rules"
 msgstr[0] "Regola eliminata"
@@ -2543,9 +2410,6 @@ msgstr "Eliminazione"
 msgid "Deleting VIP %s from this pool cannot be undone."
 msgstr "L'eliminazione di VIP %s da questo pool non può essere annullata."
 
-msgid "Deny"
-msgstr "Nega"
-
 msgid "Description"
 msgstr "Descrizione"
 
@@ -2588,9 +2452,6 @@ msgstr "Nome oggetto di destinazione"
 msgid "Destination port (integer in [1, 65535] or range in a:b)"
 msgstr ""
 "Porta di destinazione (numero intero in [1, 65535] o intervallo in a:b)"
-
-msgid "Destination:"
-msgstr "Destinazione:"
 
 msgid "Detach Interface"
 msgstr "Scollega interfaccia"
@@ -3386,10 +3247,6 @@ msgstr "Impossibile aggiungere l'agent %(agent_name)s per la rete %(network)s."
 #, python-format
 msgid "Failed to add route : %s"
 msgstr "Impossibile aggiungere l'instradamento: %s"
-
-#, python-format
-msgid "Failed to add router rule %s"
-msgstr "Impossibile aggiungere la regola del router %s"
 
 #, python-format
 msgid "Failed to add router(s) to firewall %(name)s: %(reason)s"
@@ -4291,9 +4148,6 @@ msgstr ""
 "Le immagini possono essere fornite mediante un URL HTTP/HTTPS oppure essere "
 "caricate da un file system locale. "
 
-msgid "Implementation"
-msgstr "Implementazione"
-
 msgid "Import Key Pair"
 msgstr "Importa coppia di chiavi"
 
@@ -4371,9 +4225,6 @@ msgstr "Byte del percorso file inseriti"
 
 msgid "Injected Files"
 msgstr "File inseriti"
-
-msgid "Input must be in CIDR format"
-msgstr "L'input deve essere in formato CIDR"
 
 msgid "Insert Rule"
 msgstr "Inserisci regola"
@@ -4529,13 +4380,6 @@ msgstr ""
 
 msgid "Key Size (bits)"
 msgstr "Dimensione chiave (bit)"
-
-msgid ""
-"Key pair name may only contain letters, numbers, underscores, spaces and "
-"hyphens."
-msgstr ""
-"Il nome della coppia di chiavi può contenere solo lettere, numeri, caratteri "
-"di sottolineatura, spazi e trattini."
 
 msgid "Key pair to use for authentication."
 msgstr "Coppia di chiavi da utilizzare per l'autenticazione."
@@ -5251,9 +5095,6 @@ msgstr ""
 "Successivo hop deve essere una parte di una delle sottoreti a cui sono "
 "collegate le interfacce del router."
 
-msgid "Next Hops"
-msgstr "Hop successivi"
-
 msgid "No"
 msgstr "No"
 
@@ -5606,9 +5447,6 @@ msgstr "Apri porta/intervallo porte:"
 msgid "Optional Parameters"
 msgstr "Parametri facoltativi"
 
-msgid "Optional: Next Hop Addresses (comma delimited)"
-msgstr "Facoltativo: indirizzi Next Hop (delimitati da virgole)"
-
 msgid "Optionally, you may choose to create a new volume."
 msgstr "Facoltativamente, è possibile scegliere di creare un nuovo volume."
 
@@ -5781,9 +5619,6 @@ msgstr "Periodo"
 
 msgid "Period:"
 msgstr "Periodo:"
-
-msgid "Permit"
-msgstr "Consenti"
 
 msgid "Physical Network"
 msgstr "Rete fisica"
@@ -6351,9 +6186,6 @@ msgctxt "Task status of an Instance"
 msgid "Rescuing"
 msgstr "Recupero in corso"
 
-msgid "Reset to Default"
-msgstr "Reimposta su Predefinito"
-
 msgid "Resize"
 msgstr "Ridimensiona"
 
@@ -6566,20 +6398,8 @@ msgstr "ID router"
 msgid "Router Name"
 msgstr "Nome router"
 
-msgid "Router Rule Grid"
-msgstr "Griglia regole router"
-
-msgid "Router Rules"
-msgstr "Regole router"
-
-msgid "Router Rules Grid"
-msgstr "Griglia regole router"
-
 msgid "Router Type"
 msgstr "Tipo di router"
-
-msgid "Router rule added"
-msgstr "Aggiunta regola del router"
 
 #, python-format
 msgid "Router(s)  was successfully removed from firewall %(firewall)s."
@@ -6591,13 +6411,6 @@ msgstr "I router sono stati aggiunti correttamente al firewall %(firewall)s."
 
 msgid "Routers"
 msgstr "Router"
-
-msgid ""
-"Routing rules to apply to router. Rules are matched by most specific source "
-"first and then by most specific destination."
-msgstr ""
-"Le regole di instradamento da applicare al router. Le regole sono seguite "
-"prima dall'origine più specifica e poi dalla destinazione più specifica."
 
 msgid "Rule"
 msgstr "Regola"
@@ -6615,9 +6428,6 @@ msgstr ""
 #, python-format
 msgid "Rule %s was successfully updated."
 msgstr "La regola %s è stata aggiornata correttamente."
-
-msgid "Rule Conflict"
-msgstr "Conflitto di regole"
 
 msgid "Rule:"
 msgstr "Regola:"
@@ -7217,12 +7027,6 @@ msgstr[1] "Istanze riavviate a caldo"
 msgid "Something went wrong!"
 msgstr "Si è verificato un errore."
 
-msgid "Source"
-msgstr "Origine"
-
-msgid "Source CIDR"
-msgstr "CIDR di origine"
-
 msgid "Source IP"
 msgstr "IP di origine"
 
@@ -7254,9 +7058,6 @@ msgid ""
 msgstr ""
 "L'indirizzo di rete di origine/destinazione e la versione IP sono "
 "incongruenti. Renderli congruenti."
-
-msgid "Source:"
-msgstr "Origine:"
 
 msgctxt "Task status of an Instance"
 msgid "Spawning"
@@ -7470,14 +7271,6 @@ msgstr "Nome sottorete"
 
 msgid "Subnet list can not be retrieved."
 msgstr "Impossibile ottenere la lista delle sottoreti."
-
-#, python-format
-msgid "Subnet: %(dest_subnetname)s"
-msgstr "Sottorete: %(dest_subnetname)s"
-
-#, python-format
-msgid "Subnet: %(row_source_subnetname)s"
-msgstr "Sottorete: %(row_source_subnetname)s"
 
 msgid "Subnetpool"
 msgstr "Pool di sottoreti"
@@ -7940,12 +7733,6 @@ msgid ""
 "implemented."
 msgstr "Il nome della rete fisica su cui la rete virtuale è implementata."
 
-msgid ""
-"The next hop addresses can be used to override the router used by the client."
-msgstr ""
-"Gli indirizzi next hop possono essere utilizzati per sovrapporli al router "
-"utilizzato dal client."
-
 msgid "The page you were looking for doesn't exist"
 msgstr "La pagina che si sta cercando non esiste"
 
@@ -8137,9 +7924,6 @@ msgid ""
 msgstr ""
 "Obbligatoria per le operazioni da eseguire durante il ciclo di vita dello "
 "stack"
-
-msgid "This name is already taken."
-msgstr "Questo nome è già utilizzato"
 
 msgid "This panel needs JavaScript support."
 msgstr "Questo pannello necessita del supporto JavaScript."
@@ -8589,9 +8373,6 @@ msgstr "Impossibile eliminare il pool. %s"
 #, python-format
 msgid "Unable to delete router \"%s\""
 msgstr "Impossibile eliminare il router \"%s\""
-
-msgid "Unable to delete router rule."
-msgstr "Impossibile eliminare la regola del router."
 
 #, python-format
 msgid "Unable to delete rule. %s"
@@ -9542,9 +9323,6 @@ msgstr "Impossibile aggiornare la password utente."
 
 msgid "Unable to update the user."
 msgstr "Impossibile aggiornare l'utente."
-
-msgid "Unable to update the volume type."
-msgstr "Impossibile aggiornare il tipo di volume."
 
 msgid "Unable to update volume consistency group."
 msgstr "Impossibile aggiornare il gruppo di coerenza del volume."

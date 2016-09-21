@@ -8,8 +8,8 @@
 @import "util";
 
 // Vendor Components
-@import "/bootstrap/scss/bootstrap";
-@import "/horizon/lib/font-awesome/scss/font-awesome.scss";
+@import "/horizon/lib/bootstrap_scss/scss/bootstrap";
+@import "/horizon/lib/font_awesome/scss/font-awesome.scss";
 
 // Main Page Layout
 @import "layout";
@@ -20,6 +20,7 @@
 @import "components/charts";
 @import "components/checkboxes";
 @import "components/datepicker";
+@import "components/dl_lists";
 @import "components/dropdowns";
 @import "components/forms";
 @import "components/help_panel";
@@ -32,9 +33,11 @@
 @import "components/modals";
 @import "components/navbar";
 @import "components/network_topology";
+@import "components/network_topology_svg";
 @import "components/pie_charts";
 @import "components/progress_bars";
 @import "components/quota";
+@import "components/radiobuttons";
 @import "components/resource_browser";
 @import "components/resource_topology";
 @import "components/selection_menu";

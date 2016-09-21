@@ -10,17 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from django.core.exceptions import ValidationError  # noqa
 from django.core.urlresolvers import reverse
 from django.template import defaultfilters as filters
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
 
-from horizon import exceptions
 from horizon import forms
 from horizon import tables
-from keystoneclient.exceptions import Conflict  # noqa
 
 from openstack_dashboard import api
 from openstack_dashboard import policy
@@ -201,17 +198,13 @@ class DeleteTenantsAction(policy.PolicyTargetMixin, tables.DeleteAction):
 
 
 class TenantFilterAction(tables.FilterAction):
-    def filter(self, table, tenants, filter_string):
-        """Really naive case-insensitive search."""
-        # FIXME(gabriel): This should be smarter. Written for demo purposes.
-        q = filter_string.lower()
-
-        def comp(tenant):
-            if q in tenant.name.lower():
-                return True
-            return False
-
-        return filter(comp, tenants)
+    if api.keystone.VERSIONS.active < 3:
+        filter_type = "query"
+    else:
+        filter_type = "server"
+        filter_choices = (('name', _("Project Name ="), True),
+                          ('id', _("Project ID ="), True),
+                          ('enabled', _("Enabled ="), True, _('e.g. Yes/No')))
 
 
 class UpdateRow(tables.Row):
@@ -223,58 +216,21 @@ class UpdateRow(tables.Row):
         return project_info
 
 
-class UpdateCell(tables.UpdateAction):
-    def allowed(self, request, project, cell):
-        policy_rule = (("identity", "identity:update_project"),)
-        return (
-            (cell.column.name != 'enabled' or
-             request.user.project_id != cell.datum.id) and
-            api.keystone.keystone_can_edit_project() and
-            policy.check(policy_rule, request))
-
-    def update_cell(self, request, datum, project_id,
-                    cell_name, new_cell_value):
-        # inline update project info
-        try:
-            project_obj = datum
-            # updating changed value by new value
-            setattr(project_obj, cell_name, new_cell_value)
-            api.keystone.tenant_update(
-                request,
-                project_id,
-                name=project_obj.name,
-                description=project_obj.description,
-                enabled=project_obj.enabled)
-
-        except Conflict:
-            # Returning a nice error message about name conflict. The message
-            # from exception is not that clear for the users.
-            message = _("This name is already taken.")
-            raise ValidationError(message)
-        except Exception:
-            exceptions.handle(request, ignore=True)
-            return False
-        return True
-
-
 class TenantsTable(tables.DataTable):
-    name = tables.Column('name', verbose_name=_('Name'),
-                         link=("horizon:identity:projects:detail"),
-                         form_field=forms.CharField(max_length=64),
-                         update_action=UpdateCell)
+    name = tables.WrappingColumn('name', verbose_name=_('Name'),
+                                 link=("horizon:identity:projects:detail"),
+                                 form_field=forms.CharField(max_length=64))
     description = tables.Column(lambda obj: getattr(obj, 'description', None),
                                 verbose_name=_('Description'),
                                 form_field=forms.CharField(
                                     widget=forms.Textarea(attrs={'rows': 4}),
-                                    required=False),
-                                update_action=UpdateCell)
+                                    required=False))
     id = tables.Column('id', verbose_name=_('Project ID'))
     enabled = tables.Column('enabled', verbose_name=_('Enabled'), status=True,
                             filters=(filters.yesno, filters.capfirst),
                             form_field=forms.BooleanField(
                                 label=_('Enabled'),
-                                required=False),
-                            update_action=UpdateCell)
+                                required=False))
 
     if api.keystone.VERSIONS.active >= 3:
         domain_name = tables.Column(
@@ -284,8 +240,7 @@ class TenantsTable(tables.DataTable):
                                 filters=(filters.yesno, filters.capfirst),
                                 form_field=forms.BooleanField(
                                     label=_('Enabled'),
-                                    required=False),
-                                update_action=UpdateCell)
+                                    required=False))
 
     def get_project_detail_link(self, project):
         # this method is an ugly monkey patch, needed because

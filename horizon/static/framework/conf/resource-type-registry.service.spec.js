@@ -78,9 +78,14 @@
     describe('label', function() {
       var label;
       beforeEach(function() {
+        var properties = {
+          id: 'eyedee',
+          bd: { label: 'beedee' }
+        };
         var value = service.getResourceType('something', {})
           .setProperty('example', {label: gettext("Example")})
-          .setProperty('bad_example', {});
+          .setProperty('bad_example', {})
+          .setProperties(properties);
         label = value.label;
       });
 
@@ -94,6 +99,11 @@
 
       it('returns the nice label if there is one', function() {
         expect(label('example')).toBe('Example');
+      });
+
+      it('returns the properties set via the properties descriptor', function() {
+        expect(label('id')).toBe('eyedee');
+        expect(label('bd')).toBe('beedee');
       });
     });
 
@@ -193,6 +203,18 @@
         }
         type.setListFunction(list);
         expect(type.list()).toBe('this would be a promise');
+      });
+
+      it("has a default isInTransition function that returns false", function() {
+        expect(type.itemInTransitionFunction()).toBe(false);
+      });
+
+      it("allows setting an isInTransition function", function() {
+        function isInTransitionTest() {
+          return "would return a boolean";
+        }
+        type.setItemInTransitionFunction(isInTransitionTest);
+        expect(type.itemInTransitionFunction()).toBe("would return a boolean");
       });
 
       it("allows setting of a summary template URL", function() {

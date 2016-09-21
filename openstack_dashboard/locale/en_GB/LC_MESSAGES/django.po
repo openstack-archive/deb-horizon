@@ -5,13 +5,13 @@
 # Rob Cresswell <robert.cresswell@outlook.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 10.0.0.0b3.dev89\n"
+"Project-Id-Version: horizon 10.0.0.0b4.dev98\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-07-28 12:36+0000\n"
+"POT-Creation-Date: 2016-09-07 18:08+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-07-05 11:59+0000\n"
+"PO-Revision-Date: 2016-09-07 11:20+0000\n"
 "Last-Translator: Andi Chandler <andi@gowling.com>\n"
 "Language-Team: English (United Kingdom)\n"
 "Language: en-GB\n"
@@ -57,6 +57,10 @@ msgid ""
 msgstr ""
 "\"None\" indicates that no QoS Spec is currently associated. Conversely, "
 "setting the QoS Spec to \"None\" will remove the current association."
+
+#, python-format
+msgid "%(cidr)s %(pool_name)s"
+msgstr "%(cidr)s %(pool_name)s"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -219,15 +223,6 @@ msgstr ""
 "specified per protocol. A mapping is simply a list of rules. The only "
 "Identity API objects that will support mapping are: user and group."
 
-msgid ""
-"A more specific rule affects a portion of this traffic so a rule cannot be "
-"automatically generated to control the behavior of the entire source/"
-"destination combination."
-msgstr ""
-"A more specific rule affects a portion of this traffic so a rule cannot be "
-"automatically generated to control the behavior of the entire source/"
-"destination combination."
-
 msgid "A new uploaded file will replace the content of the current object"
 msgstr "A new uploaded file will replace the content of the current object"
 
@@ -285,14 +280,6 @@ msgstr "ALLOW"
 msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 msgstr "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
-#, python-format
-msgid "ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(cidr)s"
-msgstr "ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(cidr)s"
-
-#, python-format
-msgid "ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(group)s"
-msgstr "ALLOW %(from)s:%(to)s/%(ip_protocol)s from %(group)s"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon Machine Image"
 
@@ -307,9 +294,6 @@ msgstr "API Endpoints"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdisk Image"
-
-msgid "AWS compatible"
-msgstr "AWS compatible"
 
 msgid "Accept Transfer"
 msgstr "Accept Transfer"
@@ -334,9 +318,6 @@ msgstr "Action Log"
 
 msgid "Action for the firewall rule"
 msgstr "Action for the firewall rule"
-
-msgid "Action:"
-msgstr "Action:"
 
 msgctxt "Current status of a Firewall"
 msgid "Active"
@@ -465,9 +446,6 @@ msgstr "Add Router"
 
 msgid "Add Router Route"
 msgstr "Add Router Route"
-
-msgid "Add Router Rule"
-msgstr "Add Router Rule"
 
 msgid "Add Router to Firewall"
 msgstr "Add Router to Firewall"
@@ -665,11 +643,17 @@ msgstr "Admin Password"
 msgid "Admin State"
 msgstr "Admin State"
 
+msgid "Admin State ="
+msgstr "Admin State ="
+
 msgid "Admin State Up"
 msgstr "Admin State Up"
 
-msgid "Admin URL:"
-msgstr "Admin URL:"
+msgid "Admin State is UP (True) by default."
+msgstr "Admin State is UP (True) by default."
+
+msgid "Admin:"
+msgstr "Admin:"
 
 msgid ""
 "Administrator Note: Use the following CLI command to import the default "
@@ -743,6 +727,9 @@ msgstr "All available volume types"
 msgid "All available volumes"
 msgstr "All available volumes"
 
+msgid "All fields are optional."
+msgstr "All fields are optional."
+
 msgid ""
 "All selected volume types must be associated with the same volume backend "
 "name."
@@ -772,6 +759,10 @@ msgstr "Allocated"
 msgid "Allocated Floating IP %(ip)s."
 msgstr "Allocated Floating IP %(ip)s."
 
+#, python-format
+msgid "Allocated floating IP %(ip)s."
+msgstr "Allocated floating IP %(ip)s."
+
 msgid ""
 "Allocates requests to the instance with the least number of active "
 "connections."
@@ -787,6 +778,12 @@ msgstr "Allowed Address Pairs"
 
 msgid "Amount of energy"
 msgstr "Amount of energy"
+
+msgid "An IKE policy is an association of the following attributes:"
+msgstr "An IKE policy is an association of the following attributes:"
+
+msgid "An IPSec policy is an association of the following attributes"
+msgstr "An IPSec policy is an association of the following attributes"
 
 msgid "An external (HTTP) URL to load the template from."
 msgstr "An external (HTTP) URL to load the template from."
@@ -942,6 +939,9 @@ msgstr "Attributes"
 msgid "Audited"
 msgstr "Audited"
 
+msgid "Auth algorithm limited to SHA1 only."
+msgstr "Auth algorithm limited to SHA1 only."
+
 msgid "Authentication URL"
 msgstr "Authentication URL"
 
@@ -969,6 +969,9 @@ msgstr "Automatically schedule new host."
 
 msgid "Availability Zone"
 msgstr "Availability Zone"
+
+msgid "Availability Zone ="
+msgstr "Availability Zone ="
 
 msgid "Availability Zone Name"
 msgstr "Availability Zone Name"
@@ -1097,6 +1100,9 @@ msgstr "Boot from volume snapshot (creates a new volume)"
 msgid "Bootable"
 msgstr "Bootable"
 
+msgid "Bootable ="
+msgstr "Bootable ="
+
 msgid "Bootstrap Theme Preview"
 msgstr "Bootstrap Theme Preview"
 
@@ -1136,6 +1142,10 @@ msgstr "CIDR"
 
 msgid "CIDR must be specified."
 msgstr "CIDR must be specified."
+
+#, python-format
+msgid "CIDRs allowed for user private %(ip_ver)s networks are %(allowed)s."
+msgstr "CIDRs allowed for user private %(ip_ver)s networks are %(allowed)s."
 
 msgid "CPU architecture of the image."
 msgstr "CPU architecture of the image."
@@ -1364,9 +1374,6 @@ msgstr "Comma-delimited list of valid remote IDs from the identity provider."
 msgid "Comma-separated key=value pairs"
 msgstr "Comma-separated key=value pairs"
 
-msgid "Component"
-msgstr "Component"
-
 msgid "Compute"
 msgstr "Compute"
 
@@ -1418,9 +1425,6 @@ msgstr "Confirm or Revert Resize/Migrate"
 msgctxt "Task status of an Instance"
 msgid "Confirming Resize or Migrate"
 msgstr "Confirming Resize or Migrate"
-
-msgid "Conflicting Rule"
-msgstr "Conflicting Rule"
 
 msgid "Connection Limit"
 msgstr "Connection Limit"
@@ -1587,74 +1591,20 @@ msgstr "Create Group"
 msgid "Create Host Aggregate"
 msgstr "Create Host Aggregate"
 
-msgid ""
-"Create IKE Policy for current project.\n"
-"\n"
-"An IKE policy is an association of the following attributes:\n"
-"\n"
-"<li>Authorization algorithm: Auth algorithm limited to SHA1 only.</"
-"li><li>Encryption algorithm: The type of algorithm (3des, aes-128, aes-192, "
-"aes-256) used in the IKE Policy.</li><li>IKE version: The type of version "
-"(v1/v2) that needs to be filtered.</li><li>Lifetime: Life time consists of "
-"units and value. Units in 'seconds' and the default value is 3600.</"
-"li><li>Perfect Forward Secrecy: PFS limited to using Diffie-Hellman groups "
-"2, 5(default) and 14.</li><li>IKE Phase 1 negotiation mode: Limited to "
-"'main' mode only.</li>\n"
-"All fields are optional."
-msgstr ""
-"Create IKE Policy for current project.\n"
-"\n"
-"An IKE policy is an association of the following attributes:\n"
-"\n"
-"<li>Authorisation algorithm: Auth algorithm limited to SHA1 only.</"
-"li><li>Encryption algorithm: The type of algorithm (3des, aes-128, aes-192, "
-"aes-256) used in the IKE Policy.</li><li>IKE version: The type of version "
-"(v1/v2) that needs to be filtered.</li><li>Lifetime: Life time consists of "
-"units and value. Units in 'seconds' and the default value is 3600.</"
-"li><li>Perfect Forward Secrecy: PFS limited to using Diffie-Hellman groups "
-"2, 5(default) and 14.</li><li>IKE Phase 1 negotiation mode: Limited to "
-"'main' mode only.</li>\n"
-"All fields are optional."
+msgid "Create IKE Policy for current project."
+msgstr "Create IKE Policy for current project."
+
+msgid "Create IPSec Policy for current project."
+msgstr "Create IPSec Policy for current project."
 
 msgid ""
-"Create IPSec Policy for current project.\n"
-"\n"
-"An IPSec policy is an association of the following attributes:\n"
-"\n"
-"<li>Authorization algorithm: Auth_algorithm limited to SHA1 only.</"
-"li><li>Encapsulation mode: The type of IPsec tunnel (tunnel/transport) to be "
-"used.</li><li>Encryption algorithm: The type of algorithm (3des, aes-128, "
-"aes-192, aes-256) used in the IPSec Policy.</li><li>Lifetime: Life time "
-"consists of units and value. Units in 'seconds' and the default value is "
-"3600.</li><li>Perfect Forward Secrecy: PFS limited to using Diffie-Hellman "
-"groups 2, 5(default) and 14.</li><li>Transform Protocol: The type of "
-"protocol (esp, ah, ah-esp) used in IPSec Policy.</li>\n"
-"All fields are optional."
+"Create IPSec Site Connection for current project. Assign a name and "
+"description for the IPSec Site Connection. All fields in this tab are "
+"required."
 msgstr ""
-"Create IPSec Policy for current project.\n"
-"\n"
-"An IPSec policy is an association of the following attributes:\n"
-"\n"
-"<li>Authorisation algorithm: Auth_algorithm limited to SHA1 only.</"
-"li><li>Encapsulation mode: The type of IPsec tunnel (tunnel/transport) to be "
-"used.</li><li>Encryption algorithm: The type of algorithm (3des, aes-128, "
-"aes-192, aes-256) used in the IPSec Policy.</li><li>Lifetime: Life time "
-"consists of units and value. Units in 'seconds' and the default value is "
-"3600.</li><li>Perfect Forward Secrecy: PFS limited to using Diffie-Hellman "
-"groups 2, 5(default) and 14.</li><li>Transform Protocol: The type of "
-"protocol (esp, ah, ah-esp) used in IPSec Policy.</li>\n"
-"All fields are optional."
-
-msgid ""
-"Create IPSec Site Connection for current project.\n"
-"\n"
-"Assign a name and description for the IPSec Site Connection. All fields in "
-"this tab are required."
-msgstr ""
-"Create IPSec Site Connection for current project.\n"
-"\n"
-"Assign a name and description for the IPSec Site Connection. All fields in "
-"this tab are required."
+"Create IPSec Site Connection for current project. Assign a name and "
+"description for the IPSec Site Connection. All fields in this tab are "
+"required."
 
 msgid "Create Image"
 msgstr "Create Image"
@@ -1726,26 +1676,8 @@ msgstr "Create Transfer"
 msgid "Create User"
 msgstr "Create User"
 
-msgid ""
-"Create VPN Service for current project.\n"
-"\n"
-"The VPN service is attached to a router and references to a single subnet to "
-"push to a remote site.\n"
-"Specify a name, description, router, and subnet for the VPN Service. Admin "
-"State is UP (True) by default.\n"
-"\n"
-"The router, subnet and admin state fields are required, all others are "
-"optional."
-msgstr ""
-"Create VPN Service for current project.\n"
-"\n"
-"The VPN service is attached to a router and references to a single subnet to "
-"push to a remote site.\n"
-"Specify a name, description, router, and subnet for the VPN Service. Admin "
-"State is UP (True) by default.\n"
-"\n"
-"The router, subnet and admin state fields are required, all others are "
-"optional."
+msgid "Create VPN service for current project."
+msgstr "Create VPN service for current project."
 
 msgid "Create Volume"
 msgstr "Create Volume"
@@ -2428,11 +2360,6 @@ msgid_plural "Delete Routers"
 msgstr[0] "Delete Router"
 msgstr[1] "Delete Routers"
 
-msgid "Delete Router Rule"
-msgid_plural "Delete Router Rules"
-msgstr[0] "Delete Router Rule"
-msgstr[1] "Delete Router Rules"
-
 msgid "Delete Rule"
 msgid_plural "Delete Rules"
 msgstr[0] "Delete Rule"
@@ -2630,11 +2557,6 @@ msgid_plural "Deleted Routers"
 msgstr[0] "Deleted Router"
 msgstr[1] "Deleted Routers"
 
-msgid "Deleted Router Rule"
-msgid_plural "Deleted Router Rules"
-msgstr[0] "Deleted Router Rule"
-msgstr[1] "Deleted Router Rules"
-
 msgid "Deleted Rule"
 msgid_plural "Deleted Rules"
 msgstr[0] "Deleted Rule"
@@ -2726,9 +2648,6 @@ msgstr "Deleting VIP %s from this pool cannot be undone."
 msgid "Deleting volume consistency group \"%s\""
 msgstr "Deleting volume consistency group \"%s\""
 
-msgid "Deny"
-msgstr "Deny"
-
 msgid "Description"
 msgstr "Description"
 
@@ -2773,9 +2692,6 @@ msgstr "Destination object name"
 
 msgid "Destination port (integer in [1, 65535] or range in a:b)"
 msgstr "Destination port (integer in [1, 65535] or range in a:b)"
-
-msgid "Destination:"
-msgstr "Destination:"
 
 msgid "Detach Interface"
 msgstr "Detach Interface"
@@ -3288,6 +3204,9 @@ msgstr "Encapsulation mode"
 msgid "Encrypted"
 msgstr "Encrypted"
 
+msgid "Encrypted ="
+msgstr "Encrypted ="
+
 msgid "Encrypted Password"
 msgstr "Encrypted Password"
 
@@ -3554,6 +3473,9 @@ msgstr "Extending volume: \"%s\""
 msgid "External"
 msgstr "External"
 
+msgid "External ="
+msgstr "External ="
+
 msgid "External Fixed IPs"
 msgstr "External Fixed IPs"
 
@@ -3600,10 +3522,6 @@ msgstr "Failed to add agent %(agent_name)s for network %(network)s."
 #, python-format
 msgid "Failed to add route : %s"
 msgstr "Failed to add route : %s"
-
-#, python-format
-msgid "Failed to add router rule %s"
-msgstr "Failed to add router rule %s"
 
 #, python-format
 msgid "Failed to add router(s) to firewall %(name)s: %(reason)s"
@@ -3921,6 +3839,9 @@ msgstr "Firewall Rules"
 msgid "Firewalls"
 msgstr "Firewalls"
 
+msgid "Fixed IP Address"
+msgstr "Fixed IP Address"
+
 msgid "Fixed IPs"
 msgstr "Fixed IPs"
 
@@ -3977,6 +3898,15 @@ msgstr ""
 
 msgid "Floating IP"
 msgstr "Floating IP"
+
+msgid "Floating IP Address (optional)"
+msgstr "Floating IP Address (optional)"
+
+msgid "Floating IP Details"
+msgstr "Floating IP Details"
+
+msgid "Floating IP address"
+msgstr "Floating IP address"
 
 #, python-format
 msgid "Floating IP will be removed from VIP \"%s\"."
@@ -4048,6 +3978,9 @@ msgstr "From Port"
 
 msgid "From here you can add a DHCP agent for the network."
 msgstr "From here you can add a DHCP agent for the network."
+
+msgid "From here you can allocate a floating IP to a specific project."
+msgstr "From here you can allocate a floating IP to a specific project."
 
 msgid "From here you can create a snapshot of a volume."
 msgstr "From here you can create a snapshot of a volume."
@@ -4128,6 +4061,13 @@ msgid ""
 msgstr ""
 "Groups are used to manage access and assign roles to multiple users at once. "
 "After creating the group, edit the group to add users."
+
+msgid ""
+"Groups are used to manage access and assign roles to multiple users at once. "
+"Edit the group's name and description."
+msgstr ""
+"Groups are used to manage access and assign roles to multiple users at once. "
+"Edit the group's name and description."
 
 #. Translators: High Availability mode of Neutron router
 msgid "HA mode"
@@ -4264,6 +4204,9 @@ msgstr "ICMP code is provided but ICMP type is missing."
 
 msgid "ID"
 msgstr "ID"
+
+msgid "IKE Phase 1 negotiation mode"
+msgstr "IKE Phase 1 negotiation mode"
 
 msgid "IKE Phase1 negotiation mode"
 msgstr "IKE Phase1 negotiation mode"
@@ -4533,9 +4476,6 @@ msgstr ""
 "Images can be provided via an HTTP/HTTPS URL or be uploaded from your local "
 "file system."
 
-msgid "Implementation"
-msgstr "Implementation"
-
 msgid "Import Key Pair"
 msgstr "Import Key Pair"
 
@@ -4621,9 +4561,6 @@ msgstr "Injected File Path Bytes"
 
 msgid "Injected Files"
 msgstr "Injected Files"
-
-msgid "Input must be in CIDR format"
-msgstr "Input must be in CIDR format"
 
 msgid "Insert Rule"
 msgstr "Insert Rule"
@@ -4715,8 +4652,8 @@ msgstr "Interfaces"
 msgid "Internal Interface"
 msgstr "Internal Interface"
 
-msgid "Internal URL:"
-msgstr "Internal URL:"
+msgid "Internal:"
+msgstr "Internal:"
 
 msgid "Invalid MAC Address format"
 msgstr "Invalid MAC Address format"
@@ -4774,11 +4711,11 @@ msgid "Key Size (bits)"
 msgstr "Key Size (bits)"
 
 msgid ""
-"Key pair name may only contain letters, numbers, underscores, spaces and "
-"hyphens."
+"Key pair name may only contain letters, numbers, underscores, spaces, and "
+"hyphens and may not be white space."
 msgstr ""
-"Key pair name may only contain letters, numbers, underscores, spaces and "
-"hyphens."
+"Key pair name may only contain letters, numbers, underscores, spaces, and "
+"hyphens and may not be white space."
 
 msgid "Key pair to use for authentication."
 msgstr "Key pair to use for authentication."
@@ -4883,6 +4820,16 @@ msgstr "Least connections"
 msgid "Length of Injected File Path"
 msgstr "Length of Injected File Path"
 
+msgid ""
+"Life time consists of units and value. Units in 'seconds' and the default "
+"value is 3600."
+msgstr ""
+"Life time consists of units and value. Units in 'seconds' and the default "
+"value is 3600."
+
+msgid "Lifetime"
+msgstr "Lifetime"
+
 msgid "Lifetime Units"
 msgstr "Lifetime Units"
 
@@ -4906,6 +4853,9 @@ msgstr "Lifetime value for IKE keys "
 
 msgid "Limit"
 msgstr "Limit"
+
+msgid "Limited to 'main' mode only."
+msgstr "Limited to 'main' mode only."
 
 msgid "Links"
 msgstr "Links"
@@ -5073,6 +5023,9 @@ msgstr "Manual"
 msgid "Mapped Fixed IP Address"
 msgstr "Mapped Fixed IP Address"
 
+msgid "Mapped IP Address"
+msgstr "Mapped IP Address"
+
 msgid "Mapping ID"
 msgstr "Mapping ID"
 
@@ -5173,7 +5126,6 @@ msgstr "MidoNet Uplink"
 msgid "Migrate"
 msgstr "Migrate"
 
-#, fuzzy
 msgid "Migrate Host"
 msgstr "Migrate Host"
 
@@ -5515,9 +5467,6 @@ msgstr ""
 "Next Hop IP must be a part of one of the subnets to which the router "
 "interfaces are connected."
 
-msgid "Next Hops"
-msgstr "Next Hops"
-
 msgid "No"
 msgstr "No"
 
@@ -5539,6 +5488,9 @@ msgstr "No State"
 
 msgid "No assigned volumes"
 msgstr "No assigned volumes"
+
+msgid "No associated fixed IP"
+msgstr "No associated fixed IP"
 
 msgid "No associations defined."
 msgstr "No associations defined."
@@ -5566,6 +5518,9 @@ msgstr "No floating IP addresses allocated"
 
 msgid "No floating IP pools available"
 msgstr "No floating IP pools available"
+
+msgid "No floating IP pools with IPv4 subnet available"
+msgstr "No floating IP pools with IPv4 subnet available"
 
 msgid "No floating IPs to disassociate."
 msgstr "No floating IPs to disassociate."
@@ -5624,6 +5579,9 @@ msgstr "No ports available"
 msgid "No ports available."
 msgstr "No ports available."
 
+msgid "No project available"
+msgstr "No project available"
+
 msgid "No projects found."
 msgstr "No projects found."
 
@@ -5632,6 +5590,9 @@ msgstr "No projects selected. All projects can use the flavour."
 
 msgid "No provider is available"
 msgstr "No provider is available"
+
+msgid "No router"
+msgstr "No router"
 
 msgid "No rules defined."
 msgstr "No rules defined."
@@ -5881,9 +5842,6 @@ msgstr "Open Port/Port Range:"
 msgid "Optional Parameters"
 msgstr "Optional Parameters"
 
-msgid "Optional: Next Hop Addresses (comma delimited)"
-msgstr "Optional: Next Hop Addresses (comma delimited)"
-
 msgid "Optionally, you may choose to create a new volume."
 msgstr "Optionally, you may choose to create a new volume."
 
@@ -5945,6 +5903,9 @@ msgstr ""
 
 msgid "PFS"
 msgstr "PFS"
+
+msgid "PFS limited to using Diffie-Hellman groups 2, 5 (default) and 14."
+msgstr "PFS limited to using Diffie-Hellman groups 2, 5 (default) and 14."
 
 msgid "PING"
 msgstr "PING"
@@ -6072,9 +6033,6 @@ msgstr "Period"
 
 msgid "Period:"
 msgstr "Period:"
-
-msgid "Permit"
-msgstr "Permit"
 
 msgid "Physical Network"
 msgstr "Physical Network"
@@ -6369,8 +6327,8 @@ msgstr "Public Key"
 msgid "Public URL"
 msgstr "Public URL"
 
-msgid "Public URL:"
-msgstr "Public URL:"
+msgid "Public:"
+msgstr "Public:"
 
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU Emulator"
@@ -6699,9 +6657,6 @@ msgctxt "Task status of an Instance"
 msgid "Rescuing"
 msgstr "Rescuing"
 
-msgid "Reset to Default"
-msgstr "Reset to Default"
-
 msgid "Resize"
 msgstr "Resize"
 
@@ -6925,20 +6880,11 @@ msgstr "Router ID"
 msgid "Router Name"
 msgstr "Router Name"
 
-msgid "Router Rule Grid"
-msgstr "Router Rule Grid"
-
-msgid "Router Rules"
-msgstr "Router Rules"
-
-msgid "Router Rules Grid"
-msgstr "Router Rules Grid"
+msgid "Router Name ="
+msgstr "Router Name ="
 
 msgid "Router Type"
 msgstr "Router Type"
-
-msgid "Router rule added"
-msgstr "Router rule added"
 
 #, python-format
 msgid "Router(s)  was successfully removed from firewall %(firewall)s."
@@ -6955,13 +6901,6 @@ msgstr "Routers"
 msgid "Routers on %(host)s"
 msgstr "Routers on %(host)s"
 
-msgid ""
-"Routing rules to apply to router. Rules are matched by most specific source "
-"first and then by most specific destination."
-msgstr ""
-"Routing rules to apply to router. Rules are matched by most specific source "
-"first and then by most specific destination."
-
 msgid "Rule"
 msgstr "Rule"
 
@@ -6976,9 +6915,6 @@ msgstr "Rule %(rule)s was successfully removed from policy %(policy)s."
 #, python-format
 msgid "Rule %s was successfully updated."
 msgstr "Rule %s was successfully updated."
-
-msgid "Rule Conflict"
-msgstr "Rule Conflict"
 
 msgid "Rule:"
 msgstr "Rule:"
@@ -7273,6 +7209,9 @@ msgstr "Select a profile"
 msgid "Select a project"
 msgstr "Select a project"
 
+msgid "Select a subnet"
+msgstr "Select a subnet"
+
 msgid "Select a target host"
 msgstr "Select a target host"
 
@@ -7454,6 +7393,9 @@ msgstr "Settings saved."
 msgid "Shared"
 msgstr "Shared"
 
+msgid "Shared ="
+msgstr "Shared ="
+
 msgid "Shared Storage"
 msgstr "Shared Storage"
 
@@ -7538,6 +7480,9 @@ msgstr "Size of root disk"
 
 msgid "Size of volume"
 msgstr "Size of volume"
+
+msgid "Size(GiB) ="
+msgstr "Size(GiB) ="
 
 msgid "Size: "
 msgstr "Size: "
@@ -7630,12 +7575,6 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr "Something went wrong!"
 
-msgid "Source"
-msgstr "Source"
-
-msgid "Source CIDR"
-msgstr "Source CIDR"
-
 msgid "Source IP"
 msgstr "Source IP"
 
@@ -7667,9 +7606,6 @@ msgid ""
 msgstr ""
 "Source/Destination Network Address and IP version are inconsistent. Please "
 "make them consistent."
-
-msgid "Source:"
-msgstr "Source:"
 
 msgctxt "Task status of an Instance"
 msgid "Spawning"
@@ -7715,11 +7651,17 @@ msgstr ""
 msgid "Specify IP address of gateway or check \"Disable Gateway\" checkbox."
 msgstr "Specify IP address of gateway or check \"Disable Gateway\" checkbox."
 
+msgid "Specify IP address or subnet"
+msgstr "Specify IP address or subnet"
+
 msgid "Specify VIP"
 msgstr "Specify VIP"
 
 msgid "Specify a metadata definition namespace to import."
 msgstr "Specify a metadata definition namespace to import."
+
+msgid "Specify a name, description, router, and subnet for the VPN Service."
+msgstr "Specify a name, description, router, and subnet for the VPN Service."
 
 msgid "Specify additional attributes for the subnet."
 msgstr "Specify additional attributes for the subnet."
@@ -7738,6 +7680,9 @@ msgstr "Specify member IP address"
 
 msgid "Specify the details for launching an instance."
 msgstr "Specify the details for launching an instance."
+
+msgid "Specify the subnet IP address for the new port"
+msgstr "Specify the subnet IP address for the new port"
 
 msgid ""
 "Specify this option to copy image data to the image service. If unspecified, "
@@ -7884,14 +7829,6 @@ msgstr "Subnet Name"
 
 msgid "Subnet list can not be retrieved."
 msgstr "Subnet list can not be retrieved."
-
-#, python-format
-msgid "Subnet: %(dest_subnetname)s"
-msgstr "Subnet: %(dest_subnetname)s"
-
-#, python-format
-msgid "Subnet: %(row_source_subnetname)s"
-msgstr "Subnet: %(row_source_subnetname)s"
 
 msgid "Subnetpool"
 msgstr "Subnetpool"
@@ -8250,6 +8187,15 @@ msgstr ""
 "implementations can run on different hosts."
 
 msgid ""
+"The IP address of the new floating IP (e.g. 202.2.3.4). You need to specify "
+"an explicit address which is under the public network CIDR (e.g. "
+"202.2.3.0/24)."
+msgstr ""
+"The IP address of the new floating IP (e.g. 202.2.3.4). You need to specify "
+"an explicit address which is under the public network CIDR (e.g. "
+"202.2.3.0/24)."
+
+msgid ""
 "The Image Location field MUST be a valid and direct URL to the image binary. "
 "URLs that redirect or serve error pages will result in unusable images."
 msgstr ""
@@ -8274,11 +8220,15 @@ msgstr ""
 "order to accept the transfer. Please capture both the Transfer ID and the "
 "Authorisation Key and provide them to your transfer recipient."
 
-msgid "The User Name field cannot be empty."
-msgstr "The User Name field cannot be empty."
-
 msgid "The VNIC type that is bound to the neutron port"
 msgstr "The VNIC type that is bound to the neutron port"
+
+msgid ""
+"The VPN service is attached to a router and references to a single subnet to "
+"push to a remote site."
+msgstr ""
+"The VPN service is attached to a router and references to a single subnet to "
+"push to a remote site."
 
 #, python-format
 msgid ""
@@ -8297,21 +8247,6 @@ msgid ""
 msgstr ""
 "The chart below shows the resources used by this project in relation to the "
 "project's quotas."
-
-msgid ""
-"The color and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column). Clicking the "
-"<span class=\"fa fa-random\"></span> button in the intersection will install "
-"a rule to switch the traffic behavior.<br/> <b>Note:</b> Rules only affect "
-"one direction of traffic. The opposite direction is outlined when hovering "
-"over an intersection."
-msgstr ""
-"The colour and icon of an intersection indicates whether or not traffic is "
-"permitted from the source (row) to the destination (column). Clicking the "
-"<span class=\"fa fa-random\"></span> button in the intersection will install "
-"a rule to switch the traffic behaviour.<br/> <b>Note:</b> Rules only affect "
-"one direction of traffic. The opposite direction is outlined when hovering "
-"over an intersection."
 
 msgid "The container cannot be deleted since it is not empty."
 msgstr "The container cannot be deleted since it is not empty."
@@ -8412,11 +8347,6 @@ msgstr ""
 "The name of the physical network over which the virtual network is "
 "implemented."
 
-msgid ""
-"The next hop addresses can be used to override the router used by the client."
-msgstr ""
-"The next hop addresses can be used to override the router used by the client."
-
 msgid "The page you were looking for doesn't exist"
 msgstr "The page you were looking for does not exist"
 
@@ -8493,6 +8423,13 @@ msgid ""
 msgstr ""
 "The requested instance port is already associated with another floating IP."
 
+msgid ""
+"The router, subnet and admin state fields are required. All others are "
+"optional."
+msgstr ""
+"The router, subnet and admin state fields are required. All others are "
+"optional."
+
 msgid "The specified port is invalid."
 msgstr "The specified port is invalid."
 
@@ -8539,6 +8476,29 @@ msgstr "The subnet in the Network Address is too small (/%s)."
 
 msgid "The time delta must be a number representing the time span in days"
 msgstr "The time delta must be a number representing the time span in days"
+
+msgid "The type of IPsec tunnel (tunnel/transport) to be used."
+msgstr "The type of IPsec tunnel (tunnel/transport) to be used."
+
+msgid ""
+"The type of algorithm (3des, aes-128, aes-192, aes-256) used in the IKE "
+"Policy."
+msgstr ""
+"The type of algorithm (3des, aes-128, aes-192, aes-256) used in the IKE "
+"Policy."
+
+msgid ""
+"The type of algorithm (3des, aes-128, aes-192, aes-256) used in the IPSec "
+"Policy."
+msgstr ""
+"The type of algorithm (3des, aes-128, aes-192, aes-256) used in the IPSec "
+"Policy."
+
+msgid "The type of protocol (esp, ah, ah-esp) used in IPSec Policy."
+msgstr "The type of protocol (esp, ah, ah-esp) used in IPSec Policy."
+
+msgid "The type of version (v1/v2) that needs to be filtered."
+msgstr "The type of version (v1/v2) that needs to be filtered."
 
 #, python-format
 msgid "The volume size cannot be less than the image minimum disk size (%sGiB)"
@@ -8626,9 +8586,6 @@ msgstr ""
 "This is required for operations to be performed throughout the lifecycle of "
 "the stack"
 
-msgid "This name is already taken."
-msgstr "This name is already taken."
-
 msgid "This panel needs JavaScript support."
 msgstr "This panel needs JavaScript support."
 
@@ -8656,6 +8613,9 @@ msgstr "Time since created"
 
 msgid "Time since created (Seconds)"
 msgstr "Time since created (Seconds)"
+
+msgid "Time since update"
+msgstr "Time since update"
 
 msgid "Timeout"
 msgstr "Timeout"
@@ -8686,6 +8646,9 @@ msgstr "To exit the fullscreen mode, click the browser's back button."
 
 msgid "To make volume type private, uncheck this field."
 msgstr "To make volume type private, uncheck this field."
+
+msgid "To specify a subnet or a fixed IP, select any options."
+msgstr "To specify a subnet or a fixed IP, select any options."
 
 msgid ""
 "To specify an allowed IP range, select &quot;CIDR&quot;. To allow access "
@@ -8877,6 +8840,9 @@ msgstr "Unable to add user to primary project."
 
 msgid "Unable to allocate Floating IP."
 msgstr "Unable to allocate Floating IP."
+
+msgid "Unable to allocate floating IP."
+msgstr "Unable to allocate floating IP."
 
 #, python-format
 msgid "Unable to associate IP address %s."
@@ -9099,9 +9065,6 @@ msgstr "Unable to delete pool. %s"
 #, python-format
 msgid "Unable to delete router \"%s\""
 msgstr "Unable to delete router \"%s\""
-
-msgid "Unable to delete router rule."
-msgstr "Unable to delete router rule."
 
 #, python-format
 msgid "Unable to delete rule. %s"
@@ -9474,6 +9437,10 @@ msgid "Unable to retrieve default quota values."
 msgstr "Unable to retrieve default quota values."
 
 #, python-format
+msgid "Unable to retrieve details for %(resource)s \"%(resource_id)s\"."
+msgstr "Unable to retrieve details for %(resource)s \"%(resource_id)s\"."
+
+#, python-format
 msgid "Unable to retrieve details for instance \"%s\"."
 msgstr "Unable to retrieve details for instance \"%s\"."
 
@@ -9543,6 +9510,9 @@ msgstr "Unable to retrieve flavours."
 
 msgid "Unable to retrieve floating IP addresses."
 msgstr "Unable to retrieve floating IP addresses."
+
+msgid "Unable to retrieve floating IP list."
+msgstr "Unable to retrieve floating IP list."
 
 msgid "Unable to retrieve floating IP pools."
 msgstr "Unable to retrieve floating IP pools."
@@ -10069,9 +10039,6 @@ msgstr "Unable to update the user password."
 msgid "Unable to update the user."
 msgstr "Unable to update the user."
 
-msgid "Unable to update the volume type."
-msgstr "Unable to update the volume type."
-
 msgid "Unable to update volume consistency group."
 msgstr "Unable to update volume consistency group."
 
@@ -10101,6 +10068,9 @@ msgstr "Unable to upload object."
 msgid "Unable to upload volume to image for volume: \"%s\""
 msgstr "Unable to upload volume to image for volume: \"%s\""
 
+msgid "Unable to verify Neutron service providers"
+msgstr "Unable to verify Neutron service providers"
+
 msgid "Unable to verify the VNIC types extension in Neutron"
 msgstr "Unable to verify the VNIC types extension in Neutron"
 
@@ -10115,6 +10085,9 @@ msgstr "Unknown Instance"
 
 msgid "Unknown instance (None)"
 msgstr "Unknown instance (None)"
+
+msgid "Unknown resource type for detail API."
+msgstr "Unknown resource type for detail API."
 
 msgid "Unknown volume (None)"
 msgstr "Unknown volume (None)"
@@ -10175,6 +10148,9 @@ msgstr[1] "Unshelved Instances"
 msgctxt "Task status of an Instance"
 msgid "Unshelving"
 msgstr "Unshelving"
+
+msgid "Unspecified"
+msgstr "Unspecified"
 
 msgid "Up"
 msgstr "Up"
@@ -10659,6 +10635,9 @@ msgstr "Volume Limits"
 msgid "Volume Name"
 msgstr "Volume Name"
 
+msgid "Volume Name ="
+msgstr "Volume Name ="
+
 msgid "Volume Snapshot"
 msgstr "Volume Snapshot"
 
@@ -11096,6 +11075,15 @@ msgstr "disabled"
 msgid "dm-crypt"
 msgstr "dm-crypt"
 
+msgid "down"
+msgstr "down"
+
+msgid "e.g. UP / DOWN"
+msgstr "e.g. UP / DOWN"
+
+msgid "e.g. Yes / No"
+msgstr "e.g. Yes / No"
+
 msgid "environment"
 msgstr "environment"
 
@@ -11119,6 +11107,9 @@ msgstr "hold"
 
 msgid "instance"
 msgstr "instance"
+
+msgid "no"
+msgstr "no"
 
 msgid "pseudo-folder"
 msgstr "pseudo-folder"
@@ -11153,8 +11144,14 @@ msgstr "undefined"
 msgid "unknown IP address"
 msgstr "unknown IP address"
 
+msgid "up"
+msgstr "up"
+
 msgid "v1"
 msgstr "v1"
 
 msgid "v2"
 msgstr "v2"
+
+msgid "yes"
+msgstr "yes"

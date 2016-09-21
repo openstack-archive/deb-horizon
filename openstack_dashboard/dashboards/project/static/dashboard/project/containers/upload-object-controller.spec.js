@@ -18,7 +18,7 @@
   'use strict';
 
   describe('horizon.dashboard.project.containers upload-object controller', function() {
-    var controller, $scope;
+    var controller, ctrl;
 
     beforeEach(module('horizon.framework'));
     beforeEach(module('horizon.dashboard.project.containers'));
@@ -30,42 +30,31 @@
       });
     }));
 
-    beforeEach(inject(function ($injector, _$rootScope_) {
+    beforeEach(inject(function ($injector) {
       controller = $injector.get('$controller');
-      $scope = _$rootScope_.$new(true);
+      ctrl = controller('horizon.dashboard.project.containers.UploadObjectModalController');
+      ctrl.form = {name: {$setDirty: angular.noop}};
+      spyOn(ctrl.form.name, '$setDirty');
     }));
 
-    function createController() {
-      return controller('UploadObjectModalController', {$scope: $scope});
-    }
-
     it('should initialise the controller model when created', function test() {
-      var ctrl = createController();
       expect(ctrl.model.name).toEqual('');
       expect(ctrl.model.container.name).toEqual('spam');
       expect(ctrl.model.folder).toEqual('ham');
     });
 
     it('should respond to file changes correctly', function test() {
-      var ctrl = createController();
-      spyOn($scope, '$digest');
       var file = {name: 'eggs'};
-
       ctrl.changeFile([file]);
-
       expect(ctrl.model.name).toEqual('eggs');
       expect(ctrl.model.upload_file).toEqual(file);
-      expect($scope.$digest).toHaveBeenCalled();
+      expect(ctrl.form.name.$setDirty).toHaveBeenCalled();
     });
 
-    it('should respond to file changes correctly if no files are present', function test() {
-      var ctrl = createController();
-      spyOn($scope, '$digest');
-
+    it('should not respond to file changes if no files are present', function test() {
       ctrl.changeFile([]);
-
       expect(ctrl.model.name).toEqual('');
-      expect($scope.$digest).not.toHaveBeenCalled();
+      expect(ctrl.form.name.$setDirty).not.toHaveBeenCalled();
     });
   });
 })();

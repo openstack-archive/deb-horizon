@@ -50,15 +50,64 @@
       });
     });
 
+    describe('isInTransition Function', function() {
+      it("should return true for known transitional statuses", function() {
+        var statuses = ["saving", "queued", "pending_delete"];
+        statuses.forEach(function(status) {
+          var myItem = {status: status};
+          expect(service.isInTransition(myItem)).toBe(true);
+        });
+      });
+
+      it("should return false for unknown statuses", function() {
+        var myItem = {status: "notATransitionalState"};
+        expect(service.isInTransition(myItem)).toBe(false);
+      });
+
+      it("should return false for an empty status", function() {
+        var myItem = {status: undefined};
+        expect(service.isInTransition(myItem)).toBe(false);
+      });
+
+      it("should return false for an undefined status", function() {
+        var myItem = {status: undefined};
+        expect(service.isInTransition(myItem)).toBe(false);
+      });
+
+      it("should return false for a non-string status", function() {
+        var statuses = [3, true, false];
+        statuses.forEach(function(status) {
+          var myItem = {status: status};
+          expect(service.isInTransition(myItem)).toBe(false);
+        });
+      });
+    });
+
     describe('getImagesPromise', function() {
       it("provides a promise that gets translated", inject(function($q, $injector, $timeout) {
         var glance = $injector.get('horizon.app.core.openstack-service-api.glance');
+        var session = $injector.get('horizon.app.core.openstack-service-api.userSession');
         var deferred = $q.defer();
+        var deferredSession = $q.defer();
         spyOn(glance, 'getImages').and.returnValue(deferred.promise);
+        spyOn(session, 'get').and.returnValue(deferredSession.promise);
         var result = service.getImagesPromise({});
         deferred.resolve({data: {items: [{id: 1, updated_at: 'jul1'}]}});
+        deferredSession.resolve({project_id: '12'});
         $timeout.flush();
         expect(result.$$state.value.data.items[0].trackBy).toBe('1jul1');
+      }));
+    });
+
+    describe('getImagePromise', function() {
+      it("provides a promise", inject(function($q, $injector) {
+        var glance = $injector.get('horizon.app.core.openstack-service-api.glance');
+        var deferred = $q.defer();
+        spyOn(glance, 'getImage').and.returnValue(deferred.promise);
+        var result = service.getImagePromise({});
+        deferred.resolve({id: 1, updated_at: 'jul1'});
+        expect(glance.getImage).toHaveBeenCalled();
+        expect(result.$$state.value.updated_at).toBe('jul1');
       }));
     });
   });

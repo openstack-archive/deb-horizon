@@ -100,16 +100,9 @@ class ManageUsersLink(tables.LinkAction):
 
 
 class GroupFilterAction(tables.FilterAction):
-    def filter(self, table, groups, filter_string):
-        """Naive case-insensitive search."""
-        q = filter_string.lower()
-
-        def comp(group):
-            if q in group.name.lower():
-                return True
-            return False
-
-        return filter(comp, groups)
+    filter_type = "server"
+    filter_choices = (("name", _("Group Name ="), True),
+                      ("id", _("Group ID ="), True))
 
 
 class GroupsTable(tables.DataTable):
@@ -188,10 +181,13 @@ class AddMembersLink(tables.LinkAction):
 
 
 class UsersTable(tables.DataTable):
-    name = tables.Column('name', verbose_name=_('User Name'))
-    email = tables.Column('email', verbose_name=_('Email'),
-                          filters=[defaultfilters.escape,
-                                   defaultfilters.urlize])
+    name = tables.WrappingColumn('name', verbose_name=_('User Name'))
+    email = tables.Column(lambda obj: getattr(obj, 'email', None),
+                          verbose_name=_('Email'),
+                          filters=(lambda v: defaultfilters
+                                   .default_if_none(v, ""),
+                                   defaultfilters.escape,
+                                   defaultfilters.urlize))
     id = tables.Column('id', verbose_name=_('User ID'))
     enabled = tables.Column('enabled', verbose_name=_('Enabled'),
                             status=True,

@@ -463,6 +463,14 @@ class Column(html.HTMLElement):
         return None
 
 
+class WrappingColumn(Column):
+    """A column that wraps its contents. Useful for data like UUIDs or names"""
+
+    def __init__(self, *args, **kwargs):
+        super(WrappingColumn, self).__init__(*args, **kwargs)
+        self.classes.append('word-break')
+
+
 class Row(html.HTMLElement):
     """Represents a row in the table.
 
@@ -797,7 +805,7 @@ class Cell(html.HTMLElement):
         elif status is False:
             return "status_down"
         else:
-            return "status_unknown"
+            return "warning"
 
     def get_default_classes(self):
         """Returns a flattened string of the cell's CSS classes."""
@@ -897,6 +905,24 @@ class DataTableOptions(object):
 
         String containing the template which should be used to render the
         table. Defaults to ``"horizon/common/_data_table.html"``.
+
+    .. attribute:: row_actions_dropdown_template
+
+        String containing the template which should be used to render the
+        row actions dropdown. Defaults to
+        ``"horizon/common/_data_table_row_actions_dropdown.html"``.
+
+    .. attribute:: row_actions_row_template
+
+        String containing the template which should be used to render the
+        row actions. Defaults to
+        ``"horizon/common/_data_table_row_actions_row.html"``.
+
+    .. attribute:: table_actions_template
+
+        String containing the template which should be used to render the
+        table actions. Defaults to
+        ``"horizon/common/_data_table_table_actions.html"``.
 
     .. attribute:: context_var_name
 
@@ -1023,12 +1049,18 @@ class DataTableOptions(object):
         self.template = getattr(options,
                                 'template',
                                 'horizon/common/_data_table.html')
-        self.row_actions_dropdown_template = ('horizon/common/_data_table_'
-                                              'row_actions_dropdown.html')
-        self.row_actions_row_template = ('horizon/common/_data_table_'
-                                         'row_actions_row.html')
+        self.row_actions_dropdown_template = \
+            getattr(options,
+                    'row_actions_dropdown_template',
+                    'horizon/common/_data_table_row_actions_dropdown.html')
+        self.row_actions_row_template = \
+            getattr(options,
+                    'row_actions_row_template',
+                    'horizon/common/_data_table_row_actions_row.html')
         self.table_actions_template = \
-            'horizon/common/_data_table_table_actions.html'
+            getattr(options,
+                    'table_actions_template',
+                    'horizon/common/_data_table_table_actions.html')
         self.context_var_name = six.text_type(getattr(options,
                                                       'context_var_name',
                                                       'table'))
@@ -1052,7 +1084,7 @@ class DataTableOptions(object):
         if len(self.data_types) > 1:
             self.mixed_data_type = True
 
-        # However, if the mixed_data_type is set to True manually and the
+        # However, if the mixed_data_type is set to True manually and
         # the data_types is empty, raise an error.
         if self.mixed_data_type and len(self.data_types) <= 1:
             raise ValueError("If mixed_data_type is set to True in class %s, "
@@ -1790,7 +1822,7 @@ class DataTable(object):
         elif status is False:
             return "status_down"
         else:
-            return "status_unknown"
+            return "warning"
 
     def get_columns(self):
         """Returns this table's columns including auto-generated ones."""

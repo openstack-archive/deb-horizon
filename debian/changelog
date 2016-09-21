@@ -1,3 +1,9 @@
+horizon (3:10.0.0~rc1-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Ivan Udovichenko <iudovichenko@mirantis.com>  Thu, 22 Sep 2016 01:48:33 +0300
+
 horizon (3:10.0.0~b2+2016.08.04.git.58bb3341b9-1) UNRELEASED; urgency=medium
 
   * New upstream release based on commit 58bb3341b9.
