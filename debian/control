@@ -83,8 +83,8 @@ Build-Depends-Indep: gettext,
                      python-yaml,
 Standards-Version: 3.9.8
 Homepage: http://horizon.openstack.org
-Vcs-Browser: https://anonscm.debian.org/cgit/openstack/horizon.git/
-Vcs-Git: https://anonscm.debian.org/git/openstack/horizon.git
+Vcs-Browser: https://git.openstack.org/cgit/openstack/deb-horizon?h=debian%2Fnewton
+Vcs-Git: https://git.openstack.org/openstack/deb-horizon -b debian/newton
 
 Package: python-django-horizon
 Section: python
