@@ -1,0 +1,11 @@
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 23 Sep 2016 20:56:03 +0000
+Reviewed-on: https://review.openstack.org/373700
+Project: openstack/deb-horizon
+Branch: refs/heads/master
