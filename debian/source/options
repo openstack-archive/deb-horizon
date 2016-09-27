@@ -1,1 +1,3 @@
 extend-diff-ignore = ".*\.secret_key_store|.*\.mo"
+extend-diff-ignore = "^[^/]*[.]egg-info/"
+extend-diff-ignore = "^[.]gitreview$"

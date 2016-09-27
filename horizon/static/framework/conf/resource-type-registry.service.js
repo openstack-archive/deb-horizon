@@ -100,6 +100,7 @@
       self.type = typeCode;
       self.initActions = initActions;
       self.setProperty = setProperty;
+      self.setProperties = setProperties;
       self.getProperties = getProperties;
       self.getName = getName;
       self.setNames = setNames;
@@ -110,6 +111,8 @@
       self.list = defaultListFunction;
       self.setListFunction = setListFunction;
       self.isListFunctionSet = isListFunctionSet;
+      self.itemInTransitionFunction = defaultItemInTransitionFunction;
+      self.setItemInTransitionFunction = setItemInTransitionFunction;
       self.itemName = itemName;
       self.setItemNameFunction = setItemNameFunction;
       self.setPathParser = setPathParser;
@@ -192,6 +195,31 @@
       }
 
       /**
+       * @ngdoc function
+       * @name setProperties
+       * @description
+       * Syntactic sugar for setProperty.
+       * Allows an object of properties where the key is the id and the value
+       * can either be a string or an object. If the value is a string, we assume
+       * that it is the label. If the value is an object, we use the object as
+       * the property for that key.
+       * @example
+       ```
+       var properties = {
+         id: gettext('ID'),
+         enabled: { label: gettext('Enabled') }
+       };
+       resourceType.setproperties(properties);
+       */
+      function setProperties(properties) {
+        angular.forEach(properties, function(value, key) {
+          var prop = angular.isString(value) ? { label: value } : value;
+          setProperty(key, prop);
+        });
+        return this;
+      }
+
+      /**
        * Return a copy of any properties that have been registered.
        * @returns {*}
        */
@@ -249,6 +277,40 @@
       function defaultListFunction() {
         $log.error('No list function defined for', typeCode);
         return Promise.reject({data: {items: []}});
+      }
+
+      /**
+       * @ngdoc function
+       * @name defaultItemInTransitionFunction
+       * @description
+       * A default implementation for the "itemInTransitionFunction function-pointer" which
+       * returns false every time.
+       * @returns {boolean}
+       */
+      function defaultItemInTransitionFunction() {
+        return false;
+      }
+
+      /**
+       * Set a function that detects if an instance of this resource type is in a
+       * "transition" state, such as an image with a "queued" status, or an instance
+       * with an "in-progress" status. For example, this might be used to highlight
+       * a particular item in a list, or to set a progress indicator when viewing that
+       * items details.
+       *
+       * By default, a call to itemInTransitionFunction(item) will return false unless this
+       * function is registered for the resource type;
+       *
+       * @ngdoc function
+       * @param func - The callback-function to be used for determining if this
+       * resource is in a transitional state.  This callback-function will be passed
+       * an object that is an instance of this resource (e.g. an image) and should
+       * return a boolean.  "true" indicates the item is in a "transition" state.
+       * @returns {ResourceType} - returning self to facilitate call-chaining.
+       */
+      function setItemInTransitionFunction(func) {
+        self.itemInTransitionFunction = func;
+        return self;
       }
 
       /**

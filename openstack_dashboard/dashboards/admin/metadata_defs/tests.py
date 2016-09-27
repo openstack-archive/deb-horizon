@@ -102,10 +102,10 @@ class MetadataDefinitionsView(test.BaseAdminViewTests):
         for i in [1, 2]:
             row_actions = ns_table.get_row_actions(namespaces[i])
             self.assertTrue(len(row_actions), 2)
-            self.assertTrue('delete' in
-                            [a.name for a in row_actions])
-            self.assertTrue('manage_resource_types' in
-                            [a.name for a in row_actions])
+            self.assertIn('delete',
+                          [a.name for a in row_actions])
+            self.assertIn('manage_resource_types',
+                          [a.name for a in row_actions])
 
     @test.create_stubs({api.glance: ('metadefs_namespace_get',)})
     def test_metadata_defs_get(self):
@@ -305,3 +305,99 @@ class MetadataDefinitionsCreateViewTest(test.BaseAdminViewTests):
 
         self.assertFormError(res, "form", None, ['No input was provided for '
                                                  'the namespace content.'])
+
+
+class MetadataDefinitionsUpdateViewTest(test.BaseAdminViewTests):
+
+    @test.create_stubs({api.glance: ('metadefs_namespace_get', )})
+    def test_admin_metadata_defs_update_namespace_get(self):
+        namespace = self.metadata_defs.first()
+
+        api.glance.metadefs_namespace_get(
+            IsA(http.HttpRequest),
+            namespace["namespace"]).AndReturn(namespace)
+        self.mox.ReplayAll()
+
+        res = self.client.get(reverse(
+            constants.METADATA_UPDATE_URL,
+            args=[namespace['namespace']]))
+        self.assertTemplateUsed(res, constants.METADATA_UPDATE_TEMPLATE)
+
+    @test.create_stubs({api.glance: ('metadefs_namespace_get',)})
+    def test_admin_metadata_defs_update_namespace_get_exception(self):
+        namespace = self.metadata_defs.first()
+
+        api.glance.metadefs_namespace_get(
+            IsA(http.HttpRequest),
+            namespace["namespace"]).AndRaise(self.exceptions.glance)
+        self.mox.ReplayAll()
+
+        res = self.client.get(reverse(
+            constants.METADATA_UPDATE_URL,
+            args=[namespace['namespace']]))
+        self.assertRedirectsNoFollow(res,
+                                     reverse(constants.METADATA_INDEX_URL))
+
+    @test.create_stubs({api.glance: ('metadefs_namespace_get',
+                                     'metadefs_namespace_update',)})
+    def test_admin_metadata_defs_update_namespace_post(self):
+        namespace = self.metadata_defs.first()
+        params = {
+            'visibility': namespace.visibility,
+            'protected': namespace.protected
+        }
+
+        api.glance.metadefs_namespace_update(
+            IsA(http.HttpRequest),
+            namespace.namespace,
+            **params).AndReturn(namespace)
+
+        api.glance.metadefs_namespace_get(
+            IsA(http.HttpRequest),
+            namespace["namespace"]).AndReturn(namespace)
+        self.mox.ReplayAll()
+
+        form_data = {
+            'namespace_id': namespace.namespace,
+            'public': True,
+            'protected': True
+        }
+
+        url = reverse(constants.METADATA_UPDATE_URL,
+                      args=[namespace.namespace])
+        res = self.client.post(url, form_data)
+
+        self.assertRedirectsNoFollow(res,
+                                     reverse(constants.METADATA_INDEX_URL))
+
+    @test.create_stubs({api.glance: ('metadefs_namespace_get',
+                                     'metadefs_namespace_update',)})
+    def test_admin_metadata_defs_update_namespace_post_exception(self):
+        namespace = self.metadata_defs.first()
+        params = {
+            'visibility': namespace.visibility,
+            'protected': namespace.protected
+        }
+
+        api.glance.metadefs_namespace_update(
+            IsA(http.HttpRequest),
+            namespace.namespace,
+            **params).AndRaise(self.exceptions.glance)
+
+        api.glance.metadefs_namespace_get(
+            IsA(http.HttpRequest),
+            namespace["namespace"]).AndReturn(namespace)
+        self.mox.ReplayAll()
+
+        form_data = {
+            'namespace_id': namespace.namespace,
+            'public': True,
+            'protected': True
+        }
+
+        url = reverse(constants.METADATA_UPDATE_URL,
+                      args=[namespace.namespace])
+        res = self.client.post(url, form_data)
+
+        self.assertRedirectsNoFollow(res,
+                                     reverse(constants.METADATA_INDEX_URL))

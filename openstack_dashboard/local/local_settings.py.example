@@ -57,6 +57,7 @@ WEBROOT = '/'
 #OPENSTACK_API_VERSIONS = {
 #    "data-processing": 1.1,
 #    "identity": 3,
+#    "image": 2,
 #    "volume": 2,
 #    "compute": 2,
 #}
@@ -222,6 +223,11 @@ OPENSTACK_KEYSTONE_BACKEND = {
 # allowing Admin session password retrieval/decryption.
 #OPENSTACK_ENABLE_PASSWORD_RETRIEVE = False
 
+# This setting allows deployers to control whether a token is deleted on log
+# out. This can be helpful when there are often long running processes being
+# run in the Horizon environment.
+#TOKEN_DELETE_DISABLED = False
+
 # The Launch Instance user experience has been significantly enhanced.
 # You can choose whether to enable the new launch instance experience,
 # the legacy experience, or both. The legacy experience will be removed
@@ -241,6 +247,10 @@ OPENSTACK_KEYSTONE_BACKEND = {
 #LAUNCH_INSTANCE_DEFAULTS = {
 #    'config_drive': False,
 #    'enable_scheduler_hints': True
+#    'disable_image': False,
+#    'disable_instance_snapshot': False,
+#    'disable_volume': False,
+#    'disable_volume_snapshot': False,
 #}
 
 # The Xen Hypervisor has the ability to set the mount point for volumes
@@ -364,6 +374,11 @@ IMAGE_RESERVED_CUSTOM_PROPERTIES = []
 # image form. See documentation for deployment considerations.
 #HORIZON_IMAGES_UPLOAD_MODE = 'legacy'
 
+# Allow a location to be set when creating or updating Glance images.
+# If using Glance V2, this value should be False unless the Glance
+# configuration and policies allow setting locations.
+#IMAGES_ALLOW_LOCATION = False
+
 # OPENSTACK_ENDPOINT_TYPE specifies the endpoint type to use for the endpoints
 # in the Keystone service catalog. Use this setting when Horizon is running
 # external to the OpenStack environment. The default is 'publicURL'.
@@ -384,6 +399,9 @@ API_RESULT_PAGE_SIZE = 20
 
 # The size of chunk in bytes for downloading objects from Swift
 SWIFT_FILE_TRANSFER_CHUNK_SIZE = 512 * 1024
+
+# The default number of lines displayed for instance console log.
+INSTANCE_LOG_LENGTH = 35
 
 # Specify a maximum number of items to display in a dropdown.
 DROPDOWN_MAX_ITEMS = 30
@@ -780,7 +798,42 @@ REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES',
 # of data fetched by default when rendering the Overview panel.
 #OVERVIEW_DAYS_RANGE = 1
 
-# To allow operators to require admin users provide a search criteria first
-# before loading any data into the admin views, set the following attribute to
-# True
-#ADMIN_FILTER_DATA_FIRST=False
+# To allow operators to require users provide a search criteria first
+# before loading any data into the views, set the following dict
+# attributes to True in each one of the panels you want to enable this feature.
+# Follow the convention <dashboard>.<view>
+#FILTER_DATA_FIRST = {
+#    'admin.instances': False,
+#    'admin.images': False,
+#    'admin.networks': False,
+#    'admin.routers': False,
+#    'admin.volumes': False
+#}
+
+# Dict used to restrict user private subnet cidr range.
+# An empty list means that user input will not be restricted
+# for a corresponding IP version. By default, there is
+# no restriction for IPv4 or IPv6. To restrict
+# user private subnet cidr range set ALLOWED_PRIVATE_SUBNET_CIDR
+# to something like
+#ALLOWED_PRIVATE_SUBNET_CIDR = {
+#    'ipv4': ['10.0.0.0/8', '192.168.0.0/16'],
+#    'ipv6': ['fc00::/7']
+#}
+ALLOWED_PRIVATE_SUBNET_CIDR = {'ipv4': [], 'ipv6': []}
+
+# Project and user can have any attributes by keystone v3 mechanism.
+# This settings can treat these attributes on Horizon.
+# It means, when you show Create/Update modal, attribute below is
+# shown and you can specify any value.
+# If you'd like to display these extra data in project or user index table,
+# Keystone v3 allows you to add extra properties to Project and Users.
+# Horizon's customization (http://docs.openstack.org/developer/horizon/topics/customizing.html#horizon-customization-module-overrides)
+# allows you to display this extra information in the Create/Update modal and
+# the corresponding tables.
+#PROJECT_TABLE_EXTRA_INFO = {
+#   'phone_num': _('Phone Number'),
+#}
+#USER_TABLE_EXTRA_INFO = {
+#   'phone_num': _('Phone Number'),
+#}

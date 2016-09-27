@@ -38,10 +38,11 @@ class UpdateNetwork(forms.SelfHandlingForm):
     network_id = forms.CharField(label=_("ID"),
                                  widget=forms.TextInput(
                                      attrs={'readonly': 'readonly'}))
-    admin_state = forms.ChoiceField(choices=[(True, _('UP')),
-                                             (False, _('DOWN'))],
-                                    required=False,
-                                    label=_("Admin State"))
+    admin_state = forms.ThemableChoiceField(
+        choices=[(True, _('UP')),
+                 (False, _('DOWN'))],
+        required=False,
+        label=_("Admin State"))
     shared = forms.BooleanField(label=_("Shared"), required=False)
     failure_url = 'horizon:project:networks:index'
 
@@ -57,8 +58,12 @@ class UpdateNetwork(forms.SelfHandlingForm):
     def handle(self, request, data):
         try:
             params = {'admin_state_up': (data['admin_state'] == 'True'),
-                      'name': data['name'],
-                      'shared': data['shared']}
+                      'name': data['name']}
+            # Make sure we are not sending shared data when the user
+            # doesnt'have admin rights because even if the user doesn't
+            # change it neutron sends back a 403 error
+            if policy.check((("network", "update_network:shared"),), request):
+                params['shared'] = data['shared']
             network = api.neutron.network_update(request,
                                                  data['network_id'],
                                                  **params)

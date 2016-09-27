@@ -1,16 +1,13 @@
-horizon (3:10.0.0~b2+2016.08.04.git.58bb3341b9-1) UNRELEASED; urgency=medium
+horizon (3:10.0.0~rc1-1) experimental; urgency=medium
 
-  * New upstream release based on commit 58bb3341b9.
+  * New upstream release.
+  * Fixed (build-)depends for this release, including 3 new XStatic packages.
   * Add Django 1.10 patch:
-    - django-1.10-use-argparse-instead-of-optparse.patch
-    - django-1.10-django.conf.urls.patterns-removed.patch
-    - django-1.10-fix-wrong-django.conf.urls.url-call.patch
-    - django-1.10-fixes-get-form-uses-kwargs.patch
     - django-1.10-horizon.test.settings.patch
-    - django-1.10-openstack_dashboard.test.settings.patch
-    - django-1.10-do-not-use-django.template.Context-function.patch
+  * Using OpenStack's Gerrit as VCS URLs.
+  * .gitreview file points to deb-horizon in OpenStack Gerrit.
 
- -- Thomas Goirand <zigo@debian.org>  Wed, 20 Jul 2016 10:49:45 +0200
+ -- Thomas Goirand <zigo@debian.org>  Tue, 13 Sep 2016 22:13:09 +0200
 
 horizon (3:10.0.0~b2-1) experimental; urgency=medium
 
