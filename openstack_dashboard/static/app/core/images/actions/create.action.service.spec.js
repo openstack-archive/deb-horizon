@@ -115,8 +115,88 @@
       modalArgs.submit();
       $scope.$apply();
 
-      expect(glanceAPI.createImage).toHaveBeenCalledWith({ name: 'Test',
-        id: '2', prop1: '11', prop3: '3'});
+      expect(glanceAPI.createImage.calls.argsFor(0)[0]).toEqual(
+        {name: 'Test', id: '2', prop1: '11', prop3: '3'});
+    });
+
+    it('does not pass location to create image if source_type is NOT url', function() {
+      var image = {name: 'Test', source_type: 'file-direct', image_url: 'http://somewhere',
+        data: {name: 'test_file'}
+      };
+
+      spyOn($scope, '$emit').and.callThrough();
+      spyOn(glanceAPI, 'createImage').and.callThrough();
+      spyOn(wizardModalService, 'modal').and.callThrough();
+
+      service.initScope($scope);
+      service.perform();
+      $scope.$emit(events.IMAGE_CHANGED, image);
+
+      var modalArgs = wizardModalService.modal.calls.argsFor(0)[0];
+      modalArgs.submit();
+
+      expect(glanceAPI.createImage.calls.argsFor(0)[0]).toEqual({ name: 'Test',
+        source_type: 'file-direct', data: {name: 'test_file'}});
+    });
+
+    it('does not pass file to create image if source_type is url', function() {
+      var image = {name: 'Test', source_type: 'url', image_url: 'http://somewhere',
+        data: {name: 'test_file'}
+      };
+
+      spyOn($scope, '$emit').and.callThrough();
+      spyOn(glanceAPI, 'createImage').and.callThrough();
+      spyOn(wizardModalService, 'modal').and.callThrough();
+
+      service.initScope($scope);
+      service.perform();
+      $scope.$emit(events.IMAGE_CHANGED, image);
+
+      var modalArgs = wizardModalService.modal.calls.argsFor(0)[0];
+      modalArgs.submit();
+
+      expect(glanceAPI.createImage.calls.argsFor(0)[0]).toEqual({ name: 'Test',
+        source_type: 'url', image_url: 'http://somewhere'});
+    });
+
+    it('does not pass location to create image if source_type is NOT url', function() {
+      var image = {name: 'Test', source_type: 'file-direct', image_url: 'http://somewhere',
+        data: {name: 'test_file'}
+      };
+
+      spyOn($scope, '$emit').and.callThrough();
+      spyOn(glanceAPI, 'createImage').and.callThrough();
+      spyOn(wizardModalService, 'modal').and.callThrough();
+
+      service.initScope($scope);
+      service.perform();
+      $scope.$emit(events.IMAGE_CHANGED, image);
+
+      var modalArgs = wizardModalService.modal.calls.argsFor(0)[0];
+      modalArgs.submit();
+
+      expect(glanceAPI.createImage.calls.argsFor(0)[0]).toEqual({ name: 'Test',
+        source_type: 'file-direct', data: {name: 'test_file'}});
+    });
+
+    it('does not pass file to create image if source_type is url', function() {
+      var image = {name: 'Test', source_type: 'url', image_url: 'http://somewhere',
+        data: {name: 'test_file'}
+      };
+
+      spyOn($scope, '$emit').and.callThrough();
+      spyOn(glanceAPI, 'createImage').and.callThrough();
+      spyOn(wizardModalService, 'modal').and.callThrough();
+
+      service.initScope($scope);
+      service.perform();
+      $scope.$emit(events.IMAGE_CHANGED, image);
+
+      var modalArgs = wizardModalService.modal.calls.argsFor(0)[0];
+      modalArgs.submit();
+
+      expect(glanceAPI.createImage.calls.argsFor(0)[0]).toEqual({ name: 'Test',
+        source_type: 'url', image_url: 'http://somewhere'});
     });
 
     it('should raise event even if update meta data fails', function() {
@@ -167,7 +247,7 @@
       modalArgs.submit();
       $scope.$apply();
 
-      expect(glanceAPI.createImage).toHaveBeenCalledWith({});
+      expect(glanceAPI.createImage.calls.argsFor(0)[0]).toEqual({});
     });
 
   });

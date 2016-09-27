@@ -123,7 +123,9 @@ class CreateSubnet(policy.PolicyTargetMixin, CheckNetworkEditable,
     classes = ("ajax-modal",)
     icon = "plus"
     policy_rules = (("network", "create_subnet"),)
-    policy_target_attrs = (("network:project_id", "tenant_id"),)
+    # neutron has used both in their policy files, supporting both
+    policy_target_attrs = (("network:tenant_id", "tenant_id"),
+                           ("network:project_id", "tenant_id"),)
 
     def allowed(self, request, datum=None):
         usages = quotas.tenant_quota_usages(request)
@@ -158,19 +160,23 @@ STATUS_DISPLAY_CHOICES = (
 )
 
 
-class NetworksFilterAction(tables.FilterAction):
-
-    def filter(self, table, networks, filter_string):
-        """Naive case-insensitive search."""
-        query = filter_string.lower()
-        return [network for network in networks
-                if query in network.name.lower()]
+class ProjectNetworksFilterAction(tables.FilterAction):
+    name = "filter_project_networks"
+    filter_type = "server"
+    filter_choices = (('name', _("Name ="), True),
+                      ('shared', _("Shared ="), True,
+                       _("e.g. Yes / No")),
+                      ('router:external', _("External ="), True,
+                       _("e.g. Yes / No")),
+                      ('status', _("Status ="), True),
+                      ('admin_state_up', _("Admin State ="), True,
+                       _("e.g. UP / DOWN")))
 
 
 class NetworksTable(tables.DataTable):
-    name = tables.Column("name_or_id",
-                         verbose_name=_("Name"),
-                         link='horizon:project:networks:detail')
+    name = tables.WrappingColumn("name_or_id",
+                                 verbose_name=_("Name"),
+                                 link='horizon:project:networks:detail')
     subnets = tables.Column(get_subnets,
                             verbose_name=_("Subnets Associated"),)
     shared = tables.Column("shared", verbose_name=_("Shared"),
@@ -187,5 +193,5 @@ class NetworksTable(tables.DataTable):
         name = "networks"
         verbose_name = _("Networks")
         table_actions = (CreateNetwork, DeleteNetwork,
-                         NetworksFilterAction)
+                         ProjectNetworksFilterAction)
         row_actions = (EditNetwork, CreateSubnet, DeleteNetwork)

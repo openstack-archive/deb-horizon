@@ -91,7 +91,7 @@ Once you've made your changes, there are a few things to do:
 
 * Make sure the unit tests pass: ``./run_tests.sh`` for Python, and ``npm run test`` for JS.
 * Make sure the linting tasks pass: ``./run_tests.sh --pep8`` for Python, and ``npm run lint`` for JS.
-* Make sure your code is ready for translation: ``./run_tests.sh --pseudo de`` See the Translatability section below for details.
+* Make sure your code is ready for translation: ``./run_tests.sh --pseudo de`` See :ref:`pseudo_translation` for more information.
 * Make sure your code is up-to-date with the latest master: ``git pull --rebase``
 * Finally, run ``git review`` to upload your changes to Gerrit for review.
 
@@ -122,45 +122,6 @@ The community's guidelines for etiquette are fairly simple:
 * Give credit where credit is due; if someone helps you substantially with
   a piece of code, it's polite (though not required) to thank them in your
   commit message.
-
-.. _translatability:
-
-Translatability
-===============
-
-Horizon gets translated into multiple languages. The pseudo translation tool
-can be used to verify that code is ready to be translated. The pseudo tool
-replaces a language's translation with a complete, fake translation. Then
-you can verify that your code properly displays fake translations to validate
-that your code is ready for translation.
-
-Running the pseudo translation tool
------------------------------------
-
-#. Make sure your English po file is up to date: ``./run_tests.sh --makemessages``
-#. Run the pseudo tool to create pseudo translations. For example, to replace the German translation with a pseudo translation: ``./run_tests.sh --pseudo de``
-#. Compile the catalog: ``./run_tests.sh --compilemessages``
-#. Run your development server.
-#. Log in and change to the language you pseudo translated.
-
-It should look weird. More specifically, the translatable segments are going
-to start and end with a bracket and they are going to have some added
-characters. For example, "Log In" will become "[~Log In~您好яшçあ]"
-This is useful because you can inspect for the following, and consider if your
-code is working like it should:
-
-* If you see a string in English it's not translatable. Should it be?
-* If you see brackets next to each other that might be concatenation. Concatenation
-  can make quality translations difficult or impossible. See
-  https://wiki.openstack.org/wiki/I18n/TranslatableStrings#Use_string_formating_variables.2C_never_perform_string_concatenation
-  for additional information.
-* If there is unexpected wrapping/truncation there might not be enough
-  space for translations.
-* If you see a string in the proper translated language, it comes from an
-  external source. (That's not bad, just sometimes useful to know)
-* If you get new crashes, there is probably a bug.
-
-Don't forget to cleanup any pseudo translated po files. Those don't get merged!
 
 Code Style
 ==========
@@ -403,32 +364,6 @@ Required
 * Since Django already uses ``{{ }}``, use ``{$ $}`` or ``{% verbatim %}``
   instead.
 
-* For localization in Angular files, use the Angular service
-  horizon.framework.util.i18n.gettext. Ensure that the injected dependency
-  is named ``gettext``. For regular Javascript files, use either ``gettext`` or
-  ``ngettext``. Only those two methods are recognized by our tools and will be
-  included in the .po file after running ``./run_tests --makemessages``.
-  ::
-
-    // Angular
-    angular.module('myModule')
-      .factory('myFactory', myFactory);
-
-    myFactory.$inject = ['horizon.framework.util.i18n.gettext'];
-    function myFactory(gettext) {
-      gettext('translatable text');
-    }
-
-    // Javascript
-    gettext(apple);
-    ngettext('apple', 'apples', count);
-
-    // Not valid
-    var _ = gettext;
-    _('translatable text');
-
-    $window.gettext('translatable text');
-
 ESLint
 ------
 
@@ -484,7 +419,9 @@ To make a new release of the package, you need to:
 1. Ensure the version information in the `xstatic/pkg/<package name>/__init__.py`
    file is up to date, especially the `BUILD`.
 2. Push your updated package up for review in gerrit.
-3. Once the review is approved and the change merged, `tag your release`_. That
+3. Once the review is approved and the change merged, `request a release`_ by
+   updating or creating the appropriate file for the xstatic package
+   in the `releases repository`_ under `deliverables/_independent`. That
    will cause it to be automatically packaged and released to PyPi.
 
 .. warning::
@@ -500,7 +437,8 @@ To make a new release of the package, you need to:
 .. _documentation: http://xstatic.rtfd.org/en/latest/packaging.html
 .. _xstatic-release: https://pypi.python.org/pypi/xstatic-release
 .. _`Create a new repository under OpenStack`: http://docs.openstack.org/infra/manual/creators.html
-.. _`Tag your release`: http://docs.openstack.org/infra/manual/drivers.html#tagging-a-release
+.. _`request a release`: http://git.openstack.org/cgit/openstack/releases/tree/README.rst
+.. _`releases repository`: http://git.openstack.org/cgit/openstack/releases
 .. _`Set up PyPi`: http://docs.openstack.org/infra/manual/creators.html#give-openstack-permission-to-publish-releases
 .. _global-requirements: https://github.com/openstack/requirements/blob/master/global-requirements.txt
 
@@ -510,24 +448,34 @@ Integrating a new xstatic package into Horizon
 
 Having done a release of an xstatic package:
 
-1. Edit the `upper-constraints.txt`_ file to update or include your xstatic release.
-2. Set the evironment variable `UPPER_CONSTRAINTS_FILE` to the edited upper-constraints.txt
+1. Look for the `upper-constraints.txt`_ edit related to the xstatic release that was just
+   performed. One will be created automatically by the release process in the
+   ``openstack/requirements`` project with the topic `new-release`_. You should -1 that
+   patch until you are confident Horizon does not break (or you have generated a patch to
+   fix Horizon for that release.) If no upper-constraints.txt patch is automatically
+   generated, ensure the releases yaml file created in the `releases repository`_ has the
+   "include-pypi-link: yes" setting.
+2. Pull that patch down so you have the edited upper-constraints.txt file locally.
+3. Set the evironment variable `UPPER_CONSTRAINTS_FILE` to the edited upper-constraints.txt
    file name and run tests or local development server through tox. This will pull in the
    precise version of the xstatic package that you need.
-3. Move on to releasing once you're happy the Horizon changes are stable.
+4. Move on to releasing once you're happy the Horizon changes are stable.
 
-Releasing a new compatible version of Horizon:
+Releasing a new compatible version of Horizon to address issues in the new xstatic release:
 
-1. Submit your edited upper-constraints.txt file for review (if necessary - check if there hasn't
-   been a review automatically created) with a workflow block until point 2 is viable so the release
-   team don't accidentally merge too early.
-2. When submitting your changes to Horizon use a Depends-On: referencing the upper-constraints.txt
-   review in 1. This will cause the OpenStack testing infrastructure to pull in your updated
-   xstatic package as well.
-3. Merge 1 and 2 noting that Horizon's gate may be broken in the interim between 1 and 2, so try to
-   minimise any delay there.
+1. Continue to -1 the upper-constraints.txt patch above until this process is complete. A +1
+   from a Horizon developer will indicate to the requirements team that the upper-constraints.txt
+   patch is OK to merge.
+2. When submitting your changes to Horizon to address issues around the new xstatic release,
+   use a Depends-On: referencing the upper-constraints.txt review. This will cause the OpenStack
+   testing infrastructure to pull in your updated xstatic package as well.
+3. Merge the upper-constraints.txt patch and the Horizon patch noting that Horizon's gate may be
+   broken in the interim between these steps, so try to minimise any delay there. With the
+   Depends-On it's actually safe to +W the Horizon patch, which will be held up until the
+   related upper-constraints.txt patch merges.
 
 .. _upper-constraints.txt: https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt
+.. _new-release: https://review.openstack.org/#/q/status:open+project:openstack/requirements+branch:master+topic:new-release
 
 
 HTML

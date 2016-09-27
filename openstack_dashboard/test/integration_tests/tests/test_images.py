@@ -15,22 +15,49 @@ from openstack_dashboard.test.integration_tests import helpers
 from openstack_dashboard.test.integration_tests.regions import messages
 
 
-class TestImagesBasic(helpers.TestCase):
-    """Login as demo user"""
-    IMAGE_NAME = helpers.gen_random_resource_name("image")
+@decorators.config_option_required('image.panel_type', 'legacy',
+                                   message="Angular Panels not tested")
+class TestImagesLegacy(helpers.TestCase):
+    def __init__(self, *args, **kwargs):
+        super(TestImagesLegacy, self).__init__(*args, **kwargs)
+        self.IMAGE_NAME = helpers.gen_random_resource_name("image")
 
     @property
     def images_page(self):
         return self.home_pg.go_to_compute_imagespage()
 
-    def image_create(self, local_file=None):
+
+@decorators.config_option_required('image.panel_type', 'angular',
+                                   message="Legacy Panels not tested")
+class TestImagesAngular(helpers.TestCase):
+    @property
+    def images_page(self):
+        # FIXME(tsufiev): had to return angularized version of Images Page
+        # object with the horrendous hack below because it's not so easy to
+        # wire into the Navigation machinery and tell it to return an '*NG'
+        # version of ImagesPage class if one adds '_ng' suffix to
+        # 'go_to_compute_imagespage()' method. Yet that's how it should work
+        # (or rewrite Navigation module completely).
+        from openstack_dashboard.test.integration_tests.pages.project.\
+            compute.imagespage import ImagesPageNG
+        self.home_pg.go_to_compute_imagespage()
+        return ImagesPageNG(self.driver, self.CONFIG)
+
+    def test_basic_image_browse(self):
+        images_page = self.images_page
+        self.assertEqual(images_page.header.text, 'Images')
+
+
+class TestImagesBasic(TestImagesLegacy):
+    """Login as demo user"""
+    def image_create(self, local_file=None, **kwargs):
         images_page = self.images_page
         if local_file:
             images_page.create_image(self.IMAGE_NAME,
-                                     image_source_type='file',
-                                     image_file=local_file)
+                                     image_file=local_file,
+                                     **kwargs)
         else:
-            images_page.create_image(self.IMAGE_NAME)
+            images_page.create_image(self.IMAGE_NAME, **kwargs)
         self.assertTrue(images_page.find_message_and_dismiss(messages.INFO))
         self.assertFalse(images_page.find_message_and_dismiss(messages.ERROR))
         self.assertTrue(images_page.is_image_present(self.IMAGE_NAME))
@@ -44,6 +71,7 @@ class TestImagesBasic(helpers.TestCase):
         self.assertFalse(images_page.find_message_and_dismiss(messages.ERROR))
         self.assertFalse(images_page.is_image_present(self.IMAGE_NAME))
 
+    @decorators.skip_because(bugs=['1595335'])
     def test_image_create_delete(self):
         """tests the image creation and deletion functionalities:
         * creates a new image from horizon.conf http_image
@@ -135,7 +163,11 @@ class TestImagesBasic(helpers.TestCase):
                         'metadata2': helpers.gen_random_resource_name("value")}
 
         with helpers.gen_temporary_file() as file_name:
-            images_page = self.image_create(local_file=file_name)
+            # TODO(tsufiev): had to add non-empty description to an image,
+            # because description is now considered a metadata and we want
+            # the metadata in a newly created image to be valid
+            images_page = self.image_create(local_file=file_name,
+                                            description='test description')
             images_page.add_custom_metadata(self.IMAGE_NAME, new_metadata)
             results = images_page.check_image_details(self.IMAGE_NAME,
                                                       new_metadata)
@@ -227,14 +259,8 @@ class TestImagesBasic(helpers.TestCase):
             self.image_delete(new_image_name)
 
 
-class TestImagesAdvanced(helpers.TestCase):
+class TestImagesAdvanced(TestImagesLegacy):
     """Login as demo user"""
-    IMAGE_NAME = helpers.gen_random_resource_name("image")
-
-    @property
-    def images_page(self):
-        return self.home_pg.go_to_compute_imagespage()
-
     def test_create_volume_from_image(self):
         """This test case checks create volume from image functionality:
             Steps:
@@ -293,10 +319,8 @@ class TestImagesAdvanced(helpers.TestCase):
         self.assertTrue(instances_page.is_instance_deleted(target_instance))
 
 
-class TestImagesAdmin(helpers.AdminTestCase, TestImagesBasic):
+class TestImagesAdmin(helpers.AdminTestCase, TestImagesLegacy):
     """Login as admin user"""
-    IMAGE_NAME = helpers.gen_random_resource_name("image")
-
     @property
     def images_page(self):
         return self.home_pg.go_to_system_imagespage()

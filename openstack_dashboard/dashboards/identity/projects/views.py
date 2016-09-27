@@ -16,6 +16,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -77,9 +78,8 @@ class IndexView(tables.DataTableView):
         tenants = []
         marker = self.request.GET.get(
             project_tables.TenantsTable._meta.pagination_param, None)
-
         self._more = False
-
+        filters = self.get_filters()
         if policy.check((("identity", "identity:list_projects"),),
                         self.request):
             domain_context = api.keystone.get_effective_domain_id(self.request)
@@ -88,6 +88,7 @@ class IndexView(tables.DataTableView):
                     self.request,
                     domain=domain_context,
                     paginate=True,
+                    filters=filters,
                     marker=marker)
             except Exception:
                 exceptions.handle(self.request,
@@ -100,6 +101,7 @@ class IndexView(tables.DataTableView):
                     user=self.request.user.id,
                     paginate=True,
                     marker=marker,
+                    filters=filters,
                     admin=False)
             except Exception:
                 exceptions.handle(self.request,
@@ -113,6 +115,7 @@ class IndexView(tables.DataTableView):
             domain_lookup = api.keystone.domain_lookup(self.request)
             for t in tenants:
                 t.domain_name = domain_lookup.get(t.domain_id)
+
         return tenants
 
 
@@ -145,7 +148,6 @@ class CreateProjectView(workflows.WorkflowView):
         initial["domain_id"] = domain.id
         initial["domain_name"] = domain.name
 
-        # TODO(esp): fix this for Domain Admin or find a work around
         # get initial quota defaults
         if api.keystone.is_cloud_admin(self.request):
             try:
@@ -199,8 +201,13 @@ class UpdateProjectView(workflows.WorkflowView):
             for field in PROJECT_INFO_FIELDS:
                 initial[field] = getattr(project_info, field, None)
 
-            # Retrieve the domain name where the project belong
             if keystone.VERSIONS.active >= 3:
+                # get extra columns info
+                ex_info = getattr(settings, 'PROJECT_TABLE_EXTRA_INFO', {})
+                for ex_field in ex_info:
+                    initial[ex_field] = getattr(project_info, ex_field, None)
+
+                # Retrieve the domain name where the project belong
                 try:
                     if policy.check((("identity", "identity:get_domain"),),
                                     self.request):
@@ -246,6 +253,12 @@ class DetailProjectView(views.HorizonTemplateView):
         context["project"] = project
         context["url"] = reverse(INDEX_URL)
         context["actions"] = table.render_row_actions(project)
+
+        if keystone.VERSIONS.active >= 3:
+            extra_info = getattr(settings, 'PROJECT_TABLE_EXTRA_INFO', {})
+            context['extras'] = dict(
+                (display_key, getattr(project, key, ''))
+                for key, display_key in extra_info.items())
         return context
 
     @memoized.memoized_method

@@ -70,15 +70,13 @@ class DeleteRolesAction(tables.DeleteAction):
 
 
 class RoleFilterAction(tables.FilterAction):
-    def filter(self, table, roles, filter_string):
-        """Naive case-insensitive search."""
-        q = filter_string.lower()
-        return [role for role in roles
-                if q in role.name.lower()]
+    filter_type = "server"
+    filter_choices = (("name", _("Role Name ="), True),
+                      ("id", _("Role ID ="), True))
 
 
 class RolesTable(tables.DataTable):
-    name = tables.Column('name', verbose_name=_('Role Name'))
+    name = tables.WrappingColumn('name', verbose_name=_('Role Name'))
     id = tables.Column('id', verbose_name=_('Role ID'))
 
     class Meta(object):

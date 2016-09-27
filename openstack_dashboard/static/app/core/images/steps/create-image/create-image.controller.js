@@ -46,15 +46,18 @@
   ) {
     var ctrl = this;
 
-    settings.getSettings().then(getConfiguredFormats);
+    settings.getSettings().then(getConfiguredFormatsAndModes);
     ctrl.validationRules = validationRules;
     ctrl.imageFormats = imageFormats;
     ctrl.diskFormats = [];
+    ctrl.prepareUpload = prepareUpload;
+    ctrl.apiVersion = 0;
 
     ctrl.image = {
-      source_type: 'url',
+      source_type: '',
       image_url: '',
-      is_copying: true,
+      data: {},
+      is_copying: false,
       protected: false,
       min_disk: 0,
       min_ram: 0,
@@ -62,6 +65,8 @@
       disk_format: '',
       visibility: 'public'
     };
+
+    ctrl.uploadProgress = -1;
 
     ctrl.imageProtectedOptions = [
       { label: gettext('Yes'), value: true },
@@ -73,6 +78,8 @@
       { label: gettext('No'), value: false }
     ];
 
+    ctrl.imageSourceOptions = [];
+
     ctrl.imageVisibilityOptions = [
       { label: gettext('Public'), value: 'public'},
       { label: gettext('Private'), value: 'private' }
@@ -82,27 +89,55 @@
     ctrl.ramdiskImages = [];
 
     ctrl.setFormats = setFormats;
+    ctrl.isLocalFileUpload = isLocalFileUpload;
 
     init();
 
     var imageChangedWatcher = $scope.$watchCollection('ctrl.image', watchImageCollection);
+    var watchUploadProgress = $scope.$on(events.IMAGE_UPLOAD_PROGRESS, watchImageUpload);
 
     $scope.$on('$destroy', function() {
       imageChangedWatcher();
+      watchUploadProgress();
     });
 
     ///////////////////////////
 
-    function getConfiguredFormats(response) {
+    function prepareUpload(file) {
+      ctrl.image.data = file;
+    }
+
+    function watchImageUpload(event, progress) {
+      ctrl.uploadProgress = progress;
+    }
+
+    function getConfiguredFormatsAndModes(response) {
+      ctrl.apiVersion = response.HORIZON_ACTIVE_IMAGE_VERSION;
       var settingsFormats = response.OPENSTACK_IMAGE_FORMATS;
+      var uploadMode = response.HORIZON_IMAGES_UPLOAD_MODE;
       var dupe = angular.copy(imageFormats);
       angular.forEach(dupe, function stripUnknown(name, key) {
         if (settingsFormats.indexOf(key) === -1) {
           delete dupe[key];
         }
       });
-
+      if (uploadMode !== 'off') {
+        var uploadValue = 'file-' + uploadMode;
+        ctrl.imageSourceOptions.push({
+          label: gettext('File'), value: uploadValue
+        });
+        ctrl.image.source_type = uploadValue;
+      }
+      if (ctrl.apiVersion < 2 || response.IMAGES_ALLOW_LOCATION) {
+        ctrl.imageSourceOptions.push({ label: gettext('URL'), value: 'url' });
+        ctrl.image.source_type = 'url';
+      }
       ctrl.imageFormats = dupe;
+    }
+
+    function isLocalFileUpload() {
+      var type = ctrl.image.source_type;
+      return (type === 'file-legacy' || type === 'file-direct');
     }
 
     // emits new data to parent listeners

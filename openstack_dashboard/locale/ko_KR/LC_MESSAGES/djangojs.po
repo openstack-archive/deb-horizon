@@ -1,18 +1,20 @@
 # Sungjin Kang <gang.sungjin@gmail.com>, 2015. #zanata
+# Andrea Young Oak Li <youli@redhat.com>, 2016. #zanata
 # Andreas Jaeger <jaegerandi@gmail.com>, 2016. #zanata
 # Ian Y. Choi <ianyrchoi@gmail.com>, 2016. #zanata
+# SeongSoo Cho <nexusz99@gmail.com>, 2016. #zanata
 # Sungjin Kang <gang.sungjin@gmail.com>, 2016. #zanata
 # Sunhong Kim <intensify7@naver.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 10.0.0.0b3.dev117\n"
+"Project-Id-Version: horizon 10.0.0.0b4.dev139\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-08-03 08:27+0000\n"
+"POT-Creation-Date: 2016-09-15 01:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-03-23 03:09+0000\n"
-"Last-Translator: Ian Y. Choi <ianyrchoi@gmail.com>\n"
+"PO-Revision-Date: 2016-09-15 02:55+0000\n"
+"Last-Translator: Andrea Young Oak Li <youli@redhat.com>\n"
 "Language-Team: Korean (South Korea)\n"
 "Language: ko-KR\n"
 "X-Generator: Zanata 3.7.3\n"
@@ -32,6 +34,9 @@ msgstr "(None)"
 msgid "1"
 msgstr "1"
 
+msgid "10%"
+msgstr "10%"
+
 msgid "2"
 msgstr "2"
 
@@ -50,8 +55,150 @@ msgstr "6"
 msgid "7"
 msgstr "7"
 
+msgid "75%"
+msgstr "75%"
+
+msgid ""
+"<b>Image (with Create New Volume checked)</b>: This options uses an image to "
+"boot the instance, and creates a new volume to persist instance data. You "
+"can specify volume size and whether to delete the volume on deletion of the "
+"instance."
+msgstr ""
+"<b>이미지 (새 볼륨 생성 체크 포함)</b>: 이 옵션은 인스턴스를 부팅하기 위해 이"
+"미지를 사용하고, 인스턴스 데이터를 영구 보존하기 위해 새로운 볼륨을 생성합니"
+"다. 볼륨 크기 및 인스턴스 삭제 시 볼륨을 삭제할 것인지를 선택할 수 있습니다."
+
+msgid "<b>Image</b>: This option uses an image to boot the instance."
+msgstr "<b>이미지</b>: 이 옵션은 인스턴스를 부팅하기 위해 이미지를 사용합니다."
+
+msgid ""
+"<b>Instance Snapshot</b>: This option uses an instance snapshot to boot the "
+"instance."
+msgstr ""
+"<b>인스턴스 스냅샷</b>: 이 옵션은 인스턴스를 부팅하기 위해 인스턴스 스냅샷을 "
+"사용합니다."
+
+msgid ""
+"<b>Volume Snapshot</b>: This option uses a volume snapshot to boot the "
+"instance, and creates a new volume to persist instance data. You can choose "
+"to delete the volume on deletion of the instance."
+msgstr ""
+"<b>볼륨 스냅샷</b>: 이 옵션은 인스턴스를 부팅하기 위해 볼륨 스냅샷을 사용하"
+"고 인스턴스 데이터를 영구 보존하기 위해 새로운 볼륨을 생성합니다. 인스턴스 삭"
+"제 시 볼륨을 삭제하도록 선택할 수 있습니다."
+
+msgid ""
+"<b>Volume</b>: This option uses a volume that already exists. It does not "
+"create a new volume. You can choose to delete the volume on deletion of the "
+"instance. <em>Note: when selecting Volume, you can only launch one instance."
+"</em>"
+msgstr ""
+"<b>볼륨</b>: 이 옵션은 이미 존재하는 볼륨을 사용합니다. 새로운 볼륨을 생성하"
+"지 않습니다. 인스턴스 삭제 시 해당 볼륨을 삭제하도록 선택할 수 있습니다. <em>"
+"알림: 볼륨 선택 시 하나의 인스턴스에서만 실행할 수 있습니다.</em>"
+
+msgid ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>Heads up!</strong>\n"
+"           This\n"
+"          <a href=\"#\" class=\"alert-link\">alert needs your attention</"
+"a>,\n"
+"           but it's not super important."
+msgstr ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>조심하십시오!</strong>\n"
+"           해당\n"
+"          <a href=\"#\" class=\"alert-link\">경보는 주의를 필요로 합니다</"
+"a>,\n"
+"           그러나 매우 중요하지는 않습니다."
+
+msgid ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>Oh snap!</strong>\n"
+"          <a href=\"#\" class=\"alert-link\">Change a few things up</a>\n"
+"          and try submitting again."
+msgstr ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>오 이런!</strong>\n"
+"          <a href=\"#\" class=\"alert-link\">몇 가지 사항을 변경하였으며</"
+"a>\n"
+"          따라서 다시 제출을 시도합니다."
+
+msgid ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>Well done!</strong>\n"
+"          You successfully read\n"
+"          <a href=\"#\" class=\"alert-link\">this important alert message</"
+"a>."
+msgstr ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>훌륭합니다!</strong>\n"
+"          <a href=\"#\" class=\"alert-link\">이 중요한 경보 메시지를</a>\n"
+"          성공적으로 읽었습니다."
+
 msgid "<small>This line of text is meant to be treated as fine print.</small>"
 msgstr "<small>This line of text is meant to be treated as fine print.</small>"
+
+msgid "<span>{$ 'Themable Option 1' | translate $}</span>"
+msgstr "<span>{$ 'Themable Option 1' | translate $}</span>"
+
+msgid "<span>{$ 'Themable Option 2' | translate $}</span>"
+msgstr "<span>{$ 'Themable Option 2' | translate $}</span>"
+
+msgid ""
+"A container is a storage compartment for your data and provides a way\n"
+"          for you to organize your data. You can think of a container as a\n"
+"          folder in Windows® or a directory in UNIX®. The primary "
+"difference\n"
+"          between a container and these other file system concepts is that\n"
+"          containers cannot be nested. You can, however, create an "
+"unlimited\n"
+"          number of containers within your account. Data must be stored in "
+"a\n"
+"          container so you must have at least one container defined in your\n"
+"          account prior to uploading data."
+msgstr ""
+"컨테이너는 데이터에 대한 스토리지 구역을 나누고 데이터를\n"
+"          정리하는 방법을 제공합니다. Windows® 폴더나 UNIX®의\n"
+"          디렉토리와 동일하게 컨테이너를 사용할 수 있습니다.\n"
+"          컨테이너와 다른 파일 시스템 컨셉과의 가장 큰 차이점은\n"
+"          컨테이너를 중첩하여 사용할 수 없습니다. 그러나 계정에서는\n"
+"          무한대로 컨테이너를 만들 수 있습니다. 데이터를 업로드하기\n"
+"          전에 계정에 적어도 하나의 컨테이너가 존재하여야 데이터를\n"
+"          저장할 수 있습니다."
+
+msgid "A description list is perfect for defining terms."
+msgstr "설명 목록은 용어 정의에 적합합니다."
+
+msgid "A description of the Volume."
+msgstr "볼륨에 대한 설명입니다."
+
+msgid "A description of the image."
+msgstr "이미지에 대한 설명입니다."
+
+msgid ""
+"A floating IP allows instances to be addressable from an external network.\n"
+"    Floating IPs are not allocated to instances at creation time and may be "
+"assigned\n"
+"    after the instance is created. To attach a floating IP, go to the "
+"<b>Instances</b>\n"
+"    view and click the <b>Actions</b> menu to the right of an instance.\n"
+"    Then, select the <b>Associate Floating IP</b> option and enter the "
+"necessary details."
+msgstr ""
+"Floating IP는 외부 네트워크에서 주소를 이용하여 인스턴스에 접근할 \n"
+"    수 있게 합니다. Floating IP는 인스턴스가 생성 중에는 할당할 수 없으며, \n"
+"    생성된 후 할당이 가능합니다. Floating IP 할당은 <b>인스턴스</b> 뷰로 \n"
+"    이동하여, 각 인스턴스의 오른쪽에 있는 <b>작업</b> 메뉴를 클릭합니다. \n"
+"    그런뒤 <b>Floating IP 할당</b> 옵션을 선택하여 필요한 정보를 입력합니다."
+
+msgid ""
+"A key pair allows you to SSH into your newly created instance.\n"
+"    You may select an existing key pair, import a key pair, or generate a "
+"new key pair."
+msgstr ""
+"키 페어는 새롭게 생성한 인스턴스에 SSH를 이용하여 접근할 수 있습니다.\n"
+"    기존 키 페어를 가져오거나 새로운 키 페어를 생성하여 선택할 수 있습니다."
 
 msgid ""
 "A key pair named '{$ctrl.createdKeypair.name$}' was successfully created. "
@@ -60,12 +207,18 @@ msgstr ""
 "'{$ctrl.createdKeypair.name$}'이란 이름으로 키 페어가 생성되었습니다. 키 페어"
 "는 자동으로 다운로드 됩니다."
 
+msgid "A local file should be selected."
+msgstr "로컬 파일을 선택해야 합니다."
+
 msgid ""
 "A longer block of help text that breaks onto a new line and may extend "
 "beyond one line."
 msgstr ""
-"A longer block of help text that breaks onto a new line and may extend "
-"beyond one line."
+"길이가 긴 도움말 텍스트 블록이며 새 줄에서 시작하고 한 줄이 넘어갈 수 있습니"
+"다."
+
+msgid "A name is required for your container."
+msgstr "컨테이너 이름이 필요합니다."
 
 msgid "A name is required for your instance."
 msgstr "인스턴스 이름이 필요합니다."
@@ -76,11 +229,20 @@ msgstr "포트는 논리 네트워크 스위치 상의 가상 스위치 포트�
 msgid "AKI"
 msgstr "AKI"
 
+msgid "AKI - Amazon Kernel Image"
+msgstr "AKI - Amazon 커널 이미지 (Kernel Image)"
+
 msgid "AMI"
 msgstr "AMI"
 
+msgid "AMI - Amazon Machine Image"
+msgstr "AMI - Amazon 머신 이미지 (Machine Image)"
+
 msgid "ARI"
 msgstr "ARI"
+
+msgid "ARI - Amazon Ramdisk Image"
+msgstr "ARI - Amazon 램디스크 이미지 (Ramdisk Image)"
 
 msgid "Action"
 msgstr "Action"
@@ -112,6 +274,32 @@ msgstr "관리자는 인스턴스에 연결하여 사용할 floating IP 풀을 �
 msgid "Alerts"
 msgstr "Alerts"
 
+msgid "Amount of RAM in MB that is required to boot the image."
+msgstr "이미지를 부팅하는 데 필요한 RAM (MB)"
+
+msgid "Amount of disk space in GB that is required to boot the image."
+msgstr "이미지를 부팅하는 데 필요한 디스크 공간 (GB)"
+
+msgid ""
+"An <b>External</b> network is set up by an administrator.\n"
+"    If you want an instance to communicate outside of the data center,\n"
+"    then attach a router between your <b>Project</b> network and the "
+"<b>External</b> network.\n"
+"    You can use the <b>Network Topology</b> view to connect the router to "
+"the two networks."
+msgstr ""
+"<b>외부</b> 네트워크는 관리자에 의해 셋업됩니다.\n"
+"    인스턴스를 데이터 센터 외부와 통신시키고자 할 때에,\n"
+"    <b>프로젝트</b> 네트워크와 <b>외부</b> 네트워크 사이에 있는 라우터에 연결"
+"합니다.\n"
+"    <b>네트워크 토폴로지</b>를 사용하여 라우터가 두 네트워크에 연결되어 있는"
+"지 볼 수 있습니다."
+
+msgid ""
+"An abbreviation of the word attribute is <abbr title=\"attribute\">attr</"
+"abbr>."
+msgstr "attribute에 대한 약어는 <abbr title=\"attribute\">attr</abbr> 입니다."
+
 msgid ""
 "An advanced option available when launching an instance is disk "
 "partitioning. There are two disk partition options. Selecting <b>Automatic</"
@@ -122,6 +310,32 @@ msgstr ""
 "두 가지 디스크 파티션 옵션이 있습니다. <b>자동</b>으로 선택하면 디스크 크기"
 "를 재조정하여 단일 파티션으로 설정합니다. <b>수동</b>으로 선택하면 해당 디스"
 "크에 여러 파티션을 생성할 수 있습니다."
+
+msgid "An external (HTTP) URL is required"
+msgstr "외부 (HTTP) URL이 필요합니다"
+
+msgid "An external (HTTP) URL to load the image from"
+msgstr "이미지를 가져올 외부 (HTTP) URL"
+
+msgid "An image description less than 256 characters is required."
+msgstr "이미지에 대한 설명이 256자보다 적어야 합니다."
+
+msgid ""
+"An image description less than {$ctrl.validationRules.fieldMaxLength + 1$} "
+"characters is required."
+msgstr ""
+"이미지 설명이 {$ctrl.validationRules.fieldMaxLength + 1$} 글자보다 적어야 합"
+"니다."
+
+msgid "An image name less than 256 characters is required."
+msgstr "이미지 이름이 256자보다 적어야 합니다."
+
+msgid ""
+"An image name less than {$ctrl.validationRules.fieldMaxLength + 1$} "
+"characters is required."
+msgstr ""
+"이미지 이름이 {$ctrl.validationRules.fieldMaxLength + 1$} 글자보다 적어야 합"
+"니다."
 
 msgid ""
 "An instance name is required and used to help you uniquely identify your "
@@ -152,6 +366,9 @@ msgstr "가용 구역"
 msgid "Available"
 msgstr "사용 가능"
 
+msgid "Available Scheduler Hints"
+msgstr "사용 가능한 스케줄러 힌트"
+
 msgid "Badges"
 msgstr "Badges"
 
@@ -160,6 +377,9 @@ msgstr "Basic"
 
 msgid "Basic panel"
 msgstr "Basic panel"
+
+msgid "Batch Actions:"
+msgstr "일괄 액션:"
 
 msgid "Block level button"
 msgstr "Block level button"
@@ -179,6 +399,9 @@ msgstr "Brand"
 msgid "Breadcrumbs"
 msgstr "Breadcrumbs"
 
+msgid "Browse..."
+msgstr "검색..."
+
 msgid "Button"
 msgstr "Button"
 
@@ -194,6 +417,9 @@ msgstr "Keystone으로부터 서비스 카탈로그를 가져오지 못했습니
 msgid "Cannot get the extension list."
 msgstr "확장 목록을 가져오지 못했습니다."
 
+msgid "Charts"
+msgstr "차트"
+
 msgid ""
 "Check the <b>Configuration Drive</b> box if you want to write metadata to a "
 "special configuration drive. When the instance boots, it attaches to the "
@@ -206,14 +432,23 @@ msgstr ""
 msgid "Checkbox"
 msgstr "체크박스"
 
+msgid "Checking if this name is used..."
+msgstr "이름이 이미 사용중인지 검사합니다."
+
 msgid "Checksum"
 msgstr "Checksum"
+
+msgid "Choose an image"
+msgstr "이미지 선택"
 
 msgid "Click to see more details"
 msgstr "클릭하여 세부 사항 보기"
 
 msgid "Close"
 msgstr "Close"
+
+msgid "Collecting information for deletion:"
+msgstr "삭제할 정보를 수집합니다:"
 
 msgid "Color"
 msgstr "Color"
@@ -226,6 +461,9 @@ msgstr "Column heading"
 
 msgid "Configuration"
 msgstr "구성"
+
+msgid "Configuration Drive"
+msgstr "설정 드라이브"
 
 msgid "Confirm Delete"
 msgstr "삭제 확인"
@@ -259,7 +497,7 @@ msgid "Container Name"
 msgstr "컨테이너 이름"
 
 msgid "Container name must not contain \"/\"."
-msgstr "컨테이너 이름에 \"/\"를 포함되지 않아야 합니다."
+msgstr "컨테이너 이름에 \"/\"가 포함되지 않아야 합니다."
 
 msgid "Containers"
 msgstr "Containers"
@@ -270,6 +508,12 @@ msgstr "Content 유형"
 msgid "Contextual alternatives"
 msgstr "Contextual alternatives"
 
+msgid "Copy Data"
+msgstr "데이터 복사"
+
+msgid "Count"
+msgstr "개수"
+
 msgid "Create"
 msgstr "생성"
 
@@ -278,6 +522,12 @@ msgstr "컨테이너 생성"
 
 msgid "Create Folder"
 msgstr "폴더 생성"
+
+msgid "Create Folder In: {$ ctrl.model.container.name $}"
+msgstr "{$ ctrl.model.container.name $}에서 폴더 생성"
+
+msgid "Create Image"
+msgstr "이미지 생성"
 
 msgid "Create Key Pair"
 msgstr "캐 페어 생성"
@@ -331,6 +581,12 @@ msgstr "DNS 레코드"
 msgid "Danger"
 msgstr "Danger"
 
+msgid "Danger Anchor"
+msgstr "위험 앵커"
+
+msgid "Danger Button"
+msgstr "위험 버튼"
+
 msgid "Data"
 msgstr "Data"
 
@@ -343,20 +599,35 @@ msgstr "생성된 날짜"
 msgid "Datetime"
 msgstr "Datetime"
 
+msgid "Deactivated"
+msgstr "비활성화됨"
+
 msgid "Default"
 msgstr "Default"
+
+msgid "Default Anchor"
+msgstr "디폴트 앵커"
+
+msgid "Default Button"
+msgstr "디폴트 버튼"
 
 msgid "Default button"
 msgstr "Default button"
 
 msgid "Default input"
-msgstr "Default input"
+msgstr "기본 입력"
+
+msgid "Definition list"
+msgstr "정의 목록"
 
 msgid "Delete"
 msgstr "삭제"
 
 msgid "Delete Container"
 msgstr "컨테이너 삭제"
+
+msgid "Delete Files in {$ ctrl.model.container.name $}"
+msgstr "{$ ctrl.model.container.name $}에서 파일 삭제"
 
 msgid "Delete Image"
 msgid_plural "Delete Images"
@@ -379,14 +650,20 @@ msgstr[0] "이미지 삭제됨: %s"
 msgid "Deleting"
 msgstr "삭제 중"
 
+msgid "Deleting:"
+msgstr "삭제중:"
+
 msgid "Description"
 msgstr "설명"
 
-msgid "Description:"
-msgstr "설명:"
+msgid "Description lists"
+msgstr "설명 목록"
 
 msgid "Details"
 msgstr "세부 정보"
+
+msgid "Details Views:"
+msgstr "세부사항 뷰:"
 
 msgid "Device Name"
 msgstr "장치 이름"
@@ -404,7 +681,7 @@ msgid "Disabled"
 msgstr "Disabled"
 
 msgid "Disabled input"
-msgstr "Disabled input"
+msgstr "입력 비활성"
 
 msgid "Disabled input here..."
 msgstr "여기 입력을 비활성..."
@@ -414,6 +691,9 @@ msgstr "디스크 포멧"
 
 msgid "Disk Partition"
 msgstr "디스크 파티션"
+
+msgid "Distribution Charts"
+msgstr "배포 차트"
 
 msgid "Docker"
 msgstr "Docker"
@@ -436,6 +716,21 @@ msgstr "Dropdown header"
 msgid "Dropdown link"
 msgstr "Dropdown link"
 
+msgid "Dropup"
+msgstr "드롭업"
+
+msgid "Edit"
+msgstr "편집"
+
+msgid "Edit File"
+msgstr "파일 편집"
+
+msgid "Edit File: {$ ctrl.model.container $} : {$ ctrl.model.path $}"
+msgstr "파일 수정: {$ ctrl.model.container $} : {$ ctrl.model.path $}"
+
+msgid "Edit Image"
+msgstr "이미지 편집"
+
 msgid "Email"
 msgstr "Email"
 
@@ -445,8 +740,17 @@ msgstr "Emphasis classes"
 msgid "Enabled"
 msgstr "활성화"
 
+msgid "Encountered {$ ctrl.model.deleted.failures $} failures."
+msgstr "{$ ctrl.model.deleted.failures $} 개가 실패하였습니다."
+
 msgid "Encrypted"
 msgstr "암호화됨"
+
+msgid "Enter an Image Description"
+msgstr "이미지에 대한 설명을 입력합니다."
+
+msgid "Enter an Image name"
+msgstr "이미지 이름을 입력합니다."
 
 msgid "Ephemeral Disk"
 msgstr "Ephemeral 디스크"
@@ -463,6 +767,9 @@ msgstr "Ether 유형"
 msgid "Example body text"
 msgstr "Example body text"
 
+msgid "Existing Scheduler Hints"
+msgstr "기존 스케줄러 힌트"
+
 #, python-format
 msgid "Extension is not enabled: %(extension)s."
 msgstr "확장을 활성화하지 못했습니다: %(extension)s"
@@ -476,6 +783,10 @@ msgstr "파일"
 #, python-format
 msgid "File %(name)s uploaded."
 msgstr "%(name)s 파일 업로드하였습니다."
+
+#, python-format
+msgid "File %(path)s uploaded."
+msgstr "%(path)s 이 업로드되었습니다."
 
 msgid "File Name"
 msgstr "파일 이름"
@@ -501,6 +812,12 @@ msgid ""
 msgstr ""
 "Flavor는 인스턴스의 컴퓨트, 메모리 및 스토리지 용량에 대한 크기를 관리합니다."
 
+msgid "Floating IP"
+msgstr "유동 IP"
+
+msgid "Floating IPs"
+msgstr "유동 IP"
+
 msgid "Focused input"
 msgstr "Focused input"
 
@@ -519,6 +836,25 @@ msgstr "포멧"
 
 msgid "Forms"
 msgstr "Forms"
+
+msgid ""
+"From a Windows system, you can use PuTTYGen to create private/public keys.\n"
+"  Use the PuTTY Key Generator to create and save the keys, then copy\n"
+"  the public key in the red highlighted box to your <samp>.ssh/"
+"authorized_keys</samp>\n"
+"  file."
+msgstr ""
+"Windows 시스템에서는 PuTTYGen을 이용하여 개인/공개키를 생성할 수 있습니다.\n"
+"  PuTTY 키 생성기를 이용하여 키를 생성하고 저장후, 붉은 색으로 테두리쳐진 입"
+"력\n"
+"  상자에 <samp>.ssh/authorized_keys</samp> 파일의 공개키를\n"
+"  복사합니다."
+
+msgid "Generic Table View:"
+msgstr "Generic 테이블 뷰:"
+
+msgid "Global Actions:"
+msgstr "글로벌 액션:"
 
 msgid "Hash"
 msgstr "해시"
@@ -544,8 +880,17 @@ msgstr "Heading 6"
 msgid "Home"
 msgstr "Home"
 
+msgid "Horizontal Definition List"
+msgstr "가로(Horizontal) 표시 정의 목록"
+
 msgid "Host ID"
 msgstr "호스트 ID"
+
+msgid "Hypervisor"
+msgstr "하이퍼바이저"
+
+msgid "Hypervisors"
+msgstr "하이퍼바이저"
 
 msgid "ID"
 msgstr "ID"
@@ -556,11 +901,8 @@ msgstr "IP"
 msgid "ISO"
 msgstr "ISO"
 
-msgid ""
-"If \"No volume type\" is selected, the volume will be created without a "
-"volume type."
-msgstr ""
-"\"볼륨 타입 없음\"을 선택하면, 볼륨은 볼륨 타입이 없는 상태로 생성됩니다."
+msgid "ISO - Optical Disk Image"
+msgstr "ISO - 광학 디스크 이미지 (Optical Disk Image)"
 
 msgid ""
 "If a network is shared, then all users in the project can access the network."
@@ -577,9 +919,20 @@ msgstr ""
 "난 뒤 매우 제한적인 접근만 가능합니다. VNC 콘솔을 통한 인스턴스 접근만 허용됩"
 "니다."
 
-msgid "If not, you can manually dowload this keypair at the following link:"
+msgid "If not, you can manually download this keypair at the following link:"
 msgstr ""
-"자동으로 다운로드가 안되면 다음의 링크를 이용하여 키 페어를 다운받으십시오:"
+"자동으로 다운로드가 되지 않는다면 다음 링크를 이용하여 키 페어를 다운로드하십"
+"시오:"
+
+msgid "If set to 'Yes' then the image cannot be deleted."
+msgstr "'Yes'로 설정되어 있는 경우 이미지를 삭제할 수 없습니다."
+
+msgid ""
+"If uploading the image via a HTTP URL the image location must be accessible "
+"to the Image Service and be a URL direct to the image binary."
+msgstr ""
+"HTTP URL을 통해서 이미지를 업로드하는 경우 이미지 위치를 이미지 서비스에서 액"
+"세스할 수 있어야 하며 URL이 이미지 바이너르를 직접 가리켜야 합니다."
 
 msgid ""
 "If you select an availability zone and plan to use the 'boot from volume' "
@@ -611,8 +964,37 @@ msgstr ""
 msgid "Image"
 msgstr "이미지"
 
+#, python-format
+msgid "Image %s was successfully created."
+msgstr "이미지 %s를 성공적으로 생성하였습니다."
+
+#, python-format
+msgid "Image %s was successfully updated."
+msgstr "이미지 %s를 성공적으로 업데이트했습니다."
+
+msgid "Image Description"
+msgstr "이미지 설명"
+
+msgid "Image Detail"
+msgstr "이미지 상세 정보"
+
+msgid "Image Details"
+msgstr "이미지 상세 정보"
+
+msgid "Image Metadata"
+msgstr "이미지 메타데이터"
+
 msgid "Image Name"
 msgstr "이미지 이름"
+
+msgid "Image Requirements"
+msgstr "이미지 요구 사항"
+
+msgid "Image Sharing"
+msgstr "이미지 공유"
+
+msgid "Image Source"
+msgstr "이미지 소스"
 
 msgid "Images"
 msgstr "이미지"
@@ -629,8 +1011,20 @@ msgstr "Indicators"
 msgid "Info"
 msgstr "Info"
 
+msgid "Info Anchor"
+msgstr "정보 앵커"
+
+msgid "Info Button"
+msgstr "정보 버튼"
+
+msgid "Inline"
+msgstr "인라인"
+
+msgid "Inline Form"
+msgstr "인라인 Form"
+
 msgid "Input Sizes"
-msgstr "Input Sizes"
+msgstr "입력 크기"
 
 msgid "Input States"
 msgstr "Input States"
@@ -639,13 +1033,19 @@ msgid "Input addons"
 msgstr "Input addons"
 
 msgid "Input error"
-msgstr "Input error"
+msgstr "입력 에러"
 
 msgid "Input success"
-msgstr "Input success"
+msgstr "입력 성공"
 
 msgid "Input warning"
-msgstr "Input warning"
+msgstr "입력 경고"
+
+msgid "Instance"
+msgstr "인스턴스"
+
+msgid "Instance Name"
+msgstr "인스턴스 이름"
 
 msgid "Instance Snapshot"
 msgstr "인스턴스 스냅샷"
@@ -653,11 +1053,33 @@ msgstr "인스턴스 스냅샷"
 msgid "Instance count is required and must be an integer of at least 1"
 msgstr "인스턴스 개수는 필수이며 적어도 1 이상의 정수값이어야 합니다"
 
+msgid ""
+"Instance source is the template used to create an instance. You can use a "
+"snapshot of an existing instance, an image, or a volume (if enabled).\n"
+"    You can also choose to use persistent storage by creating a new volume."
+msgstr ""
+"인스턴스 소스는 인스턴스 생성 시 사용되는 템플릿입니다. 기존 인스턴스, 이미"
+"지, 또는 볼륨(활성화된 경우)의 스냅샷을 사용할 수 있습니다.\n"
+"    또한 새로운 볼륨 생성 시 영구적인 스토리지를 사용하도록 선택할 수 있습니"
+"다."
+
+msgid "Instances"
+msgstr "인스턴스"
+
 msgid "Insufficient privilege level to view user information."
 msgstr "사용자 정보를 볼 수 있는 권한이 없습니다."
 
+msgid "Is Public"
+msgstr "공용"
+
+msgid "Item Actions:"
+msgstr "항목 액션:"
+
 msgid "Jumbotron"
 msgstr "Jumbotron"
+
+msgid "Kernel"
+msgstr "커널 (Kernel)"
 
 msgid "Kernel ID"
 msgstr "커널 ID"
@@ -665,14 +1087,43 @@ msgstr "커널 ID"
 msgid "Key Pair"
 msgstr "키 페어"
 
+msgid ""
+"Key Pair Name\n"
+"        <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+msgstr ""
+"키 페어 이름\n"
+"        <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+
 msgid "Key Pairs"
 msgstr "키 페어"
+
+msgid ""
+"Key Pairs are how you login to your instance after it is launched.\n"
+"      Choose a key pair name you will recognize and paste your SSH public "
+"key into the\n"
+"      space provided."
+msgstr ""
+"키 페어는 인터페이스가 시작한 후 로그인하는데 사용됩니다.\n"
+"      선택한 SSH 공개 키를 붙여넣습니다. 키 페어 이름을 선택하세요.\n"
+"      공백 사용 가능합니다."
+
+msgid ""
+"Key Pairs are how you login to your instance after it is launched.\n"
+"      Choose a key pair name you will recognize.\n"
+"      Names may only include alphanumeric characters, spaces, or dashes."
+msgstr ""
+"키 페어는 인스턴스가 실행되었을때 로그인할 수 있는 방법입니다.\n"
+"      인증에 사용할 키 쌍 이름을 선택합니다.\n"
+"      이름에는 알파벳, 숫자, 공백, 대시를 포함할 수 있습니다."
 
 msgid "Keypair already exists or name contains bad characters."
 msgstr "키 페어가 이미 있거나 이름에 잘못된 문자가 포함되어 있습니다."
 
 msgid "Killed"
 msgstr "Killed"
+
+msgid "Large Modal"
+msgstr "큰 Modal"
 
 msgid "Large button"
 msgstr "Large button"
@@ -698,8 +1149,14 @@ msgstr "Legend"
 msgid "Library"
 msgstr "Library"
 
+msgid "Line Charts"
+msgstr "선형 차트"
+
 msgid "Link"
 msgstr "Link"
+
+msgid "List Function:"
+msgstr "함수 목록:"
 
 msgid "List group item heading"
 msgstr "List group item heading"
@@ -719,8 +1176,14 @@ msgstr "로드 밸런서 풀 구성원"
 msgid "Load Balancer Pools"
 msgstr "로드 밸런서 풀"
 
+msgid "Load Function:"
+msgstr "기능 로드:"
+
 msgid "Loading"
 msgstr "불러 오는 중"
+
+msgid "Location"
+msgstr "위치"
 
 msgid "Look, I'm in a large well!"
 msgstr "Look, I'm in a large well!"
@@ -740,6 +1203,9 @@ msgstr "수동"
 msgid "Max Port"
 msgstr "최대 포트번호"
 
+msgid "Max. Size (bytes)"
+msgstr "최대 크기 (바이트)"
+
 msgid "Members"
 msgstr "구성원"
 
@@ -754,6 +1220,30 @@ msgstr "메타데이터 정의"
 
 msgid "Metadata Definitions"
 msgstr "메타데이터 정의"
+
+msgid "Metadata Help"
+msgstr "메타데이터 도움말"
+
+msgid ""
+"Metadata is a collection of key-value pairs associated with an instance.\n"
+"    The maximum length for each metadata key and value is 255 characters."
+msgstr ""
+"메타데이터는 인스턴스와 연결된 키 값 쌍 (KVP) 모음입니다.\n"
+"    각 메타데이터 키와 값의 최대 길이는 255자입니다."
+
+msgid ""
+"Metadata is used to provide additional information about the\n"
+"    image. Sometimes this information is only used for sorting and viewing.\n"
+"    In some installations this information may affect how the instance is\n"
+"    deployed or behaves."
+msgstr ""
+"메타데이터를 사용하여 이미지에 대한 추가 정보를\n"
+"    제공합니다. 이런 정보는 정렬 및 확인에만 사용되기도 합니다.\n"
+"    일부 설치의 경우 이런 정보가 인스턴스의 배포 또는 작동에 영향을\n"
+"    미칠 수 있습니다."
+
+msgid "Metadata was successfully updated."
+msgstr "메타데이터를 성공적으로 업데이트했습니다."
 
 msgid "Middle"
 msgstr "Middle"
@@ -773,8 +1263,23 @@ msgstr "최소 디스크"
 msgid "Min. RAM"
 msgstr "최소 RAM"
 
+msgid "Min. Size (bytes)"
+msgstr "최소 크기 (바이트)"
+
 msgid "Mini button"
 msgstr "Mini button"
+
+msgid "Minimum Disk"
+msgstr "최소 디스크"
+
+msgid "Minimum Disk (GB)"
+msgstr "최소 디스크 (GB)"
+
+msgid "Minimum RAM"
+msgstr "최소 RAM"
+
+msgid "Minimum RAM (MB)"
+msgstr "최소 RAM (MB)"
 
 msgid "Modals"
 msgstr "Modals"
@@ -784,6 +1289,9 @@ msgstr "Month"
 
 msgid "Name"
 msgstr "이름"
+
+msgid "Names:"
+msgstr "이름:"
 
 msgid "Navbar"
 msgstr "Navbar"
@@ -830,6 +1338,9 @@ msgstr "네트워크"
 msgid "Networks provide the communication channels for instances in the cloud."
 msgstr "네트워크는 클라우드 내 인스턴스에 대한 통신 채널을 제공합니다."
 
+msgid "New File Contents"
+msgstr "새로운 파일 내용"
+
 msgid "Newer"
 msgstr "Newer"
 
@@ -842,8 +1353,41 @@ msgstr "아니오"
 msgid "No available items"
 msgstr "사용 가능한 항목 없음"
 
+msgid "No available scheduler hints"
+msgstr "사용 가능한 스케줄러 힌트가 없습니다."
+
+msgid "No existing scheduler hints"
+msgstr "기존 스케줄러 힌트가 없습니다."
+
 msgid "Normal"
 msgstr "Normal"
+
+msgid "Not Set"
+msgstr "설정되지 않음"
+
+msgid ""
+"Note: A Public Container will allow anyone with the Public URL to\n"
+"          gain access to your objects in the container."
+msgstr ""
+"참고: 공개 컨테이너는 공개 URL을 이용하여 누구나 컨테이너 내에 있는 \n"
+"          오브젝트에 접근 할 수 있습니다."
+
+msgid ""
+"Note: Delimiters ('{$ ctrl.model.DELIMETER $}') are allowed in the\n"
+"          file name to place the new file into a folder that will be "
+"created\n"
+"          when the file is uploaded (to any depth of folders)."
+msgstr ""
+"참고: 구분자 ('{$ ctrl.model.DELIMETER $}') 는 파일 이름이 \n"
+"          (임의의 폴더 위치로) 업로드 될 때 생성되는 폴더 안에서\n"
+"          새로운 파일로 위치시킬 수 있도록 해 줍니다."
+
+msgid ""
+"Note: Delimiters ('{$ ctrl.model.DELIMETER $}') are allowed in the\n"
+"          folder name to create deep folders."
+msgstr ""
+"참고: 구분자 ('{$ ctrl.model.DELIMETER $}')는 해당 폴더 이름 안에\n"
+"          폴더를 만들 수 있습니다."
 
 msgid "Note: you will not be able to download this later."
 msgstr "주의: 나중에 다시 받을 수 없습니다."
@@ -851,8 +1395,14 @@ msgstr "주의: 나중에 다시 받을 수 없습니다."
 msgid "Number"
 msgstr "Number"
 
+msgid "OK"
+msgstr "OK"
+
 msgid "OVA"
 msgstr "OVA"
+
+msgid "OVA - Open Virtual Appliance"
+msgstr "OVA - 오픈 가상 어플라이언스 (Open Virtual Appliance)"
 
 msgid "Object"
 msgstr "오브젝트"
@@ -878,14 +1428,29 @@ msgstr "오브젝트 세부 정보"
 msgid "Objects"
 msgstr "오브젝트들"
 
+msgid "Ok"
+msgstr "Ok"
+
 msgid "Older"
 msgstr "Older"
 
 msgid "One fine body…"
-msgstr "One fine body…"
+msgstr "일반 body…"
+
+msgid "One large body…"
+msgstr "큰 body…"
 
 msgid "One more separated link"
 msgstr "One more separated link"
+
+msgid "One small body…"
+msgstr "작은 body…"
+
+msgid "One super large body…"
+msgstr "매우 큰 body…"
+
+msgid "One tiny body…"
+msgstr "매우 작은 body…"
 
 msgid "Option one is this"
 msgstr "옵션 1 입니다"
@@ -893,8 +1458,14 @@ msgstr "옵션 1 입니다"
 msgid "Option two can be something else"
 msgstr "옵션 2는 다른 것을 할 수 있습니다"
 
+msgid "Ordered"
+msgstr "정렬됨"
+
 msgid "Other Input Types"
 msgstr "Other Input Types"
+
+msgid "Other lists"
+msgstr "다른 목록"
 
 msgid "Overview"
 msgstr "개요"
@@ -947,8 +1518,19 @@ msgstr "물리 네트워크"
 msgid "Pills"
 msgstr "Pills"
 
+msgid ""
+"Please provide the initial hostname for the instance, the availability zone "
+"where it will be deployed, and the instance count.\n"
+"    Increase the Count to create multiple instances with the same settings."
+msgstr ""
+"인스턴스 초기 호스트 이름, 배포할 가용 구역, 인스턴스 수를 입력하십시오.\n"
+"    동일한 설정으로 여러 인스턴스를 생성하려는 수를 입력하면 됩니다."
+
 msgid "Please try again."
 msgstr "다시 시도해주세요."
+
+msgid "Policy"
+msgstr "정책"
 
 msgid "Policy check failed."
 msgstr "정책 확인을 하지 못했습니다."
@@ -972,6 +1554,12 @@ msgstr "Previous"
 msgid "Primary"
 msgstr "Primary"
 
+msgid "Primary Anchor"
+msgstr "주 앵커"
+
+msgid "Primary Button"
+msgstr "주 버튼"
+
 msgid "Private"
 msgstr "사설"
 
@@ -987,6 +1575,16 @@ msgstr "프로젝트"
 msgid "Project ID"
 msgstr "프로젝트 ID"
 
+msgid ""
+"Project networks are created by users.\n"
+"    These networks are fully isolated and are project-specific."
+msgstr ""
+"프로젝트 네트워크는 사용자에 의해 생성됩니다.\n"
+"  해당 네트워크는 완전히 격리되어 있으며 프로젝트 별로 관리됩니다."
+
+msgid "Properties:"
+msgstr "속성:"
+
 msgid "Protected"
 msgstr "보호됨"
 
@@ -995,6 +1593,13 @@ msgstr "프로토콜"
 
 msgid "Provider Network"
 msgstr "프로바이더 네트워크"
+
+msgid ""
+"Provider networks are created by administrators.\n"
+"    These networks map to an existing physical network in the data center."
+msgstr ""
+"프로바이더 네트워크는 관리자에 의해 생성됩니다.\n"
+"  해당 네트워크는 데이터 센터 내 존재하는 물리 네트워크에 매핑됩니다."
 
 msgid "Public"
 msgstr "공용"
@@ -1005,8 +1610,18 @@ msgstr "Public Access"
 msgid "Public Key"
 msgstr "공개 키"
 
+msgid ""
+"Public Key\n"
+"        <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+msgstr ""
+"공개 키\n"
+"        <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+
 msgid "QCOW2"
 msgstr "QCOW2"
+
+msgid "QCOW2 - QEMU Emulator"
+msgstr "QCOW2 - QEMU 에뮬레이터 (Emulator)"
 
 msgid "Queued"
 msgstr "Queued"
@@ -1023,17 +1638,26 @@ msgstr "RX/TX 요인"
 msgid "Radios"
 msgstr "Radios"
 
+msgid "Ramdisk"
+msgstr "램디스크 (Ramdisk)"
+
 msgid "Ramdisk ID"
 msgstr "램디스크 ID"
+
+msgid "Raw"
+msgstr "Raw"
 
 msgid "Re-order items using drag and drop"
 msgstr "다시 주문할 아이템은 드래그 앤 드롭으로 가져옵니다."
 
-msgid "Record Properties"
-msgstr "레코드 속성"
+msgid "Registered Resource Types"
+msgstr "등록된 리소스 유형"
 
 msgid "Remote"
 msgstr "원격"
+
+msgid "Resource ID(s)"
+msgstr "리소스 ID"
 
 msgid "Right"
 msgstr "Right"
@@ -1050,11 +1674,23 @@ msgstr "Save changes"
 msgid "Saving"
 msgstr "Saving"
 
+msgid "Scheduler Hints"
+msgstr "스케줄러 힌트"
+
+msgid ""
+"Scheduler hints allow you to pass additional placement related information "
+"to the compute scheduler."
+msgstr ""
+"스케줄러 힌트를 사용하여 배치 관련 추가 정보를 compute 스케줄러에 추가합니다."
+
 msgid "Search"
 msgstr "Search"
 
 msgid "Security"
 msgstr "보안"
+
+msgid "Security Group"
+msgstr "보안 그룹"
 
 msgid "Security Groups"
 msgstr "시큐리티 그룹"
@@ -1064,11 +1700,28 @@ msgid ""
 msgstr ""
 "시큐리티 그룹은 프로젝트에 지정되며 프로젝트에 걸쳐 공유될 수 없습니다."
 
+msgid ""
+"Security groups define a set of IP filter rules that determine how network "
+"traffic flows to and from an instance. Users can add additional rules to an "
+"existing security group to further define the access options for an "
+"instance. To create additional rules, go to the <b>Compute | Access &amp; "
+"Security</b> view, then find the security group and click <b>Manage Rules</"
+"b>."
+msgstr ""
+"보안 그룹에 정의되는 IP 필터 규칙 set은 네트워크 트래픽이 어떻게 인스턴스에"
+"서 흐르는지 결정합니다. 사용자가 기존 보안 그룹에 규칙을 추가해서 인스턴스에 "
+"액세스할 수 있는 옵션을 더 자세히 정의할 수 있습니다. 규칙을 추가하려면 "
+"<b>Compute | 접근 &amp; 시큐리티</b> 뷰에서 <b>규칙 관리</b>를 선택해서 보안 "
+"그룹을 찾습니다."
+
 msgid "Segmentation ID"
 msgstr "구분 ID"
 
 msgid "Select Boot Source"
 msgstr "부팅 소스 선택"
+
+msgid "Select Title"
+msgstr "제목 선택"
 
 msgid "Select a container to browse."
 msgstr "보여줄 컨테이너를 선택합니다."
@@ -1076,11 +1729,11 @@ msgstr "보여줄 컨테이너를 선택합니다."
 msgid "Select a key pair from the available key pairs below."
 msgstr "아래에서 사용 가능한 키 페어 중 하나를 선택합니다."
 
+msgid "Select a server group from the available groups below."
+msgstr "아래에서 사용 가능한 서버 그룹을 선택합니다."
+
 msgid "Select a source from those listed below."
 msgstr "아래 목록에서 소스를 선택합니다."
-
-msgid "Select a zone"
-msgstr "구역 선택"
 
 msgid "Select an item from Available items below"
 msgstr "아래에서 사용 가능한 항목에서 선택"
@@ -1103,14 +1756,61 @@ msgstr "아래 사용가능한 그룹에서 하나 이상의 시큐리티 그룹
 msgid "Select ports from those listed below."
 msgstr "아래 목록에서 포트를 선택합니다."
 
+msgid "Select the Ramdisk from the drop down menu."
+msgstr "드롭 다운 메뉴에서 램디스크를 선택합니다."
+
+msgid "Select the availability zone from the drop down menu."
+msgstr "드롭 다운 메뉴에서 가용 구역을 선택합니다."
+
+msgid "Select the format of the disk from the drop down menu."
+msgstr "드롭 다운 메뉴에서 디스크 형식을 선택합니다."
+
+msgid "Select the kernel to run from the drop down menu."
+msgstr "드롭 다운 메뉴에서 실행할 커널을 선택합니다."
+
 msgid "Select the security groups to launch the instance in."
 msgstr "인스턴스 작동시 시큐리티 그룹을 선택합니다."
+
+msgid "Select the server group to launch the instance in."
+msgstr "인스턴스를 실행할 서버 그룹을 선택합니다."
+
+msgid ""
+"Select the volume type from the drop down menu. In an environment with "
+"multiple-storage back ends, the scheduler determines where to send the "
+"volume based on the volume type."
+msgstr ""
+"드롭 다운 메뉴에서 볼륨 유형을 선택합니다. 여러 스토리지 백엔드가 있는 환경에"
+"서 스케줄러는 볼륨 유형을 바탕으로 볼륨을 어디로 보낼지 결정합니다."
 
 msgid "Selects"
 msgstr "Selects"
 
+msgid "Send invitation"
+msgstr "초대장 보내기"
+
 msgid "Separated link"
 msgstr "Separated link"
+
+msgid "Server Groups"
+msgstr "서버 그룹"
+
+msgid ""
+"Server groups are project-specific and cannot be shared across projects."
+msgstr ""
+"서버 그룹은 프로젝트에 지정되며 다른 프로젝트에 걸쳐 공유될 수 없습니다."
+
+msgid ""
+"Server groups define collections of VM's so that the entire\n"
+"    collection can be given specific properties. For example, the policy of "
+"a\n"
+"    server group may specify that VM's in this group should not be placed "
+"on\n"
+"    the same physical hardware due to availability requirements."
+msgstr ""
+"서버 그룹은 VM 집합을 정의하여 전체 집합에\n"
+"    특정 속성을 지정합니다. 예를 들어, 특정 서버 그룹의\n"
+"    규칙으로 해당 그룹 내 VM이 가용성 요구 사항으로 인해\n"
+"    동일한 물리 하드웨어에 위치하지 못하도록 지정 가능합니다."
 
 #, python-format
 msgid "Service type is not enabled: %(desiredType)s"
@@ -1123,11 +1823,20 @@ msgstr "설정을 활성하지 못했습니다: %(setting)s"
 msgid "Shared"
 msgstr "공유"
 
+msgid "Shared With Project"
+msgstr "프로젝트와 공유됨"
+
+msgid "Shared with Project"
+msgstr "프로젝트와 공유됨"
+
 msgid "Size"
 msgstr "크기"
 
 msgid "Size (GB)"
 msgstr "크기 (GB)"
+
+msgid "Small Modal"
+msgstr "작은 Modal"
 
 msgid "Small button"
 msgstr "Small button"
@@ -1153,8 +1862,17 @@ msgstr "Source Code"
 msgid "Source Title"
 msgstr "소스 제목"
 
+msgid "Source Type"
+msgstr "소스 유형"
+
+msgid "Specify an image to upload to the Image Service."
+msgstr "이미지 서비스에 업로드할 이미지를 지정합니다."
+
 msgid "Stacked"
 msgstr "Stacked"
+
+msgid "Standard Modal"
+msgstr "일반 Modal"
 
 msgid "Standard Table"
 msgstr "Standard Table"
@@ -1178,8 +1896,17 @@ msgstr "Success"
 msgid "Successfully imported key pair %(name)s."
 msgstr "%(name)s 키 페어를 성공적으로 가져왔습니다."
 
+msgid "Summary Template URL:"
+msgstr "템플릿 URL 요약:"
+
+msgid "Supports Details View:"
+msgstr "세부사항 뷰를 지원합니다:"
+
 msgid "Swap Disk"
 msgstr "스왑 디스크"
+
+msgid "Table Columns:"
+msgstr "테이블 열:"
 
 msgid "Tables"
 msgstr "Tables"
@@ -1193,8 +1920,17 @@ msgstr "태그"
 msgid "Tel"
 msgstr "Tel"
 
+msgid "Text"
+msgstr "텍스트"
+
 msgid "Textarea"
 msgstr "Textarea"
+
+msgid "The access permission for the image."
+msgstr "이미지 액세스 권한"
+
+msgid "The architecture of the image."
+msgstr "이미지 아키텍처"
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -1233,8 +1969,8 @@ msgid ""
 "The logical port also defines the MAC address and the IP address(es) to be "
 "assigned to the interfaces plugged into them."
 msgstr ""
-"논리 포트는 연결되는 인터페이스에 할당이 이루어질 MAC 주소와 IP 주소 또한 정"
-"의합니다."
+"또한 논리 포트는 연결되는 인터페이스에 할당될 MAC 주소와 IP 주소를 정의합니"
+"다."
 
 msgid ""
 "The maximum number of key-value pairs that can be supplied per instance is "
@@ -1243,14 +1979,34 @@ msgstr ""
 "인스턴트마다 제공할 수 있는 키값 쌍의 최대 수는 compute 제공자에 의해 결정됩"
 "니다."
 
+msgid ""
+"The minimum disk size required to boot the image. If unspecified, this value "
+"defaults to 0 (no minimum)."
+msgstr ""
+"이미지를 부팅하기 위한 최소 디스크 크기입니다. 지정하지 않는 경우 기본값은 0"
+"입니다(최소값 없음)."
+
+msgid ""
+"The minimum memory size required to boot the image. If unspecified, this "
+"value defaults to 0 (no minimum)."
+msgstr ""
+"이미지를 부팅하기 위한 최소 메모리 크기입니다. 지정하지 않는 경우 기본값은 0"
+"입니다(최소값 없음)."
+
+msgid "The name of the Volume."
+msgstr "볼륨 이름입니다."
+
+msgid "The name of the image."
+msgstr "이미지 이름"
+
 #, python-format
 msgid ""
 "The selected %(sourceType)s source requires a flavor with at least "
 "%(minDisk)s GB of root disk. Select a flavor with a larger root disk or use "
 "a different %(sourceType)s source."
 msgstr ""
-"선택한 %(sourceType)s 소스는 루트 디스크에서 최소한 %(minDisk)s GB flavor가 "
-"필요합니다. 더 큰 루트 디스크를 가진 flavor를 선택하거나 다른 %(sourceType)s "
+"선택한 %(sourceType)s 소스는 root 디스크에서 최소한 %(minDisk)s GB flavor가 "
+"필요합니다. 더 큰 root 디스크를 가진 flavor를 선택하거나 다른 %(sourceType)s "
 "소스를 사용하십시오."
 
 #, python-format
@@ -1263,15 +2019,60 @@ msgstr ""
 "더 많은 RAM을 가진 flavor를 선택하거나 다른 %(sourceType)s 소스를 사용하십시"
 "오."
 
+msgid "The size of the volume, in gibibytes (GiB)."
+msgstr "기비바이트 (GiB) 단위의 볼륨 크기입니다."
+
 msgid "The status indicates whether the network has an active connection."
 msgstr "해당 상태는 네트워크가 활성화된 연결을 이루고 있는지를 가리킵니다."
 
 msgid "The status indicates whether the port has an active connection."
 msgstr "이 상태는 해당 포트가 활성 연결이 있는지 여부를 가리킵니다."
 
+msgid ""
+"The subnet identifies a sub-section of a network. A subnet is specified in "
+"CIDR format.\n"
+"    A typical CIDR format looks like <samp>192.xxx.x.x/24</samp>."
+msgstr ""
+"서브넷은 네트워크의 서브섹션을 식별합니다. 서브넷은 CIDR 포맷으로 구체화합니"
+"다.\n"
+"    일반적인 CIDR 포맷은 <samp>192.xxx.x.x/24</samp>와 같습니다."
+
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
 msgstr "볼륨 크기는 최소 %(minVolumeSize)s GB여야 합니다."
+
+msgid "Themable Checkbox"
+msgstr "테마 가능한 체크박스"
+
+msgid "Themable Radios"
+msgstr "테마 가능한 라디오"
+
+msgid "Themable Selects"
+msgstr "테마 가능한 선택"
+
+msgid "There are no Availability Zones."
+msgstr "가용 구역이 없습니다."
+
+msgid ""
+"There are no allowed boot sources.\n"
+"      If you think this is wrong please contact your administrator."
+msgstr ""
+"허용되는 boot 소스가 없습니다.\n"
+"      이것이 잘못되었다고 생각되신다면 관리자에게 문의하시기 바랍니다."
+
+msgid ""
+"There are two ways to generate a key pair. From a Linux system,\n"
+"  generate the key pair with the <samp>ssh-keygen</samp> command:"
+msgstr ""
+"키 페어를 생성에는 두 가지 방법이 있습니다. 리눅스 시스템에서는,\n"
+"   <samp>ssh-keygen</samp> 명령을 이용하여 생성합니다:"
+
+msgid ""
+"This command generates a pair of keys: a private key (cloud.key)\n"
+"  and a public key (cloud.key.pub)."
+msgstr ""
+"이것을 이용하여 키 한쌍을 생성합니다: 개인키 (cloud.key)와\n"
+"  공개 키 (cloud.key.pub)."
 
 msgid ""
 "This flavor requires more RAM than your quota allows. Please select a "
@@ -1304,14 +2105,29 @@ msgid "This limit is currently set to {$ model.novaLimits.maxServerMeta $}."
 msgstr ""
 "이 제한 값은 현재 {$ model.novaLimits.maxServerMeta $} 에 설정되어있습니다."
 
+msgid "This name already exists."
+msgstr "이미 존재하는 이름입니다."
+
 msgid "This step allows you to add Metadata items to your instance."
 msgstr "이 단계에서 인스턴스에 메타데이터 항목을 추가할 수 있습니다."
+
+msgid "This step allows you to add scheduler hints to your instance."
+msgstr "이 단계에서 인스턴스에 스케줄러 힌트를 추가할 수 있습니다."
 
 msgid "Time"
 msgstr "Time"
 
 msgid "Timestamp"
 msgstr "타임스탬프"
+
+msgid ""
+"To view source code, hover over a section, then click the <a class=\"btn btn-"
+"primary btn-xs\"><span class=\"fa fa-code\"></span></a> button in the top "
+"right of that section."
+msgstr ""
+"소스 코드를 보려면 섹션 위에 커서를 올려서 해당 섹션의 오른쪽 상단의 <a "
+"class=\"btn btn-primary btn-xs\"><span class=\"fa fa-code\"></span></a> 버튼"
+"을 클릭합니다."
 
 msgid "Tooltips"
 msgstr "Tooltips"
@@ -1345,6 +2161,9 @@ msgstr ""
 
 msgid "Typography"
 msgstr "Typography"
+
+msgid "URL"
+msgstr "URL"
 
 msgid "Unable to allocate new floating IP address."
 msgstr "새로운 floating IP 주소를 할당할 수 없습니다."
@@ -1384,6 +2203,9 @@ msgstr "프로젝트를 생성하지 못했습니다."
 
 msgid "Unable to create the role."
 msgstr "역할을 생성하지 못했습니다."
+
+msgid "Unable to create the server snapshot."
+msgstr "서버 스냅샷을 생성할 수 없습니다."
 
 msgid "Unable to create the server."
 msgstr "서버를 생성하지 못했습니다."
@@ -1436,6 +2258,10 @@ msgstr "역할을 삭제하지 못했습니다."
 
 msgid "Unable to delete the roles."
 msgstr "역할을 삭제하지 못했습니다."
+
+#, python-format
+msgid "Unable to delete the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버를 삭제할 수 없습니다."
 
 msgid "Unable to delete the user."
 msgstr "사용자를 삭제하지 못했습니다."
@@ -1503,8 +2329,35 @@ msgstr "컨테이너 내의 오브젝트를 가져올 수 없습니다."
 msgid "Unable to grant the role."
 msgstr "역할을 부여하지 못했습니다."
 
+#, python-format
+msgid "Unable to hard-reboot the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버를 하드 재부팅(hard-reboot)할 수 없습니다."
+
 msgid "Unable to import the keypair."
 msgstr "키 페어를 가져오지 못했습니다."
+
+msgid "Unable to load the server actions."
+msgstr "서버 작업을 불러올 수 없습니다."
+
+msgid "Unable to load the server console info."
+msgstr "서버 콘솔 정보를 불러올 수 없습니다."
+
+msgid "Unable to load the server console log."
+msgstr "서버 콘솔 로그를 불러올 수 없습니다."
+
+msgid "Unable to load the server security groups."
+msgstr "서버 보안 그룹을 불러올 수 없습니다."
+
+msgid "Unable to load the server volumes."
+msgstr "서버 볼륨을 불러올 수 없습니다."
+
+#, python-format
+msgid "Unable to pause the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버를 정지할 수 없습니다."
+
+#, python-format
+msgid "Unable to resume the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버를 재개할 수 없습니다."
 
 msgid "Unable to retrieve floating IP pools."
 msgstr "Floating IP pool을 찾지 못했습니다."
@@ -1517,6 +2370,9 @@ msgstr "인스턴스 메타데이터를 찾지 못했습니다."
 
 msgid "Unable to retrieve instances."
 msgstr "인스턴스들을 찾지 못했습니다."
+
+msgid "Unable to retrieve server groups."
+msgstr "서버 그룹을 찾지 못했습니다."
 
 msgid "Unable to retrieve settings."
 msgstr "설정들을 찾지 못했습니다."
@@ -1542,6 +2398,9 @@ msgstr "Cinder 서비스를 찾지 못했습니다."
 msgid "Unable to retrieve the current user session."
 msgstr "현재 사용자 세션을 찾지 못했습니다."
 
+msgid "Unable to retrieve the default quotas."
+msgstr "기본 쿼터(quota)를 찾지 못했습니다."
+
 msgid "Unable to retrieve the default volume type."
 msgstr "기본 볼륨 타입을 찾지 못했습니다."
 
@@ -1550,6 +2409,9 @@ msgstr "도메인을 찾지 못했습니다."
 
 msgid "Unable to retrieve the domains."
 msgstr "도메인들을 찾지 못했습니다."
+
+msgid "Unable to retrieve the editable quotas."
+msgstr "편집 가능한 쿼터(quota)를 찾지 못했습니다."
 
 msgid "Unable to retrieve the extensions."
 msgstr "확장을 찾지 못했습니다."
@@ -1638,6 +2500,35 @@ msgstr "볼륨을 찾지 못했습니다."
 msgid "Unable to retrieve the volumes."
 msgstr "볼륨들을 찾지 못했습니다."
 
+msgid "Unable to set the default quotas."
+msgstr "기본 쿼터(quota)를 설정하지 못했습니다."
+
+#, python-format
+msgid "Unable to soft-reboot the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버를 소프트 재부팅(soft-reboot)할 수 없습니다."
+
+#, python-format
+msgid "Unable to start the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버를 시작할 수 없습니다."
+
+#, python-format
+msgid "Unable to stop the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버를 중지할 수 없습니다."
+
+#, python-format
+msgid "Unable to suspend the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버를 일시 중단할 수 없습니다."
+
+#, python-format
+msgid "Unable to unpause the server with id: %(id)s"
+msgstr "ID가 %(id)s인 서버의 정지를 해제할 수 없습니다."
+
+msgid "Unable to update metadata."
+msgstr "메타데이터를 업데이트할 수 없습니다."
+
+msgid "Unable to update project quota data."
+msgstr "프로젝트 쿼터(quota) 데이터를 업데이트할 수 없습니다."
+
 msgid "Unable to update the flavor."
 msgstr "Flavor 업데이트를 할 수 없습니다."
 
@@ -1653,6 +2544,12 @@ msgstr "템플릿 유효성을 확인할 수 없습니다."
 msgid "Unknown"
 msgstr "알 수 없음"
 
+msgid "Unordered"
+msgstr "정렬되지 않음"
+
+msgid "Unstyled"
+msgstr "스타일되어있지 않음"
+
 msgid "Up"
 msgstr "Up"
 
@@ -1661,6 +2558,9 @@ msgstr "집합 메타데이터 업데이트"
 
 msgid "Update Flavor Metadata"
 msgstr "Flavor 메타데이터 업데이트"
+
+msgid "Update Image"
+msgstr "이미지 업데이트"
 
 msgid "Update Image Metadata"
 msgstr "이미지 메타데이터 업데이트"
@@ -1680,11 +2580,20 @@ msgstr "갱신 시점"
 msgid "Upload File"
 msgstr "파일 업로드"
 
+msgid "Upload File To: {$ ctrl.model.container.name $}"
+msgstr "파일 업로드 경로: {$ ctrl.model.container.name $}"
+
 msgid "Uploading"
 msgstr "Uploading"
 
+msgid "Uploading the image from a local file or from a specified URL."
+msgstr "로컬 파일 또는 지정된 URL에서 이미지를 업로드합니다."
+
 msgid "Url"
 msgstr "Url"
+
+msgid "Usage Charts"
+msgstr "사용량 차트"
 
 msgid "Use image as a source"
 msgstr "소스로 이미지를 사용"
@@ -1704,11 +2613,20 @@ msgstr "VCPUs"
 msgid "VDI"
 msgstr "VDI"
 
+msgid "VDI - Virtual Disk Image"
+msgstr "VDI - 가상 디스크 이미지 (Virtual Disk Image)"
+
 msgid "VHD"
 msgstr "VHD"
 
+msgid "VHD - Virtual Hard Disk"
+msgstr "VHD - 가상 하드 디스크 (Virtual Hard Disk)"
+
 msgid "VMDK"
 msgstr "VMDK"
+
+msgid "VMDK - Virtual Machine Disk"
+msgstr "VMDK - 가상 머신 디스크 (Virtual Machine Disk)"
 
 msgid "VNIC type"
 msgstr "VNIC 타입"
@@ -1744,6 +2662,13 @@ msgstr "볼륨 세부 정보"
 msgid "Volume Quota"
 msgstr "볼륨 할당량"
 
+msgid ""
+"Volume Size (GB)\n"
+"            <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+msgstr ""
+"볼륨 크기 (GB)\n"
+"            <span class=\"hz-icon-required fa fa-asterisk\"></span>"
+
 msgid "Volume Snapshot"
 msgstr "볼륨 스냅샷"
 
@@ -1775,6 +2700,12 @@ msgstr ""
 msgid "Warning"
 msgstr "Warning"
 
+msgid "Warning Anchor"
+msgstr "경고 앵커"
+
+msgid "Warning Button"
+msgstr "경고 버튼"
+
 msgid "Warning!"
 msgstr "Warning!"
 
@@ -1789,8 +2720,8 @@ msgid ""
 "associated with a subnet, as the IP address was taken from the allocation "
 "pool for a specific subnet."
 msgstr ""
-"IP 주소가 포트와 연결을 맺고 있을 때, 이는 IP 주소가 임의의 서브넷에 대한 할"
-"당 풀에서 선택됨에 따라 해당 포트가 서브넷 또한 연결되어 있음을 암시합니다."
+"IP 주소가 포트와 연결되어 있을 때, IP 주소가 특정 서브넷의 할당 풀에서 선택되"
+"었으므로 해당 포트가 서브넷에도 연결되어 있음을 암시합니다."
 
 msgid ""
 "When selecting volume as boot source, please ensure the instance's "
@@ -1799,12 +2730,44 @@ msgstr ""
 "볼륨을 부팅 소스로 선택시, 인스턴스의 가용 구역이 볼륨의 가용 구역과 호환되는"
 "지 확인해주세요."
 
+msgid ""
+"When the <b>Admin State</b> for a network is set to <b>Up</b>,\n"
+"    then the network is available for use. You can set the <b>Admin State</"
+"b> to <b>Down</b>\n"
+"    if you are not ready for other users to access the network."
+msgstr ""
+"네트워크의 <b>관리 상태</b>가 <b>UP</b>으로 설정되어 있을 경우, \n"
+"    네트워크를 사용할 수 있습니다. <b>관리 상태</b>를 <b>Down</b>로 \n"
+"    설정한다면 다른 사용자들이 네트워크에 접근할 수 없습니다."
+
+msgid ""
+"When the <b>Admin State</b> for a port is set to <b>Up</b> and it has no "
+"<b>Device Owner</b>,\n"
+"    then the port is available for use. You can set the <b>Admin State</b> "
+"to <b>Down</b>\n"
+"    if you are not ready for other users to use the port."
+msgstr ""
+"포트에 대한 <b>관리 상태</b>가 <b>Up</b>으로 설정되어 있고 <b>장치 소유자</"
+"b> 가 없는 경우,\n"
+"    해당 포트는 사용할 수 있는 상태입니다. <b>관리 상태</b>를 <b>Down</b>"
+"로 \n"
+"    설정한다면 다른 사용자들이 해당 포트에 접근할 수 없습니다."
+
+msgid "XL Modal"
+msgstr "XL Modal"
+
+msgid "XS"
+msgstr "XS"
+
 msgid "Yes"
 msgstr "예"
 
 #, python-format
 msgid "You are not allowed to delete images: %s"
 msgstr "이미지를 삭제할 수 없습니다: %s"
+
+msgid "You can add arbitrary metadata to your image."
+msgstr "임의의 메타데이터를 사용자 이미지에 추가할 수 있습니다."
 
 msgid ""
 "You can add arbitrary metadata to your instance so that you can more easily "
@@ -1815,6 +2778,24 @@ msgstr ""
 "좀 더 쉽게 실행중인 다른 인스턴트간 식별할 수 있도록 하기위해 임의의 메타데이"
 "터를 추가할 수 있습니다. 메타 데이터는 인스턴스에 접근 가능한 키값 쌍의 컬렉"
 "션입니다. 각 메타데이터 키와 값의 최대 길이는 255자입니다."
+
+msgid ""
+"You can customize your instance after it has launched using the options "
+"available here.\n"
+"    \"Customization Script\" is analogous to \"User Data\" in other systems."
+msgstr ""
+"인스턴스를 작동시킨 후 이 옵션을 사용하여 커스텀 할 수 있습니다.\n"
+"    \"커스텀 스크립트\"는 다른 시스템에서 \"사용자 데이터\"와 유사합니다."
+
+msgid ""
+"You can specify scheduler hints by moving items from the left column to the "
+"right column. In the left column there are scheduler hint definitions from "
+"the Glance Metadata Catalog. Use the \"Custom\" option to add scheduler "
+"hints with the key of your choice."
+msgstr ""
+"왼쪽 열에서 오른쪽 열로 이동하여 스케줄러 힌트를 지정할 수 있습니다. 왼쪽 열"
+"에는 Glance 메타데이터 카탈로그로부터의 스케줄러 힌트 정의가 존재합니다. \"사"
+"용자 정의\" 옵션을 사용하여 선택한 키에 스케줄러 힌트를 추가할 수 있습니다."
 
 #, python-format
 msgid "You have selected \"%s\". Deleted image is not recoverable."
@@ -1838,6 +2819,9 @@ msgid "message"
 msgid_plural "messages"
 msgstr[0] "message"
 
+msgid "resource load failed: "
+msgstr "리소스 로드 실패:"
+
 msgid "snapshot"
 msgstr "snapshot"
 
@@ -1852,6 +2836,13 @@ msgstr[0] "success"
 msgid "title"
 msgid_plural "titles"
 msgstr[0] "title"
+
+msgid ""
+"{$ ctrl.model.counted.files $} files in\n"
+"      {$ ctrl.model.counted.folders $} folders."
+msgstr ""
+"{$ ctrl.model.counted.files $} 파일이\n"
+"      {$ ctrl.model.counted.folders $} 폴더에 있습니다."
 
 msgid "{$ row['provider:network_type'] $}"
 msgstr "{$ row['provider:network_type'] $}"

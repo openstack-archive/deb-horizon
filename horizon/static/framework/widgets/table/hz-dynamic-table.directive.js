@@ -21,8 +21,7 @@
     .directive('hzDynamicTable', hzDynamicTable);
 
   hzDynamicTable.$inject = [
-    'horizon.framework.widgets.basePath',
-    'horizon.framework.conf.permissions.service'
+    'horizon.framework.widgets.basePath'
   ];
 
   /**
@@ -40,6 +39,9 @@
    *   searching. Filter will not be shown if this is not supplied (optional)
    * @param {function=} resultHandler function that is called with return value
    *   from a clicked actions perform function passed into `actions` directive (optional)
+   * @param {function=} itemInTransitionFunction function that is called with each item in
+   *   the table. If it returns true, the row is given the class "warning" which by
+   *   default highlights the row with a warning color.
    *
    * @description
    * The `hzDynamicTable` directive generates all the HTML content for a table.
@@ -102,13 +104,17 @@
    * ```
    *
    */
-  function hzDynamicTable(basePath, permissionsService) {
+  function hzDynamicTable(basePath) {
 
     // <r1chardj0n3s>: there are some configuration items which are on the directive,
     // and some on the "config" attribute of the directive. Those latter configuration
     // items will be effectively "static" for the lifespan of the directive whereas
     // angular will watch directive attributes for changes. This should be revisited
     // at some point to make sure the split we've actually got here makes sense.
+
+    // TODO (tyr) In Ocata, convert to "controller as" syntax.
+    // This was not done in Mitaka to avoid breaking any hz-detail-row templates that
+    // assume table attributes are available directly on inherited scope.
     var directive = {
       restrict: 'E',
       scope: {
@@ -118,55 +124,13 @@
         batchActions: '=?',
         itemActions: '=?',
         filterFacets: '=?',
-        resultHandler: '=?'
+        resultHandler: '=?',
+        itemInTransitionFunction: '=?'
       },
-      templateUrl: basePath + 'table/hz-dynamic-table.html',
-      link: {
-        pre: preLink,
-        post: postLink
-      }
+      controller: 'horizon.framework.widgets.table.HzDynamicTableController',
+      templateUrl: basePath + 'table/hz-dynamic-table.html'
     };
 
     return directive;
-
-    function preLink(scope) {
-      //Isolate config changes we do here from propagating out.
-      scope.config = angular.copy(scope.config);
-      scope.items = [];
-    }
-
-    function postLink(scope) {
-      // if selectAll and expand are not set in the config, default set to true
-      if (angular.isUndefined(scope.config.selectAll)) {
-        scope.config.selectAll = true;
-      }
-      if (angular.isUndefined(scope.config.expand)) {
-        scope.config.expand = true;
-      }
-
-      setColumnPermitted(scope.config.columns);
-    }
-
-    function setColumnPermitted(columns) {
-
-      angular.forEach(columns, checkPermissions);
-
-      function checkPermissions(column) {
-        if (column.permitted === true || column.permitted === false) {
-          // No need to check again
-          return;
-        } else {
-          permissionsService.checkAll(column).then(allow, disallow);
-        }
-
-        function allow() {
-          column.permitted = true;
-        }
-
-        function disallow() {
-          column.permitted = false;
-        }
-      }
-    }
   }
 })();

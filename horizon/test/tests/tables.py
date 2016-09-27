@@ -591,13 +591,13 @@ class DataTableTests(test.TestCase):
                          row.cells['id'].get_status_class(cell_status))
         cell_status = row3.cells['id'].status
         self.assertIsNone(cell_status)
-        self.assertEqual('status_unknown',
+        self.assertEqual('warning',
                          row.cells['id'].get_status_class(cell_status))
 
         # Ensure data is not cached on the column across table instances
         self.table = MyTable(self.request, TEST_DATA_2)
         row = self.table.get_rows()[0]
-        self.assertTrue("down" in row.cells['status'].value)
+        self.assertIn("down", row.cells['status'].value)
 
     def test_table_row(self):
         self.table = MyTable(self.request, TEST_DATA)
@@ -1394,7 +1394,7 @@ class DataTableTests(test.TestCase):
         # Ensure data is not cached on the column across table instances
         self.table = MyTable(self.request, TEST_DATA_6)
         row = self.table.get_rows()[0]
-        self.assertTrue("down" in row.cells['status'].value)
+        self.assertIn("down", row.cells['status'].value)
 
     def test_broken_filter(self):
         class MyTableBrokenFilter(MyTable):

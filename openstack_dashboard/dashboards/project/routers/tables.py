@@ -190,12 +190,12 @@ def get_external_network(router):
 
 
 class RoutersFilterAction(tables.FilterAction):
-
-    def filter(self, table, routers, filter_string):
-        """Naive case-insensitive search."""
-        query = filter_string.lower()
-        return [router for router in routers
-                if query in router.name.lower()]
+    name = 'filter_project_routers'
+    filter_type = 'server'
+    filter_choices = (('name', _("Router Name ="), True),
+                      ('status', _("Status ="), True),
+                      ('admin_state_up', _("Admin State ="), True,
+                       _("e.g. UP / DOWN")))
 
 
 STATUS_DISPLAY_CHOICES = (
@@ -209,9 +209,9 @@ ADMIN_STATE_DISPLAY_CHOICES = (
 
 
 class RoutersTable(tables.DataTable):
-    name = tables.Column("name",
-                         verbose_name=_("Name"),
-                         link="horizon:project:routers:detail")
+    name = tables.WrappingColumn("name",
+                                 verbose_name=_("Name"),
+                                 link="horizon:project:routers:detail")
     status = tables.Column("status",
                            verbose_name=_("Status"),
                            status=True,

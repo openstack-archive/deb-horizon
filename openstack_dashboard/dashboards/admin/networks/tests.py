@@ -12,8 +12,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+
 from django.core.urlresolvers import reverse
 from django import http
+
 from django.utils.http import urlunquote
 
 from mox3.mox import IsA  # noqa
@@ -622,8 +624,8 @@ class NetworkTests(test.BaseAdminViewTests):
     @test.create_stubs({api.neutron: ('network_get',)})
     def test_network_update_get(self):
         network = self.networks.first()
-        api.neutron.network_get(IsA(http.HttpRequest), network.id)\
-            .AndReturn(network)
+        api.neutron.network_get(IsA(http.HttpRequest), network.id,
+                                expand_subnet=False).AndReturn(network)
 
         self.mox.ReplayAll()
 
@@ -657,8 +659,8 @@ class NetworkTests(test.BaseAdminViewTests):
         api.neutron.network_update(IsA(http.HttpRequest), network.id,
                                    **params)\
             .AndReturn(network)
-        api.neutron.network_get(IsA(http.HttpRequest), network.id)\
-            .AndReturn(network)
+        api.neutron.network_get(IsA(http.HttpRequest), network.id,
+                                expand_subnet=False).AndReturn(network)
         self.mox.ReplayAll()
 
         form_data = {'network_id': network.id,
@@ -683,8 +685,8 @@ class NetworkTests(test.BaseAdminViewTests):
         api.neutron.network_update(IsA(http.HttpRequest), network.id,
                                    **params)\
             .AndRaise(self.exceptions.neutron)
-        api.neutron.network_get(IsA(http.HttpRequest), network.id)\
-            .AndReturn(network)
+        api.neutron.network_get(IsA(http.HttpRequest), network.id,
+                                expand_subnet=False).AndReturn(network)
         self.mox.ReplayAll()
 
         form_data = {'network_id': network.id,
@@ -758,3 +760,15 @@ class NetworkTests(test.BaseAdminViewTests):
         res = self.client.post(INDEX_URL, form_data)
 
         self.assertRedirectsNoFollow(res, INDEX_URL)
+
+    @test.create_stubs({api.neutron: ('is_extension_supported',)})
+    @test.update_settings(FILTER_DATA_FIRST={'admin.networks': True})
+    def test_networks_list_with_admin_filter_first(self):
+        api.neutron.is_extension_supported(
+            IsA(http.HttpRequest),
+            'dhcp_agent_scheduler').AndReturn(True)
+        self.mox.ReplayAll()
+        res = self.client.get(reverse('horizon:admin:networks:index'))
+        self.assertTemplateUsed(res, 'admin/networks/index.html')
+        networks = res.context['networks_table'].data
+        self.assertItemsEqual(networks, [])

@@ -16,6 +16,7 @@
 Views for managing Neutron Routers.
 """
 
+from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
@@ -31,11 +32,25 @@ from openstack_dashboard.dashboards.project.routers import views as r_views
 class IndexView(r_views.IndexView, n_views.IndexView):
     table_class = rtbl.RoutersTable
     template_name = 'admin/routers/index.html'
+    FILTERS_MAPPING = {'admin_state_up': {_("up"): True, _("down"): False}}
 
-    def _get_routers(self, search_opts=None):
+    def needs_filter_first(self, table):
+        return getattr(self, '_needs_filter_first', False)
+
+    def _get_routers(self):
         try:
-            routers = api.neutron.router_list(self.request,
-                                              search_opts=search_opts)
+            filters = self.get_filters(filters_map=self.FILTERS_MAPPING)
+
+            # If admin_filter_first is set and if there are not other filters
+            # selected, then search criteria must be provided and return an
+            # empty list
+            filter_first = getattr(settings, 'FILTER_DATA_FIRST', {})
+            if filter_first.get('admin.routers', False) and not filters:
+                self._needs_filter_first = True
+                return []
+            self._needs_filter_first = False
+
+            routers = api.neutron.router_list(self.request, **filters)
         except Exception:
             routers = []
             exceptions.handle(self.request,
@@ -60,6 +75,16 @@ class IndexView(r_views.IndexView, n_views.IndexView):
     def get_data(self):
         routers = self._get_routers()
         return routers
+
+    def get_filters(self, filters=None, filters_map=None):
+        filters = super(IndexView, self).get_filters(filters, filters_map)
+        if 'project' in filters:
+            tenants = api.keystone.tenant_list(self.request)[0]
+            tenants_filter_ids = [t.id for t in tenants
+                                  if t.name == filters['project']]
+            del filters['project']
+            filters['tenant_id'] = tenants_filter_ids
+        return filters
 
 
 class DetailView(r_views.DetailView):

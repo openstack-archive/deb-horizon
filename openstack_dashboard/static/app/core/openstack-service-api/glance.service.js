@@ -130,15 +130,51 @@
      * True to import the image data to the image service otherwise
      * image data will be used in its current location
      *
+     * @param {function} onProgress
+     * A callback to pass upload progress back to caller.
+     *
      * Any parameters not listed above will be assigned as custom properites.
      *
      * @returns {Object} The result of the API call
      */
-    function createImage(image) {
-      return apiService.post('/api/glance/images/', image)
-        .error(function () {
-          toastService.add('error', gettext('Unable to create the image.'));
-        });
+    function createImage(image, onProgress) {
+      var localFile;
+      var method = image.source_type === 'file-legacy' ? 'post' : 'put';
+      if (image.source_type === 'file-direct' && 'data' in image) {
+        localFile = image.data;
+        image = angular.extend({}, image);
+        image.data = localFile.name;
+      }
+
+      function onImageQueued(response) {
+        var image = response.data;
+        if ('upload_url' in image) {
+          return apiService.put(image.upload_url, localFile, {
+            headers: {
+              'Content-Type': 'application/octet-stream',
+              'X-Auth-Token': image.token_id
+            },
+            external: true
+          }).then(
+            function success() { return response; },
+            onError,
+            notify
+          );
+        } else {
+          return response;
+        }
+      }
+
+      function notify(event) {
+        onProgress(Math.round(event.loaded / event.total * 100));
+      }
+
+      function onError() {
+        toastService.add('error', gettext('Unable to create the image.'));
+      }
+
+      return apiService[method]('/api/glance/images/', image)
+        .then(onImageQueued, onError, notify);
     }
 
     /**

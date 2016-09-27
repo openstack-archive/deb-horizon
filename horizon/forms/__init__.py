@@ -28,6 +28,8 @@ from horizon.forms.base import SelfHandlingForm  # noqa
 from horizon.forms.base import SelfHandlingMixin  # noqa
 from horizon.forms.fields import DynamicChoiceField  # noqa
 from horizon.forms.fields import DynamicTypedChoiceField  # noqa
+from horizon.forms.fields import ExternalFileField  # noqa
+from horizon.forms.fields import ExternalUploadMeta  # noqa
 from horizon.forms.fields import IPField  # noqa
 from horizon.forms.fields import IPv4  # noqa
 from horizon.forms.fields import IPv6  # noqa
@@ -37,6 +39,7 @@ from horizon.forms.fields import ThemableCheckboxInput  # noqa
 from horizon.forms.fields import ThemableCheckboxSelectMultiple  # noqa
 from horizon.forms.fields import ThemableChoiceField  # noqa
 from horizon.forms.fields import ThemableDynamicChoiceField  # noqa
+from horizon.forms.fields import ThemableDynamicTypedChoiceField  # noqa
 from horizon.forms.fields import ThemableSelectWidget  # noqa
 from horizon.forms.views import ModalFormMixin  # noqa
 from horizon.forms.views import ModalFormView  # noqa
