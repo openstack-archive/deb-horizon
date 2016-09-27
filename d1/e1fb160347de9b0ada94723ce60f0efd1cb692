@@ -1,0 +1,8 @@
+Code-Review+2: Thomas Goirand <thomas@goirand.fr>
+Workflow+1: Thomas Goirand <thomas@goirand.fr>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 27 Sep 2016 23:42:07 +0000
+Reviewed-on: https://review.openstack.org/378072
+Project: openstack/deb-horizon
+Branch: refs/heads/debian/newton
