@@ -20,9 +20,11 @@ import logging
 
 from oslo_utils import units
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
+from django.views import generic
 
 from horizon import exceptions
 from horizon import messages
@@ -38,6 +40,10 @@ from openstack_dashboard.dashboards.admin.images \
 
 
 LOG = logging.getLogger(__name__)
+
+
+class AngularIndexView(generic.TemplateView):
+    template_name = 'angular.html'
 
 
 class IndexView(tables.DataTableView):
@@ -64,7 +70,8 @@ class IndexView(tables.DataTableView):
             return images
         filters = self.get_filters()
 
-        if self.admin_filter_first and \
+        filter_first = getattr(settings, 'FILTER_DATA_FIRST', {})
+        if filter_first.get('admin.images', False) and \
                 len(filters) == len(self.DEFAULT_FILTERS):
             self._prev = False
             self._more = False

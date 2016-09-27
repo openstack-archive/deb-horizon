@@ -60,12 +60,14 @@ class UsersViewTests(test.BaseAdminViewTests):
     def test_index(self):
         domain = self._get_default_domain()
         domain_id = domain.id
+        filters = {}
         users = self._get_users(domain_id)
 
         api.keystone.get_effective_domain_id(IgnoreArg()).AndReturn(domain_id)
 
         api.keystone.user_list(IgnoreArg(),
-                               domain=domain_id).AndReturn(users)
+                               domain=domain_id,
+                               filters=filters).AndReturn(users)
         api.keystone.domain_lookup(IgnoreArg()).AndReturn({domain.id:
                                                            domain.name})
 
@@ -84,6 +86,7 @@ class UsersViewTests(test.BaseAdminViewTests):
                               domain_context_name=domain.name)
         self.test_index()
 
+    @override_settings(USER_TABLE_EXTRA_INFO={'phone_num': 'Phone Number'})
     @test.create_stubs({api.keystone: ('user_create',
                                        'get_default_domain',
                                        'tenant_list',
@@ -95,6 +98,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         user = self.users.get(id="1")
         domain = self._get_default_domain()
         domain_id = domain.id
+        phone_number = "+81-3-1234-5678"
 
         role = self.roles.first()
 
@@ -112,6 +116,7 @@ class UsersViewTests(test.BaseAdminViewTests):
                 IgnoreArg(), user=None).AndReturn(
                 [self.tenants.list(), False])
 
+        kwargs = {'phone_num': phone_number}
         api.keystone.user_create(IgnoreArg(),
                                  name=user.name,
                                  description=user.description,
@@ -119,7 +124,8 @@ class UsersViewTests(test.BaseAdminViewTests):
                                  password=user.password,
                                  project=self.tenant.id,
                                  enabled=True,
-                                 domain=domain_id).AndReturn(user)
+                                 domain=domain_id,
+                                 **kwargs).AndReturn(user)
         api.keystone.role_list(IgnoreArg()).AndReturn(self.roles.list())
         api.keystone.get_default_role(IgnoreArg()).AndReturn(role)
         api.keystone.roles_for_user(IgnoreArg(), user.id, self.tenant.id)
@@ -137,7 +143,8 @@ class UsersViewTests(test.BaseAdminViewTests):
                     'project': self.tenant.id,
                     'role_id': self.roles.first().id,
                     'enabled': True,
-                    'confirm_password': user.password}
+                    'confirm_password': user.password,
+                    'phone_num': phone_number}
         res = self.client.post(USER_CREATE_URL, formData)
 
         self.assertNoFormErrors(res)
@@ -370,6 +377,7 @@ class UsersViewTests(test.BaseAdminViewTests):
             res, "form", 'password',
             ['Password must be between 8 and 18 characters.'])
 
+    @override_settings(USER_TABLE_EXTRA_INFO={'phone_num': 'Phone Number'})
     @test.create_stubs({api.keystone: ('user_get',
                                        'domain_get',
                                        'tenant_list',
@@ -381,6 +389,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         user = self.users.get(id="1")
         domain_id = user.domain_id
         domain = self.domains.get(id=domain_id)
+        phone_number = "+81-3-1234-5678"
 
         api.keystone.user_get(IsA(http.HttpRequest), '1',
                               admin=True).AndReturn(user)
@@ -396,10 +405,12 @@ class UsersViewTests(test.BaseAdminViewTests):
                 IgnoreArg(), user=user.id).AndReturn(
                 [self.tenants.list(), False])
 
+        kwargs = {'phone_num': phone_number}
         api.keystone.user_update(IsA(http.HttpRequest),
                                  user.id,
                                  email=user.email,
-                                 name=user.name).AndReturn(None)
+                                 name=user.name,
+                                 **kwargs).AndReturn(None)
 
         self.mox.ReplayAll()
 
@@ -408,8 +419,8 @@ class UsersViewTests(test.BaseAdminViewTests):
                     'name': user.name,
                     'description': user.description,
                     'email': user.email,
-                    'project': self.tenant.id}
-
+                    'project': self.tenant.id,
+                    'phone_num': phone_number}
         res = self.client.post(USER_UPDATE_URL, formData)
 
         self.assertNoFormErrors(res)
@@ -644,12 +655,16 @@ class UsersViewTests(test.BaseAdminViewTests):
     def test_enable_user(self):
         domain = self._get_default_domain()
         domain_id = domain.id
+        filters = {}
         user = self.users.get(id="2")
         users = self._get_users(domain_id)
         user.enabled = False
 
         api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
-        api.keystone.user_list(IgnoreArg(), domain=domain_id).AndReturn(users)
+        api.keystone.user_list(IgnoreArg(),
+                               domain=domain_id,
+                               filters=filters)\
+            .AndReturn(users)
         api.keystone.user_update_enabled(IgnoreArg(),
                                          user.id,
                                          True).AndReturn(user)
@@ -670,13 +685,16 @@ class UsersViewTests(test.BaseAdminViewTests):
     def test_disable_user(self):
         domain = self._get_default_domain()
         domain_id = domain.id
+        filters = {}
         user = self.users.get(id="2")
         users = self._get_users(domain_id)
 
         self.assertTrue(user.enabled)
 
         api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
-        api.keystone.user_list(IgnoreArg(), domain=domain_id) \
+        api.keystone.user_list(IgnoreArg(),
+                               domain=domain_id,
+                               filters=filters)\
             .AndReturn(users)
         api.keystone.user_update_enabled(IgnoreArg(),
                                          user.id,
@@ -698,12 +716,15 @@ class UsersViewTests(test.BaseAdminViewTests):
     def test_enable_disable_user_exception(self):
         domain = self._get_default_domain()
         domain_id = domain.id
+        filters = {}
         user = self.users.get(id="2")
         users = self._get_users(domain_id)
         user.enabled = False
 
         api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
-        api.keystone.user_list(IgnoreArg(), domain=domain_id) \
+        api.keystone.user_list(IgnoreArg(),
+                               domain=domain_id,
+                               filters=filters)\
             .AndReturn(users)
         api.keystone.user_update_enabled(IgnoreArg(), user.id, True) \
                     .AndRaise(self.exceptions.keystone)
@@ -722,10 +743,13 @@ class UsersViewTests(test.BaseAdminViewTests):
     def test_disabling_current_user(self):
         domain = self._get_default_domain()
         domain_id = domain.id
+        filters = {}
         users = self._get_users(domain_id)
         api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         for i in range(0, 2):
-            api.keystone.user_list(IgnoreArg(), domain=domain_id) \
+            api.keystone.user_list(IgnoreArg(),
+                                   domain=domain_id,
+                                   filters=filters) \
                 .AndReturn(users)
             api.keystone.domain_lookup(IgnoreArg()).AndReturn({domain.id:
                                                                domain.name})
@@ -745,6 +769,7 @@ class UsersViewTests(test.BaseAdminViewTests):
     def test_disabling_current_user_domain_name(self):
         domain = self._get_default_domain()
         domains = self.domains.list()
+        filters = {}
         domain_id = domain.id
         users = self._get_users(domain_id)
         domain_lookup = dict((d.id, d.name) for d in domains)
@@ -755,7 +780,9 @@ class UsersViewTests(test.BaseAdminViewTests):
 
         for i in range(0, 2):
             api.keystone.domain_lookup(IgnoreArg()).AndReturn(domain_lookup)
-            api.keystone.user_list(IgnoreArg(), domain=domain_id) \
+            api.keystone.user_list(IgnoreArg(),
+                                   domain=domain_id,
+                                   filters=filters) \
                 .AndReturn(users)
 
         self.mox.ReplayAll()
@@ -773,10 +800,13 @@ class UsersViewTests(test.BaseAdminViewTests):
     def test_delete_user_with_improper_permissions(self):
         domain = self._get_default_domain()
         domain_id = domain.id
+        filters = {}
         users = self._get_users(domain_id)
         api.keystone.domain_get(IsA(http.HttpRequest), '1').AndReturn(domain)
         for i in range(0, 2):
-            api.keystone.user_list(IgnoreArg(), domain=domain_id) \
+            api.keystone.user_list(IgnoreArg(),
+                                   domain=domain_id,
+                                   filters=filters) \
                 .AndReturn(users)
             api.keystone.domain_lookup(IgnoreArg()).AndReturn({domain.id:
                                                                domain.name})
@@ -797,6 +827,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         domain = self._get_default_domain()
         domains = self.domains.list()
         domain_id = domain.id
+        filters = {}
         users = self._get_users(domain_id)
         domain_lookup = dict((d.id, d.name) for d in domains)
 
@@ -805,7 +836,9 @@ class UsersViewTests(test.BaseAdminViewTests):
             u.domain_name = domain_lookup.get(u.domain_id)
 
         for i in range(0, 2):
-            api.keystone.user_list(IgnoreArg(), domain=domain_id) \
+            api.keystone.user_list(IgnoreArg(),
+                                   domain=domain_id,
+                                   filters=filters) \
                 .AndReturn(users)
             api.keystone.domain_lookup(IgnoreArg()).AndReturn(domain_lookup)
 

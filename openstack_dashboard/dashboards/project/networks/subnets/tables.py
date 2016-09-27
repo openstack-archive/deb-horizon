@@ -50,6 +50,8 @@ class SubnetPolicyTargetMixin(policy.PolicyTargetMixin):
         policy_target = super(SubnetPolicyTargetMixin, self)\
             .get_policy_target(request, datum)
         network = self.table._get_network()
+        # neutron switched policy target values, we'll support both
+        policy_target["network:tenant_id"] = network.tenant_id
         policy_target["network:project_id"] = network.tenant_id
         return policy_target
 
@@ -128,8 +130,10 @@ class UpdateSubnet(SubnetPolicyTargetMixin, CheckNetworkEditable,
 
 
 class SubnetsTable(tables.DataTable):
-    name = tables.Column("name_or_id", verbose_name=_("Name"),
-                         link='horizon:project:networks:subnets:detail')
+    name = tables.WrappingColumn(
+        "name_or_id",
+        verbose_name=_("Name"),
+        link='horizon:project:networks:subnets:detail')
     cidr = tables.Column("cidr", verbose_name=_("Network Address"))
     ip_version = tables.Column("ipver_str", verbose_name=_("IP Version"))
     gateway_ip = tables.Column("gateway_ip", verbose_name=_("Gateway IP"))

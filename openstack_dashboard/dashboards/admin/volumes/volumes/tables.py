@@ -20,12 +20,18 @@ from openstack_dashboard.dashboards.project.volumes \
 
 
 class VolumesFilterAction(tables.FilterAction):
-
-    def filter(self, table, volumes, filter_string):
-        """Naive case-insensitive search."""
-        q = filter_string.lower()
-        return [volume for volume in volumes
-                if q in volume.name.lower()]
+    name = 'volumes_admin_filter'
+    filter_type = 'server'
+    filter_choices = (
+        ('name', _('Volume Name ='), True),
+        ('bootable', _('Bootable ='), True),
+        ('host', _('Host ='), True),
+        ('project', _('Project ='), True),
+        ('encrypted', _('Encrypted ='), True),
+        ('availability_zone', _('Availability Zone ='), True),
+        ('status', _('Status ='), True),
+        ('size', _('Size(GiB) ='), True),
+    )
 
 
 class ManageVolumeAction(tables.LinkAction):
@@ -87,9 +93,9 @@ class UpdateVolumeStatusAction(tables.LinkAction):
 
 
 class VolumesTable(volumes_tables.VolumesTable):
-    name = tables.Column("name",
-                         verbose_name=_("Name"),
-                         link="horizon:admin:volumes:volumes:detail")
+    name = tables.WrappingColumn("name",
+                                 verbose_name=_("Name"),
+                                 link="horizon:admin:volumes:volumes:detail")
     host = tables.Column("os-vol-host-attr:host", verbose_name=_("Host"))
     tenant = tables.Column(lambda obj: getattr(obj, 'tenant_name', None),
                            verbose_name=_("Project"))

@@ -9,6 +9,8 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+from selenium.webdriver.common import by
+
 from openstack_dashboard.test.integration_tests.pages import basepage
 from openstack_dashboard.test.integration_tests.regions import forms
 from openstack_dashboard.test.integration_tests.regions import tables
@@ -19,7 +21,10 @@ from openstack_dashboard.test.integration_tests.pages.project.compute.\
     volumes.volumespage import VolumesPage
 
 
-DEFAULT_IMAGE_SOURCE = 'url'
+# TODO(bpokorny): Set the default source back to 'url' once Glance removes
+# the show_multiple_locations option, and if the default devstack policies
+# allow setting locations.
+DEFAULT_IMAGE_SOURCE = 'file'
 DEFAULT_IMAGE_FORMAT = 'qcow2'
 DEFAULT_ACCESSIBILITY = False
 DEFAULT_PROTECTION = False
@@ -32,10 +37,9 @@ class ImagesTable(tables.TableRegion):
     name = "images"
 
     CREATE_IMAGE_FORM_FIELDS = (
-        "name", "description", "source_type", "image_url",
-        "image_file", "kernel", "ramdisk",
-        "disk_format", "architecture", "minimum_disk",
-        "minimum_ram", "is_public", "protected"
+        "name", "description", "image_file", "kernel", "ramdisk",
+        "disk_format", "architecture", "minimum_disk", "minimum_ram",
+        "is_public", "protected"
     )
 
     CREATE_VOLUME_FROM_IMAGE_FORM_FIELDS = (
@@ -127,7 +131,9 @@ class ImagesPage(basepage.BaseNavigationPage):
         create_image_form.name.text = name
         if description is not None:
             create_image_form.description.text = description
-        create_image_form.source_type.value = image_source_type
+        # TODO(bpokorny): Add this back once the show_multiple_locations
+        # option is removed from Glance
+        # create_image_form.source_type.value = image_source_type
         if image_source_type == 'url':
             if location is None:
                 create_image_form.image_url.text = \
@@ -250,3 +256,12 @@ class ImagesPage(basepage.BaseNavigationPage):
         launch_instance.count.value = instance_count
         launch_instance.submit()
         return InstancesPage(self.driver, self.conf)
+
+
+class ImagesPageNG(ImagesPage):
+    _resource_page_header_locator = (by.By.CSS_SELECTOR,
+                                     'hz-resource-panel hz-page-header h1')
+
+    @property
+    def header(self):
+        return self._get_element(*self._resource_page_header_locator)

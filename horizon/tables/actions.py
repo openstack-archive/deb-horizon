@@ -579,11 +579,15 @@ class FixedFilterAction(FilterAction):
         """
         return []
 
-    def categorize(self, table, images):
-        """Override to separate images into categories.
+    def categorize(self, table, rows):
+        """Override to separate rows into categories.
+
+        To have filtering working properly on the client, each row will need
+        CSS class(es) beginning with 'category-', followed by the value of the
+        fixed button.
 
         Return a dict with a key for the value of each fixed button,
-        and a value that is a list of images in that category.
+        and a value that is a list of rows in that category.
         """
         return {}
 
@@ -961,8 +965,26 @@ class DeleteAction(BatchAction):
         """
 
 
+class Deprecated(type):
+    # TODO(lcastell) Replace class with similar functionality from
+    # oslo_log.versionutils when it's finally added in 11.0
+    def __new__(meta, name, bases, kwargs):
+        cls = super(Deprecated, meta).__new__(meta, name, bases, kwargs)
+        message = ("WARNING:The UpdateAction class defined in module '%s'"
+                   " is deprecated as of Newton and may be removed in "
+                   "Horizon P (12.0). Class '%s' defined at module '%s' "
+                   "shall no longer subclass it.")
+        if name != 'UpdateAction':
+            LOG.warning(message % (UpdateAction.__module__,
+                                   name,
+                                   kwargs['__module__']))
+        return cls
+
+
+@six.add_metaclass(Deprecated)
 class UpdateAction(object):
     """A table action for cell updates by inline editing."""
+
     name = "update"
 
     def action(self, request, datum, obj_id, cell_name, new_cell_value):
