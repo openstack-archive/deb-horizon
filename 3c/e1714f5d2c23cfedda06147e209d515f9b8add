@@ -1,0 +1,9 @@
+Code-Review+1: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 27 Sep 2016 19:46:43 +0000
+Reviewed-on: https://review.openstack.org/371352
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
