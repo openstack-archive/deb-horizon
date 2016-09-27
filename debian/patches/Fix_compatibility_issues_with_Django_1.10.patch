@@ -1,0 +1,579 @@
+Description: Fix compatibility issues with Django 1.10
+ Required modifying our URL pattern decorator to
+ be compatible with the slightly different callback
+ attribute mechanism in 1.10
+ .
+ Modified breadcrumb structures to always be 2-tuples
+ as tuple unpacking is now strictly enforced in 1.10
+ .
+ Also made the following things changed in Django 1.10.
+ - fixed the now-deprecated TEMPLATE_DEBUG.
+ - Caught up with Request context change
+ - SimpleTestCase.urls is removed in 1.10.
+   ROOT_URLCONF needs to be used instead.
+Author: Rob Cresswell <robert.cresswell@outlook.com>
+Date: Thu, 4 Aug 2016 19:41:46 +0000 (+0100)
+X-Git-Url: https://review.openstack.org/gitweb?p=openstack%2Fhorizon.git;a=commitdiff_plain;h=3488ab3d40f90e9d01598912f7ee398c823f4385
+Co-Authored-By: Richard Jones <r1chardj0n3s@gmail.com>
+Co-Authored-By: Akihiro Motoki <motoki@da.jp.nec.com>
+Change-Id: I59cbd8bff117813258539ed0724fe89a9f5b77ee
+Implements: blueprint dj110
+Origin: upstream, https://review.openstack.org/357829
+Last-Update: 2016-09-28
+
+diff --git a/horizon/base.py b/horizon/base.py
+index 4b57e9b..ab4f5e1 100644
+--- a/horizon/base.py
++++ b/horizon/base.py
+@@ -26,6 +26,7 @@ import inspect
+ import logging
+ import os
+ 
++import django
+ from django.conf import settings
+ from django.conf.urls import include
+ from django.conf.urls import url
+@@ -54,7 +55,13 @@ LOG = logging.getLogger(__name__)
+ def _decorate_urlconf(urlpatterns, decorator, *args, **kwargs):
+     for pattern in urlpatterns:
+         if getattr(pattern, 'callback', None):
+-            pattern._callback = decorator(pattern.callback, *args, **kwargs)
++            decorated = decorator(pattern.callback, *args, **kwargs)
++            if django.VERSION >= (1, 10):
++                pattern.callback = decorated
++            else:
++                # prior to 1.10 callback was a property and we had
++                # to modify the private attribute behind the property
++                pattern._callback = decorated
+         if getattr(pattern, 'url_patterns', []):
+             _decorate_urlconf(pattern.url_patterns, decorator, *args, **kwargs)
+ 
+diff --git a/horizon/templatetags/breadcrumb_nav.py b/horizon/templatetags/breadcrumb_nav.py
+index f2cacb3..ef05723 100644
+--- a/horizon/templatetags/breadcrumb_nav.py
++++ b/horizon/templatetags/breadcrumb_nav.py
+@@ -48,13 +48,13 @@ def breadcrumb_nav(context):
+     custom_breadcrumb = context.get('custom_breadcrumb')
+ 
+     # Build list of tuples (name, optional url)
+-    breadcrumb.append((dashboard.name,))
++    breadcrumb.append((dashboard.name, None))
+     if panel_group:
+-        breadcrumb.append((panel_group.name,))
++        breadcrumb.append((panel_group.name, None))
+     if panel:
+         breadcrumb.append((panel.name, panel.get_absolute_url()))
+     if custom_breadcrumb:
+         breadcrumb.extend(custom_breadcrumb)
+-    breadcrumb.append((context.get('page_title'),))
++    breadcrumb.append((context.get('page_title'), None))
+ 
+     return {'breadcrumb': breadcrumb}
+diff --git a/horizon/test/settings.py b/horizon/test/settings.py
+index d275bc9..e261343 100644
+--- a/horizon/test/settings.py
++++ b/horizon/test/settings.py
+@@ -31,7 +31,6 @@ ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+ STATIC_ROOT = os.path.abspath(os.path.join(ROOT_PATH, '..', 'static'))
+ 
+ DEBUG = False
+-TEMPLATE_DEBUG = DEBUG
+ TESTSERVER = 'http://testserver'
+ 
+ SECRET_KEY = 'elj1IWiLoWHgcyYxFVLj7cM5rGOOxWl0'
+@@ -73,20 +72,28 @@ MIDDLEWARE_CLASSES = (
+     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+ )
+ 
+-TEMPLATE_CONTEXT_PROCESSORS = (
+-    'django.core.context_processors.debug',
+-    'django.core.context_processors.i18n',
+-    'django.core.context_processors.request',
+-    'django.core.context_processors.media',
+-    'django.core.context_processors.static',
+-    'django.contrib.messages.context_processors.messages',
+-    'horizon.context_processors.horizon')
+-
+-TEMPLATE_LOADERS = (
+-    'django.template.loaders.filesystem.Loader',
+-    'django.template.loaders.app_directories.Loader',
+-    'horizon.loaders.TemplateLoader'
+-)
++TEMPLATES = [
++    {
++        'BACKEND': 'django.template.backends.django.DjangoTemplates',
++        'DIRS': [os.path.join(ROOT_PATH, 'tests', 'templates')],
++        'OPTIONS': {
++            'context_processors': [
++                'django.template.context_processors.debug',
++                'django.template.context_processors.i18n',
++                'django.template.context_processors.request',
++                'django.template.context_processors.media',
++                'django.template.context_processors.static',
++                'django.contrib.messages.context_processors.messages',
++                'horizon.context_processors.horizon',
++            ],
++            'loaders': [
++                'django.template.loaders.filesystem.Loader',
++                'django.template.loaders.app_directories.Loader',
++                'horizon.loaders.TemplateLoader'
++            ],
++        },
++    },
++]
+ 
+ STATIC_URL = '/static/'
+ WEBROOT = '/'
+@@ -94,7 +101,6 @@ WEBROOT = '/'
+ MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+ 
+ ROOT_URLCONF = 'horizon.test.urls'
+-TEMPLATE_DIRS = (os.path.join(ROOT_PATH, 'tests', 'templates'),)
+ SITE_ID = 1
+ SITE_BRANDING = 'Horizon'
+ 
+diff --git a/openstack_dashboard/dashboards/admin/hypervisors/views.py b/openstack_dashboard/dashboards/admin/hypervisors/views.py
+index 55c210c..5e770f6 100644
+--- a/openstack_dashboard/dashboards/admin/hypervisors/views.py
++++ b/openstack_dashboard/dashboards/admin/hypervisors/views.py
+@@ -67,7 +67,6 @@ class AdminDetailView(tables.DataTableView):
+     def get_context_data(self, **kwargs):
+         context = super(AdminDetailView, self).get_context_data(**kwargs)
+         hypervisor_name = self.kwargs['hypervisor'].split('_', 1)[1]
+-        breadcrumb = [
+-            (hypervisor_name,), ]
++        breadcrumb = [(hypervisor_name, None)]
+         context['custom_breadcrumb'] = breadcrumb
+         return context
+diff --git a/openstack_dashboard/dashboards/admin/networks/ports/views.py b/openstack_dashboard/dashboards/admin/networks/ports/views.py
+index 30b3aae..a19e048 100644
+--- a/openstack_dashboard/dashboards/admin/networks/ports/views.py
++++ b/openstack_dashboard/dashboards/admin/networks/ports/views.py
+@@ -87,7 +87,8 @@ class DetailView(project_views.DetailView):
+         breadcrumb = [
+             (_("Networks"), self.get_redirect_url()),
+             ((port.network_name or port.network_id), port.network_url),
+-            (_("Ports"),), ]
++            (_("Ports"), None)
++        ]
+         context["custom_breadcrumb"] = breadcrumb
+         context["url"] = \
+             reverse('horizon:admin:networks:ports_tab', args=[port.network_id])
+diff --git a/openstack_dashboard/dashboards/identity/projects/tests.py b/openstack_dashboard/dashboards/identity/projects/tests.py
+index 9176d59..9e4e08f 100644
+--- a/openstack_dashboard/dashboards/identity/projects/tests.py
++++ b/openstack_dashboard/dashboards/identity/projects/tests.py
+@@ -17,6 +17,7 @@ import logging
+ import os
+ import unittest
+ 
++import django
+ from django.core.urlresolvers import reverse
+ from django import http
+ from django.test.utils import override_settings
+@@ -288,11 +289,15 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
+         res = self.client.get(reverse('horizon:identity:projects:create'))
+ 
+         self.assertTemplateUsed(res, views.WorkflowView.template_name)
+-        self.assertContains(res, '''
+-                            <input class="form-control"
+-                            id="id_subnet" min="-1"
+-                            name="subnet" type="number" value="10" />
+-                            ''', html=True)
++        if django.VERSION >= (1, 10):
++            pattern = ('<input class="form-control" '
++                       'id="id_subnet" min="-1" '
++                       'name="subnet" type="number" value="10" required/>')
++        else:
++            pattern = ('<input class="form-control" '
++                       'id="id_subnet" min="-1" '
++                       'name="subnet" type="number" value="10"/>')
++        self.assertContains(res, pattern, html=True)
+ 
+         workflow = res.context['workflow']
+         self.assertEqual(res.context['workflow'].name,
+diff --git a/openstack_dashboard/dashboards/project/containers/tests.py b/openstack_dashboard/dashboards/project/containers/tests.py
+index 8114bef..1fd6729 100644
+--- a/openstack_dashboard/dashboards/project/containers/tests.py
++++ b/openstack_dashboard/dashboards/project/containers/tests.py
+@@ -20,6 +20,7 @@ import copy
+ import email.header
+ import tempfile
+ 
++import django
+ from django.core.files.uploadedfile import InMemoryUploadedFile  # noqa
+ from django.core.urlresolvers import reverse
+ from django import http
+@@ -436,9 +437,16 @@ class SwiftTests(test.TestCase):
+                            args=[container.name, obj.name])
+         res = self.client.get(copy_url)
+         # The copy's name must appear in initial data
+-        pattern = ('<input id="id_new_object_name" value="%s" '
+-                   'name="new_object_name" type="text" '
+-                   'class="form-control" maxlength="255" />' % copy_name)
++        if django.VERSION >= (1, 10):
++            pattern = ('<input id="id_new_object_name" value="%s" '
++                       'name="new_object_name" type="text" '
++                       'class="form-control" '
++                       'maxlength="255" required/>' % copy_name)
++        else:
++            pattern = ('<input id="id_new_object_name" value="%s" '
++                       'name="new_object_name" type="text" '
++                       'class="form-control" '
++                       'maxlength="255"/>' % copy_name)
+         self.assertContains(res, pattern, html=True)
+ 
+     def test_get_copy_name(self):
+diff --git a/openstack_dashboard/dashboards/project/loadbalancers/views.py b/openstack_dashboard/dashboards/project/loadbalancers/views.py
+index 30e552a..192b309 100644
+--- a/openstack_dashboard/dashboards/project/loadbalancers/views.py
++++ b/openstack_dashboard/dashboards/project/loadbalancers/views.py
+@@ -139,7 +139,8 @@ class VipDetailsView(tabs.TabView):
+             (vip_nav,
+              reverse('horizon:project:loadbalancers:vipdetails',
+                      args=(vip.id,))),
+-            (_("VIP"),), ]
++            (_("VIP"), None)
++        ]
+         context["custom_breadcrumb"] = breadcrumb
+         return context
+ 
+diff --git a/openstack_dashboard/dashboards/project/networks/ports/views.py b/openstack_dashboard/dashboards/project/networks/ports/views.py
+index 0888877..3d42de1 100644
+--- a/openstack_dashboard/dashboards/project/networks/ports/views.py
++++ b/openstack_dashboard/dashboards/project/networks/ports/views.py
+@@ -90,7 +90,8 @@ class DetailView(tabs.TabbedTableView):
+         # TODO(robcresswell) Add URL for "Ports" crumb after bug/1416838
+         breadcrumb = [
+             ((port.network_name or port.network_id), port.network_url),
+-            (_("Ports"),), ]
++            (_("Ports"), None)
++        ]
+         context["custom_breadcrumb"] = breadcrumb
+         context["port"] = port
+         context["url"] = self.get_redirect_url()
+diff --git a/openstack_dashboard/dashboards/project/networks/subnets/views.py b/openstack_dashboard/dashboards/project/networks/subnets/views.py
+index eceda8a..d1dff4d 100644
+--- a/openstack_dashboard/dashboards/project/networks/subnets/views.py
++++ b/openstack_dashboard/dashboards/project/networks/subnets/views.py
+@@ -154,7 +154,8 @@ class DetailView(tabs.TabView):
+         # TODO(robcresswell) Add URL for "Subnets" crumb after bug/1416838
+         breadcrumb = [
+             (network_nav, subnet.network_url),
+-            (_("Subnets"),), ]
++            (_("Subnets"), None)
++        ]
+         context["custom_breadcrumb"] = breadcrumb
+         context["subnet"] = subnet
+         context["url"] = \
+diff --git a/openstack_dashboard/dashboards/project/routers/tests.py b/openstack_dashboard/dashboards/project/routers/tests.py
+index 3602203..5a25b52 100644
+--- a/openstack_dashboard/dashboards/project/routers/tests.py
++++ b/openstack_dashboard/dashboards/project/routers/tests.py
+@@ -13,6 +13,7 @@
+ #    under the License.
+ import copy
+ 
++import django
+ from django.core.urlresolvers import reverse
+ from django import http
+ 
+@@ -441,11 +442,15 @@ class RouterActionTests(RouterMixin, test.TestCase):
+ 
+         self.assertTemplateUsed(res, 'project/routers/update.html')
+         self.assertContains(res, 'Router Type')
+-        self.assertContains(
+-            res,
+-            '<input class="form-control" id="id_mode" name="mode" '
+-            'readonly="readonly" type="text" value="distributed" />',
+-            html=True)
++        if django.VERSION >= (1, 10):
++            pattern = ('<input class="form-control" id="id_mode" name="mode" '
++                       'readonly="readonly" type="text" value="distributed" '
++                       'required/>')
++        else:
++            pattern = ('<input class="form-control" id="id_mode" name="mode" '
++                       'readonly="readonly" type="text" '
++                       'value="distributed" />')
++        self.assertContains(res, pattern, html=True)
+         self.assertNotContains(res, 'centralized')
+ 
+     @test.create_stubs({api.neutron: ('router_get',
+diff --git a/openstack_dashboard/dashboards/project/stacks/tests.py b/openstack_dashboard/dashboards/project/stacks/tests.py
+index 4ecfc39..f1bbb06 100644
+--- a/openstack_dashboard/dashboards/project/stacks/tests.py
++++ b/openstack_dashboard/dashboards/project/stacks/tests.py
+@@ -13,6 +13,7 @@
+ import json
+ import re
+ 
++import django
+ from django.conf import settings
+ from django.core import exceptions
+ from django.core.urlresolvers import reverse
+@@ -394,16 +395,25 @@ class StackTests(test.TestCase):
+         self.assertTemplateUsed(res, 'project/stacks/create.html')
+ 
+         # ensure the fields were rendered correctly
+-        self.assertContains(res,
+-                            '<input class="form-control" '
+-                            'id="id___param_public_string" '
+-                            'name="__param_public_string" '
+-                            'type="text" />', html=True)
+-        self.assertContains(res,
+-                            '<input class="form-control" '
+-                            'id="id___param_secret_string" '
+-                            'name="__param_secret_string" '
+-                            'type="password" />', html=True)
++        if django.VERSION >= (1, 10):
++            pattern = ('<input class="form-control" '
++                       'id="id___param_public_string" '
++                       'name="__param_public_string" type="text" required/>')
++            secret = ('<input class="form-control" '
++                      'id="id___param_secret_string" '
++                      'name="__param_secret_string" '
++                      'type="password" required>')
++        else:
++            pattern = ('<input class="form-control" '
++                       'id="id___param_public_string" '
++                       'name="__param_public_string" type="text" />')
++            secret = ('<input class="form-control" '
++                      'id="id___param_secret_string" '
++                      'name="__param_secret_string" '
++                      'type="password" />')
++
++        self.assertContains(res, pattern, html=True)
++        self.assertContains(res, secret, html=True)
+ 
+     @test.create_stubs({api.heat: ('template_validate',)})
+     def test_launch_stack_with_parameter_group(self):
+@@ -560,30 +570,24 @@ class StackTests(test.TestCase):
+         self.assertTemplateUsed(res, 'project/stacks/create.html')
+ 
+         # ensure the fields were rendered correctly
+-        self.assertContains(res,
+-                            '<input class="form-control" '
+-                            'id="id___param_param1" '
+-                            'name="__param_param1" '
+-                            'type="text" />', html=True)
+-        self.assertContains(res,
+-                            '<input class="form-control" '
+-                            'id="id___param_param2" '
+-                            'name="__param_param2" '
+-                            'type="number" />', html=True)
+-        self.assertContains(res,
+-                            '<input class="form-control" '
+-                            'id="id___param_param3" '
+-                            'name="__param_param3" '
+-                            'type="text" />', html=True)
+-        self.assertContains(res,
+-                            '<input class="form-control" '
+-                            'id="id___param_param4" '
+-                            'name="__param_param4" '
+-                            'type="text" />', html=True)
+-        self.assertContains(res,
+-                            '<input id="id___param_param5" '
+-                            'name="__param_param5" '
+-                            'type="checkbox" />', html=True)
++        if django.VERSION >= (1, 10):
++            input_str = ('<input class="form-control" '
++                         'id="id___param_param{0}" '
++                         'name="__param_param{0}" type="{1}" required/>')
++        else:
++            input_str = ('<input class="form-control" '
++                         'id="id___param_param{0}" '
++                         'name="__param_param{0}" type="{1}"/>')
++
++        self.assertContains(res, input_str.format(1, 'text'), html=True)
++        self.assertContains(res, input_str.format(2, 'number'), html=True)
++        self.assertContains(res, input_str.format(3, 'text'), html=True)
++        self.assertContains(res, input_str.format(4, 'text'), html=True)
++        self.assertContains(
++            res,
++            '<input id="id___param_param5" name="__param_param5" '
++            'type="checkbox">',
++            html=True)
+ 
+         # post some sample data and make sure it validates
+         url = reverse('horizon:project:stacks:launch')
+diff --git a/openstack_dashboard/dashboards/project/volumes/volumes/tests.py b/openstack_dashboard/dashboards/project/volumes/volumes/tests.py
+index 41b2ac0..3138c17 100644
+--- a/openstack_dashboard/dashboards/project/volumes/volumes/tests.py
++++ b/openstack_dashboard/dashboards/project/volumes/volumes/tests.py
+@@ -1093,7 +1093,7 @@ class VolumeViewTests(test.ResetImageAPIVersionMixin, test.TestCase):
+     def _get_volume_row_action_from_ajax(self, res, action_name, row_id):
+         def _matches_row_id(context_row):
+             return (len(context_row.dicts) > 1 and
+-                    isinstance(context_row.dicts[1], dict) and
++                    hasattr(context_row.dicts[1], 'get') and
+                     context_row.dicts[1].get('row_id', None) == row_id)
+ 
+         matching = list(moves.filter(lambda r: _matches_row_id(r),
+diff --git a/openstack_dashboard/local/local_settings.py.example b/openstack_dashboard/local/local_settings.py.example
+index 8044ddb..07607ce 100644
+--- a/openstack_dashboard/local/local_settings.py.example
++++ b/openstack_dashboard/local/local_settings.py.example
+@@ -10,7 +10,6 @@ from openstack_dashboard import exceptions
+ from openstack_dashboard.settings import HORIZON_CONFIG
+ 
+ DEBUG = True
+-TEMPLATE_DEBUG = DEBUG
+ 
+ 
+ # WEBROOT is the location relative to Webserver root
+diff --git a/openstack_dashboard/settings.py b/openstack_dashboard/settings.py
+index 419b280..e772626 100644
+--- a/openstack_dashboard/settings.py
++++ b/openstack_dashboard/settings.py
+@@ -42,7 +42,6 @@ if ROOT_PATH not in sys.path:
+     sys.path.append(ROOT_PATH)
+ 
+ DEBUG = False
+-TEMPLATE_DEBUG = DEBUG
+ 
+ SITE_BRANDING = 'OpenStack Dashboard'
+ 
+@@ -115,29 +114,35 @@ MIDDLEWARE_CLASSES = (
+     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+ )
+ 
+-TEMPLATE_CONTEXT_PROCESSORS = (
+-    'django.core.context_processors.debug',
+-    'django.core.context_processors.i18n',
+-    'django.core.context_processors.request',
+-    'django.core.context_processors.media',
+-    'django.core.context_processors.static',
+-    'django.contrib.messages.context_processors.messages',
+-    'horizon.context_processors.horizon',
+-    'openstack_dashboard.context_processors.openstack',
+-)
+-
+-TEMPLATE_LOADERS = ('horizon.themes.ThemeTemplateLoader',)
+-
+-CACHED_TEMPLATE_LOADERS = (
++CACHED_TEMPLATE_LOADERS = [
+     'django.template.loaders.filesystem.Loader',
+     'django.template.loaders.app_directories.Loader',
+-    'horizon.loaders.TemplateLoader',)
++    'horizon.loaders.TemplateLoader'
++]
+ 
+ ADD_TEMPLATE_LOADERS = []
+ 
+-TEMPLATE_DIRS = (
+-    os.path.join(ROOT_PATH, 'templates'),
+-)
++TEMPLATES = [
++    {
++        'BACKEND': 'django.template.backends.django.DjangoTemplates',
++        'DIRS': [os.path.join(ROOT_PATH, 'templates')],
++        'OPTIONS': {
++            'context_processors': [
++                'django.template.context_processors.debug',
++                'django.template.context_processors.i18n',
++                'django.template.context_processors.request',
++                'django.template.context_processors.media',
++                'django.template.context_processors.static',
++                'django.contrib.messages.context_processors.messages',
++                'horizon.context_processors.horizon',
++                'openstack_dashboard.context_processors.openstack',
++            ],
++            'loaders': [
++                'horizon.themes.ThemeTemplateLoader'
++            ],
++        },
++    },
++]
+ 
+ STATICFILES_FINDERS = (
+     'django.contrib.staticfiles.finders.FileSystemFinder',
+@@ -309,13 +314,19 @@ try:
+ except ImportError:
+     logging.warning("No local_settings file found.")
+ 
++# configure template debugging
++TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
++
+ # Template loaders
+ if DEBUG:
+-    TEMPLATE_LOADERS += CACHED_TEMPLATE_LOADERS + tuple(ADD_TEMPLATE_LOADERS)
++    TEMPLATES[0]['OPTIONS']['loaders'].extend(
++        CACHED_TEMPLATE_LOADERS + ADD_TEMPLATE_LOADERS
++    )
+ else:
+-    TEMPLATE_LOADERS += (
+-        ('django.template.loaders.cached.Loader', CACHED_TEMPLATE_LOADERS),
+-    ) + tuple(ADD_TEMPLATE_LOADERS)
++    TEMPLATES[0]['OPTIONS']['loaders'].extend(
++        [('django.template.loaders.cached.Loader', CACHED_TEMPLATE_LOADERS)] +
++        ADD_TEMPLATE_LOADERS
++    )
+ 
+ NG_TEMPLATE_CACHE_AGE = NG_TEMPLATE_CACHE_AGE if not DEBUG else 0
+ 
+diff --git a/openstack_dashboard/test/settings.py b/openstack_dashboard/test/settings.py
+index 2622781..4a84322 100644
+--- a/openstack_dashboard/test/settings.py
++++ b/openstack_dashboard/test/settings.py
+@@ -36,8 +36,13 @@ WEBROOT = '/'
+ SECRET_KEY = secret_key.generate_or_read_from_file(
+     os.path.join(TEST_DIR, '.secret_key_store'))
+ ROOT_URLCONF = 'openstack_dashboard.test.urls'
+-TEMPLATE_DIRS = (
+-    os.path.join(TEST_DIR, 'templates'),
++
++TEMPLATES[0]['DIRS'] = [
++    os.path.join(TEST_DIR, 'templates')
++]
++
++TEMPLATES[0]['OPTIONS']['context_processors'].append(
++    'openstack_dashboard.context_processors.openstack'
+ )
+ 
+ CUSTOM_THEME_PATH = 'themes/default'
+@@ -58,10 +63,6 @@ AVAILABLE_THEMES = [
+ # Theme Static Directory
+ THEME_COLLECTION_DIR = 'themes'
+ 
+-TEMPLATE_CONTEXT_PROCESSORS += (
+-    'openstack_dashboard.context_processors.openstack',
+-)
+-
+ COMPRESS_OFFLINE = False
+ 
+ INSTALLED_APPS = (
+diff --git a/openstack_dashboard/test/tests/error_pages.py b/openstack_dashboard/test/tests/error_pages.py
+index 8e2204e..3b55c1c 100644
+--- a/openstack_dashboard/test/tests/error_pages.py
++++ b/openstack_dashboard/test/tests/error_pages.py
+@@ -25,7 +25,12 @@ class ErrorPageTests(test.TestCase):
+     urls = 'openstack_dashboard.test.error_pages_urls'
+ 
+     def test_500_error(self):
+-        TEMPLATE_DIRS = (path.join(settings.ROOT_PATH, 'templates'),)
+-        with self.settings(TEMPLATE_DIRS=TEMPLATE_DIRS):
++        with self.settings(
++                TEMPLATES=[{
++                    'DIRS': [path.join(settings.ROOT_PATH, 'templates')],
++                    'BACKEND': ('django.template.backends.django.'
++                                'DjangoTemplates')
++                }],
++                ROOT_URLCONF=self.urls):
+             response = self.client.get('/500/')
+             self.assertIn(b'Server error', response.content)
+diff --git a/releasenotes/notes/bp-dj110-438f26c21f283c46.yaml b/releasenotes/notes/bp-dj110-438f26c21f283c46.yaml
+new file mode 100644
+index 0000000..8ca244a
+--- /dev/null
++++ b/releasenotes/notes/bp-dj110-438f26c21f283c46.yaml
+@@ -0,0 +1,10 @@
++---
++upgrade:
++  - The ``TEMPLATE_*`` settings have been replaced with a ``TEMPLATE`` dict.
++    This will likely cause issues when porting settings to this version of
++    Horizon. The TEMPLATE_DEBUG setting has been removed and is tied to
++    the DEBUG setting now. A detailed explanation of this dict can be found at
++    https://docs.djangoproject.com/en/1.10/ref/settings/#templates
++  - The ``is_authenticated()`` and ``is_anonymous()`` functions in Django
++    OpenStack Auth's ``User`` class are properties when running under Django
++    1.10, and no longer take a margin parameter.

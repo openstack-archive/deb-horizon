@@ -1,7 +1,4 @@
 fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
-#django-1.10-fix-wrong-django.conf.urls.url-call.patch
-#django-1.10-horizon.test.settings.patch
-#django-1.10-openstack_dashboard.test.settings.patch
-#django-1.10-do-not-use-django.template.Context-function.patch
+Fix_compatibility_issues_with_Django_1.10.patch
