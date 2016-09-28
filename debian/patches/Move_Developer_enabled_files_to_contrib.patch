@@ -1,0 +1,273 @@
+From fbbe16f76d6d9437a9dcbd78e368f8f101f5a4fa Mon Sep 17 00:00:00 2001
+From: Rob Cresswell <robert.cresswell@outlook.com>
+Date: Fri, 19 Aug 2016 18:14:46 +0100
+Subject: [PATCH] Move Developer enabled/ files to contrib
+
+This patch moves the developer panel enabled files to contrib, to stop
+any strange behaviour when interacting with settings from enabled files
+and prevent warning logs when DEBUG is False.
+
+Change-Id: If7a2d023afe418b6dd90edf8a4a1d3bc9646c7ad
+---
+ openstack_dashboard/contrib/developer/dashboard.py |  4 ++-
+ .../contrib/developer/enabled/_9001_developer.py   | 29 +++++++++++++++++
+ .../contrib/developer/enabled/_9010_preview.py     | 21 +++++++++++++
+ .../developer/enabled/_9020_resource_browser.py    | 20 ++++++++++++
+ .../contrib/developer/enabled/__init__.py          |  0
+ openstack_dashboard/enabled/_9001_developer.py     | 36 ----------------------
+ openstack_dashboard/enabled/_9010_preview.py       | 21 -------------
+ .../enabled/_9020_resource_browser.py              | 20 ------------
+ openstack_dashboard/test/settings.py               |  4 ++-
+ ...e-developer-enabled-files-b1ad2265cd79b11e.yaml |  9 ++++++
+ 10 files changed, 85 insertions(+), 79 deletions(-)
+ create mode 100644 openstack_dashboard/contrib/developer/enabled/_9001_developer.py
+ create mode 100644 openstack_dashboard/contrib/developer/enabled/_9010_preview.py
+ create mode 100644 openstack_dashboard/contrib/developer/enabled/_9020_resource_browser.py
+ create mode 100644 openstack_dashboard/contrib/developer/enabled/__init__.py
+ delete mode 100644 openstack_dashboard/enabled/_9001_developer.py
+ delete mode 100644 openstack_dashboard/enabled/_9010_preview.py
+ delete mode 100644 openstack_dashboard/enabled/_9020_resource_browser.py
+ create mode 100644 releasenotes/notes/move-developer-enabled-files-b1ad2265cd79b11e.yaml
+
+diff --git a/openstack_dashboard/contrib/developer/dashboard.py b/openstack_dashboard/contrib/developer/dashboard.py
+index bf1219c..828ebb4 100644
+--- a/openstack_dashboard/contrib/developer/dashboard.py
++++ b/openstack_dashboard/contrib/developer/dashboard.py
+@@ -12,6 +12,7 @@
+ #    License for the specific language governing permissions and limitations
+ #    under the License.
+ 
++from django.conf import settings
+ from django.utils.translation import ugettext_lazy as _
+ 
+ import horizon
+@@ -23,4 +24,5 @@ class Developer(horizon.Dashboard):
+     default_panel = "theme_preview"
+ 
+ 
+-horizon.register(Developer)
++if getattr(settings, 'DEBUG', False):
++    horizon.register(Developer)
+diff --git a/openstack_dashboard/contrib/developer/enabled/_9001_developer.py b/openstack_dashboard/contrib/developer/enabled/_9001_developer.py
+new file mode 100644
+index 0000000..b89d4a1
+--- /dev/null
++++ b/openstack_dashboard/contrib/developer/enabled/_9001_developer.py
+@@ -0,0 +1,29 @@
++# Copyright 2015 Cisco Systems, Inc.
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#    http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++
++DASHBOARD = 'developer'
++
++ADD_ANGULAR_MODULES = [
++    'horizon.dashboard.developer'
++]
++
++ADD_INSTALLED_APPS = [
++    'openstack_dashboard.contrib.developer'
++]
++
++ADD_SCSS_FILES = [
++    'dashboard/developer/developer.scss',
++]
++
++AUTO_DISCOVER_STATIC_FILES = True
+diff --git a/openstack_dashboard/contrib/developer/enabled/_9010_preview.py b/openstack_dashboard/contrib/developer/enabled/_9010_preview.py
+new file mode 100644
+index 0000000..5d5bff1
+--- /dev/null
++++ b/openstack_dashboard/contrib/developer/enabled/_9010_preview.py
+@@ -0,0 +1,21 @@
++# Copyright 2015 Cisco Systems, Inc.
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#    http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++
++
++PANEL = 'theme_preview'
++PANEL_GROUP = 'default'
++PANEL_DASHBOARD = 'developer'
++
++ADD_PANEL = \
++    'openstack_dashboard.contrib.developer.theme_preview.panel.Preview'
+diff --git a/openstack_dashboard/contrib/developer/enabled/_9020_resource_browser.py b/openstack_dashboard/contrib/developer/enabled/_9020_resource_browser.py
+new file mode 100644
+index 0000000..4acab13
+--- /dev/null
++++ b/openstack_dashboard/contrib/developer/enabled/_9020_resource_browser.py
+@@ -0,0 +1,20 @@
++# (c) Copyright 2015 Hewlett Packard Enterprise Development Company LP
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#    http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++
++
++PANEL = 'resource_browser'
++PANEL_GROUP = 'default'
++PANEL_DASHBOARD = 'developer'
++
++ADD_PANEL = 'openstack_dashboard.contrib.developer.resource_browser.panel.ResourceBrowser'  # noqa
+diff --git a/openstack_dashboard/contrib/developer/enabled/__init__.py b/openstack_dashboard/contrib/developer/enabled/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/openstack_dashboard/enabled/_9001_developer.py b/openstack_dashboard/enabled/_9001_developer.py
+deleted file mode 100644
+index 2484392..0000000
+--- a/openstack_dashboard/enabled/_9001_developer.py
++++ /dev/null
+@@ -1,36 +0,0 @@
+-# Copyright 2015 Cisco Systems, Inc.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#    http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+-
+-from django.conf import settings
+-
+-DASHBOARD = 'developer'
+-
+-ADD_ANGULAR_MODULES = [
+-    'horizon.dashboard.developer'
+-]
+-
+-ADD_INSTALLED_APPS = [
+-    'openstack_dashboard.contrib.developer'
+-]
+-
+-ADD_SCSS_FILES = [
+-    'dashboard/developer/developer.scss',
+-]
+-
+-AUTO_DISCOVER_STATIC_FILES = True
+-
+-DISABLED = True
+-
+-if getattr(settings, 'DEBUG', False):
+-    DISABLED = False
+diff --git a/openstack_dashboard/enabled/_9010_preview.py b/openstack_dashboard/enabled/_9010_preview.py
+deleted file mode 100644
+index 5d5bff1..0000000
+--- a/openstack_dashboard/enabled/_9010_preview.py
++++ /dev/null
+@@ -1,21 +0,0 @@
+-# Copyright 2015 Cisco Systems, Inc.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#    http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+-
+-
+-PANEL = 'theme_preview'
+-PANEL_GROUP = 'default'
+-PANEL_DASHBOARD = 'developer'
+-
+-ADD_PANEL = \
+-    'openstack_dashboard.contrib.developer.theme_preview.panel.Preview'
+diff --git a/openstack_dashboard/enabled/_9020_resource_browser.py b/openstack_dashboard/enabled/_9020_resource_browser.py
+deleted file mode 100644
+index 4acab13..0000000
+--- a/openstack_dashboard/enabled/_9020_resource_browser.py
++++ /dev/null
+@@ -1,20 +0,0 @@
+-# (c) Copyright 2015 Hewlett Packard Enterprise Development Company LP
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#    http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+-
+-
+-PANEL = 'resource_browser'
+-PANEL_GROUP = 'default'
+-PANEL_DASHBOARD = 'developer'
+-
+-ADD_PANEL = 'openstack_dashboard.contrib.developer.resource_browser.panel.ResourceBrowser'  # noqa
+diff --git a/openstack_dashboard/test/settings.py b/openstack_dashboard/test/settings.py
+index 4a84322..42db0d8 100644
+--- a/openstack_dashboard/test/settings.py
++++ b/openstack_dashboard/test/settings.py
+@@ -106,6 +106,7 @@
+ )
+ 
+ # Load the pluggable dashboard settings
++import openstack_dashboard.contrib.developer.enabled
+ import openstack_dashboard.enabled
+ import openstack_dashboard.local.enabled
+ 
+@@ -113,7 +114,8 @@
+ settings_utils.update_dashboards(
+     [
+         openstack_dashboard.enabled,
+-        openstack_dashboard.local.enabled
++        openstack_dashboard.local.enabled,
++        openstack_dashboard.contrib.developer.enabled
+     ],
+     HORIZON_CONFIG,
+     INSTALLED_APPS,
+diff --git a/releasenotes/notes/move-developer-enabled-files-b1ad2265cd79b11e.yaml b/releasenotes/notes/move-developer-enabled-files-b1ad2265cd79b11e.yaml
+new file mode 100644
+index 0000000..2df05a8
+--- /dev/null
++++ b/releasenotes/notes/move-developer-enabled-files-b1ad2265cd79b11e.yaml
+@@ -0,0 +1,9 @@
++---
++upgrade:
++  - The developer enabled files have been moved from
++    ``openstack_dashboard/enabled`` to
++    ``openstack_dashboard/contrib/developer/enabled``. To enable them, copy
++    into ``openstack_dashboard/local/enabled`` and set ``DEBUG = True``.
++fixes:
++  - There will no longer be any ``WARNING`` messages regarding
++    the developer panels in logs.
