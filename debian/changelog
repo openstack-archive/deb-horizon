@@ -1,9 +1,8 @@
-horizon (3:10.0.0~rc1-1) experimental; urgency=medium
+horizon (3:10.0.0~rc2-1) experimental; urgency=medium
 
   * New upstream release.
   * Fixed (build-)depends for this release, including 3 new XStatic packages.
-  * Add Django 1.10 patch:
-    - Fix_compatibility_issues_with_Django_1.10.patch
+  * Add: Move_Developer_enabled_files_to_contrib.patch
   * Using OpenStack's Gerrit as VCS URLs.
   * .gitreview file points to deb-horizon in OpenStack Gerrit.
 
