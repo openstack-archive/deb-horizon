@@ -1,4 +1,4 @@
-horizon (3:10.0.0~rc1-1) experimental; urgency=medium
+horizon (3:10.0.0~rc2-1) experimental; urgency=medium
 
   * New upstream release.
   * Fixed (build-)depends for this release, including 3 new XStatic packages.
