@@ -1,0 +1,10 @@
+Code-Review+1: gengchc2 <geng.changcai2@zte.com.cn>
+Code-Review+2: Zhenguo Niu <Niu.ZGlinux@gmail.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 29 Sep 2016 10:27:35 +0000
+Reviewed-on: https://review.openstack.org/379080
+Project: openstack/deb-horizon
+Branch: refs/heads/master
