@@ -1,3 +1,10 @@
+horizon (3:10.0.0~rc2-2) UNRELEASED; urgency=medium
+
+  * Add hack patch for the Horizon plugin test suites to define SECRET_KEY in a
+    non-read-only folder.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 29 Sep 2016 11:26:51 +0200
+
 horizon (3:10.0.0~rc2-1) experimental; urgency=medium
 
   * New upstream release.
