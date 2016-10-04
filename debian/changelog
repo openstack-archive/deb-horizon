@@ -1,3 +1,9 @@
+horizon (3:10.0.0~rc2-3) unstable; urgency=medium
+
+  * Uploading to unstable (Closes: #832338).
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 04 Oct 2016 09:39:39 +0200
+
 horizon (3:10.0.0~rc2-2) experimental; urgency=medium
 
   * Add patch to use /tmp for the SECRET_KEY during tests, instead of the
