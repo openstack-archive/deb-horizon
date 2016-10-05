@@ -1,0 +1,9 @@
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 04 Oct 2016 21:02:41 +0000
+Reviewed-on: https://review.openstack.org/381844
+Project: openstack/deb-horizon
+Branch: refs/heads/master
