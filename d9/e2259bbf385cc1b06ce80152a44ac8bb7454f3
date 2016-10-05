@@ -1,0 +1,10 @@
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+1: Eric Peterson <eric.peterson@charter.com>
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Workflow+1: David Lyle <dklyle0@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 04 Oct 2016 20:07:15 +0000
+Reviewed-on: https://review.openstack.org/381885
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
