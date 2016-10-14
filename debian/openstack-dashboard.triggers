@@ -16,3 +16,5 @@ interest-noawait /usr/share/javascript/underscore
 interest-noawait /usr/share/twitter-bootstrap/files
 interest-noawait /usr/share/javascript/term.js
 interest-noawait /usr/share/javascript/lrDragNDrop
+interest-noawait /usr/share/javascript/tv4
+interest-noawait /usr/share/javascript/objectpath

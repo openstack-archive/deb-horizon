@@ -1,3 +1,9 @@
+horizon (3:10.0.0-2) unstable; urgency=medium
+
+  * Added missing path in debian/openstack-dashboard.triggers.
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 14 Oct 2016 17:35:09 +0200
+
 horizon (3:10.0.0-1) unstable; urgency=medium
 
   * New upstream release.
