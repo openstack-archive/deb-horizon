@@ -1,0 +1,9 @@
+Code-Review+1: Laurent Baeriswyl <lbaerisw@cisco.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 17 Oct 2016 21:49:59 +0000
+Reviewed-on: https://review.openstack.org/385666
+Project: openstack/deb-horizon
+Branch: refs/heads/master
