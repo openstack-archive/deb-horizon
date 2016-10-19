@@ -1,0 +1,10 @@
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+1: Allen <chen.qiaomin@99cloud.net>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 19 Oct 2016 05:51:25 +0000
+Reviewed-on: https://review.openstack.org/388229
+Project: openstack/deb-horizon
+Branch: refs/heads/master
