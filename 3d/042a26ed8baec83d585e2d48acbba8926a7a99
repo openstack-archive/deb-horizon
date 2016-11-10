@@ -1,0 +1,9 @@
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Code-Review+2: Timur Sufiev <tsufiev@gmail.com>
+Workflow+1: Timur Sufiev <tsufiev@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 10 Nov 2016 09:59:47 +0000
+Reviewed-on: https://review.openstack.org/395869
+Project: openstack/deb-horizon
+Branch: refs/heads/master
