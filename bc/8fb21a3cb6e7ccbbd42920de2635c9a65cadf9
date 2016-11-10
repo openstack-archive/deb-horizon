@@ -1,0 +1,9 @@
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+1: Timur Sufiev <tsufiev@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 10 Nov 2016 10:20:22 +0000
+Reviewed-on: https://review.openstack.org/396064
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
