@@ -1,0 +1,10 @@
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Code-Review+1: Kenji Ishii <ken-ishii@sx.jp.nec.com>
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Workflow+1: Radomir Dopieralski <openstack@sheep.art.pl>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 11 Nov 2016 16:46:32 +0000
+Reviewed-on: https://review.openstack.org/392106
+Project: openstack/deb-horizon
+Branch: refs/heads/master
