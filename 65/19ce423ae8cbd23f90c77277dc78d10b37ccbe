@@ -1,0 +1,9 @@
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Workflow+1: Cindy Lu <clu@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Sat, 12 Nov 2016 01:02:08 +0000
+Reviewed-on: https://review.openstack.org/392658
+Project: openstack/deb-horizon
+Branch: refs/heads/master
