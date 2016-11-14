@@ -1,0 +1,10 @@
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Code-Review+1: Allen <chen.qiaomin@99cloud.net>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Sun, 13 Nov 2016 12:02:33 +0000
+Reviewed-on: https://review.openstack.org/394805
+Project: openstack/deb-horizon
+Branch: refs/heads/master
