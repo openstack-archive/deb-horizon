@@ -1,0 +1,10 @@
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Code-Review+1: Eric Peterson <eric.peterson@charter.com>
+Code-Review+2: Timur Sufiev <tsufiev@gmail.com>
+Workflow+1: Timur Sufiev <tsufiev@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 18 Nov 2016 16:56:23 +0000
+Reviewed-on: https://review.openstack.org/399608
+Project: openstack/deb-horizon
+Branch: refs/heads/master
