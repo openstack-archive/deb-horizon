@@ -1,0 +1,9 @@
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 22 Nov 2016 18:09:59 +0000
+Reviewed-on: https://review.openstack.org/394564
+Project: openstack/deb-horizon
+Branch: refs/heads/master
