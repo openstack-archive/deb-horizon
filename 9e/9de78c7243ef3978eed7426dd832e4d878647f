@@ -1,0 +1,13 @@
+Code-Review+1: Radomir Dopieralski <openstack@sheep.art.pl>
+Code-Review+1: Liuqing Jing <jing.liuqing@99cloud.net>
+Code-Review+1: Beth Elwell <e.r.elwell@gmail.com>
+Code-Review+1: Revon Mathews <revon.mathews@intel.com>
+Code-Review+1: Ying Zuo <yinzuo@cisco.com>
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Workflow+1: David Lyle <dklyle0@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 22 Nov 2016 18:24:07 +0000
+Reviewed-on: https://review.openstack.org/398288
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
