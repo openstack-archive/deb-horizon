@@ -1,0 +1,9 @@
+Code-Review+2: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 25 Nov 2016 09:43:53 +0000
+Reviewed-on: https://review.openstack.org/402331
+Project: openstack/deb-horizon
+Branch: refs/heads/master
