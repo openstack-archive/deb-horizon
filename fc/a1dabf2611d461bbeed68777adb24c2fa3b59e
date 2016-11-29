@@ -1,0 +1,9 @@
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Workflow+1: David Lyle <dklyle0@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 28 Nov 2016 20:23:46 +0000
+Reviewed-on: https://review.openstack.org/402515
+Project: openstack/deb-horizon
+Branch: refs/heads/master

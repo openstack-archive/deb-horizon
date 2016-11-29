@@ -1,0 +1,13 @@
+Code-Review+1: Allen <chen.qiaomin@99cloud.net>
+Code-Review+1: Robert MIZIELSKI <rxoct21@gmail.com>
+Code-Review+1: Itxaka Serrano Garcia <igarcia@suse.com>
+Code-Review+1: Eddie Ramirez <eddie.ramirez@intel.com>
+Code-Review+2: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Sun, 27 Nov 2016 23:54:24 +0000
+Reviewed-on: https://review.openstack.org/387692
+Project: openstack/deb-horizon
+Branch: refs/heads/master

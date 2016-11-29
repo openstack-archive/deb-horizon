@@ -1,0 +1,10 @@
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Workflow+1: Thai Tran <tqtran@us.ibm.com>
+Code-Review+1: 李平 <liping@awcloud.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Sat, 26 Nov 2016 08:35:30 +0000
+Reviewed-on: https://review.openstack.org/402403
+Project: openstack/deb-horizon
+Branch: refs/heads/master
