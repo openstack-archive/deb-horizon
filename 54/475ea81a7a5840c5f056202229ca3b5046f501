@@ -1,0 +1,13 @@
+Code-Review+2: Tony Breeds <tony@bakeyournoodle.com>
+Code-Review+1: lixinhu <lixinhu@inspur.com>
+Code-Review+1: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Code-Review+1: Kenji Ishii <ken-ishii@sx.jp.nec.com>
+Code-Review+1: Itxaka Serrano Garcia <igarcia@suse.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 28 Nov 2016 17:07:12 +0000
+Reviewed-on: https://review.openstack.org/403282
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
