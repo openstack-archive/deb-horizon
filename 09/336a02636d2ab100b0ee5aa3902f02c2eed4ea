@@ -1,0 +1,10 @@
+Code-Review+2: Kenji Ishii <ken-ishii@sx.jp.nec.com>
+Code-Review+1: Eddie Ramirez <eddie.ramirez@intel.com>
+Code-Review+2: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Workflow+1: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 07 Dec 2016 08:34:33 +0000
+Reviewed-on: https://review.openstack.org/407756
+Project: openstack/deb-horizon
+Branch: refs/heads/master
