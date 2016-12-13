@@ -1,0 +1,11 @@
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Code-Review+1: Allen <chen.qiaomin@99cloud.net>
+Code-Review+1: Ying Zuo <yinzuo@cisco.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 13 Dec 2016 04:01:15 +0000
+Reviewed-on: https://review.openstack.org/409119
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
