@@ -10,17 +10,18 @@
 # Ivan Startsev <istartsev67@gmail.com>, 2016. #zanata
 # Maxim Bozhenko <mbozhenko@gmail.com>, 2016. #zanata
 # Nikolay Milekhin <rusmil01@ru.ibm.com>, 2016. #zanata
+# Valentin Chikunov <vchikunov@hystax.com>, 2016. #zanata
 # Yulia Ryndenkova <yryndenkova@hystax.com>, 2016. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 10.0.0.0rc2.dev27\n"
+"Project-Id-Version: horizon 10.0.1.dev41\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2016-09-27 19:52+0000\n"
+"POT-Creation-Date: 2016-10-21 17:36+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-09-28 03:18+0000\n"
-"Last-Translator: Yulia Ryndenkova <yryndenkova@hystax.com>\n"
+"PO-Revision-Date: 2016-10-12 02:48+0000\n"
+"Last-Translator: Maxim Bozhenko <mbozhenko@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
 "X-Generator: Zanata 3.7.3\n"
@@ -111,6 +112,32 @@ msgstr ""
 
 msgid ""
 "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>Heads up!</strong>\n"
+"           This\n"
+"          <a href=\"#\" class=\"alert-link\">alert needs your attention</"
+"a>,\n"
+"           but it's not super important."
+msgstr ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>Внимание!</strong>\n"
+"           Это\n"
+"          <a href=\"#\" class=\"alert-link\">уведомление требует "
+"вмешательства</a>,\n"
+"          но это не очень важно."
+
+msgid ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>Oh snap!</strong>\n"
+"          <a href=\"#\" class=\"alert-link\">Change a few things up</a>\n"
+"          and try submitting again."
+msgstr ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
+"          <strong>Ошибка!</strong>\n"
+"          <a href=\"#\" class=\"alert-link\">Исправьте кое-что</a>\n"
+"          и повторите попытку."
+
+msgid ""
+"<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>\n"
 "          <strong>Well done!</strong>\n"
 "          You successfully read\n"
 "          <a href=\"#\" class=\"alert-link\">this important alert message</"
@@ -126,6 +153,12 @@ msgid "<small>This line of text is meant to be treated as fine print.</small>"
 msgstr ""
 "<small>Это строка текста предназначена для демонстрации мелкого шрифта</"
 "small>"
+
+msgid "<span>{$ 'Themable Option 1' | translate $}</span>"
+msgstr "<span>{$ 'Themable Option 1' | translate $}</span>"
+
+msgid "<span>{$ 'Themable Option 2' | translate $}</span>"
+msgstr "<span>{$ 'Themable Option 2' | translate $}</span>"
 
 msgid ""
 "A container is a storage compartment for your data and provides a way\n"
@@ -289,6 +322,11 @@ msgstr ""
 "сетями.\n"
 "    Вы можете использовать раздел <b>Сетевая топология</b> чтобы подключить "
 "маршрутизатор к двум сетям."
+
+msgid ""
+"An abbreviation of the word attribute is <abbr title=\"attribute\">attr</"
+"abbr>."
+msgstr "Аббревиатура словосочетания  <abbr title=\"attribute\">attr</abbr>."
 
 msgid ""
 "An advanced option available when launching an instance is disk "
@@ -540,9 +578,6 @@ msgstr "Создан"
 msgid "Created At"
 msgstr "Создано"
 
-msgid "Created keypair: "
-msgstr "Созданная пара ключей: "
-
 msgid "Creating"
 msgstr "Создание "
 
@@ -576,6 +611,9 @@ msgstr "Записи DNS"
 msgid "Danger"
 msgstr "Опасность"
 
+msgid "Danger Anchor"
+msgstr "Опасный Anchor"
+
 msgid "Danger Button"
 msgstr "Кнопка опасности"
 
@@ -596,6 +634,9 @@ msgstr "Отключено"
 
 msgid "Default"
 msgstr "Значение по умолчанию"
+
+msgid "Default Anchor"
+msgstr "Anchor по умолчанию"
 
 msgid "Default Button"
 msgstr "Кнопка по умолчанию"
@@ -655,6 +696,9 @@ msgstr "Списки описаний"
 msgid "Details"
 msgstr "Подробности"
 
+msgid "Details Views:"
+msgstr "Подробнее:"
+
 msgid "Device Name"
 msgstr "Имя устройства"
 
@@ -705,6 +749,9 @@ msgstr "Выпадающий заголовок"
 
 msgid "Dropdown link"
 msgstr "Выпадающая ссылка"
+
+msgid "Dropup"
+msgstr "Выпадающий"
 
 msgid "Edit"
 msgstr "Редактирование"
@@ -964,6 +1011,9 @@ msgstr "Образ %s успешно обновлен"
 msgid "Image Description"
 msgstr "Описание образа"
 
+msgid "Image Detail"
+msgstr "Детали Образа"
+
 msgid "Image Details"
 msgstr "Подробности образа"
 
@@ -972,6 +1022,12 @@ msgstr "Метаданные образа"
 
 msgid "Image Name"
 msgstr "Имя образа"
+
+msgid "Image Requirements"
+msgstr "Требования Образа"
+
+msgid "Image Sharing"
+msgstr "Общий доступ к образу"
 
 msgid "Image Source"
 msgstr "Источник образа"
@@ -991,11 +1047,17 @@ msgstr "Индикаторы"
 msgid "Info"
 msgstr "Информация"
 
+msgid "Info Anchor"
+msgstr "Информация Anchor"
+
 msgid "Info Button"
 msgstr "Информационная кнопка"
 
 msgid "Inline"
 msgstr "Встроенный"
+
+msgid "Inline Form"
+msgstr "Встроенная форма"
 
 msgid "Input Sizes"
 msgstr "Размеры ввода"
@@ -1098,6 +1160,9 @@ msgstr "Пара ключей уже существует или имя соде
 msgid "Killed"
 msgstr "Убито"
 
+msgid "Large Modal"
+msgstr "Большая модель"
+
 msgid "Large button"
 msgstr "Большая кнопка"
 
@@ -1194,6 +1259,9 @@ msgstr "Определение метаданных"
 msgid "Metadata Definitions"
 msgstr "Определения метаданных"
 
+msgid "Metadata Help"
+msgstr "Помощь по Метаданным"
+
 msgid ""
 "Metadata is a collection of key-value pairs associated with an instance.\n"
 "    The maximum length for each metadata key and value is 255 characters."
@@ -1211,6 +1279,9 @@ msgstr ""
 "   информацию об образе. Иногда эта информация используется \n"
 "  только для сортировки и просмотра, но в некоторых окружениях \n"
 "  эта информация может влиять на запуск и поведение инстансов."
+
+msgid "Metadata was successfully updated."
+msgstr "Метаданные были успешно обновлены"
 
 msgid "Middle"
 msgstr "Посередине"
@@ -1494,9 +1565,6 @@ msgstr ""
 "развёртывания и количество разворачиваемых экземпляров.\n"
 "   Увеличьте количество для развёртывания нескольких одинаковых экземпляров."
 
-msgid "Please try again."
-msgstr "Повторите попытку."
-
 msgid "Policy"
 msgstr "Политика"
 
@@ -1521,6 +1589,9 @@ msgstr "Предыдущая"
 
 msgid "Primary"
 msgstr "Основной"
+
+msgid "Primary Anchor"
+msgstr "Главный Anchor"
 
 msgid "Primary Button"
 msgstr "Основная кнопка"
@@ -1726,6 +1797,9 @@ msgstr "Выберите порты из списка."
 msgid "Select the Ramdisk from the drop down menu."
 msgstr "Выберите \"Диск в памяти\" в выпадающем меню."
 
+msgid "Select the availability zone from the drop down menu."
+msgstr "Выберете доступные зоны из выпадающего меню."
+
 msgid "Select the format of the disk from the drop down menu."
 msgstr "Выберите формат диска в выпадающем меню."
 
@@ -1802,6 +1876,9 @@ msgstr "Размер"
 msgid "Size (GB)"
 msgstr "Размер (Гб)"
 
+msgid "Small Modal"
+msgstr "Маленькая модель"
+
 msgid "Small button"
 msgstr "Маленькая кнопка"
 
@@ -1835,6 +1912,9 @@ msgstr "Выберите образ для загрузки в сервис уп
 msgid "Stacked"
 msgstr "Стекированный"
 
+msgid "Standard Modal"
+msgstr "Стандартная модель"
+
 msgid "Standard Table"
 msgstr "Стандартная таблица"
 
@@ -1859,6 +1939,9 @@ msgstr "Успешно импортирована связка ключей %(na
 
 msgid "Summary Template URL:"
 msgstr "Описание шаблона URL:"
+
+msgid "Supports Details View:"
+msgstr "Поддержка просмотра информации:"
 
 msgid "Swap Disk"
 msgstr "Диск подкачки"
@@ -1889,6 +1972,19 @@ msgstr "Правило доступа к этому образу."
 
 msgid "The architecture of the image."
 msgstr "Архитектура образа."
+
+msgid ""
+"The current Horizon settings indicate no valid\n"
+"                       image creation methods are available. Providing\n"
+"                       an image location and/or uploading from the\n"
+"                       local file system must be allowed to support\n"
+"                       image creation."
+msgstr ""
+"Текущие настройки Horizon\n"
+"указывают на отсутствие доступных методов создания образа. Указанные\n"
+"места расположения образа и/или загруженные с\n"
+"локальной файловой системы должны разрешать поддержку\n"
+"создания образа."
 
 msgid ""
 "The flavor you select for an instance determines the amount of compute, "
@@ -1950,6 +2046,9 @@ msgstr ""
 "Минимальный размер оперативной памяти необходимый для загрузки этого образа. "
 "Если не установлено, используется значение по умолчанию - 0 (нет минимума)"
 
+msgid "The name of the Volume."
+msgstr "Имя Диска"
+
 msgid "The name of the image."
 msgstr "Имя образа."
 
@@ -1973,6 +2072,9 @@ msgstr ""
 "памяти не менее %(minRam)s МБ. Выберите разновидность с большим объемом "
 "памяти или используйте другой источник %(sourceType)s."
 
+msgid "The size of the volume, in gibibytes (GiB)."
+msgstr "Размер диска, в гигабайтах (Гб)."
+
 msgid "The status indicates whether the network has an active connection."
 msgstr "Статус показывает, есть ли активные подключения в данной сети."
 
@@ -1990,6 +2092,15 @@ msgstr ""
 #, python-format
 msgid "The volume size must be at least %(minVolumeSize)s GB"
 msgstr "Размер диска должен быть не менее %(minVolumeSize)s GB"
+
+msgid "Themable Checkbox"
+msgstr "Тематический флаг"
+
+msgid "Themable Radios"
+msgstr "Тематический переключатель"
+
+msgid "Themable Selects"
+msgstr "Тематический выбор"
 
 msgid "There are no Availability Zones."
 msgstr "Нет Зон Доступности."
@@ -2147,6 +2258,9 @@ msgstr "Не удалось создать проект"
 msgid "Unable to create the role."
 msgstr "Не удалось создать роль."
 
+msgid "Unable to create the server snapshot."
+msgstr "Не удалось создать снимок сервера."
+
 msgid "Unable to create the server."
 msgstr "Не удалось создать сервер."
 
@@ -2201,6 +2315,10 @@ msgstr "Не удалось удалить роль."
 msgid "Unable to delete the roles."
 msgstr "Не удалось удалить роли."
 
+#, python-format
+msgid "Unable to delete the server with id: %(id)s"
+msgstr "Не удаётся удалить сервер с ИД: %(id)s"
+
 msgid "Unable to delete the user."
 msgstr "Не удалось удалить пользователя."
 
@@ -2240,9 +2358,6 @@ msgstr "Не удалось получить каталог служб."
 msgid "Unable to fetch the services."
 msgstr "Не удалось получить сервисы."
 
-msgid "Unable to generate"
-msgstr "Не удалось создать"
-
 msgid "Unable to get details of the object."
 msgstr "Не удаётся получить сведения об объекте."
 
@@ -2267,8 +2382,35 @@ msgstr "Не удаётся получить объекты в контейне�
 msgid "Unable to grant the role."
 msgstr "Не удалось предоставить роль."
 
+#, python-format
+msgid "Unable to hard-reboot the server with id: %(id)s"
+msgstr "Не удаётся аппаратно перезапустить сервер с ИД: %(id)s"
+
 msgid "Unable to import the keypair."
 msgstr "Не удалось импортировать пару ключей."
+
+msgid "Unable to load the server actions."
+msgstr "Не удается загрузить действия сервера."
+
+msgid "Unable to load the server console info."
+msgstr "Не удается загрузить информационную консоль сервера."
+
+msgid "Unable to load the server console log."
+msgstr "Не удается загрузить лог-консоль сервера."
+
+msgid "Unable to load the server security groups."
+msgstr "Не удается загрузить группы безопасности сервера."
+
+msgid "Unable to load the server volumes."
+msgstr "Не удается загрузить диски сервера."
+
+#, python-format
+msgid "Unable to pause the server with id: %(id)s"
+msgstr "Не удаётся приостановить сервер с ИД: %(id)s"
+
+#, python-format
+msgid "Unable to resume the server with id: %(id)s"
+msgstr "Не удаётся возобновить сервер с ИД: %(id)s"
 
 msgid "Unable to retrieve floating IP pools."
 msgstr "Не удаётся получить пулы плавающих IP-адресов."
@@ -2320,6 +2462,9 @@ msgstr "Не удалось получить домен."
 
 msgid "Unable to retrieve the domains."
 msgstr "Не удалось получить домены."
+
+msgid "Unable to retrieve the editable quotas."
+msgstr "Не удается получить дополнительные квоты."
 
 msgid "Unable to retrieve the extensions."
 msgstr "Не удалось получить расширения."
@@ -2410,6 +2555,29 @@ msgstr "Не удалось получить диски."
 
 msgid "Unable to set the default quotas."
 msgstr "Не удается установить квоты по умолчанию."
+
+#, python-format
+msgid "Unable to soft-reboot the server with id: %(id)s"
+msgstr "Не удаётся программно перезапустить сервер с ИД: %(id)s"
+
+#, python-format
+msgid "Unable to start the server with id: %(id)s"
+msgstr "Не удаётся запустить сервер с ИД: %(id)s"
+
+#, python-format
+msgid "Unable to stop the server with id: %(id)s"
+msgstr "Не удаётся остановить сервер с ИД: %(id)s"
+
+#, python-format
+msgid "Unable to suspend the server with id: %(id)s"
+msgstr "Не удаётся приостановить сервер с ИД: %(id)s"
+
+#, python-format
+msgid "Unable to unpause the server with id: %(id)s"
+msgstr "Не удаётся возобновить сервер с ИД: %(id)s"
+
+msgid "Unable to update metadata."
+msgstr "Не удалось обновить метаданные."
 
 msgid "Unable to update project quota data."
 msgstr "Не удается обновить данные по квотам проекта."
@@ -2586,6 +2754,9 @@ msgstr ""
 msgid "Warning"
 msgstr "Предупреждение"
 
+msgid "Warning Anchor"
+msgstr "Предупреждающий Anchor"
+
 msgid "Warning Button"
 msgstr "Кнопка предупреждения"
 
@@ -2637,6 +2808,9 @@ msgstr ""
 "как <b>Выключен</b>,\n"
 "    то другим пользователям не разрешено использовать порт."
 
+msgid "XL Modal"
+msgstr "Очень большая модель"
+
 msgid "XS"
 msgstr "XS"
 
@@ -2646,6 +2820,9 @@ msgstr "Да"
 #, python-format
 msgid "You are not allowed to delete images: %s"
 msgstr "Вам не разрешено удалять образы: %s"
+
+msgid "You can add arbitrary metadata to your image."
+msgstr "Вы можете добавить произвольные метаданные в свой образ. "
 
 msgid ""
 "You can add arbitrary metadata to your instance so that you can more easily "
@@ -2705,9 +2882,6 @@ msgid_plural "messages"
 msgstr[0] "сообщение"
 msgstr[1] "сообщения"
 msgstr[2] "сообщений"
-
-msgid "resource load failed: "
-msgstr "загрузка ресурсов не удалась:"
 
 msgid "snapshot"
 msgstr "моментальная копия"

@@ -1,8 +1,12 @@
-horizon (3:10.0.0-3) UNRELEASED; urgency=medium
+horizon (3:10.0.1-1) UNRELEASED; urgency=medium
 
+  [ Ondřej Nový ]
   * Bumped debhelper compat version to 10
 
- -- Ondřej Nový <onovy@debian.org>  Thu, 24 Nov 2016 00:01:52 +0100
+  [ Ivan Udovichenko ]
+  * Sync to the latest version from stable/newton.
+
+ -- Ivan Udovichenko <iudovichenko@mirantis.com>  Fri, 30 Dec 2016 17:07:41 +0200
 
 horizon (3:10.0.0-2) unstable; urgency=medium
 
