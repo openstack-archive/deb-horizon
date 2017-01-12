@@ -1,0 +1,9 @@
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 12 Jan 2017 04:43:11 +0000
+Reviewed-on: https://review.openstack.org/403687
+Project: openstack/deb-horizon
+Branch: refs/heads/master
