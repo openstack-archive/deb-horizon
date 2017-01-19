@@ -1,0 +1,9 @@
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 18 Jan 2017 18:37:55 +0000
+Reviewed-on: https://review.openstack.org/421112
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/mitaka
