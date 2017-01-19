@@ -1,0 +1,9 @@
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 19 Jan 2017 05:27:56 +0000
+Reviewed-on: https://review.openstack.org/416694
+Project: openstack/deb-horizon
+Branch: refs/heads/master
