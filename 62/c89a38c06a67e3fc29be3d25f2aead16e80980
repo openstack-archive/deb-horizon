@@ -1,0 +1,10 @@
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Code-Review+1: Beth Elwell <e.r.elwell@gmail.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 20 Jan 2017 12:01:40 +0000
+Reviewed-on: https://review.openstack.org/422760
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton

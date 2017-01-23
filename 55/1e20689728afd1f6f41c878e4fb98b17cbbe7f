@@ -1,0 +1,12 @@
+Code-Review+2: Thai Tran <tqtran@us.ibm.com>
+Code-Review+1: anusha <anusha.yarravarapu@locuz.com>
+Code-Review+1: Eddie Ramirez <eddie.ramirez@intel.com>
+Code-Review+1: Kenji Ishii <ken-ishii@sx.jp.nec.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 20 Jan 2017 12:03:07 +0000
+Reviewed-on: https://review.openstack.org/420767
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
