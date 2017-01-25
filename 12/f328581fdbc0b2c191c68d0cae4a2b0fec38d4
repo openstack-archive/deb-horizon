@@ -1,0 +1,10 @@
+Code-Review+2: Kenji Ishii <ken-ishii@sx.jp.nec.com>
+Code-Review+1: Beth Elwell <e.r.elwell@gmail.com>
+Code-Review+2: Travis Tripp <travis.tripp@hpe.com>
+Workflow+1: Travis Tripp <travis.tripp@hpe.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 24 Jan 2017 18:46:47 +0000
+Reviewed-on: https://review.openstack.org/412578
+Project: openstack/deb-horizon
+Branch: refs/heads/master
