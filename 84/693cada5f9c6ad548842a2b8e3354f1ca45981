@@ -1,0 +1,9 @@
+Code-Review+1: Gábor Antal <antal@inf.u-szeged.hu>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 30 Jan 2017 20:42:38 +0000
+Reviewed-on: https://review.openstack.org/426845
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
