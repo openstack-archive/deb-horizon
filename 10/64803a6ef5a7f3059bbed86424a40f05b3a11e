@@ -1,0 +1,9 @@
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Code-Review+1: Eddie Ramirez <eddie.ramirez@intel.com>
+Workflow+1: Cindy Lu <clu@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 31 Jan 2017 18:21:16 +0000
+Reviewed-on: https://review.openstack.org/425580
+Project: openstack/deb-horizon
+Branch: refs/heads/master

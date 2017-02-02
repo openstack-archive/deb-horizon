@@ -1,0 +1,8 @@
+Code-Review+2: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Workflow+1: Tatiana Ovchinnikova <t.v.ovtchinnikova@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 02 Feb 2017 08:51:33 +0000
+Reviewed-on: https://review.openstack.org/428024
+Project: openstack/deb-horizon
+Branch: refs/heads/master
