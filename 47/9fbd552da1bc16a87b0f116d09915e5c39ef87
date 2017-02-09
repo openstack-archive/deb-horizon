@@ -1,0 +1,10 @@
+Code-Review+1: Daniel Castellanos <luis.daniel.castellanos@intel.com>
+Code-Review+1: Revon Mathews <revon.mathews@intel.com>
+Code-Review+2: Cindy Lu <clu@us.ibm.com>
+Workflow+1: Cindy Lu <clu@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 08 Feb 2017 22:58:54 +0000
+Reviewed-on: https://review.openstack.org/427470
+Project: openstack/deb-horizon
+Branch: refs/heads/master
