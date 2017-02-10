@@ -1,0 +1,8 @@
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 09 Feb 2017 23:37:50 +0000
+Reviewed-on: https://review.openstack.org/431559
+Project: openstack/deb-horizon
+Branch: refs/heads/master
