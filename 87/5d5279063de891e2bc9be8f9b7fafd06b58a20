@@ -1,0 +1,10 @@
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Code-Review+1: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 27 Feb 2017 14:25:33 +0000
+Reviewed-on: https://review.openstack.org/436916
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/mitaka
