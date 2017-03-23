@@ -1,0 +1,8 @@
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Workflow+1: Radomir Dopieralski <openstack@sheep.art.pl>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 10 Mar 2017 13:50:27 +0000
+Reviewed-on: https://review.openstack.org/444275
+Project: openstack/deb-horizon
+Branch: refs/heads/master

@@ -1,0 +1,10 @@
+Code-Review+1: Milan Potdar <milan.potdar@intel.com>
+Code-Review+1: Eddie Ramirez <eddie.ramirez@intel.com>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Workflow+1: Akihiro Motoki <amotoki@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 02 Mar 2017 11:56:25 +0000
+Reviewed-on: https://review.openstack.org/438717
+Project: openstack/deb-horizon
+Branch: refs/heads/master

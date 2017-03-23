@@ -1,0 +1,11 @@
+Code-Review+1: lifan <lifan@awcloud.com>
+Code-Review+2: Kenji Ishii <ken-ishii@sx.jp.nec.com>
+Code-Review+1: Aaron lu <lvxx@awcloud.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 02 Mar 2017 11:06:20 +0000
+Reviewed-on: https://review.openstack.org/439447
+Project: openstack/deb-horizon
+Branch: refs/heads/master
