@@ -1,0 +1,10 @@
+Code-Review+1: Lucas H. Xu <xuh@bu.edu>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 27 Mar 2017 05:11:11 +0000
+Reviewed-on: https://review.openstack.org/445030
+Project: openstack/deb-horizon
+Branch: refs/heads/master
