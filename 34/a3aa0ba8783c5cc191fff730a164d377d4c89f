@@ -1,0 +1,9 @@
+Code-Review+1: Gábor Antal <antal@inf.u-szeged.hu>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Workflow+1: Akihiro Motoki <amotoki@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 31 Mar 2017 13:28:44 +0000
+Reviewed-on: https://review.openstack.org/428686
+Project: openstack/deb-horizon
+Branch: refs/heads/master
