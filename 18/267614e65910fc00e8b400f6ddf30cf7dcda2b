@@ -1,0 +1,10 @@
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+1: zhengchuanhu <zhengchuan.hu@easystack.cn>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Workflow+1: Akihiro Motoki <amotoki@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Sun, 02 Apr 2017 09:20:31 +0000
+Reviewed-on: https://review.openstack.org/452380
+Project: openstack/deb-horizon
+Branch: refs/heads/master
