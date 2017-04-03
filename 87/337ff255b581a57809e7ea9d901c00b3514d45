@@ -1,0 +1,10 @@
+Code-Review+1: Yves-Gwenael Bourhis <yves-gwenael.bourhis@orange.com>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+2: Richard Jones <r1chardj0n3s@gmail.com>
+Workflow+1: Richard Jones <r1chardj0n3s@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 03 Apr 2017 03:00:28 +0000
+Reviewed-on: https://review.openstack.org/440621
+Project: openstack/deb-horizon
+Branch: refs/heads/master
