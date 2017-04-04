@@ -2,3 +2,4 @@ fix-dashboard-django-wsgi.patch
 fix-dashboard-manage.patch
 fixed-horizon-MANIFEST.in.patch
 stores-SECRET_KEY-in-tmp-folder-for-tests.patch
+CVE-2017-7400_Remove_dangerous_safestring_declaration.patch

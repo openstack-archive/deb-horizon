@@ -1,12 +1,14 @@
-horizon (3:10.0.1-1) UNRELEASED; urgency=medium
-
-  [ Ondřej Nový ]
-  * Bumped debhelper compat version to 10
+horizon (3:10.0.1-1) unstable; urgency=high
 
   [ Ivan Udovichenko ]
   * Sync to the latest version from stable/newton.
 
- -- Ivan Udovichenko <iudovichenko@mirantis.com>  Fri, 30 Dec 2016 17:07:41 +0200
+  [ Thomas Goirand ]
+  * CVE-2017-7400: XSS in federation mappings UI. Applied upstream patch:
+    Remove dangerous safestring declaration (Closes: #859559).
+  * Updated Italian translation of debconf messages (Closes: #846931).
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 04 Apr 2017 23:47:20 +0200
 
 horizon (3:10.0.0-2) unstable; urgency=medium
 
