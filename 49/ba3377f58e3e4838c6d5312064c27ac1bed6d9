@@ -1,0 +1,8 @@
+Code-Review+2: Kenji Ishii <ken-ishii@sx.jp.nec.com>
+Workflow+1: Kenji Ishii <ken-ishii@sx.jp.nec.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Sat, 22 Apr 2017 01:15:44 +0000
+Reviewed-on: https://review.openstack.org/458767
+Project: openstack/deb-horizon
+Branch: refs/heads/master
