@@ -1,0 +1,11 @@
+Code-Review+1: Gary W. Smith <gary.smith@suse.com>
+Code-Review+1: Debo Zhang <zhangdebo@inspur.com>
+Code-Review+1: Lucas H. Xu <xuh@bu.edu>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Workflow+1: Akihiro Motoki <amotoki@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 17 May 2017 19:59:21 +0000
+Reviewed-on: https://review.openstack.org/463854
+Project: openstack/deb-horizon
+Branch: refs/heads/master
