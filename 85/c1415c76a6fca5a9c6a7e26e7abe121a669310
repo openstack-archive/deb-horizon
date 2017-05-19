@@ -1,0 +1,15 @@
+Code-Review+1: Lucas H. Xu <xuh@bu.edu>
+Code-Review+1: Kevin Lefevre <lefevre.kevin@gmail.com>
+Code-Review+1: Debo Zhang <zhangdebo@inspur.com>
+Code-Review+1: Andy McCrae <andy.mccrae@googlemail.com>
+Code-Review+1: Jens Rosenboom (frickler) <j.rosenboom@x-ion.de>
+Code-Review+1: Akihiro Motoki <amotoki@gmail.com>
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 19 May 2017 09:38:04 +0000
+Reviewed-on: https://review.openstack.org/464001
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/newton
