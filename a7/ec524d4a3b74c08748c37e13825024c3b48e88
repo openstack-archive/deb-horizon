@@ -1,0 +1,9 @@
+Code-Review+1: Jeremy Moffitt <jeremy.moffitt@suse.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 24 May 2017 15:45:37 +0000
+Reviewed-on: https://review.openstack.org/465951
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/ocata
