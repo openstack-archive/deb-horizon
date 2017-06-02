@@ -1,0 +1,10 @@
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Code-Review+1: Cao Xuan Hoang <hoangcx@vn.fujitsu.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 02 Jun 2017 21:06:31 +0000
+Reviewed-on: https://review.openstack.org/466644
+Project: openstack/deb-horizon
+Branch: refs/heads/master
