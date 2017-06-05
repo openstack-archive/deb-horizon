@@ -1,0 +1,9 @@
+Code-Review+1: Cao Xuan Hoang <hoangcx@vn.fujitsu.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Workflow+1: Akihiro Motoki <amotoki@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 05 Jun 2017 06:07:37 +0000
+Reviewed-on: https://review.openstack.org/466645
+Project: openstack/deb-horizon
+Branch: refs/heads/master
