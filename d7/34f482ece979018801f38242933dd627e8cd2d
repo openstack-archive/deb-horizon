@@ -1,0 +1,10 @@
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Code-Review+1: Beth Elwell <e.r.elwell@gmail.com>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Workflow+1: Akihiro Motoki <amotoki@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 07 Jun 2017 15:49:21 +0000
+Reviewed-on: https://review.openstack.org/425283
+Project: openstack/deb-horizon
+Branch: refs/heads/master
