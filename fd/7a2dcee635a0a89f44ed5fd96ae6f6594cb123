@@ -1,0 +1,8 @@
+Code-Review+2: David Lyle <dklyle0@gmail.com>
+Workflow+1: David Lyle <dklyle0@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Sat, 10 Jun 2017 12:35:30 +0000
+Reviewed-on: https://review.openstack.org/472400
+Project: openstack/deb-horizon
+Branch: refs/heads/master
