@@ -1,0 +1,9 @@
+Code-Review-1: Ivan Kolodyazhny <e0ne@e0ne.info>
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Workflow+1: Radomir Dopieralski <openstack@sheep.art.pl>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 13 Jun 2017 11:09:52 +0000
+Reviewed-on: https://review.openstack.org/462407
+Project: openstack/deb-horizon
+Branch: refs/heads/master
