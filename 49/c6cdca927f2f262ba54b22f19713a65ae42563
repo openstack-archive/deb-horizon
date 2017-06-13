@@ -1,0 +1,16 @@
+Code-Review+1: wei.ying <wei.ying@easystack.cn>
+Code-Review+1: Debo Zhang <zhangdebo@inspur.com>
+Code-Review+1: alfred <chenjhfrontend@163.com>
+Code-Review+1: zhiweid <duanzw@awcloud.com>
+Code-Review+1: zhangyoulin <zhangyl@awcloud.com>
+Code-Review+1: limeng <limeng@awcloud.com>
+Code-Review+1: xiaoyun feng <fengxy@awcloud.com>
+Code-Review+1: Julie Gravel <julie.gravel@suse.com>
+Code-Review+2: Radomir Dopieralski <openstack@sheep.art.pl>
+Workflow+1: Radomir Dopieralski <openstack@sheep.art.pl>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 13 Jun 2017 13:14:12 +0000
+Reviewed-on: https://review.openstack.org/460551
+Project: openstack/deb-horizon
+Branch: refs/heads/master
