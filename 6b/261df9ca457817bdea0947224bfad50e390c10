@@ -1,0 +1,8 @@
+Code-Review+2: Ying Zuo <yinzuo@cisco.com>
+Workflow+1: Ying Zuo <yinzuo@cisco.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 28 Jun 2017 04:22:25 +0000
+Reviewed-on: https://review.openstack.org/477462
+Project: openstack/deb-horizon
+Branch: refs/heads/master
