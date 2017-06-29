@@ -1,0 +1,14 @@
+Code-Review+1: Liuqing Jing <jing.liuqing@99cloud.net>
+Code-Review+1: Debo Zhang <zhangdebo@inspur.com>
+Code-Review+1: Andreas Jaeger <jaegerandi@gmail.com>
+Code-Review+2: Rob Cresswell <robert.cresswell@outlook.com>
+Code-Review+1: Han Chao <hanchao@iscas.ac.cn>
+Code-Review+1: Huachao Mao <mao.huachao@99cloud.net>
+Code-Review+1: Wangliangyu <wangliangyu@gohigh.com.cn>
+Workflow+1: Rob Cresswell <robert.cresswell@outlook.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 29 Jun 2017 21:21:38 +0000
+Reviewed-on: https://review.openstack.org/476527
+Project: openstack/deb-horizon
+Branch: refs/heads/master
