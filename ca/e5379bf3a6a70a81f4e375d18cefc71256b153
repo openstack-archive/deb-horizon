@@ -1,0 +1,11 @@
+Code-Review+1: Eric Peterson <ejpetey@gmail.com>
+Code-Review+1: Jeremy Moffitt <jeremy.moffitt@suse.com>
+Code-Review+1: Ying Zuo <yinzuo@cisco.com>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Workflow+1: Akihiro Motoki <amotoki@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 14 Jul 2017 16:42:39 +0000
+Reviewed-on: https://review.openstack.org/482437
+Project: openstack/deb-horizon
+Branch: refs/heads/master
