@@ -1,0 +1,11 @@
+Code-Review+1: Allen <chen.qiaomin@99cloud.net>
+Code-Review+1: Beth Elwell <e.r.elwell@gmail.com>
+Code-Review+1: Debo Zhang <zhangdebo@inspur.com>
+Code-Review+2: Akihiro Motoki <amotoki@gmail.com>
+Workflow+1: Akihiro Motoki <amotoki@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 19 Jul 2017 20:22:01 +0000
+Reviewed-on: https://review.openstack.org/483835
+Project: openstack/deb-horizon
+Branch: refs/heads/stable/ocata
