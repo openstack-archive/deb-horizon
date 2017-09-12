@@ -1,4 +1,0 @@
----
-upgrade:
-  - The ``status_unknown`` table row class has been replaced with
-    the default bootstrap ``warning`` class.

@@ -1,4 +1,0 @@
----
-features:
-  - Support a parameter to specify subnet or fixed IP address
-    when creating port.

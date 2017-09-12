@@ -1,3 +1,0 @@
----
-features:
-  - Selenium tests may now be exercised using the headless PhantomJS driver.

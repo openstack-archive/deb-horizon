@@ -1,4 +1,0 @@
----
-features:
-  - Added two charts to show the Number of Volumes and Total Volume Storage
-    quotas on launch instance modal when cinder is enabled.

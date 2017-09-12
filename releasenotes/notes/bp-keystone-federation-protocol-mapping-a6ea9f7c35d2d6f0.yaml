@@ -1,5 +1,0 @@
----
-features:
-  - >
-    [`blueprint keystone-federation-protocol-mapping <https://blueprints.launchpad.net/horizon/+spec/keystone-federation-protocol-mapping>`_]
-    This blueprint provides CRUD interaction for identity provider protocols.
